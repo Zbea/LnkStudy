@@ -159,7 +159,6 @@ class MainCourseActivity :BaseActivity() {
             }
         }
 
-
         tv_save.setOnClickListener {
             if (selectLists.size==0)return@setOnClickListener
             CourseGreenDaoManager.getInstance(this@MainCourseActivity).deleteAll()//清除以前存储的课程
