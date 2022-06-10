@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">墨之屏学习系统</string>
+    <string name="authority">com.bll.lnkstudy</string>
+    <string name="net_work_error">检查网络是否连接</string>
+    <string name="connect_server_timeout">无法连接到服务器</string>
+    <string name="parse_data_error">解析数据错误</string>
+    <string name="connect_error">未连接到服务器</string>
+    <string name="on_server_error">服务器开小差，请重试</string>
+
+    <string name="user_tip">请输入4-12位数字、字母的用户名</string>
+    <string name="psw_tip">请输入6-20数字、字母的密码</string>
+    <string name="phone_tip">请正确输入11位手机号码</string>
+
+</resources>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_fragment_title" />
+
+    <com.androidkun.xtablayout.XTabLayout
+        android:id="@+id/xtab"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/xtab_height"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="@dimen/navigation_height"
+        android:layout_marginEnd="60dp"
+        app:xTabMode="fixed"
+        app:xTabDisplayNum="6"
+        app:xTabDividerWidthWidthText="true"
+        app:xTabIndicatorColor="@color/black"
+        app:xTabIndicatorHeight="2dp"
+        app:xTabSelectedTextColor="@color/black"
+        app:xTabSelectedTextSize="24sp"
+        app:xTabTextColor="@color/black"
+        app:xTabTextSize="24sp"></com.androidkun.xtablayout.XTabLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_painting_dynasty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/xtab"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_45"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_han"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_han" />
+
+            <ImageView
+                android:id="@+id/iv_tang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_tang" />
+
+            <ImageView
+                android:id="@+id/iv_song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_30"
+                android:src="@mipmap/icon_painting_song" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="@dimen/dp_45"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:id="@+id/iv_jd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_jd" />
+
+            <ImageView
+                android:id="@+id/iv_dd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="90dp"
+                android:src="@mipmap/icon_painting_dd" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_45"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_yuan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_yuan" />
+
+            <ImageView
+                android:id="@+id/iv_ming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_ming" />
+
+            <ImageView
+                android:id="@+id/iv_qing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_qing" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_sm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_painting_sm" />
+
+
+            <ImageView
+                android:id="@+id/iv_yb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="140dp"
+                android:src="@mipmap/icon_painting_yb" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

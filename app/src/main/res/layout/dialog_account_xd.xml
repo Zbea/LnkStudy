@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="600dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg">
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        android:background="@mipmap/icon_close" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="15dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:text="购买学豆"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:text="支付方式"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_zfb"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/rb_bg_zfb"
+                android:button="@null"
+                android:buttonTint="@color/black"
+                android:checked="true"
+                android:drawablePadding="20dp"
+                android:paddingLeft="20dp"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="1dp" />
+
+            <RadioButton
+                android:id="@+id/rb_wx"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/rb_bg_wx"
+                android:button="@null"
+                android:buttonTint="@color/black"
+                android:drawablePadding="20dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="40dp"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:text="取消"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                />
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:text="购买"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

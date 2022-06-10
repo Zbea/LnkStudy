@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="@dimen/dialog_padding">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10">
+
+        <TextView
+            android:id="@+id/tv_book_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="模板"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:src="@mipmap/icon_close" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_module1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/icon_course_1"
+            android:drawablePadding="@dimen/dp_15"
+            android:gravity="center"
+            android:text="五天六节课"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_20" />
+
+        <TextView
+            android:id="@+id/tv_module2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:drawableTop="@mipmap/icon_course_2"
+            android:drawablePadding="@dimen/dp_15"
+            android:gravity="center"
+            android:text="六天六节课"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_20" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_module3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/icon_course_3"
+            android:drawablePadding="@dimen/dp_15"
+            android:gravity="center"
+            android:text="五天七节课"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_20" />
+
+        <TextView
+            android:id="@+id/tv_module4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:drawableTop="@mipmap/icon_course_4"
+            android:drawablePadding="@dimen/dp_15"
+            android:gravity="center"
+            android:text="六天七节课"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_20" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_module5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/icon_course_5"
+            android:drawablePadding="@dimen/dp_15"
+            android:gravity="center"
+            android:text="五天八节课"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_20" />
+
+        <TextView
+            android:id="@+id/tv_module6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:drawableTop="@mipmap/icon_course_6"
+            android:drawablePadding="@dimen/dp_15"
+            android:gravity="center"
+            android:text="六天八节课"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_20" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

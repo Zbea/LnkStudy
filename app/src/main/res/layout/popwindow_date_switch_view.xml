@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/icon_homework_pop_bg"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tv_plan"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="@color/black_20"
+        android:textSize="@dimen/sp_18"
+        android:background="@drawable/bg_line_bottom"
+        android:text="学习计划"/>
+    <TextView
+        android:id="@+id/tv_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:gravity="center"
+        android:textColor="@color/black_20"
+        android:textSize="@dimen/sp_18"
+        android:background="@drawable/bg_line_bottom"
+        android:text="日程"/>
+
+    <TextView
+        android:id="@+id/tv_day"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:gravity="center"
+        android:textColor="@color/black_20"
+        android:textSize="@dimen/sp_18"
+        android:text="重要日子"/>
+
+</LinearLayout>

@@ -1,0 +1,25 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        flatDir (){
+            dirs 'libs'
+        }
+
+        jcenter()
+        google()
+        maven { url "https://jitpack.io" }
+        mavenCentral()
+    }
+
+
+}
+rootProject.name = "LnkStudy"
+include ':app'
+include ':UtilsSdk'

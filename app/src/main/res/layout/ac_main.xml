@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="horizontal">
+
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="107dp" />
+
+    <View
+        android:layout_width="1.5dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="107dp"
+        android:background="@color/black" />
+
+    <LinearLayout
+        android:layout_width="107dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_user"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_40"
+            android:src="@mipmap/icon_main_account" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:text="已登录"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="70dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_setting"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="400dp"
+        android:background="@drawable/bg_circle_shadow"
+        android:gravity="center"
+        android:text="A"
+        android:textColor="@color/black"
+        android:textSize="40sp" />
+
+
+</RelativeLayout>

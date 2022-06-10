@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="black_20">#222222</color>
+    <color name="black_30">#333333</color>
+    <color name="black_50">#555555</color>
+    <color name="black_90">#999999</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#666666</color>
+    <color name="bg_page">#FFFFFFFF</color>
+
+    <color name="gray_light">#5C707070</color>
+    <color name="color_transparent">#00000000</color>
+    <color name="color_text_hint">#666666</color>
+    <color name="line_color">#979797</color>
+    <color name="color_main_line">#222222</color>
+</resources>

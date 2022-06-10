@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/common_fragment_title"/>
+
+    <com.androidkun.xtablayout.XTabLayout
+        android:id="@+id/xtab"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/xtab_height"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        app:xTabDisplayNum="4"
+        app:xTabTextSize="@dimen/sp_22"
+        app:xTabTextColor="@color/black"
+        app:xTabSelectedTextColor="@color/black"
+        app:xTabSelectedTextSize="22sp"
+        app:xTabIndicatorColor="@color/black"
+        app:xTabIndicatorHeight="2dp"
+        app:xTabDividerWidthWidthText="true"
+        ></com.androidkun.xtablayout.XTabLayout>
+
+</LinearLayout>
