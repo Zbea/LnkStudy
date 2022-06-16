@@ -106,33 +106,45 @@ class HomeWorkFragment : BaseFragment(){
         homeWork.title = "随堂作业本"
         homeWork.isPg = true
         homeWork.type = 0
+        homeWork.message="周老师布置作业在作业集第六页"
+        homeWork.isMessage=true
         homeWork.resId = R.mipmap.icon_homework_st
         list.add(homeWork)
+
         val homeWork1 = HomeWork()
         homeWork1.title = "课件作业集"
         homeWork1.type = 1
         homeWork1.resId = R.mipmap.icon_homework_kj
         list.add(homeWork1)
+
         val homeWork2 = HomeWork()
         homeWork2.title = "家庭作业本"
         homeWork2.type = 2
+        homeWork2.message="周老师布置作业在作业集第六页"
+        homeWork2.isMessage=true
         homeWork2.resId = R.mipmap.icon_homework_jt
         list.add(homeWork2)
+
         val homeWork4 = HomeWork()
         homeWork4.title = "我的课辅本"
         homeWork4.type = 3
+        homeWork4.message="周老师布置作业在作业集第六页"
+        homeWork4.isMessage=true
         homeWork4.resId = R.mipmap.icon_homework_kf
         list.add(homeWork4)
+
         val homeWork5 = HomeWork()
         homeWork5.title = "朗读作业本"
         homeWork5.type = 4
-        homeWork5.resId = R.mipmap.icon_homework_kf
+        homeWork5.resId = R.mipmap.icon_homework_ld
         list.add(homeWork5)
+
         val homeWork6 = HomeWork()
         homeWork6.title = "实验报告"
         homeWork6.type = 5
         homeWork6.resId = R.mipmap.icon_homework_pg
         list.add(homeWork6)
+
         val homeWork7 = HomeWork()
         homeWork7.title = "社会实践"
         homeWork7.type = 6

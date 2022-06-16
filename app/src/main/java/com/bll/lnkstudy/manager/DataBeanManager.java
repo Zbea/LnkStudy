@@ -64,6 +64,14 @@ public class DataBeanManager {
             "生物",
     }; //科目的数据
 
+    public String[] bookType = {
+            "诗经楚辞", "唐诗宋词", "经典古文",
+            "四大名著","中国科技","小说散文",
+            "外语原著","历史地理","科学技术",
+            "政治经济","军事战略","艺术才能",
+            "运动健康","连环漫画"
+    }; //书籍分类
+
     public Integer[] kmImage={
             R.mipmap.icon_teach_yuwen,
             R.mipmap.icon_teach_shuxue,
@@ -111,8 +119,8 @@ public class DataBeanManager {
         h3.name=listTitle[3];
 
         MainListBean h4 = new MainListBean();
-        h4.icon=context.getDrawable(R.mipmap.icon_main_kf);
-        h4.icon_check=context.getDrawable(R.mipmap.icon_main_kf_check);
+        h4.icon=context.getDrawable(R.mipmap.icon_main_ks);
+        h4.icon_check=context.getDrawable(R.mipmap.icon_main_ks_check);
         h4.checked=false;
         h4.name=listTitle[4];
 

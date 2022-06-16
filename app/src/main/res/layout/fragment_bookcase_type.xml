@@ -32,20 +32,18 @@
                 android:id="@+id/xt_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
-                app:xTabDividerWidth="16dp"
-                app:xTabDividerColor="@color/white"
-                app:xTabBackgroundColor="@color/color_transparent"
-                app:xTabDisplayNum="11"
                 app:xTabIndicatorColor="@color/black"
                 app:xTabIndicatorHeight="2dp"
+                app:xTabDisplayNum="10"
                 app:xTabMode="scrollable"
                 app:xTabSelectedTextColor="@color/black"
                 app:xTabSelectedTextSize="22sp"
                 app:xTabTextColor="@color/black"
-                app:xTabTextSize="22sp"/>
+                app:xTabTextSize="22sp"
+                app:xTabDividerWidthWidthText="true"/>
 
             <ImageView
                 android:id="@+id/btn_arrow_right"

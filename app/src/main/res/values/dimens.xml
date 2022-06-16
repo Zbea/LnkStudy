@@ -8,6 +8,7 @@
 
     <dimen name="homework_content_width">423dp</dimen>
 
+    <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_15">15dp</dimen>
     <dimen name="dp_18">18dp</dimen>

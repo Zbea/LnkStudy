@@ -36,7 +36,7 @@ class BookCaseTypeFragment: BaseFragment() {
     private var booksAll= mutableListOf<Book>()//所有数据
     private var bookMap=HashMap<Int,MutableList<Book>>()//将所有数据按12个分页
     private var pageIndex=1
-    private var position=0
+    private var position=0 //当前书籍位置
     private var book:Book?=null
 
     override fun getLayoutId(): Int {
@@ -77,7 +77,7 @@ class BookCaseTypeFragment: BaseFragment() {
 
     //设置tab
     private fun initTab(){
-        val strings=DataBeanManager.getIncetance().kmArray
+        val strings=DataBeanManager.getIncetance().bookType
         for (str in strings){
             var tab=xt_type?.newTab()
             tab?.text = str
@@ -86,6 +86,7 @@ class BookCaseTypeFragment: BaseFragment() {
         xt_type.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {
                 type= tab?.position!!
+                showLog("type:"+type)
                 findData()
             }
 
@@ -96,16 +97,14 @@ class BookCaseTypeFragment: BaseFragment() {
         })
 
         btn_arrow_left.setOnClickListener {
-            var pos=xt_type?.selectedTabPosition!!
-            if (pos>0){
-                type=pos-1
+            if (type>0){
+                type -= 1
                 xt_type?.getTabAt(type)?.select()
             }
         }
         btn_arrow_right.setOnClickListener {
-            var pos=xt_type?.selectedTabPosition!!
-            if (pos<strings.size-1){
-                type=pos+1
+            if (type<strings.size-1){
+                type += 1
                 xt_type?.getTabAt(type)?.select()
             }
         }

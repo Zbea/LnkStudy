@@ -77,6 +77,13 @@ class SettingDialog(val context: Context){
             dialog?.dismiss()
             SystemSettingUtils.saveScreenShot(context as Activity)
         }
+
+        val llRecycle=dialog?.findViewById<LinearLayout>(R.id.ll_recyclebin)
+        llRecycle?.setOnClickListener {
+            dialog?.dismiss()
+            onClickListener?.onRecycleBin()
+        }
+
         var volume=SystemSettingUtils.getMediaVolume(context)
         var max=SystemSettingUtils.getMediaMaxVolume(context)
         val seekBar=dialog?.findViewById<SeekBar>(R.id.seekBar)
@@ -122,6 +129,7 @@ class SettingDialog(val context: Context){
         fun onClickBookStore()
         fun onClickAppStore()
         fun onClickAirPlaneMode()
+        fun onRecycleBin()
     }
 
     fun setOnDialogClickListener(onClickListener: OnClickListener?) {

@@ -47,6 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
+        android:background="@drawable/bg_course_3"
+        android:padding="1px"
         />
 
 </LinearLayout>

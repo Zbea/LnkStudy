@@ -111,6 +111,10 @@ class MainActivity : BaseActivity() {
                 override fun onClickAirPlaneMode() {
                     SystemSettingUtils.setAirPlaneMode(this@MainActivity,true)
                 }
+
+                override fun onRecycleBin() {
+
+                }
             })
         }
         else{

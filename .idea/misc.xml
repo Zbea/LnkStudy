@@ -19,6 +19,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_gary_stroke_5dp_corner.xml" value="0.252" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_gray_stroke_10dp_corner.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_line_bottom.xml" value="0.2485" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_line_bottom_black.xml" value="0.283" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_main_content.xml" value="0.261" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_rb_line_selector.xml" value="0.261" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_top_search.xml" value="0.2485" />
@@ -28,7 +29,9 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/dialog_bg.xml" value="0.5" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/ic_launcher_background.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_bg_5.xml" value="0.263" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_bg_wx.xml" value="0.283" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_bg_zfb.xml" value="0.244" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_course_bg.xml" value="0.283" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_account_info.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_account_login_user.xml" value="0.1818794964028777" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_account_register.xml" value="0.25" />
@@ -50,6 +53,9 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_painting_list.xml" value="0.1755845323741007" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_teach_list.xml" value="0.1904226618705036" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_book_empty.xml" value="0.17805755395683454" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_course_date.xml" value="0.1845773381294964" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_course_lessons.xml" value="0.18" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_course_time.xml" value="0.1841276978417266" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_date_title.xml" value="0.1818794964028777" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_empty.xml" value="0.1510791366906475" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_fragment_title.xml" value="0.17805755395683454" />
@@ -72,6 +78,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course.xml" value="0.1647931654676259" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_add_model.xml" value="0.1872751798561151" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_module.xml" value="0.18" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_time.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date_hour.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date_time.xml" value="0.17805755395683454" />
