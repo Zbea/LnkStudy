@@ -132,7 +132,7 @@ class MainDateActivity : BaseActivity() {
 
 
     private fun onClickEvent() {
-        tv_add.setOnClickListener {
+        iv_add.setOnClickListener {
             startActivity(Intent(this, MainDateAddActivity::class.java))
         }
     }

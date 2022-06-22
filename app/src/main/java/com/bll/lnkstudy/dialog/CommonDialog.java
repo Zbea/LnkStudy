@@ -67,11 +67,11 @@ public class CommonDialog {
 
         cancleTv.setOnClickListener(v -> {
             cancel();
-            if(dialogClickListener!=null)dialogClickListener.cancel();
+            if(onDialogClickListener !=null) onDialogClickListener.cancel();
         });
         okTv.setOnClickListener(v -> {
             cancel();
-            if(dialogClickListener!=null)dialogClickListener.ok();
+            if(onDialogClickListener !=null) onDialogClickListener.ok();
         });
         dialog = new AlertDialog.Builder(new ContextThemeWrapper(context,R.style.styleDialogCustom)).create();
         dialog.setView(view);
@@ -97,12 +97,12 @@ public class CommonDialog {
     public void cancel() {
         dialog.dismiss();
     }
-    public DialogClickListener dialogClickListener;
-    public interface DialogClickListener{
+    public OnDialogClickListener onDialogClickListener;
+    public interface OnDialogClickListener {
         void cancel();
         void ok();
     }
-    public void setDialogClickListener(DialogClickListener dialogClickListener){
-        this.dialogClickListener=dialogClickListener;
+    public void setDialogClickListener(OnDialogClickListener onDialogClickListener){
+        this.onDialogClickListener = onDialogClickListener;
     }
 }

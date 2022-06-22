@@ -4,14 +4,14 @@ package com.bll.lnkstudy.manager;
 import android.content.Context;
 
 import com.bll.lnkstudy.R;
+import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.CourseList;
 import com.bll.lnkstudy.mvp.model.DateRemind;
 import com.bll.lnkstudy.mvp.model.HomeWork;
 import com.bll.lnkstudy.mvp.model.MainListBean;
-import com.bll.lnkstudy.mvp.model.MessageBean;
+import com.bll.lnkstudy.mvp.model.MessageList;
+import com.bll.lnkstudy.mvp.model.NoteBook;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,10 +67,25 @@ public class DataBeanManager {
     public String[] bookType = {
             "诗经楚辞", "唐诗宋词", "经典古文",
             "四大名著","中国科技","小说散文",
-            "外语原著","历史地理","科学技术",
-            "政治经济","军事战略","艺术才能",
+            "外国原著","历史地理","政治经济",
+            "军事战略","科学技术","艺术才能",
             "运动健康","连环漫画"
     }; //书籍分类
+
+    public String[] ydcy = {
+            "运动","健康","棋类",
+            "乐器","谱曲","舞蹈",
+            "素描","绘画","壁纸",
+            "练字","演讲","漫画"
+    }; //运动才艺
+
+    public String[] ZRKX={
+            "地球天体","物理化学","生命生物"
+    };//自然科学
+
+    public String[] SWKX={
+           "人工智能","模式识别","心理生理","语言文字","数学"
+    };//思维科学
 
     public Integer[] kmImage={
             R.mipmap.icon_teach_yuwen,
@@ -222,27 +237,41 @@ public class DataBeanManager {
         return list;
     }
 
-    public List<MessageBean> getMessage() {
+    public List<MessageList> getMessage() {
 
-        List<MessageBean> list=new ArrayList<>();
+        List<MessageList> list=new ArrayList<>();
+        List<MessageList.MessageBean> listBean=new ArrayList<>();
 
-        MessageBean messageBean=new MessageBean();
-        messageBean.name="语文周老师";
-        messageBean.createTime="2020-6-2";
-        messageBean.content="上交语文作业";
-        list.add(messageBean);
+        MessageList.MessageBean messageBean=new MessageList.MessageBean();
+        messageBean.message="数学作业";
+        listBean.add(messageBean);
+        MessageList.MessageBean messageBean1=new MessageList.MessageBean();
+        messageBean1.message="语文作业";
+        listBean.add(messageBean1);
+        MessageList.MessageBean messageBean2=new MessageList.MessageBean();
+        messageBean2.message="英语作业";
+        listBean.add(messageBean2);
 
-        MessageBean messageBean1=new MessageBean();
-        messageBean1.name="数学老师";
-        messageBean1.createTime="2020-6-2";
-        messageBean1.content="上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业";
-        list.add(messageBean1);
+        MessageList messageList =new MessageList();
+        messageList.name="语文周老师";
+        messageList.createTime="2020-6-2";
+        messageList.content="上交语文作业";
+        messageList.messages=listBean;
+        list.add(messageList);
 
-        MessageBean messageBean2=new MessageBean();
-        messageBean2.name="妈妈";
-        messageBean2.createTime="2020-6-2";
-        messageBean2.content="回家吃饭";
-        list.add(messageBean2);
+        MessageList messageList1 =new MessageList();
+        messageList1.name="数学老师";
+        messageList1.createTime="2020-6-2";
+        messageList1.content="上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业";
+        messageList1.messages=listBean;
+        list.add(messageList1);
+
+        MessageList messageList2 =new MessageList();
+        messageList2.name="妈妈";
+        messageList2.createTime="2020-6-2";
+        messageList2.content="回家吃饭";
+        messageList2.messages=listBean;
+        list.add(messageList2);
 
         return list;
     }
@@ -266,55 +295,193 @@ public class DataBeanManager {
 
     }
 
-    /**
-     * 获取作业内容分类
-     * @return
-     */
-    public List<HomeWork> getHomeworkType(){
-        List<HomeWork> list=new ArrayList();
 
-        HomeWork homeWork=new HomeWork();
-        homeWork.title="随堂作业本";
-        homeWork.isPg=true;
-        homeWork.type=0;
-        homeWork.resId=R.mipmap.icon_homework_st;
-        list.add(homeWork);
 
-        HomeWork homeWork1=new HomeWork();
-        homeWork1.title="课件作业集";
-        homeWork1.type=1;
-        homeWork1.resId=R.mipmap.icon_homework_kj;
-        list.add(homeWork1);
+    public List<NoteBook> getNoteBook(){
+        List<NoteBook> list =new ArrayList<>();
 
-        HomeWork homeWork2=new HomeWork();
-        homeWork2.title="家庭作业本";
-        homeWork2.type=2;
-        homeWork2.resId=R.mipmap.icon_homework_jt;
-        list.add(homeWork2);
+        NoteBook noteBook=new NoteBook();
+        noteBook.name="全部笔记";
+        noteBook.type=0;
+        list.add(noteBook);
 
-        HomeWork homeWork4=new HomeWork();
-        homeWork4.title="我的课辅本";
-        homeWork4.type=3;
-        homeWork4.resId=R.mipmap.icon_homework_kf;
-        list.add(homeWork4);
+        NoteBook noteBook1=new NoteBook();
+        noteBook1.name="我的日记";
+        noteBook.type=1;
+        list.add(noteBook1);
 
-        HomeWork homeWork5=new HomeWork();
-        homeWork5.title="朗读作业本";
-        homeWork5.type=4;
-        homeWork5.resId=R.mipmap.icon_homework_kf;
-        list.add(homeWork5);
+        return list;
 
-        HomeWork homeWork6=new HomeWork();
-        homeWork6.title="实验报告";
-        homeWork6.type=5;
-        homeWork6.resId=R.mipmap.icon_homework_pg;
-        list.add(homeWork6);
+    }
 
-        HomeWork homeWork7=new HomeWork();
-        homeWork7.title="社会实践";
-        homeWork7.type=6;
-        homeWork7.resId=R.mipmap.icon_homework_sj;
-        list.add(homeWork7);
+
+    //年级分类
+    public List<BookStoreType> getBookTypeGrade(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        BookStoreType bookStoreType=new BookStoreType();
+        bookStoreType.type=0;
+        bookStoreType.title="小学低年级";
+        list.add(bookStoreType);
+
+        BookStoreType bookStoreType1=new BookStoreType();
+        bookStoreType1.type=1;
+        bookStoreType1.title="小学高年级";
+        list.add(bookStoreType1);
+
+        BookStoreType bookStoreType2=new BookStoreType();
+        bookStoreType2.type=2;
+        bookStoreType2.title="初中学生";
+        list.add(bookStoreType2);
+
+        BookStoreType bookStoreType3=new BookStoreType();
+        bookStoreType3.type=3;
+        bookStoreType3.title="高中学生";
+        list.add(bookStoreType3);
+
+
+        return list;
+    }
+
+    //教材分类
+    public List<BookStoreType> getBookTypeJc(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        BookStoreType bookStoreType=new BookStoreType();
+        bookStoreType.type=0;
+        bookStoreType.title="我的课本";
+        list.add(bookStoreType);
+
+        BookStoreType bookStoreType1=new BookStoreType();
+        bookStoreType1.type=1;
+        bookStoreType1.title="参考课本";
+        list.add(bookStoreType1);
+
+        BookStoreType bookStoreType2=new BookStoreType();
+        bookStoreType2.type=2;
+        bookStoreType2.title="我的课辅";
+        list.add(bookStoreType2);
+
+        BookStoreType bookStoreType5=new BookStoreType();
+        bookStoreType5.type=3;
+        bookStoreType5.title="参考课辅";
+        list.add(bookStoreType5);
+
+        BookStoreType bookStoreType3=new BookStoreType();
+        bookStoreType3.type=4;
+        bookStoreType3.title="字典词典";
+        list.add(bookStoreType3);
+
+        BookStoreType bookStoreType4=new BookStoreType();
+        bookStoreType4.type=5;
+        bookStoreType4.title="公式定理";
+        list.add(bookStoreType4);
+
+        return list;
+    }
+
+    //古籍分类
+    public List<BookStoreType> getBookTypeGj(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        BookStoreType bookStoreType=new BookStoreType();
+        bookStoreType.type=0;
+        bookStoreType.title="诗经楚辞";
+        list.add(bookStoreType);
+
+        BookStoreType bookStoreType1=new BookStoreType();
+        bookStoreType1.type=1;
+        bookStoreType1.title="唐诗宋词";
+        list.add(bookStoreType1);
+
+        BookStoreType bookStoreType2=new BookStoreType();
+        bookStoreType2.type=2;
+        bookStoreType2.title="古代经典";
+        list.add(bookStoreType2);
+
+        BookStoreType bookStoreType3=new BookStoreType();
+        bookStoreType3.type=3;
+        bookStoreType3.title="四大名著";
+        list.add(bookStoreType3);
+
+        BookStoreType bookStoreType4=new BookStoreType();
+        bookStoreType4.type=4;
+        bookStoreType4.title="中国科技";
+        list.add(bookStoreType4);
+
+        return list;
+    }
+
+    //社会科学分类
+    public List<BookStoreType> getBookTypeSHKX(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        BookStoreType bookStoreType=new BookStoreType();
+        bookStoreType.type=5;
+        bookStoreType.title="小说散文";
+        list.add(bookStoreType);
+
+        BookStoreType bookStoreType1=new BookStoreType();
+        bookStoreType1.type=6;
+        bookStoreType1.title="外国原著";
+        list.add(bookStoreType1);
+
+        BookStoreType bookStoreType2=new BookStoreType();
+        bookStoreType2.type=7;
+        bookStoreType2.title="历史地理";
+        list.add(bookStoreType2);
+
+        BookStoreType bookStoreType3=new BookStoreType();
+        bookStoreType3.type=8;
+        bookStoreType3.title="政治经济";
+        list.add(bookStoreType3);
+
+        BookStoreType bookStoreType4=new BookStoreType();
+        bookStoreType4.type=9;
+        bookStoreType4.title="军事战略";
+        list.add(bookStoreType4);
+
+        return list;
+    }
+
+    //运动才艺
+    public List<BookStoreType> getBookTypeYDCY(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        for (int i = 0; i < ydcy.length; i++) {
+            BookStoreType bookStoreType=new BookStoreType();
+            bookStoreType.type= i==0||i==1? 11 : (i==ydcy.length-1? 13:12);
+            bookStoreType.title=ydcy[i];
+            list.add(bookStoreType);
+        }
+
+        return list;
+    }
+
+    //思维科学
+    public List<BookStoreType> getBookTypeSWKX(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        for (int i = 0; i < SWKX.length; i++) {
+            BookStoreType bookStoreType=new BookStoreType();
+            bookStoreType.type= 10;
+            bookStoreType.title=SWKX[i];
+            list.add(bookStoreType);
+        }
+
+        return list;
+    }
+
+    //自然科学
+    public List<BookStoreType> getBookTypeZRKX(){
+        List<BookStoreType> list =new ArrayList<>();
+
+        for (int i = 0; i < ZRKX.length; i++) {
+            BookStoreType bookStoreType=new BookStoreType();
+            bookStoreType.type= 10;
+            bookStoreType.title=ZRKX[i];
+            list.add(bookStoreType);
+        }
 
         return list;
     }

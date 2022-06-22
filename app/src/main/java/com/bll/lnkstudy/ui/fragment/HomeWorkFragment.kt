@@ -180,7 +180,7 @@ class HomeWorkFragment : BaseFragment(){
                 ivPg?.visibility=View.VISIBLE
                 popWindow?.dismiss()
             }
-            popWindow=PopWindowUtil.getInstance().makePopupWindow(activity,ivHomework,popView, -160,20, Gravity.LEFT)
+            popWindow=PopWindowUtil().makePopupWindow(activity,ivHomework,popView, -160,20, Gravity.LEFT)
             popWindow?.show()
         }
         else{

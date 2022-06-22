@@ -79,31 +79,36 @@ class TextBookFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
 
-        xtab?.newTab()?.setText("当前科目")?.let { it -> xtab?.addTab(it) }
+        xtab?.newTab()?.setText("我的课本")?.let { it -> xtab?.addTab(it) }
+        xtab?.newTab()?.setText("我的课辅")?.let { it -> xtab?.addTab(it) }
+        xtab?.newTab()?.setText("参考课本")?.let { it -> xtab?.addTab(it) }
+        xtab?.newTab()?.setText("参考课辅")?.let { it -> xtab?.addTab(it) }
         xtab?.newTab()?.setText("过往科目")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("参考读本")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("课本听读")?.let { it -> xtab?.addTab(it) }
         xtab?.getTabAt(1)?.select()
         xtab?.getTabAt(0)?.select()
 
         xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {
                 when(tab?.text.toString() ) {
-                    "当前科目" -> {
+                    "我的课本" -> {
                         type=1
                         bookType=0
                     }
-                    "过往科目" -> {
+                    "我的课辅" -> {
+                        type=1
+                        bookType=0
+                    }
+                    "参考课本" -> {
                         type=0
                         bookType=1
                     }
-                    "参考读本" -> {
+                    "参考课辅" -> {
                         type=0
                         bookType=1
                     }
                     else -> {
                         type=0
-                        bookType=3
+                        bookType=1
                     }
                 }
                 findData()
@@ -218,7 +223,8 @@ class TextBookFragment : BaseFragment(){
 
     //删除课本书籍
     private fun delete(){
-        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
             override fun ok() {

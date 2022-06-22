@@ -202,7 +202,8 @@ class BookCaseFragment: BaseFragment() {
 
     //删除书架书籍
     private fun delete(){
-        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
             override fun ok() {

@@ -12,8 +12,8 @@
         android:id="@+id/xtab"
         android:layout_width="match_parent"
         android:layout_height="@dimen/xtab_height"
-        android:layout_marginStart="120dp"
-        android:layout_marginEnd="120dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginEnd="95dp"
         app:xTabTextSize="@dimen/sp_22"
         app:xTabTextColor="@color/black"
         app:xTabSelectedTextColor="@color/black"
@@ -21,7 +21,7 @@
         app:xTabIndicatorColor="@color/black"
         app:xTabIndicatorHeight="2dp"
         app:xTabDividerWidthWidthText="true"
-        ></com.androidkun.xtablayout.XTabLayout>
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"

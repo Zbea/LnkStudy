@@ -3,7 +3,6 @@
     android:orientation="vertical"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:maxHeight="400dp"
     android:padding="@dimen/dp_20"
     android:background="@drawable/bg_gray_stroke_10dp_corner"
     >
@@ -12,6 +11,7 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scrollbars="vertical"
         android:background="@color/white"/>
 
 </LinearLayout>

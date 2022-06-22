@@ -32,6 +32,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_bg_wx.xml" value="0.283" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_bg_zfb.xml" value="0.244" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/rb_course_bg.xml" value="0.283" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/aaaa.xml" value="0.45625" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_account_info.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_account_login_user.xml" value="0.1818794964028777" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_account_register.xml" value="0.25" />
@@ -39,7 +40,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_book_details.xml" value="0.16928956834532374" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_bookstore.xml" value="0.17423561151079137" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_bookstore_list.xml" value="0.18502697841726617" />
-        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_bookstore_type.xml" value="0.18907374100719423" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_bookstore_type.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_course.xml" value="0.1733363309352518" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_list.xml" value="0.18502697841726617" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_login_user_psw.xml" value="0.18" />
@@ -50,6 +51,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_mian_date_day_details.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_mian_date_plan_details.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_mian_date_schedule_details.xml" value="0.17805755395683454" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_notebook_manager.xml" value="0.18547661870503598" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_painting_list.xml" value="0.1755845323741007" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_teach_list.xml" value="0.1904226618705036" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_book_empty.xml" value="0.17805755395683454" />
@@ -77,13 +79,15 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_com.xml" value="0.5" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course.xml" value="0.1647931654676259" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_add_model.xml" value="0.1872751798561151" />
-        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_module.xml" value="0.18" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_module.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_course_time.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date_hour.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date_time.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_message_details.xml" value="0.18142985611510792" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_note_add.xml" value="0.18907374100719423" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_note_add_module.xml" value="0.25" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_notebook_add.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_progress.xml" value="0.24427083333333333" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_repeat_day.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_setting.xml" value="0.33" />
@@ -124,8 +128,12 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_homework.xml" value="0.17985611510791366" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_list.xml" value="0.15" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_message.xml" value="0.17805755395683454" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_note.xml" value="0.39375" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_textbook.xml" value="0.17985611510791366" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_message.xml" value="0.18345323741007194" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_message_bean.xml" value="0.1931205035971223" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_note.xml" value="0.18367805755395683" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_notebook_manager.xml" value="0.18547661870503598" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_painting.xml" value="0.1755845323741007" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_teach.xml" value="0.1904226618705036" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_teach_content.xml" value="0.18870967741935485" />
@@ -134,6 +142,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_bookstore_type.xml" value="0.17221223021582735" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_date_switch_view.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_homework.xml" value="0.18502697841726617" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_notebook.xml" value="0.1904226618705036" />
       </map>
     </option>
   </component>

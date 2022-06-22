@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.mvp.model;
 
-public class MessageBean {
+import java.util.List;
+
+public class MessageList {
 
     public int id;
     public String name;
@@ -8,5 +10,13 @@ public class MessageBean {
     public String createTime;
     public boolean isLook;
     public boolean isCheck;
+    public List<MessageBean> messages;
+
+    public static class MessageBean{
+
+        public int id;
+        public String message;
+
+    }
 
 }

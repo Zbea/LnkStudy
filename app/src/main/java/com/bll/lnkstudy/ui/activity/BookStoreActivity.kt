@@ -11,6 +11,7 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowBookStoreType
 import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.FileDownManager
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.BookEvent
@@ -22,11 +23,11 @@ import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.StringUtils
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.google.android.material.tabs.TabLayout
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.ac_bookstore.xtab
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
@@ -34,6 +35,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
+    private var title="书城"
     private val mDownMapPool = HashMap<Long,BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter=BookStorePresenter(this)
@@ -44,9 +46,12 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     private var bookDetailsDialog:BookDetailsDialog?=null
     private var book:Book?=null
 
+    private var popWindowGrade:PopWindowBookStoreType?=null
+    private var popWindowProvince:PopWindowBookStoreType?=null
+
     var provinceList= mutableListOf<BookStoreType>()
     var gradeList= mutableListOf<BookStoreType>()
-    var list= mutableListOf<BookStoreType>()
+    var typeList= mutableListOf<BookStoreType>()
 
     override fun onBookStore(bookStore: BookStore?) {
         pageCount=bookStore?.pageCount!!
@@ -91,13 +96,14 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     }
 
     override fun initData() {
+        title=intent.getStringExtra("title").toString()
         getData()
         getDataType()
     }
 
     override fun initView() {
 
-        setPageTitle("书城")
+        setPageTitle(title)
         initRecyclerView()
 
         btn_page_up.setOnClickListener {
@@ -128,51 +134,65 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
 
     private fun getDataType(){
+        gradeList=DataBeanManager.getIncetance().bookTypeGrade
+        if(title=="教材")
+        {
+            gradeList.clear()
+            typeList=DataBeanManager.getIncetance().bookTypeJc
+            xtab.setxTabDisplayNum(typeList.size)
+            for (i in 0..12){
+                var item=BookStoreType()
+                item.title= "广东省$i"
+                provinceList.add(item)
+            }
 
-        var item=BookStoreType()
-        item.title="我的课本"
-        list.add(item)
-
-        var item1=BookStoreType()
-        item1.title="参考读本"
-        list.add(item1)
-
-        var item2=BookStoreType()
-        item2.title="我的课辅"
-        list.add(item2)
-
-        var item3=BookStoreType()
-        item3.title="字典词典"
-        list.add(item3)
-
-        var item4=BookStoreType()
-        item4.title="公式定理"
-        list.add(item4)
-
-
-        for (i in 0..12){
-            var item=BookStoreType()
-            item.title= "广东省$i"
-            provinceList.add(item)
+            for (i in 1..6){
+                var item=BookStoreType()
+                item.title= "$i 年级"
+                gradeList.add(item)
+            }
+        }
+        if(title=="古籍")
+        {
+            typeList=DataBeanManager.getIncetance().bookTypeGj
+            xtab.setxTabDisplayNum(typeList.size)
+        }
+        if(title=="社会科学")
+        {
+            typeList=DataBeanManager.getIncetance().bookTypeSHKX
+            xtab.setxTabDisplayNum(typeList.size)
+        }
+        if(title=="运动才艺")
+        {
+            typeList=DataBeanManager.getIncetance().bookTypeYDCY
+            xtab.setxTabDisplayNum(10)
+            xtab.tabMode=TabLayout.MODE_SCROLLABLE
+        }
+        if(title=="自然科学")
+        {
+            typeList=DataBeanManager.getIncetance().bookTypeZRKX
+            xtab.setxTabDisplayNum(typeList.size)
+        }
+        if(title=="思维科学")
+        {
+            typeList=DataBeanManager.getIncetance().bookTypeSWKX
+            xtab.setxTabDisplayNum(typeList.size)
         }
 
-        for (i in 1..6){
-            var item=BookStoreType()
-            item.title= "$i 年级"
-            item.isCheck=i==1
-            gradeList.add(item)
+
+        if(typeList.size>0){
+            setTab()
         }
-        setTab()
         setTypeView()
     }
 
-    private var popWindowGrade:PopWindowBookStoreType?=null
-    private var popWindowProvince:PopWindowBookStoreType?=null
+
     //设置分类
     private fun setTypeView(){
 
         if (provinceList.size>0){
             tv_province.text=provinceList[0].title
+            provinceList[0].isCheck=true
         }
         else{
             tv_province.visibility=View.GONE
@@ -180,6 +200,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
         if (gradeList.size>0){
             tv_grade.text=gradeList[0].title
+            gradeList[0].isCheck=true
         }
         else{
             tv_grade.visibility=View.GONE
@@ -219,11 +240,10 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
     }
 
+
     //设置tab分类
     private fun setTab(){
-        if (list.size==0)
-            xtab.visibility=View.GONE
-        for (item in list){
+        for (item in typeList){
             xtab?.newTab()?.setText(item.title)?.let { xtab?.addTab(it) }
         }
         xtab?.getTabAt(1)?.select()
@@ -260,11 +280,6 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
         }
     }
 
-    private fun initTab(){
-        xtab.visibility= if (list.size>0)View.VISIBLE else View.GONE
-        tv_province.visibility=if (provinceList.size>0)View.VISIBLE else View.GONE
-        tv_grade.visibility=if (gradeList.size>0)View.VISIBLE else View.GONE
-    }
 
     /**
      * 展示书籍详情

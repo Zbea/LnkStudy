@@ -93,6 +93,14 @@ class MainActivity : BaseActivity() {
         lastPosition=2
     }
 
+    //跳转笔记
+    fun goToNote(){
+        mHomeAdapter?.updateItem(lastPosition, false)//原来的位置去掉勾选
+        mHomeAdapter?.updateItem(5, true)//更新新的位置
+        switchFragment(lastFragment, noteFragment)
+        lastPosition=5
+    }
+
     private var settingDialog:SettingDialog?=null
     //展示设置view
     private fun showSettingView(){

@@ -5,11 +5,11 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.MessageBean
+import com.bll.lnkstudy.mvp.model.MessageList
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class MainMessageAdapter(layoutResId: Int, data: List<MessageBean>?) : BaseQuickAdapter<MessageBean, BaseViewHolder>(layoutResId, data) {
+class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageList>?) : BaseQuickAdapter<MessageList, BaseViewHolder>(layoutResId, data) {
 
     private var type=1
 
@@ -18,7 +18,7 @@ class MainMessageAdapter(layoutResId: Int, data: List<MessageBean>?) : BaseQuick
         notifyDataSetChanged()
     }
 
-    override fun convert(helper: BaseViewHolder, item: MessageBean) {
+    override fun convert(helper: BaseViewHolder, item: MessageList) {
 
         var tvName=helper.getView<TextView>(R.id.tv_message_name)
         var tvContent=helper.getView<TextView>(R.id.tv_message_content)

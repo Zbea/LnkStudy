@@ -152,7 +152,8 @@ class MainDateDayDetailsActivity: BaseActivity() {
         }
         //删除
         tv_delete.setOnClickListener {
-            CommonDialog(this).setContent("确认删除重要日子？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+            CommonDialog(this).setContent("确认删除重要日子？").builder().setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {

@@ -72,6 +72,7 @@
         <activity android:name=".ui.activity.ListActivity"/>
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
+        <activity android:name=".ui.activity.NoteBookManagerActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

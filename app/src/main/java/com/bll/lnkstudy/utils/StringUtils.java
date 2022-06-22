@@ -83,6 +83,19 @@ public class StringUtils {
             return null;
         }
     }
+
+    public static String longToStringDataNoYear(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     //返回当前年月日
     String getNowDate()
     {

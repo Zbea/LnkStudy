@@ -86,7 +86,6 @@ class BookCaseTypeFragment: BaseFragment() {
         xt_type.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {
                 type= tab?.position!!
-                showLog("type:"+type)
                 findData()
             }
 
@@ -195,7 +194,8 @@ class BookCaseTypeFragment: BaseFragment() {
 
     //删除书架书籍
     private fun delete(){
-        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
             override fun ok() {

@@ -57,6 +57,7 @@ class Constants private constructor() {
         val TEXT_BOOK_EVENT="TextBookEvent"
         val AFTER_SCHOOL_EVENT="AfterSchoolEvent"
         val COURSE_EVENT="CourseEvent"
+        val NOTE_BOOK_MANAGER_EVENT="NoteBookManagerEvent"
     }
     
 }

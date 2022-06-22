@@ -6,7 +6,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.mvp.model.MessageBean
+import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.ui.adapter.MainMessageAdapter
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.rv_list
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.common_page_number.*
 
 class MessageListActivity:BaseActivity() {
 
-    private var lists= mutableListOf<MessageBean>()
+    private var lists= mutableListOf<MessageList>()
     private var mAdapter:MainMessageAdapter?=null
     private var pageIndex=1 //当前页码
 

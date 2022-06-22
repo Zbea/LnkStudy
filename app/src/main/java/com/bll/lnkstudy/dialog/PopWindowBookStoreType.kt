@@ -28,6 +28,7 @@ class PopWindowBookStoreType(var context:Context,var list:MutableList<BookStoreT
         mPopupWindow?.setFocusable(true) // 设置PopupWindow可获得焦点
         mPopupWindow?.setTouchable(true) // 设置PopupWindow可触摸
         mPopupWindow?.setOutsideTouchable(true) // 设置非PopupWindow区域可触摸
+        mPopupWindow?.height=400
 
         var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理

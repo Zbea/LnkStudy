@@ -176,7 +176,8 @@ class MainDatePlanDetailsActivity: BaseActivity() {
 
         }
         tv_delete.setOnClickListener {
-            CommonDialog(this).setContent("确认删除学习计划？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+            CommonDialog(this).setContent("确认删除学习计划？").builder().setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {

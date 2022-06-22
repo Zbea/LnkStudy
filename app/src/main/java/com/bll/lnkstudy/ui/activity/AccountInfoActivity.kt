@@ -117,7 +117,8 @@ class AccountInfoActivity:BaseActivity(),
         }
 
         btn_logout.setOnClickListener {
-            CommonDialog(this).setContent("确认退出登录？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+            CommonDialog(this).setContent("确认退出登录？").builder().setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {

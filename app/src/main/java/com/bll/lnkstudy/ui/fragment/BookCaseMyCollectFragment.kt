@@ -85,7 +85,8 @@ class BookCaseMyCollectFragment: BaseFragment() {
 
     //取消收藏
     private fun cancel(): Boolean {
-        CommonDialog(activity).setContent("确认取消收藏？").builder().setDialogClickListener(object : CommonDialog.DialogClickListener {
+        CommonDialog(activity).setContent("确认取消收藏？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
             override fun ok() {

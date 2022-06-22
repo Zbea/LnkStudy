@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 public class PopWindowUtil {
-    private static PopWindowUtil instance;
+//    private static PopWindowUtil instance;
     private PopupWindow mPopupWindow;
     private View contentView;
     private View view;
@@ -19,22 +19,22 @@ public class PopWindowUtil {
     private int oy;
     private int gravity;
 
-    // 私有化构造方法，变成单例模式
-    private PopWindowUtil() {
-
-    }
-
-    // 对外提供一个该类的实例，考虑多线程问题，进行同步操作
-    public static PopWindowUtil getInstance() {
-        if (instance == null) {
-            synchronized (PopWindowUtil.class) {
-                if (instance == null) {
-                    instance = new PopWindowUtil();
-                }
-            }
-        }
-        return instance;
-    }
+//    // 私有化构造方法，变成单例模式
+//    private PopWindowUtil() {
+//
+//    }
+//
+//    // 对外提供一个该类的实例，考虑多线程问题，进行同步操作
+//    public static PopWindowUtil getInstance() {
+//        if (instance == null) {
+//            synchronized (PopWindowUtil.class) {
+//                if (instance == null) {
+//                    instance = new PopWindowUtil();
+//                }
+//            }
+//        }
+//        return instance;
+//    }
 
 
     /**
@@ -66,7 +66,7 @@ public class PopWindowUtil {
         mPopupWindow.setFocusable(true); // 设置PopupWindow可获得焦点
         mPopupWindow.setTouchable(true); // 设置PopupWindow可触摸
         mPopupWindow.setOutsideTouchable(true); // 设置非PopupWindow区域可触摸
-        return instance;
+        return this;
     }
 
     /**

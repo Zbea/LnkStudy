@@ -47,7 +47,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var tvMyCollect: TextView? = null
     var ivBack: ImageView? = null
     var ivHomework: ImageView? = null
-    var tvAdd: TextView? = null
+    var ivManager: ImageView? = null
     var mDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,7 +125,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         ivBack=requireView().findViewById(R.id.iv_back)
         tvMyCollect = requireView().findViewById(R.id.tv_myCollect)
         ivHomework=requireView().findViewById(R.id.iv_homework)
-        tvAdd = requireView().findViewById(R.id.tv_add)
+        ivManager = requireView().findViewById(R.id.iv_note_manager)
     }
 
     fun setPageTitle(pageTitle: String) {
@@ -147,8 +147,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     fun setShowNoteAdd() {
-        if (tvAdd != null) {
-            tvAdd?.visibility=View.VISIBLE
+        if (ivManager != null) {
+            ivManager?.visibility=View.VISIBLE
         }
     }
 

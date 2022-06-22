@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_page">
+    android:background="@mipmap/icon_book_bg">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
+        app:layout_constraintTop_toTopOf="parent"
         android:gravity="center_vertical"
         android:background="@color/white">
 
@@ -29,7 +31,6 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="@dimen/sp_40"
-            android:text="书城"
             />
 
         <ImageView
@@ -44,103 +45,64 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            >
 
-            <TextView
-                android:id="@+id/tv_jc"
-                android:layout_width="324dp"
-                android:layout_height="106dp"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_30"
-                android:text="教材"/>
-            <TextView
-                android:id="@+id/tv_gj"
-                android:layout_width="324dp"
-                android:layout_height="106dp"
-                android:layout_marginLeft="90dp"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_30"
-                android:text="古籍"/>
+    <ImageView
+        android:id="@+id/iv_gj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="305dp"
+        android:layout_marginEnd="196dp"
+        android:src="@mipmap/icon_bookstore_gj"/>
 
-        </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_jc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/iv_gj"
+        app:layout_constraintRight_toLeftOf="@+id/iv_gj"
+        android:layout_marginEnd="24dp"
+        android:src="@mipmap/icon_bookstore_jc"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            >
+    <ImageView
+        android:id="@+id/iv_shkx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/iv_gj"
+        app:layout_constraintLeft_toLeftOf="@id/iv_gj"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="43.5dp"
+        android:src="@mipmap/icon_bookstore_shkx"/>
 
-            <TextView
-                android:id="@+id/tv_zrkx"
-                android:layout_width="324dp"
-                android:layout_height="106dp"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_30"
-                android:text="自然科学"/>
-            <TextView
-                android:id="@+id/tv_shkx"
-                android:layout_width="324dp"
-                android:layout_height="106dp"
-                android:layout_marginLeft="90dp"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_30"
-                android:text="社会科学"/>
+    <ImageView
+        android:id="@+id/iv_zrkx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/iv_shkx"
+        app:layout_constraintRight_toLeftOf="@+id/iv_shkx"
+        android:layout_marginRight="19dp"
+        android:layout_marginBottom="45dp"
+        android:src="@mipmap/icon_bookstore_zrkx"/>
 
-        </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_swkx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_zrkx"
+        app:layout_constraintRight_toLeftOf="@+id/iv_zrkx"
+        android:layout_marginRight="1.5dp"
+        android:layout_marginBottom="40dp"
+        android:src="@mipmap/icon_bookstore_swkx"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            >
+    <ImageView
+        android:id="@+id/iv_ydcy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/iv_swkx"
+        app:layout_constraintLeft_toLeftOf="@id/iv_swkx"
+        android:layout_marginLeft="123dp"
+        android:layout_marginBottom="84dp"
+        android:src="@mipmap/icon_bookstore_ydcy"/>
 
-            <TextView
-                android:id="@+id/tv_swkx"
-                android:layout_width="324dp"
-                android:layout_height="106dp"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_30"
-                android:text="思维科学"/>
-            <TextView
-                android:id="@+id/tv_ydcy"
-                android:layout_width="324dp"
-                android:layout_height="106dp"
-                android:layout_marginLeft="90dp"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_30"
-                android:text="运动才艺"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

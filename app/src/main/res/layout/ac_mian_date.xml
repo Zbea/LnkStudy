@@ -159,20 +159,14 @@
 
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/tv_add"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <ImageView
+        android:id="@+id/iv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_note_add"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/bg_circle_black"
-        android:gravity="center"
-        android:text="+"
-        android:textColor="@color/white"
-        android:textSize="40sp"></TextView>
-
+        android:layout_margin="@dimen/dp_40"
+        />
 
 </RelativeLayout>
