@@ -1,8 +1,14 @@
 package com.bll.lnkstudy.mvp.model;
 
+import android.graphics.drawable.Drawable;
+
 import java.util.List;
 
 public class AppBean {
+
+    public String appName;
+    public String packageName;
+    public Drawable image;
 
     //app数据
     public int pageIndex;

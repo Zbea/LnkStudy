@@ -67,7 +67,7 @@ class MainDateScheduleDetailsActivity: BaseActivity() {
         remindscheduleTols.removeAll(remindscheduleBeans)
 
         rv_schedule_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindscheduleAdapter = MainDateRemindAdapter(R.layout.item_main_date_remind, remindscheduleBeans)
+        remindscheduleAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindscheduleBeans)
         rv_schedule_remind.adapter = remindscheduleAdapter
         remindscheduleAdapter?.bindToRecyclerView(rv_schedule_remind)
         remindscheduleAdapter?.setOnItemChildClickListener { adapter, view, position ->

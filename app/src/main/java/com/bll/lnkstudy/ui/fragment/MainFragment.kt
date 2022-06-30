@@ -113,8 +113,7 @@ class MainFragment : BaseFragment() {
 
         iv_course.setOnClickListener {
             var type = SPUtil.getInt("courseType")
-            startActivity(
-                Intent(activity, MainCourseActivity::class.java).setFlags(1)
+            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
                     .putExtra("courseType", type)
             )
         }
@@ -122,8 +121,7 @@ class MainFragment : BaseFragment() {
             CourseModuleDialog(requireActivity()).builder()?.setOnClickListener(object :
                 CourseModuleDialog.OnClickListener {
                 override fun onClick(type: Int) {
-                    startActivity(
-                        Intent(activity, MainCourseActivity::class.java).setFlags(0)
+                    startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(0)
                             .putExtra("courseType", type)
                     )
                 }
@@ -140,23 +138,22 @@ class MainFragment : BaseFragment() {
         findDateList()
 
         rv_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mainDateAdapter = MainDateAdapter(R.layout.item_main_date_plan_event_child, planList)
+        mainDateAdapter = MainDateAdapter(R.layout.item_main_date_plan, planList)
         rv_plan.adapter = mainDateAdapter
         mainDateAdapter?.bindToRecyclerView(rv_plan)
-        rv_plan.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
+        rv_plan.addItemDecoration(SpaceItemDeco(0, 0, 0, 0, 0))
         mainDateAdapter?.emptyView = getEmptyView("去添加学习计划~")
 
         rv_schedule.layoutManager = LinearLayoutManager(activity)//创建布局管理
         mainDateEventScheduleAdapter =
-            MainDateEventScheduleAdapter(R.layout.item_main_date_schedule_event, scheduleList)
+            MainDateEventScheduleAdapter(R.layout.item_date_schedule_event, scheduleList)
         rv_schedule.adapter = mainDateEventScheduleAdapter
         mainDateEventScheduleAdapter?.bindToRecyclerView(rv_schedule)
         rv_schedule.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
         mainDateEventScheduleAdapter?.emptyView = getEmptyView("去添加日程~")
 
         rv_day.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mainDateEventDayAdapter =
-            MainDateEventDayAdapter(R.layout.item_main_date_day_event, dayList)
+        mainDateEventDayAdapter = MainDateEventDayAdapter(R.layout.item_date_day_event, dayList)
         rv_day.adapter = mainDateEventDayAdapter
         mainDateEventDayAdapter?.bindToRecyclerView(rv_day)
         rv_day.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
@@ -188,14 +185,7 @@ class MainFragment : BaseFragment() {
                     rv_day.visibility = View.VISIBLE
                     popWindow?.dismiss()
                 }
-                popWindow = PopWindowUtil().makePopupWindow(
-                    activity,
-                    iv_date_more,
-                    view,
-                    -220,
-                    5,
-                    Gravity.RIGHT
-                )
+                popWindow = PopWindowUtil().makePopupWindow(activity, iv_date_more, view, -220, 5, Gravity.RIGHT)
                 popWindow?.show()
             } else {
                 popWindow?.show()
@@ -294,11 +284,9 @@ class MainFragment : BaseFragment() {
      * 通过当天时间查找本地dateEvent事件集合
      */
     private fun findDateList() {
-        scheduleList =
-            DateScheduleEventGreenDaoManager.getInstance(activity).queryAllDateEvent(dayNowLong)
+        scheduleList = DateScheduleEventGreenDaoManager.getInstance(activity).queryAllDateEvent(dayNowLong)
         dayList = DateDayEventGreenDaoManager.getInstance(activity).queryAllDateDayEvent(dayNowLong)
-        val datas =
-            DatePlanEventGreenDaoManager.getInstance(activity).queryAllDatePlanEvent(dayNowLong)
+        val datas = DatePlanEventGreenDaoManager.getInstance(activity).queryAllDatePlanEvent(dayNowLong)
         planList.clear()
         for (data in datas) {
             for (item in data.list) {
@@ -309,7 +297,7 @@ class MainFragment : BaseFragment() {
 
     //查找作业数据
     private fun findBooks() {
-        books = BookGreenDaoManager.getInstance(activity).queryAllBook("1")
+        books = BookGreenDaoManager.getInstance(activity).queryAllTextBook("0",0)
         if (books.size > 6) {
             books = books.subList(0, 6)
         }

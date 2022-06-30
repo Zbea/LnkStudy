@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
+import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -113,7 +114,7 @@ class MainActivity : BaseActivity() {
                 }
 
                 override fun onClickAppStore() {
-                    startActivity(Intent(this@MainActivity,AppActivity::class.java))
+                    startActivity(Intent(this@MainActivity,AppListActivity::class.java))
                 }
 
                 override fun onClickAirPlaneMode() {
@@ -179,5 +180,12 @@ class MainActivity : BaseActivity() {
         return super.onTouchEvent(event)
     }
 
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        return if (event.getKeyCode() === KeyEvent.KEYCODE_BACK) {
+            true
+        } else {
+            super.dispatchKeyEvent(event)
+        }
+    }
 
 }

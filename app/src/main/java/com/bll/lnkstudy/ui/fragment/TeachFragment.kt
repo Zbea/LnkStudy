@@ -1,21 +1,15 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.CourseList
+import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.ui.activity.TeachListActivity
-import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_bookcase.*
-import kotlinx.android.synthetic.main.fragment_teach.*
 import kotlinx.android.synthetic.main.fragment_teach.rv_list
 
 /**
@@ -24,8 +18,8 @@ import kotlinx.android.synthetic.main.fragment_teach.rv_list
 class TeachFragment : BaseFragment(){
 
     private var mAdapter:TeachCourseAdapter?=null
-    private var courses= mutableListOf<CourseList>()
-    private var courseMap=HashMap<Int,MutableList<CourseList>>()//将所有数据按12个分页
+    private var courses= mutableListOf<CourseBean>()
+    private var courseMap=HashMap<Int,MutableList<CourseBean>>()//将所有数据按12个分页
     private var pageIndex=1
 
     override fun getLayoutId(): Int {

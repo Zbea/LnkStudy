@@ -1,9 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
-import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -13,11 +11,9 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CourseSelectDialog
 import com.bll.lnkstudy.dialog.CourseTimeDialog
 import com.bll.lnkstudy.manager.CourseGreenDaoManager
-import com.bll.lnkstudy.mvp.model.CourseList
+import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.StringUtils
 import com.bll.lnkstudy.utils.SystemSettingUtils
-import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_course.*
 import org.greenrobot.eventbus.EventBus
 
@@ -28,7 +24,7 @@ class MainCourseActivity : BaseActivity() {
     private var row = 11
     private var column = 7
     private var isAdd = true //是否是重新编辑课表
-    private var selectLists = mutableListOf<CourseList>()//已经选择了的课程
+    private var selectLists = mutableListOf<CourseBean>()//已经选择了的课程
 
     private var timeWidth = 60
     private var weekHeight = 102
@@ -540,7 +536,7 @@ class MainCourseActivity : BaseActivity() {
     private fun getCourseView(): TextView {
         var view = TextView(this)
         view.setTextColor(Color.BLACK)
-        view.textSize = 30f
+        view.textSize = 46f
         view.gravity = Gravity.CENTER
         return view
     }
@@ -572,10 +568,11 @@ class MainCourseActivity : BaseActivity() {
     private fun selectCourse(v: TextView) {
         CourseSelectDialog(this).builder()
             .setOnDialogClickListener(object : CourseSelectDialog.OnDialogClickListener {
-                override fun onSelect(course: CourseList) {
+                override fun onSelect(course: CourseBean) {
                     if (course != null) {
                         v.text = course.name
                         course.viewId = v.id
+                        course.type=type
 
                         //删除已经存在了的
                         if (selectLists.size > 0) {
@@ -600,9 +597,10 @@ class MainCourseActivity : BaseActivity() {
                 override fun onSelect(course: String) {
                     if (course != null) {
                         v.text = course
-                        var course1 = CourseList()
+                        var course1 = CourseBean()
                         course1.name = course
                         course1.viewId = id
+                        course1.type=type
 
                         //删除已经存在了的
                         if (selectLists.size > 0) {
@@ -642,9 +640,10 @@ class MainCourseActivity : BaseActivity() {
             dialog.dismiss()
             v.text = content
 
-            var course = CourseList()
+            var course = CourseBean()
             course.viewId = v.id
             course.name = content
+            course.type=type
 
             //删除已经存在了的
             if (selectLists.size > 0) {

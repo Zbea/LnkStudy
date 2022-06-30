@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.adapter
 
 
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
@@ -9,8 +8,6 @@ import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.DatePlanEvent
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import kotlinx.android.synthetic.main.ac_mian_date.*
-import java.util.*
 
 class MainDateEventPlanAdapter(layoutResId: Int, data: List<DatePlanEvent>?) : BaseQuickAdapter<DatePlanEvent, BaseViewHolder>(layoutResId, data) {
 
@@ -21,7 +18,7 @@ class MainDateEventPlanAdapter(layoutResId: Int, data: List<DatePlanEvent>?) : B
 
         var rv=helper.getView<RecyclerView>(R.id.rv_plan_child)
         rv.layoutManager = LinearLayoutManager(mContext)//创建布局管理
-        val childAdapter= ChildAdapter(R.layout.item_main_date_plan_event_child, item.list)
+        val childAdapter= ChildAdapter(R.layout.item_date_plan_event_child, item.list)
         rv.adapter = childAdapter
         childAdapter?.bindToRecyclerView(rv)
     }

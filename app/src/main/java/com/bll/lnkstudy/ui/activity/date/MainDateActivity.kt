@@ -87,7 +87,7 @@ class MainDateActivity : BaseActivity() {
     private fun initRecyclerView(){
 
         rv_plan.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mainDateEventPlanAdapter = MainDateEventPlanAdapter(R.layout.item_main_date_plan_event, planList)
+        mainDateEventPlanAdapter = MainDateEventPlanAdapter(R.layout.item_date_plan_event, planList)
         rv_plan.adapter = mainDateEventPlanAdapter
         mainDateEventPlanAdapter?.bindToRecyclerView(rv_plan)
         rv_plan.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
@@ -100,7 +100,7 @@ class MainDateActivity : BaseActivity() {
         }
 
         rv_schedule.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mainDateEventScheduleAdapter = MainDateEventScheduleAdapter(R.layout.item_main_date_schedule_event, scheduleList)
+        mainDateEventScheduleAdapter = MainDateEventScheduleAdapter(R.layout.item_date_schedule_event, scheduleList)
         rv_schedule.adapter = mainDateEventScheduleAdapter
         mainDateEventScheduleAdapter?.bindToRecyclerView(rv_schedule)
         rv_schedule.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
@@ -115,7 +115,7 @@ class MainDateActivity : BaseActivity() {
         }
 
         rv_day.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mainDateEventDayAdapter = MainDateEventDayAdapter(R.layout.item_main_date_day_event, dayList)
+        mainDateEventDayAdapter = MainDateEventDayAdapter(R.layout.item_date_day_event, dayList)
         rv_day.adapter = mainDateEventDayAdapter
         mainDateEventDayAdapter?.bindToRecyclerView(rv_day)
         rv_day.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))

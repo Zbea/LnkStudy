@@ -33,7 +33,7 @@ class BookCaseMyCollectFragment: BaseFragment() {
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<Book>()
     private var book:Book?=null
-    private var type=1//类型1书籍
+    private var type=0//类型0课本1书籍
     private var booksAll= mutableListOf<Book>()//所有数据
     private var bookMap=HashMap<Int,MutableList<Book>>()//将所有数据按12个分页
     private var pageIndex=1
@@ -120,23 +120,13 @@ class BookCaseMyCollectFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        var booksAlls=if (type==1){
-            BookGreenDaoManager.getInstance(activity).queryAllBook("1",true)
-        }
-        else if (type==2){
-            BookGreenDaoManager.getInstance(activity).queryAllBook("1",true)
-        }
-        else if (type==3){
-            BookGreenDaoManager.getInstance(activity).queryAllBook("1",true)
+        booksAll=if (type==1){
+            BookGreenDaoManager.getInstance(activity).queryAllBook("0",true)
         }
         else{
-            BookGreenDaoManager.getInstance(activity).queryAllBook("1",true)
+            BookGreenDaoManager.getInstance(activity).queryAllTextBook("0",true)
         }
-        booksAll.clear()
-        for (i in 0..15)
-        {
-            booksAll.addAll(booksAlls)
-        }
+
         pageNumberView()
     }
 
@@ -145,7 +135,6 @@ class BookCaseMyCollectFragment: BaseFragment() {
         bookMap.clear()
         pageIndex=1
         var pageTotal=booksAll.size
-        showLog("size:$pageTotal")
         var pageCount=Math.ceil((pageTotal.toDouble()/12)).toInt()
         if (pageTotal==0)
         {

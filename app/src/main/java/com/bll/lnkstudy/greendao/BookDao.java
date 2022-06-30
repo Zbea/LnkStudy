@@ -34,14 +34,16 @@ public class BookDao extends AbstractDao<Book, Long> {
         public final static Property BookPath = new Property(7, String.class, "bookPath", false, "BOOK_PATH");
         public final static Property LoadState = new Property(8, int.class, "loadState", false, "LOAD_STATE");
         public final static Property Type = new Property(9, String.class, "type", false, "TYPE");
-        public final static Property ClassX = new Property(10, String.class, "classX", false, "CLASS_X");
-        public final static Property Grade = new Property(11, String.class, "grade", false, "GRADE");
-        public final static Property Version = new Property(12, String.class, "version", false, "VERSION");
-        public final static Property Time = new Property(13, Long.class, "time", false, "TIME");
-        public final static Property PageIndex = new Property(14, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PageUrl = new Property(15, String.class, "pageUrl", false, "PAGE_URL");
-        public final static Property IsCollect = new Property(16, boolean.class, "isCollect", false, "IS_COLLECT");
-        public final static Property BookType = new Property(17, int.class, "bookType", false, "BOOK_TYPE");
+        public final static Property TextBook = new Property(10, int.class, "textBook", false, "TEXT_BOOK");
+        public final static Property BookType = new Property(11, int.class, "bookType", false, "BOOK_TYPE");
+        public final static Property Province = new Property(12, String.class, "province", false, "PROVINCE");
+        public final static Property ClassX = new Property(13, String.class, "classX", false, "CLASS_X");
+        public final static Property Grade = new Property(14, String.class, "grade", false, "GRADE");
+        public final static Property Version = new Property(15, String.class, "version", false, "VERSION");
+        public final static Property Time = new Property(16, Long.class, "time", false, "TIME");
+        public final static Property PageIndex = new Property(17, int.class, "pageIndex", false, "PAGE_INDEX");
+        public final static Property PageUrl = new Property(18, String.class, "pageUrl", false, "PAGE_URL");
+        public final static Property IsCollect = new Property(19, boolean.class, "isCollect", false, "IS_COLLECT");
     }
 
 
@@ -67,14 +69,16 @@ public class BookDao extends AbstractDao<Book, Long> {
                 "\"BOOK_PATH\" TEXT," + // 7: bookPath
                 "\"LOAD_STATE\" INTEGER NOT NULL ," + // 8: loadState
                 "\"TYPE\" TEXT," + // 9: type
-                "\"CLASS_X\" TEXT," + // 10: classX
-                "\"GRADE\" TEXT," + // 11: grade
-                "\"VERSION\" TEXT," + // 12: version
-                "\"TIME\" INTEGER," + // 13: time
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 14: pageIndex
-                "\"PAGE_URL\" TEXT," + // 15: pageUrl
-                "\"IS_COLLECT\" INTEGER NOT NULL ," + // 16: isCollect
-                "\"BOOK_TYPE\" INTEGER NOT NULL );"); // 17: bookType
+                "\"TEXT_BOOK\" INTEGER NOT NULL ," + // 10: textBook
+                "\"BOOK_TYPE\" INTEGER NOT NULL ," + // 11: bookType
+                "\"PROVINCE\" TEXT," + // 12: province
+                "\"CLASS_X\" TEXT," + // 13: classX
+                "\"GRADE\" TEXT," + // 14: grade
+                "\"VERSION\" TEXT," + // 15: version
+                "\"TIME\" INTEGER," + // 16: time
+                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 17: pageIndex
+                "\"PAGE_URL\" TEXT," + // 18: pageUrl
+                "\"IS_COLLECT\" INTEGER NOT NULL );"); // 19: isCollect
     }
 
     /** Drops the underlying database table. */
@@ -124,34 +128,40 @@ public class BookDao extends AbstractDao<Book, Long> {
         if (type != null) {
             stmt.bindString(10, type);
         }
+        stmt.bindLong(11, entity.getTextBook());
+        stmt.bindLong(12, entity.getBookType());
+ 
+        String province = entity.getProvince();
+        if (province != null) {
+            stmt.bindString(13, province);
+        }
  
         String classX = entity.getClassX();
         if (classX != null) {
-            stmt.bindString(11, classX);
+            stmt.bindString(14, classX);
         }
  
         String grade = entity.getGrade();
         if (grade != null) {
-            stmt.bindString(12, grade);
+            stmt.bindString(15, grade);
         }
  
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(13, version);
+            stmt.bindString(16, version);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(14, time);
+            stmt.bindLong(17, time);
         }
-        stmt.bindLong(15, entity.getPageIndex());
+        stmt.bindLong(18, entity.getPageIndex());
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(16, pageUrl);
+            stmt.bindString(19, pageUrl);
         }
-        stmt.bindLong(17, entity.getIsCollect() ? 1L: 0L);
-        stmt.bindLong(18, entity.getBookType());
+        stmt.bindLong(20, entity.getIsCollect() ? 1L: 0L);
     }
 
     @Override
@@ -195,34 +205,40 @@ public class BookDao extends AbstractDao<Book, Long> {
         if (type != null) {
             stmt.bindString(10, type);
         }
+        stmt.bindLong(11, entity.getTextBook());
+        stmt.bindLong(12, entity.getBookType());
+ 
+        String province = entity.getProvince();
+        if (province != null) {
+            stmt.bindString(13, province);
+        }
  
         String classX = entity.getClassX();
         if (classX != null) {
-            stmt.bindString(11, classX);
+            stmt.bindString(14, classX);
         }
  
         String grade = entity.getGrade();
         if (grade != null) {
-            stmt.bindString(12, grade);
+            stmt.bindString(15, grade);
         }
  
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(13, version);
+            stmt.bindString(16, version);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(14, time);
+            stmt.bindLong(17, time);
         }
-        stmt.bindLong(15, entity.getPageIndex());
+        stmt.bindLong(18, entity.getPageIndex());
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(16, pageUrl);
+            stmt.bindString(19, pageUrl);
         }
-        stmt.bindLong(17, entity.getIsCollect() ? 1L: 0L);
-        stmt.bindLong(18, entity.getBookType());
+        stmt.bindLong(20, entity.getIsCollect() ? 1L: 0L);
     }
 
     @Override
@@ -243,14 +259,16 @@ public class BookDao extends AbstractDao<Book, Long> {
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // bookPath
             cursor.getInt(offset + 8), // loadState
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // type
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // classX
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // grade
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // version
-            cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13), // time
-            cursor.getInt(offset + 14), // pageIndex
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // pageUrl
-            cursor.getShort(offset + 16) != 0, // isCollect
-            cursor.getInt(offset + 17) // bookType
+            cursor.getInt(offset + 10), // textBook
+            cursor.getInt(offset + 11), // bookType
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // province
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // classX
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // grade
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // version
+            cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16), // time
+            cursor.getInt(offset + 17), // pageIndex
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // pageUrl
+            cursor.getShort(offset + 19) != 0 // isCollect
         );
         return entity;
     }
@@ -267,14 +285,16 @@ public class BookDao extends AbstractDao<Book, Long> {
         entity.setBookPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setLoadState(cursor.getInt(offset + 8));
         entity.setType(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setClassX(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setGrade(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setVersion(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setTime(cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13));
-        entity.setPageIndex(cursor.getInt(offset + 14));
-        entity.setPageUrl(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setIsCollect(cursor.getShort(offset + 16) != 0);
-        entity.setBookType(cursor.getInt(offset + 17));
+        entity.setTextBook(cursor.getInt(offset + 10));
+        entity.setBookType(cursor.getInt(offset + 11));
+        entity.setProvince(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setClassX(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setGrade(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setVersion(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setTime(cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16));
+        entity.setPageIndex(cursor.getInt(offset + 17));
+        entity.setPageUrl(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setIsCollect(cursor.getShort(offset + 19) != 0);
      }
     
     @Override

@@ -46,6 +46,11 @@ class Constants private constructor() {
         //截图保存目录
         val SCREEN_PATH = MyApplication.mContext.getExternalFilesDir("Screen").path
 
+        //考卷保存目录
+        val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("testPaper").path
+        //作业保存目录
+        val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("homeWork").path
+
         val CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val PICTURE_FILES = "contents" //图片资源的最确路径
 

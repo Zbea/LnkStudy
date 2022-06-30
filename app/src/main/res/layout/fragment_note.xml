@@ -8,19 +8,18 @@
     <include layout="@layout/common_fragment_title" />
 
 
-
     <com.androidkun.xtablayout.XTabLayout
         android:id="@+id/xtab"
         android:layout_width="match_parent"
         android:layout_height="@dimen/xtab_height"
         android:layout_marginStart="40dp"
         android:layout_marginTop="@dimen/navigation_height"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="40dp"
         app:xTabDisplayNum="7"
-        app:xTabMode="scrollable"
         app:xTabDividerWidthWidthText="true"
         app:xTabIndicatorColor="@color/black"
         app:xTabIndicatorHeight="2dp"
+        app:xTabMode="scrollable"
         app:xTabSelectedTextColor="@color/black"
         app:xTabSelectedTextSize="22sp"
         app:xTabTextColor="@color/black"

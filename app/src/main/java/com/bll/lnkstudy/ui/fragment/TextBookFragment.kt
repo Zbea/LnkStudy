@@ -31,8 +31,7 @@ class TextBookFragment : BaseFragment(){
 
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<Book>()
-    private var type=1 //0过往课本管理1当前课本管理(用来区分移动、删除、收藏)
-    private var bookType=0//用来区分课本类型
+    private var textbook=0//用来区分课本类型
     private var position=0
     private var book:Book?=null
     private var booksAll= mutableListOf<Book>()//所有数据
@@ -48,7 +47,7 @@ class TextBookFragment : BaseFragment(){
      * 查找本地课本
      */
     private fun findData(){
-        var booksAlls=BookGreenDaoManager.getInstance(activity).queryAllTextBook("1",bookType)
+        var booksAlls=BookGreenDaoManager.getInstance(activity).queryAllTextBook("0",textbook)
         booksAll.clear()
         for (i in 0..15)
         {
@@ -68,7 +67,7 @@ class TextBookFragment : BaseFragment(){
         findData()
 
         tvMyCollect?.setOnClickListener {
-            var fragment=BookCaseMyCollectFragment().newInstance(2)
+            var fragment=BookCaseMyCollectFragment().newInstance(0)
             (activity as BaseActivity).navigationToFragment(fragment)
         }
     }
@@ -83,7 +82,6 @@ class TextBookFragment : BaseFragment(){
         xtab?.newTab()?.setText("我的课辅")?.let { it -> xtab?.addTab(it) }
         xtab?.newTab()?.setText("参考课本")?.let { it -> xtab?.addTab(it) }
         xtab?.newTab()?.setText("参考课辅")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("过往科目")?.let { it -> xtab?.addTab(it) }
         xtab?.getTabAt(1)?.select()
         xtab?.getTabAt(0)?.select()
 
@@ -91,24 +89,16 @@ class TextBookFragment : BaseFragment(){
             override fun onTabSelected(tab: XTabLayout.Tab?) {
                 when(tab?.text.toString() ) {
                     "我的课本" -> {
-                        type=1
-                        bookType=0
+                        textbook=0
                     }
                     "我的课辅" -> {
-                        type=1
-                        bookType=0
+                        textbook=1
                     }
                     "参考课本" -> {
-                        type=0
-                        bookType=1
+                        textbook=2
                     }
                     "参考课辅" -> {
-                        type=0
-                        bookType=1
-                    }
-                    else -> {
-                        type=0
-                        bookType=1
+                        textbook=3
                     }
                 }
                 findData()
@@ -198,7 +188,7 @@ class TextBookFragment : BaseFragment(){
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {
-        val dialogManager= BookManageDialog(requireActivity(),type,book!!)
+        val dialogManager= BookManageDialog(requireActivity(),0,book!!)
         dialogManager.builder().setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
             override fun onCollect() {
                 book?.isCollect=true

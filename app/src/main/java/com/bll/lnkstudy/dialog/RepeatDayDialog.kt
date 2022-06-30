@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.view.*
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
@@ -44,7 +43,7 @@ class RepeatDayDialog(val context: Context,val repeatStr: String,val type:Int){
 
         var rv_repeat=view.findViewById<RecyclerView>(R.id.rv_repeat)
         rv_repeat.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = RepeatAdapter(R.layout.item_main_date_repeat_title, repeats)
+        var mAdapter = RepeatAdapter(R.layout.item_date_repeat_title, repeats)
         rv_repeat.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_repeat)
         mAdapter?.setOnItemClickListener { adapter, view, position ->

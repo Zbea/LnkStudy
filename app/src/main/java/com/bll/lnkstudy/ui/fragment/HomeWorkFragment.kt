@@ -54,6 +54,8 @@ class HomeWorkFragment : BaseFragment(){
         for (item in courses){
             xtab?.newTab()?.setText(item.name)?.let { it -> xtab?.addTab(it) }
         }
+        xtab?.getTabAt(1)?.select()
+        xtab?.getTabAt(0)?.select()
 
         xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {

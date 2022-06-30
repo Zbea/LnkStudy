@@ -17,7 +17,7 @@
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="35dp"
+            android:paddingLeft="30dp"
             android:scaleType="center"
             android:src="@mipmap/icon_back" />
 
@@ -27,7 +27,7 @@
             android:gravity="center"
             android:text="新建"
             android:textStyle="bold"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="30dp"
             android:textColor="@color/black"
             android:textSize="40sp" />
 

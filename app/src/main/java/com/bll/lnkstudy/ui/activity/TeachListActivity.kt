@@ -1,11 +1,14 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.TeachList
+import com.bll.lnkstudy.ui.activity.date.MainDatePlanDetailsActivity
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -43,6 +46,15 @@ class TeachListActivity:BaseActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+
+            val intent= Intent(this, TeachActivity::class.java)
+            val bundle= Bundle()
+            bundle.putSerializable("teach", teachs[position])
+            intent.putExtra("teachs", bundle)
+            startActivity(intent)
+
+        }
 
         pageNumberView()
 

@@ -143,9 +143,7 @@ class NoteFragment : BaseFragment(){
             })
         }
 
-        ivManager?.setOnClickListener {
-//            var string=NoteBookConverter().convertToDatabaseValue(noteBooks)
-//            SPUtil.putObj("notebook",string)
+        ivManagers?.setOnClickListener {
             setTopSelectView()
         }
 
@@ -216,11 +214,9 @@ class NoteFragment : BaseFragment(){
                 ivAdd?.visibility= View.GONE
                 ivManager?.visibility= View.VISIBLE
                 popWindow?.dismiss()
-
                 startActivity(Intent(activity,NoteBookManagerActivity::class.java))
-
             }
-            popWindow= PopWindowUtil().makePopupWindow(activity,ivManager,popView, -180,5, Gravity.LEFT)
+            popWindow= PopWindowUtil().makePopupWindow(activity,ivManagers,popView, -180,5, Gravity.LEFT)
             popWindow?.show()
         }
         else{

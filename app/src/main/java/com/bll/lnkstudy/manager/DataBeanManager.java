@@ -5,9 +5,8 @@ import android.content.Context;
 
 import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
-import com.bll.lnkstudy.mvp.model.CourseList;
+import com.bll.lnkstudy.mvp.model.CourseBean;
 import com.bll.lnkstudy.mvp.model.DateRemind;
-import com.bll.lnkstudy.mvp.model.HomeWork;
 import com.bll.lnkstudy.mvp.model.MainListBean;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.NoteBook;
@@ -280,14 +279,15 @@ public class DataBeanManager {
      * 科目列表
      * @return
      */
-    public List<CourseList> getCourses(){
+    public List<CourseBean> getCourses(){
 
-        List<CourseList> list=new ArrayList();
+        List<CourseBean> list=new ArrayList();
         for (int i = 0; i < kmArray.length; i++) {
-            CourseList courseList=new CourseList();
-            courseList.name=kmArray[i];
-            courseList.imageId=kmImage[i];
-            list.add(courseList);
+            CourseBean courseBean =new CourseBean();
+            courseBean.name=kmArray[i];
+            courseBean.imageId=kmImage[i];
+            courseBean.courseId=i;
+            list.add(courseBean);
         }
 
 

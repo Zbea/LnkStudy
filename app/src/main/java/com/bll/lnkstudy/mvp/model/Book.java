@@ -22,7 +22,10 @@ public class Book {
     public int status;  // 1 可购买; 2 已购买; 3 已下载
     public String bookPath;  //book书的路径
     public int loadState =3;//1 已下载 ;2，正在下载;3 下载课本(课本名称)
-    public String type ="0";  //类别
+    public String type ="0";  //书城六个类别
+    public int textBook=0;//课本分类
+    public int bookType=0;//书架所有分类
+    public String province=""; //地区分类
     @SerializedName("class")
     public String classX ="0";  //科目
     public String grade ="0"; //年级
@@ -31,13 +34,14 @@ public class Book {
     public int pageIndex=1;//查看到那一页
     public String pageUrl;//查看到那一页图片路径地址
     public boolean isCollect=false;//是否收藏
-    public int bookType=0;//0当前文件1过往文件
 
-    @Generated(hash = 1258811673)
+
+    @Generated(hash = 345262659)
     public Book(Long id, String assetUrl, String downloadUrl, String description,
             String name, int price, int status, String bookPath, int loadState,
-            String type, String classX, String grade, String version, Long time,
-            int pageIndex, String pageUrl, boolean isCollect, int bookType) {
+            String type, int textBook, int bookType, String province, String classX,
+            String grade, String version, Long time, int pageIndex, String pageUrl,
+            boolean isCollect) {
         this.id = id;
         this.assetUrl = assetUrl;
         this.downloadUrl = downloadUrl;
@@ -48,6 +52,9 @@ public class Book {
         this.bookPath = bookPath;
         this.loadState = loadState;
         this.type = type;
+        this.textBook = textBook;
+        this.bookType = bookType;
+        this.province = province;
         this.classX = classX;
         this.grade = grade;
         this.version = version;
@@ -55,7 +62,6 @@ public class Book {
         this.pageIndex = pageIndex;
         this.pageUrl = pageUrl;
         this.isCollect = isCollect;
-        this.bookType = bookType;
     }
     @Generated(hash = 1839243756)
     public Book() {
@@ -167,6 +173,18 @@ public class Book {
     }
     public void setBookType(int bookType) {
         this.bookType = bookType;
+    }
+    public int getTextBook() {
+        return this.textBook;
+    }
+    public void setTextBook(int textBook) {
+        this.textBook = textBook;
+    }
+    public String getProvince() {
+        return this.province;
+    }
+    public void setProvince(String province) {
+        this.province = province;
     }
 
 

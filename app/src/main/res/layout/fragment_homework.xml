@@ -14,8 +14,6 @@
         android:layout_height="@dimen/xtab_height"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        app:xTabDisplayNum="10"
-        app:xTabMode="scrollable"
         app:xTabTextSize="22sp"
         app:xTabTextColor="@color/black"
         app:xTabSelectedTextColor="@color/black"
@@ -23,7 +21,6 @@
         app:xTabIndicatorColor="@color/black"
         app:xTabIndicatorHeight="2dp"
         app:xTabDividerWidthWidthText="true"
-        app:xTabTextAllCaps="true"
         />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -3,13 +3,13 @@ package com.bll.lnkstudy.ui.adapter
 import android.graphics.Typeface
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.CourseList
+import com.bll.lnkstudy.mvp.model.CourseBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class CourseAdapter(layoutResId: Int, data: List<CourseList>?) : BaseQuickAdapter<CourseList, BaseViewHolder>(layoutResId, data) {
+class CourseAdapter(layoutResId: Int, data: List<CourseBean>?) : BaseQuickAdapter<CourseBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: CourseList) {
+    override fun convert(helper: BaseViewHolder, item: CourseBean) {
         var tvName=helper.getView<TextView>(R.id.tv_name)
         tvName.text=item.name
         if (item.isSelect){

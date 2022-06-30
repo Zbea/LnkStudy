@@ -14,16 +14,15 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
+                android:layout_marginStart="30dp"
                 android:text="我的书籍"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_24"
@@ -33,12 +32,13 @@
                 android:id="@+id/tv_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="30dp"
                 android:text="分类显示"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_24" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/ll_topcontent"

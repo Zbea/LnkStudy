@@ -90,12 +90,7 @@ class BookCaseFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        var booksAlls=BookGreenDaoManager.getInstance(activity).queryAllBook("1")
-        booksAll.clear()
-        for (i in 0..15)
-        {
-            booksAll.addAll(booksAlls)
-        }
+        booksAll=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
         pageNumberView()
         onChangeTopView()
     }

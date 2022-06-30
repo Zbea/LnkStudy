@@ -11,7 +11,7 @@
     <RadioGroup
         android:id="@+id/rg_register"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/xtab_height"
         android:layout_marginTop="50dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
@@ -19,7 +19,7 @@
         <RadioButton
             android:id="@+id/rb_student"
             android:layout_width="120dp"
-            android:layout_height="60dp"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_rb_line_selector"
             android:button="@null"
             android:gravity="center"
@@ -27,19 +27,19 @@
             android:text="我是学生"
             android:checked="true"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="@dimen/sp_22"
             android:textColor="@color/black" />
 
         <RadioButton
             android:layout_width="120dp"
-            android:layout_height="60dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="100dp"
             android:background="@drawable/bg_rb_line_selector"
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="@dimen/sp_22"
             android:text="我是老师"
             android:textColor="@color/black" />
     </RadioGroup>

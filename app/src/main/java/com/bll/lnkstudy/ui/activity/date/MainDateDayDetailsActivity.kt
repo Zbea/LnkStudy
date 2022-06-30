@@ -69,7 +69,7 @@ class MainDateDayDetailsActivity: BaseActivity() {
         tv_day_repeat.text=repeatDayStr
 
         rv_day_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindDayAdapter = MainDateRemindAdapter(R.layout.item_main_date_remind, remindDayBeans)
+        remindDayAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindDayBeans)
         rv_day_remind.adapter = remindDayAdapter
         remindDayAdapter?.bindToRecyclerView(rv_day_remind)
         remindDayAdapter?.setOnItemChildClickListener { adapter, view, position ->

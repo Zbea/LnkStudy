@@ -110,24 +110,24 @@ public class BookGreenDaoManager {
     }
 
 
-    //查询所有书籍 根据类别
+    //查询所有书籍
     public List<Book> queryAllBook(String type) {
-        WhereCondition whereCondition=BookDao.Properties.Type.eq(type);//根据类别查询所有书籍
+        WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition).orderDesc(BookDao.Properties.Time).build().list();
         return queryBookList;
     }
 
     //根据类别 细分子类
     public List<Book> queryAllBook(String type,String flag) {
-        WhereCondition whereCondition=BookDao.Properties.Type.eq(""+type);//根据类别查询所有书籍
-        WhereCondition whereCondition1=BookDao.Properties.Grade.eq(""+flag);//根据类别查询所有书籍
+        WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
+        WhereCondition whereCondition1=BookDao.Properties.BookType.eq(flag);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
         return queryBookList;
     }
 
     //查找已收藏书籍
     public List<Book> queryAllBook(String type,boolean isCollect) {
-        WhereCondition whereCondition=BookDao.Properties.Type.eq(""+type);//根据类别查询所有书籍
+        WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
         WhereCondition whereCondition1=BookDao.Properties.IsCollect.eq(isCollect);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
         return queryBookList;
@@ -135,8 +135,16 @@ public class BookGreenDaoManager {
 
     //查找课本 细分子类
     public List<Book> queryAllTextBook(String type,int flag) {
-        WhereCondition whereCondition=BookDao.Properties.Type.eq(""+type);//根据类别查询所有书籍
-        WhereCondition whereCondition1=BookDao.Properties.BookType.eq(""+flag);//根据类别查询所有书籍
+        WhereCondition whereCondition=BookDao.Properties.Type.eq(type);
+        WhereCondition whereCondition1=BookDao.Properties.TextBook.eq(flag);
+        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
+        return queryBookList;
+    }
+
+    //查找已收藏课本
+    public List<Book> queryAllTextBook(String type,boolean isCollect) {
+        WhereCondition whereCondition=BookDao.Properties.Type.eq(type);
+        WhereCondition whereCondition1=BookDao.Properties.IsCollect.eq(isCollect);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
         return queryBookList;
     }

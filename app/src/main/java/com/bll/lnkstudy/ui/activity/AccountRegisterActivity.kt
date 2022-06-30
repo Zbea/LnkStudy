@@ -22,8 +22,7 @@ import kotlinx.android.synthetic.main.ac_account_register.ed_user
 //5. 手机号码规则 11 位有效手机号
 //6. 验证码规则数字即可
  */
-class AccountRegisterActivity : BaseActivity(),
-    IContractView.IRegisterOrFindPsdViewI {
+class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdViewI {
 
     private val presenter= RegisterOrFindPsdPresenter(this)
     private var countDownTimer: CountDownTimer? = null

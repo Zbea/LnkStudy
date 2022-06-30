@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_width="200dp"
+        android:layout_height="270dp"
         android:src="@mipmap/icon_bookcase_book"
         />
 
@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:gravity="center"
+        android:visibility="gone"
         android:orientation="horizontal"
         >
 
@@ -32,6 +33,7 @@
             android:layout_marginStart="@dimen/dp_10"
             android:layout_height="wrap_content"
             android:text="0"
+
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -41,7 +43,7 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="@dimen/sp_20"
         android:text="书名"
         android:gravity="center"
         android:maxLines="1"

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.mvp.model.CourseList
+import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.ui.adapter.CourseAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
@@ -58,7 +58,7 @@ class CourseSelectDialog(val context: Context){
     private var onClickListener: OnDialogClickListener? = null
 
     interface OnDialogClickListener {
-        fun onSelect(course:CourseList)
+        fun onSelect(course: CourseBean)
     }
 
     fun setOnDialogClickListener(onClickListener: OnDialogClickListener?) {

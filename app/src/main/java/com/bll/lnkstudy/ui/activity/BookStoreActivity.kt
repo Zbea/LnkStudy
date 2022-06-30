@@ -206,6 +206,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             tv_grade.visibility=View.GONE
         }
 
+
         tv_grade.setOnClickListener {
             if (popWindowGrade==null)
             {
@@ -239,6 +240,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
         }
 
     }
+
 
 
     //设置tab分类

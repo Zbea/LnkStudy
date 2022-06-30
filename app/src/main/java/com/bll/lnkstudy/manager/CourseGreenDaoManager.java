@@ -3,10 +3,11 @@ package com.bll.lnkstudy.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bll.lnkstudy.greendao.CourseBeanDao;
 import com.bll.lnkstudy.greendao.CourseListDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.mvp.model.CourseList;
+import com.bll.lnkstudy.mvp.model.CourseBean;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class CourseGreenDaoManager {
     private static CourseGreenDaoManager mDbController;
 
 
-    private CourseListDao courseDao;  //dateEvent表
+    private CourseBeanDao courseDao;
 
     /**
      * 构造初始化
@@ -57,7 +58,7 @@ public class CourseGreenDaoManager {
         mDaoMaster = new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
 
-        courseDao = mDaoSession.getCourseListDao();
+        courseDao = mDaoSession.getCourseBeanDao();
     }
 
 
@@ -90,23 +91,23 @@ public class CourseGreenDaoManager {
 
 
     //增加课程
-    public void insertOrReplaceCourse(CourseList bean) {
+    public void insertOrReplaceCourse(CourseBean bean) {
         courseDao.insertOrReplace(bean);
     }
 
-    public void insertAll(List<CourseList> lists){
+    public void insertAll(List<CourseBean> lists){
         for (int i = 0; i < lists.size(); i++) {
             courseDao.insertOrReplace(lists.get(i));
         }
     }
 
     //根据Id 查询
-    public CourseList queryID(int id) {
+    public CourseBean queryID(int id) {
         return  courseDao.queryBuilder().where(CourseListDao.Properties.ViewId.eq(id)).build().unique();
     }
 
     //删除
-    public void deleteCourse(CourseList bean){
+    public void deleteCourse(CourseBean bean){
         courseDao.delete(bean);
     }
 

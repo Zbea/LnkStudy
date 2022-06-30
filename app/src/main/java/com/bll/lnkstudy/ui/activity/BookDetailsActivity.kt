@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.Constants.Companion.CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.PICTURE_FILES
+import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.BookGreenDaoManager
@@ -179,8 +180,10 @@ class BookDetailsActivity:BaseActivity() {
         book?.time=System.currentTimeMillis()
         book?.pageIndex=pageIndex
         BookGreenDaoManager.getInstance(this).insertOrReplaceBook(book)
-        if (book?.type=="1")
+        if (book?.type!="0")
             EventBus.getDefault().post(BOOK_EVENT)
+        else
+            EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 
 }

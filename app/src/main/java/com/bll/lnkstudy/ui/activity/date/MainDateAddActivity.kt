@@ -131,7 +131,7 @@ class MainDateAddActivity : BaseActivity() {
         }
 
         rv_plan_add.layoutManager = LinearLayoutManager(this)//创建布局管理
-        adapterEventPlan = MainDateEventPlanAddAdapter(R.layout.item_main_date_plan_add, planList)
+        adapterEventPlan = MainDateEventPlanAddAdapter(R.layout.item_date_plan_add, planList)
         rv_plan_add.adapter = adapterEventPlan
         adapterEventPlan?.bindToRecyclerView(rv_plan_add)
 
@@ -174,7 +174,7 @@ class MainDateAddActivity : BaseActivity() {
         remindPlanTols= DataBeanManager.getIncetance().remindSchedule
 
         rv_plan_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindPlanAdapter = MainDateRemindAdapter(R.layout.item_main_date_remind, null)
+        remindPlanAdapter = MainDateRemindAdapter(R.layout.item_date_remind, null)
         rv_plan_remind.adapter = remindPlanAdapter
         remindPlanAdapter?.bindToRecyclerView(rv_plan_remind)
         remindPlanAdapter?.setOnItemChildClickListener { adapter, view, position ->
@@ -202,7 +202,7 @@ class MainDateAddActivity : BaseActivity() {
         remindscheduleTols= DataBeanManager.getIncetance().remindSchedule
 
         rv_schedule_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindscheduleAdapter = MainDateRemindAdapter(R.layout.item_main_date_remind, null)
+        remindscheduleAdapter = MainDateRemindAdapter(R.layout.item_date_remind, null)
         rv_schedule_remind.adapter = remindscheduleAdapter
         remindscheduleAdapter?.bindToRecyclerView(rv_schedule_remind)
         remindscheduleAdapter?.setOnItemChildClickListener { adapter, view, position ->
@@ -263,7 +263,7 @@ class MainDateAddActivity : BaseActivity() {
         remindDayTols= DataBeanManager.getIncetance().remindDay
 
         rv_day_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindDayAdapter = MainDateRemindAdapter(R.layout.item_main_date_remind, remindDayBeans)
+        remindDayAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindDayBeans)
         rv_day_remind.adapter = remindDayAdapter
         remindDayAdapter?.bindToRecyclerView(rv_day_remind)
         remindDayAdapter?.setOnItemChildClickListener { adapter, view, position ->

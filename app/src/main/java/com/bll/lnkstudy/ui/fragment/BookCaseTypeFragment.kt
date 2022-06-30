@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
@@ -13,8 +14,10 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.BookStoreType
 import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
+import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.utilssdk.utils.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -36,8 +39,9 @@ class BookCaseTypeFragment: BaseFragment() {
     private var booksAll= mutableListOf<Book>()//所有数据
     private var bookMap=HashMap<Int,MutableList<Book>>()//将所有数据按12个分页
     private var pageIndex=1
-    private var position=0 //当前书籍位置
+    private var pos=0 //当前书籍位置
     private var book:Book?=null
+    private var isDown=false //是否向下打开
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase_type
@@ -60,7 +64,7 @@ class BookCaseTypeFragment: BaseFragment() {
             startActivity(Intent(activity, BookDetailsActivity::class.java).putExtra("book_id",books[position].id))
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-            this.position=position
+            pos=position
             book=books[position]
             onLongClick()
         }
@@ -75,37 +79,61 @@ class BookCaseTypeFragment: BaseFragment() {
     override fun lazyLoad() {
     }
 
+    //获取tab数据
+    private fun getTabDatas(isDown: Boolean):List<BookStoreType>{
+        val types= mutableListOf<BookStoreType>()
+        val strings=DataBeanManager.getIncetance().bookType
+        if (isDown){
+            for (i in strings.indices){
+                var bookStoreType=BookStoreType()
+                bookStoreType.title=strings[i]
+                bookStoreType.type=i
+                bookStoreType.isCheck=i==type
+                types.add(bookStoreType)
+            }
+        }
+        else{
+            for (i in 0..6){
+                var bookStoreType=BookStoreType()
+                bookStoreType.title=strings[i]
+                bookStoreType.type=i
+                if(type>6)
+                    type=0
+                bookStoreType.isCheck=i==type
+                types.add(bookStoreType)
+            }
+        }
+        return types
+    }
+
     //设置tab
     private fun initTab(){
-        val strings=DataBeanManager.getIncetance().bookType
-        for (str in strings){
-            var tab=xt_type?.newTab()
-            tab?.text = str
-            xt_type?.addTab(tab!!)
-        }
-        xt_type.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-                type= tab?.position!!
-                findData()
-            }
+        var bookStoreTypes=getTabDatas(false)
 
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
-            }
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-        })
-
-        btn_arrow_left.setOnClickListener {
-            if (type>0){
-                type -= 1
-                xt_type?.getTabAt(type)?.select()
-            }
+        rv_type.layoutManager = GridLayoutManager(activity,7)//创建布局管理
+        var mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, bookStoreTypes)
+        rv_type.adapter = mAdapterType
+        mAdapterType?.bindToRecyclerView(rv_type)
+        mAdapterType?.setOnItemClickListener { adapter, view, position ->
+            mAdapterType?.getItem(type)?.isCheck=false
+            type=position
+            mAdapterType?.getItem(type)?.isCheck=true
+            mAdapterType?.notifyDataSetChanged()
+            findData()
         }
-        btn_arrow_right.setOnClickListener {
-            if (type<strings.size-1){
-                type += 1
-                xt_type?.getTabAt(type)?.select()
+
+        iv_down.setOnClickListener {
+            if (isDown){
+                isDown=false
+                iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_down)
             }
+            else{
+                isDown=true
+                iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_up)
+            }
+            bookStoreTypes=getTabDatas(isDown)
+            mAdapterType?.setNewData(bookStoreTypes)
+            findData()
         }
 
     }
@@ -114,7 +142,7 @@ class BookCaseTypeFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll=BookGreenDaoManager.getInstance(activity).queryAllBook("1",type.toString())
+        booksAll=BookGreenDaoManager.getInstance(activity).queryAllBook("0",type.toString())
         pageNumberView()
     }
 
@@ -177,7 +205,7 @@ class BookCaseTypeFragment: BaseFragment() {
         dialogManager.builder().setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
             override fun onCollect() {
                 book?.isCollect=true
-                books[position].isCollect=true
+                books[pos].isCollect=true
                 mAdapter?.notifyDataSetChanged()
                 BookGreenDaoManager.getInstance(activity).insertOrReplaceBook(book)
                 showToast("收藏成功")

@@ -79,7 +79,7 @@ class MainDatePlanDetailsActivity: BaseActivity() {
         tv_plan_repeat.text=repeatStr
 
         rv_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindPlanAdapter = MainDateRemindAdapter(R.layout.item_main_date_remind, remindPlanBeans)
+        remindPlanAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindPlanBeans)
         rv_remind.adapter = remindPlanAdapter
         remindPlanAdapter?.bindToRecyclerView(rv_remind)
         remindPlanAdapter?.setOnItemChildClickListener { adapter, view, position ->
@@ -111,7 +111,7 @@ class MainDatePlanDetailsActivity: BaseActivity() {
         remindPlanAdapter?.isShowClear(false)
 
         rv_plan.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mainDateAdapter = MainDateAdapter(R.layout.item_main_date_plan_event_child, datePlanEvent?.list)
+        mainDateAdapter = MainDateAdapter(R.layout.item_date_plan_event_child, datePlanEvent?.list)
         rv_plan.adapter = mainDateAdapter
         mainDateAdapter?.bindToRecyclerView(rv_plan)
 
@@ -143,7 +143,7 @@ class MainDatePlanDetailsActivity: BaseActivity() {
             }
         }
         rv_plan.layoutManager = LinearLayoutManager(this)//创建布局管理
-        adapterEventPlan = MainDateEventPlanAddAdapter(R.layout.item_main_date_plan_add, planList)
+        adapterEventPlan = MainDateEventPlanAddAdapter(R.layout.item_date_plan_add, planList)
         rv_plan.adapter = adapterEventPlan
         adapterEventPlan?.bindToRecyclerView(rv_plan)
 

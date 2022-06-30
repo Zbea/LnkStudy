@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.mvp.model;
 
-public class TeachList {
+import java.io.Serializable;
+
+public class TeachList implements Serializable {
 
     public int id;
     public String name;
