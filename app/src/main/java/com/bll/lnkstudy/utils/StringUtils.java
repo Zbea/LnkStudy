@@ -55,6 +55,18 @@ public class StringUtils {
         }
     }
 
+    public static String longToString(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHMMSS", Locale.CHINA);
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * 时间戳转换为字符串类型
      *

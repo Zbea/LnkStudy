@@ -44,12 +44,14 @@ class Constants private constructor() {
         val ZIP_BOOK_PATH = MyApplication.mContext.getExternalFilesDir(ZIP_BOOK_FILE).path
 
         //截图保存目录
-        val SCREEN_PATH = MyApplication.mContext.getExternalFilesDir("Screen").path
+        val SCREEN_PATH = MyApplication.mContext.getExternalFilesDir("screen").path
 
         //考卷保存目录
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("testPaper").path
         //作业保存目录
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("homeWork").path
+        //笔记保存目录
+        val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("note").path
 
         val CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val PICTURE_FILES = "contents" //图片资源的最确路径
@@ -63,6 +65,7 @@ class Constants private constructor() {
         val AFTER_SCHOOL_EVENT="AfterSchoolEvent"
         val COURSE_EVENT="CourseEvent"
         val NOTE_BOOK_MANAGER_EVENT="NoteBookManagerEvent"
+        val NOTE_EVENT="NoteEvent"
     }
     
 }

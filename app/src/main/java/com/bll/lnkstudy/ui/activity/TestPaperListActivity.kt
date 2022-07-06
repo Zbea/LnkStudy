@@ -1,11 +1,10 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
-import android.view.*
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
@@ -13,10 +12,10 @@ import com.bll.lnkstudy.mvp.model.TestPaper
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.adapter.TestPaperAdapter
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
-import com.bll.lnkstudy.widget.CustomImageView
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.ac_testpaper_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import java.io.File
 
 class TestPaperListActivity:BaseActivity() {
 
@@ -68,18 +67,33 @@ class TestPaperListActivity:BaseActivity() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list.addItemDecoration(SpaceGridItemDeco2(20,20))
+
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.iv_content1){
-
-                ImageDownLoadUtils(this,testPapers[position].image,testPaperType?.namePath,testPapers[position].id.toString(),1)
-                    .startDownload(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                        override fun onDownLoadSuccess(bitmap: Bitmap?, path: String?) {
-                            showLog(path!!)
-                        }
-                        override fun onDownLoadFailed() {
-                        }
-                    })
-
+                val id=testPapers[position].id.toString()
+                val file=File(TESTPAPER_PATH , testPaperType?.namePath+"/"+id)
+                val imageFile=File(file, "$id.png")
+                if (imageFile.exists())
+                {
+                    var intent=Intent(this,ImageDrawActivity::class.java)
+                    intent.putExtra("type","testPaper")
+                    intent.putExtra("imageStr",imageFile.path)
+                    intent.putExtra("outImageStr",file.path)
+                    startActivity(intent)
+                }
+                else{
+                    showLoading()
+                    ImageDownLoadUtils(this,testPapers[position].image,testPapers[position].id.toString(),file)
+                        .startDownload(object : ImageDownLoadUtils.ImageDownLoadCallBack {
+                            override fun onDownLoadSuccess(bitmap: Bitmap?, path: String?) {
+                                mDialog?.dismiss()
+                                showLog("ddd:"+path!!)
+                            }
+                            override fun onDownLoadFailed() {
+                                mDialog?.dismiss()
+                            }
+                        })
+                }
             }
         }
 

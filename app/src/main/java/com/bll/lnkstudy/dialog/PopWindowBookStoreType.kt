@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,10 +23,10 @@ class PopWindowBookStoreType(var context:Context,var list:MutableList<BookStoreT
         mPopupWindow = PopupWindow(context)
         mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         // 设置PopupWindow的内容view
-        mPopupWindow?.setContentView(popView)
-        mPopupWindow?.setFocusable(true) // 设置PopupWindow可获得焦点
-        mPopupWindow?.setTouchable(true) // 设置PopupWindow可触摸
-        mPopupWindow?.setOutsideTouchable(true) // 设置非PopupWindow区域可触摸
+        mPopupWindow?.contentView=popView
+        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
+        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
+        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
         if (list.size>4){
             mPopupWindow?.height=600
         }

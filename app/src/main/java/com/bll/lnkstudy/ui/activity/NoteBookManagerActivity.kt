@@ -10,9 +10,6 @@ import com.bll.lnkstudy.manager.NoteBookGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.NoteBook
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.greendao.NoteBookConverter
-import kotlinx.android.synthetic.main.ac_mian_date.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
@@ -64,6 +61,7 @@ class NoteBookManagerActivity : BaseActivity() {
     private fun setNotify(){
         mAdapter?.notifyDataSetChanged()
         EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
+        EventBus.getDefault().post(Constants.NOTE_EVENT)//更新全局通知
     }
 
     //删除
@@ -75,8 +73,9 @@ class NoteBookManagerActivity : BaseActivity() {
             override fun ok() {
                 var noteBook=noteBooks[position]
                 noteBooks.removeAt(position)
+                //删除笔记本
                 NoteBookGreenDaoManager.getInstance(this@NoteBookManagerActivity).deleteNote(noteBook)
-                showLog(noteBook.type.toString())
+                //删除笔记本下的所有笔记
                 NoteGreenDaoManager.getInstance(this@NoteBookManagerActivity).deleteType(noteBook.type)
                 setNotify()
             }

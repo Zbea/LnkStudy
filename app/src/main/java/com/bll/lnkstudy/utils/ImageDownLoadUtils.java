@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.bll.lnkstudy.Constants;
 import com.bumptech.glide.Glide;
@@ -21,22 +22,19 @@ public class ImageDownLoadUtils {
      */
     private String url;
     private Context context;
-    private String typePath;//子类文件夹名称
-    private String picName;//图片名称
+    private String id;
+    private File picPath;//路径
     private ImageDownLoadCallBack callBack;
-    private int type=0;//0作业1考卷
     private File file = null;
 
-    public ImageDownLoadUtils(Context context, String url,String typePath,String picName,int type){
+    public ImageDownLoadUtils(Context context, String url,String id,File picPath){
         this.context=context;
         this.url=url;
-        this.typePath=typePath;
-        this.picName=picName;
-        this.type=type;
+        this.picPath=picPath;
+        this.id=id;
     }
 
     public void startDownload(ImageDownLoadCallBack callBack) {
-        File file = null;
         Bitmap bitmap = null;
 
         try {
@@ -45,25 +43,13 @@ public class ImageDownLoadUtils {
                     .load(url)
                     .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .get();
-
-            Bitmap finalBitmap = bitmap;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (finalBitmap != null){
-                        saveBmpGallery(finalBitmap);
-                    }
-                }
-
-            }).start();
-
-
+            if (bitmap != null){
+                saveBmpGallery(bitmap);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
-            if (bitmap != null && file.exists()) {
+            if (bitmap != null && file!=null) {
                 callBack.onDownLoadSuccess(bitmap, file.getPath());
             } else {
                 callBack.onDownLoadFailed();
@@ -80,17 +66,15 @@ public class ImageDownLoadUtils {
      */
     private void saveBmpGallery(Bitmap bmp) {
 
-        //type为1考卷保存在testPaper目录下
-        File imageDir = new File(type==1?Constants.Companion.getTESTPAPER_PATH():Constants.Companion.getHOMEWORK_PATH(),typePath);
-        if (!imageDir.exists()) {
-            imageDir.mkdir();
+        if (!picPath.exists())
+        {
+            picPath.mkdirs();
         }
-
         // 声明输出流
         FileOutputStream outStream = null;
         try {
             // 如果有目标文件，直接获得文件对象，否则创建一个以filename为名称的文件
-            file = new File(imageDir, picName + ".png");
+            file = new File(picPath, id + ".png");
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
             if (null != outStream) {

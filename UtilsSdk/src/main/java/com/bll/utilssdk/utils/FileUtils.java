@@ -172,6 +172,21 @@ public class FileUtils {
         return files;
     }
 
+    /**
+     * 删除指定文件夹里的 指定文件
+     * @param path 文件夹路径
+     * @param name 文件名
+     */
+    public static void deleteFile(String path,String name){
+        List<File> files=getFiles(path);
+        for (int i = 0; i < files.size(); i++) {
+            File file=files.get(i);
+            if (getFileName(file.getPath()).equals(name)){
+                deleteFile(file);
+            }
+        }
+    }
+
     public static void deleteFile(File file){
         // 判断传递进来的是文件还是文件夹,如果是文件,直接删除,如果是文件夹,则判断文件夹里面有没有东西
         if (file.isDirectory()) {
@@ -181,7 +196,6 @@ public class FileUtils {
             for (File f : files) {
                 // 如果是文件,就删除
                 if (f.isFile()) {
-                    System.out.println("[lylog] 已经被删除的文件:" + f);
                     // 删除文件
                     f.delete();
                 } else if (file.isDirectory()) {
@@ -189,13 +203,8 @@ public class FileUtils {
                     deleteFile(f);
                 }
             }
-            // 删除文件夹自己,如果它低下是空的,就会被删除
-            System.out.println("[lylog] 已经被删除的文件夹:" + file);
             file.delete();
         }
-
-        // 如果是文件,就直接删除自己
-        System.out.println("已经被删除的文件:" + file);
         file.delete();
     }
 

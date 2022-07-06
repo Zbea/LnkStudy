@@ -12,6 +12,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
+import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
@@ -28,8 +29,8 @@ import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.PopWindowUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.StringUtils
-import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -332,6 +333,9 @@ class MainFragment : BaseFragment() {
             initCourse()
         }
         if (msgFlag== NOTE_BOOK_MANAGER_EVENT){
+            findNotes() //用于删除笔记本后 刷新列表
+        }
+        if (msgFlag==NOTE_EVENT){
             findNotes()
         }
     }

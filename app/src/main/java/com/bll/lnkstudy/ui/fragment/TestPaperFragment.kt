@@ -8,7 +8,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
-import com.bll.lnkstudy.mvp.model.TestPaper
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.activity.TestPaperListActivity
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
@@ -70,6 +69,7 @@ class TestPaperFragment : BaseFragment(){
         var testPaper= TestPaperType()
         testPaper.isPg=true
         testPaper.name="单元测试卷"
+        testPaper.namePath="dy"
         testPaper.type=0
         testPaper.resId=R.mipmap.icon_testpaper_dy
         items.add(testPaper)
@@ -77,12 +77,14 @@ class TestPaperFragment : BaseFragment(){
         var testPaper1=TestPaperType()
         testPaper1.resId=R.mipmap.icon_testpaper_qz
         testPaper1.name="期中考试卷"
+        testPaper1.namePath="qz"
         testPaper1.type=1
         items.add(testPaper1)
 
         var testPaper2=TestPaperType()
         testPaper2.resId=R.mipmap.icon_testpaper_end
         testPaper2.name="期终考试卷"
+        testPaper2.namePath="end"
         testPaper2.type=2
         items.add(testPaper2)
 
@@ -90,6 +92,7 @@ class TestPaperFragment : BaseFragment(){
         testPaper3.isPg=true
         testPaper3.resId=R.mipmap.icon_testpaper_jd
         testPaper3.name="阶段考试卷"
+        testPaper3.namePath="jd"
         testPaper3.type=3
         items.add(testPaper3)
 
@@ -97,6 +100,7 @@ class TestPaperFragment : BaseFragment(){
         testPaper4.isPg=true
         testPaper4.resId=R.mipmap.icon_testpaper_mn
         testPaper4.name="模拟考试卷"
+        testPaper4.namePath="mn"
         testPaper4.type=4
         items.add(testPaper4)
     }

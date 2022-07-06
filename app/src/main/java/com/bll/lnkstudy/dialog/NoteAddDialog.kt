@@ -1,8 +1,9 @@
 package com.bll.lnkstudy.dialog
 
 import android.content.Context
-import android.util.Log
-import android.view.*
+import android.view.ContextThemeWrapper
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
@@ -33,32 +34,38 @@ class NoteAddDialog(private val context: Context) {
 
         val ll_1=dialog?.findViewById<LinearLayout>(R.id.ll_1)
         ll_1?.setOnClickListener {
-            listener?.onClick(1)
+            listener?.onClick(0)
+            dismiss()
         }
 
         val ll_2=dialog?.findViewById<LinearLayout>(R.id.ll_2)
         ll_2?.setOnClickListener {
-            listener?.onClick(2)
+            listener?.onClick(1)
+            dismiss()
         }
 
         val ll_3=dialog?.findViewById<LinearLayout>(R.id.ll_3)
         ll_3?.setOnClickListener {
-            listener?.onClick(3)
+            listener?.onClick(2)
+            dismiss()
         }
 
         val ll_4=dialog?.findViewById<LinearLayout>(R.id.ll_4)
         ll_4?.setOnClickListener {
-            listener?.onClick(4)
+            listener?.onClick(3)
+            dismiss()
         }
 
         val ll_5=dialog?.findViewById<LinearLayout>(R.id.ll_5)
         ll_5?.setOnClickListener {
-            listener?.onClick(5)
+            listener?.onClick(4)
+            dismiss()
         }
 
         val ll_6=dialog?.findViewById<LinearLayout>(R.id.ll_6)
         ll_6?.setOnClickListener {
-            listener?.onClick(6)
+            listener?.onClick(5)
+            dismiss()
         }
 
         return this

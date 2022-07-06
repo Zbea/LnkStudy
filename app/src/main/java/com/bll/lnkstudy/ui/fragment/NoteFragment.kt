@@ -1,15 +1,16 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -21,17 +22,15 @@ import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.NoteBook
 import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
+import com.bll.lnkstudy.ui.activity.NoteDrawActivity
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
-import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
 import com.bll.lnkstudy.utils.PopWindowUtil
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.greendao.NoteBookConverter
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
+import java.io.File
 
 /**
  * 笔记
@@ -46,6 +45,7 @@ class NoteFragment : BaseFragment(){
     private var type=0 //当前笔记本类型
     private var mAdapter: NoteAdapter? = null
     private var position=0 //当前笔记标记
+    private var resId=0
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -79,6 +79,11 @@ class NoteFragment : BaseFragment(){
         mAdapter = NoteAdapter(R.layout.item_note, notes)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+
+            gotoDrawActivity(notes[position])
+
+        }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.iv_edit){
@@ -138,6 +143,26 @@ class NoteFragment : BaseFragment(){
             dialog?.setOnDialogClickListener(object :
                 NoteAddDialog.OnDialogClickListener {
                 override fun onClick(type:Int) {
+                    resId = when(type){
+                        1->{
+                            R.mipmap.icon_note_details_bg_1
+                        }
+                        2->{
+                            R.mipmap.icon_note_details_bg_2
+                        }
+                        3->{
+                            R.mipmap.icon_note_details_bg_3
+                        }
+                        4->{
+                            R.mipmap.icon_note_details_bg_4
+                        }
+                        5->{
+                            R.mipmap.icon_note_details_bg_5
+                        }
+                        else->{
+                            0
+                        }
+                    }
                     addNote()
                 }
             })
@@ -149,18 +174,28 @@ class NoteFragment : BaseFragment(){
 
     }
 
+    //跳转手绘
+    private fun gotoDrawActivity(note:Note){
+        var intent=Intent(activity, NoteDrawActivity::class.java)
+        var bundle=Bundle()
+        bundle.putSerializable("note",note)
+        intent.putExtra("notes",bundle)
+        startActivity(intent)
+    }
+
     //新建笔记
     private fun addNote(){
         NoteBookAddDialog(requireContext(),"新建笔记","","请输入笔记标题").builder()?.setOnDialogClickListener(object :
             NoteBookAddDialog.OnDialogClickListener {
             override fun onClick(string: String) {
+                val time=System.currentTimeMillis()
                 var note=Note()
                 note.title=string
-                note.date=System.currentTimeMillis()
+                note.date=time
                 note.type=type
-                notes.add(note)
-                mAdapter?.setNewData(notes)
-                NoteGreenDaoManager.getInstance(activity).insertOrReplaceNote(note)
+                note.resId=resId
+                //跳转
+                gotoDrawActivity(note)
 
                 dialog?.dismiss()
             }
@@ -175,6 +210,7 @@ class NoteFragment : BaseFragment(){
                 notes[position].title=string
                 mAdapter?.notifyDataSetChanged()
                 NoteGreenDaoManager.getInstance(activity).insertOrReplaceNote(notes[position])
+                EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
             }
         })
     }
@@ -190,6 +226,8 @@ class NoteFragment : BaseFragment(){
                     notes.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
                     NoteGreenDaoManager.getInstance(activity).deleteNote(note)
+                    FileUtils.deleteFile(File(note.path))
+                    EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                 }
 
             })
@@ -245,6 +283,9 @@ class NoteFragment : BaseFragment(){
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag== Constants.NOTE_BOOK_MANAGER_EVENT){
             initTab()
+        }
+        if (msgFlag==Constants.NOTE_EVENT){
+            initData()
         }
     }
 

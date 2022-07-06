@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
         android:gravity="center_vertical"
@@ -18,32 +18,75 @@
             android:scaleType="center"
             android:src="@mipmap/icon_back" />
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="30dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="@dimen/sp_40"
-            android:text="编辑"
-            />
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_back"
+            android:gravity="center"
+            >
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/dp_60"
+                android:background="@color/black"
+                android:layout_marginLeft="@dimen/dp_30"
+                />
+
+            <ImageView
+                android:id="@+id/iv_fine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_draw_fine"
+                android:layout_marginLeft="@dimen/dp_30"/>
+
+            <ImageView
+                android:id="@+id/iv_thick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_draw_thick"
+                android:layout_marginLeft="@dimen/dp_30"/>
+
+            <ImageView
+                android:id="@+id/iv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_draw_clear"
+                android:layout_marginLeft="@dimen/dp_30"/>
+
+            <ImageView
+                android:id="@+id/iv_clear_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:src="@mipmap/icon_draw_clear_all" />
+
+        </LinearLayout>
+
 
         <ImageView
             android:id="@+id/tv_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:padding="@dimen/dp_30"
-            android:src="@mipmap/icon_save"
-            />
+            android:src="@mipmap/icon_save" />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <com.bll.lnkstudy.widget.CustomImageView
+
+    <com.android.internal.widget.PreferenceImageView
         android:id="@+id/iv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scaleType="center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"></LinearLayout>
 
 </LinearLayout>
