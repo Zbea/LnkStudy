@@ -12,7 +12,7 @@ import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.activity.TestPaperListActivity
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.fragment_homework.*
+import kotlinx.android.synthetic.main.fragment_testpaper.*
 
 /**
  * 考卷
@@ -24,7 +24,7 @@ class TestPaperFragment : BaseFragment(){
     private var course:CourseBean?=null//课程id
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_homework
+        return R.layout.fragment_testpaper
     }
 
     override fun initView() {

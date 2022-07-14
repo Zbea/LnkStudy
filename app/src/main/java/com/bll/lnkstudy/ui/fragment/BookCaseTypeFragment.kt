@@ -1,10 +1,8 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
@@ -61,7 +59,10 @@ class BookCaseTypeFragment: BaseFragment() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco(60,60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            startActivity(Intent(activity, BookDetailsActivity::class.java).putExtra("book_id",books[position].id))
+            var intent=Intent(activity,BookDetailsActivity::class.java)
+//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+            intent.putExtra("book_id",books[position].id)
+            startActivity(intent)
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             pos=position

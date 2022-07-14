@@ -82,7 +82,7 @@
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.NoteBookManagerActivity"/>
         <activity android:name=".ui.activity.TestPaperListActivity"/>
-        <activity android:name=".ui.activity.ImageDrawActivity"/>
+        <activity android:name=".ui.activity.TestPaperDrawActivity"/>
         <activity android:name=".ui.activity.NoteDrawActivity"/>
 
         <provider

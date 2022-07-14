@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.mvp.model.HomeWork
+import com.bll.lnkstudy.mvp.model.HomeWorkType
 import com.bll.lnkstudy.ui.adapter.HomeWorkAdapter
 import com.bll.lnkstudy.utils.PopWindowUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -25,6 +26,9 @@ class HomeWorkFragment : BaseFragment(){
     private var popWindow:PopWindowUtil?=null
     private var mAdapter:HomeWorkAdapter?=null
 
+    private var courseID=0//当前科目id
+    private var datas= mutableListOf<HomeWorkType>()
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework
     }
@@ -38,9 +42,13 @@ class HomeWorkFragment : BaseFragment(){
             setTopSelectView()
         }
 
+        tv_add.setOnClickListener {
+            addHomeWorkType()
+        }
+
         initRecyclerView()
         initTab()
-
+        findDatas(true,0)
     }
 
     override fun lazyLoad() {
@@ -59,22 +67,15 @@ class HomeWorkFragment : BaseFragment(){
 
         xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {
-                var pos=tab?.position
-                var data=when(pos){
-                    0->{
-                        getHomeworkType(0,1,2,3,4,6)
-                    }
-                    2->{
-                        getHomeworkType(0,1,2,3,4)
-                    }
-                    3,4,8->{
-                        getHomeworkType(0,1,2,3,5)
+                courseID= tab?.position!!
+                when(courseID){
+                    0,2->{
+                        findDatas(true,courseID)
                     }
                     else->{
-                        getHomeworkType(0,1,2,3)
+                        findDatas(false,courseID)
                     }
                 }
-                mAdapter?.setNewData(data)
 
             }
 
@@ -90,8 +91,7 @@ class HomeWorkFragment : BaseFragment(){
 
 
     private fun initRecyclerView(){
-        var datas=getHomeworkType(0,1,2,3,4,6) as List<HomeWork>?
-        mAdapter = HomeWorkAdapter(R.layout.item_homework, datas)
+        mAdapter = HomeWorkAdapter(R.layout.item_homework, null)
         rv_list.layoutManager = GridLayoutManager(activity,3)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
@@ -99,69 +99,34 @@ class HomeWorkFragment : BaseFragment(){
 
     }
 
-    /**
-     * 获取不同科目 不同作业分类集合
-     */
-    private fun getHomeworkType(vararg types: Int): List<HomeWork?>? {
-        val list= mutableListOf<HomeWork>()
-        val homeWork = HomeWork()
-        homeWork.title = "随堂作业本"
-        homeWork.isPg = true
-        homeWork.type = 0
-        homeWork.message="周老师布置作业在作业集第六页"
-        homeWork.isMessage=true
-        homeWork.resId = R.mipmap.icon_homework_st
-        list.add(homeWork)
 
-        val homeWork1 = HomeWork()
-        homeWork1.title = "课件作业集"
-        homeWork1.type = 1
-        homeWork1.resId = R.mipmap.icon_homework_kj
-        list.add(homeWork1)
+    //查找分类数据
+    private fun findDatas(islg: Boolean,courseID:Int){
+        datas.clear()
+        datas=DataBeanManager.getIncetance().getHomeWorkTypes(islg)
 
-        val homeWork2 = HomeWork()
-        homeWork2.title = "家庭作业本"
-        homeWork2.type = 2
-        homeWork2.message="周老师布置作业在作业集第六页"
-        homeWork2.isMessage=true
-        homeWork2.resId = R.mipmap.icon_homework_jt
-        list.add(homeWork2)
-
-        val homeWork4 = HomeWork()
-        homeWork4.title = "我的课辅本"
-        homeWork4.type = 3
-        homeWork4.message="周老师布置作业在作业集第六页"
-        homeWork4.isMessage=true
-        homeWork4.resId = R.mipmap.icon_homework_kf
-        list.add(homeWork4)
-
-        val homeWork5 = HomeWork()
-        homeWork5.title = "朗读作业本"
-        homeWork5.type = 4
-        homeWork5.resId = R.mipmap.icon_homework_ld
-        list.add(homeWork5)
-
-        val homeWork6 = HomeWork()
-        homeWork6.title = "实验报告"
-        homeWork6.type = 5
-        homeWork6.resId = R.mipmap.icon_homework_pg
-        list.add(homeWork6)
-
-        val homeWork7 = HomeWork()
-        homeWork7.title = "社会实践"
-        homeWork7.type = 6
-        homeWork7.resId = R.mipmap.icon_homework_sj
-        list.add(homeWork7)
-
-        var homeWorks= mutableListOf<HomeWork>()
-        for (i in types)
-        {
-            homeWorks.add(list[i])
-        }
-
-        return homeWorks
+        mAdapter?.setNewData(datas)
     }
 
+    //添加作业本
+    private fun addHomeWorkType(){
+        NoteBookAddDialog(requireContext(),"新建作业本","","请输入作业本标题").builder()?.setOnDialogClickListener(
+            object : NoteBookAddDialog.OnDialogClickListener {
+            override fun onClick(string: String) {
+                val time=System.currentTimeMillis()
+                var item= HomeWorkType()
+                item.name=string
+                item.date=time
+                item.type= mAdapter?.data?.size!!//新增id为该类所有和
+                item.courseId=courseID
+                item.resId=R.mipmap.icon_homework_zy
+
+                datas.add(item)
+                mAdapter?.notifyDataSetChanged()
+
+            }
+        })
+    }
 
 
     //顶部弹出选择

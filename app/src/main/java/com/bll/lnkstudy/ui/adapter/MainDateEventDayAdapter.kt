@@ -2,20 +2,20 @@ package com.bll.lnkstudy.ui.adapter
 
 
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DateDayEvent
+import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.utils.StringUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainDateEventDayAdapter(layoutResId: Int, data: List<DateDayEvent>?) : BaseQuickAdapter<DateDayEvent, BaseViewHolder>(layoutResId, data) {
+class MainDateEventDayAdapter(layoutResId: Int, data: List<DateEvent>?) : BaseQuickAdapter<DateEvent, BaseViewHolder>(layoutResId, data) {
 
     private var nowLong= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
 
-    override fun convert(helper: BaseViewHolder, item: DateDayEvent) {
+    override fun convert(helper: BaseViewHolder, item: DateEvent) {
         helper.setText(R.id.tv_title, item.title)
-        helper.setText(R.id.tv_date, item.dayStr)
+        helper.setText(R.id.tv_date, item.dayLongStr)
 
         val day= StringUtils.sublongToDay(item.dayLong, nowLong!!)
 

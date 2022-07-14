@@ -75,7 +75,10 @@ class BookCaseMyCollectFragment: BaseFragment() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco(0,55))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            startActivity(Intent(activity, BookDetailsActivity::class.java).putExtra("book_id",books[position].id))
+            var intent=Intent(activity,BookDetailsActivity::class.java)
+//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+            intent.putExtra("book_id",books[position].id)
+            startActivity(intent)
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             book=books[position]

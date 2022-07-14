@@ -105,7 +105,7 @@ class MainCourseActivity : BaseActivity() {
             CourseGreenDaoManager.getInstance(this@MainCourseActivity).insertAll(selectLists)
             SystemSettingUtils.saveScreenShot(this, grid, "course")
             EventBus.getDefault().post(Constants.COURSE_EVENT)
-            SPUtil.putObj("courseType", type)
+            SPUtil.putInt("courseType", type)
             finish()
         }
 

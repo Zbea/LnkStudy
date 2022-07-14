@@ -139,11 +139,6 @@ public class FileUtils {
         for (int i = 0; i < tempList.length; i++) {
             if (tempList[i].isFile()) {
                 files.add(tempList[i].getName());
-                //文件名，不包含路径
-                //String fileName = tempList[i].getName();
-            }
-            if (tempList[i].isDirectory()) {
-                //这里就不递归了，
             }
         }
         return files;
@@ -164,6 +159,31 @@ public class FileUtils {
         if (tempList==null) return null;
         for (int i = 0; i < tempList.length; i++) {
             if (tempList[i].isFile()) {
+                files.add(tempList[i]);
+            }
+        }
+        //文件排序
+        sortFiles(files);
+        return files;
+    }
+
+    /**
+     * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录
+     * @param path
+     * @param suffix
+     * @return
+     */
+    public static List<File> getFiles(String path,String suffix){
+        List<File> files = new ArrayList<>();
+        if("".equals(path)){
+            return null;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return null;
+        for (int i = 0; i < tempList.length; i++) {
+            File childFile=tempList[i];
+            if (childFile.isFile()&&childFile.getName().endsWith(suffix)) {
                 files.add(tempList[i]);
             }
         }
@@ -237,5 +257,9 @@ public class FileUtils {
      */
     public static String getFileName(String fileNameStr){
         return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
+    }
+
+    public static boolean isExist(String path){
+        return new File(path).exists();
     }
 }

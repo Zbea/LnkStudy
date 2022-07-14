@@ -7,12 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.manager.DateDayEventGreenDaoManager
-import com.bll.lnkstudy.manager.DatePlanEventGreenDaoManager
-import com.bll.lnkstudy.manager.DateScheduleEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateDayEvent
-import com.bll.lnkstudy.mvp.model.DatePlanEvent
-import com.bll.lnkstudy.mvp.model.DateScheduleEvent
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
+import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.ui.adapter.MainDateEventDayAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateEventPlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateEventScheduleAdapter
@@ -30,10 +26,10 @@ import java.util.*
 
 class MainDateActivity : BaseActivity() {
 
-    private var dayTim= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
-    private var planList= mutableListOf<DatePlanEvent>()
-    private var scheduleList= mutableListOf<DateScheduleEvent>()
-    private var dayList= mutableListOf<DateDayEvent>()
+    private var dayLong= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+    private var planList= mutableListOf<DateEvent>()
+    private var scheduleList= mutableListOf<DateEvent>()
+    private var dayList= mutableListOf<DateEvent>()
     private var mainDateEventScheduleAdapter: MainDateEventScheduleAdapter?=null
     private var mainDateEventDayAdapter: MainDateEventDayAdapter?=null
     private var mainDateEventPlanAdapter: MainDateEventPlanAdapter?=null
@@ -44,7 +40,7 @@ class MainDateActivity : BaseActivity() {
     }
 
     override fun initData() {
-        findList(dayTim)
+        findList(dayLong)
     }
 
     override fun initView() {
@@ -66,16 +62,8 @@ class MainDateActivity : BaseActivity() {
             }
             override fun onCalendarSelect(calendar: com.haibin.calendarview.Calendar?, isClick: Boolean) {
                 val dayNow=StringUtils.dateToStamp("${calendar?.year}-"+"${calendar?.month}-"+"${calendar?.day}")
-
-                dayTim=dayNow
+                dayLong=dayNow
                 findList(dayNow)
-
-                mainDateEventScheduleAdapter?.setNewData(scheduleList)
-
-                mainDateEventDayAdapter?.setDateLong(dayTim)
-                mainDateEventDayAdapter?.setNewData(dayList)
-
-                mainDateEventPlanAdapter?.setNewData(planList)
             }
 
         })
@@ -141,25 +129,27 @@ class MainDateActivity : BaseActivity() {
      * 通过当天时间查找本地dateEvent事件集合
      */
     private fun findList(daylong:Long){
-        scheduleList= DateScheduleEventGreenDaoManager.getInstance(this).queryAllDateEvent(daylong)
-        dayList= DateDayEventGreenDaoManager.getInstance(this).queryAllDateDayEvent(daylong)
-        planList= DatePlanEventGreenDaoManager.getInstance(this).queryAllDatePlanEvent(daylong)
+        planList = DateEventGreenDaoManager.getInstance(this).queryAllDateEvent(0,daylong)
+        scheduleList = DateEventGreenDaoManager.getInstance(this).queryAllDateEvent(1,daylong)
+        dayList = DateEventGreenDaoManager.getInstance(this).queryAllDateEvent(2,daylong)
+
         ll_plan_content.visibility=if (planList.size>0) View.VISIBLE else View.GONE
         ll_schedule_content.visibility=if (scheduleList.size>0) View.VISIBLE else View.GONE
         ll_day_content.visibility=if (dayList.size>0) View.VISIBLE else View.GONE
+
+        mainDateEventScheduleAdapter?.setNewData(scheduleList)
+
+        mainDateEventDayAdapter?.setDateLong(dayLong)
+        mainDateEventDayAdapter?.setNewData(dayList)
+
+        mainDateEventPlanAdapter?.setNewData(planList)
     }
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag==DATE_EVENT){
-            findList(dayTim)
-            mainDateEventScheduleAdapter?.setNewData(scheduleList)
-
-            mainDateEventDayAdapter?.setDateLong(dayTim)
-            mainDateEventDayAdapter?.setNewData(dayList)
-
-            mainDateEventPlanAdapter?.setNewData(planList)
+            findList(dayLong)
         }
     }
 

@@ -19,13 +19,16 @@ class AccountLoginActivity:BaseActivity(),
     IContractView.ILoginViewI {
 
     private val presenter=LoginPresenter(this)
+    private var token=""
 
     override fun getLogin(user: User?) {
-        SPUtil.putString("token",user?.token!!)
+        token= user?.token.toString()
+        SPUtil.putString("token",token)
         presenter.accounts()
     }
 
     override fun getAccount(user: User?) {
+        user?.token=token
         SPUtil.putObj("user",user!!)
         startActivity(Intent(this,MainActivity::class.java))
         finish()
@@ -51,6 +54,7 @@ class AccountLoginActivity:BaseActivity(),
         ed_user.setText("gq")
         ed_psw.setText("123456")
 
+
         tv_register.setOnClickListener {
             startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(0), 0)
         }
@@ -74,6 +78,15 @@ class AccountLoginActivity:BaseActivity(),
 
             presenter.login(account,password, timestamp,role)
 
+        }
+
+        val tokenStr=SPUtil.getString("token")
+        val userBean=SPUtil.getObj("user",User::class.java)
+
+        if (!tokenStr.isNullOrEmpty() && userBean!=null)
+        {
+            startActivity(Intent(this,MainActivity::class.java))
+            finish()
         }
 
     }

@@ -94,12 +94,12 @@
             />
 
         <LinearLayout
-            android:id="@+id/ll_course"
             style="@style/main_content_size"
             android:background="@mipmap/icon_main_content_bg"
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/ll_course"
                 android:layout_width="match_parent"
                 android:gravity="center_vertical"
                 android:layout_height="@dimen/main_content_title_height">

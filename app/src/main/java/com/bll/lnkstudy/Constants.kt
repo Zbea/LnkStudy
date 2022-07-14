@@ -1,7 +1,5 @@
 package com.bll.lnkstudy
 
-import android.os.Environment
-
 //  ┏┓　　　┏┓
 //┏┛┻━━━┛┻┓
 //┃　　　　　　　┃
@@ -29,19 +27,16 @@ class Constants private constructor() {
         const val URL_BASE = "https://api2.bailianlong.com/v1/"
         val AUTH = "Authorization"
 
-        //zip文件的目录
-        val ZIP_FILE = Environment.DIRECTORY_PICTURES
-        //apk文件的目录
-        val APK_FILE = "APK"
-        //zip解压后的目录
-        val ZIP_BOOK_FILE = "BookFile"
         ///storage/emulated/0/Android/data/yourPackageName/files/Pictures
-        val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir(ZIP_FILE).path
+        val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip").path
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
-        val APK_PATH = MyApplication.mContext.getExternalFilesDir(APK_FILE).path
+        val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK").path
         //解压的目录
         ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
-        val ZIP_BOOK_PATH = MyApplication.mContext.getExternalFilesDir(ZIP_BOOK_FILE).path
+        val BOOK_PATH = MyApplication.mContext.getExternalFilesDir("BookFile").path
+
+        val CATALOG_TXT = "catalog.txt" //book文本信息的json文件
+        val BOOK_PICTURE_FILES = "contents" //图片资源的最确路径
 
         //截图保存目录
         val SCREEN_PATH = MyApplication.mContext.getExternalFilesDir("screen").path
@@ -52,9 +47,6 @@ class Constants private constructor() {
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("homeWork").path
         //笔记保存目录
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("note").path
-
-        val CATALOG_TXT = "catalog.txt" //book文本信息的json文件
-        val PICTURE_FILES = "contents" //图片资源的最确路径
 
         val PATH_SF = "file:///android_asset/sf/"
 

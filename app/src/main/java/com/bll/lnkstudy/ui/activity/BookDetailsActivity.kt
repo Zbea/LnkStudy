@@ -1,29 +1,27 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.graphics.drawable.Drawable
+import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import android.view.View
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.Constants.Companion.BOOK_PICTURE_FILES
 import com.bll.lnkstudy.Constants.Companion.CATALOG_TXT
-import com.bll.lnkstudy.Constants.Companion.PICTURE_FILES
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogChildBean
+import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParentBean
 import com.bll.lnkstudy.ui.adapter.BookCatalogAdapter
 import com.bll.utilssdk.utils.FileUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details.*
-import kotlinx.android.synthetic.main.ac_book_details.rv_list
-import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -37,6 +35,11 @@ class BookDetailsActivity:BaseActivity() {
 
     private var pageCount = 1
     private var pageIndex = 1 //当前页码
+
+    private var isScreen=false //是否全屏
+
+    private var elik_a: EinkPWInterface?=null
+    private var elik_b: EinkPWInterface?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_book_details
@@ -76,10 +79,12 @@ class BookDetailsActivity:BaseActivity() {
         if (catalogMsg!=null){
             setPageTitle(catalogMsg?.title!!)
             pageCount=catalogMsg?.totalCount!!
-            tv_page_total.text=pageCount.toString()
         }
 
-        updateUI()
+        elik_a=v_content_a.pwInterFace
+        elik_b=v_content_b.pwInterFace
+
+        selectScreen()
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = BookCatalogAdapter(catalogs)
@@ -88,11 +93,11 @@ class BookDetailsActivity:BaseActivity() {
         mAdapter?.setOnCatalogClickListener(object : BookCatalogAdapter.onCatalogClickListener {
             override fun onParentClick(page: Int) {
                 pageIndex=page
-                updateUI()
+                selectScreen()
             }
             override fun onChildClick(page: Int) {
                 pageIndex=page
-                updateUI()
+                selectScreen()
             }
         })
 
@@ -101,77 +106,153 @@ class BookDetailsActivity:BaseActivity() {
 
     private fun bindClick(){
 
+        iv_screen.setOnClickListener {
+            if (isScreen){
+                isScreen=false
+                v_content_b.visibility=View.GONE
+                tv_page_b.visibility=View.GONE
+                this.moveToScreenPanel(SCREEN_PANEL_A)
+            }
+            else{
+                isScreen=true
+                v_content_b.visibility=View.VISIBLE
+                tv_page_b.visibility=View.VISIBLE
+                this.moveToScreenPanel(SCREEN_PANEL_FULL)
+            }
+
+        }
+
         iv_catalog.setOnClickListener {
             if (ll_catalog.visibility== View.GONE){
                 showView(ll_catalog)
+                elik_a?.setPWEnabled(false)
+                elik_b?.setPWEnabled(false)
             }
             else{
                 disMissView(ll_catalog)
+                elik_a?.setPWEnabled(true)
+                elik_b?.setPWEnabled(true)
             }
         }
+
+        iv_pen.setOnClickListener {
+            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+            elik_a?.penSettingWidth=2
+            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+            elik_b?.penSettingWidth=2
+        }
+
+        iv_erase.setOnClickListener {
+            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+        }
+
         //用来设置点击试图其他位置目录关闭
         ll_content.setOnClickListener {
             if (ll_catalog.visibility== View.VISIBLE)
-                disMissView(ll_catalog)
-        }
-
-        v_content.setOnClickListener {
-            if (ll_catalog.visibility== View.VISIBLE)
             {
                 disMissView(ll_catalog)
-            }
-            else{
-                if(pageIndex<pageCount){
-                    pageIndex+=1
-                    updateUI()
-                }
+                elik_a?.setPWEnabled(true)
+                elik_b?.setPWEnabled(true)
             }
         }
 
+
         btn_page_up.setOnClickListener {
-            if (pageIndex>1){
-                if(pageIndex<pageCount){
-                    pageIndex-=1
-                    updateUI()
+            if (isScreen){
+                if (pageIndex>2){
+                    pageIndex-=3
+                    updateScreenFull()
                 }
             }
+            else{
+                if (pageIndex>1){
+                    pageIndex-=1
+                    updateScreenA()
+                }
+            }
+
         }
 
         btn_page_down.setOnClickListener {
             if(pageIndex<pageCount){
                 pageIndex+=1
-                updateUI()
+
+                selectScreen()
             }
+        }
+    }
+
+
+    private fun selectScreen(){
+        if (isScreen){
+            updateScreenFull()
+        }
+        else{
+            updateScreenA()
+        }
+    }
+
+    //单屏翻页
+    private fun updateScreenA(){
+        tv_page_a.text="$pageIndex/$pageCount"
+        loadPicture(pageIndex,elik_a!!,v_content_a)
+    }
+
+
+    //向前翻页
+    private fun updateScreenFull(){
+
+        if (pageIndex<1){
+            //当处于第一页
+            pageIndex=1
+            tv_page_a.text="$pageIndex/$pageCount"
+            loadPicture(pageIndex,elik_a!!,v_content_a)
+
+            pageIndex += 1//第二屏页码加一
+            tv_page_b.text="$pageIndex/$pageCount"
+            loadPicture(pageIndex,elik_b!!,v_content_b)
+        }
+        else if (pageIndex>0&&pageIndex+1<=pageCount)
+        {
+            tv_page_a.text="$pageIndex/$pageCount"
+            loadPicture(pageIndex,elik_a!!,v_content_a)
+
+            pageIndex += 1//第二屏页码加一
+            tv_page_b.text="$pageIndex/$pageCount"
+            loadPicture(pageIndex,elik_b!!,v_content_b)
+        }
+        else{
+            //当翻页后处于倒数一页
+            pageIndex=pageCount-1
+            tv_page_a.text="$pageIndex/$pageCount"
+            loadPicture(pageIndex,elik_a!!,v_content_a)
+
+            pageIndex=pageCount
+            tv_page_a.text="$pageIndex/$pageCount"
+            loadPicture(pageIndex,elik_b!!,v_content_b)
         }
 
     }
 
-    //刷新显示的页码和内容
-    private fun updateUI(){
-        tv_page_current.text=pageIndex.toString()
-        loadPicture(pageIndex)
-    }
+
 
     //加载图片
-    private fun loadPicture(index: Int) {
+    private fun loadPicture(index: Int,elik:EinkPWInterface,view:ImageView) {
         val showFile = getIndexFile(index)
-        book?.pageUrl=showFile.path
-        val simpleTarget = object : CustomTarget<Drawable>() {
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                v_content.background=resource
-            }
-
-            override fun onLoadCleared(placeholder: Drawable?) {
-            }
-        }
+        book?.pageUrl=showFile.path //设置当前页面路径
         Glide.with(this)
             .load(showFile)
-            .thumbnail(0.1f).centerCrop().into(v_content)
+            .thumbnail(0.1f).into(view)
+
+        val drawPath=showFile.path.replace(".jpg",".tch")
+        elik?.setLoadFilePath(drawPath,true)
     }
 
     //获得图片地址
     private fun getIndexFile(index: Int): File {
-        val listFiles = FileUtils.getFiles(book?.bookPath + File.separator + PICTURE_FILES)
+        val path=book?.bookPath + File.separator + BOOK_PICTURE_FILES
+        val listFiles = FileUtils.getFiles(path,".jpg")
         return listFiles[index - 1]
     }
 
@@ -185,5 +266,7 @@ class BookDetailsActivity:BaseActivity() {
         else
             EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
+
+
 
 }

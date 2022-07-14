@@ -26,7 +26,7 @@ public class CourseBean implements Serializable {
     @Transient
     public int imageId;//图片资源id
     @Transient
-    public int courseId;
+    public int courseId;//科目id
 
 
     public CourseBean(Long id, int viewId, String name) {

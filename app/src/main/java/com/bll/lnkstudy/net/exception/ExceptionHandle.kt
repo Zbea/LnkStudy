@@ -1,8 +1,6 @@
 package com.bll.lnkstudy.net.exception
 
 import com.google.gson.JsonParseException
-import com.hazz.kuangji.net.exception.ApiException
-import com.hazz.kuangji.net.exception.ErrorStatus
 
 import org.json.JSONException
 

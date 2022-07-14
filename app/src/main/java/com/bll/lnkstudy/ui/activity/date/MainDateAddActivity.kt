@@ -10,16 +10,16 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.DateTimeDialog
 import com.bll.lnkstudy.dialog.DateTimeHourDialog
+import com.bll.lnkstudy.dialog.RepeatDayDialog
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.manager.DateDayEventGreenDaoManager
-import com.bll.lnkstudy.manager.DatePlanEventGreenDaoManager
-import com.bll.lnkstudy.manager.DateScheduleEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
+import com.bll.lnkstudy.mvp.model.DateEvent
+import com.bll.lnkstudy.mvp.model.DatePlanBean
+import com.bll.lnkstudy.mvp.model.DateRemind
 import com.bll.lnkstudy.ui.adapter.MainDateEventPlanAddAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateRemindAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.StringUtils
-import com.bll.lnkstudy.dialog.RepeatDayDialog
 import kotlinx.android.synthetic.main.ac_mian_date_add.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
@@ -27,16 +27,17 @@ import java.util.*
 
 class MainDateAddActivity : BaseActivity() {
 
-    private var endLong: Long = 0//日程开始时间
-    private var starLong: Long = 0//日程结束时间
-    private var scheduleDateStartStr: String = ""//日程开始小时分
-    private var scheduleDateEndStr: String = ""//日程结束小时分
     private val nowTim = StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var type = 0//类型
+
+    private var endScheduleLong: Long = 0//日程开始时间
+    private var startScheduleLong: Long = 0//日程结束时间
+    private var scheduleDateStartStr: String = ""//日程开始小时分
+    private var scheduleDateEndStr: String = ""//日程结束小时分
     private var repeatScheduleStr="不重复"
-    private var remindscheduleAdapter:MainDateRemindAdapter?=null
-    private var remindscheduleBeans= mutableListOf<DateRemind>()//已经添加提醒
-    private var remindscheduleTols= mutableListOf<DateRemind>()//全部提醒
+    private var remindScheduleAdapter:MainDateRemindAdapter?=null
+    private var remindScheduleBeans= mutableListOf<DateRemind>()//已经添加提醒
+    private var remindScheduleAll= mutableListOf<DateRemind>()//全部提醒
 
 
     private var dayLong: Long = 0//重要日子时间
@@ -44,7 +45,7 @@ class MainDateAddActivity : BaseActivity() {
     private var repeatDayStr="不重复"
     private var remindDayAdapter:MainDateRemindAdapter?=null
     private var remindDayBeans= mutableListOf<DateRemind>()//已经添加提醒
-    private var remindDayTols= mutableListOf<DateRemind>()//全部提醒
+    private var remindDayAll= mutableListOf<DateRemind>()//全部提醒
 
     private var endPlanLong: Long = 0
     private var startPlanLong: Long = 0
@@ -53,7 +54,7 @@ class MainDateAddActivity : BaseActivity() {
     private var repeatPlanStr="不重复"
     private var remindPlanAdapter: MainDateRemindAdapter?=null
     private var remindPlanBeans= mutableListOf<DateRemind>()//已经添加提醒
-    private var remindPlanTols= mutableListOf<DateRemind>()//全部提醒
+    private var remindPlanAll= mutableListOf<DateRemind>()//全部提醒
 
 
     private var planList = mutableListOf<DatePlanBean>()
@@ -171,7 +172,7 @@ class MainDateAddActivity : BaseActivity() {
             })
         }
 
-        remindPlanTols= DataBeanManager.getIncetance().remindSchedule
+        remindPlanAll= DataBeanManager.getIncetance().remindSchedule
 
         rv_plan_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
         remindPlanAdapter = MainDateRemindAdapter(R.layout.item_date_remind, null)
@@ -179,16 +180,16 @@ class MainDateAddActivity : BaseActivity() {
         remindPlanAdapter?.bindToRecyclerView(rv_plan_remind)
         remindPlanAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.tv_clear){
-                remindPlanTols.add(remindPlanBeans[position])
+                remindPlanAll.add(remindPlanBeans[position])
                 remindPlanBeans.removeAt(position)
                 remindPlanAdapter?.setNewData(remindPlanBeans)
             }
         }
 
         ll_plan_remind.setOnClickListener {
-            if (remindPlanTols.size>0){
-                remindPlanBeans.add(remindPlanTols[0])
-                remindPlanTols.removeAt(0)
+            if (remindPlanAll.size>0){
+                remindPlanBeans.add(remindPlanAll[0])
+                remindPlanAll.removeAt(0)
                 remindPlanAdapter?.setNewData(remindPlanBeans)
             }
         }
@@ -199,26 +200,26 @@ class MainDateAddActivity : BaseActivity() {
      * 日程相关处理
      */
     private fun initScheduleEvent(){
-        remindscheduleTols= DataBeanManager.getIncetance().remindSchedule
+        remindScheduleAll= DataBeanManager.getIncetance().remindSchedule
 
         rv_schedule_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindscheduleAdapter = MainDateRemindAdapter(R.layout.item_date_remind, null)
-        rv_schedule_remind.adapter = remindscheduleAdapter
-        remindscheduleAdapter?.bindToRecyclerView(rv_schedule_remind)
-        remindscheduleAdapter?.setOnItemChildClickListener { adapter, view, position ->
+        remindScheduleAdapter = MainDateRemindAdapter(R.layout.item_date_remind, null)
+        rv_schedule_remind.adapter = remindScheduleAdapter
+        remindScheduleAdapter?.bindToRecyclerView(rv_schedule_remind)
+        remindScheduleAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.tv_clear){
-                remindscheduleTols.add(remindscheduleBeans[position])
+                remindScheduleAll.add(remindScheduleBeans[position])
 //                remindscheduleAdapter?.notifyItemRemoved(position)
-                remindscheduleBeans.removeAt(position)
-                remindscheduleAdapter?.setNewData(remindscheduleBeans)
+                remindScheduleBeans.removeAt(position)
+                remindScheduleAdapter?.setNewData(remindScheduleBeans)
             }
         }
 
         ll_schedule_remind.setOnClickListener {
-            if (remindscheduleTols.size>0){
-                remindscheduleBeans.add(remindscheduleTols[0])
-                remindscheduleTols.removeAt(0)
-                remindscheduleAdapter?.setNewData(remindscheduleBeans)
+            if (remindScheduleAll.size>0){
+                remindScheduleBeans.add(remindScheduleAll[0])
+                remindScheduleAll.removeAt(0)
+                remindScheduleAdapter?.setNewData(remindScheduleBeans)
             }
         }
 
@@ -226,7 +227,7 @@ class MainDateAddActivity : BaseActivity() {
             DateTimeDialog(this).builder()
                 .setDialogClickListener(object : DateTimeDialog.DateListener {
                     override fun getDate(dateStr: String?, hourStr: String?, dateTim: Long) {
-                        starLong = dateTim
+                        startScheduleLong = dateTim
                         scheduleDateStartStr = hourStr!!
                         tv_schedule_date_start.text = hourStr
                     }
@@ -237,7 +238,7 @@ class MainDateAddActivity : BaseActivity() {
             DateTimeDialog(this).builder()
                 .setDialogClickListener(object : DateTimeDialog.DateListener {
                     override fun getDate(dateStr: String?, hourStr: String?, dateTim: Long) {
-                        endLong = dateTim
+                        endScheduleLong = dateTim
                         scheduleDateEndStr = hourStr!!
                         tv_schedule_date_end.text = hourStr
 
@@ -260,7 +261,7 @@ class MainDateAddActivity : BaseActivity() {
      * 重要日子相关处理
      */
     private fun initDayEvent(){
-        remindDayTols= DataBeanManager.getIncetance().remindDay
+        remindDayAll= DataBeanManager.getIncetance().remindDay
 
         rv_day_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
         remindDayAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindDayBeans)
@@ -268,16 +269,16 @@ class MainDateAddActivity : BaseActivity() {
         remindDayAdapter?.bindToRecyclerView(rv_day_remind)
         remindDayAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.tv_clear){
-                remindDayTols.add(remindDayBeans[position])
+                remindDayAll.add(remindDayBeans[position])
                 remindDayBeans.removeAt(position)
 //                remindDayAdapter?.notifyItemRemoved(position)
                 remindDayAdapter?.setNewData(remindDayBeans)
             }
         }
         ll_day_remind.setOnClickListener {
-            if (remindDayTols.size>0){
-                remindDayBeans.add(remindDayTols[0])
-                remindDayTols.removeAt(0)
+            if (remindDayAll.size>0){
+                remindDayBeans.add(remindDayAll[0])
+                remindDayAll.removeAt(0)
                 remindDayAdapter?.setNewData(remindDayBeans)
             }
         }
@@ -342,19 +343,29 @@ class MainDateAddActivity : BaseActivity() {
             return
         }
 
-        var dates = mutableListOf<DatePlanBean>()
+        var plans = mutableListOf<DatePlanBean>()
         var items = adapterEventPlan?.data!!
         for (item in items) {
             if (!TextUtils.isEmpty(item.content) && !TextUtils.isEmpty(item.startTimeStr) && !TextUtils.isEmpty(
                     item.endTimeStr
                 )
             ) {
-                dates.add(item)
+                plans.add(item)
             }
         }
-        if (dates.size > 0) {
-            val datePlanEvent = DatePlanEvent(null, nowTim, startPlanLong, endPlanLong, startPlanStr, endPlanStr, dates,remindPlanBeans,repeatPlanStr)
-            DatePlanEventGreenDaoManager.getInstance(this).insertOrReplaceDatePlanEvent(datePlanEvent)
+        if (plans.size > 0) {
+            val dateEvent = DateEvent()
+            dateEvent.type=type
+            dateEvent.dayLong=nowTim
+            dateEvent.startTime=startPlanLong
+            dateEvent.endTime=endPlanLong
+            dateEvent.startTimeStr=startPlanStr
+            dateEvent.endTimeStr=endPlanStr
+            dateEvent.list=plans
+            dateEvent.remindList=remindPlanBeans
+            dateEvent.repeat=repeatPlanStr
+
+            DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
             EventBus.getDefault().post(DATE_EVENT)
             if (remindPlanBeans.size>0||repeatPlanStr!="不重复")
                 CalendarReminderUtils.addCalendarEvent(this,startPlanStr+"学习计划","",startPlanLong,endPlanLong,remindPlanBeans,repeatPlanStr)
@@ -368,8 +379,8 @@ class MainDateAddActivity : BaseActivity() {
      * 保存日程
      */
     private fun addSchedule(){
-        var scheduleTitle = et_schedule_title.text.toString()
-        if (TextUtils.isEmpty(scheduleTitle)) {
+        var title = et_schedule_title.text.toString()
+        if (TextUtils.isEmpty(title)) {
             showToast("请输入日程标题")
             return
         }
@@ -382,29 +393,28 @@ class MainDateAddActivity : BaseActivity() {
             return
         }
 
-        if (starLong > endLong) {
+        if (startScheduleLong > endScheduleLong) {
             showToast("请重新选择日程结束日期")
             return
         }
 
         //获取选择开始日期当天的time
-        val dayLong = StringUtils.dateToStamp(StringUtils.longToStringDataNoHour(starLong))
+        val dayLong = StringUtils.dateToStamp(StringUtils.longToStringDataNoHour(startScheduleLong))
 
-        val dateEvent = DateScheduleEvent(
-            null,
-            type,
-            scheduleTitle,
-            dayLong,
-            starLong,
-            endLong,
-            scheduleDateStartStr,
-            scheduleDateEndStr,
-            remindscheduleBeans,
-            repeatScheduleStr
-        )
-        if (remindscheduleBeans.size>0||repeatScheduleStr!="不重复")
-            CalendarReminderUtils.addCalendarEvent(this,scheduleTitle,"",starLong,endLong,remindscheduleBeans,repeatScheduleStr)
-        DateScheduleEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
+        val dateEvent = DateEvent()
+        dateEvent.type=type
+        dateEvent.title=title
+        dateEvent.dayLong=dayLong
+        dateEvent.startTime=startScheduleLong
+        dateEvent.endTime=endScheduleLong
+        dateEvent.startTimeStr=scheduleDateStartStr
+        dateEvent.endTimeStr=scheduleDateEndStr
+        dateEvent.remindList=remindScheduleBeans
+        dateEvent.repeat=repeatScheduleStr
+
+        if (remindScheduleBeans.size>0||repeatScheduleStr!="不重复")
+            CalendarReminderUtils.addCalendarEvent(this,title,"",startScheduleLong,endScheduleLong,remindScheduleBeans,repeatScheduleStr)
+        DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
         EventBus.getDefault().post(DATE_EVENT)
         finish()
     }
@@ -413,9 +423,8 @@ class MainDateAddActivity : BaseActivity() {
      * 保存重要日子
      */
     private fun addDay(){
-        var dayTitle = et_day_title.text.toString()
-        if (TextUtils.isEmpty(dayTitle)) {
-//                    Toast.makeText(this,"请选择日期", Toast.LENGTH_SHORT).show()
+        var title = et_day_title.text.toString()
+        if (TextUtils.isEmpty(title)) {
             showToast("请输入重要日子")
             return
         }
@@ -426,11 +435,20 @@ class MainDateAddActivity : BaseActivity() {
             showToast("请选择日期")
             return
         }
-        val dayEvent = DateDayEvent(null, dayTitle, dayLong, dayStr, dayExplain, remindDayBeans,repeatDayStr)
-        DateDayEventGreenDaoManager.getInstance(this).insertOrReplaceDateDayEvent(dayEvent)
+
+        val dateEvent = DateEvent()
+        dateEvent.type=type
+        dateEvent.title=title
+        dateEvent.dayLong=dayLong
+        dateEvent.dayLongStr=dayStr
+        dateEvent.remindList=remindDayBeans
+        dateEvent.repeat=repeatDayStr
+        dateEvent.explain=dayExplain
+
+        DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
         EventBus.getDefault().post(DATE_EVENT)
         if (remindDayBeans.size>0||repeatDayStr!="不重复")
-            CalendarReminderUtils.addCalendarEvent2(this,dayTitle,dayExplain,dayLong,remindDayBeans,repeatDayStr)
+            CalendarReminderUtils.addCalendarEvent2(this,title,dayExplain,dayLong,remindDayBeans,repeatDayStr)
         finish()
     }
 

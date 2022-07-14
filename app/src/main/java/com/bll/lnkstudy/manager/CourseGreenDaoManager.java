@@ -103,7 +103,7 @@ public class CourseGreenDaoManager {
 
     //根据Id 查询
     public CourseBean queryID(int id) {
-        return  courseDao.queryBuilder().where(CourseListDao.Properties.ViewId.eq(id)).build().unique();
+        return  courseDao.queryBuilder().where(CourseBeanDao.Properties.ViewId.eq(id)).build().unique();
     }
 
     //删除

@@ -13,8 +13,6 @@ import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.utils.StringUtils
 import com.bll.utilssdk.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_image_draw.iv_content
-import kotlinx.android.synthetic.main.ac_image_draw.tv_save
 import kotlinx.android.synthetic.main.ac_note_draw_details.*
 import org.greenrobot.eventbus.EventBus
 
@@ -83,7 +81,6 @@ class NoteDrawActivity:BaseActivity() ,View.OnClickListener{
 
     private fun changePageView(){
         currentPath = paths?.get(pos)
-        showLog(currentPath!!)
         elik?.setLoadFilePath(currentPath,true)
         tv_page_current.text=(pos+1).toString()
         tv_page_total.text=paths?.size.toString()
@@ -110,14 +107,14 @@ class NoteDrawActivity:BaseActivity() ,View.OnClickListener{
                 popWindow=PopWindowDrawSetting(this,iv_setting).builder()
                 popWindow?.setOnSelectListener(object : PopWindowDrawSetting.OnSelectListener {
                     override fun onSelect(type: Int) {
-
                         if (type==1){
-                            elik?.drawObjectType=PWDrawObjectHandler.DRAW_OBJ_ERASE
-                            elik?.penEraseWidth = 6
+                            elik?.drawObjectType=PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
                         }
                         if (type==2){
                             elik?.clearContent(null,true,true)
-                            elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+                            if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
+                                elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+                            }
                         }
                         if (type==3){
                             if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
@@ -136,7 +133,16 @@ class NoteDrawActivity:BaseActivity() ,View.OnClickListener{
                 })
             }
             else{
-                popWindow?.show()
+                if (popWindow?.isShow()==true){
+                    popWindow?.dismiss()
+                    if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
+                        elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+                    }
+                }
+                else{
+                    popWindow?.show()
+                }
+
             }
 
         }

@@ -4,15 +4,15 @@ package com.bll.lnkstudy.ui.adapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DatePlanBean
-import com.bll.lnkstudy.mvp.model.DatePlanEvent
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class MainDateEventPlanAdapter(layoutResId: Int, data: List<DatePlanEvent>?) : BaseQuickAdapter<DatePlanEvent, BaseViewHolder>(layoutResId, data) {
+class MainDateEventPlanAdapter(layoutResId: Int, data: List<DateEvent>?) : BaseQuickAdapter<DateEvent, BaseViewHolder>(layoutResId, data) {
 
 
-    override fun convert(helper: BaseViewHolder, item: DatePlanEvent) {
+    override fun convert(helper: BaseViewHolder, item: DateEvent) {
         helper.setText(R.id.tv_time_start, item.startTimeStr)
         helper.setText(R.id.tv_time_end, item.endTimeStr)
 

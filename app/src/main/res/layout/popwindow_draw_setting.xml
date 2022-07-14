@@ -20,7 +20,7 @@
             android:drawableTop="@mipmap/icon_draw_clear"
             android:drawablePadding="@dimen/dp_15"
             android:gravity="center"
-            android:text="自由擦除"
+            android:text="圈选擦除"
             android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
             />

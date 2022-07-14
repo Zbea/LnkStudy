@@ -10,17 +10,13 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import com.bll.lnkstudy.mvp.model.Book;
 import com.bll.lnkstudy.mvp.model.CourseBean;
-import com.bll.lnkstudy.mvp.model.DateDayEvent;
-import com.bll.lnkstudy.mvp.model.DatePlanEvent;
-import com.bll.lnkstudy.mvp.model.DateScheduleEvent;
+import com.bll.lnkstudy.mvp.model.DateEvent;
 import com.bll.lnkstudy.mvp.model.Note;
 import com.bll.lnkstudy.mvp.model.NoteBook;
 
 import com.bll.lnkstudy.greendao.BookDao;
 import com.bll.lnkstudy.greendao.CourseBeanDao;
-import com.bll.lnkstudy.greendao.DateDayEventDao;
-import com.bll.lnkstudy.greendao.DatePlanEventDao;
-import com.bll.lnkstudy.greendao.DateScheduleEventDao;
+import com.bll.lnkstudy.greendao.DateEventDao;
 import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.greendao.NoteBookDao;
 
@@ -35,17 +31,13 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig bookDaoConfig;
     private final DaoConfig courseBeanDaoConfig;
-    private final DaoConfig dateDayEventDaoConfig;
-    private final DaoConfig datePlanEventDaoConfig;
-    private final DaoConfig dateScheduleEventDaoConfig;
+    private final DaoConfig dateEventDaoConfig;
     private final DaoConfig noteDaoConfig;
     private final DaoConfig noteBookDaoConfig;
 
     private final BookDao bookDao;
     private final CourseBeanDao courseBeanDao;
-    private final DateDayEventDao dateDayEventDao;
-    private final DatePlanEventDao datePlanEventDao;
-    private final DateScheduleEventDao dateScheduleEventDao;
+    private final DateEventDao dateEventDao;
     private final NoteDao noteDao;
     private final NoteBookDao noteBookDao;
 
@@ -59,14 +51,8 @@ public class DaoSession extends AbstractDaoSession {
         courseBeanDaoConfig = daoConfigMap.get(CourseBeanDao.class).clone();
         courseBeanDaoConfig.initIdentityScope(type);
 
-        dateDayEventDaoConfig = daoConfigMap.get(DateDayEventDao.class).clone();
-        dateDayEventDaoConfig.initIdentityScope(type);
-
-        datePlanEventDaoConfig = daoConfigMap.get(DatePlanEventDao.class).clone();
-        datePlanEventDaoConfig.initIdentityScope(type);
-
-        dateScheduleEventDaoConfig = daoConfigMap.get(DateScheduleEventDao.class).clone();
-        dateScheduleEventDaoConfig.initIdentityScope(type);
+        dateEventDaoConfig = daoConfigMap.get(DateEventDao.class).clone();
+        dateEventDaoConfig.initIdentityScope(type);
 
         noteDaoConfig = daoConfigMap.get(NoteDao.class).clone();
         noteDaoConfig.initIdentityScope(type);
@@ -76,17 +62,13 @@ public class DaoSession extends AbstractDaoSession {
 
         bookDao = new BookDao(bookDaoConfig, this);
         courseBeanDao = new CourseBeanDao(courseBeanDaoConfig, this);
-        dateDayEventDao = new DateDayEventDao(dateDayEventDaoConfig, this);
-        datePlanEventDao = new DatePlanEventDao(datePlanEventDaoConfig, this);
-        dateScheduleEventDao = new DateScheduleEventDao(dateScheduleEventDaoConfig, this);
+        dateEventDao = new DateEventDao(dateEventDaoConfig, this);
         noteDao = new NoteDao(noteDaoConfig, this);
         noteBookDao = new NoteBookDao(noteBookDaoConfig, this);
 
         registerDao(Book.class, bookDao);
         registerDao(CourseBean.class, courseBeanDao);
-        registerDao(DateDayEvent.class, dateDayEventDao);
-        registerDao(DatePlanEvent.class, datePlanEventDao);
-        registerDao(DateScheduleEvent.class, dateScheduleEventDao);
+        registerDao(DateEvent.class, dateEventDao);
         registerDao(Note.class, noteDao);
         registerDao(NoteBook.class, noteBookDao);
     }
@@ -94,9 +76,7 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         bookDaoConfig.clearIdentityScope();
         courseBeanDaoConfig.clearIdentityScope();
-        dateDayEventDaoConfig.clearIdentityScope();
-        datePlanEventDaoConfig.clearIdentityScope();
-        dateScheduleEventDaoConfig.clearIdentityScope();
+        dateEventDaoConfig.clearIdentityScope();
         noteDaoConfig.clearIdentityScope();
         noteBookDaoConfig.clearIdentityScope();
     }
@@ -109,16 +89,8 @@ public class DaoSession extends AbstractDaoSession {
         return courseBeanDao;
     }
 
-    public DateDayEventDao getDateDayEventDao() {
-        return dateDayEventDao;
-    }
-
-    public DatePlanEventDao getDatePlanEventDao() {
-        return datePlanEventDao;
-    }
-
-    public DateScheduleEventDao getDateScheduleEventDao() {
-        return dateScheduleEventDao;
+    public DateEventDao getDateEventDao() {
+        return dateEventDao;
     }
 
     public NoteDao getNoteDao() {

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,12 +19,15 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.*
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity
-import com.bll.lnkstudy.ui.activity.MainActivity
-import com.bll.lnkstudy.ui.activity.MainCourseActivity
-import com.bll.lnkstudy.ui.activity.MessageListActivity
+import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
+import com.bll.lnkstudy.manager.NoteGreenDaoManager
+import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.DateEvent
+import com.bll.lnkstudy.mvp.model.DatePlanBean
+import com.bll.lnkstudy.mvp.model.Note
+import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.MainDateActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.PopWindowUtil
@@ -49,8 +53,8 @@ class MainFragment : BaseFragment() {
 
     private var dayNowLong = StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var planList = mutableListOf<DatePlanBean>()
-    private var scheduleList = mutableListOf<DateScheduleEvent>()
-    private var dayList = mutableListOf<DateDayEvent>()
+    private var scheduleList = mutableListOf<DateEvent>()
+    private var dayList = mutableListOf<DateEvent>()
     private var mainDateEventScheduleAdapter: MainDateEventScheduleAdapter? = null
     private var mainDateEventDayAdapter: MainDateEventDayAdapter? = null
     private var mainDateAdapter: MainDateAdapter? = null
@@ -102,6 +106,13 @@ class MainFragment : BaseFragment() {
             (activity as MainActivity).goToNote()
         }
 
+        ll_course.setOnClickListener {
+            val courseType = SPUtil.getInt("courseType")
+            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
+                .putExtra("courseType", courseType)
+            )
+        }
+
     }
 
     //课程表相关处理
@@ -112,12 +123,7 @@ class MainFragment : BaseFragment() {
             .skipMemoryCache(true)
             .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE)).into(iv_course)
 
-        iv_course.setOnClickListener {
-            var type = SPUtil.getInt("courseType")
-            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
-                    .putExtra("courseType", type)
-            )
-        }
+
         iv_course_more.setOnClickListener {
             CourseModuleDialog(requireActivity()).builder()?.setOnClickListener(object :
                 CourseModuleDialog.OnClickListener {
@@ -272,10 +278,19 @@ class MainFragment : BaseFragment() {
 
     //作业相关
     private fun initNote(){
+
         mainNoteAdapter = MainNoteAdapter(R.layout.item_main_note, notes)
         rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
         rv_main_note.adapter = mainNoteAdapter
         mainNoteAdapter?.bindToRecyclerView(rv_main_note)
+        mainNoteAdapter?.setOnItemClickListener { adapter, view, position ->
+            //跳转手绘
+            var intent=Intent(activity, NoteDrawActivity::class.java)
+            var bundle= Bundle()
+            bundle.putSerializable("note",notes[position])
+            intent.putExtra("notes",bundle)
+            startActivity(intent)
+        }
 
         findNotes()
     }
@@ -285,9 +300,9 @@ class MainFragment : BaseFragment() {
      * 通过当天时间查找本地dateEvent事件集合
      */
     private fun findDateList() {
-        scheduleList = DateScheduleEventGreenDaoManager.getInstance(activity).queryAllDateEvent(dayNowLong)
-        dayList = DateDayEventGreenDaoManager.getInstance(activity).queryAllDateDayEvent(dayNowLong)
-        val datas = DatePlanEventGreenDaoManager.getInstance(activity).queryAllDatePlanEvent(dayNowLong)
+        scheduleList = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(1,dayNowLong)
+        dayList = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(2,dayNowLong)
+        val datas = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(0,dayNowLong)
         planList.clear()
         for (data in datas) {
             for (item in data.list) {
@@ -306,7 +321,7 @@ class MainFragment : BaseFragment() {
     }
 
     private fun findNotes(){
-        notes=NoteGreenDaoManager.getInstance(activity).queryAllNote(0)
+        notes= NoteGreenDaoManager.getInstance(activity).queryAllNote(0)
         if (notes.size>6){
             notes=notes.subList(0,6)
         }

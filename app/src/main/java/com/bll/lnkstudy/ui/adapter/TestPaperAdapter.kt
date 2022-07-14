@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.adapter
 
 
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.TestPaper
 import com.bll.lnkstudy.utils.StringUtils
@@ -18,15 +19,30 @@ class TestPaperAdapter(layoutResId: Int, data: List<TestPaper>?) : BaseQuickAdap
         helper.setText(R.id.tv_rank,item.rank.toString())
         helper.setText(R.id.tv_score,item.score.toString())
         helper.setText(R.id.tv_date, StringUtils.longToStringDataNoHour(item.createDate))
-        val image1=helper.getView<ImageView>(R.id.iv_content1)
-        Glide.with(mContext).load(item.image).into(image1)
-        val image2=helper.getView<ImageView>(R.id.iv_content2)
-        Glide.with(mContext).load(item.image).into(image2)
 
-        helper.addOnClickListener(R.id.iv_content1)
+        helper.addOnClickListener(R.id.ll_content)
+
+        val ll_content=helper.getView<LinearLayout>(R.id.ll_content)
+        for (url in item.images)
+        {
+            var imageView=getImageView(url)
+            ll_content.addView(imageView)
+        }
 
     }
 
+    private fun getImageView(url:String):ImageView{
+        val imageView=ImageView(mContext)
+        val layoutParams=LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.MATCH_PARENT)
+        layoutParams.marginStart=20
+        imageView.layoutParams=layoutParams
+        imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+
+        Glide.with(mContext)
+            .load(url).into(imageView)
+
+        return imageView
+    }
 
 
 }

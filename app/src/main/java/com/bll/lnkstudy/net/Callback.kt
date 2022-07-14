@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.net
 
 
-import android.util.Log
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
@@ -26,7 +25,6 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
             IBaseView?.fail(tBaseResult.error)
             return
         }
-
         if (tBaseResult.code == 0) {
             success(tBaseResult)
         } else {
@@ -48,6 +46,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
 
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
+
         SToast.showToast(ExceptionHandle.handleException(e))
         IBaseView.hideLoading()
     }

@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
-import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -76,7 +75,10 @@ class BookCaseFragment: BaseFragment() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco(0,30))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            startActivity(Intent(activity,BookDetailsActivity::class.java).putExtra("book_id",books[position].id))
+            var intent=Intent(activity,BookDetailsActivity::class.java)
+//                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+                intent.putExtra("book_id",books[position].id)
+            startActivity(intent)
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             this.position=position

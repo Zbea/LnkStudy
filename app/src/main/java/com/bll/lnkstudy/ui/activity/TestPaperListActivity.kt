@@ -1,10 +1,9 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
@@ -13,6 +12,7 @@ import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.adapter.TestPaperAdapter
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
+import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_testpaper_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
@@ -25,6 +25,7 @@ class TestPaperListActivity:BaseActivity() {
     private var mAdapter:TestPaperAdapter?=null
     private var pageIndex=1 //当前页码
     private var bookMap=HashMap<Int,MutableList<TestPaper>>()
+    private var position=0
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_list
@@ -68,37 +69,63 @@ class TestPaperListActivity:BaseActivity() {
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list.addItemDecoration(SpaceGridItemDeco2(20,20))
 
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.iv_content1){
-                val id=testPapers[position].id.toString()
-                val file=File(TESTPAPER_PATH , testPaperType?.namePath+"/"+id)
-                val imageFile=File(file, "$id.png")
-                if (imageFile.exists())
-                {
-                    var intent=Intent(this,ImageDrawActivity::class.java)
-                    intent.putExtra("type","testPaper")
-                    intent.putExtra("imageStr",imageFile.path)
-                    intent.putExtra("outImageStr",file.path)
-                    startActivity(intent)
-                }
-                else{
-                    showLoading()
-                    ImageDownLoadUtils(this,testPapers[position].image,testPapers[position].id.toString(),file)
-                        .startDownload(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                            override fun onDownLoadSuccess(bitmap: Bitmap?, path: String?) {
-                                mDialog?.dismiss()
-                                showLog("ddd:"+path!!)
-                            }
-                            override fun onDownLoadFailed() {
-                                mDialog?.dismiss()
-                            }
-                        })
-                }
-            }
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            this.position=position
+            onClick()
         }
 
         pageNumberView()
 
+    }
+
+    //点击处理，先下载图片，再跳转
+    private fun onClick(){
+        val id=testPapers[position].id.toString()
+        val images=testPapers[position].images
+        val file= File(Constants.TESTPAPER_PATH , testPaperType?.namePath+"/"+id)//设置路径
+        if (!file.exists())
+        {
+            file.mkdirs()
+        }
+        val files= FileUtils.getFiles(file.path)
+        val paths= mutableListOf<String>()
+        for (file in files){
+            paths.add(file.path)
+        }
+        if (files.size==images.size)
+        {
+            var intent= Intent(this,TestPaperDrawActivity::class.java)
+            intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
+            intent.putExtra("outImageStr",file.path)
+            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+            startActivity(intent)
+        }
+        else{
+            showLoading()
+            var imageDownLoad= ImageDownLoadUtils(this,images,file.path)
+            imageDownLoad.startDownload()
+            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
+                override fun onDownLoadSuccess(loadMap: Map<Int,String>?) {
+                    hideLoading()
+                    showToast("下载成功")
+                }
+                override fun onDownLoadFailed(unLoadList: List<Int>?) {
+                    hideLoading()
+                    var msg="第"
+                    if (unLoadList != null) {
+                        for (i in unLoadList){
+                            if (i==unLoadList.size-1) {
+                                msg=msg+"${i+1}页"+"下载失败"
+                            } else{
+                                msg=msg+"${i+1}页"+"、"
+                            }
+                        }
+                    }
+                    showToast(msg)
+                }
+            })
+
+        }
     }
 
     //翻页处理

@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.bll.lnkstudy.greendao.BookDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.DateDayEventDao;
-import com.bll.lnkstudy.greendao.DatePlanEventDao;
 import com.bll.lnkstudy.mvp.model.Book;
 
 import org.greenrobot.greendao.query.WhereCondition;

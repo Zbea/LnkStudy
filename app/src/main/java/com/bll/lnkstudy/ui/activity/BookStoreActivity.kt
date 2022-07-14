@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
-import com.bll.lnkstudy.Constants.Companion.ZIP_BOOK_PATH
+import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
@@ -26,7 +26,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.android.material.tabs.TabLayout
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.ac_bookstore.xtab
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -317,13 +316,15 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             return null
         }
 
+        val fileName=book?.id.toString()//文件名
+
         //看file 是否创建目录
-        val filedir = File(Constants.TEXTBOOK_PATH)
+        val filedir = File(Constants.ZIP_PATH)
         if (!filedir.exists()) {
             filedir.mkdir()
         }
 
-        val targetFileStr = filedir.path + File.separator + book?.id + ".zip"
+        val targetFileStr = filedir.path + File.separator + fileName + ".zip"
         val targetFile = File(targetFileStr)
         if (targetFile.exists()) {
             targetFile.delete()
@@ -350,15 +351,14 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    val fileTargetName = targetFile.name.substring(0, targetFile.name.lastIndexOf(".")) //文件名
-                    ZipUtils.unzip(targetFileStr, fileTargetName, object : ZipUtils.ZipCallback {
+                    ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             showLog("解压完成")
                             book?.time=System.currentTimeMillis()//下载时间用于排序
                             //解压完成就开始存数据库
                             book?.loadState = 1//已经下载
                             ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/9527
-                            book?.bookPath = ZIP_BOOK_PATH + File.separator + fileTargetName
+                            book?.bookPath = BOOK_PATH + File.separator + fileName
                             //下载解压完成后更新存储的book
                             BookGreenDaoManager.getInstance(this@BookStoreActivity).insertOrReplaceBook(book)
                             EventBus.getDefault().post(BOOK_EVENT)
@@ -373,6 +373,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
                         override fun onError(msg: String?) {
                             showLog(msg!!)
+                            showToast(msg)
                         }
 
                         override fun onStart() {

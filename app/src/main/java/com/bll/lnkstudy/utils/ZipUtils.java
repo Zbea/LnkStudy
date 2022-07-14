@@ -20,7 +20,7 @@ public class ZipUtils {
     public static void  unzip(String targetZipFilePath, String fileName, ZipCallback callback){
 
         ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
-        File unzipTargetFile = new File(Constants.Companion.getZIP_BOOK_PATH());
+        File unzipTargetFile = new File(Constants.Companion.getBOOK_PATH());
         if(!unzipTargetFile.exists()){
             unzipTargetFile.mkdir();
         }

@@ -1,4 +1,4 @@
-package com.hazz.kuangji.net.exception
+package com.bll.lnkstudy.net.exception
 
 /**
  * Created by xuhao on 2017/12/5.

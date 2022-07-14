@@ -12,4 +12,18 @@ public class User {
     public int balance;//学豆
     public int vipExpiredAt;//vip时间
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", token='" + token + '\'' +
+                ", account='" + account + '\'' +
+                ", role=" + role +
+                ", accountId=" + accountId +
+                ", telNumber='" + telNumber + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", balance=" + balance +
+                ", vipExpiredAt=" + vipExpiredAt +
+                '}';
+    }
 }

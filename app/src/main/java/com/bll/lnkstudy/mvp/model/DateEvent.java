@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class DateEvent implements Serializable {
@@ -21,7 +22,7 @@ public class DateEvent implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public int type;//0学习计划 1重要日子 2日程
+    public int type;//0学习计划 1日程 2重要日子
 
     public String title;//标题
     public Long dayLong;//当天时间
@@ -39,5 +40,106 @@ public class DateEvent implements Serializable {
     @Convert(columnType = String.class,converter = DateRemindConverter.class)
     public List<DateRemind> remindList;//提醒事件列表
     public String repeat;//重复类型
+
+    @Generated(hash = 443415164)
+    public DateEvent(Long id, int type, String title, Long dayLong,
+            String dayLongStr, String explain, Long startTime, Long endTime,
+            String startTimeStr, String endTimeStr, List<DatePlanBean> list,
+            List<DateRemind> remindList, String repeat) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.dayLong = dayLong;
+        this.dayLongStr = dayLongStr;
+        this.explain = explain;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.startTimeStr = startTimeStr;
+        this.endTimeStr = endTimeStr;
+        this.list = list;
+        this.remindList = remindList;
+        this.repeat = repeat;
+    }
+    @Generated(hash = 1511002217)
+    public DateEvent() {
+    }
+    public Long getId() {
+        return this.id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
+    public String getTitle() {
+        return this.title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public Long getDayLong() {
+        return this.dayLong;
+    }
+    public void setDayLong(Long dayLong) {
+        this.dayLong = dayLong;
+    }
+    public String getDayLongStr() {
+        return this.dayLongStr;
+    }
+    public void setDayLongStr(String dayLongStr) {
+        this.dayLongStr = dayLongStr;
+    }
+    public String getExplain() {
+        return this.explain;
+    }
+    public void setExplain(String explain) {
+        this.explain = explain;
+    }
+    public Long getStartTime() {
+        return this.startTime;
+    }
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+    public Long getEndTime() {
+        return this.endTime;
+    }
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+    public String getStartTimeStr() {
+        return this.startTimeStr;
+    }
+    public void setStartTimeStr(String startTimeStr) {
+        this.startTimeStr = startTimeStr;
+    }
+    public String getEndTimeStr() {
+        return this.endTimeStr;
+    }
+    public void setEndTimeStr(String endTimeStr) {
+        this.endTimeStr = endTimeStr;
+    }
+    public List<DatePlanBean> getList() {
+        return this.list;
+    }
+    public void setList(List<DatePlanBean> list) {
+        this.list = list;
+    }
+    public List<DateRemind> getRemindList() {
+        return this.remindList;
+    }
+    public void setRemindList(List<DateRemind> remindList) {
+        this.remindList = remindList;
+    }
+    public String getRepeat() {
+        return this.repeat;
+    }
+    public void setRepeat(String repeat) {
+        this.repeat = repeat;
+    }
 
 }

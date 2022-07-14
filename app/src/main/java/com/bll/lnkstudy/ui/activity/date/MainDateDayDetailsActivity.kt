@@ -8,28 +8,27 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DateDialog
+import com.bll.lnkstudy.dialog.RepeatDayDialog
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.manager.DateDayEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateDayEvent
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
+import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DateRemind
 import com.bll.lnkstudy.ui.adapter.MainDateRemindAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
-import com.bll.lnkstudy.dialog.RepeatDayDialog
 import kotlinx.android.synthetic.main.ac_mian_date_day_details.*
 import kotlinx.android.synthetic.main.common_date_title.*
-
 import org.greenrobot.eventbus.EventBus
 
 class MainDateDayDetailsActivity: BaseActivity() {
 
-    private var dateEvent: DateDayEvent?=null
+    private var dateEvent: DateEvent?=null
     private var isEdit=false//是否是编辑状态
     private var dayLong:Long=0//重要日子时间
     private var dayStr:String=""//重要日子时间
     private var repeatDayStr="不重复"
     private var remindDayAdapter: MainDateRemindAdapter?=null
-    private var remindDayBeans= mutableListOf<DateRemind>()//已经添加提醒
-    private var remindDayTols= mutableListOf<DateRemind>()//全部提醒
+    private var remindBeans= mutableListOf<DateRemind>()//已经添加提醒
+    private var remindAlls= mutableListOf<DateRemind>()//全部提醒
 
 
     override fun layoutId(): Int {
@@ -37,25 +36,25 @@ class MainDateDayDetailsActivity: BaseActivity() {
     }
 
     override fun initData() {
-        dateEvent=intent.getBundleExtra("DATEDAYS")?.getSerializable("DATEDAY") as DateDayEvent?
+        dateEvent=intent.getBundleExtra("DATEDAYS")?.getSerializable("DATEDAY") as DateEvent?
     }
 
     override fun initView() {
 
         setPageTitle("重要日子")
 
-        remindDayTols= DataBeanManager.getIncetance().remindDay
+        remindAlls= DataBeanManager.getIncetance().remindDay
         dayLong=dateEvent?.dayLong!!
-        dayStr=dateEvent?.dayStr!!
+        dayStr=dateEvent?.dayLongStr!!
         repeatDayStr=dateEvent?.repeat!!
         //去空
         for ( item in dateEvent?.remindList!!)
         {
             if (item!=null)
-                remindDayBeans.add(item)
+                remindBeans.add(item)
         }
         //全部提醒去除已添加的提醒
-        remindDayTols.removeAll(remindDayBeans)
+        remindAlls.removeAll(remindBeans)
 
         et_day_title.setText(dateEvent?.title)
         tv_day_date.text=dayStr
@@ -69,14 +68,14 @@ class MainDateDayDetailsActivity: BaseActivity() {
         tv_day_repeat.text=repeatDayStr
 
         rv_day_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindDayAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindDayBeans)
+        remindDayAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindBeans)
         rv_day_remind.adapter = remindDayAdapter
         remindDayAdapter?.bindToRecyclerView(rv_day_remind)
         remindDayAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.tv_clear){
-                remindDayTols.add(remindDayBeans[position])
-                remindDayBeans.removeAt(position)
-                remindDayAdapter?.setNewData(remindDayBeans)
+                remindAlls.add(remindBeans[position])
+                remindBeans.removeAt(position)
+                remindDayAdapter?.notifyDataSetChanged()
             }
         }
 
@@ -159,7 +158,7 @@ class MainDateDayDetailsActivity: BaseActivity() {
                 override fun ok() {
                     //删除添加的日历事件
                     CalendarReminderUtils.deleteCalendarEvent(this@MainDateDayDetailsActivity,dateEvent?.title)
-                    DateDayEventGreenDaoManager.getInstance(this@MainDateDayDetailsActivity).deleteDateDayEvent(dateEvent)
+                    DateEventGreenDaoManager.getInstance(this@MainDateDayDetailsActivity).deleteDateEvent(dateEvent)
                     EventBus.getDefault().post(DATE_EVENT)
                     finish()
                 }
@@ -183,10 +182,10 @@ class MainDateDayDetailsActivity: BaseActivity() {
 
         //添加提醒处理
         ll_day_remind.setOnClickListener {
-            if (remindDayTols.size>0){
-                remindDayBeans.add(remindDayTols[0])
-                remindDayTols.removeAt(0)
-                remindDayAdapter?.setNewData(remindDayBeans)
+            if (remindAlls.size>0){
+                remindBeans.add(remindAlls[0])
+                remindAlls.removeAt(0)
+                remindDayAdapter?.notifyDataSetChanged()
             }
         }
 
@@ -210,12 +209,23 @@ class MainDateDayDetailsActivity: BaseActivity() {
                 return@setOnClickListener
             }
             var dayExplain=et_explain.text.toString()
-            dateEvent=DateDayEvent(dateEvent?.id,dayTitle,dayLong,dayStr,dayExplain,remindDayBeans,repeatDayStr)
-            DateDayEventGreenDaoManager.getInstance(this).insertOrReplaceDateDayEvent(dateEvent)
+
+            val dateDayEvent = DateEvent()
+            dateDayEvent.id=dateEvent?.id
+            dateDayEvent.type= dateEvent?.type!!
+            dateDayEvent.title=dayTitle
+            dateDayEvent.dayLong=dayLong
+            dateDayEvent.dayLongStr=dayStr
+            dateDayEvent.remindList=remindBeans
+            dateDayEvent.repeat=repeatDayStr
+            dateDayEvent.explain=dayExplain
+
+            DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateDayEvent)
             EventBus.getDefault().post(DATE_EVENT)
+
             CalendarReminderUtils.deleteCalendarEvent(this,dateEvent?.title)//删除原来的
-            if (remindDayBeans.size>0||repeatDayStr!="不重复"){
-                CalendarReminderUtils.addCalendarEvent2(this,dayTitle,dayExplain,dayLong,remindDayBeans,repeatDayStr)
+            if (remindBeans.size>0||repeatDayStr!="不重复"){
+                CalendarReminderUtils.addCalendarEvent2(this,dayTitle,dayExplain,dayLong,remindBeans,repeatDayStr)
             }
             contentShow()
         }

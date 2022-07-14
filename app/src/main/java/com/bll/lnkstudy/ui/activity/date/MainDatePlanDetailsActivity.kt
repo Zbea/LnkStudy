@@ -8,24 +8,18 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DateTimeHourDialog
+import com.bll.lnkstudy.dialog.RepeatDayDialog
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.manager.DatePlanEventGreenDaoManager
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
+import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DatePlanBean
-import com.bll.lnkstudy.mvp.model.DatePlanEvent
 import com.bll.lnkstudy.mvp.model.DateRemind
 import com.bll.lnkstudy.ui.adapter.MainDateAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateEventPlanAddAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateRemindAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.StringUtils
-import com.bll.lnkstudy.dialog.RepeatDayDialog
 import kotlinx.android.synthetic.main.ac_mian_date_plan_details.*
-import kotlinx.android.synthetic.main.ac_mian_date_plan_details.ll_plan_remind
-import kotlinx.android.synthetic.main.ac_mian_date_plan_details.ll_plan_repeat
-import kotlinx.android.synthetic.main.ac_mian_date_plan_details.tv_plan_add
-import kotlinx.android.synthetic.main.ac_mian_date_plan_details.tv_plan_end
-import kotlinx.android.synthetic.main.ac_mian_date_plan_details.tv_plan_repeat
-import kotlinx.android.synthetic.main.ac_mian_date_plan_details.tv_plan_start
 import kotlinx.android.synthetic.main.common_date_title.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
@@ -33,27 +27,27 @@ import java.util.*
 
 class MainDatePlanDetailsActivity: BaseActivity() {
 
-    private var datePlanEvent: DatePlanEvent?=null
+    private var datePlanEvent: DateEvent?=null
     private var mainDateAdapter: MainDateAdapter?=null
     private var isEdit=false//是否是编辑状态
     private var adapterEventPlan: MainDateEventPlanAddAdapter?=null
     private var planList= mutableListOf<DatePlanBean>()
-    private var nowTim= 0L
+    private var dayLong= 0L //当天
     private var endPlanLong:Long=0
     private var startPlanLong:Long=0
     private var endPlanStr:String=""
     private var startPlanStr:String=""
     private var repeatStr="不重复"
     private var remindPlanAdapter: MainDateRemindAdapter?=null
-    private var remindPlanBeans= mutableListOf<DateRemind>()//已经添加提醒
-    private var remindPlanTols= mutableListOf<DateRemind>()//全部提醒
+    private var remindBeans= mutableListOf<DateRemind>()//已经添加提醒
+    private var remindAlls= mutableListOf<DateRemind>()//全部提醒
 
     override fun layoutId(): Int {
         return R.layout.ac_mian_date_plan_details
     }
 
     override fun initData() {
-        datePlanEvent= intent.getBundleExtra("DATEPLANS")?.getSerializable("DATEPLAN") as DatePlanEvent?
+        datePlanEvent= intent.getBundleExtra("DATEPLANS")?.getSerializable("DATEPLAN") as DateEvent?
     }
 
     override fun initView() {
@@ -63,30 +57,30 @@ class MainDatePlanDetailsActivity: BaseActivity() {
         endPlanStr=datePlanEvent?.endTimeStr!!
         startPlanLong=datePlanEvent?.startTime!!
         endPlanLong=datePlanEvent?.endTime!!
-        nowTim=datePlanEvent?.dayLong!!
+        dayLong=datePlanEvent?.dayLong!!
         //去空
         for ( item in datePlanEvent?.remindList!!)
         {
             if (item!=null)
-                remindPlanBeans.add(item)
+                remindBeans.add(item)
         }
         repeatStr=datePlanEvent?.repeat!!
-        remindPlanTols= DataBeanManager.getIncetance().remindSchedule
-        remindPlanTols.removeAll(remindPlanBeans)
+        remindAlls= DataBeanManager.getIncetance().remindSchedule
+        remindAlls.removeAll(remindBeans)
 
         tv_plan_start.text=startPlanStr
         tv_plan_end.text=endPlanStr
         tv_plan_repeat.text=repeatStr
 
         rv_remind.layoutManager = LinearLayoutManager(this)//创建布局管理
-        remindPlanAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindPlanBeans)
+        remindPlanAdapter = MainDateRemindAdapter(R.layout.item_date_remind, remindBeans)
         rv_remind.adapter = remindPlanAdapter
         remindPlanAdapter?.bindToRecyclerView(rv_remind)
         remindPlanAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.tv_clear){
-                remindPlanTols.add(remindPlanBeans[position])
-                remindPlanBeans.removeAt(position)
-                remindPlanAdapter?.setNewData(remindPlanBeans)
+                remindAlls.add(remindBeans[position])
+                remindBeans.removeAt(position)
+                remindPlanAdapter?.setNewData(remindBeans)
             }
         }
 
@@ -182,7 +176,7 @@ class MainDatePlanDetailsActivity: BaseActivity() {
                 }
                 override fun ok() {
                     CalendarReminderUtils.deleteCalendarEvent(this@MainDatePlanDetailsActivity,datePlanEvent?.startTimeStr+"学习计划")
-                    DatePlanEventGreenDaoManager.getInstance(this@MainDatePlanDetailsActivity).deleteDatePlanEvent(datePlanEvent)
+                    DateEventGreenDaoManager.getInstance(this@MainDatePlanDetailsActivity).deleteDateEvent(datePlanEvent)
                     EventBus.getDefault().post(DATE_EVENT)
                     finish()
                 }
@@ -201,17 +195,17 @@ class MainDatePlanDetailsActivity: BaseActivity() {
         }
 
         ll_plan_remind.setOnClickListener {
-            if (remindPlanTols.size>0){
-                remindPlanBeans.add(remindPlanTols[0])
-                remindPlanTols.removeAt(0)
-                remindPlanAdapter?.setNewData(remindPlanBeans)
+            if (remindAlls.size>0){
+                remindBeans.add(remindAlls[0])
+                remindAlls.removeAt(0)
+                remindPlanAdapter?.setNewData(remindBeans)
             }
         }
 
         ll_plan_start.setOnClickListener {
             DateTimeHourDialog(this).builder().setDialogClickListener(object : DateTimeHourDialog.DateListener {
                 override fun getDate(dateStr: String?,hourStr: String?, dateTim: Long) {
-                    nowTim= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+                    dayLong= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
                     startPlanLong=dateTim
                     startPlanStr=dateStr!!
                     tv_plan_start.text=dateStr
@@ -239,22 +233,33 @@ class MainDatePlanDetailsActivity: BaseActivity() {
                 return@setOnClickListener
             }
 
-            var dates= mutableListOf<DatePlanBean>()
+            var plans= mutableListOf<DatePlanBean>()
             var items= adapterEventPlan?.data!!
             for (item in items){
                 if (!TextUtils.isEmpty(item.content)&&!TextUtils.isEmpty(item.startTimeStr)&&!TextUtils.isEmpty(item.endTimeStr))
                 {
-                    dates.add(item)
+                    plans.add(item)
                 }
             }
-            if (dates.size>0){
+            if (plans.size>0){
 
                 CalendarReminderUtils.deleteCalendarEvent(this,datePlanEvent?.startTimeStr+"学习计划")//删除原来的
-                if (remindPlanBeans.size>0||repeatStr!="不重复")
-                    CalendarReminderUtils.addCalendarEvent(this,startPlanStr+"学习计划","",startPlanLong,endPlanLong,remindPlanBeans,repeatStr)
+                if (remindBeans.size>0||repeatStr!="不重复")
+                    CalendarReminderUtils.addCalendarEvent(this,startPlanStr+"学习计划","",startPlanLong,endPlanLong,remindBeans,repeatStr)
 
-                datePlanEvent=DatePlanEvent(datePlanEvent?.id,nowTim,startPlanLong,endPlanLong,startPlanStr,endPlanStr,dates,remindPlanBeans,repeatStr)
-                DatePlanEventGreenDaoManager.getInstance(this).insertOrReplaceDatePlanEvent(datePlanEvent)
+                val dateEvent = DateEvent()
+                dateEvent.id=datePlanEvent?.id
+                dateEvent.type=datePlanEvent?.type!!
+                dateEvent.dayLong=dayLong
+                dateEvent.startTime=startPlanLong
+                dateEvent.endTime=endPlanLong
+                dateEvent.startTimeStr=startPlanStr
+                dateEvent.endTimeStr=endPlanStr
+                dateEvent.list=plans
+                dateEvent.remindList=remindBeans
+                dateEvent.repeat=repeatStr
+
+                DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
                 EventBus.getDefault().post(DATE_EVENT)
                 contentShow()
             }

@@ -80,7 +80,7 @@ public class SToast {
         toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
         toast.setText(str);
         toast.setDuration(duration);
-        toast.setGravity(Gravity.BOTTOM, 0, 400);
+        toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 600, 400);
         toast.show();
     }
 
@@ -104,7 +104,8 @@ public class SToast {
             showText(ctx.getString(R.string.parse_data_error));
         }else if(code==ExceptionHandle.ERROR.HTTP_ERROR){
             showText(ctx.getString(R.string.connect_error));
-        }else {
+        }
+        else {
             showText(ctx.getString(R.string.on_server_error));
         }
     }
