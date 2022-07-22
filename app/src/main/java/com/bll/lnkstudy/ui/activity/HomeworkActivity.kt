@@ -158,6 +158,7 @@ class HomeworkActivity:BaseActivity() {
 
     }
 
+
     //目录列表
     private fun initRecyclerCatalog(){
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
