@@ -84,6 +84,23 @@ public class StringUtils {
         }
     }
 
+    /**
+     * 时间戳转换为字符串类型
+     *
+     * @return
+     */
+    public static String longToHour1(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("H:m", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String longToStringDataNoHour(long date) {
         if(0 == date){
             return null;

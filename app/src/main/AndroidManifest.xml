@@ -38,6 +38,7 @@
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:name=".MyApplication"
@@ -84,6 +85,9 @@
         <activity android:name=".ui.activity.TestPaperListActivity"/>
         <activity android:name=".ui.activity.TestPaperDrawActivity"/>
         <activity android:name=".ui.activity.NoteDrawActivity"/>
+        <activity android:name=".ui.activity.HomeworkActivity"/>
+        <activity android:name=".ui.activity.RecordActivity"/>
+        <activity android:name=".ui.activity.RecordListActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

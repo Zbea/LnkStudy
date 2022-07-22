@@ -47,6 +47,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var ivBack: ImageView? = null
     var tvPageTitle: TextView? = null
     var tvMyCollect: TextView? = null
+    var ivSave: ImageView? = null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -102,6 +103,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
         ivBack = findViewById(R.id.iv_back)
+        ivSave = findViewById(R.id.iv_save)
         tvPageTitle = findViewById(R.id.tv_title)
         tvMyCollect = findViewById(R.id.tv_myCollect)
         if (ivBack != null) {
@@ -113,6 +115,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     fun setDisBackShow() {
         if (ivBack != null) {
             ivBack!!.visibility = View.GONE
+        }
+    }
+
+    fun setSaveShow() {
+        if (ivSave != null) {
+            ivSave!!.visibility = View.VISIBLE
         }
     }
 

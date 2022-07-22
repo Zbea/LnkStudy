@@ -285,14 +285,18 @@ class MainCourseActivity : BaseActivity() {
 
             view.id = id
             var tvTime = view.findViewById<TextView>(R.id.tv_time)
+            var tvTimeEnd = view.findViewById<TextView>(R.id.tv_time_end)
             view.setOnClickListener {
-                selectTime(tvTime, id)
+                selectTime(tvTime,tvTimeEnd, id)
             }
 
             //不重置
             if (!isAdd) {
                 if (course != null) {
-                    tvTime.text = course.name.toString()
+                    var string=course.name.split("~")
+                    tvTime.text = string[0]
+                    tvTimeEnd.text=string[1]
+//                    tvTime.text = course.name.toString()
                     selectLists.add(course)//将已经存在的加入课程集合
                 }
             }
@@ -591,12 +595,14 @@ class MainCourseActivity : BaseActivity() {
 
 
     //时间选择器
-    private fun selectTime(v: TextView, id: Int) {
+    private fun selectTime(v: TextView,v1: TextView, id: Int) {
         CourseTimeDialog(this).builder()
             .setOnDialogClickListener(object : CourseTimeDialog.OnDialogClickListener {
                 override fun onSelect(course: String) {
                     if (course != null) {
-                        v.text = course
+                        var string=course.split("~")
+                        v.text = string[0]
+                        v1.text=string[1]
                         var course1 = CourseBean()
                         course1.name = course
                         course1.viewId = id

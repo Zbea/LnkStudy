@@ -45,6 +45,8 @@ class Constants private constructor() {
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("testPaper").path
         //作业保存目录
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("homeWork").path
+        //录音保存目录
+        val RECORD_PATH = MyApplication.mContext.getExternalFilesDir("record").path
         //笔记保存目录
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("note").path
 
@@ -58,6 +60,7 @@ class Constants private constructor() {
         val COURSE_EVENT="CourseEvent"
         val NOTE_BOOK_MANAGER_EVENT="NoteBookManagerEvent"
         val NOTE_EVENT="NoteEvent"
+        val RECORD_EVENT="RecordEvent"
     }
     
 }

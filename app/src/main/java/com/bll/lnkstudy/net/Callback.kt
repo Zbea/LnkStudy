@@ -5,6 +5,7 @@ import com.bll.lnkstudy.utils.SToast
 import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import retrofit2.HttpException
 
 abstract class Callback<T> : Observer<BaseResult<T>> {
 
@@ -46,6 +47,10 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
 
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
+
+        if ((e as HttpException).code()==401){
+            IBaseView?.login()
+        }
 
         SToast.showToast(ExceptionHandle.handleException(e))
         IBaseView.hideLoading()

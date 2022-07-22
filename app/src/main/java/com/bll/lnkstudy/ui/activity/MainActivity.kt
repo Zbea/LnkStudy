@@ -24,9 +24,9 @@ class MainActivity : BaseActivity() {
 
     private var mainFragment: MainFragment? = null
     private var bookcaseFragment: BookCaseFragment? = null
-    private var textBookFragment: TextBookFragment? = null
+    private var textbookFragment: TextbookFragment? = null
     private var testPaperFragment: TestPaperFragment? = null
-    private var homeWorkFragment: HomeWorkFragment? = null
+    private var homeworkFragment: HomeworkFragment? = null
     private var noteFragment: NoteFragment? = null
     private var paintingFragment: PaintingFragment? = null
     private var teachFragment: TeachFragment? = null
@@ -43,9 +43,9 @@ class MainActivity : BaseActivity() {
 
         mainFragment = MainFragment()
         bookcaseFragment = BookCaseFragment()
-        textBookFragment= TextBookFragment()
+        textbookFragment= TextbookFragment()
         testPaperFragment = TestPaperFragment()
-        homeWorkFragment = HomeWorkFragment()
+        homeworkFragment = HomeworkFragment()
         noteFragment= NoteFragment()
         paintingFragment = PaintingFragment()
         teachFragment = TeachFragment()
@@ -64,8 +64,8 @@ class MainActivity : BaseActivity() {
             when (position) {
                 0 -> switchFragment(lastFragment, mainFragment)//首页
                 1 -> switchFragment(lastFragment, bookcaseFragment)//书架
-                2 -> switchFragment(lastFragment, textBookFragment)//课本
-                3 -> switchFragment(lastFragment, homeWorkFragment)//作业
+                2 -> switchFragment(lastFragment, textbookFragment)//课本
+                3 -> switchFragment(lastFragment, homeworkFragment)//作业
                 4 -> switchFragment(lastFragment, testPaperFragment)//考卷
                 5 -> switchFragment(lastFragment, noteFragment)//笔记
                 6 -> switchFragment(lastFragment, paintingFragment)//书画
@@ -90,7 +90,7 @@ class MainActivity : BaseActivity() {
     fun goToTextBook(){
         mHomeAdapter?.updateItem(lastPosition, false)//原来的位置去掉勾选
         mHomeAdapter?.updateItem(2, true)//更新新的位置
-        switchFragment(lastFragment, textBookFragment)
+        switchFragment(lastFragment, textbookFragment)
         lastPosition=2
     }
 

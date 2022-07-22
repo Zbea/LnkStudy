@@ -7,7 +7,7 @@ import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.CourseBean;
 import com.bll.lnkstudy.mvp.model.DateRemind;
-import com.bll.lnkstudy.mvp.model.HomeWorkType;
+import com.bll.lnkstudy.mvp.model.HomeworkType;
 import com.bll.lnkstudy.mvp.model.MainListBean;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.NoteBook;
@@ -301,32 +301,33 @@ public class DataBeanManager {
      * 作业分类列表
      * @return
      */
-    public List<HomeWorkType> getHomeWorkTypes(boolean isLg){
+    public List<HomeworkType> getHomeWorkTypes(boolean isLg, int courseId){
 
-        List<HomeWorkType> list=new ArrayList();
-        HomeWorkType homeWork = new HomeWorkType();
+        List<HomeworkType> list=new ArrayList();
+        HomeworkType homeWork = new HomeworkType();
         homeWork.name = "随堂作业本";
         homeWork.type = 0;
         homeWork.resId = R.mipmap.icon_homework_zy;
         list.add(homeWork);
 
-        HomeWorkType homeWork1 = new HomeWorkType();
+        HomeworkType homeWork1 = new HomeworkType();
         homeWork1.name = "家庭作业本";
         homeWork1.type = 1;
         homeWork1.resId = R.mipmap.icon_homework_zy;
         list.add(homeWork1);
 
-        HomeWorkType homeWork2 = new HomeWorkType();
+        HomeworkType homeWork2 = new HomeworkType();
         homeWork2.name = "课件作业集";
         homeWork2.type = 2;
         homeWork2.resId = R.mipmap.icon_homework_zy;
         list.add(homeWork2);
 
         if (isLg){
-            HomeWorkType homeWork3 = new HomeWorkType();
+            HomeworkType homeWork3 = new HomeworkType();
             homeWork3.name = "朗读作业本";
             homeWork3.type= 3;
             homeWork3.isListenToRead=true;
+            homeWork3.courseId=courseId;
             homeWork3.resId = R.mipmap.icon_homework_ld;
             list.add(homeWork3);
         }

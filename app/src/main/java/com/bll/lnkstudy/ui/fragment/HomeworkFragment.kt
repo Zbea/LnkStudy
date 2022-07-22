@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +13,11 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.mvp.model.HomeWorkType
-import com.bll.lnkstudy.ui.adapter.HomeWorkAdapter
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.mvp.model.HomeworkType
+import com.bll.lnkstudy.ui.activity.HomeworkActivity
+import com.bll.lnkstudy.ui.activity.RecordListActivity
+import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.PopWindowUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_homework.*
@@ -21,13 +26,13 @@ import kotlinx.android.synthetic.main.fragment_homework.*
 /**
  * 作业
  */
-class HomeWorkFragment : BaseFragment(){
+class HomeworkFragment : BaseFragment(){
 
     private var popWindow:PopWindowUtil?=null
-    private var mAdapter:HomeWorkAdapter?=null
+    private var mAdapter:HomeworkAdapter?=null
 
     private var courseID=0//当前科目id
-    private var datas= mutableListOf<HomeWorkType>()
+    private var datas= mutableListOf<HomeworkType>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework
@@ -91,11 +96,22 @@ class HomeWorkFragment : BaseFragment(){
 
 
     private fun initRecyclerView(){
-        mAdapter = HomeWorkAdapter(R.layout.item_homework, null)
+        mAdapter = HomeworkAdapter(R.layout.item_homework, null)
         rv_list.layoutManager = GridLayoutManager(activity,3)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(0,90))
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            if(datas[position].isListenToRead){
+                startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
+            }
+            else{
+                var bundle=Bundle()
+                bundle.putSerializable("homework",datas[position])
+                bundle.putSerializable("courseId",courseID)
+                startActivity(Intent(context,HomeworkActivity::class.java).putExtra("homeworkBundle",bundle))
+            }
+        }
 
     }
 
@@ -103,8 +119,8 @@ class HomeWorkFragment : BaseFragment(){
     //查找分类数据
     private fun findDatas(islg: Boolean,courseID:Int){
         datas.clear()
-        datas=DataBeanManager.getIncetance().getHomeWorkTypes(islg)
-
+        datas=DataBeanManager.getIncetance().getHomeWorkTypes(islg,courseID)
+        datas.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID))
         mAdapter?.setNewData(datas)
     }
 
@@ -114,12 +130,14 @@ class HomeWorkFragment : BaseFragment(){
             object : NoteBookAddDialog.OnDialogClickListener {
             override fun onClick(string: String) {
                 val time=System.currentTimeMillis()
-                var item= HomeWorkType()
+                var item= HomeworkType()
                 item.name=string
                 item.date=time
                 item.type= mAdapter?.data?.size!!//新增id为该类所有和
                 item.courseId=courseID
                 item.resId=R.mipmap.icon_homework_zy
+
+                HomeworkTypeDaoManager.getInstance(context).insertOrReplace(item)
 
                 datas.add(item)
                 mAdapter?.notifyDataSetChanged()

@@ -48,7 +48,8 @@ class AccountLoginActivity:BaseActivity(),
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_CALENDAR,
-            Manifest.permission.READ_CALENDAR
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.RECORD_AUDIO
         )
 
         ed_user.setText("gq")

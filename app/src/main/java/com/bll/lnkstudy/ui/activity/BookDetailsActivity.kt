@@ -111,13 +111,13 @@ class BookDetailsActivity:BaseActivity() {
                 isScreen=false
                 v_content_b.visibility=View.GONE
                 tv_page_b.visibility=View.GONE
-                this.moveToScreenPanel(SCREEN_PANEL_A)
+//                this.moveToScreenPanel(SCREEN_PANEL_A)
             }
             else{
                 isScreen=true
                 v_content_b.visibility=View.VISIBLE
                 tv_page_b.visibility=View.VISIBLE
-                this.moveToScreenPanel(SCREEN_PANEL_FULL)
+//                this.moveToScreenPanel(SCREEN_PANEL_FULL)
             }
 
         }

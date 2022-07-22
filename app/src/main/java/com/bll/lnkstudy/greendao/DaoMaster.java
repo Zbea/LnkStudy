@@ -24,8 +24,12 @@ public class DaoMaster extends AbstractDaoMaster {
         BookDao.createTable(db, ifNotExists);
         CourseBeanDao.createTable(db, ifNotExists);
         DateEventDao.createTable(db, ifNotExists);
+        HomeworkDao.createTable(db, ifNotExists);
+        HomeworkContentDao.createTable(db, ifNotExists);
+        HomeworkTypeDao.createTable(db, ifNotExists);
         NoteDao.createTable(db, ifNotExists);
         NoteBookDao.createTable(db, ifNotExists);
+        RecordBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -33,8 +37,12 @@ public class DaoMaster extends AbstractDaoMaster {
         BookDao.dropTable(db, ifExists);
         CourseBeanDao.dropTable(db, ifExists);
         DateEventDao.dropTable(db, ifExists);
+        HomeworkDao.dropTable(db, ifExists);
+        HomeworkContentDao.dropTable(db, ifExists);
+        HomeworkTypeDao.dropTable(db, ifExists);
         NoteDao.dropTable(db, ifExists);
         NoteBookDao.dropTable(db, ifExists);
+        RecordBeanDao.dropTable(db, ifExists);
     }
 
     /**
@@ -56,8 +64,12 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(BookDao.class);
         registerDaoClass(CourseBeanDao.class);
         registerDaoClass(DateEventDao.class);
+        registerDaoClass(HomeworkDao.class);
+        registerDaoClass(HomeworkContentDao.class);
+        registerDaoClass(HomeworkTypeDao.class);
         registerDaoClass(NoteDao.class);
         registerDaoClass(NoteBookDao.class);
+        registerDaoClass(RecordBeanDao.class);
     }
 
     public DaoSession newSession() {

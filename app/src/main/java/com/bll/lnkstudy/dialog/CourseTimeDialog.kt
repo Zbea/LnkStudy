@@ -2,12 +2,14 @@ package com.bll.lnkstudy.dialog
 
 import android.app.AlertDialog
 import android.content.Context
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TimePicker
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.StringUtils
@@ -36,7 +38,7 @@ class CourseTimeDialog(val context: Context){
             isStart = i==R.id.rb_start
         }
         val rbStart=dialog.findViewById<RadioButton>(R.id.rb_start)
-        rbStart.text=StringUtils.longToHour(System.currentTimeMillis())
+        rbStart.text=StringUtils.longToHour1(System.currentTimeMillis())
         val rbEnd=dialog.findViewById<RadioButton>(R.id.rb_end)
 
         val timePicker=dialog.findViewById<TimePicker>(R.id.timePicker)
@@ -56,7 +58,7 @@ class CourseTimeDialog(val context: Context){
         cancleTv.setOnClickListener { v: View? -> dialog.dismiss()}
         var okTv = view.findViewById<Button>(R.id.btn_ok)
         okTv.setOnClickListener {
-            var timeStr=rbStart.text.toString()+" ~ "+rbEnd.text.toString()
+            var timeStr=rbStart.text.toString()+"~"+rbEnd.text.toString()
             if (!rbStart.text.toString().isNullOrEmpty()&&!rbEnd.text.toString().isNullOrEmpty())
             {
                 if (onClickListener!=null)

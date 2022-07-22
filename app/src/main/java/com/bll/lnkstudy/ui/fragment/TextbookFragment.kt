@@ -27,7 +27,7 @@ import java.io.File
 /**
  * 课本
  */
-class TextBookFragment : BaseFragment(){
+class TextbookFragment : BaseFragment(){
 
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<Book>()
