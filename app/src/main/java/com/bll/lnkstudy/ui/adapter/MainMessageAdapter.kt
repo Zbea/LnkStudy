@@ -38,8 +38,8 @@ class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageList>?) : Ba
         }
         else{
             if (!item.isLook){
-                tvName.typeface=Typeface.defaultFromStyle(Typeface.BOLD)
-                tvContent.typeface=Typeface.defaultFromStyle(Typeface.BOLD)
+                tvName.typeface=Typeface.defaultFromStyle(Typeface.NORMAL)
+                tvContent.typeface=Typeface.defaultFromStyle(Typeface.NORMAL)
             }
             else{
                 tvName.typeface=Typeface.defaultFromStyle(Typeface.NORMAL)

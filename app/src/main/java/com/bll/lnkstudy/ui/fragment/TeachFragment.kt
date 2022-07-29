@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
@@ -10,7 +11,7 @@ import com.bll.lnkstudy.ui.activity.TeachListActivity
 import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_teach.rv_list
+import kotlinx.android.synthetic.main.fragment_teach.*
 
 /**
  * 教学
@@ -39,7 +40,10 @@ class TeachFragment : BaseFragment(){
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceGridItemDeco2(0,90))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            startActivity(Intent(activity,TeachListActivity::class.java).putExtra("course",courses[position].name))
+            var bundle=Bundle()
+            bundle.putSerializable("course",courses[position])
+            startActivity(Intent(activity,TeachListActivity::class.java)
+                .putExtra("bundleCourse",bundle))
         }
 
         pageNumberView()

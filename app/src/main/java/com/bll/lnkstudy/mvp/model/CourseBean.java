@@ -27,6 +27,8 @@ public class CourseBean implements Serializable {
     public int imageId;//图片资源id
     @Transient
     public int courseId;//科目id
+    @Transient
+    public int mainCourseId;//首页课业进度背景图
 
 
     public CourseBean(Long id, int viewId, String name) {

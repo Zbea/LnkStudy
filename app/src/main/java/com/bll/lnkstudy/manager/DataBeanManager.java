@@ -87,7 +87,7 @@ public class DataBeanManager {
            "人工智能","模式识别","心理生理","语言文字","数学"
     };//思维科学
 
-    public Integer[] kmImage={
+    public Integer[] kmTeachImage={
             R.mipmap.icon_teach_yuwen,
             R.mipmap.icon_teach_shuxue,
             R.mipmap.icon_teach_yinwen,
@@ -97,6 +97,18 @@ public class DataBeanManager {
             R.mipmap.icon_teach_sizhen,
             R.mipmap.icon_teach_lishi,
             R.mipmap.icon_teach_shengwu,
+    };
+
+    public Integer[] kmTextbookImage={
+            R.mipmap.icon_main_course_yuwen,
+            R.mipmap.icon_main_course_shuxue,
+            R.mipmap.icon_main_course_yinyu,
+            R.mipmap.icon_main_course_wuli,
+            R.mipmap.icon_main_course_huaxue,
+            R.mipmap.icon_main_course_dili,
+            R.mipmap.icon_main_course_sizheng,
+            R.mipmap.icon_main_course_lishi,
+            R.mipmap.icon_main_course_shengwu,
     };
 
     /**
@@ -116,8 +128,8 @@ public class DataBeanManager {
         h0.name=listTitle[0];
 
         MainListBean h1 = new MainListBean();
-        h1.icon=context.getDrawable(R.mipmap.icon_main_sj);
-        h1.icon_check=context.getDrawable(R.mipmap.icon_main_sj_check);
+        h1.icon=context.getDrawable(R.mipmap.icon_main_sj1);
+        h1.icon_check=context.getDrawable(R.mipmap.icon_main_sj_check1);
         h1.checked=false;
         h1.name=listTitle[1];
 
@@ -286,7 +298,8 @@ public class DataBeanManager {
         for (int i = 0; i < kmArray.length; i++) {
             CourseBean courseBean =new CourseBean();
             courseBean.name=kmArray[i];
-            courseBean.imageId=kmImage[i];
+            courseBean.imageId=kmTeachImage[i];
+            courseBean.mainCourseId=kmTextbookImage[i];
             courseBean.courseId=i;
             list.add(courseBean);
         }

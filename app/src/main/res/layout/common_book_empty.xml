@@ -11,11 +11,5 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/icon_book_null"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:text="暂无~"/>
 
 </LinearLayout>

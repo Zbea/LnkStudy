@@ -109,7 +109,10 @@ class HomeworkFragment : BaseFragment(){
                 var bundle=Bundle()
                 bundle.putSerializable("homework",datas[position])
                 bundle.putSerializable("courseId",courseID)
-                startActivity(Intent(context,HomeworkActivity::class.java).putExtra("homeworkBundle",bundle))
+                var intent=Intent(context,HomeworkActivity::class.java)
+                intent.putExtra("homeworkBundle",bundle)
+//                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+                startActivity(intent)
             }
         }
 

@@ -65,6 +65,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_record_list.xml" value="0.27239583333333334" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_teach.xml" value="0.17603911980440098" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_teach_list.xml" value="0.1904226618705036" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_testpaper_draw.xml" value="0.275" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/ac_testpaper_list.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_book_empty.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/common_course_date.xml" value="0.1845773381294964" />
@@ -150,6 +151,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_list.xml" value="0.15" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_message.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_note.xml" value="0.39375" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_receivepaper.xml" value="0.275" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_main_textbook.xml" value="0.17985611510791366" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_message.xml" value="0.18345323741007194" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_message_bean.xml" value="0.1931205035971223" />

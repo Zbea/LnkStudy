@@ -38,7 +38,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_45"
+            android:layout_marginTop="90dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -46,23 +46,25 @@
                 android:id="@+id/iv_han"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_45"
                 android:src="@mipmap/icon_painting_han" />
+
 
             <ImageView
                 android:id="@+id/iv_tang"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_45"
                 android:src="@mipmap/icon_painting_tang" />
 
             <ImageView
                 android:id="@+id/iv_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_30"
                 android:src="@mipmap/icon_painting_song" />
         </LinearLayout>
         <LinearLayout
-            android:layout_marginTop="@dimen/dp_45"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -85,7 +87,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_45"
+            android:layout_marginTop="@dimen/dp_5"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -93,12 +95,14 @@
                 android:id="@+id/iv_yuan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_45"
                 android:src="@mipmap/icon_painting_yuan" />
 
             <ImageView
                 android:id="@+id/iv_ming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_45"
                 android:src="@mipmap/icon_painting_ming" />
 
             <ImageView
@@ -110,7 +114,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="90dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -125,7 +129,7 @@
                 android:id="@+id/iv_yb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="140dp"
+                android:layout_marginLeft="150dp"
                 android:src="@mipmap/icon_painting_yb" />
         </LinearLayout>
     </LinearLayout>

@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
@@ -17,7 +16,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.utilssdk.utils.FileUtils
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -30,12 +28,9 @@ import java.io.File
 class BookCaseFragment: BaseFragment() {
 
     private var mAdapter: BookAdapter?=null
-    private var books= mutableListOf<Book>()
     private var position=0
     private var book:Book?=null
-    private var pageIndex=1 //当前页码
-    private var booksAll= mutableListOf<Book>()//所有数据
-    private var bookMap=HashMap<Int,MutableList<Book>>()//将所有数据按12个分页
+    private var books= mutableListOf<Book>()//所有数据
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase
@@ -68,12 +63,11 @@ class BookCaseFragment: BaseFragment() {
 
     private fun initRecyclerView(){
 
-        rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_book, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(0,30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(0,80))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)
 //                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
@@ -92,69 +86,15 @@ class BookCaseFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
-        pageNumberView()
+        books=BookGreenDaoManager.getInstance(activity).queryAllBook1("0")
+        mAdapter?.setNewData(books)
         onChangeTopView()
     }
 
-    //翻页处理
-    private fun pageNumberView(){
-        bookMap.clear()
-        pageIndex=1
-        var pageTotal=booksAll.size //全部数量
-        var pageCount=Math.ceil((pageTotal.toDouble()/12)).toInt()//总共页码
-        if (pageTotal==0)
-        {
-            ll_page_number.visibility= View.GONE
-            mAdapter?.notifyDataSetChanged()
-            return
-        }
-
-        var toIndex=12
-        for(i in 0 until pageCount){
-            var index=i*12
-            if(index+12>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
-                toIndex=pageTotal-index
-            }
-            var newList = booksAll.subList(index,index+toIndex)
-            bookMap[i+1]=newList
-        }
-
-        tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageCount.toString()
-        upDateUI()
-
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                upDateUI()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                upDateUI()
-            }
-        }
-
-    }
-
-    //刷新数据
-    private fun upDateUI()
-    {
-        books= bookMap[pageIndex]!!
-        mAdapter?.setNewData(books)
-        tv_page_current.text=pageIndex.toString()
-    }
 
     //设置头部view显示 (当前页的第一个)
     private fun onChangeTopView(){
-        if (books.size==0){
-            ll_topcontent.visibility= View.GONE
-        }
-        else{
-            ll_topcontent.visibility=View.VISIBLE
+        if (books.size>0){
             var book=books[0]
             tv_top_page.text=""+book.pageIndex+"页"
             Glide.with(this)

@@ -6,17 +6,16 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TeachList
-import com.bll.lnkstudy.ui.activity.date.MainDatePlanDetailsActivity
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.*
+import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.rv_list
 
 class TeachListActivity:BaseActivity() {
 
-    private var courseStr=""
+    private var course:CourseBean?=null
     private var teachs= mutableListOf<TeachList>()
     private var mAdapter:TeachListAdapter?=null
     private var pageIndex=1 //当前页码
@@ -27,7 +26,7 @@ class TeachListActivity:BaseActivity() {
     }
 
     override fun initData() {
-        courseStr= intent.getStringExtra("course").toString()
+        course= intent.getBundleExtra("bundleCourse")?.getSerializable("course") as CourseBean
 
         for (index in 0..40){
             var item=TeachList()
@@ -39,7 +38,7 @@ class TeachListActivity:BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle(courseStr)
+        setPageTitle(course?.name.toString())
 
         rv_list.layoutManager = GridLayoutManager(this,6)//创建布局管理
         mAdapter = TeachListAdapter(R.layout.item_teach_content, null)
@@ -58,6 +57,21 @@ class TeachListActivity:BaseActivity() {
 
         pageNumberView()
 
+        if (course?.courseId==0){
+            iv_image.setImageResource(R.mipmap.image1)
+        }
+        else if (course?.courseId==1){
+            iv_image.setImageResource(R.mipmap.image2)
+        }
+        else if (course?.courseId==2){
+            iv_image.setImageResource(R.mipmap.image3)
+        }
+        else if (course?.courseId==3){
+            iv_image.setImageResource(R.mipmap.image4)
+        }
+        else{
+            iv_image.setImageResource(R.mipmap.image5)
+        }
     }
 
     //翻页处理

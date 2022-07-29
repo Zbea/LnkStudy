@@ -60,7 +60,7 @@ public class StringUtils {
             return null;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHMMSS", Locale.CHINA);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHMMSS", Locale.CHINA);
             return sdf.format(new Date(date));
         } catch (Exception e) {
             return null;

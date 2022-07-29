@@ -162,8 +162,8 @@ public class FileUtils {
                 files.add(tempList[i]);
             }
         }
-        //文件排序
-        sortFiles(files);
+//        //文件排序
+//        sortFiles(files);
         return files;
     }
 
@@ -201,7 +201,7 @@ public class FileUtils {
         List<File> files=getFiles(path);
         for (int i = 0; i < files.size(); i++) {
             File file=files.get(i);
-            if (getFileName(file.getPath()).equals(name)){
+            if (getFileName(file.getName()).equals(name)){
                 deleteFile(file);
             }
         }

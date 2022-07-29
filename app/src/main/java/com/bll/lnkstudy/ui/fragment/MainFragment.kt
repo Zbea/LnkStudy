@@ -14,7 +14,6 @@ import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
-import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
@@ -23,7 +22,6 @@ import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
-import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
@@ -59,7 +57,6 @@ class MainFragment : BaseFragment() {
     private var mainDateEventDayAdapter: MainDateEventDayAdapter? = null
     private var mainDateAdapter: MainDateAdapter? = null
 
-    private var books = mutableListOf<Book>()
     private var mainTextBookAdapter: MainTextBookAdapter? = null
     private var popWindow: PopWindowUtil? = null
 
@@ -89,6 +86,7 @@ class MainFragment : BaseFragment() {
     override fun lazyLoad() {
     }
 
+    @SuppressLint("WrongConstant")
     private fun onClickView() {
         ll_date.setOnClickListener {
             startActivity(Intent(activity, MainDateActivity::class.java))
@@ -236,23 +234,21 @@ class MainFragment : BaseFragment() {
 
     //课业相关处理
     private fun initTextBookView() {
-
+        var courses=DataBeanManager.getIncetance().courses
         rv_main_textbook.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mainTextBookAdapter = MainTextBookAdapter(R.layout.item_main_textbook, books)
+        mainTextBookAdapter = MainTextBookAdapter(R.layout.item_main_textbook, courses)
         rv_main_textbook.adapter = mainTextBookAdapter
         mainTextBookAdapter?.bindToRecyclerView(rv_main_textbook)
-        mainTextBookAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_main_textbook?.addItemDecoration(SpaceGridItemDeco(0, 40))
+        rv_main_textbook?.addItemDecoration(SpaceGridItemDeco(0, 50))
         mainTextBookAdapter?.setOnItemClickListener { adapter, view, position ->
-            startActivity(
-                Intent(activity, BookDetailsActivity::class.java).putExtra(
-                    "book_id",
-                    books[position].id
-                )
-            )
+            val course=courses[position]
+            val book=BookGreenDaoManager.getInstance(activity).queryBook("0",0,course.courseId)
+            if(book!=null){
+                var intent=Intent(activity, BookDetailsActivity::class.java).putExtra("book_id", book.id)
+                startActivity(intent)
+            }
         }
 
-        findBooks()
     }
 
     //作业相关
@@ -311,14 +307,6 @@ class MainFragment : BaseFragment() {
         }
     }
 
-    //查找作业数据
-    private fun findBooks() {
-        books = BookGreenDaoManager.getInstance(activity).queryAllTextBook("0",0)
-        if (books.size > 6) {
-            books = books.subList(0, 6)
-        }
-        mainTextBookAdapter?.setNewData(books)
-    }
 
     private fun findNotes(){
         notes= NoteGreenDaoManager.getInstance(activity).queryAllNote(0)
@@ -340,9 +328,6 @@ class MainFragment : BaseFragment() {
             mainDateEventDayAdapter?.setNewData(dayList)
 
             mainDateAdapter?.setNewData(planList)
-        }
-        if (msgFlag == TEXT_BOOK_EVENT) {
-            findBooks()
         }
         if (msgFlag == COURSE_EVENT) {
             initCourse()

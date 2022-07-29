@@ -10,7 +10,6 @@
         android:id="@+id/iv_image"
         android:layout_width="94dp"
         android:layout_height="114dp"
-        android:scaleType="fitXY"
         />
 
 </LinearLayout>

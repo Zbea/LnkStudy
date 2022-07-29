@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="265dp"
         android:src="@mipmap/icon_bookcase_book"
         />
 
@@ -22,6 +22,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:layout_margin="@dimen/dp_10"
+        android:visibility="gone"
         android:textColor="@color/black"/>
 
 </LinearLayout>

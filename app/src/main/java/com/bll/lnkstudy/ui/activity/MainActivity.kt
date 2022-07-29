@@ -39,6 +39,7 @@ class MainActivity : BaseActivity() {
         mData=DataBeanManager.getIncetance().getIndexData(this)
     }
 
+
     override fun initView() {
 
         mainFragment = MainFragment()
