@@ -4,47 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
-        android:gravity="center_vertical"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="30dp"
-            android:scaleType="center"
-            android:focusableInTouchMode="true"
-            android:src="@mipmap/icon_back" />
-
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp"
-            android:gravity="center"
-            android:lines="1"
-            android:textColor="@color/black"
-            android:textSize="38sp"
-            android:textStyle="bold" />
-
-
-        <ImageView
-            android:id="@+id/tv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/dp_30"
-            android:src="@mipmap/icon_save" />
-
-
-    </RelativeLayout>
-
 
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/iv_content"
@@ -60,81 +19,10 @@
         android:visibility="gone"
         android:background="@color/line_color"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
-        android:orientation="horizontal"
-        >
+    <include
+        layout="@layout/common_drawing_bottom"
+        />
 
-        <ImageView
-            android:id="@+id/iv_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_30"
-            android:src="@mipmap/icon_note_draw_setting" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            >
-
-            <Button
-                android:id="@+id/btn_page_up"
-                android:layout_width="120dp"
-                android:layout_height="@dimen/dp_50"
-                android:textSize="24sp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_black_stroke_10dp_corner"
-                android:text="上一页"/>
-
-            <TextView
-                android:id="@+id/tv_page_current"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="@color/black_50"
-                android:textSize="24sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="/"
-                android:layout_margin="5dp"
-                android:textColor="@color/black_50"
-                android:textSize="24sp"/>
-            <TextView
-                android:id="@+id/tv_page_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="@color/black_50"
-                android:textSize="24sp"/>
-
-            <Button
-                android:id="@+id/btn_page_down"
-                android:layout_width="120dp"
-                android:layout_height="@dimen/dp_50"
-                android:textSize="24sp"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_black_stroke_10dp_corner"
-                android:text="下一页"/>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/iv_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_30"
-            android:src="@mipmap/icon_notebook_delete" />
-
-    </RelativeLayout>
 
 </LinearLayout>

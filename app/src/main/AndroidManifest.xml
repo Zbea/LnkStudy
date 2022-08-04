@@ -39,6 +39,7 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
 
     <application
         android:name=".MyApplication"
@@ -83,12 +84,12 @@
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.NoteBookManagerActivity"/>
         <activity android:name=".ui.activity.TestPaperListActivity"/>
-        <activity android:name=".ui.activity.TestPaperDrawActivity"/>
-        <activity android:name=".ui.activity.NoteDrawActivity"/>
-        <activity android:name=".ui.activity.HomeworkActivity"/>
+        <activity android:name=".ui.activity.TestPaperDrawingActivity"/>
+        <activity android:name=".ui.activity.NoteDrawingActivity"/>
+        <activity android:name=".ui.activity.HomeworkDrawingActivity"/>
         <activity android:name=".ui.activity.RecordActivity"/>
         <activity android:name=".ui.activity.RecordListActivity"/>
-
+        <activity android:name=".ui.activity.PaintingDrawingActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="@string/authority"

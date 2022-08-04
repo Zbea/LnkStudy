@@ -9,7 +9,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import com.bll.lnkstudy.R
 
-class PopWindowDrawSetting(var context:Context, var view: View) {
+class PopWindowDrawSetting(var context:Context, var view: View?) {
 
     private var mPopupWindow:PopupWindow?=null
 

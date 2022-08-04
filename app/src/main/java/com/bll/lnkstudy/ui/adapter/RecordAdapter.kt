@@ -22,6 +22,6 @@ class RecordAdapter(layoutResId: Int, data: MutableList<RecordBean>?) : BaseQuic
         }
 
         helper.addOnClickListener(R.id.iv_record)
-
+        helper.addOnClickListener(R.id.iv_setting)
     }
 }

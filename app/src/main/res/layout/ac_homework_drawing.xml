@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_bottom"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_content_a"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_weight="1">
+
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/iv_content_a"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_content_b"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/iv_content_b"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <include
+        android:id="@+id/ll_bottom"
+        android:layout_alignParentBottom="true"
+        layout="@layout/common_drawing_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_bottom_height"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_catalog"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_above="@+id/ll_bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:text="目录"
+            android:background="@drawable/bg_catalog_top"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

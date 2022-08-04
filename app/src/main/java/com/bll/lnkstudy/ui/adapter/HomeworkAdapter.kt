@@ -13,7 +13,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAd
         helper.setVisible(R.id.iv_pg,item.isPg)
 
         var llContent=helper.getView<RelativeLayout>(R.id.ll_content)
-        llContent.setBackgroundResource(item.resId)
+        llContent.setBackgroundResource(item.bgResId)
     }
 
 

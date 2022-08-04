@@ -2,16 +2,14 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.provider.Settings
-import android.util.Log
-import android.view.*
+import android.view.ContextThemeWrapper
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
-import androidx.core.content.ContextCompat.startActivity
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SystemSettingUtils
@@ -33,7 +31,7 @@ class SettingDialog(val context: Context){
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
         window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
-        layoutParams.width = DP2PX.dip2px(context,380F)
+        layoutParams.width = DP2PX.dip2px(context,600f)
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
         layoutParams.gravity = Gravity.CENTER
         window.attributes = layoutParams
@@ -52,15 +50,6 @@ class SettingDialog(val context: Context){
                 onClickListener?.onClickAppStore()
         }
 
-        val llWifi=dialog?.findViewById<LinearLayout>(R.id.ll_wifi)
-        llWifi?.setOnClickListener {
-            SystemSettingUtils.gotoSystemWifi(context)
-        }
-
-        val llNet=dialog?.findViewById<LinearLayout>(R.id.ll_4g)
-        llNet?.setOnClickListener {
-            SystemSettingUtils.gotoSystemNet(context)
-        }
 
         val llSet=dialog?.findViewById<LinearLayout>(R.id.ll_setting)
         llSet?.setOnClickListener {
@@ -78,7 +67,7 @@ class SettingDialog(val context: Context){
             SystemSettingUtils.saveScreenShot(context as Activity)
         }
 
-        val llRecycle=dialog?.findViewById<LinearLayout>(R.id.ll_recyclebin)
+        val llRecycle=dialog?.findViewById<LinearLayout>(R.id.ll_recycler)
         llRecycle?.setOnClickListener {
             dialog?.dismiss()
             onClickListener?.onRecycleBin()

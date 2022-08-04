@@ -13,7 +13,6 @@
         android:id="@+id/ed_name"
         android:layout_width="400dp"
         android:layout_height="60dp"
-        android:hint="请输入修改后名字"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_line_bottom"
         android:layout_gravity="center_horizontal"

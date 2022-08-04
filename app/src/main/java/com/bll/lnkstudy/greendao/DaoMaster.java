@@ -29,6 +29,7 @@ public class DaoMaster extends AbstractDaoMaster {
         HomeworkTypeDao.createTable(db, ifNotExists);
         NoteDao.createTable(db, ifNotExists);
         NoteBookDao.createTable(db, ifNotExists);
+        PaintingBeanDao.createTable(db, ifNotExists);
         RecordBeanDao.createTable(db, ifNotExists);
     }
 
@@ -42,6 +43,7 @@ public class DaoMaster extends AbstractDaoMaster {
         HomeworkTypeDao.dropTable(db, ifExists);
         NoteDao.dropTable(db, ifExists);
         NoteBookDao.dropTable(db, ifExists);
+        PaintingBeanDao.dropTable(db, ifExists);
         RecordBeanDao.dropTable(db, ifExists);
     }
 
@@ -69,6 +71,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(HomeworkTypeDao.class);
         registerDaoClass(NoteDao.class);
         registerDaoClass(NoteBookDao.class);
+        registerDaoClass(PaintingBeanDao.class);
         registerDaoClass(RecordBeanDao.class);
     }
 

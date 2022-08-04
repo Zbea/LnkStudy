@@ -82,9 +82,8 @@ class AccountLoginActivity:BaseActivity(),
         }
 
         val tokenStr=SPUtil.getString("token")
-        val userBean=SPUtil.getObj("user",User::class.java)
 
-        if (!tokenStr.isNullOrEmpty() && userBean!=null)
+        if (!tokenStr.isNullOrEmpty() && mUser!=null)
         {
             startActivity(Intent(this,MainActivity::class.java))
             finish()

@@ -281,7 +281,7 @@ class MainFragment : BaseFragment() {
         mainNoteAdapter?.bindToRecyclerView(rv_main_note)
         mainNoteAdapter?.setOnItemClickListener { adapter, view, position ->
             //跳转手绘
-            var intent=Intent(activity, NoteDrawActivity::class.java)
+            var intent=Intent(activity, NoteDrawingActivity::class.java)
             var bundle= Bundle()
             bundle.putSerializable("note",notes[position])
             intent.putExtra("notes",bundle)

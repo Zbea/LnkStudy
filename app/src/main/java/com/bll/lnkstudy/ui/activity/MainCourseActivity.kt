@@ -1,15 +1,17 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.app.Dialog
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
-import android.widget.*
+import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CourseSelectDialog
 import com.bll.lnkstudy.dialog.CourseTimeDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.CourseGreenDaoManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.utils.SPUtil
@@ -625,47 +627,31 @@ class MainCourseActivity : BaseActivity() {
 
 
     private fun inputContent(v: TextView) {
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_account_edit_name)
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
-        val name = dialog.findViewById<EditText>(R.id.ed_name)
-        name.hint = "请输入内容"
-        name.setText(v.text.toString())
-        dialog.show()
-        btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        btn_ok.setOnClickListener {
-            var content = name.text.toString()
-            if (content.isNullOrEmpty()) {
-                showToast("请输入内容")
-                return@setOnClickListener
-            }
-            dialog.dismiss()
-            v.text = content
 
-            var course = CourseBean()
-            course.viewId = v.id
-            course.name = content
-            course.type=type
+        InputContentDialog(this,v.text.toString()).builder()?.setOnDialogClickListener(object :
+            InputContentDialog.OnDialogClickListener {
+            override fun onClick(string: String) {
+                v.text = string
 
-            //删除已经存在了的
-            if (selectLists.size > 0) {
-                var it = selectLists.iterator()
-                while (it.hasNext()) {
-                    if (it.next().viewId == v.id) {
-                        it.remove()
+                var course = CourseBean()
+                course.viewId = v.id
+                course.name = string
+                course.type=type
+
+                //删除已经存在了的
+                if (selectLists.size > 0) {
+                    var it = selectLists.iterator()
+                    while (it.hasNext()) {
+                        if (it.next().viewId == v.id) {
+                            it.remove()
+                        }
                     }
                 }
+                selectLists.add(course)
             }
-            selectLists.add(course)
 
-        }
-        dialog.setOnDismissListener {
-            hideKeyboard()
-        }
+        })
+
     }
 
 

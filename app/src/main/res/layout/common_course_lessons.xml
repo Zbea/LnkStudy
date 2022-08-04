@@ -28,20 +28,18 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
-            android:textColor="@color/black_30"
+            android:textSize="32sp"
+            android:textColor="@color/black"
             />
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="2dp" />
+
 
         <TextView
             android:id="@+id/tv_time_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
-            android:textColor="@color/black_30"
+            android:textSize="32sp"
+            android:textColor="@color/black"
             />
 
     </LinearLayout>

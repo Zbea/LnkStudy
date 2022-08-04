@@ -92,9 +92,10 @@ class TestPaperListActivity:BaseActivity() {
         for (file in files){
             paths.add(file.path)
         }
+        showLog(files.size.toString())
         if (files.size==images.size)
         {
-            var intent= Intent(this,TestPaperDrawActivity::class.java)
+            var intent= Intent(this,TestPaperDrawingActivity::class.java)
             intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
             intent.putExtra("outImageStr",file.path)
             intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)

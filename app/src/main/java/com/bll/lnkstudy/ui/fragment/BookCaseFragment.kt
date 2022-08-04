@@ -67,7 +67,7 @@ class BookCaseFragment: BaseFragment() {
         mAdapter = BookAdapter(R.layout.item_book, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(0,80))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(0,60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)
 //                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)

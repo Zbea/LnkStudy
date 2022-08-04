@@ -5,19 +5,21 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.RadioButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.mvp.model.AccountList
 import com.bll.lnkstudy.mvp.model.AccountOrder
-import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.adapter.AccountXdAdapter
 import com.bll.lnkstudy.ui.adapter.AccountVipAdapter
+import com.bll.lnkstudy.ui.adapter.AccountXdAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.StringUtils
@@ -28,7 +30,6 @@ class AccountInfoActivity:BaseActivity(),
     IContractView.IAccountInfoViewI {
 
     private val presenter=AccountInfoPresenter(this)
-    private var mUser:User?=null
     private var nickname=""
     private var payFlag=0 //支付方式
     private var qrCodeDialog:Dialog?=null
@@ -88,8 +89,6 @@ class AccountInfoActivity:BaseActivity(),
     }
 
     override fun initData() {
-        mUser=SPUtil.getObj("user",User::class.java)
-
     }
 
     @SuppressLint("WrongConstant")
@@ -144,26 +143,16 @@ class AccountInfoActivity:BaseActivity(),
      * 修改名称
      */
     private fun editName(){
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_account_edit_name)
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
-        val name = dialog.findViewById<EditText>(R.id.ed_name)
-        name.setText(tv_name.text.toString())
-        dialog.show()
-        btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        btn_ok.setOnClickListener {
-            nickname = name.text.toString()
-            if (nickname.isNullOrEmpty()) {
-                showToast("姓名不能为空")
-                return@setOnClickListener
+
+        InputContentDialog(this,tv_name.text.toString()).builder()?.setOnDialogClickListener(object :
+            InputContentDialog.OnDialogClickListener {
+            override fun onClick(string: String) {
+                nickname = string
+                presenter.editName(nickname)
             }
-            presenter.editName(nickname)
-            dialog.dismiss()
-        }
+
+        })
+
 
     }
 

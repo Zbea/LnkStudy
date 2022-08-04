@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
@@ -48,6 +49,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var tvPageTitle: TextView? = null
     var tvMyCollect: TextView? = null
     var ivSave: ImageView? = null
+    var mUser=SPUtil.getObj("user",User::class.java)
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {

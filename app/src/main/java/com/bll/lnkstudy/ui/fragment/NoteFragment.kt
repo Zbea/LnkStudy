@@ -2,29 +2,25 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidkun.xtablayout.XTabLayout
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteAddDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
+import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.NoteBookGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.NoteBook
+import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
-import com.bll.lnkstudy.ui.activity.NoteDrawActivity
+import com.bll.lnkstudy.ui.activity.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
-import com.bll.lnkstudy.utils.PopWindowUtil
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
@@ -36,8 +32,8 @@ import java.io.File
  * 笔记
  */
 class NoteFragment : BaseFragment(){
-
-    private var popWindow:PopWindowUtil?=null
+    private var popWindowList:PopWindowList?=null
+    private var popWindowBeans = mutableListOf<PopWindowBean>()
     private var dialog:NoteAddDialog?=null
     private var allNoteBooks= mutableListOf<NoteBook>()
     private var noteBooks= mutableListOf<NoteBook>()
@@ -70,6 +66,17 @@ class NoteFragment : BaseFragment(){
     }
 
     private fun initData(){
+
+        var popWindowBean= PopWindowBean()
+        popWindowBean.name="新建笔记本"
+        popWindowBean.isCheck=true
+        var popWindowBean1= PopWindowBean()
+        popWindowBean1.name="笔记本管理"
+        popWindowBean1.isCheck=false
+
+        popWindowBeans.add(popWindowBean)
+        popWindowBeans.add(popWindowBean1)
+
         notes=NoteGreenDaoManager.getInstance(activity).queryAllNote(type)
         mAdapter?.setNewData(notes)
     }
@@ -176,7 +183,7 @@ class NoteFragment : BaseFragment(){
 
     //跳转手绘
     private fun gotoDrawActivity(note:Note){
-        var intent=Intent(activity, NoteDrawActivity::class.java)
+        var intent=Intent(activity, NoteDrawingActivity::class.java)
         var bundle=Bundle()
         bundle.putSerializable("note",note)
         intent.putExtra("notes",bundle)
@@ -236,29 +243,23 @@ class NoteFragment : BaseFragment(){
 
     //顶部弹出选择
     private fun setTopSelectView(){
-        if (popWindow==null){
-            val popView = LayoutInflater.from(activity).inflate(R.layout.popwindow_notebook, null, false)
-            val llAdd=popView?.findViewById<LinearLayout>(R.id.ll_add)
-            val ivAdd=popView?.findViewById<ImageView>(R.id.iv_select_add)
-            val llManager=popView?.findViewById<LinearLayout>(R.id.ll_manager)
-            val ivManager=popView?.findViewById<ImageView>(R.id.iv_select_manager)
-            llAdd?.setOnClickListener {
-                ivAdd?.visibility= View.VISIBLE
-                ivManager?.visibility= View.GONE
-                popWindow?.dismiss()
-                addNoteBook()
-            }
-            llManager?.setOnClickListener {
-                ivAdd?.visibility= View.GONE
-                ivManager?.visibility= View.VISIBLE
-                popWindow?.dismiss()
-                startActivity(Intent(activity,NoteBookManagerActivity::class.java))
-            }
-            popWindow= PopWindowUtil().makePopupWindow(activity,ivManagers,popView, -180,5, Gravity.LEFT)
-            popWindow?.show()
+
+        if (popWindowList==null){
+            popWindowList= PopWindowList(requireActivity(),popWindowBeans,ivManagers!!,-230,20).builder()
+            popWindowList?.setOnSelectListener(object : PopWindowList.OnSelectListener {
+                override fun onSelect(item: PopWindowBean) {
+                    if (item.name=="新建笔记本")
+                    {
+                        addNoteBook()
+                    }else{
+                        startActivity(Intent(activity,NoteBookManagerActivity::class.java))
+                    }
+
+                }
+            })
         }
         else{
-            popWindow?.show()
+            popWindowList?.show()
         }
     }
 
@@ -281,10 +282,10 @@ class NoteFragment : BaseFragment(){
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
-        if (msgFlag== Constants.NOTE_BOOK_MANAGER_EVENT){
+        if (msgFlag== NOTE_BOOK_MANAGER_EVENT){
             initTab()
         }
-        if (msgFlag==Constants.NOTE_EVENT){
+        if (msgFlag==NOTE_EVENT){
             initData()
         }
     }

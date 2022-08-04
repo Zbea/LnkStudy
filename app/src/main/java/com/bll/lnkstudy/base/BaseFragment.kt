@@ -15,6 +15,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
@@ -48,6 +49,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var ivHomework: ImageView? = null
     var ivManagers: ImageView? = null
     var mDialog: ProgressDialog? = null
+    var mUser=SPUtil.getObj("user",User::class.java)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
