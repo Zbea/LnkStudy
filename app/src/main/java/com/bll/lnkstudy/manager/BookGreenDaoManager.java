@@ -115,18 +115,22 @@ public class BookGreenDaoManager {
         return queryBookList;
     }
 
-    //查询所有书籍前6个
-    public List<Book> queryAllBook1(String type) {
-        WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition).orderDesc(BookDao.Properties.Time).limit(6).build().list();
-        return queryBookList;
-    }
-
     //根据类别 细分子类
     public List<Book> queryAllBook(String type,String flag) {
         WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
         WhereCondition whereCondition1=BookDao.Properties.BookType.eq(flag);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
+        return queryBookList;
+    }
+
+    //根据类别 细分子类 分页处理
+    public List<Book> queryAllBook(String type,String flag,int page, int pageSize) {
+        WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
+        WhereCondition whereCondition1=BookDao.Properties.BookType.eq(flag);
+        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1)
+                .orderDesc(BookDao.Properties.Time)
+                .offset(page*pageSize).limit(pageSize)
+                .build().list();
         return queryBookList;
     }
 
@@ -146,8 +150,18 @@ public class BookGreenDaoManager {
         return queryBookList;
     }
 
+    public List<Book> queryAllTextBook(String type,int flag,int page, int pageSize) {
+        WhereCondition whereCondition=BookDao.Properties.Type.eq(type);
+        WhereCondition whereCondition1=BookDao.Properties.TextBook.eq(flag);
+        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1)
+                .orderDesc(BookDao.Properties.Time)
+                .offset(page*pageSize).limit(pageSize)
+                .build().list();
+        return queryBookList;
+    }
+
     //查找课本 细分子类 根据科目查找书籍
-    public Book queryBook(String type,int flag,int classId) {
+    public Book queryTextBook(String type, int flag, int classId) {
         WhereCondition whereCondition=BookDao.Properties.Type.eq(type);
         WhereCondition whereCondition1=BookDao.Properties.TextBook.eq(flag);
         WhereCondition whereCondition2=BookDao.Properties.ClassX.eq(classId);

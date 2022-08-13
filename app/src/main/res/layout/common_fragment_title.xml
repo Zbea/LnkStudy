@@ -6,14 +6,6 @@
     android:gravity="center_vertical"
     android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingLeft="30dp"
-        android:scaleType="center"
-        android:src="@mipmap/icon_back" />
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
@@ -21,13 +13,14 @@
         android:layout_weight="1"
         android:layout_marginStart="30dp"
         android:textColor="@color/black"
-        android:textSize="40sp"
+        android:textSize="37sp"
         android:textStyle="bold"
         android:text="标题"
         />
 
 
     <LinearLayout
+        android:id="@+id/ll_search"
         android:layout_width="200dp"
         android:layout_height="@dimen/dp_50"
         android:layout_alignParentRight="true"
@@ -64,6 +57,19 @@
         android:layout_marginEnd="30dp"
         android:visibility="gone"
         android:src="@mipmap/icon_notebook_manager"/>
+
+
+    <TextView
+        android:id="@+id/tv_myCollect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:textSize="24sp"
+        android:text="收藏"
+        android:textStyle="bold"
+        />
 
 
 </LinearLayout>

@@ -10,12 +10,10 @@ import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.utilssdk.utils.BitmapMergeUtils
 import com.bll.utilssdk.utils.BitmapUtils
 import com.bll.utilssdk.utils.FileUtils
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.ac_testpaper_drawing.*
 
 class TestPaperDrawingActivity : BaseActivity(), View.OnClickListener {
@@ -148,10 +146,8 @@ class TestPaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
     //加载图片
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
-        Glide.with(this)
-            .load(paths[index - 1])
-            .skipMemoryCache(true)
-            .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE)).into(view)
+
+        GlideUtils.setImageNoCacheUrl(this,paths[index - 1],view)
 
         val drawPath = "$outImageStr/$index/draw.tch"
         elik?.setLoadFilePath(drawPath, true)

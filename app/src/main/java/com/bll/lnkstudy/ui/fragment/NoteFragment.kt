@@ -2,8 +2,8 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.R
@@ -12,14 +12,15 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteAddDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.manager.NoteBookGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
+import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Note
-import com.bll.lnkstudy.mvp.model.NoteBook
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
 import com.bll.lnkstudy.ui.activity.NoteDrawingActivity
+import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_note.*
@@ -35,19 +36,31 @@ class NoteFragment : BaseFragment(){
     private var popWindowList:PopWindowList?=null
     private var popWindowBeans = mutableListOf<PopWindowBean>()
     private var dialog:NoteAddDialog?=null
-    private var allNoteBooks= mutableListOf<NoteBook>()
-    private var noteBooks= mutableListOf<NoteBook>()
+    private var noteBooks= mutableListOf<BaseTypeBean>()
     private var notes= mutableListOf<Note>()
     private var type=0 //当前笔记本类型
     private var mAdapter: NoteAdapter? = null
+    private var mAdapterType :BookCaseTypeAdapter?=null
     private var position=0 //当前笔记标记
     private var resId=0
+    private var positionType=0//当前笔记本标记
+    private var isDown=false //是否向下打开
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
     }
 
     override fun initView() {
+
+        var popWindowBean= PopWindowBean()
+        popWindowBean.name="新建笔记本"
+        popWindowBean.isCheck=true
+        var popWindowBean1= PopWindowBean()
+        popWindowBean1.name="笔记本管理"
+        popWindowBean1.isCheck=false
+
+        popWindowBeans.add(popWindowBean)
+        popWindowBeans.add(popWindowBean1)
 
         EventBus.getDefault().register(this)
 
@@ -67,16 +80,51 @@ class NoteFragment : BaseFragment(){
 
     private fun initData(){
 
-        var popWindowBean= PopWindowBean()
-        popWindowBean.name="新建笔记本"
-        popWindowBean.isCheck=true
-        var popWindowBean1= PopWindowBean()
-        popWindowBean1.name="笔记本管理"
-        popWindowBean1.isCheck=false
+        noteBooks= DataBeanManager.getIncetance().noteBook
+        var noBooks=BaseTypeBeanDaoManager.getInstance(activity).queryAll()
+        if (noBooks.size<1){
+            val baseTypeBean = BaseTypeBean()
+            baseTypeBean.name = "金句彩段"
+            baseTypeBean.typeId=2
+            noBooks.add(baseTypeBean)
+            BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(baseTypeBean)
 
-        popWindowBeans.add(popWindowBean)
-        popWindowBeans.add(popWindowBean1)
+            val noteBook1 = BaseTypeBean()
+            noteBook1.name = "典型题型"
+            noteBook1.typeId=3
+            noBooks.add(noteBook1)
+            BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(noteBook1)
+        }
+        noteBooks.addAll(noBooks)
 
+        if(positionType<noteBooks.size){
+            noteBooks[positionType].isCheck=true
+        }
+        else{
+            positionType=0
+            noteBooks[positionType].isCheck=true
+        }
+
+        if (!isDown){
+            if (noteBooks.size>5){
+                if (positionType>=5){
+                    noteBooks[positionType].isCheck=false
+                    positionType=0
+                    noteBooks[positionType].isCheck=true
+                }
+                noteBooks=noteBooks.subList(0,5)
+            }
+        }
+
+        mAdapterType?.setNewData(noteBooks)
+        type=noteBooks[positionType].typeId
+
+        findDatas()
+
+    }
+
+    //查找数据
+    private fun findDatas(){
         notes=NoteGreenDaoManager.getInstance(activity).queryAllNote(type)
         mAdapter?.setNewData(notes)
     }
@@ -106,41 +154,32 @@ class NoteFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
 
-        allNoteBooks=DataBeanManager.getIncetance().noteBook
-        noteBooks=NoteBookGreenDaoManager.getInstance(activity).queryAllNote()
-        if (noteBooks.size<1){
-            val noteBook2 = NoteBook()
-            noteBook2.name = "金句彩段"
-            noteBook2.type=2
-            noteBooks.add(noteBook2)
-            NoteBookGreenDaoManager.getInstance(activity).insertOrReplaceNote(noteBook2)
+        rv_type.layoutManager = GridLayoutManager(activity,5)//创建布局管理
+        mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, noteBooks)
+        rv_type.adapter = mAdapterType
+        mAdapterType?.bindToRecyclerView(rv_type)
+        mAdapterType?.setOnItemClickListener { adapter, view, position ->
+            noteBooks[positionType]?.isCheck=false
+            positionType=position
+            noteBooks[positionType]?.isCheck=true
+            mAdapterType?.notifyDataSetChanged()
 
-            val noteBook3 = NoteBook()
-            noteBook3.name = "典型题型"
-            noteBook3.type=3
-            noteBooks.add(noteBook3)
-            NoteBookGreenDaoManager.getInstance(activity).insertOrReplaceNote(noteBook3)
-        }
-        allNoteBooks.addAll(noteBooks)
+            type= noteBooks[positionType]?.typeId
+            findDatas()
 
-        xtab?.removeAllTabs()
-        for (notebook in allNoteBooks){
-            xtab?.newTab()?.setText(notebook.name)?.let { it -> xtab?.addTab(it) }
         }
 
-        xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-                type= tab?.position!!
-                initData()
+        iv_down.setOnClickListener {
+            if (isDown){
+                isDown=false
+                iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_down)
             }
-
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
+            else{
+                isDown=true
+                iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_up)
             }
-
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-
-        })
+            initData()
+        }
 
     }
 
@@ -269,12 +308,12 @@ class NoteFragment : BaseFragment(){
         NoteBookAddDialog(requireContext(),"新建笔记本","","请输入笔记本").builder()?.setOnDialogClickListener(object :
                 NoteBookAddDialog.OnDialogClickListener {
                 override fun onClick(string: String) {
-                    var noteBook=NoteBook()
+                    var noteBook=BaseTypeBean()
                     noteBook.name=string
-                    noteBook.type=allNoteBooks.size
+                    noteBook.typeId=noteBooks.size
                     noteBooks.add(noteBook)
-                    NoteBookGreenDaoManager.getInstance(activity).insertOrReplaceNote(noteBook)
-                    xtab?.newTab()?.setText(string)?.let { it -> xtab?.addTab(it) }
+                    BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(noteBook)
+                    mAdapterType?.notifyDataSetChanged()
                 }
             })
     }
@@ -283,10 +322,10 @@ class NoteFragment : BaseFragment(){
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag== NOTE_BOOK_MANAGER_EVENT){
-            initTab()
+            initData()
         }
         if (msgFlag==NOTE_EVENT){
-            initData()
+            findDatas()
         }
     }
 

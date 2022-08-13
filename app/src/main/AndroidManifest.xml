@@ -56,14 +56,17 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
-        <activity android:name=".ui.activity.MainActivity"/>
+        <activity android:name=".ui.activity.MainActivity">
+
+            </activity>
         <activity android:name=".ui.activity.date.MainDateActivity"/>
         <activity android:name=".ui.activity.date.MainDateAddActivity"/>
         <activity android:name=".ui.activity.date.MainDateDayDetailsActivity"/>

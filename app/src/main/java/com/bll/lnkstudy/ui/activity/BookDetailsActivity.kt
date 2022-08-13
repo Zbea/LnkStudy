@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,13 +16,14 @@ import com.bll.lnkstudy.mvp.model.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParentBean
 import com.bll.lnkstudy.ui.adapter.BookCatalogAdapter
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.utilssdk.utils.FileUtils
-import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+
 
 class BookDetailsActivity:BaseActivity() {
     private var book: Book?=null
@@ -125,35 +125,21 @@ class BookDetailsActivity:BaseActivity() {
         iv_catalog.setOnClickListener {
             if (ll_catalog.visibility== View.GONE){
                 showView(ll_catalog)
-                elik_a?.setPWEnabled(false)
-                elik_b?.setPWEnabled(false)
+                setPWEnabled(false)
             }
             else{
                 disMissView(ll_catalog)
-                elik_a?.setPWEnabled(true)
-                elik_b?.setPWEnabled(true)
+                setPWEnabled(true)
             }
         }
 
-        iv_pen.setOnClickListener {
-            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-            elik_a?.penSettingWidth=2
-            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-            elik_b?.penSettingWidth=2
-        }
-
-        iv_erase.setOnClickListener {
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
 
         //用来设置点击试图其他位置目录关闭
         ll_content.setOnClickListener {
             if (ll_catalog.visibility== View.VISIBLE)
             {
                 disMissView(ll_catalog)
-                elik_a?.setPWEnabled(true)
-                elik_b?.setPWEnabled(true)
+                setPWEnabled(true)
             }
         }
 
@@ -181,6 +167,12 @@ class BookDetailsActivity:BaseActivity() {
                 selectScreen()
             }
         }
+    }
+
+    //设置手绘是否可以绘制
+    private fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
     }
 
 
@@ -241,9 +233,9 @@ class BookDetailsActivity:BaseActivity() {
     private fun loadPicture(index: Int,elik:EinkPWInterface,view:ImageView) {
         val showFile = getIndexFile(index)
         book?.pageUrl=showFile.path //设置当前页面路径
-        Glide.with(this)
-            .load(showFile)
-            .thumbnail(0.1f).into(view)
+
+        GlideUtils.setImageFile(this,showFile,view)
+        showLog(showFile.path)
 
         val drawPath=showFile.path.replace(".jpg",".tch")
         elik?.setLoadFilePath(drawPath,true)

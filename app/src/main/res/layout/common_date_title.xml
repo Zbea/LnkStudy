@@ -34,7 +34,7 @@
             android:text="标题"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="40sp" />
+            android:textSize="27sp" />
 
 
         <TextView

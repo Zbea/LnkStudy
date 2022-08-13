@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
+        android:layout_height="@dimen/dp_60"
         android:gravity="center_vertical">
 
         <ImageView
@@ -27,30 +27,17 @@
             android:layout_marginLeft="30dp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="@dimen/sp_40"
+            android:textSize="27sp"
             android:text="标题"
             />
 
-        <ImageView
-            android:id="@+id/iv_pen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:src="@mipmap/icon_draw_fine" />
-
-        <ImageView
-            android:id="@+id/iv_erase"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:src="@mipmap/icon_draw_clear" />
 
         <ImageView
             android:id="@+id/iv_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:src="@mipmap/icon_notebook_edit" />
+            android:src="@mipmap/icon_draw_expand" />
 
         <ImageView
             android:id="@+id/iv_catalog"
@@ -106,8 +93,8 @@
                 android:paddingBottom="20dp"
                 android:text="目录"
                 android:background="@drawable/bg_catalog_top"
-                android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -122,22 +109,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/drawing_bottom_height"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_20"
         >
 
-        <Button
+        <ImageView
             android:id="@+id/btn_page_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_30"
-            android:background="@color/color_transparent"
-            android:text="上一页"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_page_up"/>
 
         <TextView
             android:id="@+id/tv_page_a"
@@ -157,15 +140,13 @@
             android:textColor="@color/black_50"
             android:textSize="24sp" />
 
-        <Button
+        <ImageView
             android:id="@+id/btn_page_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_30"
-            android:background="@color/color_transparent"
-            android:text="下一页"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_page_down" />
 
 
     </LinearLayout>

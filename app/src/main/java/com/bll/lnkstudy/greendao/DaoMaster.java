@@ -21,6 +21,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
+        BaseTypeBeanDao.createTable(db, ifNotExists);
         BookDao.createTable(db, ifNotExists);
         CourseBeanDao.createTable(db, ifNotExists);
         DateEventDao.createTable(db, ifNotExists);
@@ -28,13 +29,13 @@ public class DaoMaster extends AbstractDaoMaster {
         HomeworkContentDao.createTable(db, ifNotExists);
         HomeworkTypeDao.createTable(db, ifNotExists);
         NoteDao.createTable(db, ifNotExists);
-        NoteBookDao.createTable(db, ifNotExists);
         PaintingBeanDao.createTable(db, ifNotExists);
         RecordBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
+        BaseTypeBeanDao.dropTable(db, ifExists);
         BookDao.dropTable(db, ifExists);
         CourseBeanDao.dropTable(db, ifExists);
         DateEventDao.dropTable(db, ifExists);
@@ -42,7 +43,6 @@ public class DaoMaster extends AbstractDaoMaster {
         HomeworkContentDao.dropTable(db, ifExists);
         HomeworkTypeDao.dropTable(db, ifExists);
         NoteDao.dropTable(db, ifExists);
-        NoteBookDao.dropTable(db, ifExists);
         PaintingBeanDao.dropTable(db, ifExists);
         RecordBeanDao.dropTable(db, ifExists);
     }
@@ -63,6 +63,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
+        registerDaoClass(BaseTypeBeanDao.class);
         registerDaoClass(BookDao.class);
         registerDaoClass(CourseBeanDao.class);
         registerDaoClass(DateEventDao.class);
@@ -70,7 +71,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(HomeworkContentDao.class);
         registerDaoClass(HomeworkTypeDao.class);
         registerDaoClass(NoteDao.class);
-        registerDaoClass(NoteBookDao.class);
         registerDaoClass(PaintingBeanDao.class);
         registerDaoClass(RecordBeanDao.class);
     }

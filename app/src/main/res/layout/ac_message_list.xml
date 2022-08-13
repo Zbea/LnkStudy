@@ -28,7 +28,7 @@
             android:layout_marginLeft="30dp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="@dimen/sp_40"
+            android:textSize="27sp"
             android:text="消息中心"
             />
 

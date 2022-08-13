@@ -2,6 +2,7 @@ package com.bll.lnkstudy.net
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.Fragment
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -36,7 +37,7 @@ abstract class BasePresenter<T : IBaseView>(private val view: T) : IBasePresente
             return
         }
         if (showLoading) this.view.showLoading()
-
+         Log.d("debug","doRequest")
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observer)

@@ -15,7 +15,7 @@ import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceGridItemDeco4
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.*
@@ -73,7 +73,7 @@ class BookCaseMyCollectFragment: BaseFragment() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(0,55))
+        rv_list?.addItemDecoration(SpaceGridItemDeco4(19,70))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)
 //            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
@@ -123,11 +123,16 @@ class BookCaseMyCollectFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
+        booksAll.clear()
         booksAll=if (type==1){
             BookGreenDaoManager.getInstance(activity).queryAllBook("0",true)
         }
         else{
             BookGreenDaoManager.getInstance(activity).queryAllTextBook("0",true)
+        }
+
+        for (i in 0..5){
+            booksAll.addAll(booksAll)
         }
 
         pageNumberView()
@@ -138,17 +143,17 @@ class BookCaseMyCollectFragment: BaseFragment() {
         bookMap.clear()
         pageIndex=1
         var pageTotal=booksAll.size
-        var pageCount=Math.ceil((pageTotal.toDouble()/12)).toInt()
+        var toIndex=12
+        var pageCount=Math.ceil((pageTotal.toDouble()/toIndex)).toInt()
         if (pageTotal==0)
         {
             ll_page_number.visibility= View.GONE
             return
         }
 
-        var toIndex=12
         for(i in 0 until pageCount){
-            var index=i*12
-            if(index+12>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
+            var index=i*toIndex
+            if(index+toIndex>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
                 toIndex=pageTotal-index
             }
             var newList = booksAll.subList(index,index+toIndex)

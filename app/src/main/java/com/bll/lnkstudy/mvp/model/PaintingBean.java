@@ -16,13 +16,19 @@ public class PaintingBean {
     public int bgResId;
     public long date;//开始时间
     public String path;//图片路径
-    @Generated(hash = 787134327)
-    public PaintingBean(Long id, int type, int bgResId, long date, String path) {
+    public String title;
+    public int page;
+
+    @Generated(hash = 868008727)
+    public PaintingBean(Long id, int type, int bgResId, long date, String path,
+            String title, int page) {
         this.id = id;
         this.type = type;
         this.bgResId = bgResId;
         this.date = date;
         this.path = path;
+        this.title = title;
+        this.page = page;
     }
     @Generated(hash = 1284832375)
     public PaintingBean() {
@@ -56,6 +62,18 @@ public class PaintingBean {
     }
     public void setPath(String path) {
         this.path = path;
+    }
+    public String getTitle() {
+        return this.title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
     }
 
 

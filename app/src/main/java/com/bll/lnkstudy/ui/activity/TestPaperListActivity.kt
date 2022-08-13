@@ -82,12 +82,8 @@ class TestPaperListActivity:BaseActivity() {
     private fun onClick(){
         val id=testPapers[position].id.toString()
         val images=testPapers[position].images
-        val file= File(Constants.TESTPAPER_PATH , testPaperType?.namePath+"/"+id)//设置路径
-        if (!file.exists())
-        {
-            file.mkdirs()
-        }
-        val files= FileUtils.getFiles(file.path)
+        val file= File(Constants.RECEIVEPAPER_PATH , testPaperType?.namePath+"/"+id)//设置路径
+        val files= FileUtils.getFilesSort(file.path)
         val paths= mutableListOf<String>()
         for (file in files){
             paths.add(file.path)

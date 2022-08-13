@@ -2,25 +2,26 @@ package com.bll.lnkstudy.mvp.model;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Unique;
 
+//分类列表
 @Entity
-public class NoteBook {
-
+public class BaseTypeBean {
     @Id(autoincrement = true)
     public Long id;
+    public int typeId;//分类id
     public String name;
-    public int type;
-
-    @Generated(hash = 2049909941)
-    public NoteBook(Long id, String name, int type) {
+    @Transient
+    public boolean isCheck;
+    @Generated(hash = 2038045697)
+    public BaseTypeBean(Long id, int typeId, String name) {
         this.id = id;
+        this.typeId = typeId;
         this.name = name;
-        this.type = type;
     }
-    @Generated(hash = 2066935268)
-    public NoteBook() {
+    @Generated(hash = 108103880)
+    public BaseTypeBean() {
     }
     public Long getId() {
         return this.id;
@@ -28,17 +29,17 @@ public class NoteBook {
     public void setId(Long id) {
         this.id = id;
     }
+    public int getTypeId() {
+        return this.typeId;
+    }
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
     public String getName() {
         return this.name;
     }
     public void setName(String name) {
         this.name = name;
-    }
-    public int getType() {
-        return this.type;
-    }
-    public void setType(int type) {
-        this.type = type;
     }
 
 }

@@ -13,10 +13,10 @@ import com.bll.lnkstudy.dialog.PopWindowBookStoreType
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.FileDownManager
+import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.BookEvent
 import com.bll.lnkstudy.mvp.model.BookStore
-import com.bll.lnkstudy.mvp.model.BookStoreType
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
@@ -27,6 +27,7 @@ import com.google.android.material.tabs.TabLayout
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_xtab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
@@ -48,9 +49,9 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     private var popWindowGrade:PopWindowBookStoreType?=null
     private var popWindowProvince:PopWindowBookStoreType?=null
 
-    var provinceList= mutableListOf<BookStoreType>()
-    var gradeList= mutableListOf<BookStoreType>()
-    var typeList= mutableListOf<BookStoreType>()
+    var provinceList= mutableListOf<BaseTypeBean>()
+    var gradeList= mutableListOf<BaseTypeBean>()
+    var typeList= mutableListOf<BaseTypeBean>()
 
     override fun onBookStore(bookStore: BookStore?) {
         pageCount=bookStore?.pageCount!!
@@ -61,7 +62,9 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
         tv_page_total.text=pageCount.toString()
 
         if (!bookStore?.list.isNullOrEmpty()){
-            books=bookStore?.list
+            for (i in 0..5){
+                books.addAll(bookStore.list)
+            }
             mAdapter?.setNewData(books)
         }
     }
@@ -104,6 +107,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
         setPageTitle(title)
         initRecyclerView()
+        setShowSearch(true)
 
         btn_page_up.setOnClickListener {
             if (pageIndex>1){
@@ -140,14 +144,14 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             typeList=DataBeanManager.getIncetance().bookTypeJc
             xtab.setxTabDisplayNum(typeList.size)
             for (i in 0..12){
-                var item=BookStoreType()
-                item.title= "广东省$i"
+                var item= BaseTypeBean()
+                item.name= "广东省$i"
                 provinceList.add(item)
             }
 
             for (i in 1..6){
-                var item=BookStoreType()
-                item.title= "$i 年级"
+                var item= BaseTypeBean()
+                item.name= "$i 年级"
                 gradeList.add(item)
             }
         }
@@ -190,7 +194,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     private fun setTypeView(){
 
         if (provinceList.size>0){
-            tv_province.text=provinceList[0].title
+            tv_province.text=provinceList[0].name
             provinceList[0].isCheck=true
         }
         else{
@@ -198,7 +202,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
         }
 
         if (gradeList.size>0){
-            tv_grade.text=gradeList[0].title
+            tv_grade.text=gradeList[0].name
             gradeList[0].isCheck=true
         }
         else{
@@ -211,8 +215,8 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             {
                 popWindowGrade=PopWindowBookStoreType(this,gradeList,tv_grade).builder()
                 popWindowGrade?.setOnSelectListener(object : PopWindowBookStoreType.OnSelectListener {
-                    override fun onSelect(bookStoreType: BookStoreType) {
-                        tv_grade.text=bookStoreType.title
+                    override fun onSelect(baseTypeBean: BaseTypeBean) {
+                        tv_grade.text=baseTypeBean.name
                     }
                 })
             }
@@ -227,8 +231,8 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             {
                 popWindowProvince=PopWindowBookStoreType(this,provinceList,tv_province).builder()
                 popWindowProvince?.setOnSelectListener(object : PopWindowBookStoreType.OnSelectListener {
-                    override fun onSelect(bookStoreType: BookStoreType) {
-                        tv_province.text=bookStoreType.title
+                    override fun onSelect(baseTypeBean: BaseTypeBean) {
+                        tv_province.text=baseTypeBean.name
                     }
                 })
             }
@@ -245,7 +249,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     //设置tab分类
     private fun setTab(){
         for (item in typeList){
-            xtab?.newTab()?.setText(item.title)?.let { xtab?.addTab(it) }
+            xtab?.newTab()?.setText(item.name)?.let { xtab?.addTab(it) }
         }
         xtab?.getTabAt(1)?.select()
         xtab?.getTabAt(0)?.select()
@@ -270,7 +274,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             rv_list.adapter = mAdapter
             mAdapter?.bindToRecyclerView(rv_list)
             mAdapter?.setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(0,55))
+            rv_list?.addItemDecoration(SpaceGridItemDeco(0,20))
             mAdapter?.setOnItemClickListener { adapter, view, position ->
                 book=books[position]
                 showBookDetails(book)

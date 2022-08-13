@@ -12,9 +12,9 @@ import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.widget.SpaceGridItemDeco4
 import com.bll.utilssdk.utils.FileUtils
-import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import org.greenrobot.eventbus.EventBus
@@ -63,17 +63,18 @@ class BookCaseFragment: BaseFragment() {
 
     private fun initRecyclerView(){
 
-        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_book, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(0,60))
+        rv_list?.addItemDecoration(SpaceGridItemDeco4(63,28))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)
 //                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
                 intent.putExtra("book_id",books[position].id)
             startActivity(intent)
         }
+
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             this.position=position
             book=books[position]
@@ -86,7 +87,10 @@ class BookCaseFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance(activity).queryAllBook1("0")
+        books.clear()
+        for (i in 0..5){
+            books.addAll(BookGreenDaoManager.getInstance(activity).queryAllBook("0"))
+        }
         mAdapter?.setNewData(books)
         onChangeTopView()
     }
@@ -97,18 +101,14 @@ class BookCaseFragment: BaseFragment() {
         if (books.size>0){
             var book=books[0]
             tv_top_page.text=""+book.pageIndex+"页"
-            Glide.with(this)
-                .load(book.assetUrl)
-                .thumbnail(0.1f).centerCrop().into(iv_content1)
+//            GlideUtils.setImageRoundUrl(activity,book.assetUrl,iv_content1,5)
+
             if (book.pageIndex==1)
             {
-                Glide.with(this).load(book.assetUrl)
-                    .thumbnail(0.1f).centerCrop().into(iv_content2)
+                GlideUtils.setImageRoundUrl(activity,book.assetUrl,iv_content2,5)
             }
             else{
-                Glide.with(this)
-                    .load(book.pageUrl)
-                    .thumbnail(0.1f).centerCrop().into(iv_content2)
+                GlideUtils.setImageRoundUrl(activity,book.pageUrl,iv_content2,5)
             }
 
         }

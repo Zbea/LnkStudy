@@ -28,10 +28,10 @@
         android:lines="1"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
-        android:background="@drawable/bg_line_bottom_black"
+        android:background="@drawable/bg_line_bottom"
         android:layout_marginStart="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_30"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="50dp"
         />
 
 
@@ -42,13 +42,14 @@
         android:layout_marginStart="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_30"
         android:padding="@dimen/dp_30"
-        android:background="@drawable/bg_black_stroke_10dp_corner"
+        android:background="@drawable/bg_gray_stroke_10dp_corner"
         android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_marginLeft="@dimen/dp_60"
             android:src="@mipmap/icon_record"
             />
 

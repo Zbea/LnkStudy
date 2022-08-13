@@ -101,7 +101,10 @@ class MainCourseActivity : BaseActivity() {
 
     override fun initView() {
 
-        tv_save.setOnClickListener {
+        setPageTitle("课程表   编辑")
+        setSaveShow()
+
+        ivSave?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
             CourseGreenDaoManager.getInstance(this@MainCourseActivity).deleteAll()//清除以前存储的课程
             CourseGreenDaoManager.getInstance(this@MainCourseActivity).insertAll(selectLists)

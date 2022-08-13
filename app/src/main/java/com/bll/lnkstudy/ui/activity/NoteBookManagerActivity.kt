@@ -6,9 +6,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
-import com.bll.lnkstudy.manager.NoteBookGreenDaoManager
+import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
-import com.bll.lnkstudy.mvp.model.NoteBook
+import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
@@ -16,7 +16,7 @@ import java.util.*
 
 class NoteBookManagerActivity : BaseActivity() {
 
-    private var noteBooks= mutableListOf<NoteBook>()
+    private var noteBooks= mutableListOf<BaseTypeBean>()
     private var mAdapter: NoteBookManagerAdapter? = null
     private var position=0
 
@@ -25,7 +25,7 @@ class NoteBookManagerActivity : BaseActivity() {
     }
 
     override fun initData() {
-        noteBooks= NoteBookGreenDaoManager.getInstance(this).queryAllNote()
+        noteBooks= BaseTypeBeanDaoManager.getInstance(this).queryAll()
     }
 
     override fun initView() {
@@ -74,9 +74,9 @@ class NoteBookManagerActivity : BaseActivity() {
                 var noteBook=noteBooks[position]
                 noteBooks.removeAt(position)
                 //删除笔记本
-                NoteBookGreenDaoManager.getInstance(this@NoteBookManagerActivity).deleteNote(noteBook)
+                BaseTypeBeanDaoManager.getInstance(this@NoteBookManagerActivity).deleteBean(noteBook)
                 //删除笔记本下的所有笔记
-                NoteGreenDaoManager.getInstance(this@NoteBookManagerActivity).deleteType(noteBook.type)
+                NoteGreenDaoManager.getInstance(this@NoteBookManagerActivity).deleteType(noteBook.typeId)
                 setNotify()
             }
 
@@ -89,7 +89,7 @@ class NoteBookManagerActivity : BaseActivity() {
             NoteBookAddDialog.OnDialogClickListener {
             override fun onClick(string: String) {
                 noteBooks[position].name=string
-                NoteBookGreenDaoManager.getInstance(this@NoteBookManagerActivity).insertOrReplaceNote(noteBooks[position])
+                BaseTypeBeanDaoManager.getInstance(this@NoteBookManagerActivity).insertOrReplace(noteBooks[position])
                 setNotify()
             }
         })

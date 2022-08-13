@@ -7,6 +7,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.ui.activity.ListActivity
 import com.bll.lnkstudy.ui.activity.PaintingDrawingActivity
+import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_painting.*
 
 /**

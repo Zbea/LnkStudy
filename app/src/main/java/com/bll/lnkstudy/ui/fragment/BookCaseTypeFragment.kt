@@ -11,12 +11,12 @@ import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.BookStoreType
 import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceGridItemDeco4
 import com.bll.utilssdk.utils.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -52,12 +52,12 @@ class BookCaseTypeFragment: BaseFragment() {
 
         initTab()
 
-        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_book_type, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(60,60))
+        rv_list?.addItemDecoration(SpaceGridItemDeco4(19,38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)
 //            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
@@ -81,27 +81,27 @@ class BookCaseTypeFragment: BaseFragment() {
     }
 
     //获取tab数据
-    private fun getTabDatas(isDown: Boolean):List<BookStoreType>{
-        val types= mutableListOf<BookStoreType>()
+    private fun getTabDatas(isDown: Boolean):List<BaseTypeBean>{
+        val types= mutableListOf<BaseTypeBean>()
         val strings=DataBeanManager.getIncetance().bookType
         if (isDown){
             for (i in strings.indices){
-                var bookStoreType=BookStoreType()
-                bookStoreType.title=strings[i]
-                bookStoreType.type=i
-                bookStoreType.isCheck=i==type
-                types.add(bookStoreType)
+                var baseTypeBean= BaseTypeBean()
+                baseTypeBean.name=strings[i]
+                baseTypeBean.typeId=i
+                baseTypeBean.isCheck=i==type
+                types.add(baseTypeBean)
             }
         }
         else{
             for (i in 0..6){
-                var bookStoreType=BookStoreType()
-                bookStoreType.title=strings[i]
-                bookStoreType.type=i
+                var baseTypeBean= BaseTypeBean()
+                baseTypeBean.name=strings[i]
+                baseTypeBean.typeId=i
                 if(type>6)
                     type=0
-                bookStoreType.isCheck=i==type
-                types.add(bookStoreType)
+                baseTypeBean.isCheck=i==type
+                types.add(baseTypeBean)
             }
         }
         return types
@@ -143,7 +143,10 @@ class BookCaseTypeFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll=BookGreenDaoManager.getInstance(activity).queryAllBook("0",type.toString())
+        booksAll.clear()
+        for (i in 0..6){
+            booksAll.addAll(BookGreenDaoManager.getInstance(activity).queryAllBook("0",type.toString()))
+        }
         pageNumberView()
     }
 
@@ -151,8 +154,9 @@ class BookCaseTypeFragment: BaseFragment() {
     private fun pageNumberView(){
         bookMap.clear()
         pageIndex=1
+        var toIndex=12
         var pageTotal=booksAll.size
-        var pageCount=Math.ceil((pageTotal.toDouble()/12)).toInt()
+        var pageCount=Math.ceil((pageTotal.toDouble()/toIndex)).toInt()
         if (pageTotal==0)
         {
             ll_page_number.visibility= View.GONE
@@ -160,11 +164,9 @@ class BookCaseTypeFragment: BaseFragment() {
             mAdapter?.setNewData(books)
             return
         }
-
-        var toIndex=9
         for(i in 0 until pageCount){
-            var index=i*9
-            if(index+9>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
+            var index=i*toIndex
+            if(index+toIndex>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
                 toIndex=pageTotal-index
             }
             var newList = booksAll.subList(index,index+toIndex)

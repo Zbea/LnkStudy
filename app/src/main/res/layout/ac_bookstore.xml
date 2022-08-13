@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page">
 
-    <include layout="@layout/common_fragment_title"/>
+    <include layout="@layout/common_title"/>
 
-    <com.androidkun.xtablayout.XTabLayout
-        android:id="@+id/xtab"
+    <include
+        layout="@layout/common_xtab"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/xtab_height"
+        android:layout_height="wrap_content"
         android:layout_marginStart="95dp"
-        android:layout_marginEnd="95dp"
-        app:xTabTextSize="@dimen/sp_22"
-        app:xTabTextColor="@color/black"
-        app:xTabSelectedTextColor="@color/black"
-        app:xTabSelectedTextSize="22sp"
-        app:xTabIndicatorColor="@color/black"
-        app:xTabIndicatorHeight="2dp"
-        app:xTabDividerWidthWidthText="true"
-        />
+        android:layout_marginEnd="95dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
         android:layout_marginBottom="@dimen/dp_10"
         android:orientation="horizontal">
 
@@ -68,7 +59,9 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="25dp"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_40"
         android:layout_weight="1"/>
 
     <include layout="@layout/common_page_number" />

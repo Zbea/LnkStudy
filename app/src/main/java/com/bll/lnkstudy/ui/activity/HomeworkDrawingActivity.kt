@@ -145,12 +145,10 @@ class HomeworkDrawingActivity : BaseActivity() {
         iv_catalog.setOnClickListener {
             if (ll_catalog.visibility == View.VISIBLE) {
                 disMissView(ll_catalog)
-                elik_a?.setPWEnabled(true)
-                elik_b?.setPWEnabled(true)
+                setPWEnabled(true)
             } else {
                 showView(ll_catalog)
-                elik_a?.setPWEnabled(false)
-                elik_b?.setPWEnabled(false)
+                setPWEnabled(false)
             }
         }
 
@@ -179,6 +177,11 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     }
 
+    //设置手绘是否可以绘制
+    private fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
+    }
 
     //目录列表
     private fun initRecyclerCatalog() {
@@ -193,8 +196,7 @@ class HomeworkDrawingActivity : BaseActivity() {
                 changeContent()
 
                 disMissView(ll_catalog)
-                elik_a?.setPWEnabled(true)
-                elik_b?.setPWEnabled(true)
+                setPWEnabled(true)
             }
         }
     }
@@ -321,9 +323,9 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     private fun showPopWindowBtn() {
         var popWindowDrawingButton = if (homework?.isSave == false) {
-            PopWindowDrawingButton(this, iv_btn, 0, -325)
+            PopWindowDrawingButton(this, iv_btn, 0, -350)
         } else if (homework?.isSave == true && homework?.state == 0) {
-            PopWindowDrawingButton(this, iv_btn, 1, -180)
+            PopWindowDrawingButton(this, iv_btn, 1, -200)
         } else {
             return
         }

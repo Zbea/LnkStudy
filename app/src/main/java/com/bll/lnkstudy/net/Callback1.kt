@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.net
 
 
+import com.bll.lnkstudy.MyApplication
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
@@ -36,7 +38,18 @@ abstract class Callback1<T> : Observer<T> {
 
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
-        SToast.showToast(ExceptionHandle.handleException(e))
+        val code: Int = ExceptionHandle.handleException(e).code
+        if (code == ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION) {
+            SToast.showText(MyApplication.mContext.getString(R.string.net_work_error))
+        } else if (code == ExceptionHandle.ERROR.NETWORD_ERROR || code == ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR) {
+            SToast.showText(MyApplication.mContext.getString(R.string.connect_server_timeout))
+        } else if (code == ExceptionHandle.ERROR.PARSE_ERROR) {
+            SToast.showText(MyApplication.mContext.getString(R.string.parse_data_error))
+        } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
+            SToast.showText(MyApplication.mContext.getString(R.string.connect_error))
+        } else {
+            SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))
+        }
         IBaseView.hideLoading()
     }
 

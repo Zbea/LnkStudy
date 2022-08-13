@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
     android:orientation="vertical">
 
-    <include layout="@layout/common_title" />
+    <include layout="@layout/common_fragment_title" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="35dp"
             android:text="我的书籍"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24"
@@ -35,25 +36,31 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="310dp"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_height="348px"
+        android:layout_marginTop="@dimen/dp_20"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.bll.lnkstudy.widget.RoundImageView
             android:id="@+id/iv_content1"
-            android:layout_width="230dp"
-            android:layout_height="match_parent" />
+            android:layout_width="261px"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:src="@mipmap/icon_title"
+            android:padding="1dp"
+            app:radius="6dp"/>
 
         <RelativeLayout
-            android:layout_width="230dp"
+            android:layout_width="261px"
             android:layout_height="match_parent"
-            android:layout_marginStart="15dp">
+            android:padding="1dp"
+            android:background="@drawable/bg_black_stroke_5dp_corner">
 
-            <ImageView
+            <com.bll.lnkstudy.widget.RoundImageView
                 android:id="@+id/iv_content2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:radius="6dp" />
 
             <TextView
                 android:id="@+id/tv_top_page"
@@ -69,9 +76,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingEnd="63px"
+        android:layout_marginTop="83px"
         />
 
 

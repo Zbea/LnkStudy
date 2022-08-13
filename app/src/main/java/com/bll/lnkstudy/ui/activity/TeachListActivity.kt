@@ -9,9 +9,8 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TeachList
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
-import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.rv_list
+import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.*
 
 class TeachListActivity:BaseActivity() {
 
@@ -56,22 +55,6 @@ class TeachListActivity:BaseActivity() {
         }
 
         pageNumberView()
-
-        if (course?.courseId==0){
-            iv_image.setImageResource(R.mipmap.image1)
-        }
-        else if (course?.courseId==1){
-            iv_image.setImageResource(R.mipmap.image2)
-        }
-        else if (course?.courseId==2){
-            iv_image.setImageResource(R.mipmap.image3)
-        }
-        else if (course?.courseId==3){
-            iv_image.setImageResource(R.mipmap.image4)
-        }
-        else{
-            iv_image.setImageResource(R.mipmap.image5)
-        }
     }
 
     //翻页处理

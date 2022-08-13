@@ -25,21 +25,19 @@ import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
+import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.MainDateActivity
 import com.bll.lnkstudy.ui.adapter.*
-import com.bll.lnkstudy.utils.PopWindowUtil
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
+import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -116,11 +114,7 @@ class MainFragment : BaseFragment() {
     //课程表相关处理
     @SuppressLint("WrongConstant")
     private fun initCourse() {
-        Glide.with(this)
-            .load(Constants.SCREEN_PATH + "/course.png")
-            .skipMemoryCache(true)
-            .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE)).into(iv_course)
-
+        GlideUtils.setImageNoCacheUrl(activity,Constants.SCREEN_PATH + "/course.png",iv_course)
 
         iv_course_more.setOnClickListener {
             CourseModuleDialog(requireActivity()).builder()?.setOnClickListener(object :
@@ -242,7 +236,7 @@ class MainFragment : BaseFragment() {
         rv_main_textbook?.addItemDecoration(SpaceGridItemDeco(0, 50))
         mainTextBookAdapter?.setOnItemClickListener { adapter, view, position ->
             val course=courses[position]
-            val book=BookGreenDaoManager.getInstance(activity).queryBook("0",0,course.courseId)
+            val book=BookGreenDaoManager.getInstance(activity).queryTextBook("0",0,course.courseId)
             if(book!=null){
                 var intent=Intent(activity, BookDetailsActivity::class.java).putExtra("book_id", book.id)
                 startActivity(intent)
@@ -253,23 +247,86 @@ class MainFragment : BaseFragment() {
 
     //作业相关
     private fun initHomeWorkView() {
-        val courses = DataBeanManager.getIncetance().courses
 
-        var mainHomeWorkAdapter = CourseAdapter(R.layout.item_main_course, courses)
-        rv_main_homework.layoutManager = GridLayoutManager(activity, 2)
-        rv_main_homework.adapter = mainHomeWorkAdapter
-        mainHomeWorkAdapter?.bindToRecyclerView(rv_main_homework)
-        mainHomeWorkAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (courses[position].isSelect) {
-                courses[position].isSelect = false
-                mainHomeWorkAdapter?.notifyDataSetChanged()
+        var receivePapers= mutableListOf<ReceivePaper>()
+
+        var receivePaper=ReceivePaper()
+        receivePaper.id=0
+        receivePaper.type=0
+        receivePaper.title="语文课后作业"
+        receivePaper.course="语文"
+        receivePaper.courseId=0
+        receivePaper.createDate=System.currentTimeMillis()
+
+        var receivePaper1=ReceivePaper()
+        receivePaper1.id=1
+        receivePaper1.type=1
+        receivePaper1.title="数学期中考试"
+        receivePaper1.course="数学"
+        receivePaper1.courseId=1
+        receivePaper1.category="期中考试"
+        receivePaper1.categoryId=3
+        receivePaper1.createDate=System.currentTimeMillis()
+
+        var receivePaper2=ReceivePaper()
+        receivePaper2.id=2
+        receivePaper2.type=1
+        receivePaper2.title="英语期中考试"
+        receivePaper2.course="英语"
+        receivePaper2.courseId=1
+        receivePaper2.category="期中考试"
+        receivePaper2.categoryId=3
+        receivePaper2.createDate=System.currentTimeMillis()
+
+        var receivePaper3=ReceivePaper()
+        receivePaper3.id=3
+        receivePaper3.type=0
+        receivePaper3.title="语文课后作业"
+        receivePaper3.course="语文"
+        receivePaper3.courseId=0
+        receivePaper3.createDate=System.currentTimeMillis()
+
+        receivePapers.add(receivePaper)
+        receivePapers.add(receivePaper1)
+        receivePapers.add(receivePaper2)
+        receivePapers.add(receivePaper3)
+
+        for (item in receivePapers){
+            //设置路径
+            val file=if (item.type==0){
+                File(Constants.RECEIVEPAPER_PATH , "${item.type}/"+item.id)
+            } else{
+                File(Constants.RECEIVEPAPER_PATH , "${item.type}/${item.categoryId}/"+item.id)
+            }
+            item.path=file.path
+            val files= FileUtils.getFilesSort(file.path)
+            if (files==null||files.size!=item.images.size){
+                var imageDownLoad= ImageDownLoadUtils(activity,item.images,file.path)
+                imageDownLoad.startDownload()
             }
         }
 
-        var mainTestPaperAdapter = CourseAdapter(R.layout.item_main_course, courses)
-        rv_main_testpaper.layoutManager = GridLayoutManager(activity, 2)
-        rv_main_testpaper.adapter = mainTestPaperAdapter
-        mainTestPaperAdapter?.bindToRecyclerView(rv_main_testpaper)
+        var receivePaperAdapter = MainReceivePaperAdapter(R.layout.item_main_receivepaper, receivePapers)
+        rv_main_receivePaper.layoutManager = GridLayoutManager(activity, 3)
+        rv_main_receivePaper.adapter = receivePaperAdapter
+        receivePaperAdapter?.bindToRecyclerView(rv_main_receivePaper)
+        rv_main_receivePaper?.addItemDecoration(SpaceGridItemDeco(0, 10))
+        receivePaperAdapter.setOnItemClickListener { adapter, view, position ->
+//            val paper=receivePapers[position]
+//            val files= FileUtils.getFilesSort(paper.path)
+//            val paths= mutableListOf<String>()
+//            for (file in files){
+//                paths.add(file.path)
+//            }
+//            if (files.size==paper.images.size) {
+//                var intent= Intent(activity,TestPaperDrawingActivity::class.java)
+//                intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
+//                intent.putExtra("outImageStr",paper.path)
+//                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+//                startActivity(intent)
+//            }
+        }
+
     }
 
     //作业相关
@@ -309,7 +366,7 @@ class MainFragment : BaseFragment() {
 
 
     private fun findNotes(){
-        notes= NoteGreenDaoManager.getInstance(activity).queryAllNote(0)
+        notes= NoteGreenDaoManager.getInstance(activity).queryAll()
         if (notes.size>6){
             notes=notes.subList(0,6)
         }

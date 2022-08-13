@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.androidkun.xtablayout.XTabLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/xtab"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:xTabDividerWidthWidthText="true"
+    app:xTabIndicatorColor="@color/black"
+    app:xTabIndicatorHeight="3dp"
+    app:xTabSelectedTextColor="@color/black"
+    app:xTabSelectedTextSize="24sp"
+    app:xTabTextBold="true"
+    app:xTabTextColor="@color/black_90"
+    app:xTabTextSelectedBold="true"
+    app:xTabTextSize="24sp" />

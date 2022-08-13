@@ -21,7 +21,6 @@ class LoginPresenter(view: IContractView.ILoginViewI) : BasePresenter<IContractV
         )
 
         val login = RetrofitManager.service.login(body)
-
         doRequest(login, object : Callback<User>(view) {
             override fun failed(tBaseResult: BaseResult<User>): Boolean {
                 return false

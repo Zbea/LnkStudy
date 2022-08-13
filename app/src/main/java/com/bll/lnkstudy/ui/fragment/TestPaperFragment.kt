@@ -11,7 +11,8 @@ import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.activity.TestPaperListActivity
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceGridItemDeco2
+import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 
 /**
@@ -74,34 +75,20 @@ class TestPaperFragment : BaseFragment(){
         testPaper.resId=R.mipmap.icon_testpaper_dy
         items.add(testPaper)
 
-        var testPaper1=TestPaperType()
-        testPaper1.resId=R.mipmap.icon_testpaper_qz
-        testPaper1.name="期中考试卷"
-        testPaper1.namePath="qz"
-        testPaper1.type=1
-        items.add(testPaper1)
-
-        var testPaper2=TestPaperType()
-        testPaper2.resId=R.mipmap.icon_testpaper_end
-        testPaper2.name="期终考试卷"
-        testPaper2.namePath="end"
-        testPaper2.type=2
-        items.add(testPaper2)
-
         var testPaper3=TestPaperType()
         testPaper3.isPg=true
         testPaper3.resId=R.mipmap.icon_testpaper_jd
         testPaper3.name="阶段考试卷"
         testPaper3.namePath="jd"
-        testPaper3.type=3
+        testPaper3.type=1
         items.add(testPaper3)
 
         var testPaper4=TestPaperType()
         testPaper4.isPg=true
-        testPaper4.resId=R.mipmap.icon_testpaper_mn
-        testPaper4.name="模拟考试卷"
-        testPaper4.namePath="mn"
-        testPaper4.type=4
+        testPaper4.resId=R.mipmap.icon_testpaper_xq
+        testPaper4.name="学期考试卷"
+        testPaper4.namePath="xq"
+        testPaper4.type=2
         items.add(testPaper4)
     }
 
@@ -111,7 +98,7 @@ class TestPaperFragment : BaseFragment(){
         rv_list.layoutManager = GridLayoutManager(activity,2)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(0,80))
+        rv_list.addItemDecoration(SpaceGridItemDeco2(0,80))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
 
             var bundle=Bundle()

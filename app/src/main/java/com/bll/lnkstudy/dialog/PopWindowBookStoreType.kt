@@ -10,11 +10,11 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.BookStoreType
+import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowBookStoreType(var context:Context,var list:MutableList<BookStoreType>,var view: View) {
+class PopWindowBookStoreType(var context:Context, var list:MutableList<BaseTypeBean>, var view: View) {
 
     private var mPopupWindow:PopupWindow?=null
 
@@ -71,15 +71,15 @@ class PopWindowBookStoreType(var context:Context,var list:MutableList<BookStoreT
     }
 
     interface OnSelectListener{
-        fun onSelect(bookStoreType: BookStoreType)
+        fun onSelect(baseTypeBean: BaseTypeBean)
     }
 
 
-    private class MAdapter(layoutResId: Int, data: List<BookStoreType>?) : BaseQuickAdapter<BookStoreType, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<BaseTypeBean>?) : BaseQuickAdapter<BaseTypeBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: BookStoreType) {
+        override fun convert(helper: BaseViewHolder, item: BaseTypeBean) {
 
-            helper.setText(R.id.tv_name,item.title)
+            helper.setText(R.id.tv_name,item.name)
             helper.setVisible(R.id.iv_check,item.isCheck)
 
         }

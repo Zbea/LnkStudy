@@ -41,8 +41,8 @@ class Constants private constructor() {
         //截图保存目录
         val SCREEN_PATH = MyApplication.mContext.getExternalFilesDir("screen").path
 
-        //考卷保存目录
-        val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("testPaper").path
+        //收到题卷地址
+        val RECEIVEPAPER_PATH = MyApplication.mContext.getExternalFilesDir("receivePaper").path
         //作业保存目录
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("homeWork").path
         //录音保存目录

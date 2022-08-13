@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,30 +7,22 @@
 
     <include layout="@layout/common_fragment_title" />
 
-    <com.androidkun.xtablayout.XTabLayout
-        android:id="@+id/xtab"
+    <include
+        layout="@layout/common_xtab"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/xtab_height"
+        android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginTop="@dimen/navigation_height"
-        app:xTabTextSize="22sp"
-        app:xTabTextColor="@color/black"
-        app:xTabSelectedTextColor="@color/black"
-        app:xTabSelectedTextSize="22sp"
-        app:xTabIndicatorColor="@color/black"
-        app:xTabIndicatorHeight="2dp"
-        app:xTabDividerWidthWidthText="true"
-        />
+        android:layout_marginEnd="30dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/xtab"
+        android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginTop="60dp"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_marginRight="@dimen/dp_40"/>
+        android:layout_marginRight="@dimen/dp_30" />
 
 
 </RelativeLayout>

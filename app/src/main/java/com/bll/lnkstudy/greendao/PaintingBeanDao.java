@@ -29,6 +29,8 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         public final static Property BgResId = new Property(2, int.class, "bgResId", false, "BG_RES_ID");
         public final static Property Date = new Property(3, long.class, "date", false, "DATE");
         public final static Property Path = new Property(4, String.class, "path", false, "PATH");
+        public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
+        public final static Property Page = new Property(6, int.class, "page", false, "PAGE");
     }
 
 
@@ -48,7 +50,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
                 "\"TYPE\" INTEGER NOT NULL ," + // 1: type
                 "\"BG_RES_ID\" INTEGER NOT NULL ," + // 2: bgResId
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
-                "\"PATH\" TEXT);"); // 4: path
+                "\"PATH\" TEXT," + // 4: path
+                "\"TITLE\" TEXT," + // 5: title
+                "\"PAGE\" INTEGER NOT NULL );"); // 6: page
     }
 
     /** Drops the underlying database table. */
@@ -73,6 +77,12 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         if (path != null) {
             stmt.bindString(5, path);
         }
+ 
+        String title = entity.getTitle();
+        if (title != null) {
+            stmt.bindString(6, title);
+        }
+        stmt.bindLong(7, entity.getPage());
     }
 
     @Override
@@ -91,6 +101,12 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         if (path != null) {
             stmt.bindString(5, path);
         }
+ 
+        String title = entity.getTitle();
+        if (title != null) {
+            stmt.bindString(6, title);
+        }
+        stmt.bindLong(7, entity.getPage());
     }
 
     @Override
@@ -105,7 +121,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
             cursor.getInt(offset + 1), // type
             cursor.getInt(offset + 2), // bgResId
             cursor.getLong(offset + 3), // date
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // path
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // path
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
+            cursor.getInt(offset + 6) // page
         );
         return entity;
     }
@@ -117,6 +135,8 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         entity.setBgResId(cursor.getInt(offset + 2));
         entity.setDate(cursor.getLong(offset + 3));
         entity.setPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setPage(cursor.getInt(offset + 6));
      }
     
     @Override

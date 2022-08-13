@@ -99,15 +99,11 @@ public class NoteGreenDaoManager {
         return queryNote;
     }
 
-    public List<Note> queryAllNote() {
-        List<Note> queryNoteList = noteDao.queryBuilder().build().list();
-        return queryNoteList;
+    public List<Note> queryAll(){
+        return noteDao.queryBuilder().orderDesc(NoteDao.Properties.Id).build().list();
     }
 
     public List<Note> queryAllNote(int type) {
-        if (type==0){
-            return noteDao.queryBuilder().orderDesc(NoteDao.Properties.Id).build().list();
-        }
         WhereCondition whereCondition=NoteDao.Properties.Type.eq(type);
         List<Note> querynoteList = noteDao.queryBuilder().where(whereCondition).orderDesc(NoteDao.Properties.NowDate).build().list();
         return querynoteList;

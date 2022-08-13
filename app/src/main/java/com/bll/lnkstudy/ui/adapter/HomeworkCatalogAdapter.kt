@@ -9,7 +9,7 @@ class HomeworkCatalogAdapter(layoutResId: Int, data: List<Homework>?) : BaseQuic
 
     override fun convert(helper: BaseViewHolder, item: Homework) {
         helper.setText(R.id.tv_num, item.title)
-        helper.setText(R.id.tv_page, ""+item.page)
+        helper.setText(R.id.tv_page, (item.page+1).toString())
     }
 
 }

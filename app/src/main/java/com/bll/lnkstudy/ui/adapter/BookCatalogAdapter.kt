@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.widget.LinearLayout
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.mvp.model.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.CatalogParentBean
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
@@ -22,7 +21,6 @@ class BookCatalogAdapter(data: MutableList<MultiItemEntity>?) : BaseMultiItemQui
                 val item= item as CatalogParentBean
                 helper.setText(R.id.tv_num, item.title)
                 helper.setText(R.id.tv_page, ""+item.pageNumber)
-
                 helper.itemView.setOnClickListener { v ->
                     val pos = helper.adapterPosition
                     if (item.hasSubItem()){
@@ -41,7 +39,6 @@ class BookCatalogAdapter(data: MutableList<MultiItemEntity>?) : BaseMultiItemQui
             1-> {
                 val childItem = item as CatalogChildBean
                 helper.setText(R.id.tv_num, childItem.title)
-//                helper.setText(R.id.tv_name, childItem.picName)
                 helper.setText(R.id.tv_page,""+childItem.pageNumber)
                 helper.getView<LinearLayout>(R.id.ll_click).setOnClickListener {
                     if (listener!=null)

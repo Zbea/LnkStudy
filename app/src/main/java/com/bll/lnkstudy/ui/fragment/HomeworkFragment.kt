@@ -17,7 +17,8 @@ import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.activity.HomeworkDrawingActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceGridItemDeco5
+import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_homework.*
 
 
@@ -109,7 +110,7 @@ class HomeworkFragment : BaseFragment(){
         rv_list.layoutManager = GridLayoutManager(activity,3)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(0,70))
+        rv_list.addItemDecoration(SpaceGridItemDeco5(71,89))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if(datas[position].isListenToRead){
                 startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
@@ -190,7 +191,7 @@ class HomeworkFragment : BaseFragment(){
             object : ModuleAddDialog.OnDialogClickListener {
                 override fun onClick(moduleBean: ModuleBean) {
                     val item=HomeworkType()
-                    item.resId=moduleBean.resId
+                    item.resId=moduleBean.resContentId
                     item.bgResId=coverResId
 
                     addHomeWorkType(item)

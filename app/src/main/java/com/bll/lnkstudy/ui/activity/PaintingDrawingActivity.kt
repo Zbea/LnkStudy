@@ -6,14 +6,17 @@ import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopWindowDrawSetting
 import com.bll.lnkstudy.dialog.PopWindowDrawingButton
 import com.bll.lnkstudy.manager.PaintingDaoManager
 import com.bll.lnkstudy.mvp.model.PaintingBean
+import com.bll.lnkstudy.ui.adapter.PaintingCatalogAdapter
 import com.bll.lnkstudy.utils.StringUtils
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_painting_drawing.*
@@ -29,7 +32,7 @@ class PaintingDrawingActivity : BaseActivity() {
     private var elik_a: EinkPWInterface? = null
     private var elik_b: EinkPWInterface? = null
     private var popWindow: PopWindowDrawSetting? = null
-
+    private var mAdapter: PaintingCatalogAdapter? = null
 
     private var paintingBean: PaintingBean? = null//当前作业内容
     private var paintingBean_a: PaintingBean? = null//a屏作业
@@ -68,13 +71,10 @@ class PaintingDrawingActivity : BaseActivity() {
 
     override fun initView() {
 
-        setPageTitle(if (type == 0) "我的画本" else "我的书法")
-
-        if (type==1){
-            resId=R.mipmap.icon_painting_bg_sf
-        }
-        else{
-            resId=0
+        resId = if (type==1){
+            R.mipmap.icon_painting_bg_sf
+        } else{
+            0
         }
 
         setBg()
@@ -84,6 +84,33 @@ class PaintingDrawingActivity : BaseActivity() {
 
         changeContent()
 
+        initRecyclerCatalog()
+
+        tv_title.setOnClickListener {
+            var title=tv_title.text.toString()
+            InputContentDialog(this,title).builder()?.setOnDialogClickListener(object :
+                InputContentDialog.OnDialogClickListener {
+                override fun onClick(string: String) {
+                    tv_title.text=string
+                    paintingBean?.title = string
+                    paintingLists[page].title = string
+                    mAdapter?.notifyDataSetChanged()
+                    PaintingDaoManager.getInstance(this@PaintingDrawingActivity).insertOrReplace(paintingBean)
+                }
+
+            })
+
+        }
+
+        iv_catalog.setOnClickListener {
+            if (ll_catalog.visibility == View.VISIBLE) {
+                disMissView(ll_catalog)
+                setPWEnabled(true)
+            } else {
+                showView(ll_catalog)
+                setPWEnabled(false)
+            }
+        }
 
         btn_page_down.setOnClickListener {
 
@@ -138,10 +165,33 @@ class PaintingDrawingActivity : BaseActivity() {
 
     }
 
+    //目录列表
+    private fun initRecyclerCatalog() {
+        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
+        mAdapter = PaintingCatalogAdapter(R.layout.item_catalog_parent, paintingLists)
+        rv_list.adapter = mAdapter
+        mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            if (page!= position) {
+                page = position
+                changeContent()
+
+                disMissView(ll_catalog)
+                setPWEnabled(true)
+            }
+        }
+    }
+
     //设置背景图
     private fun setBg(){
         iv_content_a.setImageResource(resId)
         iv_content_b.setImageResource(resId)
+    }
+
+    //设置手绘是否可以绘制
+    private fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
     }
 
 
@@ -164,6 +214,13 @@ class PaintingDrawingActivity : BaseActivity() {
             }
         } else {
             paintingBean_a = null
+        }
+
+        //切换页面内容的一些变化
+        tv_title.text=paintingBean?.title
+        if (paintingBean?.title.isNullOrEmpty())
+        {
+            tv_title.hint="输入标题"
         }
 
         if (isScreen) {
@@ -209,13 +266,13 @@ class PaintingDrawingActivity : BaseActivity() {
         paintingBean?.type = type
         paintingBean?.date = System.currentTimeMillis()
         paintingBean?.path = "$path/$date.tch"
-
-
         page = paintingLists.size
+        paintingBean?.page=page
         paintingLists.add(paintingBean!!)
 
         PaintingDaoManager.getInstance(this).insertOrReplace(paintingBean)
 
+        mAdapter?.notifyDataSetChanged()
 
     }
 
@@ -223,7 +280,7 @@ class PaintingDrawingActivity : BaseActivity() {
     //
     private fun showPopWindowBtn() {
         val flag = if (type == 0) 2 else 3
-        val yoff=if (type == 0) -250 else -180
+        val yoff=if (type == 0) -270 else -200
         if (popWindowDrawingButton == null) {
             popWindowDrawingButton = PopWindowDrawingButton(this, iv_btn, flag,yoff).builder()
             popWindowDrawingButton?.setOnSelectListener(object : PopWindowDrawingButton.OnClickListener {

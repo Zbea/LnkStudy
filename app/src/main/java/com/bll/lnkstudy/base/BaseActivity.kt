@@ -15,10 +15,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -50,6 +47,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var tvMyCollect: TextView? = null
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
+    var llSearch:LinearLayout?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -126,6 +124,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
+        llSearch= findViewById(R.id.ll_search)
 
     }
 
@@ -133,6 +132,20 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (ivBack != null) {
             ivBack!!.visibility = View.GONE
         }
+    }
+
+    fun setShowSearch(isShow:Boolean) {
+        if (isShow){
+            if (llSearch != null) {
+                showView(llSearch)
+            }
+        }
+        else{
+            if (llSearch != null) {
+                disMissView(llSearch)
+            }
+        }
+
     }
 
     fun setSaveShow() {
@@ -144,12 +157,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     fun setPageTitle(pageTitle: String) {
         if (tvPageTitle != null) {
             tvPageTitle!!.text = pageTitle
-        }
-    }
-    fun setMyCollect()
-    {
-        if (tvMyCollect != null) {
-            tvMyCollect?.visibility=View.VISIBLE
         }
     }
 

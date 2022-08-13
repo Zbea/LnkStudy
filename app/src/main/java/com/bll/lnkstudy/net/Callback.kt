@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.net
 
 
+import com.bll.lnkstudy.MyApplication
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
@@ -21,8 +23,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     }
 
     override fun onNext(@NonNull tBaseResult: BaseResult<T>) {
-        if (!tBaseResult.error.isNullOrEmpty())
-        {
+        if (!tBaseResult.error.isNullOrEmpty()) {
             IBaseView?.fail(tBaseResult.error)
             return
         }
@@ -30,7 +31,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
             success(tBaseResult)
         } else {
             when {
-                tBaseResult.code==1 -> {
+                tBaseResult.code == 1 -> {
                     IBaseView?.login()
                 }
                 else -> {
@@ -48,11 +49,22 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
 
-        if ((e as HttpException).code()==401){
-            IBaseView?.login()
+        val code = ExceptionHandle.handleException(e).code
+        if (code == ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION) {
+            SToast.showText(MyApplication.mContext.getString(R.string.net_work_error))
+        } else if (code == ExceptionHandle.ERROR.NETWORD_ERROR || code == ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR) {
+            SToast.showText(MyApplication.mContext.getString(R.string.connect_server_timeout))
+        } else if (code == ExceptionHandle.ERROR.PARSE_ERROR) {
+            SToast.showText(MyApplication.mContext.getString(R.string.parse_data_error))
+        } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
+            SToast.showText(MyApplication.mContext.getString(R.string.connect_error))
+        } else {
+            SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))
         }
 
-        SToast.showToast(ExceptionHandle.handleException(e))
+        if ((e as HttpException).code() == 401) {
+            IBaseView?.login()
+        }
         IBaseView.hideLoading()
     }
 

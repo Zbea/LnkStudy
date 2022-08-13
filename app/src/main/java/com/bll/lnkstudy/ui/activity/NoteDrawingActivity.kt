@@ -172,7 +172,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
 
     private fun showPopWindowBtn() {
 
-         PopWindowDrawingButton(this, iv_btn, 4,-250).builder()
+         PopWindowDrawingButton(this, iv_btn, 4,-270).builder()
         ?.setOnSelectListener(object : PopWindowDrawingButton.OnClickListener {
             override fun onClick(type: Int) {
                 if (type==1){

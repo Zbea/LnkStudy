@@ -1,7 +1,9 @@
 package com.bll.lnkstudy.dialog
 
 import android.content.Context
-import android.view.*
+import android.view.ContextThemeWrapper
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.utils.DP2PX
-import com.bumptech.glide.Glide
+import com.bll.lnkstudy.utils.GlideUtils
 
 
 class BookDetailsDialog(private val context: Context, private val book: Book) {
@@ -38,8 +40,8 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
         val tv_incetro = dialog?.findViewById<TextView>(R.id.tv_info)
         val tv_book_name = dialog?.findViewById<TextView>(R.id.tv_book_name)
 
-        Glide.with(context).load(book.assetUrl)
-            .thumbnail(0.1f).into(iv_book!!) //加载图片
+        GlideUtils.setImageUrl(context,book.assetUrl,iv_book)
+
         tv_book_name?.text = book.name
         tv_price?.text = "价格： " + book.price
         tv_incetro?.text = "简介： " + book.description

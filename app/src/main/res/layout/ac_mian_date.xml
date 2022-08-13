@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="@dimen/navigation_height"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -33,13 +33,13 @@
                 android:layout_marginLeft="30dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="40sp" />
+                android:textSize="27sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -47,13 +47,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
                 <TextView
                     android:id="@+id/tv_lunar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -9,22 +7,13 @@
 
     <include layout="@layout/common_fragment_title" />
 
-    <com.androidkun.xtablayout.XTabLayout
-        android:id="@+id/xtab"
+    <include
+        layout="@layout/common_xtab"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/xtab_height"
+        android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="@dimen/navigation_height"
-        android:layout_marginEnd="60dp"
-        app:xTabMode="fixed"
-        app:xTabDisplayNum="6"
-        app:xTabDividerWidthWidthText="true"
-        app:xTabIndicatorColor="@color/black"
-        app:xTabIndicatorHeight="2dp"
-        app:xTabSelectedTextColor="@color/black"
-        app:xTabSelectedTextSize="24sp"
-        app:xTabTextColor="@color/black"
-        app:xTabTextSize="24sp"></com.androidkun.xtablayout.XTabLayout>
+        android:layout_marginEnd="60dp" />
 
 
     <LinearLayout
@@ -32,8 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/xtab"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,13 +51,14 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_painting_song" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_marginTop="@dimen/dp_5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:gravity="center"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/iv_jd"
                 android:layout_width="wrap_content"
@@ -84,6 +73,7 @@
                 android:src="@mipmap/icon_painting_dd" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,6 +101,7 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_painting_qing" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

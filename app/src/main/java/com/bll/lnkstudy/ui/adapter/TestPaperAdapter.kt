@@ -5,8 +5,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.TestPaper
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.StringUtils
-import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -38,8 +38,7 @@ class TestPaperAdapter(layoutResId: Int, data: List<TestPaper>?) : BaseQuickAdap
         imageView.layoutParams=layoutParams
         imageView.scaleType = ImageView.ScaleType.FIT_CENTER
 
-        Glide.with(mContext)
-            .load(url).into(imageView)
+        GlideUtils.setImageUrl(mContext,url,imageView)
 
         return imageView
     }

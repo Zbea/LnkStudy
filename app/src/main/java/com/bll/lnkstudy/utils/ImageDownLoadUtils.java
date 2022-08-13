@@ -52,33 +52,26 @@ public class ImageDownLoadUtils {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap = null;
-                try {
-                    bitmap = Glide.with(context)
-                            .asBitmap()
-                            .load(url)
-                            .into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL)
-                            .get();
-                    if (bitmap != null){
-                        saveBmpGallery(bitmap,index+1);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (bitmap != null && file!=null) {
-                        map.put(index,file.getPath());
-                    } else {
-                        unLoadList.add(index);
-                    }
-                    if (index==urls.length-1){
-//                        Log.i("debug","结束回调");
-                        if (map.size()==urls.length)
-                        {
+                Bitmap bitmap=GlideUtils.getBitmap(context,url);
+                if (bitmap != null){
+                    saveBmpGallery(bitmap,index+1);
+                }
+
+                if (bitmap != null && file!=null) {
+                    map.put(index,file.getPath());
+                } else {
+                    unLoadList.add(index);
+                }
+
+                if (index==urls.length-1){
+                    if (map.size()==urls.length)
+                    {
+                        if (callBack!=null)
                             callBack.onDownLoadSuccess(map);
-                        }
-                        if (unLoadList.size()>0){
+                    }
+                    if (unLoadList.size()>0){
+                        if (callBack!=null)
                             callBack.onDownLoadFailed(unLoadList);
-                        }
                     }
                 }
             }
@@ -94,6 +87,10 @@ public class ImageDownLoadUtils {
     private void saveBmpGallery(Bitmap bmp,int i) {
         // 声明输出流
         FileOutputStream outStream = null;
+        File folderFile=new File(path);
+        if (!folderFile.exists()) {
+            folderFile.mkdirs();
+        }
         try {
             file = new File(path,i+".png");
             // 获得输出流，如果文件中有内容，追加内容
@@ -112,11 +109,11 @@ public class ImageDownLoadUtils {
                 e.printStackTrace();
             }
         }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
+//        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
+//        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        Uri uri = Uri.fromFile(file);
+//        intent.setData(uri);
+//        context.sendBroadcast(intent);
 
     }
 

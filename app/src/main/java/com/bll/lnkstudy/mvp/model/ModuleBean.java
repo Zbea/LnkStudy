@@ -4,6 +4,6 @@ package com.bll.lnkstudy.mvp.model;
 public class ModuleBean {
 
     public String name;
+    public int resContentId;
     public int resId;
-
 }

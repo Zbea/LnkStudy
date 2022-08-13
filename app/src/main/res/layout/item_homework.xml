@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center">
 
     <RelativeLayout
-        android:id="@+id/ll_content"
-        android:layout_width="240dp"
-        android:layout_height="313dp"
-        >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="1dp"
+        android:background="@drawable/bg_black_stroke_5dp_corner">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:textColor="@color/black"
-            android:text="作业本"
-            android:textStyle="bold"
-            android:textSize="34sp" />
+        <com.bll.lnkstudy.widget.RoundImageView
+            android:id="@+id/iv_image"
+            android:layout_width="224dp"
+            android:layout_height="298dp"
+            android:src="@mipmap/icon_homework_cover_1"
+            app:radius="6dp" />
 
-
-        <ImageView
-            android:id="@+id/iv_pg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_homework_pg_bg"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:layout_margin="@dimen/dp_10"
-            />
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="作业本"
+        android:textColor="@color/black"
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
 
+    <ImageView
+        android:id="@+id/iv_pg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_homework_pg_bg"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:layout_margin="@dimen/dp_10"
+        />
     </RelativeLayout>
-
 
 </LinearLayout>

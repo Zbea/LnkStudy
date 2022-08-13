@@ -88,25 +88,9 @@ public class SToast {
      * 取消显示
      * 建议放在 baseActivity中做统一处理
      */
-    public static void cancle() {
+    public static void cancel() {
         if (toast != null) {
             toast.cancel();
-        }
-    }
-
-    public static void showToast(ExceptionHandle.ResponeThrowable responseThrowable) {
-        int code = responseThrowable.code;
-        if (code == ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION) {
-            showText(ctx.getString(R.string.net_work_error));
-        }else if(code == ExceptionHandle.ERROR.NETWORD_ERROR ||code==ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR){
-            showText(ctx.getString(R.string.connect_server_timeout));
-        } else if(code ==ExceptionHandle.ERROR.PARSE_ERROR){
-            showText(ctx.getString(R.string.parse_data_error));
-        }else if(code==ExceptionHandle.ERROR.HTTP_ERROR){
-            showText(ctx.getString(R.string.connect_error));
-        }
-        else {
-            showText(ctx.getString(R.string.on_server_error));
         }
     }
 }

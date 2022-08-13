@@ -7,6 +7,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.ui.adapter.ListAdapter
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 
@@ -53,7 +54,7 @@ class ListActivity:BaseActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-
+        rv_list?.addItemDecoration(SpaceGridItemDeco(0,125))
         pageNumberView()
 
     }

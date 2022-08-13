@@ -3,14 +3,19 @@ package com.bll.lnkstudy.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bll.lnkstudy.greendao.BaseTypeBeanDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.NoteBookDao;
-import com.bll.lnkstudy.mvp.model.NoteBook;
+import com.bll.lnkstudy.greendao.RecordBeanDao;
+import com.bll.lnkstudy.mvp.model.BaseTypeBean;
+import com.bll.lnkstudy.mvp.model.RecordBean;
+
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
 
-public class NoteBookGreenDaoManager {
+public class BaseTypeBeanDaoManager {
+
 
     /**
      * 数据库名字
@@ -40,23 +45,23 @@ public class NoteBookGreenDaoManager {
     /**
      *
      */
-    private static NoteBookGreenDaoManager mDbController;
+    private static BaseTypeBeanDaoManager mDbController;
 
 
-    private NoteBookDao noteDao;  //note表
+    private BaseTypeBeanDao dao;
 
     /**
      * 构造初始化
      *
      * @param context
      */
-    public NoteBookGreenDaoManager(Context context) {
+    public BaseTypeBeanDaoManager(Context context) {
         this.context = context;
         mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
         mDaoMaster = new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
 
-        noteDao = mDaoSession.getNoteBookDao(); //note表
+        dao = mDaoSession.getBaseTypeBeanDao();
     }
 
 
@@ -76,34 +81,30 @@ public class NoteBookGreenDaoManager {
     /**
      * 获取单例（context 最好用application的context  防止内存泄漏）
      */
-    public static NoteBookGreenDaoManager getInstance(Context context) {
+    public static BaseTypeBeanDaoManager getInstance(Context context) {
         if (mDbController == null) {
-            synchronized (NoteBookGreenDaoManager.class) {
+            synchronized (BaseTypeBeanDaoManager.class) {
                 if (mDbController == null) {
-                    mDbController = new NoteBookGreenDaoManager(context);
+                    mDbController = new BaseTypeBeanDaoManager(context);
                 }
             }
         }
         return mDbController;
     }
 
-    public void insertOrReplaceNote(NoteBook bean) {
-        noteDao.insertOrReplace(bean);
-    }
-
-    public NoteBook queryByNoteID(Long noteID) {
-        NoteBook queryNote = noteDao.queryBuilder().where(NoteBookDao.Properties.Id.eq(noteID)).build().unique();
-        return queryNote;
-    }
-
-    public List<NoteBook> queryAllNote() {
-        List<NoteBook> queryNoteList = noteDao.queryBuilder().build().list();
-        return queryNoteList;
+    public void insertOrReplace(BaseTypeBean bean) {
+        dao.insertOrReplace(bean);
     }
 
 
-    public void deleteNote(NoteBook note){
-        noteDao.delete(note);
+    public List<BaseTypeBean> queryAll() {
+        List<BaseTypeBean> queryList = dao.queryBuilder().build().list();
+        return queryList;
     }
+
+    public void deleteBean(BaseTypeBean bean){
+        dao.delete(bean);
+    }
+
 
 }
