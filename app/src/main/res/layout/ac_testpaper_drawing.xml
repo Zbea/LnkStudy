@@ -8,11 +8,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ll_bottom"
+        android:layout_above="@+id/ll_bottom"
         android:orientation="horizontal"
         >
 
         <LinearLayout
+            android:id="@+id/ll_content_a"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -24,9 +25,11 @@
                 />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/ll_content_b"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:visibility="gone"
             android:layout_weight="1">
             <com.android.internal.widget.PreferenceImageView
                 android:id="@+id/v_content_b"
@@ -37,57 +40,39 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <include
         android:id="@+id/ll_bottom"
+        layout="@layout/common_drawing_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawing_bottom_height"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/btn_page_up"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_30"
-            android:scaleType="center"
-            android:src="@mipmap/icon_draw_page_up" />
+        android:layout_alignParentBottom="true" />
+    <LinearLayout
+        android:id="@+id/ll_catalog"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_above="@+id/ll_bottom"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_page_a"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/black_50"
-            android:textSize="24sp" />
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:text="目录"
+            android:background="@drawable/bg_catalog_top"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_page_b"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/black_50"
-            android:textSize="24sp" />
-
-        <ImageView
-            android:id="@+id/btn_page_down"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:scaleType="center"
-            android:src="@mipmap/icon_draw_page_down" />
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/tv_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:padding="@dimen/dp_30"
-        android:src="@mipmap/icon_save" />
 
 </RelativeLayout>

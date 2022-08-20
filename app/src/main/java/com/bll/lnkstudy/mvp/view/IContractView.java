@@ -28,10 +28,14 @@ public interface IContractView {
     interface IAccountInfoViewI extends IBaseView {
         void onLogout();
         void onEditNameSuccess();
-        void getXdList(AccountList list);
         void getVipList(AccountList list);
-        void onXdOrder(AccountOrder order);
         void onVipOrder(AccountOrder order);
+    }
+
+    //钱包页面回调
+    interface IWalletView extends IBaseView {
+        void getXdList(AccountList list);
+        void onXdOrder(AccountOrder order);
         void checkOrder(AccountOrder order);
     }
 

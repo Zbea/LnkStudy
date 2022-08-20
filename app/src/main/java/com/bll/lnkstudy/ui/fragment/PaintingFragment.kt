@@ -24,8 +24,7 @@ class PaintingFragment : BaseFragment(){
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-        setPageTitle("书画")
-        setDisBackShow()
+        setTitle("书画")
         initTab()
 
         iv_han.setOnClickListener {

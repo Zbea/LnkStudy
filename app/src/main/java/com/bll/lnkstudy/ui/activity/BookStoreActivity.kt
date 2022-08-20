@@ -35,7 +35,6 @@ import java.util.concurrent.locks.ReentrantLock
 
 class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
-    private var title="书城"
     private val mDownMapPool = HashMap<Long,BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter=BookStorePresenter(this)
@@ -98,16 +97,14 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     }
 
     override fun initData() {
-        title=intent.getStringExtra("title").toString()
         getData()
         getDataType()
     }
 
     override fun initView() {
-
-        setPageTitle(title)
+        setTitle(intent.getStringExtra("title").toString())
         initRecyclerView()
-        setShowSearch(true)
+        showSearchView(true)
 
         btn_page_up.setOnClickListener {
             if (pageIndex>1){

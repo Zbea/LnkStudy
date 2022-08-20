@@ -27,8 +27,7 @@ class TeachFragment : BaseFragment(){
     }
 
     override fun initView() {
-        setPageTitle("义教")
-        setDisBackShow()
+        setTitle("义教")
 
         courses=DataBeanManager.getIncetance().courses
 

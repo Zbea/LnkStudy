@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
@@ -44,12 +45,12 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     var mView:View?=null
     var tvPageTitle: TextView? = null
-    var tvMyCollect: TextView? = null
     var ivBack: ImageView? = null
     var ivHomework: ImageView? = null
     var ivManagers: ImageView? = null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
+    var llSearch: LinearLayout?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -124,41 +125,43 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun initCommonTitle() {
         tvPageTitle = requireView().findViewById(R.id.tv_title)
         ivBack=requireView().findViewById(R.id.iv_back)
-        tvMyCollect = requireView().findViewById(R.id.tv_myCollect)
         ivHomework=requireView().findViewById(R.id.iv_homework)
         ivManagers = requireView().findViewById(R.id.iv_note_manager)
+        llSearch= requireView().findViewById(R.id.ll_search)
     }
 
-    fun setPageTitle(pageTitle: String) {
+    fun setTitle(pageTitle: String) {
         if (tvPageTitle != null) {
             tvPageTitle?.text = pageTitle
         }
     }
 
-    fun setDisBackShow() {
-        if (ivBack != null) {
-            ivBack?.visibility=View.GONE
+    fun showSearch(isShow:Boolean) {
+        if (isShow){
+            showView(llSearch)
+        }
+        else{
+            disMissView(llSearch)
         }
     }
 
-    fun setShowHomework() {
-        if (ivHomework != null) {
-            ivHomework?.visibility=View.VISIBLE
+    fun showBackView(isShow:Boolean) {
+        if (isShow){
+            showView(ivBack)
+        }
+        else{
+            disMissView(ivBack)
         }
     }
 
-    fun setShowNoteAdd() {
-        if (ivManagers != null) {
-            ivManagers?.visibility=View.VISIBLE
-        }
+    fun showHomeworkView() {
+        showView(ivHomework)
     }
 
-    fun setMyCollect()
-    {
-        if (tvMyCollect != null) {
-            tvMyCollect?.visibility=View.VISIBLE
-        }
+    fun showNoteView() {
+        showView(ivManagers)
     }
+
 
     /**
      * 显示view

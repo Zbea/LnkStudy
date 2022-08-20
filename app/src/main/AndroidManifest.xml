@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.bll.lnkstudy">
+    package="com.bll.lnkstudy"
+    >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -52,7 +53,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         >
 
-        <activity android:name=".ui.activity.AccountLoginActivity"
+        <activity android:name=".ui.activity.LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,10 +63,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.activity.AccountLoginActivity"/>
+
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
         <activity android:name=".ui.activity.MainActivity">
+            <intent-filter>
 
+            </intent-filter>
             </activity>
         <activity android:name=".ui.activity.date.MainDateActivity"/>
         <activity android:name=".ui.activity.date.MainDateAddActivity"/>
@@ -86,13 +91,18 @@
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.NoteBookManagerActivity"/>
-        <activity android:name=".ui.activity.TestPaperListActivity"/>
-        <activity android:name=".ui.activity.TestPaperDrawingActivity"/>
+        <activity android:name=".ui.activity.MainReceivePaperDrawingActivity"/>
         <activity android:name=".ui.activity.NoteDrawingActivity"/>
         <activity android:name=".ui.activity.HomeworkDrawingActivity"/>
         <activity android:name=".ui.activity.RecordActivity"/>
         <activity android:name=".ui.activity.RecordListActivity"/>
         <activity android:name=".ui.activity.PaintingDrawingActivity"/>
+        <activity android:name=".ui.activity.BookCaseCollectActivity"/>
+        <activity android:name=".ui.activity.PaperDrawingActivity"/>
+        <activity android:name=".ui.activity.WalletActivity"
+            android:theme="@style/activityCustom"
+            />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="@string/authority"

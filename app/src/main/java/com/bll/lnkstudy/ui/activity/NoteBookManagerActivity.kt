@@ -29,7 +29,7 @@ class NoteBookManagerActivity : BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("笔记本管理")
+        setTitle("笔记本管理")
 
         initRecyclerView()
     }

@@ -50,7 +50,7 @@
             android:layout_alignTop="@id/iv_book"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/iv_book"
-            android:drawableEnd="@mipmap/icon_smoney"
+            android:drawableEnd="@mipmap/icon_wallet_smoney"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:text="价格"

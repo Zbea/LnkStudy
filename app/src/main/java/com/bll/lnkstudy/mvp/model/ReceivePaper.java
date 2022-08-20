@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.mvp.model;
 
-public class ReceivePaper {
+import java.io.Serializable;
+
+public class ReceivePaper implements Serializable {
 
     public int id;
     public int type;//类型 0收到作业 1收到试卷

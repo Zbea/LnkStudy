@@ -9,25 +9,6 @@ import com.bll.lnkstudy.net.*
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoViewI) : BasePresenter<IContractView.IAccountInfoViewI>(view) {
 
-    //获取学豆列表
-    fun getXdList() {
-
-        var map=HashMap<String,String>()
-        map.put("pageIndex", "1")
-        map.put("pageSize", "10")
-
-        val list = RetrofitManager.service.getSMoneyList(map)
-        doRequest(list, object : Callback<AccountList>(view) {
-            override fun failed(tBaseResult: BaseResult<AccountList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AccountList>) {
-                view.getXdList(tBaseResult.data)
-            }
-
-        }, true)
-
-    }
 
     //获取vip列表
     fun getVipList() {
@@ -41,20 +22,6 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoViewI) : BasePresente
             }
             override fun success(tBaseResult: BaseResult<AccountList>) {
                 view.getVipList(tBaseResult.data)
-            }
-        }, true)
-    }
-
-    //提交学豆订单
-    fun postXdOrder(id:String)
-    {
-        val post = RetrofitManager.service.postOrder(id)
-        doRequest(post, object : Callback<AccountOrder>(view) {
-            override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AccountOrder>) {
-                view.onXdOrder(tBaseResult.data)
             }
         }, true)
     }
@@ -73,19 +40,6 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoViewI) : BasePresente
         }, true)
     }
 
-    //查看订单状态
-    fun checkOrder(id:String)
-    {
-        val order = RetrofitManager.service.getOrderStatus(id)
-        doRequest(order, object : Callback<AccountOrder>(view) {
-            override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AccountOrder>) {
-                view.checkOrder(tBaseResult.data)
-            }
-        }, false)
-    }
 
     fun editName(name: String) {
 

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_50"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_line_bottom"
+    >
+
+    <TextView
+        android:id="@+id/tv_group"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="match_parent"
+        android:text="班群"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_groupNumber"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="班群号"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="班名"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_teacher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="老师"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_course"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="课目"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="人数"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_out"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="match_parent"
+        android:text="退出"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"/>
+
+</LinearLayout>

@@ -19,16 +19,16 @@
             android:src="@mipmap/icon_homework_cover_1"
             app:radius="6dp" />
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="作业本"
-        android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:text="作业本"
+            android:textColor="@color/black"
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
 
     <ImageView

@@ -45,7 +45,7 @@ class MainDateScheduleDetailsActivity: BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("日程")
+        setTitle("日程")
 
         starLong=dateScheduleEvent?.startTime!!
         endLong=dateScheduleEvent?.endTime!!

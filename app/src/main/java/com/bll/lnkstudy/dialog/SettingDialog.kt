@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SystemSettingUtils
@@ -73,6 +74,18 @@ class SettingDialog(val context: Context){
             onClickListener?.onRecycleBin()
         }
 
+        val llWallet=dialog?.findViewById<LinearLayout>(R.id.ll_wallet)
+        llWallet?.setOnClickListener {
+            dialog?.dismiss()
+            onClickListener?.onWallet()
+        }
+
+        val tvCollect=dialog?.findViewById<TextView>(R.id.tv_myCollect)
+        tvCollect?.setOnClickListener {
+            dialog?.dismiss()
+            onClickListener?.onCollect()
+        }
+
         var volume=SystemSettingUtils.getMediaVolume(context)
         var max=SystemSettingUtils.getMediaMaxVolume(context)
         val seekBar=dialog?.findViewById<SeekBar>(R.id.seekBar)
@@ -119,6 +132,8 @@ class SettingDialog(val context: Context){
         fun onClickAppStore()
         fun onClickAirPlaneMode()
         fun onRecycleBin()
+        fun onCollect()
+        fun onWallet()
     }
 
     fun setOnDialogClickListener(onClickListener: OnClickListener?) {

@@ -40,9 +40,7 @@ class BookCaseFragment: BaseFragment() {
 
         EventBus.getDefault().register(this)
 
-        setPageTitle("书架")
-        setDisBackShow()
-        setMyCollect()
+        setTitle("书架")
 
         initRecyclerView()
         findData()
@@ -50,12 +48,6 @@ class BookCaseFragment: BaseFragment() {
         tv_type.setOnClickListener {
             (activity as BaseActivity).navigationToFragment(BookCaseTypeFragment())
         }
-
-        tvMyCollect?.setOnClickListener {
-            var fragment=BookCaseMyCollectFragment().newInstance(1)
-            (activity as BaseActivity).navigationToFragment(fragment)
-        }
-
     }
 
     override fun lazyLoad() {
@@ -88,9 +80,7 @@ class BookCaseFragment: BaseFragment() {
      */
     private fun findData(){
         books.clear()
-        for (i in 0..5){
-            books.addAll(BookGreenDaoManager.getInstance(activity).queryAllBook("0"))
-        }
+        books=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
         mAdapter?.setNewData(books)
         onChangeTopView()
     }
@@ -101,7 +91,7 @@ class BookCaseFragment: BaseFragment() {
         if (books.size>0){
             var book=books[0]
             tv_top_page.text=""+book.pageIndex+"页"
-//            GlideUtils.setImageRoundUrl(activity,book.assetUrl,iv_content1,5)
+            GlideUtils.setImageRoundUrl(activity,book.assetUrl,iv_content1,5)
 
             if (book.pageIndex==1)
             {

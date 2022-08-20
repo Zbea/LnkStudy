@@ -35,8 +35,8 @@ class RecordActivity : BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("录音")
-        setSaveShow()
+        setTitle("录音")
+        showSaveView()
 
         ivSave?.setOnClickListener {
             if (!FileUtils.isExist(path)) {

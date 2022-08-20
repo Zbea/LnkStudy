@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -43,29 +42,18 @@ class TextbookFragment : BaseFragment(){
      * 查找本地课本
      */
     private fun findData(){
-        var books=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
-        for (i in 0..1)
-        {
-            books.addAll(books)
-        }
+        books=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
         mAdapter?.setNewData(books)
 
     }
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setPageTitle("课本")
-        setDisBackShow()
-        setMyCollect()
+        setTitle("课本")
 
         initTab()
         initRecyclerView()
         findData()
-
-        tvMyCollect?.setOnClickListener {
-            var fragment=BookCaseMyCollectFragment().newInstance(0)
-            (activity as BaseActivity).navigationToFragment(fragment)
-        }
     }
 
     override fun lazyLoad() {
@@ -112,7 +100,6 @@ class TextbookFragment : BaseFragment(){
         mAdapter = BookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco5(71,38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)

@@ -58,19 +58,19 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     override fun initView() {
 
         if (flags==2){
-            setPageTitle("修改密码")
+            setTitle("修改密码")
             ll_name.visibility= View.GONE
             ll_user.visibility=View.GONE
             rg_register.visibility=View.GONE
             btn_register.text="提交"
         }
         else if (flags==1){
-            setPageTitle("找回密码")
+            setTitle("找回密码")
             ll_name.visibility= View.GONE
             btn_register.text="提交"
         }
         else{
-            setPageTitle("注册账号")
+            setTitle("注册账号")
         }
 
 

@@ -128,33 +128,29 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     }
 
-    fun setDisBackShow() {
-        if (ivBack != null) {
-            ivBack!!.visibility = View.GONE
-        }
-    }
-
-    fun setShowSearch(isShow:Boolean) {
+    fun showBackView(isShow:Boolean) {
         if (isShow){
-            if (llSearch != null) {
-                showView(llSearch)
-            }
+            showView(ivBack)
         }
         else{
-            if (llSearch != null) {
-                disMissView(llSearch)
-            }
-        }
-
-    }
-
-    fun setSaveShow() {
-        if (ivSave != null) {
-            ivSave!!.visibility = View.VISIBLE
+            disMissView(ivBack)
         }
     }
 
-    fun setPageTitle(pageTitle: String) {
+    fun showSearchView(isShow:Boolean) {
+        if (isShow){
+            showView(llSearch)
+        }
+        else{
+            disMissView(llSearch)
+        }
+    }
+
+    fun showSaveView() {
+        showView(ivSave)
+    }
+
+    fun setTitle(pageTitle: String) {
         if (tvPageTitle != null) {
             tvPageTitle!!.text = pageTitle
         }

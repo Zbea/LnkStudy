@@ -9,8 +9,8 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TeachList
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
+import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.*
 
 class TeachListActivity:BaseActivity() {
 
@@ -37,7 +37,7 @@ class TeachListActivity:BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle(course?.name.toString())
+        setTitle(course?.name.toString())
 
         rv_list.layoutManager = GridLayoutManager(this,6)//创建布局管理
         mAdapter = TeachListAdapter(R.layout.item_teach_content, null)

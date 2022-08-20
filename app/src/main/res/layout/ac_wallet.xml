@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:padding="@dimen/dp_40"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="我的钱包"
+        android:textSize="28sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_60"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/tv_xdmoney"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="学豆"
+            android:textSize="@dimen/sp_26"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/tv_buy"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:text="购买学豆"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:background="@drawable/bg_gary_arch"
+            />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

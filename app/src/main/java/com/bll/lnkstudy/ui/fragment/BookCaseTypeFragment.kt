@@ -48,7 +48,8 @@ class BookCaseTypeFragment: BaseFragment() {
     override fun initView() {
         EventBus.getDefault().register(this)
 
-        setPageTitle("分类展示")
+        setTitle("分类展示")
+        showSearch(true)
 
         initTab()
 
@@ -56,7 +57,6 @@ class BookCaseTypeFragment: BaseFragment() {
         mAdapter = BookAdapter(R.layout.item_book_type, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco4(19,38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)
@@ -143,10 +143,7 @@ class BookCaseTypeFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll.clear()
-        for (i in 0..6){
-            booksAll.addAll(BookGreenDaoManager.getInstance(activity).queryAllBook("0",type.toString()))
-        }
+        booksAll=BookGreenDaoManager.getInstance(activity).queryAllBook("0",type.toString())
         pageNumberView()
     }
 

@@ -23,12 +23,22 @@ class AppListActivity:BaseActivity() {
         appBean.appName="应用中心"
         appBean.image=getDrawable(R.mipmap.icon_app_center)
 
+        var appBean1=AppBean()
+        appBean1.appName="操机技巧"
+        appBean1.image=getDrawable(R.mipmap.icon_app_cz)
+
+        var appBean2=AppBean()
+        appBean2.appName="官方壁纸"
+        appBean2.image=getDrawable(R.mipmap.icon_app_wallpaper)
+
         apps=AppUtils.scanLocalInstallAppList(this)
         apps.add(0,appBean)
+        apps.add(1,appBean1)
+        apps.add(2,appBean2)
     }
 
     override fun initView() {
-        setPageTitle("应用中心")
+        setTitle("应用中心")
 
         initRecycler()
 

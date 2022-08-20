@@ -139,7 +139,7 @@ class PaintingDrawingActivity : BaseActivity() {
         }
 
 
-        iv_screen.setOnClickListener {
+        iv_expand.setOnClickListener {
             if (isScreen) {
                 isScreen = false
                 ll_content_a.visibility = View.GONE

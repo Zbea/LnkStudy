@@ -46,8 +46,7 @@
             android:layout_width="261px"
             android:layout_height="match_parent"
             android:background="@drawable/bg_black_stroke_5dp_corner"
-            android:src="@mipmap/icon_title"
-            android:padding="1dp"
+            android:padding="2dp"
             app:radius="6dp"/>
 
         <RelativeLayout
@@ -60,6 +59,7 @@
                 android:id="@+id/iv_content2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="2dp"
                 app:radius="6dp" />
 
             <TextView

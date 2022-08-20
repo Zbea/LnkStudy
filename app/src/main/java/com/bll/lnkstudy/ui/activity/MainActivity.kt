@@ -125,6 +125,14 @@ class MainActivity : BaseActivity() {
                 override fun onRecycleBin() {
 
                 }
+
+                override fun onCollect() {
+                    startActivity(Intent(this@MainActivity,BookCaseCollectActivity::class.java))
+                }
+
+                override fun onWallet() {
+                    startActivity(Intent(this@MainActivity,WalletActivity::class.java))
+                }
             })
         }
         else{

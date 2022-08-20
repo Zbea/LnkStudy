@@ -1,24 +1,19 @@
-package com.bll.lnkstudy.ui.fragment
+package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants.Companion.AFTER_SCHOOL_EVENT
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
-import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco4
 import com.chad.library.adapter.base.BaseQuickAdapter
+import kotlinx.android.synthetic.main.ac_bookcase_mycollect.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_bookcase_mycollect.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,56 +21,44 @@ import org.greenrobot.eventbus.ThreadMode
 /**
  * 书架收藏
  */
-class BookCaseMyCollectFragment: BaseFragment() {
-
-    private val ARG_TYPE="TYPE"
+class BookCaseCollectActivity: BaseActivity() {
 
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<Book>()
     private var book:Book?=null
-    private var type=0//类型0课本1书籍
     private var booksAll= mutableListOf<Book>()//所有数据
     private var bookMap=HashMap<Int,MutableList<Book>>()//将所有数据按12个分页
     private var pageIndex=1
 
-    fun newInstance(index: Int): BookCaseMyCollectFragment? {
-        val fragment= BookCaseMyCollectFragment()
-        val args = Bundle()
-        args.putInt(ARG_TYPE, index)
-        fragment.arguments = args
-        return fragment
+
+    override fun layoutId(): Int {
+        return R.layout.ac_bookcase_mycollect
     }
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_bookcase_mycollect
+    override fun initData() {
+
     }
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setPageTitle("我的收藏")
-        type= arguments?.getInt(ARG_TYPE,0)!!
+        setTitle("我的收藏")
 
         initRecyclerView()
 
         findData()
 
-        ivBack?.setOnClickListener {
-            (activity as BaseActivity).popToStack(BookCaseMyCollectFragment())
-        }
     }
 
-    override fun lazyLoad() {
-    }
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_book_type, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco4(19,70))
+        rv_list?.addItemDecoration(SpaceGridItemDeco4(54,70))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var intent=Intent(activity,BookDetailsActivity::class.java)
+            var intent=Intent(this,BookDetailsActivity::class.java)
 //            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
             intent.putExtra("book_id",books[position].id)
             startActivity(intent)
@@ -88,30 +71,17 @@ class BookCaseMyCollectFragment: BaseFragment() {
 
     //取消收藏
     private fun cancel(): Boolean {
-        CommonDialog(activity).setContent("确认取消收藏？").builder().setDialogClickListener(object :
+        CommonDialog(this).setContent("确认取消收藏？").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
             override fun ok() {
                 book?.isCollect=false
-                BookGreenDaoManager.getInstance(activity).insertOrReplaceBook(book) //删除本地数据库
+                BookGreenDaoManager.getInstance(this@BookCaseCollectActivity).insertOrReplaceBook(book) //删除本地数据库
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()
 
-                when(type){
-                    1->{
-                        EventBus.getDefault().post(BOOK_EVENT)
-                    }
-                    2->{
-                        EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                    }
-                    3->{
-                        EventBus.getDefault().post(AFTER_SCHOOL_EVENT)
-                    }
-                    else ->{
-
-                    }
-                }
+                EventBus.getDefault().post(BOOK_EVENT)
 
             }
         })
@@ -123,18 +93,7 @@ class BookCaseMyCollectFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll.clear()
-        booksAll=if (type==1){
-            BookGreenDaoManager.getInstance(activity).queryAllBook("0",true)
-        }
-        else{
-            BookGreenDaoManager.getInstance(activity).queryAllTextBook("0",true)
-        }
-
-        for (i in 0..5){
-            booksAll.addAll(booksAll)
-        }
-
+        booksAll=BookGreenDaoManager.getInstance(this).queryAllBook(true)
         pageNumberView()
     }
 

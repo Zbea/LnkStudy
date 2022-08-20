@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_bottom"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:id="@+id/ll_content_a"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_a"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_content_b"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:gravity="center"
+            android:layout_weight="1">
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_b"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/ll_bottom"
+        layout="@layout/common_drawing_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_bottom_height"
+        android:layout_alignParentBottom="true" />
+
+
+    <ImageView
+        android:id="@+id/tv_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/dp_30"
+        android:src="@mipmap/icon_save" />
+
+</RelativeLayout>

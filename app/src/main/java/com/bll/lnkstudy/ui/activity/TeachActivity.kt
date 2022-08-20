@@ -21,7 +21,7 @@ class TeachActivity:BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle(teach?.name!!)
+        setTitle(teach?.name!!)
 
         jz_vd.setUp(teach?.address, "")
         jz_vd.startPreloading(); //开始预加载，加载完等待播放

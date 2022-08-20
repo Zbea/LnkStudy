@@ -135,10 +135,9 @@ public class BookGreenDaoManager {
     }
 
     //查找已收藏书籍
-    public List<Book> queryAllBook(String type,boolean isCollect) {
-        WhereCondition whereCondition=BookDao.Properties.Type.notEq(type);
-        WhereCondition whereCondition1=BookDao.Properties.IsCollect.eq(isCollect);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
+    public List<Book> queryAllBook(boolean isCollect) {
+        WhereCondition whereCondition=BookDao.Properties.IsCollect.eq(isCollect);
+        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition).orderDesc(BookDao.Properties.Time).build().list();
         return queryBookList;
     }
 
@@ -168,15 +167,6 @@ public class BookGreenDaoManager {
         Book book = bookDao.queryBuilder().where(whereCondition,whereCondition1,whereCondition2).build().unique();
         return book;
     }
-
-    //查找已收藏课本
-    public List<Book> queryAllTextBook(String type,boolean isCollect) {
-        WhereCondition whereCondition=BookDao.Properties.Type.eq(type);
-        WhereCondition whereCondition1=BookDao.Properties.IsCollect.eq(isCollect);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).build().list();
-        return queryBookList;
-    }
-
 
     //删除书籍数据d对象
     public void deleteBook(Book book){

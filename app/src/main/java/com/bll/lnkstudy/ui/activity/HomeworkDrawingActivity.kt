@@ -152,7 +152,7 @@ class HomeworkDrawingActivity : BaseActivity() {
             }
         }
 
-        iv_screen.setOnClickListener {
+        iv_expand.setOnClickListener {
             if (isScreen) {
                 isScreen = false
                 ll_content_a.visibility = View.GONE
@@ -192,7 +192,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if (currentPosition != position) {
                 currentPosition = position
-                page = homeworkLists[position].page - 1
+                page = homeworkLists[position].page
                 changeContent()
 
                 disMissView(ll_catalog)
@@ -286,7 +286,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         homework?.bgResId = homeworkType?.resId
         homework?.state = 0
 
-        homework?.page = homeworkContentLists.size + 1 //设置作业页码 作业内容的第一个
+        homework?.page = homeworkContentLists.size //设置作业页码 作业内容的第一个
 
         HomeworkDaoManager.getInstance(this).insertOrReplace(homework)
         homework?.id = HomeworkDaoManager.getInstance(this).insertId

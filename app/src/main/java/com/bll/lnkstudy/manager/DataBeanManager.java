@@ -110,18 +110,6 @@ public class DataBeanManager {
             R.mipmap.icon_teach_shengwu,
     };
 
-    public Integer[] kmTextbookImage = {
-            R.mipmap.icon_main_course_yuwen,
-            R.mipmap.icon_main_course_shuxue,
-            R.mipmap.icon_main_course_yinyu,
-            R.mipmap.icon_main_course_wuli,
-            R.mipmap.icon_main_course_huaxue,
-            R.mipmap.icon_main_course_dili,
-            R.mipmap.icon_main_course_sizheng,
-            R.mipmap.icon_main_course_lishi,
-            R.mipmap.icon_main_course_shengwu,
-    };
-
     /**
      * 获取index栏目
      *
@@ -314,7 +302,6 @@ public class DataBeanManager {
             CourseBean courseBean = new CourseBean();
             courseBean.name = kmArray[i];
             courseBean.imageId = kmTeachImage[i];
-            courseBean.mainCourseId = kmTextbookImage[i];
             courseBean.courseId = i;
             list.add(courseBean);
         }
@@ -367,7 +354,7 @@ public class DataBeanManager {
         homeWork1.name = "家庭作业本";
         homeWork1.type = 1;
         homeWork1.courseId = courseId;
-        homeWork1.bgResId = R.mipmap.icon_homework_cover_1;
+        homeWork1.bgResId = R.mipmap.icon_homework_cover_2;
         homeWork1.resId = resId;
         list.add(homeWork1);
 
@@ -375,7 +362,7 @@ public class DataBeanManager {
         homeWork2.name = "课件作业集";
         homeWork2.type = 2;
         homeWork2.courseId = courseId;
-        homeWork2.bgResId = R.mipmap.icon_homework_cover_1;
+        homeWork2.bgResId = R.mipmap.icon_homework_cover_3;
         homeWork2.resId = resId;
         list.add(homeWork2);
 
@@ -385,7 +372,7 @@ public class DataBeanManager {
             homeWork3.type = 3;
             homeWork3.isListenToRead = true;
             homeWork3.courseId = courseId;
-            homeWork3.bgResId = R.mipmap.icon_homework_cover_2;
+            homeWork3.bgResId = R.mipmap.icon_homework_cover_4;
             list.add(homeWork3);
         }
 

@@ -1,5 +1,8 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.graphics.Bitmap
+import android.graphics.Point
+import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
@@ -21,6 +24,7 @@ import com.bll.utilssdk.utils.FileUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details.*
+import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -34,9 +38,9 @@ class BookDetailsActivity:BaseActivity() {
     private var childItems= mutableListOf<CatalogChildBean>()
 
     private var pageCount = 1
-    private var pageIndex = 1 //当前页码
+    private var page = 1 //当前页码
 
-    private var isScreen=false //是否全屏
+    private var isExpand=false //是否全屏
 
     private var elik_a: EinkPWInterface?=null
     private var elik_b: EinkPWInterface?=null
@@ -48,7 +52,7 @@ class BookDetailsActivity:BaseActivity() {
     override fun initData() {
         val id=intent.getLongExtra("book_id",0)
         book = BookGreenDaoManager.getInstance(this).queryBookByBookID(id)
-        pageIndex=book?.pageIndex!!
+        page=book?.pageIndex!!
         if (book==null) return
         val cataLogFilePath =File(book?.bookPath).path + File.separator + CATALOG_TXT
         val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
@@ -77,7 +81,7 @@ class BookDetailsActivity:BaseActivity() {
 
     override fun initView() {
         if (catalogMsg!=null){
-            setPageTitle(catalogMsg?.title!!)
+            setTitle(catalogMsg?.title!!)
             pageCount=catalogMsg?.totalCount!!
         }
 
@@ -86,17 +90,19 @@ class BookDetailsActivity:BaseActivity() {
 
         selectScreen()
 
+        changeExpandView()
+
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = BookCatalogAdapter(catalogs)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnCatalogClickListener(object : BookCatalogAdapter.onCatalogClickListener {
             override fun onParentClick(page: Int) {
-                pageIndex=page
+                this@BookDetailsActivity.page =page
                 selectScreen()
             }
             override fun onChildClick(page: Int) {
-                pageIndex=page
+                this@BookDetailsActivity.page =page
                 selectScreen()
             }
         })
@@ -104,22 +110,19 @@ class BookDetailsActivity:BaseActivity() {
         bindClick()
     }
 
+    //单屏、全屏内容切换
+    private fun changeExpandView(){
+        tv_page_a.visibility = View.VISIBLE
+        tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
+        iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
+        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
+    }
+
     private fun bindClick(){
 
-        iv_screen.setOnClickListener {
-            if (isScreen){
-                isScreen=false
-                v_content_b.visibility=View.GONE
-                tv_page_b.visibility=View.GONE
-//                this.moveToScreenPanel(SCREEN_PANEL_A)
-            }
-            else{
-                isScreen=true
-                v_content_b.visibility=View.VISIBLE
-                tv_page_b.visibility=View.VISIBLE
-//                this.moveToScreenPanel(SCREEN_PANEL_FULL)
-            }
-
+        iv_expand.setOnClickListener {
+            isExpand=!isExpand
+            changeExpandView()
         }
 
         iv_catalog.setOnClickListener {
@@ -145,15 +148,15 @@ class BookDetailsActivity:BaseActivity() {
 
 
         btn_page_up.setOnClickListener {
-            if (isScreen){
-                if (pageIndex>2){
-                    pageIndex-=3
+            if (isExpand){
+                if (page>2){
+                    page-=3
                     updateScreenFull()
                 }
             }
             else{
-                if (pageIndex>1){
-                    pageIndex-=1
+                if (page>1){
+                    page-=1
                     updateScreenA()
                 }
             }
@@ -161,8 +164,8 @@ class BookDetailsActivity:BaseActivity() {
         }
 
         btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
+            if(page<pageCount){
+                page+=1
 
                 selectScreen()
             }
@@ -177,7 +180,7 @@ class BookDetailsActivity:BaseActivity() {
 
 
     private fun selectScreen(){
-        if (isScreen){
+        if (isExpand){
             updateScreenFull()
         }
         else{
@@ -187,42 +190,42 @@ class BookDetailsActivity:BaseActivity() {
 
     //单屏翻页
     private fun updateScreenA(){
-        tv_page_a.text="$pageIndex/$pageCount"
-        loadPicture(pageIndex,elik_a!!,v_content_a)
+        tv_page_a.text="$page/$pageCount"
+        loadPicture(page,elik_a!!,v_content_a)
     }
 
 
     //向前翻页
     private fun updateScreenFull(){
 
-        if (pageIndex<1){
+        if (page<1){
             //当处于第一页
-            pageIndex=1
-            tv_page_a.text="$pageIndex/$pageCount"
-            loadPicture(pageIndex,elik_a!!,v_content_a)
+            page=1
+            tv_page_a.text="$page/$pageCount"
+            loadPicture(page,elik_a!!,v_content_a)
 
-            pageIndex += 1//第二屏页码加一
-            tv_page_b.text="$pageIndex/$pageCount"
-            loadPicture(pageIndex,elik_b!!,v_content_b)
+            page += 1//第二屏页码加一
+            tv_page_b.text="$page/$pageCount"
+            loadPicture(page,elik_b!!,v_content_b)
         }
-        else if (pageIndex>0&&pageIndex+1<=pageCount)
+        else if (page>0&&page+1<=pageCount)
         {
-            tv_page_a.text="$pageIndex/$pageCount"
-            loadPicture(pageIndex,elik_a!!,v_content_a)
+            tv_page_a.text="$page/$pageCount"
+            loadPicture(page,elik_a!!,v_content_a)
 
-            pageIndex += 1//第二屏页码加一
-            tv_page_b.text="$pageIndex/$pageCount"
-            loadPicture(pageIndex,elik_b!!,v_content_b)
+            page += 1//第二屏页码加一
+            tv_page_b.text="$page/$pageCount"
+            loadPicture(page,elik_b!!,v_content_b)
         }
         else{
             //当翻页后处于倒数一页
-            pageIndex=pageCount-1
-            tv_page_a.text="$pageIndex/$pageCount"
-            loadPicture(pageIndex,elik_a!!,v_content_a)
+            page=pageCount-1
+            tv_page_a.text="$page/$pageCount"
+            loadPicture(page,elik_a!!,v_content_a)
 
-            pageIndex=pageCount
-            tv_page_a.text="$pageIndex/$pageCount"
-            loadPicture(pageIndex,elik_b!!,v_content_b)
+            page=pageCount
+            tv_page_b.text="$page/$pageCount"
+            loadPicture(page,elik_b!!,v_content_b)
         }
 
     }
@@ -235,10 +238,21 @@ class BookDetailsActivity:BaseActivity() {
         book?.pageUrl=showFile.path //设置当前页面路径
 
         GlideUtils.setImageFile(this,showFile,view)
-        showLog(showFile.path)
 
         val drawPath=showFile.path.replace(".jpg",".tch")
         elik?.setLoadFilePath(drawPath,true)
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
+            }
+
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
+            }
+
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik?.saveBitmap(true) {}
+            }
+
+        })
     }
 
     //获得图片地址
@@ -251,7 +265,7 @@ class BookDetailsActivity:BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         book?.time=System.currentTimeMillis()
-        book?.pageIndex=pageIndex
+        book?.pageIndex=page
         BookGreenDaoManager.getInstance(this).insertOrReplaceBook(book)
         if (book?.type!="0")
             EventBus.getDefault().post(BOOK_EVENT)

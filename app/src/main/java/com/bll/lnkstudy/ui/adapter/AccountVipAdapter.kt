@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.adapter
 
-import android.view.View
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.AccountList
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -12,7 +11,7 @@ class AccountVipAdapter(layoutResId: Int, data: List<AccountList.ListBean>?) : B
 
     override fun convert(helper: BaseViewHolder, item: AccountList.ListBean) {
         helper.setText(R.id.tv_name,item.name.toString())
-        helper.setText(R.id.tv_price,item.price.toString()+"元")
+        helper.setText(R.id.tv_price,item.price.toString())
         helper.setVisible(R.id.iv_select,helper.adapterPosition==mPosition)
     }
 

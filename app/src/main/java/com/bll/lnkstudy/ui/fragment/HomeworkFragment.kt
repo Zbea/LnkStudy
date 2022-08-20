@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.mvp.model.ModuleBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.activity.HomeworkDrawingActivity
+import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco5
@@ -39,9 +40,8 @@ class HomeworkFragment : BaseFragment(){
     }
 
     override fun initView() {
-        setPageTitle("作业")
-        setDisBackShow()
-        setShowHomework()
+        setTitle("作业")
+        showHomeworkView()
 
         var popWindowBean=PopWindowBean()
         popWindowBean.name="提交详情"
@@ -114,6 +114,13 @@ class HomeworkFragment : BaseFragment(){
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if(datas[position].isListenToRead){
                 startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
+            }
+            else if (datas[position].type==2){
+                var intent=Intent(activity, PaperDrawingActivity::class.java)
+                intent.putExtra("courseId",courseID)
+                intent.putExtra("categoryId",2)
+                intent.flags=0
+                startActivity(intent)
             }
             else{
                 var bundle=Bundle()

@@ -101,8 +101,8 @@ class MainCourseActivity : BaseActivity() {
 
     override fun initView() {
 
-        setPageTitle("课程表   编辑")
-        setSaveShow()
+        setTitle("课程表   编辑")
+        showSaveView()
 
         ivSave?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener

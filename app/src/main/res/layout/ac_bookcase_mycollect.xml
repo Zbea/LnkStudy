@@ -5,18 +5,17 @@
     android:background="@color/bg_page"
     android:orientation="vertical">
 
-    <include layout="@layout/common_title" />
+    <include layout="@layout/common_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:layout_marginTop="@dimen/dp_60"
         />
 
     <include layout="@layout/common_page_number" />
-
-
 
 
 </LinearLayout>

@@ -56,7 +56,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
         tv_title.text=note?.title
 
         iv_tool_left.visibility=View.GONE
-        iv_screen.visibility=View.GONE
+        iv_expand.visibility=View.GONE
 
         btn_page_down.setOnClickListener(this)
         btn_page_up.setOnClickListener(this)

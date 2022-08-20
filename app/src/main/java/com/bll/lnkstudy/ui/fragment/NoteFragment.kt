@@ -64,9 +64,8 @@ class NoteFragment : BaseFragment(){
 
         EventBus.getDefault().register(this)
 
-        setPageTitle("笔记")
-        setDisBackShow()
-        setShowNoteAdd()
+        setTitle("笔记")
+        showNoteView()
         bindClick()
 
         initTab()

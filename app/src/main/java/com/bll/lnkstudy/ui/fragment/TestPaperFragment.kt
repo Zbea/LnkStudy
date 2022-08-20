@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.R
@@ -9,7 +9,7 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
-import com.bll.lnkstudy.ui.activity.TestPaperListActivity
+import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.common_xtab.*
@@ -29,8 +29,7 @@ class TestPaperFragment : BaseFragment(){
     }
 
     override fun initView() {
-        setPageTitle("考卷")
-        setDisBackShow()
+        setTitle("考卷")
 
         initData()
         initRecyclerView()
@@ -92,6 +91,7 @@ class TestPaperFragment : BaseFragment(){
         items.add(testPaper4)
     }
 
+    @SuppressLint("WrongConstant")
     private fun initRecyclerView(){
 
         mAdapter = TestPaperTypeAdapter(R.layout.item_testpaper_type,items)
@@ -101,11 +101,13 @@ class TestPaperFragment : BaseFragment(){
         rv_list.addItemDecoration(SpaceGridItemDeco2(0,80))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
 
-            var bundle=Bundle()
-            bundle.putSerializable("course",course)
-            bundle.putSerializable("testPaperType",items[position])
-
-            startActivity(Intent(activity,TestPaperListActivity::class.java).putExtra("testPaper",bundle))
+            var intent=Intent(activity,PaperDrawingActivity::class.java)
+            intent.putExtra("courseId",course?.courseId)
+            intent.putExtra("categoryId",items[position].type)
+            intent.flags=1
+//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
 
         }
 

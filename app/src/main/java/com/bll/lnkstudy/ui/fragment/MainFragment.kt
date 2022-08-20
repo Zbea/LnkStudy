@@ -14,6 +14,7 @@ import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
+import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
@@ -61,14 +62,17 @@ class MainFragment : BaseFragment() {
     private var notes= mutableListOf<Note>()
     private var mainNoteAdapter: MainNoteAdapter? = null
 
+    private var receivePapers= mutableListOf<ReceivePaper>()
+    private var receivePaperAdapter :MainReceivePaperAdapter?=null
+    private var positionPaper=0
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_main
     }
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setPageTitle("首页")
-        setDisBackShow()
+        setTitle("首页")
 
         onClickView()
 
@@ -247,84 +251,36 @@ class MainFragment : BaseFragment() {
 
     //作业相关
     private fun initHomeWorkView() {
-
-        var receivePapers= mutableListOf<ReceivePaper>()
-
-        var receivePaper=ReceivePaper()
-        receivePaper.id=0
-        receivePaper.type=0
-        receivePaper.title="语文课后作业"
-        receivePaper.course="语文"
-        receivePaper.courseId=0
-        receivePaper.createDate=System.currentTimeMillis()
-
-        var receivePaper1=ReceivePaper()
-        receivePaper1.id=1
-        receivePaper1.type=1
-        receivePaper1.title="数学期中考试"
-        receivePaper1.course="数学"
-        receivePaper1.courseId=1
-        receivePaper1.category="期中考试"
-        receivePaper1.categoryId=3
-        receivePaper1.createDate=System.currentTimeMillis()
-
-        var receivePaper2=ReceivePaper()
-        receivePaper2.id=2
-        receivePaper2.type=1
-        receivePaper2.title="英语期中考试"
-        receivePaper2.course="英语"
-        receivePaper2.courseId=1
-        receivePaper2.category="期中考试"
-        receivePaper2.categoryId=3
-        receivePaper2.createDate=System.currentTimeMillis()
-
-        var receivePaper3=ReceivePaper()
-        receivePaper3.id=3
-        receivePaper3.type=0
-        receivePaper3.title="语文课后作业"
-        receivePaper3.course="语文"
-        receivePaper3.courseId=0
-        receivePaper3.createDate=System.currentTimeMillis()
-
-        receivePapers.add(receivePaper)
-        receivePapers.add(receivePaper1)
-        receivePapers.add(receivePaper2)
-        receivePapers.add(receivePaper3)
-
-        for (item in receivePapers){
-            //设置路径
-            val file=if (item.type==0){
-                File(Constants.RECEIVEPAPER_PATH , "${item.type}/"+item.id)
-            } else{
-                File(Constants.RECEIVEPAPER_PATH , "${item.type}/${item.categoryId}/"+item.id)
-            }
-            item.path=file.path
-            val files= FileUtils.getFilesSort(file.path)
-            if (files==null||files.size!=item.images.size){
-                var imageDownLoad= ImageDownLoadUtils(activity,item.images,file.path)
-                imageDownLoad.startDownload()
-            }
-        }
-
-        var receivePaperAdapter = MainReceivePaperAdapter(R.layout.item_main_receivepaper, receivePapers)
+        findReceivePapers()
+        receivePaperAdapter = MainReceivePaperAdapter(R.layout.item_main_receivepaper, receivePapers)
         rv_main_receivePaper.layoutManager = GridLayoutManager(activity, 3)
         rv_main_receivePaper.adapter = receivePaperAdapter
         receivePaperAdapter?.bindToRecyclerView(rv_main_receivePaper)
-        rv_main_receivePaper?.addItemDecoration(SpaceGridItemDeco(0, 10))
-        receivePaperAdapter.setOnItemClickListener { adapter, view, position ->
-//            val paper=receivePapers[position]
-//            val files= FileUtils.getFilesSort(paper.path)
-//            val paths= mutableListOf<String>()
-//            for (file in files){
-//                paths.add(file.path)
-//            }
-//            if (files.size==paper.images.size) {
-//                var intent= Intent(activity,TestPaperDrawingActivity::class.java)
-//                intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
-//                intent.putExtra("outImageStr",paper.path)
-//                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-//                startActivity(intent)
-//            }
+        rv_main_receivePaper?.addItemDecoration(SpaceGridItemDeco(0, 30))
+        receivePaperAdapter?.setOnItemClickListener { adapter, view, position ->
+            positionPaper=position
+            val paper=receivePapers[positionPaper]
+            val files= FileUtils.getFilesSort(paper.path)
+            val paths= mutableListOf<String>()
+            for (file in files){
+                paths.add(file.path)
+            }
+            if (files.size==paper.images.size) {
+                var bundle=Bundle()
+                bundle.putSerializable("receivePaper",paper)
+                var intent= Intent(activity,MainReceivePaperDrawingActivity::class.java)
+                intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
+                intent.putExtra("outImageStr",paper.path)
+                intent.putExtra("bundle",bundle)
+                if (paper.type==1){
+                    intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                }
+                startActivity(intent)
+            }
+            else{
+                showLoading()
+                loadPapers()
+            }
         }
 
     }
@@ -373,6 +329,92 @@ class MainFragment : BaseFragment() {
         mainNoteAdapter?.setNewData(notes)
     }
 
+    private fun findReceivePapers(){
+
+        var receivePaper= ReceivePaper()
+        receivePaper.id=0
+        receivePaper.type=0
+        receivePaper.title="语文课后作业"
+        receivePaper.course="语文"
+        receivePaper.courseId=0
+        receivePaper.categoryId=2
+        receivePaper.createDate=System.currentTimeMillis()
+        receivePaper.images=arrayOf(
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-9%2F18%2F1c04fc93-c130-4779-8c4f-718922afd68e%2F1c04fc93-c130-4779-8c4f-718922afd68e1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659079134&t=aea0e93799e11e4154452df47c03f710",
+        )
+
+        var receivePaper1= ReceivePaper()
+        receivePaper1.id=1
+        receivePaper1.type=1
+        receivePaper1.title="数学期中考试"
+        receivePaper1.course="数学"
+        receivePaper1.courseId=1
+        receivePaper1.category="期中考试"
+        receivePaper1.categoryId=1
+        receivePaper1.createDate=System.currentTimeMillis()
+
+        var receivePaper2= ReceivePaper()
+        receivePaper2.id=2
+        receivePaper2.type=1
+        receivePaper2.title="英语期中考试"
+        receivePaper2.course="英语"
+        receivePaper2.courseId=1
+        receivePaper2.category="期中考试"
+        receivePaper2.categoryId=1
+        receivePaper2.createDate=System.currentTimeMillis()
+        receivePaper2.images= arrayOf(
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-9%2F18%2F1c04fc93-c130-4779-8c4f-718922afd68e%2F1c04fc93-c130-4779-8c4f-718922afd68e1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659079134&t=aea0e93799e11e4154452df47c03f710",
+            "http://files.eduuu.com/img/2012/12/14/165129_50cae891a6231.jpg",
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-11%2F13%2Fa7590e12-844e-482c-aeb7-f06a8b248c6b%2Fa7590e12-844e-482c-aeb7-f06a8b248c6b1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659771383&t=800602d745210c44e69f6f4e274f30b5"
+        )
+
+        var receivePaper3= ReceivePaper()
+        receivePaper3.id=3
+        receivePaper3.type=0
+        receivePaper3.title="数学课后作业"
+        receivePaper3.course="数学"
+        receivePaper3.courseId=1
+        receivePaper3.categoryId=2
+        receivePaper3.createDate=System.currentTimeMillis()
+        receivePaper3.images= arrayOf(
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-9%2F18%2F1c04fc93-c130-4779-8c4f-718922afd68e%2F1c04fc93-c130-4779-8c4f-718922afd68e1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659079134&t=aea0e93799e11e4154452df47c03f710",
+            "http://files.eduuu.com/img/2012/12/14/165129_50cae891a6231.jpg",
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-11%2F13%2Fa7590e12-844e-482c-aeb7-f06a8b248c6b%2Fa7590e12-844e-482c-aeb7-f06a8b248c6b1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659771383&t=800602d745210c44e69f6f4e274f30b5"
+        )
+
+        receivePapers.add(receivePaper)
+        receivePapers.add(receivePaper1)
+        receivePapers.add(receivePaper2)
+        receivePapers.add(receivePaper3)
+
+        loadPapers()
+    }
+
+    //下载收到的图片
+    private fun loadPapers(){
+        for (item in receivePapers){
+            //设置路径
+            val file=if (item.type==0){
+                File(Constants.RECEIVEPAPER_PATH , "${item.type}/"+item.id)
+            } else{
+                File(Constants.RECEIVEPAPER_PATH , "${item.type}/${item.categoryId}/"+item.id)
+            }
+            item.path=file.path
+            val files= FileUtils.getFilesSort(file.path)
+            if (files==null||files.size!=item.images.size){
+                var imageDownLoad= ImageDownLoadUtils(activity,item.images,file.path)
+                imageDownLoad.startDownload()
+                imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
+                    override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
+                        hideLoading()
+                    }
+                    override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
+                        hideLoading()
+                    }
+                })
+            }
+        }
+    }
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -395,12 +437,21 @@ class MainFragment : BaseFragment() {
         if (msgFlag==NOTE_EVENT){
             findNotes()
         }
+        if (msgFlag== RECEIVE_PAPER_COMMIT_EVENT){
+            receivePapers.removeAt(positionPaper)
+            receivePaperAdapter?.setNewData(receivePapers)
+        }
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        loadPapers()
     }
 
 }

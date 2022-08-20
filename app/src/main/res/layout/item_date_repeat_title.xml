@@ -4,38 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/ll_no"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/bg_line_bottom"
         >
+
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_weight="1"
             android:text="不重复"
             android:textColor="@color/black_20"
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/tv_id"
+            android:id="@+id/iv_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/dp_10"
             android:src="@mipmap/icon_btn_select" />
 
 
-    </LinearLayout>
-    <View
-        android:id="@+id/v_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/line_color"
-        />
+    </RelativeLayout>
+
 
 </LinearLayout>

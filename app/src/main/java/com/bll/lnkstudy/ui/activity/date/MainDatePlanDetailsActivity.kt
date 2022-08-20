@@ -51,7 +51,7 @@ class MainDatePlanDetailsActivity: BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("学习计划")
+        setTitle("学习计划")
 
         startPlanStr=datePlanEvent?.startTimeStr!!
         endPlanStr=datePlanEvent?.endTimeStr!!

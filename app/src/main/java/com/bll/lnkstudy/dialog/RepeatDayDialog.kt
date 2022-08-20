@@ -2,7 +2,9 @@ package com.bll.lnkstudy.dialog
 
 import android.app.AlertDialog
 import android.content.Context
-import android.view.*
+import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -76,7 +78,7 @@ class RepeatDayDialog(val context: Context,val repeatStr: String,val type:Int){
 
         override fun convert(helper: BaseViewHolder, item: DateRepeat) {
             helper.setText(R.id.tv_title, item.title)
-            helper.setVisible(R.id.tv_id,item.isShow)
+            helper.setVisible(R.id.iv_select,item.isShow)
 //            helper.setVisible(R.id.v_line,helper.adapterPosition!=data.size-1)
         }
 

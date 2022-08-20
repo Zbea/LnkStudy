@@ -70,7 +70,7 @@ class AppDownloadActivity:BaseActivity(), IContractView.IAPPViewI {
     }
 
     override fun initView() {
-        setPageTitle("应用下载")
+        setTitle("应用下载")
 
         initApp()
         initWallpaper()
