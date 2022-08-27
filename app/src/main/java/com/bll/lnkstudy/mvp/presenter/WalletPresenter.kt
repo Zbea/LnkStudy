@@ -12,7 +12,7 @@ import com.bll.lnkstudy.net.RetrofitManager
 class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContractView.IWalletView>(view) {
 
     //获取学豆列表
-    fun getXdList() {
+    fun getXdList(boolean: Boolean) {
 
         var map=HashMap<String,String>()
         map.put("pageIndex", "1")
@@ -27,7 +27,7 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
                 view.getXdList(tBaseResult.data)
             }
 
-        }, true)
+        }, boolean)
 
     }
 

@@ -83,10 +83,8 @@ class TextbookFragment : BaseFragment(){
                 }
                 findData()
             }
-
             override fun onTabUnselected(tab: XTabLayout.Tab?) {
             }
-
             override fun onTabReselected(tab: XTabLayout.Tab?) {
             }
 
@@ -100,6 +98,7 @@ class TextbookFragment : BaseFragment(){
         mAdapter = BookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco5(71,38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(activity,BookDetailsActivity::class.java)

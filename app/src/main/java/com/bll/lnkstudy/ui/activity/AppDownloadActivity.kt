@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.ac_app_download.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
 
-class AppDownloadActivity:BaseActivity(), IContractView.IAPPViewI {
+class AppDownloadActivity:BaseActivity(),
+    IContractView.IAPPView {
 
     private val presenter=AppPresenter(this)
     private var appBean:AppBean?=null
@@ -70,7 +71,7 @@ class AppDownloadActivity:BaseActivity(), IContractView.IAPPViewI {
     }
 
     override fun initView() {
-        setTitle("应用下载")
+        setPageTitle("应用下载")
 
         initApp()
         initWallpaper()

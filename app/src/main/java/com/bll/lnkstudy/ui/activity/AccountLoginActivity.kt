@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.ac_account_login_user.*
 import pub.devrel.easypermissions.EasyPermissions
 
 class AccountLoginActivity:BaseActivity(),
-    IContractView.ILoginViewI {
+    IContractView.ILoginView {
 
     private val presenter=LoginPresenter(this)
     private var token=""
@@ -52,7 +52,7 @@ class AccountLoginActivity:BaseActivity(),
             Manifest.permission.RECORD_AUDIO
         )
 
-        ed_user.setText("gq")
+        ed_user.setText("student3")
         ed_psw.setText("123456")
 
 

@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
@@ -48,6 +49,13 @@ class BookCaseFragment: BaseFragment() {
         tv_type.setOnClickListener {
             (activity as BaseActivity).navigationToFragment(BookCaseTypeFragment())
         }
+
+        ll_book_top.setOnClickListener {
+            if (books.size>0){
+                gotoIntent(books[0])
+            }
+        }
+
     }
 
     override fun lazyLoad() {
@@ -59,12 +67,10 @@ class BookCaseFragment: BaseFragment() {
         mAdapter = BookAdapter(R.layout.item_book, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco4(63,28))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var intent=Intent(activity,BookDetailsActivity::class.java)
-//                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-                intent.putExtra("book_id",books[position].id)
-            startActivity(intent)
+            gotoIntent(books[position])
         }
 
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -75,11 +81,17 @@ class BookCaseFragment: BaseFragment() {
 
     }
 
+    //跳转书籍详情
+    private fun gotoIntent(book: Book){
+        var intent=Intent(activity,BookDetailsActivity::class.java)
+        intent.putExtra("book_id",book.id)
+        startActivity(intent)
+    }
+
     /**
      * 查找本地书籍
      */
     private fun findData(){
-        books.clear()
         books=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
         mAdapter?.setNewData(books)
         onChangeTopView()
@@ -91,20 +103,29 @@ class BookCaseFragment: BaseFragment() {
         if (books.size>0){
             var book=books[0]
             tv_top_page.text=""+book.pageIndex+"页"
-            GlideUtils.setImageRoundUrl(activity,book.assetUrl,iv_content1,5)
 
-            if (book.pageIndex==1)
-            {
-                GlideUtils.setImageRoundUrl(activity,book.assetUrl,iv_content2,5)
+            if (book.pageUpUrl==null){
+                setImageUrl(book?.assetUrl,iv_content_up)
             }
             else{
-                GlideUtils.setImageRoundUrl(activity,book.pageUrl,iv_content2,5)
+                setImageUrl(book?.pageUpUrl,iv_content_up)
+            }
+
+            if (book.pageUrl==null){
+                setImageUrl(book?.assetUrl,iv_content_down)
+            }
+            else{
+                setImageUrl(book?.pageUrl,iv_content_down)
             }
 
         }
-
-
     }
+
+
+    private fun setImageUrl(url: String,image:ImageView){
+        GlideUtils.setImageRoundUrl(activity,url,image,5)
+    }
+
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {

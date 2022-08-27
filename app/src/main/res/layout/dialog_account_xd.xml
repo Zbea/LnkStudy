@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="550dp"
+    android:layout_width="600dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
-    android:paddingStart="@dimen/dp_40"
-    android:paddingEnd="@dimen/dp_40"
-    android:paddingTop="@dimen/dp_30"
-    android:paddingBottom="@dimen/dp_30"
+    android:paddingStart="@dimen/dp_50"
+    android:paddingEnd="@dimen/dp_50"
+    android:paddingTop="@dimen/dp_40"
+    android:paddingBottom="@dimen/dp_40"
     android:orientation="vertical">
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_gravity="center_horizontal"
         android:text="购买学豆"
         android:textColor="@color/black"
-        android:textSize="26sp"
+        android:textSize="32sp"
         android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -28,14 +28,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_30"
         android:text="支付方式"
         android:textColor="@color/black"
-        android:textSize="24sp" />
+        android:textSize="30sp" />
 
     <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="68dp"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal">
@@ -55,7 +55,7 @@
             android:textSize="20sp" />
 
         <View
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content" />
 
         <RadioButton
@@ -83,13 +83,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="22sp"
+            android:textSize="28sp"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:text="取消"
             android:textColor="@color/black" />
 
         <View
-            android:layout_width="75dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             />
 
@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="22sp"
+            android:textSize="28sp"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:text="购买"
             android:textColor="@color/black" />

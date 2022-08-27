@@ -22,13 +22,14 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.StringUtils
 import kotlinx.android.synthetic.main.ac_account_info.*
 
-class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoViewI {
+class AccountInfoActivity:BaseActivity(),
+    IContractView.IAccountInfoView {
 
     private val presenter=AccountInfoPresenter(this)
     private var nickname=""
     private var mAdapter:AccountGroupAdapter?=null
     private var groups= mutableListOf<ClassGroup>()
-
+    private var positionGroup=0
     private var accountBuyVipDialog:AccountBuyVipDialog?=null
     private var vipList= mutableListOf<AccountList.ListBean>()
 
@@ -61,6 +62,24 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoViewI {
         }
     }
 
+    override fun onInsert() {
+        showToast("加入班群成功")
+        presenter.getClassGroupList(true)
+    }
+
+    override fun onClassGroupList(lists:List<ClassGroup>) {
+        groups= lists as MutableList<ClassGroup>
+        ll_group.visibility=if (groups.size>0) View.VISIBLE else View.GONE
+        mAdapter?.setNewData(groups)
+    }
+
+    override fun onQuit() {
+        showToast("退出班群成功")
+        groups.removeAt(positionGroup)
+        ll_group.visibility=if (groups.size>0) View.VISIBLE else View.GONE
+        mAdapter?.setNewData(groups)
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_account_info
     }
@@ -71,9 +90,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoViewI {
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-        setTitle("我的账户")
+        setPageTitle("我的账户")
 
-        tv_xd.text =mUser?.balance.toString()
         tv_user.text = mUser?.account
         tv_name.text = mUser?.nickname
         tv_phone.text =  mUser?.telNumber?.substring(0,3)+"****"+mUser?.telNumber?.substring(7,11)
@@ -109,7 +127,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoViewI {
                 getVipView(vipList)
             }
             else{
-                presenter.getVipList()
+                presenter.getVipList(true)
             }
         }
 
@@ -128,15 +146,14 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoViewI {
                     override fun cancel() {
                     }
                     override fun ok() {
-                        groups.removeAt(position)
-                        ll_group.visibility=if (groups.size>0) View.VISIBLE else View.GONE
-                        mAdapter?.setNewData(groups)
+                        positionGroup=position
+                        presenter.onQuitClassGroup(groups[position].id.toString())
                     }
                 })
             }
         }
 
-//        presenter.getVipList()
+        presenter.getClassGroupList(false)
 
     }
 
@@ -173,16 +190,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoViewI {
         ClassGroupAddDialog(this).builder()?.setOnDialogClickListener(object :
             ClassGroupAddDialog.OnDialogClickListener {
             override fun onClick(code: String) {
-                val classGroup=ClassGroup()
-                classGroup.groupNumber=code
-                classGroup.name="三年一班"
-                classGroup.teacher="周老师"
-                classGroup.course="语文"
-                classGroup.number=10
-                groups.add(classGroup)
-                ll_group.visibility=if (groups.size>0) View.VISIBLE else View.GONE
-                mAdapter?.setNewData(groups)
-
+                presenter.onInsertClassGroup(code)
             }
         })
     }

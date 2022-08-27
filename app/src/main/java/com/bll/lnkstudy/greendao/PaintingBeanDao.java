@@ -25,12 +25,13 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Type = new Property(1, int.class, "type", false, "TYPE");
-        public final static Property BgResId = new Property(2, int.class, "bgResId", false, "BG_RES_ID");
-        public final static Property Date = new Property(3, long.class, "date", false, "DATE");
-        public final static Property Path = new Property(4, String.class, "path", false, "PATH");
-        public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
-        public final static Property Page = new Property(6, int.class, "page", false, "PAGE");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
+        public final static Property BgResId = new Property(3, int.class, "bgResId", false, "BG_RES_ID");
+        public final static Property Date = new Property(4, long.class, "date", false, "DATE");
+        public final static Property Path = new Property(5, String.class, "path", false, "PATH");
+        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
+        public final static Property Page = new Property(7, int.class, "page", false, "PAGE");
     }
 
 
@@ -47,12 +48,13 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PAINTING_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
-                "\"TYPE\" INTEGER NOT NULL ," + // 1: type
-                "\"BG_RES_ID\" INTEGER NOT NULL ," + // 2: bgResId
-                "\"DATE\" INTEGER NOT NULL ," + // 3: date
-                "\"PATH\" TEXT," + // 4: path
-                "\"TITLE\" TEXT," + // 5: title
-                "\"PAGE\" INTEGER NOT NULL );"); // 6: page
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
+                "\"BG_RES_ID\" INTEGER NOT NULL ," + // 3: bgResId
+                "\"DATE\" INTEGER NOT NULL ," + // 4: date
+                "\"PATH\" TEXT," + // 5: path
+                "\"TITLE\" TEXT," + // 6: title
+                "\"PAGE\" INTEGER NOT NULL );"); // 7: page
     }
 
     /** Drops the underlying database table. */
@@ -69,20 +71,21 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getType());
-        stmt.bindLong(3, entity.getBgResId());
-        stmt.bindLong(4, entity.getDate());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getType());
+        stmt.bindLong(4, entity.getBgResId());
+        stmt.bindLong(5, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(5, path);
+            stmt.bindString(6, path);
         }
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
-        stmt.bindLong(7, entity.getPage());
+        stmt.bindLong(8, entity.getPage());
     }
 
     @Override
@@ -93,20 +96,21 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getType());
-        stmt.bindLong(3, entity.getBgResId());
-        stmt.bindLong(4, entity.getDate());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getType());
+        stmt.bindLong(4, entity.getBgResId());
+        stmt.bindLong(5, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(5, path);
+            stmt.bindString(6, path);
         }
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
-        stmt.bindLong(7, entity.getPage());
+        stmt.bindLong(8, entity.getPage());
     }
 
     @Override
@@ -118,12 +122,13 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
     public PaintingBean readEntity(Cursor cursor, int offset) {
         PaintingBean entity = new PaintingBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // type
-            cursor.getInt(offset + 2), // bgResId
-            cursor.getLong(offset + 3), // date
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // path
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
-            cursor.getInt(offset + 6) // page
+            cursor.getLong(offset + 1), // userId
+            cursor.getInt(offset + 2), // type
+            cursor.getInt(offset + 3), // bgResId
+            cursor.getLong(offset + 4), // date
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // path
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
+            cursor.getInt(offset + 7) // page
         );
         return entity;
     }
@@ -131,12 +136,13 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
     @Override
     public void readEntity(Cursor cursor, PaintingBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setType(cursor.getInt(offset + 1));
-        entity.setBgResId(cursor.getInt(offset + 2));
-        entity.setDate(cursor.getLong(offset + 3));
-        entity.setPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setPage(cursor.getInt(offset + 6));
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setType(cursor.getInt(offset + 2));
+        entity.setBgResId(cursor.getInt(offset + 3));
+        entity.setDate(cursor.getLong(offset + 4));
+        entity.setPath(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setPage(cursor.getInt(offset + 7));
      }
     
     @Override

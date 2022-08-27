@@ -25,10 +25,11 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Title = new Property(1, String.class, "title", false, "TITLE");
-        public final static Property Date = new Property(2, long.class, "date", false, "DATE");
-        public final static Property Path = new Property(3, String.class, "path", false, "PATH");
-        public final static Property CourseId = new Property(4, int.class, "courseId", false, "COURSE_ID");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property Title = new Property(2, String.class, "title", false, "TITLE");
+        public final static Property Date = new Property(3, long.class, "date", false, "DATE");
+        public final static Property Path = new Property(4, String.class, "path", false, "PATH");
+        public final static Property CourseId = new Property(5, int.class, "courseId", false, "COURSE_ID");
     }
 
 
@@ -45,10 +46,11 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"RECORD_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
-                "\"TITLE\" TEXT," + // 1: title
-                "\"DATE\" INTEGER NOT NULL ," + // 2: date
-                "\"PATH\" TEXT," + // 3: path
-                "\"COURSE_ID\" INTEGER NOT NULL );"); // 4: courseId
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"TITLE\" TEXT," + // 2: title
+                "\"DATE\" INTEGER NOT NULL ," + // 3: date
+                "\"PATH\" TEXT," + // 4: path
+                "\"COURSE_ID\" INTEGER NOT NULL );"); // 5: courseId
     }
 
     /** Drops the underlying database table. */
@@ -65,18 +67,19 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
+        stmt.bindLong(2, entity.getUserId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(2, title);
+            stmt.bindString(3, title);
         }
-        stmt.bindLong(3, entity.getDate());
+        stmt.bindLong(4, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(4, path);
+            stmt.bindString(5, path);
         }
-        stmt.bindLong(5, entity.getCourseId());
+        stmt.bindLong(6, entity.getCourseId());
     }
 
     @Override
@@ -87,18 +90,19 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
+        stmt.bindLong(2, entity.getUserId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(2, title);
+            stmt.bindString(3, title);
         }
-        stmt.bindLong(3, entity.getDate());
+        stmt.bindLong(4, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(4, path);
+            stmt.bindString(5, path);
         }
-        stmt.bindLong(5, entity.getCourseId());
+        stmt.bindLong(6, entity.getCourseId());
     }
 
     @Override
@@ -110,10 +114,11 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
     public RecordBean readEntity(Cursor cursor, int offset) {
         RecordBean entity = new RecordBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // title
-            cursor.getLong(offset + 2), // date
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // path
-            cursor.getInt(offset + 4) // courseId
+            cursor.getLong(offset + 1), // userId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
+            cursor.getLong(offset + 3), // date
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // path
+            cursor.getInt(offset + 5) // courseId
         );
         return entity;
     }
@@ -121,10 +126,11 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
     @Override
     public void readEntity(Cursor cursor, RecordBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTitle(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDate(cursor.getLong(offset + 2));
-        entity.setPath(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setCourseId(cursor.getInt(offset + 4));
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setTitle(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDate(cursor.getLong(offset + 3));
+        entity.setPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setCourseId(cursor.getInt(offset + 5));
      }
     
     @Override

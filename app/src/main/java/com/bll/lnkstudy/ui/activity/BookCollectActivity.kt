@@ -17,11 +17,12 @@ import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.math.ceil
 
 /**
  * 书架收藏
  */
-class BookCaseCollectActivity: BaseActivity() {
+class BookCollectActivity: BaseActivity() {
 
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<Book>()
@@ -41,7 +42,7 @@ class BookCaseCollectActivity: BaseActivity() {
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setTitle("我的收藏")
+        setPageTitle("我的收藏")
 
         initRecyclerView()
 
@@ -56,7 +57,7 @@ class BookCaseCollectActivity: BaseActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco4(54,70))
+        rv_list?.addItemDecoration(SpaceGridItemDeco4(50,70))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent=Intent(this,BookDetailsActivity::class.java)
 //            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
@@ -77,7 +78,7 @@ class BookCaseCollectActivity: BaseActivity() {
             }
             override fun ok() {
                 book?.isCollect=false
-                BookGreenDaoManager.getInstance(this@BookCaseCollectActivity).insertOrReplaceBook(book) //删除本地数据库
+                BookGreenDaoManager.getInstance(this@BookCollectActivity).insertOrReplaceBook(book) //删除本地数据库
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()
 
@@ -103,7 +104,7 @@ class BookCaseCollectActivity: BaseActivity() {
         pageIndex=1
         var pageTotal=booksAll.size
         var toIndex=12
-        var pageCount=Math.ceil((pageTotal.toDouble()/toIndex)).toInt()
+        var pageCount= ceil(pageTotal.toDouble()/toIndex).toInt()
         if (pageTotal==0)
         {
             ll_page_number.visibility= View.GONE

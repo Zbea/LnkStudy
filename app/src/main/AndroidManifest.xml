@@ -58,8 +58,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
+<!--                <category android:name="android.intent.category.HOME" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
             </intent-filter>
         </activity>
 
@@ -68,9 +68,6 @@
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
         <activity android:name=".ui.activity.MainActivity">
-            <intent-filter>
-
-            </intent-filter>
             </activity>
         <activity android:name=".ui.activity.date.MainDateActivity"/>
         <activity android:name=".ui.activity.date.MainDateAddActivity"/>
@@ -97,7 +94,7 @@
         <activity android:name=".ui.activity.RecordActivity"/>
         <activity android:name=".ui.activity.RecordListActivity"/>
         <activity android:name=".ui.activity.PaintingDrawingActivity"/>
-        <activity android:name=".ui.activity.BookCaseCollectActivity"/>
+        <activity android:name=".ui.activity.BookCollectActivity"/>
         <activity android:name=".ui.activity.PaperDrawingActivity"/>
         <activity android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom"

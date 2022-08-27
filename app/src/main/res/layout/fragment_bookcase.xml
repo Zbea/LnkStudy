@@ -35,28 +35,30 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="348px"
+        android:id="@+id/ll_book_top"
+        android:layout_width="wrap_content"
+        android:layout_height="254dp"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_20"
         android:gravity="center"
         android:orientation="horizontal">
 
         <com.bll.lnkstudy.widget.RoundImageView
-            android:id="@+id/iv_content1"
-            android:layout_width="261px"
+            android:id="@+id/iv_content_up"
+            android:layout_width="190dp"
             android:layout_height="match_parent"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:padding="2dp"
             app:radius="6dp"/>
 
         <RelativeLayout
-            android:layout_width="261px"
+            android:layout_width="190dp"
             android:layout_height="match_parent"
             android:padding="1dp"
             android:background="@drawable/bg_black_stroke_5dp_corner">
 
             <com.bll.lnkstudy.widget.RoundImageView
-                android:id="@+id/iv_content2"
+                android:id="@+id/iv_content_down"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="2dp"
@@ -76,7 +78,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:paddingEnd="63px"

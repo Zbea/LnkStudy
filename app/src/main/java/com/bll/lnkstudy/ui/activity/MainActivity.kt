@@ -127,7 +127,7 @@ class MainActivity : BaseActivity() {
                 }
 
                 override fun onCollect() {
-                    startActivity(Intent(this@MainActivity,BookCaseCollectActivity::class.java))
+                    startActivity(Intent(this@MainActivity,BookCollectActivity::class.java))
                 }
 
                 override fun onWallet() {

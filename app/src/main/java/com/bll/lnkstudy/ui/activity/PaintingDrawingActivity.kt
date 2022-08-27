@@ -259,7 +259,7 @@ class PaintingDrawingActivity : BaseActivity() {
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        val path = Constants.PAINTING_PATH + "/$type"
+        val path = Constants.PAINTING_PATH + "/$mUserId/$type"
         val date = StringUtils.longToString(System.currentTimeMillis())
 
         paintingBean = PaintingBean()

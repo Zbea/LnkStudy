@@ -50,6 +50,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var ivManagers: ImageView? = null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
+    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var llSearch: LinearLayout?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

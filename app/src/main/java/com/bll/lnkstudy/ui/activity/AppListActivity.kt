@@ -4,66 +4,95 @@ import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
 
 class AppListActivity:BaseActivity() {
 
     private var apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null
+    private var mAdapterTool:AppListAdapter?=null
+    private var toolApps= mutableListOf<AppBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_app_list
     }
 
     override fun initData() {
-        var appBean=AppBean()
-        appBean.appName="应用中心"
-        appBean.image=getDrawable(R.mipmap.icon_app_center)
-
-        var appBean1=AppBean()
-        appBean1.appName="操机技巧"
-        appBean1.image=getDrawable(R.mipmap.icon_app_cz)
-
-        var appBean2=AppBean()
-        appBean2.appName="官方壁纸"
-        appBean2.image=getDrawable(R.mipmap.icon_app_wallpaper)
-
-        apps=AppUtils.scanLocalInstallAppList(this)
-        apps.add(0,appBean)
-        apps.add(1,appBean1)
-        apps.add(2,appBean2)
+        apps=DataBeanManager.getIncetance().appBaseList
+        apps.addAll(AppUtils.scanLocalInstallAppList(this))
     }
 
     override fun initView() {
-        setTitle("应用中心")
+        setPageTitle("应用中心")
 
         initRecycler()
+        initRecyclerTool()
+
+        tv_add.setOnClickListener {
+            for (item in apps){
+                if (item.isCheck){
+                    item.isCheck=false
+                    if(!toolApps.contains(item)){
+                        toolApps.add(item)
+                    }
+                }
+            }
+            mAdapter?.notifyDataSetChanged()
+            mAdapterTool?.notifyDataSetChanged()
+        }
+
+        tv_remove.setOnClickListener {
+            val it=toolApps.iterator()
+            while (it.hasNext()){
+                if (it.next().isCheck){
+                    it.remove()
+                }
+            }
+            mAdapterTool?.notifyDataSetChanged()
+        }
 
     }
 
 
     private fun initRecycler(){
+
         rv_list.layoutManager = GridLayoutManager(this,5)//创建布局管理
         mAdapter = AppListAdapter(R.layout.item_app_list, apps)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (position==0)
-            {
-                startActivity(Intent(this,AppDownloadActivity::class.java))
+        rv_list.addItemDecoration(SpaceGridItemDeco(0,70))
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            if (view.id==R.id.iv_image){
+                if (position==0)
+                {
+                    startActivity(Intent(this,AppDownloadActivity::class.java))
+                }
+                else{
+                    val packageName= apps[position].packageName
+                    AppUtils.startAPP(this,packageName)
+                }
             }
-            else{
-                val packageName= apps[position].packageName
-                AppUtils.startAPP(this,packageName)
-            }
-
         }
+
     }
 
+    private fun initRecyclerTool(){
 
+        rv_tool.layoutManager = GridLayoutManager(this,4)//创建布局管理
+        mAdapterTool = AppListAdapter(R.layout.item_app_list, toolApps)
+        rv_tool.adapter = mAdapterTool
+        mAdapterTool?.bindToRecyclerView(rv_tool)
+        rv_tool.addItemDecoration(SpaceGridItemDeco(0,60))
+        mAdapterTool?.setOnItemClickListener { adapter, view, position ->
+
+        }
+
+    }
 
 
 }

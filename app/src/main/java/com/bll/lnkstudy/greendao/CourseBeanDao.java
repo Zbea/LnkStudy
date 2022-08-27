@@ -25,9 +25,10 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property ViewId = new Property(1, int.class, "viewId", false, "VIEW_ID");
-        public final static Property Name = new Property(2, String.class, "name", false, "NAME");
-        public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property ViewId = new Property(2, int.class, "viewId", false, "VIEW_ID");
+        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
+        public final static Property Type = new Property(4, int.class, "type", false, "TYPE");
     }
 
 
@@ -44,9 +45,10 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"COURSE_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"VIEW_ID\" INTEGER NOT NULL UNIQUE ," + // 1: viewId
-                "\"NAME\" TEXT," + // 2: name
-                "\"TYPE\" INTEGER NOT NULL );"); // 3: type
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"VIEW_ID\" INTEGER NOT NULL UNIQUE ," + // 2: viewId
+                "\"NAME\" TEXT," + // 3: name
+                "\"TYPE\" INTEGER NOT NULL );"); // 4: type
     }
 
     /** Drops the underlying database table. */
@@ -63,13 +65,14 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getViewId());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getViewId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(3, name);
+            stmt.bindString(4, name);
         }
-        stmt.bindLong(4, entity.getType());
+        stmt.bindLong(5, entity.getType());
     }
 
     @Override
@@ -80,13 +83,14 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getViewId());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getViewId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(3, name);
+            stmt.bindString(4, name);
         }
-        stmt.bindLong(4, entity.getType());
+        stmt.bindLong(5, entity.getType());
     }
 
     @Override
@@ -98,9 +102,10 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
     public CourseBean readEntity(Cursor cursor, int offset) {
         CourseBean entity = new CourseBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // viewId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
-            cursor.getInt(offset + 3) // type
+            cursor.getLong(offset + 1), // userId
+            cursor.getInt(offset + 2), // viewId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
+            cursor.getInt(offset + 4) // type
         );
         return entity;
     }
@@ -108,9 +113,10 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
     @Override
     public void readEntity(Cursor cursor, CourseBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setViewId(cursor.getInt(offset + 1));
-        entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setType(cursor.getInt(offset + 3));
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setViewId(cursor.getInt(offset + 2));
+        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setType(cursor.getInt(offset + 4));
      }
     
     @Override

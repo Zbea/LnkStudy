@@ -41,7 +41,7 @@ class MainDateDayDetailsActivity: BaseActivity() {
 
     override fun initView() {
 
-        setTitle("重要日子")
+        setPageTitle("重要日子")
 
         remindAlls= DataBeanManager.getIncetance().remindDay
         dayLong=dateEvent?.dayLong!!

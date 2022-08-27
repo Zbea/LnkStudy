@@ -22,7 +22,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.StringUtils
 import com.bll.lnkstudy.utils.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceGridItemDeco4
 import com.google.android.material.tabs.TabLayout
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
@@ -33,8 +33,10 @@ import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
 
-class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
+class BookStoreActivity:BaseActivity() ,
+    IContractView.IBookStoreView {
 
+    private var title=""
     private val mDownMapPool = HashMap<Long,BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter=BookStorePresenter(this)
@@ -61,9 +63,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
         tv_page_total.text=pageCount.toString()
 
         if (!bookStore?.list.isNullOrEmpty()){
-            for (i in 0..5){
-                books.addAll(bookStore.list)
-            }
+            books=bookStore?.list
             mAdapter?.setNewData(books)
         }
     }
@@ -97,12 +97,13 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
     }
 
     override fun initData() {
+        title=intent.getStringExtra("title").toString()
         getData()
         getDataType()
     }
 
     override fun initView() {
-        setTitle(intent.getStringExtra("title").toString())
+        setPageTitle(title)
         initRecyclerView()
         showSearchView(true)
 
@@ -206,7 +207,6 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             tv_grade.visibility=View.GONE
         }
 
-
         tv_grade.setOnClickListener {
             if (popWindowGrade==null)
             {
@@ -236,12 +236,8 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             else{
                 popWindowProvince?.show()
             }
-
         }
-
     }
-
-
 
     //设置tab分类
     private fun setTab(){
@@ -252,6 +248,16 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
         xtab?.getTabAt(0)?.select()
         xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {
+
+                if (title=="教材"){
+                    val baseTypeBean=typeList[tab?.position!!]
+                    if (baseTypeBean.id.toInt()==0){
+                        showView(tv_province)
+                    }
+                    else{
+                        disMissView(tv_province)
+                    }
+                }
 
             }
 
@@ -271,7 +277,7 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
             rv_list.adapter = mAdapter
             mAdapter?.bindToRecyclerView(rv_list)
             mAdapter?.setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(0,20))
+            rv_list?.addItemDecoration(SpaceGridItemDeco4(75,20))
             mAdapter?.setOnItemClickListener { adapter, view, position ->
                 book=books[position]
                 showBookDetails(book)
@@ -321,10 +327,6 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
 
         //看file 是否创建目录
         val filedir = File(Constants.ZIP_PATH)
-        if (!filedir.exists()) {
-            filedir.mkdir()
-        }
-
         val targetFileStr = filedir.path + File.separator + fileName + ".zip"
         val targetFile = File(targetFileStr)
         if (targetFile.exists()) {
@@ -352,14 +354,14 @@ class BookStoreActivity:BaseActivity() , IContractView.IBookStoreViewI {
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
+                    ZipUtils.unzip(mUserId.toString(),targetFileStr, fileName, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             showLog("解压完成")
                             book?.time=System.currentTimeMillis()//下载时间用于排序
                             //解压完成就开始存数据库
                             book?.loadState = 1//已经下载
-                            ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/9527
-                            book?.bookPath = BOOK_PATH + File.separator + fileName
+                            ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/0/9527
+                            book?.bookPath = "$BOOK_PATH/$mUserId/$fileName"
                             //下载解压完成后更新存储的book
                             BookGreenDaoManager.getInstance(this@BookStoreActivity).insertOrReplaceBook(book)
                             EventBus.getDefault().post(BOOK_EVENT)

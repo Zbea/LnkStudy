@@ -6,9 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkDao;
+import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
 import com.bll.lnkstudy.mvp.model.Homework;
 import com.bll.lnkstudy.mvp.model.PaintingBean;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -47,6 +50,9 @@ public class PaintingDaoManager {
 
 
     private PaintingBeanDao dao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= PaintingBeanDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -96,7 +102,7 @@ public class PaintingDaoManager {
 
     public List<PaintingBean> queryAllByType(int type) {
         WhereCondition whereCondition=PaintingBeanDao.Properties.Type.eq(type);
-        List<PaintingBean> queryList = dao.queryBuilder().where(whereCondition).build().list();
+        List<PaintingBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
         return queryList;
     }
 

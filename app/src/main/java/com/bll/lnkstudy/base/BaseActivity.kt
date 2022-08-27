@@ -47,6 +47,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var tvMyCollect: TextView? = null
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
+    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var llSearch:LinearLayout?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
@@ -150,7 +151,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         showView(ivSave)
     }
 
-    fun setTitle(pageTitle: String) {
+    fun setPageTitle(pageTitle: String) {
         if (tvPageTitle != null) {
             tvPageTitle!!.text = pageTitle
         }
@@ -343,7 +344,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     override fun fail(msg: String) {
-        showLog(msg)
+        showToast(msg)
     }
 
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {

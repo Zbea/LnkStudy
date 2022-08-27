@@ -27,7 +27,7 @@ class ListActivity:BaseActivity() {
     override fun initData() {
         titleStr= intent.getStringExtra("title").toString()
         type=intent.getIntExtra("type",0)
-        setTitle(titleStr)
+        setPageTitle(titleStr)
         if (type==1){
             for (i in 0..30){
                 var item=ListBean()

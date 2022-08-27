@@ -25,18 +25,19 @@ public class HomeworkDao extends AbstractDao<Homework, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Index = new Property(1, int.class, "index", false, "INDEX");
-        public final static Property BgResId = new Property(2, int.class, "bgResId", false, "BG_RES_ID");
-        public final static Property CourseId = new Property(3, int.class, "courseId", false, "COURSE_ID");
-        public final static Property HomeworkTypeId = new Property(4, int.class, "homeworkTypeId", false, "HOMEWORK_TYPE_ID");
-        public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
-        public final static Property StartDate = new Property(6, long.class, "startDate", false, "START_DATE");
-        public final static Property EndDate = new Property(7, long.class, "endDate", false, "END_DATE");
-        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
-        public final static Property Page = new Property(9, int.class, "page", false, "PAGE");
-        public final static Property Count = new Property(10, int.class, "count", false, "COUNT");
-        public final static Property State = new Property(11, int.class, "state", false, "STATE");
-        public final static Property IsSave = new Property(12, boolean.class, "isSave", false, "IS_SAVE");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property Index = new Property(2, int.class, "index", false, "INDEX");
+        public final static Property BgResId = new Property(3, String.class, "bgResId", false, "BG_RES_ID");
+        public final static Property CourseId = new Property(4, int.class, "courseId", false, "COURSE_ID");
+        public final static Property HomeworkTypeId = new Property(5, int.class, "homeworkTypeId", false, "HOMEWORK_TYPE_ID");
+        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
+        public final static Property StartDate = new Property(7, long.class, "startDate", false, "START_DATE");
+        public final static Property EndDate = new Property(8, long.class, "endDate", false, "END_DATE");
+        public final static Property Path = new Property(9, String.class, "path", false, "PATH");
+        public final static Property Page = new Property(10, int.class, "page", false, "PAGE");
+        public final static Property Count = new Property(11, int.class, "count", false, "COUNT");
+        public final static Property State = new Property(12, int.class, "state", false, "STATE");
+        public final static Property IsSave = new Property(13, boolean.class, "isSave", false, "IS_SAVE");
     }
 
 
@@ -53,18 +54,19 @@ public class HomeworkDao extends AbstractDao<Homework, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"HOMEWORK\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
-                "\"INDEX\" INTEGER NOT NULL ," + // 1: index
-                "\"BG_RES_ID\" INTEGER NOT NULL ," + // 2: bgResId
-                "\"COURSE_ID\" INTEGER NOT NULL ," + // 3: courseId
-                "\"HOMEWORK_TYPE_ID\" INTEGER NOT NULL ," + // 4: homeworkTypeId
-                "\"TITLE\" TEXT," + // 5: title
-                "\"START_DATE\" INTEGER NOT NULL ," + // 6: startDate
-                "\"END_DATE\" INTEGER NOT NULL ," + // 7: endDate
-                "\"PATH\" TEXT," + // 8: path
-                "\"PAGE\" INTEGER NOT NULL ," + // 9: page
-                "\"COUNT\" INTEGER NOT NULL ," + // 10: count
-                "\"STATE\" INTEGER NOT NULL ," + // 11: state
-                "\"IS_SAVE\" INTEGER NOT NULL );"); // 12: isSave
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"INDEX\" INTEGER NOT NULL ," + // 2: index
+                "\"BG_RES_ID\" TEXT," + // 3: bgResId
+                "\"COURSE_ID\" INTEGER NOT NULL ," + // 4: courseId
+                "\"HOMEWORK_TYPE_ID\" INTEGER NOT NULL ," + // 5: homeworkTypeId
+                "\"TITLE\" TEXT," + // 6: title
+                "\"START_DATE\" INTEGER NOT NULL ," + // 7: startDate
+                "\"END_DATE\" INTEGER NOT NULL ," + // 8: endDate
+                "\"PATH\" TEXT," + // 9: path
+                "\"PAGE\" INTEGER NOT NULL ," + // 10: page
+                "\"COUNT\" INTEGER NOT NULL ," + // 11: count
+                "\"STATE\" INTEGER NOT NULL ," + // 12: state
+                "\"IS_SAVE\" INTEGER NOT NULL );"); // 13: isSave
     }
 
     /** Drops the underlying database table. */
@@ -81,26 +83,31 @@ public class HomeworkDao extends AbstractDao<Homework, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getIndex());
-        stmt.bindLong(3, entity.getBgResId());
-        stmt.bindLong(4, entity.getCourseId());
-        stmt.bindLong(5, entity.getHomeworkTypeId());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getIndex());
+ 
+        String bgResId = entity.getBgResId();
+        if (bgResId != null) {
+            stmt.bindString(4, bgResId);
+        }
+        stmt.bindLong(5, entity.getCourseId());
+        stmt.bindLong(6, entity.getHomeworkTypeId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
-        stmt.bindLong(7, entity.getStartDate());
-        stmt.bindLong(8, entity.getEndDate());
+        stmt.bindLong(8, entity.getStartDate());
+        stmt.bindLong(9, entity.getEndDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(9, path);
+            stmt.bindString(10, path);
         }
-        stmt.bindLong(10, entity.getPage());
-        stmt.bindLong(11, entity.getCount());
-        stmt.bindLong(12, entity.getState());
-        stmt.bindLong(13, entity.getIsSave() ? 1L: 0L);
+        stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(12, entity.getCount());
+        stmt.bindLong(13, entity.getState());
+        stmt.bindLong(14, entity.getIsSave() ? 1L: 0L);
     }
 
     @Override
@@ -111,26 +118,31 @@ public class HomeworkDao extends AbstractDao<Homework, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getIndex());
-        stmt.bindLong(3, entity.getBgResId());
-        stmt.bindLong(4, entity.getCourseId());
-        stmt.bindLong(5, entity.getHomeworkTypeId());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getIndex());
+ 
+        String bgResId = entity.getBgResId();
+        if (bgResId != null) {
+            stmt.bindString(4, bgResId);
+        }
+        stmt.bindLong(5, entity.getCourseId());
+        stmt.bindLong(6, entity.getHomeworkTypeId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
-        stmt.bindLong(7, entity.getStartDate());
-        stmt.bindLong(8, entity.getEndDate());
+        stmt.bindLong(8, entity.getStartDate());
+        stmt.bindLong(9, entity.getEndDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(9, path);
+            stmt.bindString(10, path);
         }
-        stmt.bindLong(10, entity.getPage());
-        stmt.bindLong(11, entity.getCount());
-        stmt.bindLong(12, entity.getState());
-        stmt.bindLong(13, entity.getIsSave() ? 1L: 0L);
+        stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(12, entity.getCount());
+        stmt.bindLong(13, entity.getState());
+        stmt.bindLong(14, entity.getIsSave() ? 1L: 0L);
     }
 
     @Override
@@ -142,18 +154,19 @@ public class HomeworkDao extends AbstractDao<Homework, Long> {
     public Homework readEntity(Cursor cursor, int offset) {
         Homework entity = new Homework( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // index
-            cursor.getInt(offset + 2), // bgResId
-            cursor.getInt(offset + 3), // courseId
-            cursor.getInt(offset + 4), // homeworkTypeId
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
-            cursor.getLong(offset + 6), // startDate
-            cursor.getLong(offset + 7), // endDate
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // path
-            cursor.getInt(offset + 9), // page
-            cursor.getInt(offset + 10), // count
-            cursor.getInt(offset + 11), // state
-            cursor.getShort(offset + 12) != 0 // isSave
+            cursor.getLong(offset + 1), // userId
+            cursor.getInt(offset + 2), // index
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // bgResId
+            cursor.getInt(offset + 4), // courseId
+            cursor.getInt(offset + 5), // homeworkTypeId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
+            cursor.getLong(offset + 7), // startDate
+            cursor.getLong(offset + 8), // endDate
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // path
+            cursor.getInt(offset + 10), // page
+            cursor.getInt(offset + 11), // count
+            cursor.getInt(offset + 12), // state
+            cursor.getShort(offset + 13) != 0 // isSave
         );
         return entity;
     }
@@ -161,18 +174,19 @@ public class HomeworkDao extends AbstractDao<Homework, Long> {
     @Override
     public void readEntity(Cursor cursor, Homework entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setIndex(cursor.getInt(offset + 1));
-        entity.setBgResId(cursor.getInt(offset + 2));
-        entity.setCourseId(cursor.getInt(offset + 3));
-        entity.setHomeworkTypeId(cursor.getInt(offset + 4));
-        entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setStartDate(cursor.getLong(offset + 6));
-        entity.setEndDate(cursor.getLong(offset + 7));
-        entity.setPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setPage(cursor.getInt(offset + 9));
-        entity.setCount(cursor.getInt(offset + 10));
-        entity.setState(cursor.getInt(offset + 11));
-        entity.setIsSave(cursor.getShort(offset + 12) != 0);
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setIndex(cursor.getInt(offset + 2));
+        entity.setBgResId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setCourseId(cursor.getInt(offset + 4));
+        entity.setHomeworkTypeId(cursor.getInt(offset + 5));
+        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setStartDate(cursor.getLong(offset + 7));
+        entity.setEndDate(cursor.getLong(offset + 8));
+        entity.setPath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setPage(cursor.getInt(offset + 10));
+        entity.setCount(cursor.getInt(offset + 11));
+        entity.setState(cursor.getInt(offset + 12));
+        entity.setIsSave(cursor.getShort(offset + 13) != 0);
      }
     
     @Override

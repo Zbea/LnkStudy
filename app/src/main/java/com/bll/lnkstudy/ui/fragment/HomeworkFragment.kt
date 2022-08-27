@@ -6,11 +6,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.dialog.ModuleAddDialog
-import com.bll.lnkstudy.dialog.NoteBookAddDialog
-import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.mvp.model.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.mvp.model.ModuleBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
@@ -18,6 +17,7 @@ import com.bll.lnkstudy.ui.activity.HomeworkDrawingActivity
 import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco5
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_homework.*
@@ -34,6 +34,8 @@ class HomeworkFragment : BaseFragment(){
 
     private var courseID=0//当前科目id
     private var datas= mutableListOf<HomeworkType>()
+
+    private var homeworkMessageAllDialog:HomeworkMessageAllDialog?=null
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework
@@ -59,6 +61,25 @@ class HomeworkFragment : BaseFragment(){
 
         tv_add.setOnClickListener {
             addCover()
+
+//            ZipUtils.zip(Constants.HOMEWORK_PATH+"/$mUserId","homework",object : ZipUtils.ZipCallback {
+//                override fun onStart() {
+//                    showLog("开始")
+//                }
+//
+//                override fun onProgress(percentDone: Int) {
+//                    showLog(percentDone.toString())
+//                }
+//
+//                override fun onFinish(success: Boolean) {
+//                    showLog(success.toString())
+//                }
+//
+//                override fun onError(msg: String?) {
+//                    showLog(msg!!)
+//                }
+//
+//            })
         }
 
         initRecyclerView()
@@ -110,7 +131,7 @@ class HomeworkFragment : BaseFragment(){
         rv_list.layoutManager = GridLayoutManager(activity,3)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco5(71,89))
+        rv_list.addItemDecoration(SpaceGridItemDeco5(71,30))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if(datas[position].isListenToRead){
                 startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
@@ -127,9 +148,26 @@ class HomeworkFragment : BaseFragment(){
                 bundle.putSerializable("homework",datas[position])
                 var intent=Intent(context,HomeworkDrawingActivity::class.java)
                 intent.putExtra("homeworkBundle",bundle)
-//                intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
                 startActivity(intent)
             }
+        }
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+
+            if (view.id==R.id.tv_message){
+                HomeworkMessageDialog(requireActivity(),getMessageDatas()).builder()
+            }
+            if (view.id==R.id.iv_message){
+                var datas=getMessageDatas()
+                homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),datas).builder()
+                homeworkMessageAllDialog?.setOnDialogClickListener(object : HomeworkMessageAllDialog.OnDialogClickListener {
+                        override fun onClick(position:Int,id: String) {
+                            datas.removeAt(position)
+                            homeworkMessageAllDialog?.setData(datas)
+                        }
+
+                    })
+            }
+
         }
 
     }
@@ -141,6 +179,22 @@ class HomeworkFragment : BaseFragment(){
         datas=DataBeanManager.getIncetance().getHomeWorkTypes(islg,courseID,mUser?.grade!!)
         datas.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID))
         mAdapter?.setNewData(datas)
+    }
+
+    private fun getMessageDatas():MutableList<HomeworkMessage>{
+        val messages= mutableListOf<HomeworkMessage>()
+        val homeworkMessage=HomeworkMessage()
+        homeworkMessage.title="语文家庭作业1、3、5页"
+        homeworkMessage.date=System.currentTimeMillis()
+
+        val homeworkMessage2=HomeworkMessage()
+        homeworkMessage2.title="数学作业"
+        homeworkMessage2.date=System.currentTimeMillis()
+
+        messages.add(homeworkMessage)
+        messages.add(homeworkMessage2)
+
+        return messages
     }
 
     //添加作业本
@@ -198,8 +252,8 @@ class HomeworkFragment : BaseFragment(){
             object : ModuleAddDialog.OnDialogClickListener {
                 override fun onClick(moduleBean: ModuleBean) {
                     val item=HomeworkType()
-                    item.resId=moduleBean.resContentId
-                    item.bgResId=coverResId
+                    item.resId=ToolUtils.getImageResStr(activity,moduleBean.resContentId)
+                    item.bgResId=ToolUtils.getImageResStr(activity,coverResId)
 
                     addHomeWorkType(item)
                 }

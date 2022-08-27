@@ -64,11 +64,11 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
                 getXdView()
             }
             else{
-                walletPresenter.getXdList()
+                walletPresenter.getXdList(true)
             }
         }
 
-        walletPresenter.getXdList()
+        walletPresenter.getXdList(false)
 
     }
 

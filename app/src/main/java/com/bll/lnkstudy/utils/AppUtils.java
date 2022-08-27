@@ -311,6 +311,7 @@ public class AppUtils {
                 if (!packageInfo.packageName.equals(context.getPackageName()))
                 {
                     AppBean myAppInfo = new AppBean();
+                    myAppInfo.appId=4+i;
                     String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     myAppInfo.appName=appName;
                     myAppInfo.packageName=packageInfo.packageName;

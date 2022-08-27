@@ -29,7 +29,7 @@ class NoteBookManagerActivity : BaseActivity() {
     }
 
     override fun initView() {
-        setTitle("笔记本管理")
+        setPageTitle("笔记本管理")
 
         initRecyclerView()
     }
@@ -50,6 +50,9 @@ class NoteBookManagerActivity : BaseActivity() {
                 setDeleteView()
             }
             if (view.id==R.id.iv_top){
+                var date=noteBooks[0].date
+                noteBooks[position].date=date-1000
+                BaseTypeBeanDaoManager.getInstance(this@NoteBookManagerActivity).insertOrReplace(noteBooks[position])
                 Collections.swap(noteBooks,position,0)
                 setNotify()
             }

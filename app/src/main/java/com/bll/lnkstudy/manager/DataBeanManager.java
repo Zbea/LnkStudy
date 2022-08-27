@@ -3,7 +3,9 @@ package com.bll.lnkstudy.manager;
 
 import android.content.Context;
 
+import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.R;
+import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.BaseTypeBean;
 import com.bll.lnkstudy.mvp.model.CourseBean;
 import com.bll.lnkstudy.mvp.model.DateRemind;
@@ -11,6 +13,7 @@ import com.bll.lnkstudy.mvp.model.HomeworkType;
 import com.bll.lnkstudy.mvp.model.MainListBean;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.ModuleBean;
+import com.bll.lnkstudy.utils.ToolUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +49,61 @@ public class DataBeanManager {
             "体育",
             "美术",
             "舞蹈",
-            "书法",
             "演讲",
-            "编程",
-            "军事",
-            "时事"};
+            "编程"};
+
+    public String[] teachTYList = {
+            "球类",
+            "棋类",
+            "田径",
+            "体操",
+            "跳水",
+            "游泳",
+            "皮艇",
+            "击剑",
+            "举重",
+            "摔跤",
+            "射击",
+            "拳击",
+            "跆拳道",
+            "自行车",
+            "滑雪",
+            "滑冰",
+            "冰球",
+            "冰壶"};
+
+    public String[] teachMSList = {
+            "绘画",
+            "雕塑",
+            "书法",
+            "篆刻",
+            "建筑",
+            "摄影",
+            "工艺",
+            "设计"};
+
+    public String[] teachWDList = {
+            "芭蕾",
+            "名族",
+            "现代",
+            "古典",
+            "拉丁",
+            "交际",
+            "爵士",
+            "街舞"};
+
+    public String[] teachYJList = {
+            "命题",
+            "即兴",
+            "辩论",
+            "背诵"};
+
+    public String[] teachBCList = {
+            "go",
+            "Android",
+            "python",
+            "swift"};
+
 
     public String[] dateDayTitle = {
             "不重复",
@@ -97,18 +150,6 @@ public class DataBeanManager {
     public String[] SWKX = {
             "人工智能", "模式识别", "心理生理", "语言文字", "数学"
     };//思维科学
-
-    public Integer[] kmTeachImage = {
-            R.mipmap.icon_teach_yuwen,
-            R.mipmap.icon_teach_shuxue,
-            R.mipmap.icon_teach_yinwen,
-            R.mipmap.icon_teach_wuli,
-            R.mipmap.icon_teach_huaxue,
-            R.mipmap.icon_teach_dili,
-            R.mipmap.icon_teach_sizhen,
-            R.mipmap.icon_teach_lishi,
-            R.mipmap.icon_teach_shengwu,
-    };
 
     /**
      * 获取index栏目
@@ -254,37 +295,23 @@ public class DataBeanManager {
     public List<MessageList> getMessage() {
 
         List<MessageList> list = new ArrayList<>();
-        List<MessageList.MessageBean> listBean = new ArrayList<>();
-
-        MessageList.MessageBean messageBean = new MessageList.MessageBean();
-        messageBean.message = "数学作业";
-        listBean.add(messageBean);
-        MessageList.MessageBean messageBean1 = new MessageList.MessageBean();
-        messageBean1.message = "语文作业";
-        listBean.add(messageBean1);
-        MessageList.MessageBean messageBean2 = new MessageList.MessageBean();
-        messageBean2.message = "英语作业";
-        listBean.add(messageBean2);
 
         MessageList messageList = new MessageList();
         messageList.name = "语文周老师";
         messageList.createTime = "2020-6-2";
         messageList.content = "上交语文作业";
-        messageList.messages = listBean;
         list.add(messageList);
 
         MessageList messageList1 = new MessageList();
         messageList1.name = "数学老师";
         messageList1.createTime = "2020-6-2";
         messageList1.content = "上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业";
-        messageList1.messages = listBean;
         list.add(messageList1);
 
         MessageList messageList2 = new MessageList();
         messageList2.name = "妈妈";
         messageList2.createTime = "2020-6-2";
         messageList2.content = "回家吃饭";
-        messageList2.messages = listBean;
         list.add(messageList2);
 
         return list;
@@ -301,7 +328,6 @@ public class DataBeanManager {
         for (int i = 0; i < kmArray.length; i++) {
             CourseBean courseBean = new CourseBean();
             courseBean.name = kmArray[i];
-            courseBean.imageId = kmTeachImage[i];
             courseBean.courseId = i;
             list.add(courseBean);
         }
@@ -343,37 +369,45 @@ public class DataBeanManager {
 
         List<HomeworkType> list = new ArrayList();
         HomeworkType homeWork = new HomeworkType();
-        homeWork.name = "随堂作业本";
+        homeWork.name = "课堂作业本";
         homeWork.type = 0;
         homeWork.courseId = courseId;
-        homeWork.bgResId = R.mipmap.icon_homework_cover_1;
-        homeWork.resId = resId;
+        homeWork.bgResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_1) ;
+        homeWork.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId) ;
         list.add(homeWork);
 
         HomeworkType homeWork1 = new HomeworkType();
-        homeWork1.name = "家庭作业本";
+        homeWork1.name = "课外作业本";
         homeWork1.type = 1;
         homeWork1.courseId = courseId;
-        homeWork1.bgResId = R.mipmap.icon_homework_cover_2;
-        homeWork1.resId = resId;
+        homeWork1.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_2);
+        homeWork1.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork1);
 
         HomeworkType homeWork2 = new HomeworkType();
-        homeWork2.name = "课件作业集";
+        homeWork2.name = "课堂题卷本";
         homeWork2.type = 2;
         homeWork2.courseId = courseId;
-        homeWork2.bgResId = R.mipmap.icon_homework_cover_3;
-        homeWork2.resId = resId;
+        homeWork2.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_3);
+        homeWork2.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork2);
 
+        HomeworkType homeWork3 = new HomeworkType();
+        homeWork3.name = "课外题卷本";
+        homeWork3.type = 3;
+        homeWork3.courseId = courseId;
+        homeWork3.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_4);
+        homeWork3.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
+        list.add(homeWork3);
+
         if (isLg) {
-            HomeworkType homeWork3 = new HomeworkType();
-            homeWork3.name = "朗读作业本";
-            homeWork3.type = 3;
-            homeWork3.isListenToRead = true;
-            homeWork3.courseId = courseId;
-            homeWork3.bgResId = R.mipmap.icon_homework_cover_4;
-            list.add(homeWork3);
+            HomeworkType homeWork4 = new HomeworkType();
+            homeWork4.name = "课文朗读册";
+            homeWork4.type = 4;
+            homeWork4.isListenToRead = true;
+            homeWork4.courseId = courseId;
+            homeWork4.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_4);
+            list.add(homeWork4);
         }
 
         return list;
@@ -443,13 +477,8 @@ public class DataBeanManager {
 
         BaseTypeBean baseTypeBean3 = new BaseTypeBean();
         baseTypeBean3.typeId = 2;
-        baseTypeBean3.name = "字典词典";
+        baseTypeBean3.name = "课辅习题";
         list.add(baseTypeBean3);
-
-        BaseTypeBean baseTypeBean4 = new BaseTypeBean();
-        baseTypeBean4.typeId = 3;
-        baseTypeBean4.name = "公式定理";
-        list.add(baseTypeBean4);
 
         return list;
     }
@@ -712,6 +741,39 @@ public class DataBeanManager {
         list.add(moduleBean2);
         list.add(moduleBean3);
         return list;
+    }
+
+    public List<AppBean> getAppBaseList(){
+        List<AppBean> apps=new ArrayList<>();
+        AppBean appBean=new AppBean();
+        appBean.appId=0;
+        appBean.appName="应用市场";
+        appBean.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_center);
+        appBean.isBase=true;
+        apps.add(appBean);
+
+        AppBean appBean1=new AppBean();
+        appBean1.appId=1;
+        appBean1.appName="操机技巧";
+        appBean1.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_cz);
+        appBean1.isBase=true;
+        apps.add(appBean1);
+
+        AppBean appBean2=new AppBean();
+        appBean2.appId=2;
+        appBean2.appName="官方壁纸";
+        appBean2.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_wallpaper);
+        appBean2.isBase=true;
+        apps.add(appBean2);
+
+        AppBean appBean3=new AppBean();
+        appBean3.appId=3;
+        appBean3.appName="设备管家";
+        appBean3.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_steward);
+        appBean3.isBase=true;
+        apps.add(appBean3);
+
+        return apps;
     }
 
 }

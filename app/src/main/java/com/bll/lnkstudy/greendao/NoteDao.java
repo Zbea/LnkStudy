@@ -28,14 +28,15 @@ public class NoteDao extends AbstractDao<Note, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Date = new Property(1, long.class, "date", false, "DATE");
-        public final static Property NowDate = new Property(2, long.class, "nowDate", false, "NOW_DATE");
-        public final static Property Title = new Property(3, String.class, "title", false, "TITLE");
-        public final static Property Type = new Property(4, int.class, "type", false, "TYPE");
-        public final static Property ResId = new Property(5, int.class, "resId", false, "RES_ID");
-        public final static Property Index = new Property(6, int.class, "index", false, "INDEX");
-        public final static Property Path = new Property(7, String.class, "path", false, "PATH");
-        public final static Property Paths = new Property(8, String.class, "paths", false, "PATHS");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property Date = new Property(2, long.class, "date", false, "DATE");
+        public final static Property NowDate = new Property(3, long.class, "nowDate", false, "NOW_DATE");
+        public final static Property Title = new Property(4, String.class, "title", false, "TITLE");
+        public final static Property Type = new Property(5, int.class, "type", false, "TYPE");
+        public final static Property ResId = new Property(6, String.class, "resId", false, "RES_ID");
+        public final static Property Index = new Property(7, int.class, "index", false, "INDEX");
+        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
+        public final static Property Paths = new Property(9, String.class, "paths", false, "PATHS");
     }
 
     private final NoteConverter pathsConverter = new NoteConverter();
@@ -53,14 +54,15 @@ public class NoteDao extends AbstractDao<Note, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"NOTE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"DATE\" INTEGER NOT NULL UNIQUE ," + // 1: date
-                "\"NOW_DATE\" INTEGER NOT NULL ," + // 2: nowDate
-                "\"TITLE\" TEXT," + // 3: title
-                "\"TYPE\" INTEGER NOT NULL ," + // 4: type
-                "\"RES_ID\" INTEGER NOT NULL ," + // 5: resId
-                "\"INDEX\" INTEGER NOT NULL ," + // 6: index
-                "\"PATH\" TEXT," + // 7: path
-                "\"PATHS\" TEXT);"); // 8: paths
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"DATE\" INTEGER NOT NULL UNIQUE ," + // 2: date
+                "\"NOW_DATE\" INTEGER NOT NULL ," + // 3: nowDate
+                "\"TITLE\" TEXT," + // 4: title
+                "\"TYPE\" INTEGER NOT NULL ," + // 5: type
+                "\"RES_ID\" TEXT," + // 6: resId
+                "\"INDEX\" INTEGER NOT NULL ," + // 7: index
+                "\"PATH\" TEXT," + // 8: path
+                "\"PATHS\" TEXT);"); // 9: paths
     }
 
     /** Drops the underlying database table. */
@@ -77,25 +79,30 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getDate());
-        stmt.bindLong(3, entity.getNowDate());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getDate());
+        stmt.bindLong(4, entity.getNowDate());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(4, title);
+            stmt.bindString(5, title);
         }
-        stmt.bindLong(5, entity.getType());
-        stmt.bindLong(6, entity.getResId());
-        stmt.bindLong(7, entity.getIndex());
+        stmt.bindLong(6, entity.getType());
+ 
+        String resId = entity.getResId();
+        if (resId != null) {
+            stmt.bindString(7, resId);
+        }
+        stmt.bindLong(8, entity.getIndex());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(8, path);
+            stmt.bindString(9, path);
         }
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(9, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(10, pathsConverter.convertToDatabaseValue(paths));
         }
     }
 
@@ -107,25 +114,30 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getDate());
-        stmt.bindLong(3, entity.getNowDate());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getDate());
+        stmt.bindLong(4, entity.getNowDate());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(4, title);
+            stmt.bindString(5, title);
         }
-        stmt.bindLong(5, entity.getType());
-        stmt.bindLong(6, entity.getResId());
-        stmt.bindLong(7, entity.getIndex());
+        stmt.bindLong(6, entity.getType());
+ 
+        String resId = entity.getResId();
+        if (resId != null) {
+            stmt.bindString(7, resId);
+        }
+        stmt.bindLong(8, entity.getIndex());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(8, path);
+            stmt.bindString(9, path);
         }
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(9, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(10, pathsConverter.convertToDatabaseValue(paths));
         }
     }
 
@@ -138,14 +150,15 @@ public class NoteDao extends AbstractDao<Note, Long> {
     public Note readEntity(Cursor cursor, int offset) {
         Note entity = new Note( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // date
-            cursor.getLong(offset + 2), // nowDate
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // title
-            cursor.getInt(offset + 4), // type
-            cursor.getInt(offset + 5), // resId
-            cursor.getInt(offset + 6), // index
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // path
-            cursor.isNull(offset + 8) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 8)) // paths
+            cursor.getLong(offset + 1), // userId
+            cursor.getLong(offset + 2), // date
+            cursor.getLong(offset + 3), // nowDate
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // title
+            cursor.getInt(offset + 5), // type
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // resId
+            cursor.getInt(offset + 7), // index
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // path
+            cursor.isNull(offset + 9) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 9)) // paths
         );
         return entity;
     }
@@ -153,14 +166,15 @@ public class NoteDao extends AbstractDao<Note, Long> {
     @Override
     public void readEntity(Cursor cursor, Note entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setDate(cursor.getLong(offset + 1));
-        entity.setNowDate(cursor.getLong(offset + 2));
-        entity.setTitle(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setType(cursor.getInt(offset + 4));
-        entity.setResId(cursor.getInt(offset + 5));
-        entity.setIndex(cursor.getInt(offset + 6));
-        entity.setPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setPaths(cursor.isNull(offset + 8) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 8)));
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setDate(cursor.getLong(offset + 2));
+        entity.setNowDate(cursor.getLong(offset + 3));
+        entity.setTitle(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setType(cursor.getInt(offset + 5));
+        entity.setResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setIndex(cursor.getInt(offset + 7));
+        entity.setPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setPaths(cursor.isNull(offset + 9) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 9)));
      }
     
     @Override

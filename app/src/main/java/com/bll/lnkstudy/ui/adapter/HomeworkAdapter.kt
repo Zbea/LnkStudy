@@ -1,8 +1,8 @@
 package com.bll.lnkstudy.ui.adapter
 
-import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.HomeworkType
+import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -10,10 +10,32 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAd
 
     override fun convert(helper: BaseViewHolder, item: HomeworkType) {
         helper.setText(R.id.tv_name,item.name)
-        helper.setVisible(R.id.iv_pg,item.isPg)
+        helper.setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext,item.bgResId))
+        if (item.isPg){
+            helper.setTextColor(R.id.tv_pg,mContext.resources.getColor(R.color.black))
+        }
+        else{
+            helper.setTextColor(R.id.tv_pg,mContext.resources.getColor(R.color.gray))
+        }
 
-        var llContent=helper.getView<ImageView>(R.id.iv_image)
-        llContent.setImageResource(item.bgResId)
+        if (item.isMessage){
+            helper.setTextColor(R.id.tv_message,mContext.resources.getColor(R.color.black))
+        }
+        else{
+            helper.setTextColor(R.id.tv_message,mContext.resources.getColor(R.color.gray))
+        }
+
+        if(item.type==2||item.type==3){
+            helper.setText(R.id.tv_message,"收到题卷")
+        }
+        else{
+            helper.setText(R.id.tv_message,"收到通知")
+        }
+
+        helper.addOnClickListener(R.id.tv_message)
+        helper.addOnClickListener(R.id.iv_message)
+
+
     }
 
 

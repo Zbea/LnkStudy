@@ -6,10 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkContentDao;
-import com.bll.lnkstudy.greendao.HomeworkDao;
-import com.bll.lnkstudy.greendao.HomeworkTypeDao;
 import com.bll.lnkstudy.mvp.model.HomeworkContent;
-import com.bll.lnkstudy.mvp.model.HomeworkType;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -49,7 +48,10 @@ public class HomeworkContentDaoManager {
     private static HomeworkContentDaoManager mDbController;
 
 
-    private HomeworkContentDao homeworkContentDao;
+    private HomeworkContentDao dao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= HomeworkContentDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -61,7 +63,7 @@ public class HomeworkContentDaoManager {
         mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
         mDaoMaster = new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
-        homeworkContentDao = mDaoSession.getHomeworkContentDao();
+        dao = mDaoSession.getHomeworkContentDao();
     }
 
 
@@ -93,12 +95,13 @@ public class HomeworkContentDaoManager {
     }
 
     public void insertOrReplace(HomeworkContent bean) {
-        homeworkContentDao.insertOrReplace(bean);
+        dao.insertOrReplace(bean);
     }
 
     public  List<HomeworkContent> queryByID(Long homeworkID) {
-        List<HomeworkContent> querys = homeworkContentDao.queryBuilder()
-                .where(HomeworkContentDao.Properties.HomeworkId.eq(homeworkID)).build().list();
+        WhereCondition whereCondition=HomeworkContentDao.Properties.HomeworkId.eq(homeworkID);
+        List<HomeworkContent> querys = dao.queryBuilder()
+                .where( whereUser,whereCondition).build().list();
         return querys;
     }
 
@@ -108,14 +111,14 @@ public class HomeworkContentDaoManager {
         WhereCondition whereCondition= HomeworkContentDao.Properties.CourseId.eq(courseId);
         WhereCondition whereCondition1=HomeworkContentDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
 
-        List<HomeworkContent> queryList = homeworkContentDao.queryBuilder().where(whereCondition,whereCondition1).build().list();
+        List<HomeworkContent> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
 //                .orderDesc(HomeworkContentDao.Properties.Date).build().list();
         return queryList;
     }
 
 
     public void deleteBean(HomeworkContent bean){
-        homeworkContentDao.delete(bean);
+        dao.delete(bean);
     }
 
 

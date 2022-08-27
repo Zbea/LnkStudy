@@ -12,7 +12,6 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.StringUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
-import kotlinx.android.synthetic.main.ac_account_register.ed_user
 
 
 /**
@@ -22,7 +21,8 @@ import kotlinx.android.synthetic.main.ac_account_register.ed_user
 //5. 手机号码规则 11 位有效手机号
 //6. 验证码规则数字即可
  */
-class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdViewI {
+class AccountRegisterActivity : BaseActivity(),
+    IContractView.IRegisterOrFindPsdView {
 
     private val presenter= RegisterOrFindPsdPresenter(this)
     private var countDownTimer: CountDownTimer? = null
@@ -58,19 +58,19 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     override fun initView() {
 
         if (flags==2){
-            setTitle("修改密码")
+            setPageTitle("修改密码")
             ll_name.visibility= View.GONE
             ll_user.visibility=View.GONE
             rg_register.visibility=View.GONE
             btn_register.text="提交"
         }
         else if (flags==1){
-            setTitle("找回密码")
+            setPageTitle("找回密码")
             ll_name.visibility= View.GONE
             btn_register.text="提交"
         }
         else{
-            setTitle("注册账号")
+            setPageTitle("注册账号")
         }
 
 

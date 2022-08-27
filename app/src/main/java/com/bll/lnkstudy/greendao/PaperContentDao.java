@@ -25,7 +25,7 @@ public class PaperContentDao extends AbstractDao<PaperContent, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property UserId = new Property(1, int.class, "userId", false, "USER_ID");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
         public final static Property CourseId = new Property(3, int.class, "courseId", false, "COURSE_ID");
         public final static Property CategoryId = new Property(4, int.class, "categoryId", false, "CATEGORY_ID");
@@ -130,7 +130,7 @@ public class PaperContentDao extends AbstractDao<PaperContent, Long> {
     public PaperContent readEntity(Cursor cursor, int offset) {
         PaperContent entity = new PaperContent( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // userId
+            cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // type
             cursor.getInt(offset + 3), // courseId
             cursor.getInt(offset + 4), // categoryId
@@ -146,7 +146,7 @@ public class PaperContentDao extends AbstractDao<PaperContent, Long> {
     @Override
     public void readEntity(Cursor cursor, PaperContent entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setUserId(cursor.getInt(offset + 1));
+        entity.setUserId(cursor.getLong(offset + 1));
         entity.setType(cursor.getInt(offset + 2));
         entity.setCourseId(cursor.getInt(offset + 3));
         entity.setCategoryId(cursor.getInt(offset + 4));

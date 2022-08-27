@@ -39,7 +39,7 @@ class RecordListActivity : BaseActivity() {
 
     override fun initView() {
         var course=DataBeanManager.getIncetance().courses[courseId].name
-        setTitle("$course 朗读录音")
+        setPageTitle("$course 朗读录音")
         EventBus.getDefault().register(this)
 
 

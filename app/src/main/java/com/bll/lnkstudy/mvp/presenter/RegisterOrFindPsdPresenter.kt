@@ -5,7 +5,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdViewI) : BasePresenter<IContractView.IRegisterOrFindPsdViewI>(view) {
+class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : BasePresenter<IContractView.IRegisterOrFindPsdView>(view) {
 
     fun register(role: String,account: String, password: String, name: String,phone: String,code: String) {
 

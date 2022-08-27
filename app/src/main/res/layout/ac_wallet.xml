@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="我的钱包"
-        android:textSize="28sp"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:textColor="@color/black"
         android:gravity="center"
         />
@@ -20,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginBottom="@dimen/dp_10"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         >
@@ -29,14 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="学豆"
-            android:textSize="@dimen/sp_26"
+            android:textSize="28sp"
             android:textColor="@color/black"
             />
 
         <TextView
             android:id="@+id/tv_buy"
-            android:layout_width="140dp"
-            android:layout_height="50dp"
+            android:layout_width="142dp"
+            android:layout_height="48dp"
             android:text="购买学豆"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"

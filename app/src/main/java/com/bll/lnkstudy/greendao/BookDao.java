@@ -25,25 +25,27 @@ public class BookDao extends AbstractDao<Book, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property AssetUrl = new Property(1, String.class, "assetUrl", false, "ASSET_URL");
-        public final static Property DownloadUrl = new Property(2, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property Description = new Property(3, String.class, "description", false, "DESCRIPTION");
-        public final static Property Name = new Property(4, String.class, "name", false, "NAME");
-        public final static Property Price = new Property(5, int.class, "price", false, "PRICE");
-        public final static Property Status = new Property(6, int.class, "status", false, "STATUS");
-        public final static Property BookPath = new Property(7, String.class, "bookPath", false, "BOOK_PATH");
-        public final static Property LoadState = new Property(8, int.class, "loadState", false, "LOAD_STATE");
-        public final static Property Type = new Property(9, String.class, "type", false, "TYPE");
-        public final static Property TextBook = new Property(10, int.class, "textBook", false, "TEXT_BOOK");
-        public final static Property BookType = new Property(11, int.class, "bookType", false, "BOOK_TYPE");
-        public final static Property Province = new Property(12, String.class, "province", false, "PROVINCE");
-        public final static Property ClassX = new Property(13, String.class, "classX", false, "CLASS_X");
-        public final static Property Grade = new Property(14, String.class, "grade", false, "GRADE");
-        public final static Property Version = new Property(15, String.class, "version", false, "VERSION");
-        public final static Property Time = new Property(16, Long.class, "time", false, "TIME");
-        public final static Property PageIndex = new Property(17, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PageUrl = new Property(18, String.class, "pageUrl", false, "PAGE_URL");
-        public final static Property IsCollect = new Property(19, boolean.class, "isCollect", false, "IS_COLLECT");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property AssetUrl = new Property(2, String.class, "assetUrl", false, "ASSET_URL");
+        public final static Property DownloadUrl = new Property(3, String.class, "downloadUrl", false, "DOWNLOAD_URL");
+        public final static Property Description = new Property(4, String.class, "description", false, "DESCRIPTION");
+        public final static Property Name = new Property(5, String.class, "name", false, "NAME");
+        public final static Property Price = new Property(6, int.class, "price", false, "PRICE");
+        public final static Property Status = new Property(7, int.class, "status", false, "STATUS");
+        public final static Property BookPath = new Property(8, String.class, "bookPath", false, "BOOK_PATH");
+        public final static Property LoadState = new Property(9, int.class, "loadState", false, "LOAD_STATE");
+        public final static Property Type = new Property(10, String.class, "type", false, "TYPE");
+        public final static Property TextBook = new Property(11, int.class, "textBook", false, "TEXT_BOOK");
+        public final static Property BookType = new Property(12, int.class, "bookType", false, "BOOK_TYPE");
+        public final static Property Province = new Property(13, String.class, "province", false, "PROVINCE");
+        public final static Property ClassX = new Property(14, String.class, "classX", false, "CLASS_X");
+        public final static Property Grade = new Property(15, String.class, "grade", false, "GRADE");
+        public final static Property Version = new Property(16, String.class, "version", false, "VERSION");
+        public final static Property Time = new Property(17, Long.class, "time", false, "TIME");
+        public final static Property PageIndex = new Property(18, int.class, "pageIndex", false, "PAGE_INDEX");
+        public final static Property PageUpUrl = new Property(19, String.class, "pageUpUrl", false, "PAGE_UP_URL");
+        public final static Property PageUrl = new Property(20, String.class, "pageUrl", false, "PAGE_URL");
+        public final static Property IsCollect = new Property(21, boolean.class, "isCollect", false, "IS_COLLECT");
     }
 
 
@@ -60,25 +62,27 @@ public class BookDao extends AbstractDao<Book, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BOOK\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY UNIQUE ," + // 0: id
-                "\"ASSET_URL\" TEXT," + // 1: assetUrl
-                "\"DOWNLOAD_URL\" TEXT," + // 2: downloadUrl
-                "\"DESCRIPTION\" TEXT," + // 3: description
-                "\"NAME\" TEXT," + // 4: name
-                "\"PRICE\" INTEGER NOT NULL ," + // 5: price
-                "\"STATUS\" INTEGER NOT NULL ," + // 6: status
-                "\"BOOK_PATH\" TEXT," + // 7: bookPath
-                "\"LOAD_STATE\" INTEGER NOT NULL ," + // 8: loadState
-                "\"TYPE\" TEXT," + // 9: type
-                "\"TEXT_BOOK\" INTEGER NOT NULL ," + // 10: textBook
-                "\"BOOK_TYPE\" INTEGER NOT NULL ," + // 11: bookType
-                "\"PROVINCE\" TEXT," + // 12: province
-                "\"CLASS_X\" TEXT," + // 13: classX
-                "\"GRADE\" TEXT," + // 14: grade
-                "\"VERSION\" TEXT," + // 15: version
-                "\"TIME\" INTEGER," + // 16: time
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 17: pageIndex
-                "\"PAGE_URL\" TEXT," + // 18: pageUrl
-                "\"IS_COLLECT\" INTEGER NOT NULL );"); // 19: isCollect
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"ASSET_URL\" TEXT," + // 2: assetUrl
+                "\"DOWNLOAD_URL\" TEXT," + // 3: downloadUrl
+                "\"DESCRIPTION\" TEXT," + // 4: description
+                "\"NAME\" TEXT," + // 5: name
+                "\"PRICE\" INTEGER NOT NULL ," + // 6: price
+                "\"STATUS\" INTEGER NOT NULL ," + // 7: status
+                "\"BOOK_PATH\" TEXT," + // 8: bookPath
+                "\"LOAD_STATE\" INTEGER NOT NULL ," + // 9: loadState
+                "\"TYPE\" TEXT," + // 10: type
+                "\"TEXT_BOOK\" INTEGER NOT NULL ," + // 11: textBook
+                "\"BOOK_TYPE\" INTEGER NOT NULL ," + // 12: bookType
+                "\"PROVINCE\" TEXT," + // 13: province
+                "\"CLASS_X\" TEXT," + // 14: classX
+                "\"GRADE\" TEXT," + // 15: grade
+                "\"VERSION\" TEXT," + // 16: version
+                "\"TIME\" INTEGER," + // 17: time
+                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 18: pageIndex
+                "\"PAGE_UP_URL\" TEXT," + // 19: pageUpUrl
+                "\"PAGE_URL\" TEXT," + // 20: pageUrl
+                "\"IS_COLLECT\" INTEGER NOT NULL );"); // 21: isCollect
     }
 
     /** Drops the underlying database table. */
@@ -95,73 +99,79 @@ public class BookDao extends AbstractDao<Book, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
+        stmt.bindLong(2, entity.getUserId());
  
         String assetUrl = entity.getAssetUrl();
         if (assetUrl != null) {
-            stmt.bindString(2, assetUrl);
+            stmt.bindString(3, assetUrl);
         }
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(3, downloadUrl);
+            stmt.bindString(4, downloadUrl);
         }
  
         String description = entity.getDescription();
         if (description != null) {
-            stmt.bindString(4, description);
+            stmt.bindString(5, description);
         }
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(5, name);
+            stmt.bindString(6, name);
         }
-        stmt.bindLong(6, entity.getPrice());
-        stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(7, entity.getPrice());
+        stmt.bindLong(8, entity.getStatus());
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(8, bookPath);
+            stmt.bindString(9, bookPath);
         }
-        stmt.bindLong(9, entity.getLoadState());
+        stmt.bindLong(10, entity.getLoadState());
  
         String type = entity.getType();
         if (type != null) {
-            stmt.bindString(10, type);
+            stmt.bindString(11, type);
         }
-        stmt.bindLong(11, entity.getTextBook());
-        stmt.bindLong(12, entity.getBookType());
+        stmt.bindLong(12, entity.getTextBook());
+        stmt.bindLong(13, entity.getBookType());
  
         String province = entity.getProvince();
         if (province != null) {
-            stmt.bindString(13, province);
+            stmt.bindString(14, province);
         }
  
         String classX = entity.getClassX();
         if (classX != null) {
-            stmt.bindString(14, classX);
+            stmt.bindString(15, classX);
         }
  
         String grade = entity.getGrade();
         if (grade != null) {
-            stmt.bindString(15, grade);
+            stmt.bindString(16, grade);
         }
  
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(16, version);
+            stmt.bindString(17, version);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(17, time);
+            stmt.bindLong(18, time);
         }
-        stmt.bindLong(18, entity.getPageIndex());
+        stmt.bindLong(19, entity.getPageIndex());
+ 
+        String pageUpUrl = entity.getPageUpUrl();
+        if (pageUpUrl != null) {
+            stmt.bindString(20, pageUpUrl);
+        }
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(19, pageUrl);
+            stmt.bindString(21, pageUrl);
         }
-        stmt.bindLong(20, entity.getIsCollect() ? 1L: 0L);
+        stmt.bindLong(22, entity.getIsCollect() ? 1L: 0L);
     }
 
     @Override
@@ -172,73 +182,79 @@ public class BookDao extends AbstractDao<Book, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
+        stmt.bindLong(2, entity.getUserId());
  
         String assetUrl = entity.getAssetUrl();
         if (assetUrl != null) {
-            stmt.bindString(2, assetUrl);
+            stmt.bindString(3, assetUrl);
         }
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(3, downloadUrl);
+            stmt.bindString(4, downloadUrl);
         }
  
         String description = entity.getDescription();
         if (description != null) {
-            stmt.bindString(4, description);
+            stmt.bindString(5, description);
         }
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(5, name);
+            stmt.bindString(6, name);
         }
-        stmt.bindLong(6, entity.getPrice());
-        stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(7, entity.getPrice());
+        stmt.bindLong(8, entity.getStatus());
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(8, bookPath);
+            stmt.bindString(9, bookPath);
         }
-        stmt.bindLong(9, entity.getLoadState());
+        stmt.bindLong(10, entity.getLoadState());
  
         String type = entity.getType();
         if (type != null) {
-            stmt.bindString(10, type);
+            stmt.bindString(11, type);
         }
-        stmt.bindLong(11, entity.getTextBook());
-        stmt.bindLong(12, entity.getBookType());
+        stmt.bindLong(12, entity.getTextBook());
+        stmt.bindLong(13, entity.getBookType());
  
         String province = entity.getProvince();
         if (province != null) {
-            stmt.bindString(13, province);
+            stmt.bindString(14, province);
         }
  
         String classX = entity.getClassX();
         if (classX != null) {
-            stmt.bindString(14, classX);
+            stmt.bindString(15, classX);
         }
  
         String grade = entity.getGrade();
         if (grade != null) {
-            stmt.bindString(15, grade);
+            stmt.bindString(16, grade);
         }
  
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(16, version);
+            stmt.bindString(17, version);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(17, time);
+            stmt.bindLong(18, time);
         }
-        stmt.bindLong(18, entity.getPageIndex());
+        stmt.bindLong(19, entity.getPageIndex());
+ 
+        String pageUpUrl = entity.getPageUpUrl();
+        if (pageUpUrl != null) {
+            stmt.bindString(20, pageUpUrl);
+        }
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(19, pageUrl);
+            stmt.bindString(21, pageUrl);
         }
-        stmt.bindLong(20, entity.getIsCollect() ? 1L: 0L);
+        stmt.bindLong(22, entity.getIsCollect() ? 1L: 0L);
     }
 
     @Override
@@ -250,25 +266,27 @@ public class BookDao extends AbstractDao<Book, Long> {
     public Book readEntity(Cursor cursor, int offset) {
         Book entity = new Book( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // assetUrl
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // downloadUrl
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // description
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // name
-            cursor.getInt(offset + 5), // price
-            cursor.getInt(offset + 6), // status
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // bookPath
-            cursor.getInt(offset + 8), // loadState
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // type
-            cursor.getInt(offset + 10), // textBook
-            cursor.getInt(offset + 11), // bookType
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // province
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // classX
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // grade
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // version
-            cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16), // time
-            cursor.getInt(offset + 17), // pageIndex
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // pageUrl
-            cursor.getShort(offset + 19) != 0 // isCollect
+            cursor.getLong(offset + 1), // userId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // assetUrl
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // downloadUrl
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // description
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // name
+            cursor.getInt(offset + 6), // price
+            cursor.getInt(offset + 7), // status
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // bookPath
+            cursor.getInt(offset + 9), // loadState
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // type
+            cursor.getInt(offset + 11), // textBook
+            cursor.getInt(offset + 12), // bookType
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // province
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // classX
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // grade
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // version
+            cursor.isNull(offset + 17) ? null : cursor.getLong(offset + 17), // time
+            cursor.getInt(offset + 18), // pageIndex
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // pageUpUrl
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // pageUrl
+            cursor.getShort(offset + 21) != 0 // isCollect
         );
         return entity;
     }
@@ -276,25 +294,27 @@ public class BookDao extends AbstractDao<Book, Long> {
     @Override
     public void readEntity(Cursor cursor, Book entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setAssetUrl(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDownloadUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setDescription(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setPrice(cursor.getInt(offset + 5));
-        entity.setStatus(cursor.getInt(offset + 6));
-        entity.setBookPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setLoadState(cursor.getInt(offset + 8));
-        entity.setType(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setTextBook(cursor.getInt(offset + 10));
-        entity.setBookType(cursor.getInt(offset + 11));
-        entity.setProvince(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setClassX(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setGrade(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setVersion(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setTime(cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16));
-        entity.setPageIndex(cursor.getInt(offset + 17));
-        entity.setPageUrl(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
-        entity.setIsCollect(cursor.getShort(offset + 19) != 0);
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setAssetUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDownloadUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setDescription(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setPrice(cursor.getInt(offset + 6));
+        entity.setStatus(cursor.getInt(offset + 7));
+        entity.setBookPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setLoadState(cursor.getInt(offset + 9));
+        entity.setType(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setTextBook(cursor.getInt(offset + 11));
+        entity.setBookType(cursor.getInt(offset + 12));
+        entity.setProvince(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setClassX(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setGrade(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setVersion(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setTime(cursor.isNull(offset + 17) ? null : cursor.getLong(offset + 17));
+        entity.setPageIndex(cursor.getInt(offset + 18));
+        entity.setPageUpUrl(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setPageUrl(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setIsCollect(cursor.getShort(offset + 21) != 0);
      }
     
     @Override

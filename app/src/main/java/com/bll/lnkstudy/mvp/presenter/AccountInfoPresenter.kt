@@ -3,15 +3,16 @@ package com.bll.lnkstudy.mvp.presenter
 import android.util.Pair
 import com.bll.lnkstudy.mvp.model.AccountList
 import com.bll.lnkstudy.mvp.model.AccountOrder
+import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class AccountInfoPresenter(view: IContractView.IAccountInfoViewI) : BasePresenter<IContractView.IAccountInfoViewI>(view) {
+class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter<IContractView.IAccountInfoView>(view) {
 
 
     //获取vip列表
-    fun getVipList() {
+    fun getVipList(boolean: Boolean) {
         var map=HashMap<String,String>()
         map.put("pageIndex", "1")
         map.put("pageSize", "10")
@@ -23,7 +24,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoViewI) : BasePresente
             override fun success(tBaseResult: BaseResult<AccountList>) {
                 view.getVipList(tBaseResult.data)
             }
-        }, true)
+        }, boolean)
     }
 
     //提交Vip订单
@@ -38,6 +39,45 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoViewI) : BasePresente
                 view.onVipOrder(tBaseResult.data)
             }
         }, true)
+    }
+
+    //加入班群
+    fun onInsertClassGroup(classNum:String) {
+        val insert = RetrofitManager.service.insertGroup(classNum)
+        doRequest(insert, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onInsert()
+            }
+        }, true)
+    }
+
+    //退出班群
+    fun onQuitClassGroup(id:String) {
+        val quit= RetrofitManager.service.quitClassGroup(id)
+        doRequest(quit, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onQuit()
+            }
+        }, true)
+    }
+
+    //班群列表
+    fun getClassGroupList(boolean: Boolean) {
+        val list= RetrofitManager.service.groupList()
+        doRequest(list, object : Callback<List<ClassGroup>>(view) {
+            override fun failed(tBaseResult: BaseResult<List<ClassGroup>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<List<ClassGroup>>) {
+                view.onClassGroupList(tBaseResult.data as List<ClassGroup>)
+            }
+        }, boolean)
     }
 
 

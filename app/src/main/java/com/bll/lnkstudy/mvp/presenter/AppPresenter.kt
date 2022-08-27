@@ -5,7 +5,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class AppPresenter(view: IContractView.IAPPViewI) : BasePresenter<IContractView.IAPPViewI>(view) {
+class AppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
 
     fun getAppList(map: HashMap<String,Any>) {
 

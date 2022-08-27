@@ -3,11 +3,15 @@ package com.bll.lnkstudy.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bll.lnkstudy.greendao.BaseTypeBeanDao;
 import com.bll.lnkstudy.greendao.CourseBeanDao;
-import com.bll.lnkstudy.greendao.CourseListDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.mvp.model.CourseBean;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
+
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
 
@@ -46,6 +50,8 @@ public class CourseGreenDaoManager {
 
 
     private CourseBeanDao courseDao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
 
     /**
      * 构造初始化
@@ -96,14 +102,14 @@ public class CourseGreenDaoManager {
     }
 
     public void insertAll(List<CourseBean> lists){
-        for (int i = 0; i < lists.size(); i++) {
-            courseDao.insertOrReplace(lists.get(i));
-        }
+        courseDao.insertOrReplaceInTx(lists);
     }
 
     //根据Id 查询
     public CourseBean queryID(int id) {
-        return  courseDao.queryBuilder().where(CourseBeanDao.Properties.ViewId.eq(id)).build().unique();
+        WhereCondition whereCondition= CourseBeanDao.Properties.UserId.eq(userId);
+        WhereCondition whereCondition1= CourseBeanDao.Properties.ViewId.eq(id);
+        return  courseDao.queryBuilder().where(whereCondition,whereCondition1).build().unique();
     }
 
     //删除

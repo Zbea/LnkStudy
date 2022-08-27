@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.utils.SPUtil;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -11,7 +13,8 @@ public class HomeworkContent {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public int bgResId;//作业背景样式id
+    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public String bgResId;//作业背景样式id
     public int courseId;//科目id
     public int homeworkTypeId;//作业本分组id
     public long homeworkId;//作业id
@@ -19,10 +22,11 @@ public class HomeworkContent {
     public long date;
     public String path;//路径
     public int page;//页码
-    @Generated(hash = 670139037)
-    public HomeworkContent(Long id, int bgResId, int courseId, int homeworkTypeId,
-            long homeworkId, long date, String path, int page) {
+    @Generated(hash = 1478750862)
+    public HomeworkContent(Long id, long userId, String bgResId, int courseId,
+            int homeworkTypeId, long homeworkId, long date, String path, int page) {
         this.id = id;
+        this.userId = userId;
         this.bgResId = bgResId;
         this.courseId = courseId;
         this.homeworkTypeId = homeworkTypeId;
@@ -40,10 +44,16 @@ public class HomeworkContent {
     public void setId(Long id) {
         this.id = id;
     }
-    public int getBgResId() {
+    public long getUserId() {
+        return this.userId;
+    }
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+    public String getBgResId() {
         return this.bgResId;
     }
-    public void setBgResId(int bgResId) {
+    public void setBgResId(String bgResId) {
         this.bgResId = bgResId;
     }
     public int getCourseId() {
@@ -82,7 +92,6 @@ public class HomeworkContent {
     public void setPage(int page) {
         this.page = page;
     }
-
 
 
 

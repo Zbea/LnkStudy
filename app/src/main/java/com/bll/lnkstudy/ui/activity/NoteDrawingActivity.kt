@@ -16,6 +16,7 @@ import com.bll.lnkstudy.dialog.PopWindowDrawingButton
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_note_draw_details.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -47,7 +48,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
             path= note?.path.toString()
         }
         else{
-            path= Constants.NOTE_PATH+"/$nowDate"
+            path= Constants.NOTE_PATH+"/$mUserId/$nowDate"
         }
         index=note?.index!!
     }
@@ -62,7 +63,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
         btn_page_up.setOnClickListener(this)
         iv_btn.setOnClickListener(this)
 
-        iv_content.setImageResource(note?.resId!!)
+        iv_content.setImageResource(ToolUtils.getImageResId(this,note?.resId))
         elik=iv_content.pwInterFace
 
         setViewChange()

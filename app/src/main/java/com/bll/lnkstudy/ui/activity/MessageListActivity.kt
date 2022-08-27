@@ -24,7 +24,7 @@ class MessageListActivity:BaseActivity() {
     }
 
     override fun initData() {
-        setTitle("消息中心")
+        setPageTitle("消息中心")
         lists= DataBeanManager.getIncetance().message
     }
 

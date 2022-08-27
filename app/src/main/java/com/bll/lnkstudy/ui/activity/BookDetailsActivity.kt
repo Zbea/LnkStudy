@@ -81,7 +81,7 @@ class BookDetailsActivity:BaseActivity() {
 
     override fun initView() {
         if (catalogMsg!=null){
-            setTitle(catalogMsg?.title!!)
+            setPageTitle(catalogMsg?.title!!)
             pageCount=catalogMsg?.totalCount!!
         }
 
@@ -236,6 +236,9 @@ class BookDetailsActivity:BaseActivity() {
     private fun loadPicture(index: Int,elik:EinkPWInterface,view:ImageView) {
         val showFile = getIndexFile(index)
         book?.pageUrl=showFile.path //设置当前页面路径
+        if (index>1){
+            book?.pageUpUrl=getIndexFile(index-1).path
+        }
 
         GlideUtils.setImageFile(this,showFile,view)
 

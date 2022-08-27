@@ -21,6 +21,7 @@ import com.bll.lnkstudy.mvp.model.HomeworkContent
 import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.ui.adapter.HomeworkCatalogAdapter
 import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_homework_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -85,8 +86,8 @@ class HomeworkDrawingActivity : BaseActivity() {
     }
 
     override fun initView() {
-        iv_content_a.setImageResource(homeworkType?.resId!!)//设置背景
-        iv_content_b.setImageResource(homeworkType?.resId!!)//设置背景
+        iv_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
+        iv_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
         elik_a = iv_content_a.pwInterFace
         elik_b = iv_content_b.pwInterFace
 
@@ -291,8 +292,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         HomeworkDaoManager.getInstance(this).insertOrReplace(homework)
         homework?.id = HomeworkDaoManager.getInstance(this).insertId
 
-        homework?.path =
-            Constants.HOMEWORK_PATH + "/$courseId" + "/${homeworkType?.type}" + "/${homework?.id}"
+        homework?.path = Constants.HOMEWORK_PATH+"/$mUserId" + "/$courseId" + "/${homeworkType?.type}" + "/${homework?.id}"
 
         homeworkLists.add(homework!!)
         mAdapter?.setNewData(homeworkLists)

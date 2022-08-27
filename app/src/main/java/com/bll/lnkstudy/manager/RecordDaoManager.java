@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.PaperContentDao;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.mvp.model.RecordBean;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -47,6 +50,9 @@ public class RecordDaoManager {
 
 
     private RecordBeanDao recordBeanDao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= RecordBeanDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -97,7 +103,8 @@ public class RecordDaoManager {
 
     public List<RecordBean> queryAllByCourseId(int courseId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.CourseId.eq(courseId);
-        List<RecordBean> queryList = recordBeanDao.queryBuilder().where(whereCondition).orderDesc(RecordBeanDao.Properties.Date).build().list();
+        List<RecordBean> queryList = recordBeanDao.queryBuilder().where(whereUser,whereCondition)
+                .orderDesc(RecordBeanDao.Properties.Date).build().list();
         return queryList;
     }
 

@@ -65,7 +65,7 @@ interface AiPickService{
     /**
      * 查看订单状态
      */
-    @GET("/wallets/order/{id}")
+    @GET("wallets/order/{id}")
     fun getOrderStatus(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
     /**
      * //获取vip列表
@@ -77,6 +77,23 @@ interface AiPickService{
      */
     @POST("wallets/vips/buy/{id}")
     fun postOrderVip(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
+
+    /**
+     * 加入班群
+     */
+    @POST("class/insert")
+    fun insertGroup(@Query("classNum") classNum:String): Observable<BaseResult<Any>>
+    /**
+     * 班群列表
+     */
+    @GET("class/list")
+    fun groupList(): Observable<BaseResult<List<ClassGroup>>>
+    /**
+     * 退出班群
+     */
+    @POST("class/quit")
+    fun quitClassGroup(@Query("id") id:String): Observable<BaseResult<Any>>
+
 
     /**
      * 书城列表

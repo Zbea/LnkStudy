@@ -57,7 +57,7 @@ public class FileDownManager {
     public BaseDownloadTask startDownLoad(final DownLoadCallBack downLoadCallBack) {
         auth = Constants.Companion.getAUTH();
         token = SPUtil.INSTANCE.getString("token");
-        Log.d("lylog"," download url = "+url);
+        Log.d("debug"," download url = "+url);
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url).addHeader(auth, token).setPath(path).setListener(new FileDownloadListener() {
 
             @Override

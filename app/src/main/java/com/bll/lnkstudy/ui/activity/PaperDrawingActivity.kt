@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 
 class PaperDrawingActivity:BaseActivity() {
-    private var mUserId=0
+
     private var type=0//0作业 1考卷
     private var mCourseId=0
     private var mCatalogId=0//分组id
@@ -50,13 +50,12 @@ class PaperDrawingActivity:BaseActivity() {
         isExpand= type == 1
         mCourseId=intent.getIntExtra("courseId",0)
         mCatalogId=intent.getIntExtra("categoryId",0)
-        mUserId=mUser?.id!!
         pageCount=paperContents.size
 
         daoManager= PaperDaoManager.getInstance(this)
         daoContentManager= PaperContentDaoManager.getInstance(this)
 
-        papers= daoManager?.queryAll(mUserId,type,mCourseId,mCatalogId) as MutableList<Paper>
+        papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>
         if (papers.size>0)
             currentPosition=papers.size-1
 
@@ -177,7 +176,7 @@ class PaperDrawingActivity:BaseActivity() {
 
         paper=papers[currentPosition]
 
-        paperContents= daoContentManager?.queryByID(mUserId,paper?.id!!) as MutableList<PaperContent>
+        paperContents= daoContentManager?.queryByID(paper?.id!!) as MutableList<PaperContent>
 
         pageCount=paperContents.size
 

@@ -31,11 +31,11 @@ class RecordActivity : BaseActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        path = File(Constants.RECORD_PATH, "${StringUtils.longToString(recordBean?.date!!)}.amr").toString()
+        path = File(Constants.RECORD_PATH, "$mUserId/${StringUtils.longToString(recordBean?.date!!)}.amr").toString()
     }
 
     override fun initView() {
-        setTitle("录音")
+        setPageTitle("录音")
         showSaveView()
 
         ivSave?.setOnClickListener {

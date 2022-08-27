@@ -10,7 +10,72 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_margin="@dimen/dp_50"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="工具栏"
+            android:layout_marginStart="76dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_36"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:orientation="horizontal"
+            >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tool"
+                android:layout_width="740dp"
+                android:layout_height="396dp"
+                android:layout_marginStart="54dp"
+                android:paddingTop="@dimen/dp_20"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="35dp"
+                android:paddingEnd="35dp"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tv_add"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_50"
+                    android:text="添加"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_26"
+                    android:gravity="center"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+
+                <TextView
+                    android:id="@+id/tv_remove"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_50"
+                    android:layout_marginTop="35dp"
+                    android:text="剔除"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_26"
+                    android:gravity="center"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -9,6 +9,8 @@ import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.mvp.model.BaseTypeBean;
 import com.bll.lnkstudy.mvp.model.RecordBean;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -49,6 +51,8 @@ public class BaseTypeBeanDaoManager {
 
 
     private BaseTypeBeanDao dao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
 
     /**
      * 构造初始化
@@ -98,7 +102,9 @@ public class BaseTypeBeanDaoManager {
 
 
     public List<BaseTypeBean> queryAll() {
-        List<BaseTypeBean> queryList = dao.queryBuilder().build().list();
+        WhereCondition whereCondition=BaseTypeBeanDao.Properties.UserId.eq(userId);
+        List<BaseTypeBean> queryList = dao.queryBuilder().where(whereCondition)
+                .orderAsc(BaseTypeBeanDao.Properties.Date).build().list();
         return queryList;
     }
 

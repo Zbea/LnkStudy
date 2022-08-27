@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.utils.SPUtil;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -12,6 +14,7 @@ public class PaintingBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
+    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public int type;//类型
     public int bgResId;
     public long date;//开始时间
@@ -19,10 +22,11 @@ public class PaintingBean {
     public String title;
     public int page;
 
-    @Generated(hash = 868008727)
-    public PaintingBean(Long id, int type, int bgResId, long date, String path,
-            String title, int page) {
+    @Generated(hash = 2109824709)
+    public PaintingBean(Long id, long userId, int type, int bgResId, long date,
+            String path, String title, int page) {
         this.id = id;
+        this.userId = userId;
         this.type = type;
         this.bgResId = bgResId;
         this.date = date;
@@ -30,14 +34,22 @@ public class PaintingBean {
         this.title = title;
         this.page = page;
     }
+
     @Generated(hash = 1284832375)
     public PaintingBean() {
     }
+
     public Long getId() {
         return this.id;
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public long getUserId() {
+        return this.userId;
+    }
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
     public int getType() {
         return this.type;

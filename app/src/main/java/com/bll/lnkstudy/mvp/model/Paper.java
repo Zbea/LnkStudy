@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.utils.SPUtil;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -10,7 +12,7 @@ public class Paper {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public int userId;//用户id
+    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public int contentId;//这次考卷id
     public int type;//0作业1考卷
     public int courseId;//科目id
@@ -29,8 +31,8 @@ public class Paper {
 
     public String images;//下载地址
 
-    @Generated(hash = 877697688)
-    public Paper(Long id, int userId, int contentId, int type, int courseId,
+    @Generated(hash = 966030678)
+    public Paper(Long id, long userId, int contentId, int type, int courseId,
             String course, int categoryId, String category, int index, String title,
             int rank, double score, long createDate, long date, String path,
             int page, String images) {
@@ -65,11 +67,11 @@ public class Paper {
         this.id = id;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return this.userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -192,7 +194,6 @@ public class Paper {
     public void setImages(String images) {
         this.images = images;
     }
-
 
 
 }

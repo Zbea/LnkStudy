@@ -1,44 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@drawable/bg_line_bottom">
-
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:src="@mipmap/icon_wallet_smoney" />
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    >
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/icon"
-        android:lineSpacingExtra="8dp"
-        android:text="X500"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="500"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="28sp"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
-    <TextView
-        android:id="@+id/tv_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="50dp"
-        android:text="500元"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
 
-    <ImageView
-        android:id="@+id/iv_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:src="@mipmap/icon_btn_select" />
-</RelativeLayout>
+</LinearLayout>

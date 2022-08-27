@@ -25,6 +25,7 @@ class Constants private constructor() {
     companion object {
 
         const val URL_BASE = "https://api2.bailianlong.com/v1/"
+//        const val URL_BASE = "http://192.168.101.187:10800/v1/"
         val AUTH = "Authorization"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Pictures
@@ -57,7 +58,6 @@ class Constants private constructor() {
         val DATE_EVENT="DateEvent"
         val BOOK_EVENT="BookEvent"
         val TEXT_BOOK_EVENT="TextBookEvent"
-        val AFTER_SCHOOL_EVENT="AfterSchoolEvent"
         val COURSE_EVENT="CourseEvent"
         val NOTE_BOOK_MANAGER_EVENT="NoteBookManagerEvent"
         val NOTE_EVENT="NoteEvent"

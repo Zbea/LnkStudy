@@ -26,7 +26,6 @@ import org.greenrobot.eventbus.EventBus
 
 class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
-    private var mUserId=0
     private var type=0//考卷
     private var mCourseId=0
     private var mCatalogId=0
@@ -61,15 +60,14 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
         type=receivePaper?.type!!
         isExpand=type==1
-        mUserId=mUser?.id!!
         mCourseId=receivePaper?.courseId!!
         mCatalogId=receivePaper?.categoryId!!
 
         daoManager= PaperDaoManager.getInstance(this)
         daoContentManager= PaperContentDaoManager.getInstance(this)
 
-        papers= daoManager?.queryAll(mUserId,type,mCourseId,mCatalogId) as MutableList<Paper>
-        paperContents= daoContentManager?.queryAll(mUserId,type,mCourseId,mCatalogId) as MutableList<PaperContent>
+        papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>
+        paperContents= daoContentManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperContent>
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -112,7 +110,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             },500)
 
             var paper= Paper()
-            paper.userId=mUserId
             paper.contentId=receivePaper?.id!!
             paper.type=type
             paper.courseId=mCourseId
@@ -130,7 +127,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
             for (i in 0 until paths.size){
                 var paperContent= PaperContent()
-                paperContent.userId=mUserId
                 paperContent.type=type
                 paperContent.courseId=mCourseId
                 paperContent.categoryId=mCatalogId

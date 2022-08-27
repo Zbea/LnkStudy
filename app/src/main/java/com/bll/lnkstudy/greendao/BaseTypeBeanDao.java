@@ -25,8 +25,10 @@ public class BaseTypeBeanDao extends AbstractDao<BaseTypeBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property TypeId = new Property(1, int.class, "typeId", false, "TYPE_ID");
-        public final static Property Name = new Property(2, String.class, "name", false, "NAME");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property TypeId = new Property(2, int.class, "typeId", false, "TYPE_ID");
+        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
+        public final static Property Date = new Property(4, long.class, "date", false, "DATE");
     }
 
 
@@ -43,8 +45,10 @@ public class BaseTypeBeanDao extends AbstractDao<BaseTypeBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BASE_TYPE_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"TYPE_ID\" INTEGER NOT NULL ," + // 1: typeId
-                "\"NAME\" TEXT);"); // 2: name
+                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
+                "\"TYPE_ID\" INTEGER NOT NULL ," + // 2: typeId
+                "\"NAME\" TEXT," + // 3: name
+                "\"DATE\" INTEGER NOT NULL );"); // 4: date
     }
 
     /** Drops the underlying database table. */
@@ -61,12 +65,14 @@ public class BaseTypeBeanDao extends AbstractDao<BaseTypeBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getTypeId());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getTypeId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(3, name);
+            stmt.bindString(4, name);
         }
+        stmt.bindLong(5, entity.getDate());
     }
 
     @Override
@@ -77,12 +83,14 @@ public class BaseTypeBeanDao extends AbstractDao<BaseTypeBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getTypeId());
+        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(3, entity.getTypeId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(3, name);
+            stmt.bindString(4, name);
         }
+        stmt.bindLong(5, entity.getDate());
     }
 
     @Override
@@ -94,8 +102,10 @@ public class BaseTypeBeanDao extends AbstractDao<BaseTypeBean, Long> {
     public BaseTypeBean readEntity(Cursor cursor, int offset) {
         BaseTypeBean entity = new BaseTypeBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // typeId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // name
+            cursor.getLong(offset + 1), // userId
+            cursor.getInt(offset + 2), // typeId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
+            cursor.getLong(offset + 4) // date
         );
         return entity;
     }
@@ -103,8 +113,10 @@ public class BaseTypeBeanDao extends AbstractDao<BaseTypeBean, Long> {
     @Override
     public void readEntity(Cursor cursor, BaseTypeBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTypeId(cursor.getInt(offset + 1));
-        entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUserId(cursor.getLong(offset + 1));
+        entity.setTypeId(cursor.getInt(offset + 2));
+        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setDate(cursor.getLong(offset + 4));
      }
     
     @Override

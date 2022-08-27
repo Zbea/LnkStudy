@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.PaintingBeanDao;
 import com.bll.lnkstudy.greendao.PaperContentDao;
 import com.bll.lnkstudy.mvp.model.PaperContent;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -47,6 +50,9 @@ public class PaperContentDaoManager {
 
 
     private PaperContentDao dao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= PaperContentDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -94,26 +100,23 @@ public class PaperContentDaoManager {
     }
 
     //通过考卷id查询所有试卷
-    public  List<PaperContent> queryByID(int mUserId, long paperId) {
-        WhereCondition whereCondition= PaperContentDao.Properties.UserId.eq(mUserId);
-        WhereCondition whereCondition1= PaperContentDao.Properties.PaperId.eq(paperId);
-        return dao.queryBuilder().where(whereCondition,whereCondition1).build().list();
+    public  List<PaperContent> queryByID(long paperId) {
+        WhereCondition whereCondition= PaperContentDao.Properties.PaperId.eq(paperId);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     /**
      *
-     * @param mUserId 用户id
      * @param type //作业还是考卷
      * @param courseId //科目id
      * @param categoryId //分组id
      * @return
      */
-    public List<PaperContent> queryAll(int mUserId, int type,int courseId, int categoryId) {
-        WhereCondition whereCondition= PaperContentDao.Properties.UserId.eq(mUserId);
+    public List<PaperContent> queryAll(int type,int courseId, int categoryId) {
         WhereCondition whereCondition1= PaperContentDao.Properties.Type.eq(type);
         WhereCondition whereCondition2= PaperContentDao.Properties.CourseId.eq(courseId);
         WhereCondition whereCondition3= PaperContentDao.Properties.CategoryId.eq(categoryId);
-        List<PaperContent> queryList = dao.queryBuilder().where(whereCondition,whereCondition1,whereCondition2,whereCondition3).build().list();
+        List<PaperContent> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().list();
         return queryList;
     }
 

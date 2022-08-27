@@ -22,6 +22,7 @@ import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
 import com.bll.lnkstudy.ui.activity.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
@@ -42,7 +43,7 @@ class NoteFragment : BaseFragment(){
     private var mAdapter: NoteAdapter? = null
     private var mAdapterType :BookCaseTypeAdapter?=null
     private var position=0 //当前笔记标记
-    private var resId=0
+    private var resId=""
     private var positionType=0//当前笔记本标记
     private var isDown=false //是否向下打开
 
@@ -85,14 +86,16 @@ class NoteFragment : BaseFragment(){
             val baseTypeBean = BaseTypeBean()
             baseTypeBean.name = "金句彩段"
             baseTypeBean.typeId=2
+            baseTypeBean.date=System.currentTimeMillis()
             noBooks.add(baseTypeBean)
             BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(baseTypeBean)
 
-            val noteBook1 = BaseTypeBean()
-            noteBook1.name = "典型题型"
-            noteBook1.typeId=3
-            noBooks.add(noteBook1)
-            BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(noteBook1)
+            val baseTypeBean1 = BaseTypeBean()
+            baseTypeBean1.name = "典型题型"
+            baseTypeBean1.typeId=3
+            baseTypeBean1.date=System.currentTimeMillis()+1000
+            noBooks.add(baseTypeBean1)
+            BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(baseTypeBean1)
         }
         noteBooks.addAll(noBooks)
 
@@ -183,6 +186,7 @@ class NoteFragment : BaseFragment(){
     }
 
     private fun bindClick(){
+
         tv_add.setOnClickListener {
             dialog=NoteAddDialog(requireContext()).builder()
             dialog?.setOnDialogClickListener(object :
@@ -190,22 +194,22 @@ class NoteFragment : BaseFragment(){
                 override fun onClick(type:Int) {
                     resId = when(type){
                         1->{
-                            R.mipmap.icon_note_details_bg_1
+                            ToolUtils.getImageResStr(activity, R.mipmap.icon_note_details_bg_1)
                         }
                         2->{
-                            R.mipmap.icon_note_details_bg_2
+                            ToolUtils.getImageResStr(activity, R.mipmap.icon_note_details_bg_2)
                         }
                         3->{
-                            R.mipmap.icon_note_details_bg_3
+                            ToolUtils.getImageResStr(activity, R.mipmap.icon_note_details_bg_3)
                         }
                         4->{
-                            R.mipmap.icon_note_details_bg_4
+                            ToolUtils.getImageResStr(activity, R.mipmap.icon_note_details_bg_4)
                         }
                         5->{
-                            R.mipmap.icon_note_details_bg_5
+                            ToolUtils.getImageResStr(activity, R.mipmap.icon_note_details_bg_5)
                         }
                         else->{
-                            0
+                            ToolUtils.getImageResStr(activity, 0)
                         }
                     }
                     addNote()
@@ -216,6 +220,7 @@ class NoteFragment : BaseFragment(){
         ivManagers?.setOnClickListener {
             setTopSelectView()
         }
+
 
     }
 

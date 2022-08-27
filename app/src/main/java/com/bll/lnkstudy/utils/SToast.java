@@ -80,7 +80,7 @@ public class SToast {
         toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
         toast.setText(str);
         toast.setDuration(duration);
-        toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 600, 400);
+//        toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 600, 400);
         toast.show();
     }
 

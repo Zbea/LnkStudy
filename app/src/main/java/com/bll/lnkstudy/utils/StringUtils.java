@@ -101,6 +101,18 @@ public class StringUtils {
         }
     }
 
+    public static String longToStringWeek(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd HH:mm EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String longToStringDataNoHour(long date) {
         if(0 == date){
             return null;

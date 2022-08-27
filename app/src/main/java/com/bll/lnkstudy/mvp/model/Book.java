@@ -1,4 +1,5 @@
 package com.bll.lnkstudy.mvp.model;
+import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -14,6 +15,7 @@ public class Book {
     @Id
     @Unique
     public Long id;
+    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String assetUrl;//图片url
     public String downloadUrl;//书籍下载url
     public String description;//简介
@@ -31,18 +33,19 @@ public class Book {
     public String grade ="0"; //年级
     public String version ="0";  //版本
     public Long time;//观看时间
-    public int pageIndex=1;//查看到那一页
-    public String pageUrl;//查看到那一页图片路径地址
+    public int pageIndex=1;//当前页
+    public String pageUpUrl;//上一页路径
+    public String pageUrl;//当前页路径
     public boolean isCollect=false;//是否收藏
 
-
-    @Generated(hash = 345262659)
-    public Book(Long id, String assetUrl, String downloadUrl, String description,
-            String name, int price, int status, String bookPath, int loadState,
-            String type, int textBook, int bookType, String province, String classX,
-            String grade, String version, Long time, int pageIndex, String pageUrl,
-            boolean isCollect) {
+    @Generated(hash = 236105516)
+    public Book(Long id, long userId, String assetUrl, String downloadUrl,
+            String description, String name, int price, int status, String bookPath,
+            int loadState, String type, int textBook, int bookType, String province,
+            String classX, String grade, String version, Long time, int pageIndex,
+            String pageUpUrl, String pageUrl, boolean isCollect) {
         this.id = id;
+        this.userId = userId;
         this.assetUrl = assetUrl;
         this.downloadUrl = downloadUrl;
         this.description = description;
@@ -60,17 +63,26 @@ public class Book {
         this.version = version;
         this.time = time;
         this.pageIndex = pageIndex;
+        this.pageUpUrl = pageUpUrl;
         this.pageUrl = pageUrl;
         this.isCollect = isCollect;
     }
+
     @Generated(hash = 1839243756)
     public Book() {
     }
+
     public Long getId() {
         return this.id;
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public long getUserId() {
+        return this.userId;
+    }
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
     public String getAssetUrl() {
         return this.assetUrl;
@@ -126,6 +138,24 @@ public class Book {
     public void setType(String type) {
         this.type = type;
     }
+    public int getTextBook() {
+        return this.textBook;
+    }
+    public void setTextBook(int textBook) {
+        this.textBook = textBook;
+    }
+    public int getBookType() {
+        return this.bookType;
+    }
+    public void setBookType(int bookType) {
+        this.bookType = bookType;
+    }
+    public String getProvince() {
+        return this.province;
+    }
+    public void setProvince(String province) {
+        this.province = province;
+    }
     public String getClassX() {
         return this.classX;
     }
@@ -168,24 +198,12 @@ public class Book {
     public void setIsCollect(boolean isCollect) {
         this.isCollect = isCollect;
     }
-    public int getBookType() {
-        return this.bookType;
-    }
-    public void setBookType(int bookType) {
-        this.bookType = bookType;
-    }
-    public int getTextBook() {
-        return this.textBook;
-    }
-    public void setTextBook(int textBook) {
-        this.textBook = textBook;
-    }
-    public String getProvince() {
-        return this.province;
-    }
-    public void setProvince(String province) {
-        this.province = province;
+
+    public String getPageUpUrl() {
+        return this.pageUpUrl;
     }
 
-
+    public void setPageUpUrl(String pageUpUrl) {
+        this.pageUpUrl = pageUpUrl;
+    }
 }

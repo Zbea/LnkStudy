@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.HomeworkContentDao;
 import com.bll.lnkstudy.greendao.HomeworkDao;
 import com.bll.lnkstudy.greendao.HomeworkTypeDao;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
@@ -12,6 +13,8 @@ import com.bll.lnkstudy.mvp.model.Homework;
 import com.bll.lnkstudy.mvp.model.HomeworkType;
 import com.bll.lnkstudy.mvp.model.Note;
 import com.bll.lnkstudy.mvp.model.RecordBean;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -50,6 +53,9 @@ public class HomeworkDaoManager {
 
 
     private HomeworkDao homeworkDao;
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= HomeworkDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -106,14 +112,15 @@ public class HomeworkDaoManager {
 
 
     public Homework queryByID(Long id) {
-        Homework homework = homeworkDao.queryBuilder().where(HomeworkDao.Properties.Id.eq(id)).build().unique();
+        WhereCondition whereCondition=HomeworkDao.Properties.Id.eq(id);
+        Homework homework = homeworkDao.queryBuilder().where(whereUser,whereCondition).build().unique();
         return homework;
     }
 
     public List<Homework> queryAllByType(int courseId,int homeworkTypeId) {
         WhereCondition whereCondition=HomeworkDao.Properties.CourseId.eq(courseId);
         WhereCondition whereCondition1=HomeworkDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
-        List<Homework> queryList = homeworkDao.queryBuilder().where(whereCondition,whereCondition1).build().list();
+        List<Homework> queryList = homeworkDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
 //                .orderDesc(HomeworkDao.Properties.StartDate).build().list();
         return queryList;
     }

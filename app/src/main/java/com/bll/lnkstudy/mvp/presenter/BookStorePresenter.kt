@@ -6,7 +6,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class BookStorePresenter(view: IContractView.IBookStoreViewI) : BasePresenter<IContractView.IBookStoreViewI>(view) {
+class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<IContractView.IBookStoreView>(view) {
 
     fun getBooks(map: HashMap<String,Any>) {
 

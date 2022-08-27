@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.greendao.DatePlanConverter;
 import com.bll.lnkstudy.utils.greendao.DateRemindConverter;
 
@@ -22,6 +23,7 @@ public class DateEvent implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
+    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public int type;//0学习计划 1日程 2重要日子
 
     public String title;//标题
@@ -41,12 +43,13 @@ public class DateEvent implements Serializable {
     public List<DateRemind> remindList;//提醒事件列表
     public String repeat;//重复类型
 
-    @Generated(hash = 443415164)
-    public DateEvent(Long id, int type, String title, Long dayLong,
+    @Generated(hash = 2090154417)
+    public DateEvent(Long id, long userId, int type, String title, Long dayLong,
             String dayLongStr, String explain, Long startTime, Long endTime,
             String startTimeStr, String endTimeStr, List<DatePlanBean> list,
             List<DateRemind> remindList, String repeat) {
         this.id = id;
+        this.userId = userId;
         this.type = type;
         this.title = title;
         this.dayLong = dayLong;
@@ -60,14 +63,22 @@ public class DateEvent implements Serializable {
         this.remindList = remindList;
         this.repeat = repeat;
     }
+
     @Generated(hash = 1511002217)
     public DateEvent() {
     }
+
     public Long getId() {
         return this.id;
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public long getUserId() {
+        return this.userId;
+    }
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
     public int getType() {
         return this.type;
@@ -141,5 +152,4 @@ public class DateEvent implements Serializable {
     public void setRepeat(String repeat) {
         this.repeat = repeat;
     }
-
 }

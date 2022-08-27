@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="加入班群"
-        android:textSize="26sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/black" />
 
@@ -20,14 +20,15 @@
     <EditText
         android:id="@+id/et_number"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="54dp"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_20"
         android:hint="输入班群号"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_gray_stroke_5dp_corner"
         android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:inputType="number"
         android:textColor="@color/black"
         android:layout_marginBottom="40dp"
@@ -37,7 +38,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="@dimen/dp_45"
         android:orientation="horizontal"
         android:gravity="center"
         >

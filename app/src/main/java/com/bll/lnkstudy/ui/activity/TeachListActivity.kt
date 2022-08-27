@@ -37,7 +37,7 @@ class TeachListActivity:BaseActivity() {
     }
 
     override fun initView() {
-        setTitle(course?.name.toString())
+        setPageTitle(course?.name.toString())
 
         rv_list.layoutManager = GridLayoutManager(this,6)//创建布局管理
         mAdapter = TeachListAdapter(R.layout.item_teach_content, null)

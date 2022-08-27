@@ -10,13 +10,6 @@ public class MessageList {
     public String createTime;
     public boolean isLook;
     public boolean isCheck;
-    public List<MessageBean> messages;
 
-    public static class MessageBean{
-
-        public int id;
-        public String message;
-
-    }
 
 }

@@ -6,9 +6,12 @@ import java.util.List;
 
 public class AppBean {
 
+    public int appId;
     public String appName;
     public String packageName;
     public Drawable image;
+    public boolean isCheck;
+    public boolean isBase;//基本数据
 
     //app数据
     public int pageIndex;

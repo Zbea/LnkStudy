@@ -7,6 +7,10 @@ import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkTypeDao;
 import com.bll.lnkstudy.mvp.model.HomeworkType;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
+
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
 
@@ -44,7 +48,10 @@ public class HomeworkTypeDaoManager {
     private static HomeworkTypeDaoManager mDbController;
 
 
-    private HomeworkTypeDao homeWorkTypeDao;  //note表
+    private HomeworkTypeDao dao;  //note表
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= HomeworkTypeDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -56,7 +63,7 @@ public class HomeworkTypeDaoManager {
         mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
         mDaoMaster = new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
-        homeWorkTypeDao = mDaoSession.getHomeworkTypeDao(); //note表
+        dao = mDaoSession.getHomeworkTypeDao(); //note表
     }
 
 
@@ -88,27 +95,29 @@ public class HomeworkTypeDaoManager {
     }
 
     public void insertOrReplace(HomeworkType bean) {
-        homeWorkTypeDao.insertOrReplace(bean);
+        dao.insertOrReplace(bean);
     }
 
     public HomeworkType queryByID(Long noteID) {
-        HomeworkType queryNote = homeWorkTypeDao.queryBuilder().where(HomeworkTypeDao.Properties.Id.eq(noteID)).build().unique();
+        WhereCondition whereCondition=HomeworkTypeDao.Properties.Id.eq(noteID);
+        HomeworkType queryNote = dao.queryBuilder().where(whereUser,whereCondition).build().unique();
         return queryNote;
     }
 
     public List<HomeworkType> queryAll() {
-        List<HomeworkType> queryList = homeWorkTypeDao.queryBuilder().build().list();
+        List<HomeworkType> queryList = dao.queryBuilder().where(whereUser).build().list();
         return queryList;
     }
 
     public List<HomeworkType> queryAllByCourseId(int courseId) {
-        List<HomeworkType> queryList = homeWorkTypeDao.queryBuilder().where(HomeworkTypeDao.Properties.CourseId.eq(courseId)).build().list();
+        WhereCondition whereCondition=HomeworkTypeDao.Properties.CourseId.eq(courseId);
+        List<HomeworkType> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
         return queryList;
     }
 
 
     public void deleteBean(HomeworkType bean){
-        homeWorkTypeDao.delete(bean);
+        dao.delete(bean);
     }
 
 

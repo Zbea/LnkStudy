@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.HomeworkTypeDao;
 import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.mvp.model.Note;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -47,6 +50,9 @@ public class NoteGreenDaoManager {
 
 
     private NoteDao noteDao;  //note表
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= NoteDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -95,17 +101,18 @@ public class NoteGreenDaoManager {
     }
 
     public Note queryByNoteID(Long noteID) {
-        Note queryNote = noteDao.queryBuilder().where(NoteDao.Properties.Id.eq(noteID)).build().unique();
+        WhereCondition whereCondition=NoteDao.Properties.Id.eq(noteID);
+        Note queryNote = noteDao.queryBuilder().where(whereUser,whereCondition).build().unique();
         return queryNote;
     }
 
     public List<Note> queryAll(){
-        return noteDao.queryBuilder().orderDesc(NoteDao.Properties.Id).build().list();
+        return noteDao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Id).build().list();
     }
 
     public List<Note> queryAllNote(int type) {
         WhereCondition whereCondition=NoteDao.Properties.Type.eq(type);
-        List<Note> querynoteList = noteDao.queryBuilder().where(whereCondition).orderDesc(NoteDao.Properties.NowDate).build().list();
+        List<Note> querynoteList = noteDao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.NowDate).build().list();
         return querynoteList;
     }
 
@@ -115,7 +122,7 @@ public class NoteGreenDaoManager {
 
     public void deleteType(int type){
         WhereCondition whereCondition=NoteDao.Properties.Type.eq(type);
-        List<Note> queryNoteList = noteDao.queryBuilder().where(whereCondition).build().list();
+        List<Note> queryNoteList = noteDao.queryBuilder().where(whereUser,whereCondition).build().list();
         noteDao.deleteInTx(queryNoteList);
     }
 

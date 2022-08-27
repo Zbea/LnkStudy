@@ -6,7 +6,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class LoginPresenter(view: IContractView.ILoginViewI) : BasePresenter<IContractView.ILoginViewI>(view) {
+class LoginPresenter(view: IContractView.ILoginView) : BasePresenter<IContractView.ILoginView>(view) {
 
     fun login(account: String, password: String, timestamp: Int, role: Int) {
 

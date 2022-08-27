@@ -94,11 +94,15 @@ public final class ZipManager {
             ZipFile zipFile = new ZipFile(destinationFilePath);
             zipFile.setRunInThread(true);
             File targetFile = new File(targetPath);
-            if (targetFile.isDirectory()) {
-                zipFile.addFolder(targetFile, parameters);
-            } else {
-                zipFile.addFile(targetFile, parameters);
+            File[] files=targetFile.listFiles();
+            for (File file :files){
+                if (file.isDirectory()) {
+                    zipFile.addFolder(file, parameters);
+                } else {
+                    zipFile.addFile(file, parameters);
+                }
             }
+
             timerMsg(callback, zipFile);
         } catch (Exception e) {
             if (callback != null) callback.onFinish(false);

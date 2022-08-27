@@ -3,11 +3,14 @@ package com.bll.lnkstudy.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bll.lnkstudy.greendao.BaseTypeBeanDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DateEventDao;
 import com.bll.lnkstudy.greendao.DateEventDao;
 import com.bll.lnkstudy.mvp.model.DateEvent;
+import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -48,6 +51,9 @@ public class DateEventGreenDaoManager {
 
 
     private DateEventDao dateEventDao;  //dateEvent表
+
+    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private WhereCondition whereUser= DateEventDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
@@ -99,14 +105,14 @@ public class DateEventGreenDaoManager {
 
     //根据Id 查询DateEvent
     public DateEvent queryID(Long id) {
-        return  dateEventDao.queryBuilder().where(DateEventDao.Properties.Id.eq(id)).build().unique();
+        return  dateEventDao.queryBuilder().where(whereUser,DateEventDao.Properties.Id.eq(id)).build().unique();
     }
 
     //查询所有当天事件 根据当天时间
     public List<DateEvent> queryAllDateEvent(int type,long dayTim) {
         WhereCondition whereCondition1=DateEventDao.Properties.Type.eq(type);
         WhereCondition whereCondition2=DateEventDao.Properties.DayLong.ge(dayTim);
-        List<DateEvent> list = dateEventDao.queryBuilder().where(whereCondition1,whereCondition2).build().list();
+        List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
         return list;
     }
 

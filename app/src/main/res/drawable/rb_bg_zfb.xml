@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_checked="false" >
-        <bitmap android:src="@mipmap/alipay_nor" />
+        <bitmap android:src="@mipmap/icon_pay_zfb_nor" />
 
     </item>
 
     <item android:state_checked="true">
-        <bitmap android:src="@mipmap/alipay_sel" />
+        <bitmap android:src="@mipmap/icon_pay_zfb_check" />
     </item>
 </selector>
