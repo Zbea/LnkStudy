@@ -63,8 +63,8 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
         btn_page_up.setOnClickListener(this)
         iv_btn.setOnClickListener(this)
 
-        iv_content.setImageResource(ToolUtils.getImageResId(this,note?.resId))
-        elik=iv_content.pwInterFace
+        v_content.setImageResource(ToolUtils.getImageResId(this,note?.resId))
+        elik=v_content.pwInterFace
 
         setViewChange()
 

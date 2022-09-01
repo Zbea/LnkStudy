@@ -19,14 +19,12 @@
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
             android:layout_weight="1"
-            android:visibility="gone"
             android:orientation="vertical">
 
             <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/iv_content_a"
+                android:id="@+id/v_content_a"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
                 android:scaleType="fitCenter" />
         </LinearLayout>
 
@@ -36,46 +34,21 @@
             android:layout_height="match_parent"
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
+            android:visibility="gone"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/iv_content_b"
+                android:id="@+id/v_content_b"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:scaleType="fitCenter" />
         </LinearLayout>
 
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_catalog"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:visibility="gone"
-        android:layout_above="@+id/ll_bottom"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:text="目录"
-            android:background="@drawable/bg_catalog_top"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
 
     <include
         android:id="@+id/ll_bottom"
@@ -85,6 +58,11 @@
         android:layout_alignParentBottom="true" />
 
 
-
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_30"
+        android:src="@mipmap/icon_back_big"/>
 
 </RelativeLayout>

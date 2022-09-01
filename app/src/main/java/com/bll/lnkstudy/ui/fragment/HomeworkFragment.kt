@@ -4,19 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.mvp.model.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.HomeworkType
-import com.bll.lnkstudy.mvp.model.ModuleBean
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.manager.PaperContentDaoManager
+import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.ui.activity.HomeworkDrawingActivity
 import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
+import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco5
 import kotlinx.android.synthetic.main.common_xtab.*
@@ -34,6 +35,7 @@ class HomeworkFragment : BaseFragment(){
 
     private var courseID=0//当前科目id
     private var datas= mutableListOf<HomeworkType>()
+    private var messages= mutableListOf<HomeworkMessage>()
 
     private var homeworkMessageAllDialog:HomeworkMessageAllDialog?=null
 
@@ -46,9 +48,11 @@ class HomeworkFragment : BaseFragment(){
         showHomeworkView()
 
         var popWindowBean=PopWindowBean()
+        popWindowBean.id=0
         popWindowBean.name="提交详情"
         popWindowBean.isCheck=true
         var popWindowBean1=PopWindowBean()
+        popWindowBean1.id=1
         popWindowBean1.name="批改详情"
         popWindowBean1.isCheck=false
 
@@ -61,29 +65,14 @@ class HomeworkFragment : BaseFragment(){
 
         tv_add.setOnClickListener {
             addCover()
-
-//            ZipUtils.zip(Constants.HOMEWORK_PATH+"/$mUserId","homework",object : ZipUtils.ZipCallback {
-//                override fun onStart() {
-//                    showLog("开始")
-//                }
-//
-//                override fun onProgress(percentDone: Int) {
-//                    showLog(percentDone.toString())
-//                }
-//
-//                override fun onFinish(success: Boolean) {
-//                    showLog(success.toString())
-//                }
-//
-//                override fun onError(msg: String?) {
-//                    showLog(msg!!)
-//                }
-//
-//            })
         }
 
         initRecyclerView()
         initTab()
+
+        getMessageDatas()
+        loadImage()
+
         findDatas(true,0)
     }
 
@@ -131,38 +120,40 @@ class HomeworkFragment : BaseFragment(){
         rv_list.layoutManager = GridLayoutManager(activity,3)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco5(71,30))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if(datas[position].isListenToRead){
-                startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
-            }
-            else if (datas[position].type==2){
-                var intent=Intent(activity, PaperDrawingActivity::class.java)
-                intent.putExtra("courseId",courseID)
-                intent.putExtra("categoryId",2)
-                intent.flags=0
-                startActivity(intent)
-            }
-            else{
-                var bundle=Bundle()
-                bundle.putSerializable("homework",datas[position])
-                var intent=Intent(context,HomeworkDrawingActivity::class.java)
-                intent.putExtra("homeworkBundle",bundle)
-                startActivity(intent)
-            }
-        }
+        rv_list.addItemDecoration(SpaceGridItemDeco5(71,40))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-
+            val item=datas[position]
+            if (view.id==R.id.iv_image){
+                item.isMessage=false
+                mAdapter?.notifyDataSetChanged()
+                if(item.isListenToRead){
+                    startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
+                }
+                else if (item.type==2||item.type==3){
+                    var intent=Intent(activity, PaperDrawingActivity::class.java)
+                    intent.putExtra("courseId",courseID)
+                    intent.putExtra("categoryId",item.type)
+                    intent.flags=0
+                    startActivity(intent)
+                }
+                else{
+                    var bundle=Bundle()
+                    bundle.putSerializable("homework",item)
+                    var intent=Intent(context,HomeworkDrawingActivity::class.java)
+                    intent.putExtra("homeworkBundle",bundle)
+                    startActivity(intent)
+                }
+            }
             if (view.id==R.id.tv_message){
-                HomeworkMessageDialog(requireActivity(),getMessageDatas()).builder()
+                if (item.message!=null)
+                    HomeworkMessageDialog(requireActivity(),item.message).builder()
             }
             if (view.id==R.id.iv_message){
-                var datas=getMessageDatas()
-                homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),datas).builder()
+                homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),messages).builder()
                 homeworkMessageAllDialog?.setOnDialogClickListener(object : HomeworkMessageAllDialog.OnDialogClickListener {
                         override fun onClick(position:Int,id: String) {
-                            datas.removeAt(position)
-                            homeworkMessageAllDialog?.setData(datas)
+                            messages.removeAt(position)
+                            homeworkMessageAllDialog?.setData(messages)
                         }
 
                     })
@@ -178,23 +169,100 @@ class HomeworkFragment : BaseFragment(){
         datas.clear()
         datas=DataBeanManager.getIncetance().getHomeWorkTypes(islg,courseID,mUser?.grade!!)
         datas.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID))
+
+        for (item in datas){
+            for (mes in messages){
+                if (item.courseId==mes.courseId&&item.type==mes.homeworkTypeId){
+                    item.isMessage=true
+                    item.message=mes
+                }
+            }
+        }
+
         mAdapter?.setNewData(datas)
+
     }
 
-    private fun getMessageDatas():MutableList<HomeworkMessage>{
-        val messages= mutableListOf<HomeworkMessage>()
+    private fun getMessageDatas(){
         val homeworkMessage=HomeworkMessage()
         homeworkMessage.title="语文家庭作业1、3、5页"
         homeworkMessage.date=System.currentTimeMillis()
+        homeworkMessage.course="语文"
+        homeworkMessage.courseId=0
+        homeworkMessage.state=0
+        homeworkMessage.homeworkTypeId=0
 
-        val homeworkMessage2=HomeworkMessage()
-        homeworkMessage2.title="数学作业"
-        homeworkMessage2.date=System.currentTimeMillis()
+        val homeworkMessage1=HomeworkMessage()
+        homeworkMessage1.title="数学作业"
+        homeworkMessage1.date=System.currentTimeMillis()
+        homeworkMessage1.course="数学"
+        homeworkMessage1.courseId=1
+        homeworkMessage1.state=1
+        homeworkMessage1.homeworkTypeId=2
 
         messages.add(homeworkMessage)
-        messages.add(homeworkMessage2)
+        messages.add(homeworkMessage1)
 
-        return messages
+
+    }
+
+    /**
+     * 下载图片
+     */
+    private fun loadImage(){
+        for (item in messages){
+            if (item.homeworkTypeId==2||item.homeworkTypeId==3){
+                if (item.images.isNullOrEmpty())
+                    return
+                //设置路径
+                val pathStr=Constants.HOMEWORK_PATH+"/$mUserId" + "/${item.courseId}" + "/${item.homeworkTypeId}" + "/${item.id}"
+                var imageDownLoad= ImageDownLoadUtils(activity,item.images,pathStr)
+                imageDownLoad.startDownload()
+                imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
+                    override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
+                        //查找到之前已经存储的数据、用于页码计算
+                        var papers=PaperDaoManager.getInstance(requireContext()).queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<Paper>
+                        var paperContents=PaperContentDaoManager.getInstance(requireContext())?.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<PaperContent>
+
+                        var paper= Paper()
+                        paper.contentId=item?.id!!
+                        paper.type=0//作业
+                        paper.courseId=item?.courseId
+                        paper.course=item?.course
+                        paper.categoryId=item?.homeworkTypeId
+                        paper.title=item?.title
+                        paper.path=pathStr
+                        paper.page=paperContents.size //子内容的第一个页码位置
+                        paper.index=papers.size //作业位置
+                        paper.createDate=item?.date
+                        paper.images=item?.images?.toString()
+                        PaperDaoManager.getInstance(requireContext())?.insertOrReplace(paper)
+                        paper.id=PaperDaoManager.getInstance(requireContext())?.insertId
+
+                        for (i in 0 until map?.size!!){
+                            val path=map[i]
+                            val drawPath=pathStr+"/${i + 1}/draw.tch"
+
+                            var paperContent= PaperContent()
+                            paperContent.type=0
+                            paperContent.courseId=item?.courseId
+                            paperContent.categoryId=item?.homeworkTypeId
+                            paperContent.paperId=paper?.id
+                            paperContent.path=path
+                            paperContent.drawPath=drawPath
+                            paperContent.date=item?.date
+                            paperContent.page=paperContents.size+i
+                            PaperContentDaoManager.getInstance(requireContext())?.insertOrReplace(paperContent)
+
+                        }
+                    }
+                    override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
+                        imageDownLoad.reloadImage()
+                    }
+                })
+
+            }
+        }
     }
 
     //添加作业本
@@ -264,14 +332,15 @@ class HomeworkFragment : BaseFragment(){
     }
 
 
-
     private fun setPopWindow(){
         if (popWindowList==null)
         {
             popWindowList= PopWindowList(requireActivity(),popWindowBeans,ivHomework!!,-220,20).builder()
             popWindowList?.setOnSelectListener(object : PopWindowList.OnSelectListener {
                 override fun onSelect(item: PopWindowBean) {
-
+                    if (item.id==0){
+                        HomeworkCommitDetailsDialog(requireActivity(),messages).builder()
+                    }
                 }
             })
         }

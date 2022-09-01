@@ -2,31 +2,25 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.HomeworkMessage
-import com.bll.lnkstudy.widget.SpaceItemDeco
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageDialog(val context: Context, val list: List<HomeworkMessage>) {
+class HomeworkMessageDialog(val context: Context, private val homeworkMessage:  HomeworkMessage) {
 
     private var dialog:Dialog?=null
 
     fun builder(): HomeworkMessageDialog? {
 
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_homework_message_all)
-        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog!!.setContentView(R.layout.dialog_homework_message)
         dialog?.show()
+        val window=dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
+        val tvTitle=dialog?.findViewById<TextView>(R.id.tv_title)
+        tvTitle?.text=homeworkMessage.title
 
-        recyclerview.layoutManager = LinearLayoutManager(context)
-        var mAdapter = MessageAdapter(R.layout.item_message_bean, list)
-        recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,20,0))
 
         return this
     }
@@ -41,12 +35,6 @@ class HomeworkMessageDialog(val context: Context, val list: List<HomeworkMessage
             dialog?.show()
     }
 
-    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage>) : BaseQuickAdapter<HomeworkMessage, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
-            helper.setText(R.id.tv_name,item.title)
-        }
-
-    }
 
 }

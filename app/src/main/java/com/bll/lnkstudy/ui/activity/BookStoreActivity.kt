@@ -78,14 +78,11 @@ class BookStoreActivity:BaseActivity() ,
     }
 
     override fun onDownBook(bookEvent: BookEvent?) {
-        book?.status=3
         book?.downloadUrl=bookEvent?.contentUrl
-        bookDetailsDialog?.setChangeStatus(3)
         book?.loadState = 2//下载ing
         mAdapter?.notifyDataSetChanged()
-
         //加载任务
-        mDialog?.show()
+        showLoading()
         val downloadTask = downLoadStart(bookEvent?.contentUrl!!)
         if (downloadTask !=null){
             mDownMapPool.put(book?.id!!,downloadTask)
@@ -251,7 +248,7 @@ class BookStoreActivity:BaseActivity() ,
 
                 if (title=="教材"){
                     val baseTypeBean=typeList[tab?.position!!]
-                    if (baseTypeBean.id.toInt()==0){
+                    if (baseTypeBean.typeId==0){
                         showView(tv_province)
                     }
                     else{
@@ -298,6 +295,7 @@ class BookStoreActivity:BaseActivity() ,
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener(object : BookDetailsDialog.OnClickListener {
             override fun onClick() {
+
                 if (book.status==1){
                     presenter.buyBook(book.id.toString())
                 }
@@ -356,31 +354,33 @@ class BookStoreActivity:BaseActivity() ,
                     lock.lock()
                     ZipUtils.unzip(mUserId.toString(),targetFileStr, fileName, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
-                            showLog("解压完成")
-                            book?.time=System.currentTimeMillis()//下载时间用于排序
-                            //解压完成就开始存数据库
-                            book?.loadState = 1//已经下载
-                            ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/0/9527
-                            book?.bookPath = "$BOOK_PATH/$mUserId/$fileName"
-                            //下载解压完成后更新存储的book
-                            BookGreenDaoManager.getInstance(this@BookStoreActivity).insertOrReplaceBook(book)
-                            EventBus.getDefault().post(BOOK_EVENT)
-                            //更新列表
-                            mAdapter?.notifyDataSetChanged()
-                            if (bookDetailsDialog!=null)
-                                bookDetailsDialog?.setUnClickBtn("已下载")
+                            if (success){
+                                showLog("解压完成")
+                                book?.time=System.currentTimeMillis()//下载时间用于排序
+                                //解压完成就开始存数据库
+                                book?.status=3
+                                book?.loadState = 1//已经下载
+                                ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/0/9527
+                                book?.bookPath = "$BOOK_PATH/$mUserId/$fileName"
+                                //下载解压完成后更新存储的book
+                                BookGreenDaoManager.getInstance(this@BookStoreActivity).insertOrReplaceBook(book)
+                                EventBus.getDefault().post(BOOK_EVENT)
+                                //更新列表
+                                mAdapter?.notifyDataSetChanged()
+                                if (bookDetailsDialog!=null)
+                                    bookDetailsDialog?.setUnClickBtn("已下载")
+                            }
+                            else{
+                                showToast("解压失败")
+                            }
                         }
 
                         override fun onProgress(percentDone: Int) {
                         }
-
                         override fun onError(msg: String?) {
-                            showLog(msg!!)
-                            showToast(msg)
+                            showToast(msg!!)
                         }
-
                         override fun onStart() {
-                            showLog("开始解压")
                         }
 
                     })
@@ -393,8 +393,7 @@ class BookStoreActivity:BaseActivity() ,
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     mDialog?.dismiss()
-                    if (bookDetailsDialog!=null)
-                        bookDetailsDialog?.setChangeOk()
+                    showToast("下载书籍失败")
                     deleteDoneTask(task)
                 }
             })

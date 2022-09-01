@@ -8,28 +8,21 @@
     android:background="@drawable/bg_line_bottom" >
 
     <TextView
-        android:id="@+id/tv_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="一"
-        android:textSize="20sp"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:textColor="@color/black"/>
-
-    <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
         android:layout_weight="1"
-        android:gravity="center"
         android:textSize="20sp"
+        android:layout_marginStart="@dimen/dp_10"
         android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/tv_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_margin="10dp"
         android:gravity="center"
         android:text="1"
         android:textSize="20sp"

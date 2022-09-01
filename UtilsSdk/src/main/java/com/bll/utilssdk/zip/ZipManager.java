@@ -102,8 +102,7 @@ public final class ZipManager {
                     zipFile.addFile(file, parameters);
                 }
             }
-
-            timerMsg(callback, zipFile);
+            timerMsg(callback, zipFile,"zip");
         } catch (Exception e) {
             if (callback != null) callback.onFinish(false);
             ZipLog.debug("zip: Exception=" + e.getMessage());
@@ -137,7 +136,7 @@ public final class ZipManager {
             ZipFile zipFile = new ZipFile(destinationFilePath);
             zipFile.setRunInThread(true);
             zipFile.addFiles(list, parameters);
-            timerMsg(callback, zipFile);
+            timerMsg(callback, zipFile,"zip");
         } catch (Exception e) {
             if (callback != null) callback.onFinish(false);
             ZipLog.debug("zip: Exception=" + e.getMessage());
@@ -182,12 +181,15 @@ public final class ZipManager {
         ZipLog.debug("unzip: targetZipFilePath=" + targetZipFilePath + " , destinationFolderPath=" + destinationFolderPath + " , password=" + password);
         try {
             ZipFile zipFile = new ZipFile(targetZipFilePath);
+            if (!zipFile.isValidZipFile()){
+                if (callback != null) callback.onFinish(false);
+            }
             if (zipFile.isEncrypted() && Zip4jUtil.isStringNotNullAndNotEmpty(password)) {
                 zipFile.setPassword(password);
             }
             zipFile.setRunInThread(true);
             zipFile.extractAll(destinationFolderPath);
-            timerMsg(callback, zipFile);
+            timerMsg(callback, zipFile,"unzip");
         } catch (Exception e) {
             if (callback != null) callback.onFinish(false);
             ZipLog.debug("unzip: Exception=" + e.getMessage());
@@ -195,7 +197,7 @@ public final class ZipManager {
     }
 
     //Handler send msg
-    private static void timerMsg(final IZipCallback callback, ZipFile zipFile) {
+    private static void timerMsg(final IZipCallback callback, ZipFile zipFile,String index) {
         if (callback == null) return;
         mUIHandler.obtainMessage(WHAT_START, callback).sendToTarget();
         final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
@@ -206,6 +208,9 @@ public final class ZipManager {
                 mUIHandler.obtainMessage(WHAT_PROGRESS, progressMonitor.getPercentDone(), 0, callback).sendToTarget();
                 if (progressMonitor.getResult() == ProgressMonitor.RESULT_SUCCESS) {
                     mUIHandler.obtainMessage(WHAT_FINISH, callback).sendToTarget();
+//                    if (index.equals("unzip")){
+//                        zipFile.getFile().delete();
+//                    }
                     this.cancel();
                     timer.purge();
                 }

@@ -260,7 +260,7 @@ class MainFragment : BaseFragment() {
         receivePaperAdapter?.setOnItemClickListener { adapter, view, position ->
             positionPaper=position
             val paper=receivePapers[positionPaper]
-            val files= FileUtils.getFilesSort(paper.path)
+            val files= FileUtils.getFiles(paper.path)
             val paths= mutableListOf<String>()
             for (file in files){
                 paths.add(file.path)
@@ -272,9 +272,7 @@ class MainFragment : BaseFragment() {
                 intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
                 intent.putExtra("outImageStr",paper.path)
                 intent.putExtra("bundle",bundle)
-                if (paper.type==1){
-                    intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-                }
+                intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
                 startActivity(intent)
             }
             else{
@@ -367,7 +365,7 @@ class MainFragment : BaseFragment() {
             //设置路径
             val file=File(Constants.RECEIVEPAPER_PATH , "$mUserId/${item.categoryId}/"+item.id)
             item.path=file.path
-            val files= FileUtils.getFilesSort(file.path)
+            val files= FileUtils.getFiles(file.path)
             if (files==null||files.size!=item.images.size){
                 var imageDownLoad= ImageDownLoadUtils(activity,item.images,file.path)
                 imageDownLoad.startDownload()

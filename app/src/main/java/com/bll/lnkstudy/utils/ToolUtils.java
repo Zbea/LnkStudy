@@ -8,7 +8,7 @@ import java.util.Map;
 public class ToolUtils {
 
 
-    //返回图片唯一值
+    //返回图片唯一值(用于存储)
     public static String getImageResStr(Context context,int resId){
         if (resId==0){
             return "";

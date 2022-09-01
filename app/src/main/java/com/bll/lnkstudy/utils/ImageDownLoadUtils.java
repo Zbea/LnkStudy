@@ -29,70 +29,67 @@ public class ImageDownLoadUtils {
     private String path;//路径
     private File file = null;
 
-    private Map<Integer,String> map=new HashMap<>();//下载成功
-    private List<Integer> unLoadList=new ArrayList<>();//未下载成功
+    private Map<Integer, String> map = new HashMap<>();//下载成功
+    private List<Integer> unLoadList = new ArrayList<>();//未下载成功
 
 
-
-    public ImageDownLoadUtils(Context context, String[] urls,String path){
-        this.context=context;
-        this.urls=urls;
-        this.path=path;
+    public ImageDownLoadUtils(Context context, String[] urls, String path) {
+        this.context = context;
+        this.urls = urls;
+        this.path = path;
     }
 
     public void startDownload() {
-        if (urls==null||urls.length==0)
+        if (urls == null || urls.length == 0)
             return;
-        for (int i = 0; i < urls.length; i++) {
-            download(i,urls[i]);
-        }
-    }
 
-    private void download(int index,String url){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap=GlideUtils.getBitmap(context,url);
-                if (bitmap != null){
-                    saveBmpGallery(bitmap,index+1);
-                }
-
-                if (bitmap != null && file!=null) {
-                    map.put(index,file.getPath());
-                } else {
-                    unLoadList.add(index);
-                }
-
-                if (index==urls.length-1){
-                    if (map.size()==urls.length)
-                    {
-                        if (callBack!=null)
-                            callBack.onDownLoadSuccess(map);
-                    }
-                    if (unLoadList.size()>0){
-                        if (callBack!=null)
-                            callBack.onDownLoadFailed(unLoadList);
-                    }
+                for (int i = 0; i < urls.length; i++) {
+                    download(i, urls[i]);
                 }
             }
         }).start();
     }
 
+    private void download(int index, String url) {
+        file = null;
+        Bitmap bitmap = GlideUtils.getBitmap(context, url);
+        if (bitmap != null) {
+            saveBmpGallery(bitmap, index + 1);
+        }
+        if (bitmap != null && file != null) {
+            map.put(index, file.getPath());
+        } else {
+            unLoadList.add(index);
+        }
+        if (index == urls.length - 1) {
+            if (map.size() == urls.length) {
+                if (callBack != null)
+                    callBack.onDownLoadSuccess(map);
+            }
+            if (unLoadList.size() > 0) {
+                if (callBack != null)
+                    callBack.onDownLoadFailed(unLoadList);
+            }
+        }
+    }
 
     /**
      * 保存bitmap刷新相册
      *
-     * @param bmp     获取的bitmap数据
+     * @param bmp 获取的bitmap数据
      */
-    private void saveBmpGallery(Bitmap bmp,int i) {
+    private void saveBmpGallery(Bitmap bmp, int i) {
         // 声明输出流
         FileOutputStream outStream = null;
-        File folderFile=new File(path);
+        File folderFile = new File(path);
         if (!folderFile.exists()) {
             folderFile.mkdirs();
         }
         try {
-            file = new File(path,i+".png");
+            file = new File(path, i + ".png");
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
             if (null != outStream) {
@@ -117,15 +114,34 @@ public class ImageDownLoadUtils {
 
     }
 
+    /**
+     * 重新下载
+     */
+    public void reloadImage(){
+
+        map.clear();
+        unLoadList.clear();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < urls.length; i++) {
+                    download(i, urls[i]);
+                }
+            }
+        }).start();
+    }
+
     private ImageDownLoadCallBack callBack;
 
-    public void setCallBack(ImageDownLoadCallBack callBack){
-        this.callBack=callBack;
+    public void setCallBack(ImageDownLoadCallBack callBack) {
+        this.callBack = callBack;
     }
 
 
-    public interface ImageDownLoadCallBack{
-        void onDownLoadSuccess(Map<Integer,String> map);
+    public interface ImageDownLoadCallBack {
+        void onDownLoadSuccess(Map<Integer, String> map);
+
         void onDownLoadFailed(List<Integer> unLoadList);
     }
 

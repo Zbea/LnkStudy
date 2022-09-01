@@ -6,17 +6,13 @@ import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.PopWindowDrawSetting
-import com.bll.lnkstudy.dialog.PopWindowDrawingButton
+import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.PaintingDaoManager
+import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.mvp.model.PaintingBean
-import com.bll.lnkstudy.ui.adapter.PaintingCatalogAdapter
 import com.bll.lnkstudy.utils.StringUtils
 import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_painting_drawing.*
@@ -26,20 +22,17 @@ import java.io.File
 class PaintingDrawingActivity : BaseActivity() {
 
     private var type = 0
-
     private var popWindowDrawingButton: PopWindowDrawingButton? = null
-
     private var elik_a: EinkPWInterface? = null
     private var elik_b: EinkPWInterface? = null
     private var popWindow: PopWindowDrawSetting? = null
-    private var mAdapter: PaintingCatalogAdapter? = null
 
     private var paintingBean: PaintingBean? = null//当前作业内容
     private var paintingBean_a: PaintingBean? = null//a屏作业
 
     private var paintingLists = mutableListOf<PaintingBean>() //所有作业内容
 
-    private var isScreen = false //是否是全屏
+    private var isExpand = false //是否是全屏
 
     private var page = 0//页码
     private var resId=0
@@ -79,12 +72,10 @@ class PaintingDrawingActivity : BaseActivity() {
 
         setBg()
 
-        elik_a = iv_content_a.pwInterFace
-        elik_b = iv_content_b.pwInterFace
+        elik_a = v_content_a.pwInterFace
+        elik_b = v_content_b.pwInterFace
 
         changeContent()
-
-        initRecyclerCatalog()
 
         tv_title.setOnClickListener {
             var title=tv_title.text.toString()
@@ -94,7 +85,6 @@ class PaintingDrawingActivity : BaseActivity() {
                     tv_title.text=string
                     paintingBean?.title = string
                     paintingLists[page].title = string
-                    mAdapter?.notifyDataSetChanged()
                     PaintingDaoManager.getInstance(this@PaintingDrawingActivity).insertOrReplace(paintingBean)
                 }
 
@@ -103,13 +93,7 @@ class PaintingDrawingActivity : BaseActivity() {
         }
 
         iv_catalog.setOnClickListener {
-            if (ll_catalog.visibility == View.VISIBLE) {
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            } else {
-                showView(ll_catalog)
-                setPWEnabled(false)
-            }
+            showCatalog()
         }
 
         btn_page_down.setOnClickListener {
@@ -124,7 +108,7 @@ class PaintingDrawingActivity : BaseActivity() {
 
         btn_page_up.setOnClickListener {
 
-            if (isScreen) {
+            if (isExpand) {
                 if (page > 1) {
                     page -= 1
                     changeContent()
@@ -138,22 +122,12 @@ class PaintingDrawingActivity : BaseActivity() {
 
         }
 
-
         iv_expand.setOnClickListener {
-            if (isScreen) {
-                isScreen = false
-                ll_content_a.visibility = View.GONE
-                iv_content_a.visibility = View.GONE
-                tv_page_a.visibility = View.GONE
-                iv_tool_right.visibility=View.GONE
-                paintingBean_a == null
-            } else {
-                isScreen = true
-                ll_content_a.visibility = View.VISIBLE
-                iv_content_a.visibility = View.VISIBLE
-                tv_page_a.visibility = View.VISIBLE
-                iv_tool_right.visibility=View.VISIBLE
-            }
+            isExpand=!isExpand
+            ll_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+            v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+            tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+            iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
             changeContent()
         }
 
@@ -165,42 +139,41 @@ class PaintingDrawingActivity : BaseActivity() {
 
     }
 
-    //目录列表
-    private fun initRecyclerCatalog() {
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = PaintingCatalogAdapter(R.layout.item_catalog_parent, paintingLists)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (page!= position) {
-                page = position
-                changeContent()
-
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            }
+    /**
+     * 弹出目录
+     */
+    private fun showCatalog(){
+        var list= mutableListOf<ListBean>()
+        for (item in paintingLists){
+            val listBean=ListBean()
+            listBean.name=item.title
+            listBean.page=item.page
+            list.add(listBean)
         }
+        DrawingCatalogDialog(this,list).builder()?.
+        setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!= position) {
+                    page = position
+                    changeContent()
+                }
+            }
+        })
     }
+
 
     //设置背景图
     private fun setBg(){
-        iv_content_a.setImageResource(resId)
-        iv_content_b.setImageResource(resId)
+        v_content_a.setImageResource(resId)
+        v_content_b.setImageResource(resId)
     }
-
-    //设置手绘是否可以绘制
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
-    }
-
 
     //翻页内容更新切换
     private fun changeContent() {
 
         paintingBean = paintingLists[page]
 
-        if (isScreen) {
+        if (isExpand) {
             if (page > 0) {
                 paintingBean_a = paintingLists[page - 1]
             } else {
@@ -223,7 +196,7 @@ class PaintingDrawingActivity : BaseActivity() {
             tv_title.hint="输入标题"
         }
 
-        if (isScreen) {
+        if (isExpand) {
             updateImage(elik_b!!, paintingBean?.path!!)
             tv_page_b.text = (page + 1).toString()
 
@@ -233,8 +206,8 @@ class PaintingDrawingActivity : BaseActivity() {
             }
 
         } else {
-            updateImage(elik_b!!, paintingBean?.path!!)
-            tv_page_b.text = (page + 1).toString()
+            updateImage(elik_a!!, paintingBean?.path!!)
+            tv_page_a.text = (page + 1).toString()
         }
     }
 
@@ -271,8 +244,6 @@ class PaintingDrawingActivity : BaseActivity() {
         paintingLists.add(paintingBean!!)
 
         PaintingDaoManager.getInstance(this).insertOrReplace(paintingBean)
-
-        mAdapter?.notifyDataSetChanged()
 
     }
 

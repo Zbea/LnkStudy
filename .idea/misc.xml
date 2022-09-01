@@ -112,6 +112,8 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date_hour.xml" value="0.17805755395683454" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_date_time.xml" value="0.17805755395683454" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_drawing_catalog.xml" value="0.5" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_homework_commit_details.xml" value="0.26458333333333334" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_homework_message.xml" value="0.26510416666666664" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_homework_message_all.xml" value="0.28854166666666664" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/dialog_message_details.xml" value="0.18142985611510792" />
@@ -157,6 +159,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_date_repeat_title.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_date_schedule_event.xml" value="0.24583333333333332" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_homework.xml" value="0.5" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_homework_commit.xml" value="0.26458333333333334" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_homework_km_kj.xml" value="0.25" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_homework_km_zy.xml" value="0.1818794964028777" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/item_homework_message_all.xml" value="0.5" />

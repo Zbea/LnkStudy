@@ -116,6 +116,7 @@ class BookDetailsActivity:BaseActivity() {
         tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
         v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
+//        if (isExpand) this.moveToScreenPanel(Activity.SCREEN_PANEL_FULL) else this.moveToScreenPanel(Activity.SCREEN_PANEL_A)
     }
 
     private fun bindClick(){
@@ -235,33 +236,37 @@ class BookDetailsActivity:BaseActivity() {
     //加载图片
     private fun loadPicture(index: Int,elik:EinkPWInterface,view:ImageView) {
         val showFile = getIndexFile(index)
-        book?.pageUrl=showFile.path //设置当前页面路径
-        if (index>1){
-            book?.pageUpUrl=getIndexFile(index-1).path
+        if (showFile!=null){
+            book?.pageUrl=showFile?.path //设置当前页面路径
+            if (index>1){
+                book?.pageUpUrl=getIndexFile(index-1)?.path
+            }
+
+            GlideUtils.setImageFile(this,showFile,view)
+
+            val drawPath=showFile.path.replace(".jpg",".tch")
+            elik?.setLoadFilePath(drawPath,true)
+            elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+                override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
+                }
+
+                override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
+                }
+
+                override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                    elik?.saveBitmap(true) {}
+                }
+
+            })
         }
-
-        GlideUtils.setImageFile(this,showFile,view)
-
-        val drawPath=showFile.path.replace(".jpg",".tch")
-        elik?.setLoadFilePath(drawPath,true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
-            }
-
-        })
     }
 
     //获得图片地址
-    private fun getIndexFile(index: Int): File {
+    private fun getIndexFile(index: Int): File? {
         val path=book?.bookPath + File.separator + BOOK_PICTURE_FILES
         val listFiles = FileUtils.getFiles(path,".jpg")
+        if (listFiles.size==0)
+            return null
         return listFiles[index - 1]
     }
 

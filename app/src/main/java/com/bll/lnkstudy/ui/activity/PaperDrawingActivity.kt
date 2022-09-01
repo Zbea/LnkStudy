@@ -6,14 +6,14 @@ import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.mvp.model.Paper
 import com.bll.lnkstudy.mvp.model.PaperContent
-import com.bll.lnkstudy.ui.adapter.PaperCatalogAdapter
 import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_testpaper_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 class PaperDrawingActivity:BaseActivity() {
 
-    private var type=0//0作业 1考卷
+    private var flags=0//0作业 1考卷
     private var mCourseId=0
     private var mCatalogId=0//分组id
     private var daoManager: PaperDaoManager?=null
@@ -29,8 +29,6 @@ class PaperDrawingActivity:BaseActivity() {
     private var papers= mutableListOf<Paper>()
     private var paperContents= mutableListOf<PaperContent>()
     private var paper: Paper?=null
-
-    private var mAdapter: PaperCatalogAdapter? = null
 
     private var currentPosition=0
     private var page = 0//页码
@@ -46,8 +44,8 @@ class PaperDrawingActivity:BaseActivity() {
     }
 
     override fun initData() {
-        type=intent.flags
-        isExpand= type == 1
+        flags=intent.flags
+        isExpand= flags == 1
         mCourseId=intent.getIntExtra("courseId",0)
         mCatalogId=intent.getIntExtra("categoryId",0)
         pageCount=paperContents.size
@@ -55,7 +53,10 @@ class PaperDrawingActivity:BaseActivity() {
         daoManager= PaperDaoManager.getInstance(this)
         daoContentManager= PaperContentDaoManager.getInstance(this)
 
-        papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>
+        papers= daoManager?.queryAll(flags,mCourseId,mCatalogId) as MutableList<Paper>
+
+        showLog(papers.size.toString())
+
         if (papers.size>0)
             currentPosition=papers.size-1
 
@@ -63,40 +64,22 @@ class PaperDrawingActivity:BaseActivity() {
 
     override fun initView() {
 
-        elik_a=v_content_a.pwInterFace
-        elik_b=v_content_b.pwInterFace
-
-        changeExpandView()
-
-        if(papers.size>0)
+        if(papers.size>0){
+            elik_a=v_content_a.pwInterFace
+            elik_b=v_content_b.pwInterFace
             changeContent()
-
-        initRecyclerCatalog()
-
+        }
+        changeExpandView()
         bindClick()
     }
 
-    //目录列表
-    private fun initRecyclerCatalog() {
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = PaperCatalogAdapter(R.layout.item_catalog_parent, papers)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            currentPosition = papers[position].index
-            page=0
-            changeContent()
-
-            disMissView(ll_catalog)
-            setPWEnabled(true)
-        }
-    }
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
         tv_page_a.visibility = View.VISIBLE
         tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
+        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
         ll_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
     }
 
@@ -108,20 +91,10 @@ class PaperDrawingActivity:BaseActivity() {
         }
 
         iv_catalog.setOnClickListener {
-            if (ll_catalog.visibility== View.GONE){
-                showView(ll_catalog)
-                setPWEnabled(false)
-            }
-            else{
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            }
+            showCatalog()
         }
 
-
         btn_page_up.setOnClickListener {
-            disMissView(ll_catalog)
-            setPWEnabled(true)
 
             if (isExpand&&page>1){
                 page-=2
@@ -142,8 +115,6 @@ class PaperDrawingActivity:BaseActivity() {
         }
 
         btn_page_down.setOnClickListener {
-            disMissView(ll_catalog)
-            setPWEnabled(true)
 
             if (isExpand&&page+2<pageCount){
                 page+=2
@@ -164,10 +135,25 @@ class PaperDrawingActivity:BaseActivity() {
         }
     }
 
-    //设置手绘是否可以绘制
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
+    /**
+     * 弹出目录
+     */
+    private fun showCatalog(){
+        var list= mutableListOf<ListBean>()
+        for (item in papers){
+            val listBean= ListBean()
+            listBean.name=item.title
+            listBean.page=item.page
+            list.add(listBean)
+        }
+        DrawingCatalogDialog(this,list).builder()?.
+        setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                currentPosition = papers[position].index
+                page=0
+                changeContent()
+            }
+        })
     }
 
 

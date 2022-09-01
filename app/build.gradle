@@ -22,7 +22,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -42,31 +43,31 @@ android {
         targetGenDir 'src/main/java'
     }
 
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
-        }
-    }
-
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            Set<File> fileSet = options.bootstrapClasspath.getFiles()
-            List<File> newFileList =  new ArrayList<>();
-            //相对位置，根据存放的位置修改路径
-            newFileList.add(new File("./libs/eink/classes.jar"))
-            newFileList.addAll(fileSet)
-            options.bootstrapClasspath = files(
-                    newFileList.toArray()
-            )
-        }
-    }
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
+//        }
+//    }
+//
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            Set<File> fileSet = options.bootstrapClasspath.getFiles()
+//            List<File> newFileList =  new ArrayList<>();
+//            //相对位置，根据存放的位置修改路径
+//            newFileList.add(new File("./libs/eink/classes.jar"))
+//            newFileList.addAll(fileSet)
+//            options.bootstrapClasspath = files(
+//                    newFileList.toArray()
+//            )
+//        }
+//    }
 
 }
 
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.0'
-    compileOnly files('libs\\eink\\classes.jar')
+    compileOnly files('libs/eink/classes.jar')
 //    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.core:core-ktx:1.5.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'

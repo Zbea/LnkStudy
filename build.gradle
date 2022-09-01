@@ -13,11 +13,25 @@ plugins {
 }
 
 allprojects {
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
+//        }
+//    }
+
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
+            Set<File> fileSet = options.bootstrapClasspath.getFiles()
+            List<File> newFileList = new ArrayList<>();
+            //相对位置，根据存放的位置修改路径
+            newFileList.add(new File("./libs/eink/classes.jar"))
+            newFileList.addAll(fileSet)
+            options.bootstrapClasspath = files(
+                    newFileList.toArray()
+            )
         }
     }
+
 }
 
 task clean(type: Delete) {

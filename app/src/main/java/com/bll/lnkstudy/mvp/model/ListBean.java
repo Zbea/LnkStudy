@@ -6,4 +6,6 @@ public class ListBean {
     public String name;
     public String info;
     public String url;
+    public int page;
+
 }

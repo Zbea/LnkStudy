@@ -61,7 +61,12 @@
                 android:layout_marginBottom="@dimen/dp_10" />
 
         </LinearLayout>
-
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_30"
+            android:src="@mipmap/icon_back_big"/>
     </RelativeLayout>
 
     <include

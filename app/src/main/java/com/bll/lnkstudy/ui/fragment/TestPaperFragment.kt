@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.DataBeanManager
@@ -11,9 +12,13 @@ import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
+import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * 考卷
@@ -30,7 +35,7 @@ class TestPaperFragment : BaseFragment(){
 
     override fun initView() {
         setTitle("考卷")
-
+        EventBus.getDefault().register(this)
         initData()
         initRecyclerView()
         initTab()
@@ -113,7 +118,38 @@ class TestPaperFragment : BaseFragment(){
 
     }
 
+    /**
+     * 自动压缩zip
+     */
+    private fun autoZip() {
+
+        ZipUtils.zip(Constants.RECEIVEPAPER_PATH + "/$mUserId", "testPaper", object : ZipUtils.ZipCallback {
+            override fun onStart() {
+                showLog("testPaper开始打包上传")
+            }
+            override fun onProgress(percentDone: Int) {
+            }
+            override fun onFinish(success: Boolean) {
+                showLog(success.toString())
+            }
+            override fun onError(msg: String?) {
+                showLog(msg!!)
+            }
+        })
+    }
 
 
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    fun onMessageEvent(msgFlag: String) {
+        if (msgFlag == Constants.AUTO_UPLOAD_EVENT) {
+            autoZip()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
 
 }

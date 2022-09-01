@@ -26,7 +26,7 @@ import org.greenrobot.eventbus.EventBus
 
 class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
-    private var type=0//考卷
+    private var type=1//考卷
     private var mCourseId=0
     private var mCatalogId=0
     private var daoManager: PaperDaoManager?=null
@@ -45,7 +45,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     private var pageCount = 0
     private var page = 0 //当前页码
 
-    private var isExpand=false
+    private var isExpand=true
 
 
     override fun layoutId(): Int {
@@ -58,8 +58,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         paths = intent.getStringArrayListExtra("imagePaths")!!
         pageCount = paths.size
 
-        type=receivePaper?.type!!
-        isExpand=type==1
         mCourseId=receivePaper?.courseId!!
         mCatalogId=receivePaper?.categoryId!!
 
@@ -76,12 +74,12 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initView() {
-        disMissView(ivBack)
 
         tv_save.setOnClickListener(this)
         btn_page_up.setOnClickListener(this)
         btn_page_down.setOnClickListener(this)
-        iv_expand.setOnClickListener(this)
+//        iv_expand.setOnClickListener(this)
+        disMissView(iv_expand)
 
         elik_a = v_content_a.pwInterFace
         elik_b = v_content_b.pwInterFace
@@ -98,6 +96,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         tv_page_a.visibility = View.VISIBLE
         tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
+        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
         ll_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
     }
 

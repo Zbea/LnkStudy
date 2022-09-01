@@ -4,22 +4,20 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.PopWindowDrawSetting
 import com.bll.lnkstudy.dialog.PopWindowDrawingButton
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkDaoManager
 import com.bll.lnkstudy.mvp.model.Homework
 import com.bll.lnkstudy.mvp.model.HomeworkContent
 import com.bll.lnkstudy.mvp.model.HomeworkType
-import com.bll.lnkstudy.ui.adapter.HomeworkCatalogAdapter
+import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.utils.StringUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.utilssdk.utils.FileUtils
@@ -31,8 +29,6 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     private var elik_a: EinkPWInterface? = null
     private var elik_b: EinkPWInterface? = null
-    private var popWindow: PopWindowDrawSetting? = null
-    private var mAdapter: HomeworkCatalogAdapter? = null
 
     private var courseId = 0 //科目id
     private var homeworkTypeId = 0//作业分组id
@@ -45,7 +41,7 @@ class HomeworkDrawingActivity : BaseActivity() {
     private var homeworkLists = mutableListOf<Homework>() //所有作业
     private var homeworkContentLists = mutableListOf<HomeworkContent>() //所有作业内容
 
-    private var isScreen = false //是否是全屏
+    private var isExpand = false //是否是全屏
 
     private var page = 0//页码
     private var currentPosition = 0//目录位置
@@ -86,14 +82,12 @@ class HomeworkDrawingActivity : BaseActivity() {
     }
 
     override fun initView() {
-        iv_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
-        iv_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
-        elik_a = iv_content_a.pwInterFace
-        elik_b = iv_content_b.pwInterFace
+        v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
+        v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
+        elik_a = v_content_a.pwInterFace
+        elik_b = v_content_b.pwInterFace
 
         changeContent()
-
-        initRecyclerCatalog()
 
         tv_title.setOnClickListener {
             var title=tv_title.text.toString()
@@ -103,7 +97,6 @@ class HomeworkDrawingActivity : BaseActivity() {
                     tv_title.text=string
                     homework?.title = string
                     homeworkLists[currentPosition].title = string
-                    mAdapter?.notifyDataSetChanged()
                     HomeworkDaoManager.getInstance(this@HomeworkDrawingActivity).insertOrReplace(homework)
                 }
 
@@ -129,7 +122,7 @@ class HomeworkDrawingActivity : BaseActivity() {
 
         btn_page_up.setOnClickListener {
 
-            if (isScreen) {
+            if (isExpand) {
                 if (page > 1) {
                     page -= 1
                     changeContent()
@@ -144,30 +137,16 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
 
         iv_catalog.setOnClickListener {
-            if (ll_catalog.visibility == View.VISIBLE) {
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            } else {
-                showView(ll_catalog)
-                setPWEnabled(false)
-            }
+            showCatalog()
         }
 
         iv_expand.setOnClickListener {
-            if (isScreen) {
-                isScreen = false
-                ll_content_a.visibility = View.GONE
-                iv_content_a.visibility = View.GONE
-                tv_page_a.visibility = View.GONE
-                iv_tool_right.visibility=View.GONE
-                homeworkContent_a == null
-            } else {
-                isScreen = true
-                ll_content_a.visibility = View.VISIBLE
-                iv_content_a.visibility = View.VISIBLE
-                tv_page_a.visibility = View.VISIBLE
-                iv_tool_right.visibility=View.VISIBLE
-            }
+            isExpand=!isExpand
+            ll_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+            v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+            tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+            iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
+
             changeContent()
         }
 
@@ -178,28 +157,27 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     }
 
-    //设置手绘是否可以绘制
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
-    }
-
-    //目录列表
-    private fun initRecyclerCatalog() {
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = HomeworkCatalogAdapter(R.layout.item_catalog_parent, homeworkLists)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (currentPosition != position) {
-                currentPosition = position
-                page = homeworkLists[position].page
-                changeContent()
-
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            }
+    /**
+     * 弹出目录
+     */
+    private fun showCatalog(){
+        var list= mutableListOf<ListBean>()
+        for (item in homeworkLists){
+            val listBean= ListBean()
+            listBean.name=item.title
+            listBean.page=item.page
+            list.add(listBean)
         }
+        DrawingCatalogDialog(this,list).builder()?.
+        setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (currentPosition != position) {
+                    currentPosition = position
+                    page = homeworkLists[position].page
+                    changeContent()
+                }
+            }
+        })
     }
 
     //翻页内容更新切换
@@ -207,7 +185,7 @@ class HomeworkDrawingActivity : BaseActivity() {
 
         homeworkContent = homeworkContentLists[page]
 
-        if (isScreen) {
+        if (isExpand) {
             if (page > 0) {
                 homeworkContent_a = homeworkContentLists[page - 1]
             } else {
@@ -240,7 +218,7 @@ class HomeworkDrawingActivity : BaseActivity() {
     //更新绘图以及页码
     private fun updateUI() {
         val pageTotal = homeworkContentLists.size
-        if (isScreen) {
+        if (isExpand) {
             updateImage(elik_b!!, homeworkContent?.path!!)
             tv_page_b.text = (page + 1).toString()
 
@@ -250,8 +228,8 @@ class HomeworkDrawingActivity : BaseActivity() {
             }
 
         } else {
-            updateImage(elik_b!!, homeworkContent?.path!!)
-            tv_page_b.text = (page + 1).toString()
+            updateImage(elik_a!!, homeworkContent?.path!!)
+            tv_page_a.text = (page + 1).toString()
         }
 
     }
@@ -295,7 +273,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         homework?.path = Constants.HOMEWORK_PATH+"/$mUserId" + "/$courseId" + "/${homeworkType?.type}" + "/${homework?.id}"
 
         homeworkLists.add(homework!!)
-        mAdapter?.setNewData(homeworkLists)
     }
 
     //创建新的作业内容
@@ -317,7 +294,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         homeworkContentLists.add(homeworkContent!!)
 
         HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent)
-
 
     }
 
@@ -410,67 +386,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
     }
 
-    //手绘设置
-    private fun showDrawSetting() {
-        if (popWindow == null) {
-            popWindow = PopWindowDrawSetting(this, null).builder()
-            popWindow?.setOnSelectListener(object : PopWindowDrawSetting.OnSelectListener {
-                override fun onSelect(type: Int) {
-                    if (type == 1) {
-                        elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-                        elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-                    }
-                    if (type == 2) {
-                        elik_a?.clearContent(null, true, true)
-                        elik_b?.clearContent(null, true, true)
-                        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                    }
-                    if (type == 3) {
-                        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_a?.penSettingWidth = 2
-
-                        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_b?.penSettingWidth = 2
-                    }
-                    if (type == 4) {
-                        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_a?.penSettingWidth = 6
-
-                        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_b?.penSettingWidth = 6
-                    }
-
-                }
-            })
-        } else {
-            if (popWindow?.isShow() == true) {
-                popWindow?.dismiss()
-                if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                    elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                }
-                if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                    elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                }
-            } else {
-                popWindow?.show()
-            }
-
-        }
-    }
-
     //删除作业
     private fun deleteContent() {
 
@@ -485,7 +400,6 @@ class HomeworkDrawingActivity : BaseActivity() {
 
             HomeworkDaoManager.getInstance(this).deleteBean(homework)
             homeworkLists.remove(homework)
-            mAdapter?.setNewData(homeworkLists)
 
             FileUtils.deleteFile(File(homework?.path))//删除文件夹中的文件
 

@@ -163,32 +163,10 @@ public class FileUtils {
             }
         }
 //        //文件排序
-//        sortFiles(files);
-        return files;
-    }
-
-    /**
-     * 获取目录下文件对象（排序）  不包含文件目录下的子文件目录
-     * @param path
-     * @return
-     */
-    public static List<File> getFilesSort(String path){
-        List<File> files = new ArrayList<>();
-        if("".equals(path)){
-            return null;
-        }
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-        if (tempList==null) return null;
-        for (int i = 0; i < tempList.length; i++) {
-            if (tempList[i].isFile()) {
-                files.add(tempList[i]);
-            }
-        }
-        //文件排序
         sortFiles(files);
         return files;
     }
+
 
     /**
      * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录
@@ -267,8 +245,17 @@ public class FileUtils {
                 else if (!l1 && l2)
                     return 1;
                 else {
-                    return Integer.valueOf(getFileName(lhs.getName())).compareTo(Integer.valueOf(getFileName(rhs.getName())));
+                    return lhs.getName().compareTo(rhs.getName());
                 }
+
+//                if (lhs.lastModified() < rhs.lastModified()) {
+//                    return -1;
+//                } else if (lhs.lastModified() == rhs.lastModified()) {
+//                    return 0;
+//                } else {
+//                    return 1;
+//                }
+
             }
         });
     }

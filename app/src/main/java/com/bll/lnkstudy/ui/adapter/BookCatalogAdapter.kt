@@ -19,7 +19,7 @@ class BookCatalogAdapter(data: MutableList<MultiItemEntity>?) : BaseMultiItemQui
         when (helper.itemViewType) {
             0 -> {
                 val item= item as CatalogParentBean
-                helper.setText(R.id.tv_num, item.title)
+                helper.setText(R.id.tv_name, item.title)
                 helper.setText(R.id.tv_page, ""+item.pageNumber)
                 helper.itemView.setOnClickListener { v ->
                     val pos = helper.adapterPosition
@@ -38,7 +38,8 @@ class BookCatalogAdapter(data: MutableList<MultiItemEntity>?) : BaseMultiItemQui
             }
             1-> {
                 val childItem = item as CatalogChildBean
-                helper.setText(R.id.tv_num, childItem.title)
+                helper.setText(R.id.tv_name, childItem.title)
+                helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
                 helper.setText(R.id.tv_page,""+childItem.pageNumber)
                 helper.getView<LinearLayout>(R.id.ll_click).setOnClickListener {
                     if (listener!=null)

@@ -56,9 +56,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
             val parent: ViewGroup? = container
-            if (null != parent) {
-                parent.removeView(parent)
-            }
+            parent?.removeView(parent)
         } else {
             mView = inflater.inflate(getLayoutId(), container,false)
         }
@@ -81,8 +79,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         initView()
         mDialog = ProgressDialog(activity)
         lazyLoadDataIfPrepared()
-
     }
+
+
+
 
     private fun lazyLoadDataIfPrepared() {
         if (userVisibleHint && isViewPrepare && !hasLoadData) {

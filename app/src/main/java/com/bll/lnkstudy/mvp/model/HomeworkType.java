@@ -24,7 +24,7 @@ public class HomeworkType implements Serializable {
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String name;
-    public int type;//
+    public int type;//作业本分类id
     public long date; //创建时间
     public String resId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
@@ -36,7 +36,7 @@ public class HomeworkType implements Serializable {
     @Transient
     public boolean isMessage;//收到通知
     @Transient
-    public List<HomeworkMessage> messages;
+    public HomeworkMessage message;
 
     @Generated(hash = 1161804354)
     public HomeworkType(Long id, long userId, String name, int type, long date,

@@ -98,7 +98,7 @@ class PopWindowDrawingButton(val context:Context, val view: View, val type: Int,
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,10, yoff)
+            mPopupWindow?.showAsDropDown(view,-20, yoff)
         }
     }
 

@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.ui.adapter
 
+import android.graphics.Typeface
+import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.utils.ToolUtils
@@ -12,17 +14,21 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAd
         helper.setText(R.id.tv_name,item.name)
         helper.setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext,item.bgResId))
         if (item.isPg){
-            helper.setTextColor(R.id.tv_pg,mContext.resources.getColor(R.color.black))
+            helper.setTextColor(R.id.tv_pg,mContext.getColor(R.color.black))
+            helper.getView<TextView>(R.id.tv_pg).typeface= Typeface.defaultFromStyle(Typeface.BOLD)
         }
         else{
-            helper.setTextColor(R.id.tv_pg,mContext.resources.getColor(R.color.gray))
+            helper.setTextColor(R.id.tv_pg,mContext.getColor(R.color.gray))
+            helper.getView<TextView>(R.id.tv_pg).typeface= Typeface.defaultFromStyle(Typeface.NORMAL)
         }
 
         if (item.isMessage){
-            helper.setTextColor(R.id.tv_message,mContext.resources.getColor(R.color.black))
+            helper.setTextColor(R.id.tv_message,mContext.getColor(R.color.black))
+            helper.getView<TextView>(R.id.tv_message).typeface= Typeface.defaultFromStyle(Typeface.BOLD)
         }
         else{
-            helper.setTextColor(R.id.tv_message,mContext.resources.getColor(R.color.gray))
+            helper.setTextColor(R.id.tv_message,mContext.getColor(R.color.gray))
+            helper.getView<TextView>(R.id.tv_message).typeface= Typeface.defaultFromStyle(Typeface.NORMAL)
         }
 
         if(item.type==2||item.type==3){
@@ -32,6 +38,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAd
             helper.setText(R.id.tv_message,"收到通知")
         }
 
+        helper.addOnClickListener(R.id.iv_image)
         helper.addOnClickListener(R.id.tv_message)
         helper.addOnClickListener(R.id.iv_message)
 

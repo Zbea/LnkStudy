@@ -7,7 +7,6 @@ import com.bll.lnkstudy.utils.SToast
 import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
-import retrofit2.HttpException
 
 abstract class Callback<T> : Observer<BaseResult<T>> {
 
@@ -58,12 +57,12 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
             SToast.showText(MyApplication.mContext.getString(R.string.parse_data_error))
         } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
             SToast.showText(MyApplication.mContext.getString(R.string.connect_error))
-        } else {
-            SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))
-        }
-
-        if ((e as HttpException).code() == 401) {
+        }else if(code==401)
+        {
             IBaseView?.login()
+        }
+        else {
+            SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))
         }
         IBaseView.hideLoading()
     }

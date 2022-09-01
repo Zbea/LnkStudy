@@ -55,6 +55,7 @@ class Constants private constructor() {
         val PATH_SF = "file:///android_asset/sf/"
 
         //eventbus通知标志
+        val AUTO_UPLOAD_EVENT="AutoUploadEvent"
         val DATE_EVENT="DateEvent"
         val BOOK_EVENT="BookEvent"
         val TEXT_BOOK_EVENT="TextBookEvent"

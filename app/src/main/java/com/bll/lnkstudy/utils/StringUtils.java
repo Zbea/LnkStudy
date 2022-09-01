@@ -55,6 +55,23 @@ public class StringUtils {
         }
     }
 
+    /**
+     * 时间戳转换为字符串类型
+     *
+     * @return
+     */
+    public static String longToStringNoYear(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String longToString(long date) {
         if(0 == date){
             return null;

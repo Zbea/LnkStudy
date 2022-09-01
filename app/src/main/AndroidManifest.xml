@@ -53,21 +53,31 @@
         android:theme="@style/AppTheme.NoActionBar"
         >
 
-        <activity android:name=".ui.activity.LauncherActivity"
+        <activity android:name=".ui.activity.LauncherActivity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--                <category android:name="android.intent.category.HOME" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity android:name=".ui.activity.AccountLoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-<!--                <category android:name="android.intent.category.HOME" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
             </intent-filter>
-        </activity>
-
-        <activity android:name=".ui.activity.AccountLoginActivity"/>
+        </activity>>
 
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
-        <activity android:name=".ui.activity.MainActivity">
+        <activity android:name=".ui.activity.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             </activity>
         <activity android:name=".ui.activity.date.MainDateActivity"/>
         <activity android:name=".ui.activity.date.MainDateAddActivity"/>
@@ -109,6 +119,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <service android:name=".ui.AlarmService"></service>
 
     </application>
 
