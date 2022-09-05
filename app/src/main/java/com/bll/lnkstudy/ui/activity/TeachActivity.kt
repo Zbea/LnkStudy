@@ -3,20 +3,20 @@ package com.bll.lnkstudy.ui.activity
 import cn.jzvd.Jzvd
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.mvp.model.TeachList
+import com.bll.lnkstudy.mvp.model.ListBean
 import kotlinx.android.synthetic.main.ac_teach.*
 
 
 class TeachActivity:BaseActivity() {
 
-    private var teach:TeachList?=null
+    private var teach:ListBean?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_teach
     }
 
     override fun initData() {
-        teach= intent.getBundleExtra("teachs")?.getSerializable("teach") as TeachList
+        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as ListBean
 
     }
 

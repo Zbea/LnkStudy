@@ -13,7 +13,7 @@ import com.bll.lnkstudy.ui.adapter.MainDateEventDayAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateEventPlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateEventScheduleAdapter
 import com.bll.lnkstudy.utils.Lunar
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.haibin.calendarview.CalendarView
 import kotlinx.android.synthetic.main.ac_mian_date.*
@@ -26,7 +26,7 @@ import java.util.*
 
 class MainDateActivity : BaseActivity() {
 
-    private var dayLong= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+    private var dayLong= DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var planList= mutableListOf<DateEvent>()
     private var scheduleList= mutableListOf<DateEvent>()
     private var dayList= mutableListOf<DateEvent>()
@@ -48,8 +48,11 @@ class MainDateActivity : BaseActivity() {
         EventBus.getDefault().register(this)
 
         tv_date.text=SimpleDateFormat("MM月dd日").format(Date())
-        tv_year.text=StringUtils.getYear().toString()
-        var dat= Lunar.getLunar(StringUtils.getYear(),StringUtils.getMonth(),StringUtils.getDay())
+        tv_year.text= DateUtils.getYear().toString()
+        var dat= Lunar.getLunar(
+            DateUtils.getYear(),
+            DateUtils.getMonth(),
+            DateUtils.getDay())
         tv_lunar.text= dat
 
         initRecyclerView()
@@ -61,7 +64,7 @@ class MainDateActivity : BaseActivity() {
             override fun onCalendarOutOfRange(calendar: com.haibin.calendarview.Calendar?) {
             }
             override fun onCalendarSelect(calendar: com.haibin.calendarview.Calendar?, isClick: Boolean) {
-                val dayNow=StringUtils.dateToStamp("${calendar?.year}-"+"${calendar?.month}-"+"${calendar?.day}")
+                val dayNow= DateUtils.dateToStamp("${calendar?.year}-"+"${calendar?.month}-"+"${calendar?.day}")
                 dayLong=dayNow
                 findList(dayNow)
             }

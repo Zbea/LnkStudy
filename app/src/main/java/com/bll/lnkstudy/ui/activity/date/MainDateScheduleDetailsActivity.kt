@@ -15,7 +15,7 @@ import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DateRemind
 import com.bll.lnkstudy.ui.adapter.MainDateRemindAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_mian_date_schedule_details.*
 import kotlinx.android.synthetic.main.common_date_title.*
 import org.greenrobot.eventbus.EventBus
@@ -30,7 +30,7 @@ class MainDateScheduleDetailsActivity: BaseActivity() {
     private var starLong:Long=0//日程结束时间
     private var startStr:String=""//日程开始小时分
     private var endStr:String=""//日程结束小时分
-    private var dayLong= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+    private var dayLong= DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var repeatStr="不重复"
     private var remindAdapter: MainDateRemindAdapter?=null
     private var remindBeans= mutableListOf<DateRemind>()//已经添加提醒

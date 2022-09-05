@@ -5,7 +5,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.View
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -18,9 +18,9 @@ import com.bll.lnkstudy.mvp.model.Homework
 import com.bll.lnkstudy.mvp.model.HomeworkContent
 import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.mvp.model.ListBean
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_homework_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
@@ -270,7 +270,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         HomeworkDaoManager.getInstance(this).insertOrReplace(homework)
         homework?.id = HomeworkDaoManager.getInstance(this).insertId
 
-        homework?.path = Constants.HOMEWORK_PATH+"/$mUserId" + "/$courseId" + "/${homeworkType?.type}" + "/${homework?.id}"
+        homework?.path = FileAddress().getPathHomework(courseId,homeworkType?.type,homework?.id?.toInt())
 
         homeworkLists.add(homework!!)
     }
@@ -278,7 +278,7 @@ class HomeworkDrawingActivity : BaseActivity() {
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        var date = StringUtils.longToString(System.currentTimeMillis())
+        var date = DateUtils.longToString(System.currentTimeMillis())
 
         homeworkContent = HomeworkContent()
         homeworkContent?.courseId = courseId

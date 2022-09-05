@@ -6,7 +6,7 @@ import android.view.*
 import android.widget.NumberPicker
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,7 +41,7 @@ class DateTimeDialog(private val context: Context) {
         datePicker= view.findViewById(R.id.np_date)
 
         var monthTv = view.findViewById<TextView>(R.id.tv_date)
-        val month= StringUtils.getMonth().toString()
+        val month= DateUtils.getMonth().toString()
         monthTv.text=month+"月"
 
         calendar[Calendar.DATE] = 1 //把日期设置为当月第一天
@@ -53,7 +53,7 @@ class DateTimeDialog(private val context: Context) {
 
         datePicker?.minValue=1
         datePicker?.maxValue=maxDate
-        datePicker?.value=StringUtils.getDay()
+        datePicker?.value= DateUtils.getDay()
         datePicker?.wrapSelectorWheel=false
 
         //24小时制，限制小时数为0~23

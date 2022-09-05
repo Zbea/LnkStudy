@@ -10,7 +10,7 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.MD5Utils
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 
 
@@ -81,7 +81,7 @@ class AccountRegisterActivity : BaseActivity(),
         btn_code.setOnClickListener {
 
             val phone=ed_phone.text.toString().trim()
-            if (!StringUtils.isPhoneNum(phone)) {
+            if (!ToolUtils.isPhoneNum(phone)) {
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
@@ -113,12 +113,12 @@ class AccountRegisterActivity : BaseActivity(),
                 return@setOnClickListener
             }
 
-            if (!StringUtils.isLetterOrDigit(psd, 6, 20)) {
+            if (!ToolUtils.isLetterOrDigit(psd, 6, 20)) {
                 showToast(getString(R.string.psw_tip))
                 return@setOnClickListener
             }
 
-            if (!StringUtils.isPhoneNum(phone)) {
+            if (!ToolUtils.isPhoneNum(phone)) {
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
@@ -131,7 +131,7 @@ class AccountRegisterActivity : BaseActivity(),
                     showToast("请输入姓名")
                     return@setOnClickListener
                 }
-                if (!StringUtils.isLetterOrDigit(account, 4, 12)) {
+                if (!ToolUtils.isLetterOrDigit(account, 4, 12)) {
                     showToast(getString(R.string.user_tip))
                     return@setOnClickListener
                 }

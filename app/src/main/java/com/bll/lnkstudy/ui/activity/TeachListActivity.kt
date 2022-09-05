@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
-import com.bll.lnkstudy.mvp.model.TeachList
+import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -15,10 +15,10 @@ import kotlinx.android.synthetic.main.common_page_number.*
 class TeachListActivity:BaseActivity() {
 
     private var course:CourseBean?=null
-    private var teachs= mutableListOf<TeachList>()
+    private var teachs= mutableListOf<ListBean>()
     private var mAdapter:TeachListAdapter?=null
     private var pageIndex=1 //当前页码
-    private var bookMap=HashMap<Int,MutableList<TeachList>>()//将所有数据按30个分页
+    private var bookMap=HashMap<Int,MutableList<ListBean>>()//将所有数据按30个分页
 
     override fun layoutId(): Int {
         return R.layout.ac_teach_list
@@ -28,7 +28,7 @@ class TeachListActivity:BaseActivity() {
         course= intent.getBundleExtra("bundleCourse")?.getSerializable("course") as CourseBean
 
         for (index in 0..40){
-            var item=TeachList()
+            var item=ListBean()
             item.name="三角函数"
             item.info="北京大学 张老师"
             teachs.add(item)
@@ -49,7 +49,7 @@ class TeachListActivity:BaseActivity() {
             val intent= Intent(this, TeachActivity::class.java)
             val bundle= Bundle()
             bundle.putSerializable("teach", teachs[position])
-            intent.putExtra("teachs", bundle)
+            intent.putExtra("bundle", bundle)
             startActivity(intent)
 
         }

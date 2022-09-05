@@ -7,7 +7,7 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 
 
-interface AiPickService{
+interface APIService{
 
     /**
      * 用户登录 "/login"

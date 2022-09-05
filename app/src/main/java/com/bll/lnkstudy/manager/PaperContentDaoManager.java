@@ -100,8 +100,8 @@ public class PaperContentDaoManager {
     }
 
     //通过考卷id查询所有试卷
-    public  List<PaperContent> queryByID(long paperId) {
-        WhereCondition whereCondition= PaperContentDao.Properties.PaperId.eq(paperId);
+    public  List<PaperContent> queryByID(int contentId) {
+        WhereCondition whereCondition= PaperContentDao.Properties.ContentId.eq(contentId);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 

@@ -7,8 +7,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
-import com.bll.lnkstudy.utils.StringUtils
-import com.bll.utilssdk.utils.FileUtils
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_record.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -31,7 +31,7 @@ class RecordActivity : BaseActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        path = File(Constants.RECORD_PATH, "$mUserId/${StringUtils.longToString(recordBean?.date!!)}.amr").toString()
+        path = File(Constants.RECORD_PATH, "$mUserId/${DateUtils.longToString(recordBean?.date!!)}.amr").toString()
     }
 
     override fun initView() {

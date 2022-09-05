@@ -4,6 +4,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -13,6 +14,7 @@ public class Paper {
     @Id(autoincrement = true)
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    @Unique
     public int contentId;//这次考卷id
     public int type;//0作业1考卷
     public int courseId;//科目id
@@ -28,14 +30,15 @@ public class Paper {
     public long date;//批改时间
     public String path;//文件路径
     public int page;
+    public boolean isPg=false;
 
     public String images;//下载地址
 
-    @Generated(hash = 966030678)
+    @Generated(hash = 299402581)
     public Paper(Long id, long userId, int contentId, int type, int courseId,
             String course, int categoryId, String category, int index, String title,
             int rank, double score, long createDate, long date, String path,
-            int page, String images) {
+            int page, boolean isPg, String images) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -52,6 +55,7 @@ public class Paper {
         this.date = date;
         this.path = path;
         this.page = page;
+        this.isPg = isPg;
         this.images = images;
     }
 
@@ -193,6 +197,14 @@ public class Paper {
 
     public void setImages(String images) {
         this.images = images;
+    }
+
+    public boolean getIsPg() {
+        return this.isPg;
+    }
+
+    public void setIsPg(boolean isPg) {
+        this.isPg = isPg;
     }
 
 

@@ -6,21 +6,19 @@ import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
-import com.bll.lnkstudy.Constants.Companion.BOOK_PICTURE_FILES
-import com.bll.lnkstudy.Constants.Companion.CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParentBean
-import com.bll.lnkstudy.ui.adapter.BookCatalogAdapter
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.utilssdk.utils.FileUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details.*
@@ -32,7 +30,6 @@ import java.io.File
 class BookDetailsActivity:BaseActivity() {
     private var book: Book?=null
     private var catalogMsg: CatalogMsg?=null
-    private var mAdapter:BookCatalogAdapter?=null
     private var catalogs= mutableListOf<MultiItemEntity>()
     private var parentItems= mutableListOf<CatalogParentBean>()
     private var childItems= mutableListOf<CatalogChildBean>()
@@ -54,7 +51,7 @@ class BookDetailsActivity:BaseActivity() {
         book = BookGreenDaoManager.getInstance(this).queryBookByBookID(id)
         page=book?.pageIndex!!
         if (book==null) return
-        val cataLogFilePath =File(book?.bookPath).path + File.separator + CATALOG_TXT
+        val cataLogFilePath =FileAddress().getPathBookCatalog(book?.bookPath!!)
         val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
         catalogMsg=Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
         if (catalogMsg==null) return
@@ -92,21 +89,6 @@ class BookDetailsActivity:BaseActivity() {
 
         changeExpandView()
 
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = BookCatalogAdapter(catalogs)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnCatalogClickListener(object : BookCatalogAdapter.onCatalogClickListener {
-            override fun onParentClick(page: Int) {
-                this@BookDetailsActivity.page =page
-                selectScreen()
-            }
-            override fun onChildClick(page: Int) {
-                this@BookDetailsActivity.page =page
-                selectScreen()
-            }
-        })
-
         bindClick()
     }
 
@@ -127,26 +109,15 @@ class BookDetailsActivity:BaseActivity() {
         }
 
         iv_catalog.setOnClickListener {
-            if (ll_catalog.visibility== View.GONE){
-                showView(ll_catalog)
-                setPWEnabled(false)
-            }
-            else{
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            }
+            DrawingCatalogDialog(this,catalogs,1).builder()?.
+            setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+                override fun onClick(position: Int) {
+                    page=position
+                    selectScreen()
+                }
+            })
+
         }
-
-
-        //用来设置点击试图其他位置目录关闭
-        ll_content.setOnClickListener {
-            if (ll_catalog.visibility== View.VISIBLE)
-            {
-                disMissView(ll_catalog)
-                setPWEnabled(true)
-            }
-        }
-
 
         btn_page_up.setOnClickListener {
             if (isExpand){
@@ -172,13 +143,6 @@ class BookDetailsActivity:BaseActivity() {
             }
         }
     }
-
-    //设置手绘是否可以绘制
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
-    }
-
 
     private fun selectScreen(){
         if (isExpand){
@@ -263,7 +227,7 @@ class BookDetailsActivity:BaseActivity() {
 
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
-        val path=book?.bookPath + File.separator + BOOK_PICTURE_FILES
+        val path=FileAddress().getPathBookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path,".jpg")
         if (listFiles.size==0)
             return null

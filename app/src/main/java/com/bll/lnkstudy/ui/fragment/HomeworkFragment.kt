@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
@@ -125,6 +125,7 @@ class HomeworkFragment : BaseFragment(){
             val item=datas[position]
             if (view.id==R.id.iv_image){
                 item.isMessage=false
+                item.isPg=false
                 mAdapter?.notifyDataSetChanged()
                 if(item.isListenToRead){
                     startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
@@ -151,12 +152,12 @@ class HomeworkFragment : BaseFragment(){
             if (view.id==R.id.iv_message){
                 homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),messages).builder()
                 homeworkMessageAllDialog?.setOnDialogClickListener(object : HomeworkMessageAllDialog.OnDialogClickListener {
-                        override fun onClick(position:Int,id: String) {
-                            messages.removeAt(position)
-                            homeworkMessageAllDialog?.setData(messages)
-                        }
+                    override fun onClick(position:Int,id: String) {
+                        messages.removeAt(position)
+                        homeworkMessageAllDialog?.setData(messages)
+                    }
 
-                    })
+                })
             }
 
         }
@@ -174,6 +175,7 @@ class HomeworkFragment : BaseFragment(){
             for (mes in messages){
                 if (item.courseId==mes.courseId&&item.type==mes.homeworkTypeId){
                     item.isMessage=true
+                    item.isPg=mes.isPg
                     item.message=mes
                 }
             }
@@ -185,6 +187,7 @@ class HomeworkFragment : BaseFragment(){
 
     private fun getMessageDatas(){
         val homeworkMessage=HomeworkMessage()
+        homeworkMessage.id=0
         homeworkMessage.title="语文家庭作业1、3、5页"
         homeworkMessage.date=System.currentTimeMillis()
         homeworkMessage.course="语文"
@@ -193,16 +196,28 @@ class HomeworkFragment : BaseFragment(){
         homeworkMessage.homeworkTypeId=0
 
         val homeworkMessage1=HomeworkMessage()
+        homeworkMessage1.id=1
         homeworkMessage1.title="数学作业"
         homeworkMessage1.date=System.currentTimeMillis()
         homeworkMessage1.course="数学"
         homeworkMessage1.courseId=1
         homeworkMessage1.state=1
         homeworkMessage1.homeworkTypeId=2
+        homeworkMessage1.isPg=true
+
+        val homeworkMessage2=HomeworkMessage()
+        homeworkMessage2.id=2
+        homeworkMessage2.title="数学作业112"
+        homeworkMessage2.date=System.currentTimeMillis()
+        homeworkMessage2.course="数学"
+        homeworkMessage2.courseId=1
+        homeworkMessage2.state=1
+        homeworkMessage2.homeworkTypeId=3
+        homeworkMessage2.isPg=false
 
         messages.add(homeworkMessage)
         messages.add(homeworkMessage1)
-
+        messages.add(homeworkMessage2)
 
     }
 
@@ -212,48 +227,55 @@ class HomeworkFragment : BaseFragment(){
     private fun loadImage(){
         for (item in messages){
             if (item.homeworkTypeId==2||item.homeworkTypeId==3){
-                if (item.images.isNullOrEmpty())
-                    return
                 //设置路径
-                val pathStr=Constants.HOMEWORK_PATH+"/$mUserId" + "/${item.courseId}" + "/${item.homeworkTypeId}" + "/${item.id}"
-                var imageDownLoad= ImageDownLoadUtils(activity,item.images,pathStr)
+                val pathStr=FileAddress().getPathHomework(item.courseId,item.homeworkTypeId,item.id)
+                var imageDownLoad= ImageDownLoadUtils(activity,if (item.isPg)item.pgImages else item.images,pathStr)
                 imageDownLoad.startDownload()
                 imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                     override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                        //查找到之前已经存储的数据、用于页码计算
-                        var papers=PaperDaoManager.getInstance(requireContext()).queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<Paper>
-                        var paperContents=PaperContentDaoManager.getInstance(requireContext())?.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<PaperContent>
+                        val paperDaoManager=PaperDaoManager.getInstance(requireContext())
+                        val paperContentDaoManager=PaperContentDaoManager.getInstance(requireContext())
+                        if (item.isPg){
+                            var paper=paperDaoManager.queryByContentID(item.id)
+                            if(paper!=null){
+                                paper.isPg=true
+                                paperDaoManager.insertOrReplace(paper)
+                            }
+                        }
+                        else{
+                            //查找到之前已经存储的数据、用于页码计算
+                            var papers=paperDaoManager.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<Paper>
+                            var paperContents=paperContentDaoManager.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<PaperContent>
 
-                        var paper= Paper()
-                        paper.contentId=item?.id!!
-                        paper.type=0//作业
-                        paper.courseId=item?.courseId
-                        paper.course=item?.course
-                        paper.categoryId=item?.homeworkTypeId
-                        paper.title=item?.title
-                        paper.path=pathStr
-                        paper.page=paperContents.size //子内容的第一个页码位置
-                        paper.index=papers.size //作业位置
-                        paper.createDate=item?.date
-                        paper.images=item?.images?.toString()
-                        PaperDaoManager.getInstance(requireContext())?.insertOrReplace(paper)
-                        paper.id=PaperDaoManager.getInstance(requireContext())?.insertId
+                            var paper= Paper()
+                            paper.contentId=item?.id
+                            paper.type=0//作业
+                            paper.courseId=item?.courseId
+                            paper.course=item?.course
+                            paper.categoryId=item?.homeworkTypeId
+                            paper.title=item?.title
+                            paper.path=pathStr
+                            paper.page=paperContents.size //子内容的第一个页码位置
+                            paper.index=papers.size //作业位置
+                            paper.createDate=item?.date
+                            paper.images=item?.images?.toString()
+                            paper.isPg=false
+                            paperDaoManager.insertOrReplace(paper)
 
-                        for (i in 0 until map?.size!!){
-                            val path=map[i]
-                            val drawPath=pathStr+"/${i + 1}/draw.tch"
-
-                            var paperContent= PaperContent()
-                            paperContent.type=0
-                            paperContent.courseId=item?.courseId
-                            paperContent.categoryId=item?.homeworkTypeId
-                            paperContent.paperId=paper?.id
-                            paperContent.path=path
-                            paperContent.drawPath=drawPath
-                            paperContent.date=item?.date
-                            paperContent.page=paperContents.size+i
-                            PaperContentDaoManager.getInstance(requireContext())?.insertOrReplace(paperContent)
-
+                            for (i in 0 until map?.size!!){
+                                val path=map[i]
+                                val drawPath=pathStr+"/${i + 1}/draw.tch"
+                                var paperContent= PaperContent()
+                                paperContent.type=0
+                                paperContent.courseId=item?.courseId
+                                paperContent.categoryId=item?.homeworkTypeId
+                                paperContent.contentId=paper?.contentId
+                                paperContent.path=path
+                                paperContent.drawPath=drawPath
+                                paperContent.date=item?.date
+                                paperContent.page=paperContents.size+i
+                                paperContentDaoManager.insertOrReplace(paperContent)
+                            }
                         }
                     }
                     override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
@@ -264,6 +286,7 @@ class HomeworkFragment : BaseFragment(){
             }
         }
     }
+
 
     //添加作业本
     private fun addHomeWorkType(item:HomeworkType){

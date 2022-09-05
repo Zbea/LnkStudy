@@ -84,6 +84,10 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
     }
 
+    fun dismiss(){
+        dialog?.dismiss()
+    }
+
 
     private var listener: OnClickListener? = null
 

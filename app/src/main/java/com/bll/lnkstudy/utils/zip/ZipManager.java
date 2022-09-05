@@ -1,18 +1,20 @@
-package com.bll.utilssdk.zip;
+package com.bll.lnkstudy.utils.zip;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import zip4j.core.ZipFile;
-import zip4j.model.ZipParameters;
-import zip4j.progress.ProgressMonitor;
-import zip4j.util.Zip4jUtil;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.model.enums.EncryptionMethod;
+import net.lingala.zip4j.progress.ProgressMonitor;
+import net.lingala.zip4j.util.Zip4jUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
 
 /**
  * function:ZIP 压缩工具管理器
@@ -83,15 +85,12 @@ public final class ZipManager {
         ZipLog.debug("zip: targetPath=" + targetPath + " , destinationFilePath=" + destinationFilePath + " , password=" + password);
         try {
             ZipParameters parameters = new ZipParameters();
-            parameters.setCompressionMethod(8);
-            parameters.setCompressionLevel(5);
+            ZipFile zipFile = new ZipFile(destinationFilePath);
             if (password.length() > 0) {
                 parameters.setEncryptFiles(true);
-                parameters.setEncryptionMethod(99);
-                parameters.setAesKeyStrength(3);
-                parameters.setPassword(password);
+                parameters.setEncryptionMethod(EncryptionMethod.AES);
+                zipFile.setPassword(password.toCharArray());
             }
-            ZipFile zipFile = new ZipFile(destinationFilePath);
             zipFile.setRunInThread(true);
             File targetFile = new File(targetPath);
             File[] files=targetFile.listFiles();
@@ -109,50 +108,6 @@ public final class ZipManager {
         }
     }
 
-    /**
-     * 压缩多个文件
-     *
-     * @param list                被压缩的文件集合
-     * @param destinationFilePath 压缩后生成的文件路径
-     * @param password            压缩 密码
-     * @param callback            回调
-     */
-    public static void zip(ArrayList<File> list, String destinationFilePath, String password, final IZipCallback callback) {
-        if (list == null || list.size() == 0 || !Zip4jUtil.isStringNotNullAndNotEmpty(destinationFilePath)) {
-            if (callback != null) callback.onFinish(false);
-            return;
-        }
-        ZipLog.debug("zip: list=" + list.toString() + " , destinationFilePath=" + destinationFilePath + " , password=" + password);
-        try {
-            ZipParameters parameters = new ZipParameters();
-            parameters.setCompressionMethod(8);
-            parameters.setCompressionLevel(5);
-            if (password.length() > 0) {
-                parameters.setEncryptFiles(true);
-                parameters.setEncryptionMethod(99);
-                parameters.setAesKeyStrength(3);
-                parameters.setPassword(password);
-            }
-            ZipFile zipFile = new ZipFile(destinationFilePath);
-            zipFile.setRunInThread(true);
-            zipFile.addFiles(list, parameters);
-            timerMsg(callback, zipFile,"zip");
-        } catch (Exception e) {
-            if (callback != null) callback.onFinish(false);
-            ZipLog.debug("zip: Exception=" + e.getMessage());
-        }
-    }
-
-    /**
-     * 压缩多个文件
-     *
-     * @param list                被压缩的文件集合
-     * @param destinationFilePath 压缩后生成的文件路径
-     * @param callback            压缩进度回调
-     */
-    public static void zip(ArrayList<File> list, String destinationFilePath, IZipCallback callback) {
-        zip(list, destinationFilePath, "", callback);
-    }
 
     /**
      * 解压
@@ -185,7 +140,7 @@ public final class ZipManager {
                 if (callback != null) callback.onFinish(false);
             }
             if (zipFile.isEncrypted() && Zip4jUtil.isStringNotNullAndNotEmpty(password)) {
-                zipFile.setPassword(password);
+                zipFile.setPassword(password.toCharArray());
             }
             zipFile.setRunInThread(true);
             zipFile.extractAll(destinationFolderPath);
@@ -197,7 +152,7 @@ public final class ZipManager {
     }
 
     //Handler send msg
-    private static void timerMsg(final IZipCallback callback, ZipFile zipFile,String index) {
+    private static void timerMsg(final IZipCallback callback, ZipFile zipFile, String index) {
         if (callback == null) return;
         mUIHandler.obtainMessage(WHAT_START, callback).sendToTarget();
         final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
@@ -206,7 +161,7 @@ public final class ZipManager {
             @Override
             public void run() {
                 mUIHandler.obtainMessage(WHAT_PROGRESS, progressMonitor.getPercentDone(), 0, callback).sendToTarget();
-                if (progressMonitor.getResult() == ProgressMonitor.RESULT_SUCCESS) {
+                if (progressMonitor.getResult() == ProgressMonitor.Result.SUCCESS) {
                     mUIHandler.obtainMessage(WHAT_FINISH, callback).sendToTarget();
 //                    if (index.equals("unzip")){
 //                        zipFile.getFile().delete();

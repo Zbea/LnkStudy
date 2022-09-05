@@ -104,8 +104,8 @@ public class PaperDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    public Paper queryByID(Long id) {
-        Paper item = dao.queryBuilder().where(whereUser,PaperDao.Properties.Id.eq(id)).build().unique();
+    public Paper queryByContentID(int id) {
+        Paper item = dao.queryBuilder().where(whereUser,PaperDao.Properties.ContentId.eq(id)).build().unique();
         return item;
     }
 

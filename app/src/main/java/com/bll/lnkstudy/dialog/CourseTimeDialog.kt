@@ -12,7 +12,7 @@ import android.widget.RadioGroup
 import android.widget.TimePicker
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 
 /**
  * 课程表 时间选择
@@ -38,7 +38,7 @@ class CourseTimeDialog(val context: Context){
             isStart = i==R.id.rb_start
         }
         val rbStart=dialog.findViewById<RadioButton>(R.id.rb_start)
-        rbStart.text=StringUtils.longToHour1(System.currentTimeMillis())
+        rbStart.text= DateUtils.longToHour1(System.currentTimeMillis())
         val rbEnd=dialog.findViewById<RadioButton>(R.id.rb_end)
 
         val timePicker=dialog.findViewById<TimePicker>(R.id.timePicker)

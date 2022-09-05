@@ -1,6 +1,4 @@
-package com.bll.utilssdk.utils;
-
-import android.util.Log;
+package com.bll.lnkstudy.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -17,9 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by ly on 2021/1/21 15:19
- */
 public class FileUtils {
     /**
      * 读取文本内容String

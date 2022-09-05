@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.bll.lnkstudy.Constants;
 import com.bll.lnkstudy.utils.SPUtil;
-import com.bll.lnkstudy.utils.StringUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;

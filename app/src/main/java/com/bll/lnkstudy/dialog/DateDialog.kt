@@ -7,7 +7,7 @@ import android.widget.DatePicker
 import android.widget.NumberPicker
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -75,7 +75,7 @@ class DateDialog(private val context: Context):NumberPicker.OnValueChangeListene
             val month = monthPicker?.value
             val dayOfMonth = datePicker?.value
             val time = "$year 年$month 月$dayOfMonth 日"
-            val dateToStamp = StringUtils.dateToStamp("$year-$month-$dayOfMonth")
+            val dateToStamp = DateUtils.dateToStamp("$year-$month-$dayOfMonth")
             if (dateListener != null) dateListener!!.getDate(time, dateToStamp)
         }
         return this

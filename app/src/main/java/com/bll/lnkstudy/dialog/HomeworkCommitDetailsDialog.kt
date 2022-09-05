@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.HomeworkMessage
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -48,7 +48,7 @@ class HomeworkCommitDetailsDialog(val context: Context, val list: List<HomeworkM
 
         override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
             helper.setText(R.id.tv_title,item.title)
-            helper.setText(R.id.tv_date,StringUtils.longToStringNoYear(item.date))
+            helper.setText(R.id.tv_date, DateUtils.longToStringNoYear(item.date))
             helper.setText(R.id.tv_state,if (item.state==0) "未提交" else "已提交")
             helper.setTextColor(R.id.tv_state,if (item.state==0)
                 mContext.resources.getColor(R.color.black) else mContext.resources.getColor(R.color.gray))

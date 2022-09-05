@@ -13,8 +13,8 @@ import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.PaintingDaoManager
 import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.mvp.model.PaintingBean
-import com.bll.lnkstudy.utils.StringUtils
-import com.bll.utilssdk.utils.FileUtils
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_painting_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
@@ -233,7 +233,7 @@ class PaintingDrawingActivity : BaseActivity() {
     private fun newHomeWorkContent() {
 
         val path = Constants.PAINTING_PATH + "/$mUserId/$type"
-        val date = StringUtils.longToString(System.currentTimeMillis())
+        val date = DateUtils.longToString(System.currentTimeMillis())
 
         paintingBean = PaintingBean()
         paintingBean?.type = type

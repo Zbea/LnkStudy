@@ -8,7 +8,7 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.entity.MultiItemEntity
 
-class BookCatalogAdapter(data: MutableList<MultiItemEntity>?) : BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder>(data) {
+class BookCatalogAdapter(data: List<MultiItemEntity>?) : BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder>(data) {
 
     init {
         addItemType(0, R.layout.item_catalog_parent)
@@ -50,14 +50,14 @@ class BookCatalogAdapter(data: MutableList<MultiItemEntity>?) : BaseMultiItemQui
 
     }
 
-    private var listener: onCatalogClickListener? = null
+    private var listener: OnCatalogClickListener? = null
 
-    interface onCatalogClickListener{
+    interface OnCatalogClickListener{
         fun onParentClick(page:Int)
         fun onChildClick(page:Int)
     }
 
-    fun setOnCatalogClickListener(listener: onCatalogClickListener?) {
+    fun setOnCatalogClickListener(listener: OnCatalogClickListener?) {
         this.listener = listener
     }
 

@@ -8,7 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.DatePlanBean
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.bll.lnkstudy.dialog.DateTimeHourDialog
@@ -41,9 +41,9 @@ class MainDateEventPlanAddAdapter(layoutResId: Int, data: List<DatePlanBean>?) :
             DateTimeHourDialog(mContext).builder()
                 .setDialogClickListener(object : DateTimeHourDialog.DateListener {
                     override fun getDate(dateStr: String?, hourStr: String?, dateTim: Long) {
-                        tv_start.text= StringUtils.longToHour(dateTim)
+                        tv_start.text= DateUtils.longToHour(dateTim)
                         item.startTime = dateTim
-                        item.startTimeStr = StringUtils.longToHour(dateTim)
+                        item.startTimeStr = DateUtils.longToHour(dateTim)
                     }
                 })
         }
@@ -51,9 +51,9 @@ class MainDateEventPlanAddAdapter(layoutResId: Int, data: List<DatePlanBean>?) :
             DateTimeHourDialog(mContext).builder()
                 .setDialogClickListener(object : DateTimeHourDialog.DateListener {
                     override fun getDate(dateStr: String?, hourStr: String?, dateTim: Long) {
-                        tv_end.text=StringUtils.longToHour(dateTim)
+                        tv_end.text= DateUtils.longToHour(dateTim)
                         item.endTime = dateTim
-                        item.endTimeStr = StringUtils.longToHour(dateTim)
+                        item.endTimeStr = DateUtils.longToHour(dateTim)
                     }
                 })
         }

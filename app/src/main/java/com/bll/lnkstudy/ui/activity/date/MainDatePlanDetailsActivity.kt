@@ -18,7 +18,7 @@ import com.bll.lnkstudy.ui.adapter.MainDateAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateEventPlanAddAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateRemindAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_mian_date_plan_details.*
 import kotlinx.android.synthetic.main.common_date_title.*
 import org.greenrobot.eventbus.EventBus
@@ -205,7 +205,7 @@ class MainDatePlanDetailsActivity: BaseActivity() {
         ll_plan_start.setOnClickListener {
             DateTimeHourDialog(this).builder().setDialogClickListener(object : DateTimeHourDialog.DateListener {
                 override fun getDate(dateStr: String?,hourStr: String?, dateTim: Long) {
-                    dayLong= StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+                    dayLong= DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
                     startPlanLong=dateTim
                     startPlanStr=dateStr!!
                     tv_plan_start.text=dateStr

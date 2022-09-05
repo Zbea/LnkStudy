@@ -16,32 +16,29 @@ public class PaperContent {
     public int type;//0作业1考卷
     public int courseId;//科目id
     public int categoryId;//考卷分组id
-    public long paperId;//考卷id
+    public int contentId;//考卷id
     public long date;
     public String path;//原图路径
     public String drawPath;//绘图路径
     public int page;//页码
-
-    @Generated(hash = 1026393534)
+    @Generated(hash = 1920762037)
     public PaperContent(Long id, long userId, int type, int courseId,
-            int categoryId, long paperId, long date, String path, String drawPath,
+            int categoryId, int contentId, long date, String path, String drawPath,
             int page) {
         this.id = id;
         this.userId = userId;
         this.type = type;
         this.courseId = courseId;
         this.categoryId = categoryId;
-        this.paperId = paperId;
+        this.contentId = contentId;
         this.date = date;
         this.path = path;
         this.drawPath = drawPath;
         this.page = page;
     }
-
     @Generated(hash = 792024976)
     public PaperContent() {
     }
-
     public Long getId() {
         return this.id;
     }
@@ -72,11 +69,11 @@ public class PaperContent {
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
-    public long getPaperId() {
-        return this.paperId;
+    public int getContentId() {
+        return this.contentId;
     }
-    public void setPaperId(long paperId) {
-        this.paperId = paperId;
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
     }
     public long getDate() {
         return this.date;
@@ -102,6 +99,7 @@ public class PaperContent {
     public void setPage(int page) {
         this.page = page;
     }
+
 
 
 }

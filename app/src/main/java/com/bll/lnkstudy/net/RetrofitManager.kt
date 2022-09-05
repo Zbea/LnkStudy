@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.net
 
 import android.util.Log
-import com.bll.lnkstudy.AiPickService
+import com.bll.lnkstudy.APIService
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -24,8 +24,8 @@ import javax.net.ssl.X509TrustManager
 
 object RetrofitManager{
 
-    val service: AiPickService by lazy (LazyThreadSafetyMode.SYNCHRONIZED){
-        getRetrofit().create(AiPickService::class.java)
+    val service: APIService by lazy (LazyThreadSafetyMode.SYNCHRONIZED){
+        getRetrofit().create(APIService::class.java)
     }
 
     /**

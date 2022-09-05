@@ -40,7 +40,8 @@ public class PaperDao extends AbstractDao<Paper, Long> {
         public final static Property Date = new Property(13, long.class, "date", false, "DATE");
         public final static Property Path = new Property(14, String.class, "path", false, "PATH");
         public final static Property Page = new Property(15, int.class, "page", false, "PAGE");
-        public final static Property Images = new Property(16, String.class, "images", false, "IMAGES");
+        public final static Property IsPg = new Property(16, boolean.class, "isPg", false, "IS_PG");
+        public final static Property Images = new Property(17, String.class, "images", false, "IMAGES");
     }
 
 
@@ -58,7 +59,7 @@ public class PaperDao extends AbstractDao<Paper, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"PAPER\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"CONTENT_ID\" INTEGER NOT NULL ," + // 2: contentId
+                "\"CONTENT_ID\" INTEGER NOT NULL UNIQUE ," + // 2: contentId
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
                 "\"COURSE_ID\" INTEGER NOT NULL ," + // 4: courseId
                 "\"COURSE\" TEXT," + // 5: course
@@ -72,7 +73,8 @@ public class PaperDao extends AbstractDao<Paper, Long> {
                 "\"DATE\" INTEGER NOT NULL ," + // 13: date
                 "\"PATH\" TEXT," + // 14: path
                 "\"PAGE\" INTEGER NOT NULL ," + // 15: page
-                "\"IMAGES\" TEXT);"); // 16: images
+                "\"IS_PG\" INTEGER NOT NULL ," + // 16: isPg
+                "\"IMAGES\" TEXT);"); // 17: images
     }
 
     /** Drops the underlying database table. */
@@ -120,10 +122,11 @@ public class PaperDao extends AbstractDao<Paper, Long> {
             stmt.bindString(15, path);
         }
         stmt.bindLong(16, entity.getPage());
+        stmt.bindLong(17, entity.getIsPg() ? 1L: 0L);
  
         String images = entity.getImages();
         if (images != null) {
-            stmt.bindString(17, images);
+            stmt.bindString(18, images);
         }
     }
 
@@ -166,10 +169,11 @@ public class PaperDao extends AbstractDao<Paper, Long> {
             stmt.bindString(15, path);
         }
         stmt.bindLong(16, entity.getPage());
+        stmt.bindLong(17, entity.getIsPg() ? 1L: 0L);
  
         String images = entity.getImages();
         if (images != null) {
-            stmt.bindString(17, images);
+            stmt.bindString(18, images);
         }
     }
 
@@ -197,7 +201,8 @@ public class PaperDao extends AbstractDao<Paper, Long> {
             cursor.getLong(offset + 13), // date
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // path
             cursor.getInt(offset + 15), // page
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16) // images
+            cursor.getShort(offset + 16) != 0, // isPg
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // images
         );
         return entity;
     }
@@ -220,7 +225,8 @@ public class PaperDao extends AbstractDao<Paper, Long> {
         entity.setDate(cursor.getLong(offset + 13));
         entity.setPath(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setPage(cursor.getInt(offset + 15));
-        entity.setImages(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setIsPg(cursor.getShort(offset + 16) != 0);
+        entity.setImages(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     @Override

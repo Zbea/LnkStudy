@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.adapter
 import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.RecordBean
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -12,7 +12,7 @@ class RecordAdapter(layoutResId: Int, data: MutableList<RecordBean>?) : BaseQuic
     override fun convert(helper: BaseViewHolder, item: RecordBean) {
 
         helper.setText(R.id.tv_title,item.title)
-        helper.setText(R.id.tv_date, StringUtils.longToStringDataNoHour(item.date))
+        helper.setText(R.id.tv_date, DateUtils.longToStringDataNoHour(item.date))
 
         var image=helper.getView<ImageView>(R.id.iv_record)
         if (item.state==0){

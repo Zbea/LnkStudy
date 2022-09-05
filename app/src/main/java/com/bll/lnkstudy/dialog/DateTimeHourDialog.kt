@@ -6,7 +6,7 @@ import android.view.*
 import android.widget.NumberPicker
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,7 +38,7 @@ class DateTimeHourDialog(private val context: Context) {
         hourPicker= view.findViewById(R.id.np_hour)
         minutePicker= view.findViewById(R.id.np_minute)
 
-        val month= StringUtils.getMonth().toString()
+        val month= DateUtils.getMonth().toString()
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val yearMonth=simpleDateFormat.format(Date())

@@ -7,14 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.ListBean
+import com.bll.lnkstudy.ui.adapter.BookCatalogAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.entity.MultiItemEntity
 
-class DrawingCatalogDialog(val context: Context, val list: List<ListBean>) {
+/**
+ * type=0绘图目录 type=1书籍目录
+ */
+class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:Int=0) {
 
     private var dialog:Dialog?=null
-    private var mAdapter:CatalogAdapter?=null
 
     fun builder(): DrawingCatalogDialog? {
 
@@ -30,15 +34,36 @@ class DrawingCatalogDialog(val context: Context, val list: List<ListBean>) {
         layoutParams.y=DP2PX.dip2px(context,46f)
         window.attributes = layoutParams
 
-        val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
+        val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)
 
-        recyclerview.layoutManager = LinearLayoutManager(context)
-        mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list)
-        recyclerview.adapter = mAdapter
-        mAdapter?.setOnItemClickListener  { adapter, view, position ->
-            dismiss()
-            if (listener!=null)
-                listener?.onClick(position)
+        rv_list?.layoutManager = LinearLayoutManager(context)
+
+        if (type==0){
+            var mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ListBean>)
+            rv_list?.adapter = mAdapter
+            mAdapter?.bindToRecyclerView(rv_list)
+            mAdapter?.setOnItemClickListener  { adapter, view, position ->
+                dismiss()
+                if (listener!=null)
+                    listener?.onClick(position)
+            }
+        }
+        else{
+            var mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>)
+            rv_list?.adapter = mAdapter
+            mAdapter?.bindToRecyclerView(rv_list)
+            mAdapter?.setOnCatalogClickListener(object : BookCatalogAdapter.OnCatalogClickListener {
+                override fun onParentClick(page: Int) {
+                    dismiss()
+                    if (listener!=null)
+                        listener?.onClick(page)
+                }
+                override fun onChildClick(page: Int) {
+                    dismiss()
+                    if (listener!=null)
+                        listener?.onClick(page)
+                }
+            })
         }
 
         return this
@@ -54,10 +79,6 @@ class DrawingCatalogDialog(val context: Context, val list: List<ListBean>) {
             dialog?.show()
     }
 
-    fun setData(datas: List<ListBean>){
-        mAdapter?.setNewData(datas)
-    }
-
     private var listener: OnDialogClickListener? = null
 
     interface OnDialogClickListener {
@@ -68,7 +89,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<ListBean>) {
         this.listener = listener
     }
 
-    class CatalogAdapter(layoutResId: Int, data: List<ListBean>?) : BaseQuickAdapter<ListBean, BaseViewHolder>(layoutResId, data) {
+    class CatalogAdapter(layoutResId: Int, data: List<ListBean>) : BaseQuickAdapter<ListBean, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, item: ListBean) {
             helper.setText(R.id.tv_name, item.name)

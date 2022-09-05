@@ -15,6 +15,7 @@ import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
@@ -33,7 +34,6 @@ import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -48,7 +48,7 @@ import java.util.*
  */
 class MainFragment : BaseFragment() {
 
-    private var dayNowLong = StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+    private var dayNowLong = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var planList = mutableListOf<DatePlanBean>()
     private var scheduleList = mutableListOf<DateEvent>()
     private var dayList = mutableListOf<DateEvent>()
@@ -353,8 +353,6 @@ class MainFragment : BaseFragment() {
         )
         receivePapers.add(receivePaper1)
         receivePapers.add(receivePaper2)
-        receivePapers.add(receivePaper1)
-        receivePapers.add(receivePaper2)
 
         loadPapers()
     }
@@ -363,11 +361,11 @@ class MainFragment : BaseFragment() {
     private fun loadPapers(){
         for (item in receivePapers){
             //设置路径
-            val file=File(Constants.RECEIVEPAPER_PATH , "$mUserId/${item.categoryId}/"+item.id)
+            val file=File(FileAddress().getPathTestPaper(item.categoryId,item.id))
             item.path=file.path
             val files= FileUtils.getFiles(file.path)
             if (files==null||files.size!=item.images.size){
-                var imageDownLoad= ImageDownLoadUtils(activity,item.images,file.path)
+                val imageDownLoad= ImageDownLoadUtils(activity,item.images,file.path)
                 imageDownLoad.startDownload()
                 imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                     override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
@@ -375,6 +373,7 @@ class MainFragment : BaseFragment() {
                     }
                     override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                         hideLoading()
+                        imageDownLoad.reloadImage()
                     }
                 })
             }

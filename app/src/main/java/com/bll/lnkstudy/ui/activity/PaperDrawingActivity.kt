@@ -55,18 +55,13 @@ class PaperDrawingActivity:BaseActivity() {
 
         papers= daoManager?.queryAll(flags,mCourseId,mCatalogId) as MutableList<Paper>
 
-        showLog(papers.size.toString())
-
-        if (papers.size>0)
-            currentPosition=papers.size-1
-
     }
 
     override fun initView() {
-
         if(papers.size>0){
             elik_a=v_content_a.pwInterFace
             elik_b=v_content_b.pwInterFace
+            currentPosition=papers.size-1
             changeContent()
         }
         changeExpandView()
@@ -156,17 +151,26 @@ class PaperDrawingActivity:BaseActivity() {
         })
     }
 
+    /**
+     * 设置是否可以手写
+     */
+    private fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
+    }
+
 
     //内容切换
     private fun changeContent(){
 
         paper=papers[currentPosition]
 
-        paperContents= daoContentManager?.queryByID(paper?.id!!) as MutableList<PaperContent>
+        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContent>
 
         pageCount=paperContents.size
 
         tv_title.text=paper?.title
+        setPWEnabled(!paper!!.isPg)
 
         loadImage(page,elik_a!!,v_content_a)
         tv_page_a.text="${paperContents[page].page+1}"
@@ -188,7 +192,7 @@ class PaperDrawingActivity:BaseActivity() {
     private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
 
         var testPaperContent=paperContents[index]
-        GlideUtils.setImageUrl(this,testPaperContent.path,view)
+        GlideUtils.setImageNoCacheUrl(this,testPaperContent.path,view)
 
         elik?.setLoadFilePath(testPaperContent.drawPath,true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {

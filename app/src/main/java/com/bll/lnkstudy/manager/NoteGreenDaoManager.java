@@ -106,14 +106,18 @@ public class NoteGreenDaoManager {
         return queryNote;
     }
 
+    /**
+     * 查找全部笔记，按照自增长id倒序
+     * @return
+     */
     public List<Note> queryAll(){
         return noteDao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Id).build().list();
     }
 
     public List<Note> queryAllNote(int type) {
         WhereCondition whereCondition=NoteDao.Properties.Type.eq(type);
-        List<Note> querynoteList = noteDao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.NowDate).build().list();
-        return querynoteList;
+        List<Note> list = noteDao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.NowDate).build().list();
+        return list;
     }
 
     public void deleteNote(Note note){
@@ -122,8 +126,8 @@ public class NoteGreenDaoManager {
 
     public void deleteType(int type){
         WhereCondition whereCondition=NoteDao.Properties.Type.eq(type);
-        List<Note> queryNoteList = noteDao.queryBuilder().where(whereUser,whereCondition).build().list();
-        noteDao.deleteInTx(queryNoteList);
+        List<Note> list = noteDao.queryBuilder().where(whereUser,whereCondition).build().list();
+        noteDao.deleteInTx(list);
     }
 
 }

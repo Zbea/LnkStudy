@@ -29,6 +29,7 @@ public class ImageDownLoadUtils {
     private String path;//路径
     private File file = null;
 
+    //位置 下载路径
     private Map<Integer, String> map = new HashMap<>();//下载成功
     private List<Integer> unLoadList = new ArrayList<>();//未下载成功
 

@@ -3,9 +3,8 @@ package com.bll.lnkstudy.ui.activity
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
-import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
@@ -20,7 +19,6 @@ import com.bll.lnkstudy.mvp.model.BookStore
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.StringUtils
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco4
 import com.google.android.material.tabs.TabLayout
@@ -316,16 +314,14 @@ class BookStoreActivity:BaseActivity() ,
 
     //下载book
     private fun downLoadStart(url: String): BaseDownloadTask? {
-        if (StringUtils.isNull_b(url)) {
+        if (url.isNullOrEmpty()) {
             showToast("URL地址错误")
             return null
         }
 
         val fileName=book?.id.toString()//文件名
 
-        //看file 是否创建目录
-        val filedir = File(Constants.ZIP_PATH)
-        val targetFileStr = filedir.path + File.separator + fileName + ".zip"
+        val targetFileStr = FileAddress().getPathZip(fileName)
         val targetFile = File(targetFileStr)
         if (targetFile.exists()) {
             targetFile.delete()
@@ -335,7 +331,7 @@ class BookStoreActivity:BaseActivity() ,
             .startDownLoad(object : FileDownManager.DownLoadCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task !=null && task.isRunning && task == mDownMapPool.get(book?.id)){
+                    if (task !=null && task.isRunning && task == mDownMapPool[book?.id]){
                         runOnUiThread {
                             val s="下载中(" + getFormatNum(soFarBytes.toDouble() / (1024*1024),"0.0") + "M/" + getFormatNum(totalBytes.toDouble() / (1024*1024),"0.0")+"M)"
                             if (bookDetailsDialog!=null)
@@ -348,27 +344,24 @@ class BookStoreActivity:BaseActivity() ,
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    showToast("下载完成")
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    ZipUtils.unzip(mUserId.toString(),targetFileStr, fileName, object : ZipUtils.ZipCallback {
+                    ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success){
-                                showLog("解压完成")
+                                showToast("下载完成")
                                 book?.time=System.currentTimeMillis()//下载时间用于排序
                                 //解压完成就开始存数据库
                                 book?.status=3
                                 book?.loadState = 1//已经下载
-                                ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/0/9527
-                                book?.bookPath = "$BOOK_PATH/$mUserId/$fileName"
+                                book?.bookPath = FileAddress().getPathBook(fileName)
                                 //下载解压完成后更新存储的book
                                 BookGreenDaoManager.getInstance(this@BookStoreActivity).insertOrReplaceBook(book)
                                 EventBus.getDefault().post(BOOK_EVENT)
                                 //更新列表
                                 mAdapter?.notifyDataSetChanged()
-                                if (bookDetailsDialog!=null)
-                                    bookDetailsDialog?.setUnClickBtn("已下载")
+                                bookDetailsDialog?.dismiss()
                             }
                             else{
                                 showToast("解压失败")

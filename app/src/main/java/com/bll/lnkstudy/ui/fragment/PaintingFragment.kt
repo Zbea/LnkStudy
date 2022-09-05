@@ -3,12 +3,17 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import com.androidkun.xtablayout.XTabLayout
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.ui.activity.ListActivity
 import com.bll.lnkstudy.ui.activity.PaintingDrawingActivity
+import com.bll.lnkstudy.utils.ZipUtils
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_painting.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * 书画
@@ -24,6 +29,9 @@ class PaintingFragment : BaseFragment(){
 
     @SuppressLint("WrongConstant")
     override fun initView() {
+
+        EventBus.getDefault().register(this)
+
         setTitle("书画")
         initTab()
 
@@ -119,6 +127,39 @@ class PaintingFragment : BaseFragment(){
         intent.putExtra("title", "$dynastyStr   $typeStr" )
         intent.putExtra("type",t)
         startActivity(intent)
+    }
+
+    /**
+     * 自动压缩zip
+     */
+    private fun autoZip() {
+
+        ZipUtils.zip(Constants.PAINTING_PATH + "/$mUserId", "painting", object : ZipUtils.ZipCallback {
+            override fun onStart() {
+                showLog("painting开始打包上传")
+            }
+            override fun onProgress(percentDone: Int) {
+            }
+            override fun onFinish(success: Boolean) {
+                showLog("onFinish painting:$success")
+            }
+            override fun onError(msg: String?) {
+                showLog("onError painting:$msg")
+            }
+        })
+    }
+
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    fun onMessageEvent(msgFlag: String) {
+        if (msgFlag == Constants.AUTO_UPLOAD_EVENT) {
+            autoZip()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 }

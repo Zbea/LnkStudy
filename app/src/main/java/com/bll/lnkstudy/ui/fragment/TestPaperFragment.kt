@@ -123,7 +123,7 @@ class TestPaperFragment : BaseFragment(){
      */
     private fun autoZip() {
 
-        ZipUtils.zip(Constants.RECEIVEPAPER_PATH + "/$mUserId", "testPaper", object : ZipUtils.ZipCallback {
+        ZipUtils.zip(Constants.TESTPAPER_PATH + "/$mUserId", "testPaper", object : ZipUtils.ZipCallback {
             override fun onStart() {
                 showLog("testPaper开始打包上传")
             }

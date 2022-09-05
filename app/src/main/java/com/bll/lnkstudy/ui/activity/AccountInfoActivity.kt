@@ -19,7 +19,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.AccountGroupAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_account_info.*
 
 class AccountInfoActivity:BaseActivity(),
@@ -58,7 +58,7 @@ class AccountInfoActivity:BaseActivity(),
     override fun onVipOrder(order: AccountOrder?) {
         runOnUiThread {
             mUser?.vipExpiredAt = order?.vipExpiredAt
-            tv_member.text = "有效期"+StringUtils.longToStringData(order?.vipExpiredAt!! * 1000L)
+            tv_member.text = "有效期"+ DateUtils.longToStringData(order?.vipExpiredAt!! * 1000L)
         }
     }
 
@@ -99,7 +99,7 @@ class AccountInfoActivity:BaseActivity(),
         if (mUser?.vipExpiredAt==0) {
             tv_member.text = "普通会员"
         } else {
-            tv_member.text = "有效期"+StringUtils.longToStringData(mUser?.vipExpiredAt!! * 1000L)
+            tv_member.text = "有效期"+ DateUtils.longToStringData(mUser?.vipExpiredAt!! * 1000L)
         }
 
         btn_edit_psd.setOnClickListener {

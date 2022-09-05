@@ -2,9 +2,6 @@ package com.bll.lnkstudy.utils;
 
 import java.security.MessageDigest;
 
-/**
- * Created by ly on 2021/1/18 11:23
- */
 public class MD5Utils {
     /*对密码进行加密
      *参数：密码

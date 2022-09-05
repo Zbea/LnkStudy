@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.APK_PATH
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.FileDownManager
@@ -12,7 +13,7 @@ import com.bll.lnkstudy.mvp.presenter.AppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.AppDownloadListAdapter
 import com.bll.lnkstudy.utils.AppUtils
-import com.bll.utilssdk.utils.FileUtils
+import com.bll.lnkstudy.utils.FileUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_app_download.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -144,25 +145,16 @@ class AppDownloadActivity:BaseActivity(),
     //下载应用
     private fun downLoadStart(bean: AppBean): BaseDownloadTask? {
 
-        //看file 是否创建目录
-        val filedir = File(APK_PATH)
-        if (!filedir.exists()) {
-            filedir.mkdir()
-        }
+        val targetFileStr=FileAddress().getPathApk(bean.applicationId.toString())
+
         //看看 是否已经下载
-        val listFiles = FileUtils.getFiles(filedir.path)
+        val listFiles = FileUtils.getFiles(APK_PATH)
         for (file in listFiles) {
-            if (file.name.contains("" + bean.applicationId)) {
+            if (file.name.contains( bean.applicationId.toString())) {
                 //已经下载 直接去解析apk 去安装
-                installApk(filedir.path + File.separator + bean.applicationId + ".apk")
+                installApk(targetFileStr)
                 return null
             }
-        }
-
-        val targetFileStr = filedir.path + File.separator + bean.applicationId + ".apk"
-        val targetFile = File(targetFileStr)
-        if (targetFile.exists()) {
-            targetFile.delete()
         }
         mDialog?.show()
         val download = FileDownManager.with(this).create(bean.contentUrl).setPath(targetFileStr).startDownLoad(object : FileDownManager.DownLoadCallBack {
@@ -190,19 +182,15 @@ class AppDownloadActivity:BaseActivity(),
     //是否已经下载安装
     private fun isInstalled(position: Int): Boolean {
         val filedir = File(APK_PATH)
-
-        if (filedir.exists()) {//证明已经下载过
-
-            val listFile = FileUtils.getFiles(filedir.path)
-            if (listFile.size > 0) {
-                for (file in listFile) {
-                    if (file.name.contains("" + apps[position].id)) {//证明已经下载
-                        val packageName = AppUtils.getApkInfo(this, filedir.path + File.separator + "" + apps[position].id + ".apk")
-                        try {
-                            AppUtils.startAPP(this, packageName)
-                            return true
-                        } catch (e: Exception) {
-                        }
+        val listFile = FileUtils.getFiles(filedir.path)
+        if (listFile.size > 0) {
+            for (file in listFile) {
+                if (file.name.contains("" + apps[position].id)) {//证明已经下载
+                    val packageName = AppUtils.getApkInfo(this, FileAddress().getPathApk(apps[position].id.toString()))
+                    try {
+                        AppUtils.startAPP(this, packageName)
+                        return true
+                    } catch (e: Exception) {
                     }
                 }
             }

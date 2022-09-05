@@ -16,10 +16,9 @@ import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.Paper
 import com.bll.lnkstudy.mvp.model.PaperContent
 import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.utils.BitmapUtils
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.utilssdk.utils.BitmapMergeUtils
-import com.bll.utilssdk.utils.BitmapUtils
-import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_main_receivepaper_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
@@ -66,6 +65,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
         papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>
         paperContents= daoContentManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperContent>
+
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -122,14 +122,13 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             paper.createDate=receivePaper?.createDate!!
             paper.images=receivePaper?.images?.toString()
             daoManager?.insertOrReplace(paper)
-            paper.id=daoManager?.insertId
 
             for (i in 0 until paths.size){
                 var paperContent= PaperContent()
                 paperContent.type=type
                 paperContent.courseId=mCourseId
                 paperContent.categoryId=mCatalogId
-                paperContent.paperId=paper?.id
+                paperContent.contentId=paper?.contentId
                 paperContent.path=paths[i]
                 paperContent.drawPath=drawPaths[i]
                 paperContent.date=receivePaper?.createDate!!
@@ -196,10 +195,10 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
                 null
             }
             if (drawBitmap != null) {
-                val mergeBitmap = BitmapMergeUtils.mergeBitmap(oldBitmap, drawBitmap)
+                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                 BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge")
             } else {
-                showToast("试卷$index 未做")
+                showToast("试卷未做完")
                 BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge")
             }
             commitPaths.add(mergePathStr)
@@ -230,7 +229,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view: ImageView) {
 
-        GlideUtils.setImageUrl(this,paths[index],view)
+        GlideUtils.setImageNoCacheUrl(this,paths[index],view)
 
         elik?.setLoadFilePath(drawPaths[index],true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {

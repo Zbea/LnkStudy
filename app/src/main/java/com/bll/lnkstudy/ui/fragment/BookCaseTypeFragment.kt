@@ -16,8 +16,8 @@ import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco4
-import com.bll.utilssdk.utils.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_bookcase_type.*

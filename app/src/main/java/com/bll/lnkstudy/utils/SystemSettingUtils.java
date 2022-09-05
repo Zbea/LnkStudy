@@ -87,7 +87,7 @@ public class SystemSettingUtils {
         View view = context.getWindow().getDecorView();
         view.setDrawingCacheEnabled(true);//允许绘制缓存
         Bitmap bitmap = view.getDrawingCache();//绘制
-        saveBmp2Gallery(context, bitmap, "screenShot" + System.currentTimeMillis());
+        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),"screenShot" + System.currentTimeMillis());
         SToast.showText("截图成功");
     }
 
@@ -100,7 +100,7 @@ public class SystemSettingUtils {
     public static void saveScreenShot(Activity context, View view) {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
-        saveBmp2Gallery(context, bitmap, "screenShot" + System.currentTimeMillis());
+        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),"screenShot" + System.currentTimeMillis());
         SToast.showText("截图成功");
     }
 
@@ -113,50 +113,8 @@ public class SystemSettingUtils {
     public static void saveScreenShot(Activity context, View view,String picName) {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
-        saveBmp2Gallery(context, bitmap, picName);
+        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),picName);
         SToast.showText("截图成功");
-    }
-    /**
-     * 保存bitmap刷新相册
-     *
-     * @param bmp     获取的bitmap数据
-     * @param picName 自定义的图片名
-     */
-    public static void saveBmp2Gallery(Context context, Bitmap bmp, String picName) {
-
-        File appDir = new File(Constants.Companion.getSCREEN_PATH());
-        if (!appDir.exists()) {
-            appDir.mkdir();
-        }
-        // 声明文件对象
-        File file = null;
-        // 声明输出流
-        FileOutputStream outStream = null;
-        try {
-            // 如果有目标文件，直接获得文件对象，否则创建一个以filename为名称的文件
-            file = new File(appDir, picName + ".png");
-            // 获得输出流，如果文件中有内容，追加内容
-            outStream = new FileOutputStream(file);
-            if (null != outStream) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 90, outStream);
-            }
-        } catch (Exception e) {
-            e.getStackTrace();
-        } finally {
-            try {
-                if (outStream != null) {
-                    outStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-
     }
 
     //获取最大多媒体音量

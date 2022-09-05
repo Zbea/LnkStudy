@@ -19,7 +19,7 @@ import com.bll.lnkstudy.mvp.model.DateRemind
 import com.bll.lnkstudy.ui.adapter.MainDateEventPlanAddAdapter
 import com.bll.lnkstudy.ui.adapter.MainDateRemindAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_mian_date_add.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
@@ -27,7 +27,7 @@ import java.util.*
 
 class MainDateAddActivity : BaseActivity() {
 
-    private val nowTim = StringUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+    private val nowTim = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var type = 0//类型
 
     private var endScheduleLong: Long = 0//日程开始时间
@@ -399,7 +399,8 @@ class MainDateAddActivity : BaseActivity() {
         }
 
         //获取选择开始日期当天的time
-        val dayLong = StringUtils.dateToStamp(StringUtils.longToStringDataNoHour(startScheduleLong))
+        val dayLong = DateUtils.dateToStamp(
+            DateUtils.longToStringDataNoHour(startScheduleLong))
 
         val dateEvent = DateEvent()
         dateEvent.type=type

@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * Created by seatrend on 2018/8/21.
  */
 
-public class StringUtils {
+public class DateUtils {
 
     /**
      * 基于当天剩余天数
@@ -272,90 +272,6 @@ public class StringUtils {
         return 0;
     }
 
-    /**
-     * 处理空字符串
-     */
-    public static String isNull(Object obj) {
-        String content = "";
-
-        try {
-            if (obj != null && !obj.toString().equals("") && !obj.toString().equals("null"))
-                content = obj.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-        return content;
-    }
-
-
-    /**
-     * 处理空字符串
-     *
-     * true 代表空  ||||   false 不为空
-     */
-    public static Boolean isNull_b(Object obj) {
-        boolean content = true;
-
-        try {
-            if (obj != null && !obj.toString().equals("") && !obj.toString().equals("null") && obj.toString().length()>0)
-                content = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-        return content;
-    }
-
-    /**
-     * 处理空字符串
-     */
-    public static String isNulls(String obj) {
-        String content = "--";
-        if (obj != null && !obj.equals("") && !obj.equals("null"))
-            content = obj.toString();
-        return content;
-    }
-
-    public static String getProcessingResultsByCode(int code) {
-        switch (code) {
-            case 0:
-                return "未处理";
-            case 1:
-                return "已处理";
-            default:
-                return "未知状态";
-        }
-
-    }
-
-    /**
-     * 带有*号的字符
-     *
-     * @param s      处理字符串
-     * @param start  开始的下标
-     * @param number *号的个数
-     * @return
-     */
-    public static String StringShowStar(String s, int start, int number) {
-        try {
-            char[] chars = s.toCharArray();
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < chars.length; i++) {
-                if (i >= start && i < start + number) {
-                    builder.append("*");
-                } else {
-                    builder.append(chars[i]);
-                }
-            }
-            return builder.toString();
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-
-    }
-
-
     public static String getToDayTime() {
         String toDay = longToStringDataNoHour(System.currentTimeMillis());
         //String toDay ="2018-09-07";
@@ -364,66 +280,6 @@ public class StringUtils {
 
     }
 
-    /**
-     * 判断是否是11位的手机号
-     * @param str
-     * @return
-     */
-    public static boolean isPhoneNum(String str){
-        String regex = "[1][3-9]\\d{9}";
-        return str.matches(regex);
-    }
-
-    /**
-     * 判断验证码 长度 4位 6位
-     * @param str
-     * @return
-     */
-    public static  boolean isVerifyCode(String str){
-        String regex4 = "\\d{4}";
-        String regex6 = "\\d{6}";
-        return str.matches(regex4)||str.matches(regex6);
-    }
-
-    //是否是email
-    public static boolean isEmailAddress(String phone) {
-        String regex = "^^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(phone);
-        return m.matches();
-    }
-
-    /**
-     * 是否包含大小写字母及数字或
-     * @param str
-     * @param min  最低多少
-     * @param max  最大多少
-     * @return
-     */
-    public static boolean isLetterOrDigit(String str,int min,int max) {
-        String regex = "^[a-zA-Z0-9]{"+min+","+max+"}$";
-        return str.matches(regex);
-    }
-
-    /**
-     * json解析是去掉回车空格换行 其他
-     *    注：\n 回车(\u000a)
-     *     \t 水平制表符(\u0009)
-     *     \s 空格(\u0008)
-     *     \r 换行(\u000d)
-     *
-     * @param str
-     * @return 完整的string
-     */
-    public static String replaceBlank(String str) {
-        String dest = "";
-        if (str!=null) {
-            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-            Matcher m = p.matcher(str);
-            dest = m.replaceAll("");
-        }
-        return dest;
-    }
 
     /**
      *

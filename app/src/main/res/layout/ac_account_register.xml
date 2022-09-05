@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/xtab_height"
         android:layout_marginTop="50dp"
+        android:visibility="gone"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 

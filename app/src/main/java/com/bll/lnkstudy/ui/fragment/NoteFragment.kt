@@ -24,9 +24,9 @@ import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
 import com.bll.lnkstudy.ui.activity.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.ZipUtils
-import com.bll.utilssdk.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -290,7 +290,6 @@ class NoteFragment : BaseFragment() {
 
     //顶部弹出选择
     private fun setTopSelectView() {
-
         if (popWindowList == null) {
             popWindowList =
                 PopWindowList(requireActivity(), popWindowBeans, ivManagers!!, -230, 20).builder()
@@ -301,7 +300,6 @@ class NoteFragment : BaseFragment() {
                     } else {
                         startActivity(Intent(activity, NoteBookManagerActivity::class.java))
                     }
-
                 }
             })
         } else {
@@ -338,10 +336,10 @@ class NoteFragment : BaseFragment() {
             override fun onProgress(percentDone: Int) {
             }
             override fun onFinish(success: Boolean) {
-                showLog(success.toString())
+                showLog("onFinish note:$success")
             }
             override fun onError(msg: String?) {
-                showLog(msg!!)
+                showLog("onError note:$msg")
             }
         })
     }

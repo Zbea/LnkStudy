@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.HomeworkMessage
-import com.bll.lnkstudy.utils.StringUtils
+import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -66,7 +66,7 @@ class HomeworkMessageAllDialog(val context: Context, val list: List<HomeworkMess
         fun onClick(position: Int,id:String)
     }
 
-    fun setOnDialogClickListener(listener: OnDialogClickListener?) {
+    fun setOnDialogClickListener(listener: OnDialogClickListener) {
         this.listener = listener
     }
 
@@ -74,7 +74,7 @@ class HomeworkMessageAllDialog(val context: Context, val list: List<HomeworkMess
 
         override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
             helper.setText(R.id.tv_title,item.title)
-            helper.setText(R.id.tv_date,StringUtils.longToStringWeek(item.date))
+            helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.date))
             helper.addOnClickListener(R.id.tv_delete)
         }
 
