@@ -30,7 +30,9 @@ class AccountLoginActivity:BaseActivity(),
     override fun getAccount(user: User?) {
         user?.token=token
         SPUtil.putObj("user",user!!)
-        startActivity(Intent(this,MainActivity::class.java))
+        val intent=Intent(this,LauncherActivity::class.java)
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        startActivity(intent)
         finish()
     }
 
@@ -85,7 +87,9 @@ class AccountLoginActivity:BaseActivity(),
 
         if (!tokenStr.isNullOrEmpty() && mUser!=null)
         {
-            startActivity(Intent(this,MainActivity::class.java))
+            val intent=Intent(this,LauncherActivity::class.java)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
             finish()
         }
 

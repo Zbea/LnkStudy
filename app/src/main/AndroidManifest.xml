@@ -55,8 +55,6 @@
 
         <activity android:name=".ui.activity.LauncherActivity">
 <!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--                <category android:name="android.intent.category.HOME" />-->
 <!--                <category android:name="android.intent.category.DEFAULT" />-->
 <!--            </intent-filter>-->
@@ -67,18 +65,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>>
-
-        <activity android:name=".ui.activity.AccountRegisterActivity"/>
-        <activity android:name=".ui.activity.AccountInfoActivity"/>
-        <activity android:name=".ui.activity.MainActivity"
-            android:exported="true">
-            <intent-filter>
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.activity.AccountRegisterActivity"/>
+        <activity android:name=".ui.activity.AccountInfoActivity"/>
+
+        <activity android:name=".ui.activity.MainActivity"
+            android:exported="true">
             </activity>
+
         <activity android:name=".ui.activity.date.MainDateActivity"/>
         <activity android:name=".ui.activity.date.MainDateAddActivity"/>
         <activity android:name=".ui.activity.date.MainDateDayDetailsActivity"/>

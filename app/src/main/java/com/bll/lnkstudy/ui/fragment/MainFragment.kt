@@ -74,6 +74,7 @@ class MainFragment : BaseFragment() {
         EventBus.getDefault().register(this)
         setTitle("首页")
 
+        showSearch(false)
         onClickView()
 
         initDateView()

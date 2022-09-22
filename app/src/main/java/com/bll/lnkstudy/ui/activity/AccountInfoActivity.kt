@@ -18,8 +18,8 @@ import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.AccountGroupAdapter
 import com.bll.lnkstudy.utils.ActivityManager
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
 
 class AccountInfoActivity:BaseActivity(),
@@ -37,7 +37,9 @@ class AccountInfoActivity:BaseActivity(),
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         Handler().postDelayed(Runnable {
-            startActivity(Intent(this, AccountLoginActivity::class.java))
+            val intent=Intent(this, AccountLoginActivity::class.java)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
         }, 500)
     }

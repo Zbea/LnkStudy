@@ -1,11 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.view.KeyEvent
-import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
@@ -13,14 +8,12 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.SettingDialog
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.MainListBean
-import com.bll.lnkstudy.ui.AlarmService
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
 import com.bll.lnkstudy.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_main.*
-import java.util.*
 
-class MainActivity : BaseActivity() {
+open class MainActivity : BaseActivity() {
 
     private var lastPosition = 0;
     private var mHomeAdapter: MainListAdapter? = null
@@ -47,7 +40,6 @@ class MainActivity : BaseActivity() {
 
 
     override fun initView() {
-        startRemind()
 
         mainFragment = MainFragment()
         bookcaseFragment = BookCaseFragment()
@@ -88,49 +80,10 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this,AccountInfoActivity::class.java))
         }
 
-        tv_setting.setOnClickListener {
-            showSettingView()
-        }
 
     }
 
-    /**
-     * 开始每天定时任务
-     */
-    private fun startRemind(){
 
-        val mCalendar= Calendar.getInstance()
-        val currentTimeMillisLong=System.currentTimeMillis()
-        mCalendar.timeInMillis=currentTimeMillisLong
-        mCalendar.timeZone= TimeZone.getTimeZone("GMT+8")
-        mCalendar.set(Calendar.HOUR_OF_DAY,15)
-        mCalendar.set(Calendar.MINUTE,0)
-        mCalendar.set(Calendar.SECOND,0)
-        mCalendar.set(Calendar.MILLISECOND,0)
-
-        var selectLong=mCalendar.timeInMillis
-
-        if (currentTimeMillisLong>selectLong){
-            mCalendar.add(Calendar.DAY_OF_MONTH,1)
-        }
-
-        val intent=Intent(this, AlarmService::class.java)
-        val pendingIntent=PendingIntent.getService(this,0,intent,0)
-        val alarmManager=getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,selectLong,AlarmManager.INTERVAL_DAY,pendingIntent)
-
-    }
-
-    /**
-     * 停止每天定时任务
-     */
-    private fun stopRemind(){
-        val intent=Intent(this, AlarmService::class.java)
-        val pendingIntent=PendingIntent.getService(this,0,intent,0)
-        val alarmManager=getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
-    }
 
 
     //跳转课本
@@ -217,35 +170,5 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
-
-    private var startY=0
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event?.action==MotionEvent.ACTION_DOWN)
-        {
-            startY= event.y.toInt()
-        }
-        if(event?.action==MotionEvent.ACTION_UP){
-            var sub=event.y.toInt()-startY
-            if (startY!!<100&&sub!!>200){
-                showSettingView()
-            }
-        }
-
-        return super.onTouchEvent(event)
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return if (event.getKeyCode() === KeyEvent.KEYCODE_BACK) {
-            true
-        } else {
-            super.dispatchKeyEvent(event)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopRemind()
-    }
 
 }

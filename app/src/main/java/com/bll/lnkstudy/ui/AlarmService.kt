@@ -14,7 +14,6 @@ class AlarmService:Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         Log.d("debug","全局自动打包上传")
         //开启全局自动打包上传
         EventBus.getDefault().postSticky(AUTO_UPLOAD_EVENT)

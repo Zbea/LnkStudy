@@ -47,16 +47,6 @@
             android:layout_marginTop="70dp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_setting"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="400dp"
-        android:background="@drawable/bg_circle_shadow"
-        android:gravity="center"
-        android:text="A"
-        android:textColor="@color/black"
-        android:textSize="40sp" />
 
 
 </RelativeLayout>

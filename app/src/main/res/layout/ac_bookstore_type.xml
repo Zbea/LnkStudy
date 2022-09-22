@@ -7,43 +7,6 @@
     android:background="@mipmap/icon_book_bg">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center_vertical"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="30dp"
-            android:scaleType="center"
-            android:src="@mipmap/icon_back_big" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="30dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="@dimen/sp_40"
-            />
-
-        <ImageView
-            android:id="@+id/iv_service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
-            android:src="@mipmap/icon_bookstore_service"
-            />
-
-
-    </LinearLayout>
-
 
 
     <ImageView
