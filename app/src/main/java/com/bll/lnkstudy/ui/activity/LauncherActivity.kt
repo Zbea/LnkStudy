@@ -18,7 +18,6 @@ class LauncherActivity : MainActivity() {
 
     override fun initView() {
         super.initView()
-
         startRemind()
 
         iv_jc.setOnClickListener {

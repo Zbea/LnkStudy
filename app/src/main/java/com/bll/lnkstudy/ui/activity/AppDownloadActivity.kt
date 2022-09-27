@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.APK_PATH
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.FileDownManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.presenter.AppPresenter
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_app_download.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
 
-class AppDownloadActivity:BaseActivity(),
+class AppDownloadActivity:BaseAppCompatActivity(),
     IContractView.IAPPView {
 
     private val presenter=AppPresenter(this)

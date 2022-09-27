@@ -2,13 +2,13 @@ package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
 
 /**
  * 书城分类
  */
-class BookStoreTypeActivity:BaseActivity() {
+class BookStoreTypeActivity:BaseAppCompatActivity() {
 
 
     override fun layoutId(): Int {

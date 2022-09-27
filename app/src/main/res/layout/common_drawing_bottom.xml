@@ -97,7 +97,7 @@
             <ImageView
                 android:id="@+id/iv_expand"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:src="@mipmap/icon_draw_expand" />
 

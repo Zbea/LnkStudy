@@ -77,13 +77,14 @@
             android:exported="true">
             </activity>
 
-        <activity android:name=".ui.activity.date.MainDateActivity"/>
-        <activity android:name=".ui.activity.date.MainDateAddActivity"/>
-        <activity android:name=".ui.activity.date.MainDateDayDetailsActivity"/>
-        <activity android:name=".ui.activity.date.MainDatePlanDetailsActivity"/>
-        <activity android:name=".ui.activity.date.MainDateScheduleDetailsActivity"/>
+        <activity android:name=".ui.activity.date.MainDateAppCompatActivity"/>
+        <activity android:name=".ui.activity.date.MainDateAddAppCompatActivity"/>
+        <activity android:name=".ui.activity.date.MainDateDayDetailsAppCompatActivity"/>
+        <activity android:name=".ui.activity.date.MainDatePlanDetailsAppCompatActivity"/>
+        <activity android:name=".ui.activity.date.MainDateScheduleDetailsAppCompatActivity"/>
         <activity android:name=".ui.activity.BookStoreActivity"/>
-        <activity android:name=".ui.activity.BookDetailsActivity"/>
+        <activity android:name=".ui.activity.BookDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity android:name=".ui.activity.AppListActivity"/>
         <activity android:name=".ui.activity.AppDownloadActivity"/>
         <activity android:name=".ui.activity.TeachListActivity" />
@@ -98,12 +99,16 @@
         <activity android:name=".ui.activity.NoteBookManagerActivity"/>
         <activity android:name=".ui.activity.MainReceivePaperDrawingActivity"/>
         <activity android:name=".ui.activity.NoteDrawingActivity"/>
-        <activity android:name=".ui.activity.HomeworkDrawingActivity"/>
+        <activity android:name=".ui.activity.HomeworkDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
         <activity android:name=".ui.activity.RecordActivity"/>
         <activity android:name=".ui.activity.RecordListActivity"/>
-        <activity android:name=".ui.activity.PaintingDrawingActivity"/>
+        <activity android:name=".ui.activity.PaintingDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity android:name=".ui.activity.BookCollectActivity"/>
-        <activity android:name=".ui.activity.PaperDrawingActivity"/>
+        <activity android:name=".ui.activity.PaperDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom"
             />

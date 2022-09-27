@@ -6,7 +6,7 @@ import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowBookStoreType
 import com.bll.lnkstudy.manager.BookGreenDaoManager
@@ -31,7 +31,7 @@ import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
 
-class BookStoreActivity:BaseActivity() ,
+class BookStoreActivity:BaseAppCompatActivity() ,
     IContractView.IBookStoreView {
 
     private var title=""

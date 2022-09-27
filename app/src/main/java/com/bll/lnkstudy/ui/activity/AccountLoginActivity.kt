@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -15,7 +15,7 @@ import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 import pub.devrel.easypermissions.EasyPermissions
 
-class AccountLoginActivity:BaseActivity(),
+class AccountLoginActivity:BaseAppCompatActivity(),
     IContractView.ILoginView {
 
     private val presenter=LoginPresenter(this)

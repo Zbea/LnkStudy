@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
@@ -11,7 +11,7 @@ import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
 
-class AppListActivity:BaseActivity() {
+class AppListActivity:BaseAppCompatActivity() {
 
     private var apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null

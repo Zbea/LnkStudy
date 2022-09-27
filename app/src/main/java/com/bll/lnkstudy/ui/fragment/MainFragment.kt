@@ -29,7 +29,7 @@ import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.ui.activity.*
-import com.bll.lnkstudy.ui.activity.date.MainDateActivity
+import com.bll.lnkstudy.ui.activity.date.MainDateAppCompatActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -92,7 +92,7 @@ class MainFragment : BaseFragment() {
     @SuppressLint("WrongConstant")
     private fun onClickView() {
         ll_date.setOnClickListener {
-            startActivity(Intent(activity, MainDateActivity::class.java))
+            startActivity(Intent(activity, MainDateAppCompatActivity::class.java))
         }
 
         ll_message.setOnClickListener {
@@ -203,7 +203,7 @@ class MainFragment : BaseFragment() {
     private fun getEmptyView(title: String): View {
         var emptyView = layoutInflater.inflate(R.layout.common_empty, null)
         emptyView.setOnClickListener {
-            startActivity(Intent(activity, MainDateActivity::class.java))
+            startActivity(Intent(activity, MainDateAppCompatActivity::class.java))
         }
         var tv_content = emptyView.findViewById<TextView>(R.id.tv_empty_title)
         tv_content.text = title

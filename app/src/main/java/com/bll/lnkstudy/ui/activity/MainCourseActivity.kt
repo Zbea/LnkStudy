@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CourseSelectDialog
 import com.bll.lnkstudy.dialog.CourseTimeDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.ac_course.*
 import org.greenrobot.eventbus.EventBus
 
 //课程表
-class MainCourseActivity : BaseActivity() {
+class MainCourseActivity : BaseAppCompatActivity() {
 
     private var type = 0//0五天六节 1六天六节 2五天七节 3六天七节 4五天八节 5六天八节
     private var row = 11

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.DateTimeDialog
 import com.bll.lnkstudy.dialog.DateTimeHourDialog
@@ -25,7 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainDateAddActivity : BaseActivity() {
+class MainDateAddAppCompatActivity : BaseAppCompatActivity() {
 
     private val nowTim = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var type = 0//类型

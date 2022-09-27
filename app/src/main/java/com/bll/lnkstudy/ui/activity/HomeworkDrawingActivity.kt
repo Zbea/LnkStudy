@@ -30,6 +30,8 @@ class HomeworkDrawingActivity : BaseActivity() {
     private var elik_a: EinkPWInterface? = null
     private var elik_b: EinkPWInterface? = null
 
+    private var isExpand = false //是否是全屏
+
     private var courseId = 0 //科目id
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkType? = null
@@ -41,7 +43,6 @@ class HomeworkDrawingActivity : BaseActivity() {
     private var homeworkLists = mutableListOf<Homework>() //所有作业
     private var homeworkContentLists = mutableListOf<HomeworkContent>() //所有作业内容
 
-    private var isExpand = false //是否是全屏
 
     private var page = 0//页码
     private var currentPosition = 0//目录位置
@@ -52,16 +53,13 @@ class HomeworkDrawingActivity : BaseActivity() {
     }
 
     override fun initData() {
-
         var bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkType
         homeworkTypeId = homeworkType?.type!!
         courseId=homeworkType?.courseId!!
 
-        homeworkLists =
-            HomeworkDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
-        homeworkContentLists =
-            HomeworkContentDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
+        homeworkLists = HomeworkDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
+        homeworkContentLists = HomeworkContentDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
 
         if (homeworkLists.size > 0) {
 
@@ -142,18 +140,17 @@ class HomeworkDrawingActivity : BaseActivity() {
 
         iv_expand.setOnClickListener {
             isExpand=!isExpand
+            moveToScreen(isExpand)
             ll_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
             v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
             tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
             iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
-
             changeContent()
         }
 
         iv_btn.setOnClickListener {
             showPopWindowBtn()
         }
-
 
     }
 
@@ -223,11 +220,18 @@ class HomeworkDrawingActivity : BaseActivity() {
             tv_page_b.text = (page + 1).toString()
 
             if (homeworkContent_a != null) {
+                v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))
                 updateImage(elik_a!!, homeworkContent_a?.path!!)
                 tv_page_a.text = "$page"
             }
-
+            else{
+                //当只存在一个页面全屏展示时候 a屏不显示东西不能手写
+                v_content_a.setImageResource(0)
+                elik_a?.setPWEnabled(false)
+                tv_page_a.text = ""
+            }
         } else {
+            v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))
             updateImage(elik_a!!, homeworkContent?.path!!)
             tv_page_a.text = (page + 1).toString()
         }
@@ -236,6 +240,7 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
+        elik?.setPWEnabled(true)
         elik?.setLoadFilePath(path, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -250,7 +255,6 @@ class HomeworkDrawingActivity : BaseActivity() {
 
         })
     }
-
 
     //创建新的作业
     private fun newHomeWork() {
@@ -404,8 +408,9 @@ class HomeworkDrawingActivity : BaseActivity() {
             FileUtils.deleteFile(File(homework?.path))//删除文件夹中的文件
 
         }
-
-        page -= 1
+        if (page>0){
+            page -= 1
+        }
         changeContent()
 
     }

@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.Paper
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.ac_main_receivepaper_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 
-class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
+class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     private var type=1//考卷
     private var mCourseId=0
@@ -78,7 +78,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         tv_save.setOnClickListener(this)
         btn_page_up.setOnClickListener(this)
         btn_page_down.setOnClickListener(this)
-//        iv_expand.setOnClickListener(this)
+
         disMissView(iv_expand)
 
         elik_a = v_content_a.pwInterFace

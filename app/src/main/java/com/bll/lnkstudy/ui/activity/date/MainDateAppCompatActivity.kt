@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.ui.adapter.MainDateEventDayAdapter
@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainDateActivity : BaseActivity() {
+class MainDateAppCompatActivity : BaseAppCompatActivity() {
 
     private var dayLong= DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var planList= mutableListOf<DateEvent>()
@@ -83,7 +83,7 @@ class MainDateActivity : BaseActivity() {
         mainDateEventPlanAdapter?.bindToRecyclerView(rv_plan)
         rv_plan.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
         mainDateEventPlanAdapter?.setOnItemClickListener { adapter, view, position ->
-            val intent= Intent(this, MainDatePlanDetailsActivity::class.java)
+            val intent= Intent(this, MainDatePlanDetailsAppCompatActivity::class.java)
             val bundle= Bundle()
                 bundle.putSerializable("DATEPLAN", planList[position])
             intent.putExtra("DATEPLANS", bundle)
@@ -97,7 +97,7 @@ class MainDateActivity : BaseActivity() {
         rv_schedule.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
         mainDateEventScheduleAdapter?.setOnItemClickListener { adapter, view, position ->
 
-            val intent=Intent(this, MainDateScheduleDetailsActivity::class.java)
+            val intent=Intent(this, MainDateScheduleDetailsAppCompatActivity::class.java)
             val bundle=Bundle()
             bundle.putSerializable("DATESCHEDULE", scheduleList[position])
             intent.putExtra("DATESCHEDULES", bundle)
@@ -112,7 +112,7 @@ class MainDateActivity : BaseActivity() {
         rv_day.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
         mainDateEventDayAdapter?.setOnItemClickListener { adapter, view, position ->
 
-            val intent=Intent(this, MainDateDayDetailsActivity::class.java)
+            val intent=Intent(this, MainDateDayDetailsAppCompatActivity::class.java)
             val bundle=Bundle()
             bundle.putSerializable("DATEDAY", dayList[position])
             intent.putExtra("DATEDAYS", bundle)
@@ -124,7 +124,7 @@ class MainDateActivity : BaseActivity() {
 
     private fun onClickEvent() {
         iv_add.setOnClickListener {
-            startActivity(Intent(this, MainDateAddActivity::class.java))
+            startActivity(Intent(this, MainDateAddAppCompatActivity::class.java))
         }
     }
 

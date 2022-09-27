@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
@@ -22,7 +22,7 @@ import kotlin.math.ceil
 /**
  * 书架收藏
  */
-class BookCollectActivity: BaseActivity() {
+class BookCollectActivity: BaseAppCompatActivity() {
 
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<Book>()

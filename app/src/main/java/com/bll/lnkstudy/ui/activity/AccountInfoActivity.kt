@@ -6,7 +6,7 @@ import android.os.Handler
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.AccountBuyVipDialog
 import com.bll.lnkstudy.dialog.ClassGroupAddDialog
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -22,8 +22,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
 
-class AccountInfoActivity:BaseActivity(),
-    IContractView.IAccountInfoView {
+class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoView {
 
     private val presenter=AccountInfoPresenter(this)
     private var nickname=""

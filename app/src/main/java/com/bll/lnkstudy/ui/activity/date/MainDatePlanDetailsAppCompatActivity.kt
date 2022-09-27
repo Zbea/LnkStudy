@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DateTimeHourDialog
 import com.bll.lnkstudy.dialog.RepeatDayDialog
@@ -25,7 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainDatePlanDetailsActivity: BaseActivity() {
+class MainDatePlanDetailsAppCompatActivity: BaseAppCompatActivity() {
 
     private var datePlanEvent: DateEvent?=null
     private var mainDateAdapter: MainDateAdapter?=null
@@ -175,8 +175,8 @@ class MainDatePlanDetailsActivity: BaseActivity() {
                 override fun cancel() {
                 }
                 override fun ok() {
-                    CalendarReminderUtils.deleteCalendarEvent(this@MainDatePlanDetailsActivity,datePlanEvent?.startTimeStr+"学习计划")
-                    DateEventGreenDaoManager.getInstance(this@MainDatePlanDetailsActivity).deleteDateEvent(datePlanEvent)
+                    CalendarReminderUtils.deleteCalendarEvent(this@MainDatePlanDetailsAppCompatActivity,datePlanEvent?.startTimeStr+"学习计划")
+                    DateEventGreenDaoManager.getInstance(this@MainDatePlanDetailsAppCompatActivity).deleteDateEvent(datePlanEvent)
                     EventBus.getDefault().post(DATE_EVENT)
                     finish()
                 }

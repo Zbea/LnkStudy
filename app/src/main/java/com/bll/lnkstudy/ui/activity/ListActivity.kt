@@ -4,14 +4,14 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.PATH_SF
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.ui.adapter.ListAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 
-class ListActivity:BaseActivity() {
+class ListActivity:BaseAppCompatActivity() {
 
     private var titleStr=""
     private var type=0 //type=1书画类型 type=2书法

@@ -7,7 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.dialog.PopWindowRecordSetting
@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class RecordListActivity : BaseActivity() {
+class RecordListActivity : BaseAppCompatActivity() {
 
     private var mAdapter: RecordAdapter? = null
     private var courseId = 0

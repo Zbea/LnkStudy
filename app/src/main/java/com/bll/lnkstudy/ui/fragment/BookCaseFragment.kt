@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -47,7 +47,7 @@ class BookCaseFragment: BaseFragment() {
         findData()
 
         tv_type.setOnClickListener {
-            (activity as BaseActivity).navigationToFragment(BookCaseTypeFragment())
+            (activity as BaseAppCompatActivity).navigationToFragment(BookCaseTypeFragment())
         }
 
         ll_book_top.setOnClickListener {

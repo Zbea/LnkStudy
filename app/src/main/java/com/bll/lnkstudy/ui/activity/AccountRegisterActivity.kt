@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.MD5Utils
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.ac_account_register.*
 //5. 手机号码规则 11 位有效手机号
 //6. 验证码规则数字即可
  */
-class AccountRegisterActivity : BaseActivity(),
+class AccountRegisterActivity : BaseAppCompatActivity(),
     IContractView.IRegisterOrFindPsdView {
 
     private val presenter= RegisterOrFindPsdPresenter(this)
@@ -61,22 +61,19 @@ class AccountRegisterActivity : BaseActivity(),
             setPageTitle("修改密码")
             ll_name.visibility= View.GONE
             ll_user.visibility=View.GONE
-            rg_register.visibility=View.GONE
+            ll_school.visibility=View.GONE
             btn_register.text="提交"
         }
         else if (flags==1){
             setPageTitle("找回密码")
             ll_name.visibility= View.GONE
+            ll_school.visibility=View.GONE
             btn_register.text="提交"
         }
         else{
             setPageTitle("注册账号")
         }
 
-
-        rg_register.setOnCheckedChangeListener { _, checkid ->
-            rb_student.isChecked = checkid == R.id.rb_student
-        }
 
         btn_code.setOnClickListener {
 
@@ -97,7 +94,6 @@ class AccountRegisterActivity : BaseActivity(),
             val name=ed_name.text.toString().trim()
             val phone=ed_phone.text.toString().trim()
             val code=ed_code.text.toString().trim()
-            val role=if (rb_student.isChecked) 2 else 1
 
             if (psd.isNullOrEmpty()) {
                 showToast("请输入密码")
@@ -136,14 +132,14 @@ class AccountRegisterActivity : BaseActivity(),
                     return@setOnClickListener
                 }
 
-                presenter.register(role.toString(),account,MD5Utils.digest(psd),name,phone,code)
+                presenter.register("2",account,MD5Utils.digest(psd),name,phone,code)
             }
             else if (flags==1){
                 if (account.isNullOrEmpty()) {
                     showToast("请输入用户名")
                     return@setOnClickListener
                 }
-                presenter.findPsd(role.toString(),account,MD5Utils.digest(psd),phone, code)
+                presenter.findPsd("2",account,MD5Utils.digest(psd),phone, code)
             }
             else{
                 presenter.editPsd(MD5Utils.digest(psd),code)

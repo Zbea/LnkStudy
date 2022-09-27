@@ -27,7 +27,9 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity:BaseActivity() {
+class BookDetailsActivity: BaseActivity() {
+
+    //屏幕当前位置
     private var book: Book?=null
     private var catalogMsg: CatalogMsg?=null
     private var catalogs= mutableListOf<MultiItemEntity>()
@@ -98,14 +100,15 @@ class BookDetailsActivity:BaseActivity() {
         tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
         v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
-//        if (isExpand) this.moveToScreenPanel(Activity.SCREEN_PANEL_FULL) else this.moveToScreenPanel(Activity.SCREEN_PANEL_A)
     }
 
     private fun bindClick(){
 
         iv_expand.setOnClickListener {
             isExpand=!isExpand
+            moveToScreen(isExpand)
             changeExpandView()
+            selectScreen()
         }
 
         iv_catalog.setOnClickListener {

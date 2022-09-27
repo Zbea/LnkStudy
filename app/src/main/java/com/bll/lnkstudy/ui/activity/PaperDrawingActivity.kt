@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_testpaper_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 
-class PaperDrawingActivity:BaseActivity() {
+class PaperDrawingActivity: BaseActivity() {
 
     private var flags=0//0作业 1考卷
     private var mCourseId=0
@@ -82,6 +82,7 @@ class PaperDrawingActivity:BaseActivity() {
 
         iv_expand.setOnClickListener {
             isExpand= !isExpand
+            moveToScreen(isExpand)
             changeExpandView()
         }
 

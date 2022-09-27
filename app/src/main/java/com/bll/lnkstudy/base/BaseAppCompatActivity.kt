@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -18,8 +17,11 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.User
@@ -36,9 +38,7 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
-abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, IBaseView {
-
-    private var screenPos=0
+abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
@@ -50,18 +50,50 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var llSearch:LinearLayout?=null
 
+    open fun navigationToFragment(fragment: Fragment?) {
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.frame_layout, fragment, (fragment as Any?)!!.javaClass.simpleName)
+                .addToBackStack(null).commitAllowingStateLoss()
+        }
+    }
+
+    open fun popToStack(fragment: Fragment?) {
+        val fragmentManager: FragmentManager = supportFragmentManager
+        if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
+        }
+        fragmentManager.popBackStack()
+    }
+
+    override fun moveTaskToBack(nonRoot: Boolean): Boolean {
+        return super.moveTaskToBack(true)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mSaveState=savedInstanceState
         setContentView(layoutId())
         initCommonTitle()
-        screenPos=getCurrentScreenPanel()
-        showLog(""+screenPos)
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
+
+        val decorView = window.decorView
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+//        val uiOptions = (0
+//                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide naviagtion,and whow again when touch
+//                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+//        decorView.systemUiVisibility = uiOptions
 
         mDialog = ProgressDialog(this)
         initData()
@@ -145,12 +177,6 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
-    /**
-     * 单双屏展开
-     */
-    public fun moveToScreen(isExpand:Boolean){
-        moveToScreenPanel(if (isExpand) 3 else screenPos )
-    }
 
     /**
      * 消失view

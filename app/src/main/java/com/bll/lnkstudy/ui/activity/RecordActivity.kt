@@ -4,7 +4,7 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.utils.FileUtils
@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.IOException
 
-class RecordActivity : BaseActivity() {
+class RecordActivity : BaseAppCompatActivity() {
 
     //语音文件保存路径
     private var path: String? = null

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.RepeatDayDialog
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_mian_date_day_details.*
 import kotlinx.android.synthetic.main.common_date_title.*
 import org.greenrobot.eventbus.EventBus
 
-class MainDateDayDetailsActivity: BaseActivity() {
+class MainDateDayDetailsAppCompatActivity: BaseAppCompatActivity() {
 
     private var dateEvent: DateEvent?=null
     private var isEdit=false//是否是编辑状态
@@ -157,8 +157,8 @@ class MainDateDayDetailsActivity: BaseActivity() {
                 }
                 override fun ok() {
                     //删除添加的日历事件
-                    CalendarReminderUtils.deleteCalendarEvent(this@MainDateDayDetailsActivity,dateEvent?.title)
-                    DateEventGreenDaoManager.getInstance(this@MainDateDayDetailsActivity).deleteDateEvent(dateEvent)
+                    CalendarReminderUtils.deleteCalendarEvent(this@MainDateDayDetailsAppCompatActivity,dateEvent?.title)
+                    DateEventGreenDaoManager.getInstance(this@MainDateDayDetailsAppCompatActivity).deleteDateEvent(dateEvent)
                     EventBus.getDefault().post(DATE_EVENT)
                     finish()
                 }

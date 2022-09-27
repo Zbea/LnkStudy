@@ -9,7 +9,7 @@ import android.view.View
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.PopWindowDrawSetting
 import com.bll.lnkstudy.dialog.PopWindowDrawingButton
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.ac_note_draw_details.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 
-class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
+class NoteDrawingActivity:BaseAppCompatActivity() ,View.OnClickListener{
     private var note:Note?=null
     private var elik: EinkPWInterface?=null
     private var notes= mutableListOf<Note>()
@@ -53,8 +53,8 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
     override fun initView() {
         tv_title.text=note?.title
 
-        iv_tool_left.visibility=View.GONE
-        iv_expand.visibility=View.GONE
+        disMissView(iv_tool_left)
+        disMissView(iv_expand)
 
         btn_page_down.setOnClickListener(this)
         btn_page_up.setOnClickListener(this)

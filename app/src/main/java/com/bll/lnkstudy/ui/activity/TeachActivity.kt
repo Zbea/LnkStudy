@@ -2,12 +2,12 @@ package com.bll.lnkstudy.ui.activity
 
 import cn.jzvd.Jzvd
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.ListBean
 import kotlinx.android.synthetic.main.ac_teach.*
 
 
-class TeachActivity:BaseActivity() {
+class TeachActivity:BaseAppCompatActivity() {
 
     private var teach:ListBean?=null
 

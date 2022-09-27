@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
-class NoteBookManagerActivity : BaseActivity() {
+class NoteBookManagerActivity : BaseAppCompatActivity() {
 
     private var noteBooks= mutableListOf<BaseTypeBean>()
     private var mAdapter: NoteBookManagerAdapter? = null

@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.MessageList
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.ac_message_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 
-class MessageListActivity:BaseActivity() {
+class MessageListActivity:BaseAppCompatActivity() {
 
     private var lists= mutableListOf<MessageList>()
     private var mAdapter:MainMessageAdapter?=null

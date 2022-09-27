@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.SettingDialog
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.MainListBean
@@ -13,7 +13,7 @@ import com.bll.lnkstudy.ui.fragment.*
 import com.bll.lnkstudy.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_main.*
 
-open class MainActivity : BaseActivity() {
+open class MainActivity : BaseAppCompatActivity() {
 
     private var lastPosition = 0;
     private var mHomeAdapter: MainListAdapter? = null

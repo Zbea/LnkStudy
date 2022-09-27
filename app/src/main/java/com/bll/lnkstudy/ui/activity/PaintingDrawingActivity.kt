@@ -124,6 +124,7 @@ class PaintingDrawingActivity : BaseActivity() {
 
         iv_expand.setOnClickListener {
             isExpand=!isExpand
+            moveToScreen(isExpand)
             ll_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
             v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
             tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
@@ -201,11 +202,19 @@ class PaintingDrawingActivity : BaseActivity() {
             tv_page_b.text = (page + 1).toString()
 
             if (paintingBean_a != null) {
+                v_content_a.setImageResource(resId)
                 updateImage(elik_a!!, paintingBean_a?.path!!)
                 tv_page_a.text = "$page"
             }
+            else{
+                //当只存在一个页面全屏展示时候 a屏不显示东西不能手写
+                v_content_a.setImageResource(0)
+                elik_a?.setPWEnabled(false)
+                tv_page_a.text = ""
+            }
 
         } else {
+            v_content_a.setImageResource(resId)
             updateImage(elik_a!!, paintingBean?.path!!)
             tv_page_a.text = (page + 1).toString()
         }
@@ -213,6 +222,7 @@ class PaintingDrawingActivity : BaseActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
+        elik?.setPWEnabled(true)
         elik?.setLoadFilePath(path, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -359,8 +369,9 @@ class PaintingDrawingActivity : BaseActivity() {
         val file = File(paintingBean?.path)
         val pathName = FileUtils.getFileName(file.name)
         FileUtils.deleteFile(file.parent, pathName)//删除文件
-
-        page -= 1
+        if (page>0){
+            page -= 1
+        }
         changeContent()
 
     }
