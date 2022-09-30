@@ -372,8 +372,7 @@ class PaintingDrawingActivity : BaseActivity() {
 
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun changeScreenPage() {
         if (isExpand){
             isExpand=!isExpand
             moveToScreen(isExpand)

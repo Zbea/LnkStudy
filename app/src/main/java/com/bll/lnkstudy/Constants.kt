@@ -64,6 +64,7 @@ class Constants private constructor() {
         val NOTE_EVENT="NoteEvent"
         val RECORD_EVENT="RecordEvent"
         val RECEIVE_PAPER_COMMIT_EVENT="ReceivePaperCommit"
+        val SCREEN_EVENT="AutoScreenEvent"
     }
     
 }

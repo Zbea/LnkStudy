@@ -3,15 +3,18 @@ package com.bll.lnkstudy.ui.activity
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.SettingDialog
 import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.MainListBean
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
 import com.bll.lnkstudy.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_main.*
+import org.greenrobot.eventbus.EventBus
 
 open class MainActivity : BaseAppCompatActivity() {
 
@@ -40,6 +43,11 @@ open class MainActivity : BaseAppCompatActivity() {
 
 
     override fun initView() {
+
+        val eventBusBean=EventBusBean()
+        eventBusBean.id=Constants.SCREEN_EVENT
+        eventBusBean.screen=getCurrentScreenPanel()
+        EventBus.getDefault().post(eventBusBean)//发送通知，全屏自动收屏到主页的另外一边
 
         mainFragment = MainFragment()
         bookcaseFragment = BookCaseFragment()

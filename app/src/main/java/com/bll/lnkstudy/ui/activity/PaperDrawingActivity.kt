@@ -214,15 +214,13 @@ class PaperDrawingActivity: BaseActivity() {
         view.setImageResource(0)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun changeScreenPage() {
         if (isExpand){
-            isExpand= !isExpand
+            isExpand=!isExpand
             moveToScreen(isExpand)
             changeExpandView()
             changeContent()
         }
     }
-
 
 }

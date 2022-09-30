@@ -20,8 +20,10 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -32,13 +34,16 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
 abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
-    private var screenPos=0
+    var screenPos=0
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
@@ -53,11 +58,14 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mSaveState=savedInstanceState
         setContentView(layoutId())
+
+        EventBus.getDefault().register(this)
+
         initCommonTitle()
         screenPos=getCurrentScreenPanel()
-        showLog("当前展示屏幕：$screenPos")
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
@@ -332,6 +340,30 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         super.onPause()
         mDialog!!.dismiss()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(bean: EventBusBean) {
+        if (bean.id== Constants.SCREEN_EVENT){
+            val screen=bean.screen
+            screenPos=when(screen){
+                1->2
+                2->1
+                else->2
+            }
+            changeScreenPage()
+        }
+    }
+
+    /**
+     * 自动收屏
+     */
+    open fun changeScreenPage(){}
 
 }
 

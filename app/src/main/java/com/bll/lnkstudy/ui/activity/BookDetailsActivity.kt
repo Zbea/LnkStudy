@@ -214,10 +214,8 @@ class BookDetailsActivity: BaseActivity() {
             EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (isExpand)
-        {
+    override fun changeScreenPage() {
+        if (isExpand){
             isExpand=!isExpand
             moveToScreen(isExpand)
             changeExpandView()

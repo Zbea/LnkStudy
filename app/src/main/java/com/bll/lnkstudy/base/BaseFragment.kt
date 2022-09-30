@@ -214,7 +214,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun gotoBookDetails(book: Book){
         if (ActivityManager.getInstance().checkBookIDisExist(book.id))
         {
-            SToast.showText("本书已经打开,请勿重复打开")
+            showToast("本书已经打开,请勿重复打开")
+
         }
         else{
             var intent=Intent(activity, BookDetailsActivity::class.java)
@@ -228,7 +229,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     fun gotoHomeworkDrawing(item:HomeworkType){
         if (ActivityManager.getInstance().checkHomeworkDrawingisExist(item)){
-            SToast.showText(item.name+"已经打开,请勿重复打开")
+            showToast(item.name+"已经打开,请勿重复打开")
         }
         else{
             var bundle= Bundle()
@@ -245,7 +246,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun gotoPaintingDrawing(type: Int){
         if (ActivityManager.getInstance().checkPaintingDrawingIsExist(type))
         {
-            SToast.showText("画本已经打开,请勿重复打开")
+            showToast("画本已经打开,请勿重复打开")
         }
         else{
             var intent=Intent(activity, PaintingDrawingActivity::class.java)
@@ -260,7 +261,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun gotoPaperDrawing(flags: Int,mCourseId:Int,mTypeId:Int){
         if (ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourseId,mTypeId))
         {
-            SToast.showText("页面已经打开,请勿重复打开")
+            showToast("页面已经打开,请勿重复打开")
         }
         else{
             var intent=Intent(activity, PaperDrawingActivity::class.java)
@@ -280,7 +281,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
         if (ActivityManager.getInstance().checkNoteDrawing(note))
         {
-            SToast.showText("笔记已经打开,请勿重复打开")
+            showToast("笔记已经打开,请勿重复打开")
         }
         else{
             var intent = Intent(activity, NoteDrawingActivity::class.java)
@@ -290,7 +291,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             startActivity(intent)
         }
     }
-
 
     /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，

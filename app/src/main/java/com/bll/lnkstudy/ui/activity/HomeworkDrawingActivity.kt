@@ -80,6 +80,7 @@ class HomeworkDrawingActivity : BaseActivity() {
     }
 
     override fun initView() {
+
         v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
         v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
         elik_a = v_content_a.pwInterFace
@@ -132,7 +133,10 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
 
         iv_expand.setOnClickListener {
-            expandChange()
+            isExpand=!isExpand
+            moveToScreen(isExpand)
+            changeExpandView()
+            changeContent()
         }
 
         iv_btn.setOnClickListener {
@@ -141,16 +145,11 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     }
 
-    /**
-     * 单双屏切换
-     */
-    private fun expandChange(){
-        isExpand=!isExpand
-        moveToScreen(isExpand)
+
+    private fun changeExpandView(){
         v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
         tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
-        changeContent()
     }
 
     /**
@@ -414,13 +413,13 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (isExpand)
-        {
-            expandChange()
+   override fun changeScreenPage() {
+        if (isExpand){
+            isExpand=!isExpand
+            moveToScreen(isExpand)
+            changeExpandView()
+            changeContent()
         }
     }
-
 
 }

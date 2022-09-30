@@ -206,7 +206,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     fun gotoBookDetails(book: Book){
         if (ActivityManager.getInstance().checkBookIDisExist(book.id))
         {
-            SToast.showText("本书已经打开,请勿重新开打")
+            showToast("本书已经打开,请勿重新开打")
         }
         else{
             var intent=Intent(this, BookDetailsActivity::class.java)
