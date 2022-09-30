@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.fragment
 
-import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -11,7 +10,6 @@ import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
@@ -52,7 +50,7 @@ class BookCaseFragment: BaseFragment() {
 
         ll_book_top.setOnClickListener {
             if (books.size>0){
-                gotoIntent(books[0])
+                gotoBookDetails(books[0])
             }
         }
 
@@ -70,7 +68,7 @@ class BookCaseFragment: BaseFragment() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco4(63,28))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoIntent(books[position])
+            gotoBookDetails(books[position])
         }
 
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -81,12 +79,7 @@ class BookCaseFragment: BaseFragment() {
 
     }
 
-    //跳转书籍详情
-    private fun gotoIntent(book: Book){
-        var intent=Intent(activity,BookDetailsActivity::class.java)
-        intent.putExtra("book_id",book.id)
-        startActivity(intent)
-    }
+
 
     /**
      * 查找本地书籍
@@ -102,7 +95,7 @@ class BookCaseFragment: BaseFragment() {
     private fun onChangeTopView(){
         if (books.size>0){
             var book=books[0]
-            tv_top_page.text=""+book.pageIndex+"页"
+            tv_top_page.text="${book.pageIndex+1}页"
 
             if (book.pageUpUrl==null){
                 setImageUrl(book?.assetUrl,iv_content_up)

@@ -119,19 +119,12 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
 
         btn_page_up.setOnClickListener {
-
-            if (isExpand) {
-                if (page > 1) {
-                    page -= 1
-                    changeContent()
-                }
-            } else {
-                if (page > 0) {
-                    page -= 1
-                    changeContent()
-                }
+            //全屏时 page最小为1
+            val min=if (isExpand) 1 else 0
+            if (page > min) {
+                page -= 1
+                changeContent()
             }
-
         }
 
         iv_catalog.setOnClickListener {
@@ -139,19 +132,25 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
 
         iv_expand.setOnClickListener {
-            isExpand=!isExpand
-            moveToScreen(isExpand)
-            ll_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
-            v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
-            tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
-            iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
-            changeContent()
+            expandChange()
         }
 
         iv_btn.setOnClickListener {
             showPopWindowBtn()
         }
 
+    }
+
+    /**
+     * 单双屏切换
+     */
+    private fun expandChange(){
+        isExpand=!isExpand
+        moveToScreen(isExpand)
+        v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+        tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
+        changeContent()
     }
 
     /**
@@ -413,6 +412,14 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
         changeContent()
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isExpand)
+        {
+            expandChange()
+        }
     }
 
 

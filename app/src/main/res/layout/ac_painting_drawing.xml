@@ -12,39 +12,24 @@
         android:layout_above="@id/ll_bottom"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/ll_content_a"
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_a"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:scaleType="fitCenter" />
 
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_a"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_content_b"
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
+            android:layout_weight="1"
             android:visibility="gone"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_b"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:scaleType="fitCenter" />
-        </LinearLayout>
+            android:scaleType="fitCenter" />
 
 
     </LinearLayout>

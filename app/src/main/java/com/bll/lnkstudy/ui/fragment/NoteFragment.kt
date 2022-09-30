@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
@@ -21,7 +20,6 @@ import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
-import com.bll.lnkstudy.ui.activity.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
 import com.bll.lnkstudy.utils.FileUtils
@@ -225,14 +223,7 @@ class NoteFragment : BaseFragment() {
 
     }
 
-    //跳转手绘
-    private fun gotoDrawActivity(note: Note) {
-        var intent = Intent(activity, NoteDrawingActivity::class.java)
-        var bundle = Bundle()
-        bundle.putSerializable("note", note)
-        intent.putExtra("notes", bundle)
-        startActivity(intent)
-    }
+
 
     //新建笔记
     private fun addNote() {

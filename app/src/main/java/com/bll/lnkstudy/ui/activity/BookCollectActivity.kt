@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -59,10 +58,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco4(50,70))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var intent=Intent(this,BookDetailsActivity::class.java)
-//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-            intent.putExtra("book_id",books[position].id)
-            startActivity(intent)
+            gotoBookDetails(books[position])
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             book=books[position]

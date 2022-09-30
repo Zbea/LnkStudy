@@ -12,31 +12,20 @@
         android:orientation="horizontal"
         >
 
-        <LinearLayout
-            android:id="@+id/ll_content_a"
-            android:layout_width="match_parent"
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_a"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1">
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_a"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_content_b"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            />
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_weight="1"
             android:visibility="gone"
-            android:layout_weight="1">
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_b"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                />
-        </LinearLayout>
+            />
 
     </LinearLayout>
 

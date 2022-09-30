@@ -7,7 +7,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.ui.activity.ListActivity
-import com.bll.lnkstudy.ui.activity.PaintingDrawingActivity
 import com.bll.lnkstudy.utils.ZipUtils
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_painting.*
@@ -68,14 +67,10 @@ class PaintingFragment : BaseFragment(){
             onClick(1)
         }
         iv_hb.setOnClickListener {
-            val intent=Intent(activity,PaintingDrawingActivity::class.java).setFlags(0)
-//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-            startActivity(intent)
+            gotoPaintingDrawing(0)
         }
         iv_sf.setOnClickListener {
-            val intent=Intent(activity,PaintingDrawingActivity::class.java).setFlags(1)
-//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-            startActivity(intent)
+            gotoPaintingDrawing(1)
         }
 
     }

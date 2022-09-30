@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants
@@ -10,7 +9,6 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
-import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco2
@@ -105,15 +103,7 @@ class TestPaperFragment : BaseFragment(){
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco2(0,80))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-
-            var intent=Intent(activity,PaperDrawingActivity::class.java)
-            intent.putExtra("courseId",course?.courseId)
-            intent.putExtra("categoryId",items[position].type)
-            intent.flags=1
-//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-
+            gotoPaperDrawing(1,course?.courseId!!,items[position].type)
         }
 
     }

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.fragment
 
-import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -13,7 +12,6 @@ import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.utils.FileUtils
@@ -60,10 +58,7 @@ class BookCaseTypeFragment: BaseFragment() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco4(19,38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var intent=Intent(activity,BookDetailsActivity::class.java)
-//            intent.putExtra(Intent.EXTRA_LAUNCH_SCREEN, Intent.EXTRA_LAUNCH_SCREEN_PANEL_BOTH)
-            intent.putExtra("book_id",books[position].id)
-            startActivity(intent)
+            gotoBookDetails(books[position])
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             pos=position

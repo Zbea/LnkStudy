@@ -57,7 +57,7 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         setContentView(layoutId())
         initCommonTitle()
         screenPos=getCurrentScreenPanel()
-        showLog(""+screenPos)
+        showLog("当前展示屏幕：$screenPos")
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))

@@ -24,10 +24,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SPUtil
@@ -195,6 +197,21 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             if (view != null && view.visibility != View.GONE) {
                 view.visibility = View.GONE
             }
+        }
+    }
+
+    /**
+     * 跳转书籍详情
+     */
+    fun gotoBookDetails(book: Book){
+        if (ActivityManager.getInstance().checkBookIDisExist(book.id))
+        {
+            SToast.showText("本书已经打开,请勿重新开打")
+        }
+        else{
+            var intent=Intent(this, BookDetailsActivity::class.java)
+            intent.putExtra("book_id",book.id)
+            startActivity(intent)
         }
     }
 

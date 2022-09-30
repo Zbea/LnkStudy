@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.FileAddress
@@ -13,8 +12,6 @@ import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.*
-import com.bll.lnkstudy.ui.activity.HomeworkDrawingActivity
-import com.bll.lnkstudy.ui.activity.PaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
@@ -131,18 +128,10 @@ class HomeworkFragment : BaseFragment(){
                     startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
                 }
                 else if (item.type==2||item.type==3){
-                    var intent=Intent(activity, PaperDrawingActivity::class.java)
-                    intent.putExtra("courseId",courseID)
-                    intent.putExtra("categoryId",item.type)
-                    intent.flags=0
-                    startActivity(intent)
+                    gotoPaperDrawing(0,courseID,item.type)
                 }
                 else{
-                    var bundle=Bundle()
-                    bundle.putSerializable("homework",item)
-                    var intent=Intent(context,HomeworkDrawingActivity::class.java)
-                    intent.putExtra("homeworkBundle",bundle)
-                    startActivity(intent)
+                    gotoHomeworkDrawing(item)
                 }
             }
             if (view.id==R.id.tv_message){

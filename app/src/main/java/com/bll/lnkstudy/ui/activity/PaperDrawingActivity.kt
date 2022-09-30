@@ -71,11 +71,9 @@ class PaperDrawingActivity: BaseActivity() {
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
-        tv_page_a.visibility = View.VISIBLE
         tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
         v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
-        ll_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
     }
 
     private fun bindClick(){
@@ -84,6 +82,7 @@ class PaperDrawingActivity: BaseActivity() {
             isExpand= !isExpand
             moveToScreen(isExpand)
             changeExpandView()
+            changeContent()
         }
 
         iv_catalog.setOnClickListener {
@@ -213,6 +212,16 @@ class PaperDrawingActivity: BaseActivity() {
     //不显示不能手写
     private fun unloadImage(view:ImageView){
         view.setImageResource(0)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isExpand){
+            isExpand= !isExpand
+            moveToScreen(isExpand)
+            changeExpandView()
+            changeContent()
+        }
     }
 
 

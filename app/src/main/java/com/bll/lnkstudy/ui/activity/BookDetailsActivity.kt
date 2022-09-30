@@ -37,7 +37,7 @@ class BookDetailsActivity: BaseActivity() {
     private var childItems= mutableListOf<CatalogChildBean>()
 
     private var pageCount = 1
-    private var page = 1 //当前页码
+    private var page = 0 //当前页码
 
     private var isExpand=false //是否全屏
 
@@ -87,20 +87,12 @@ class BookDetailsActivity: BaseActivity() {
         elik_a=v_content_a.pwInterFace
         elik_b=v_content_b.pwInterFace
 
-        selectScreen()
-
-        changeExpandView()
+        changeContent()
 
         bindClick()
     }
 
-    //单屏、全屏内容切换
-    private fun changeExpandView(){
-        tv_page_a.visibility = View.VISIBLE
-        tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
-        iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
-        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
-    }
+
 
     private fun bindClick(){
 
@@ -108,15 +100,15 @@ class BookDetailsActivity: BaseActivity() {
             isExpand=!isExpand
             moveToScreen(isExpand)
             changeExpandView()
-            selectScreen()
+            changeContent()
         }
 
         iv_catalog.setOnClickListener {
             DrawingCatalogDialog(this,catalogs,1).builder()?.
             setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
                 override fun onClick(position: Int) {
-                    page=position
-                    selectScreen()
+                    page=position-1
+                    changeContent()
                 }
             })
 
@@ -124,94 +116,70 @@ class BookDetailsActivity: BaseActivity() {
 
         btn_page_up.setOnClickListener {
             if (isExpand){
-                if (page>2){
-                    page-=3
-                    updateScreenFull()
+                if (page>1){
+                    page-=2
+                }
+                else{
+                    page=0
                 }
             }
             else{
-                if (page>1){
+                if (page>0){
                     page-=1
-                    updateScreenA()
                 }
             }
-
+            changeContent()
         }
 
         btn_page_down.setOnClickListener {
-            if(page<pageCount){
-                page+=1
-
-                selectScreen()
-            }
+            page += if (isExpand) 2 else 1
+            changeContent()
         }
     }
 
-    private fun selectScreen(){
-        if (isExpand){
-            updateScreenFull()
-        }
-        else{
-            updateScreenA()
-        }
+    //单屏、全屏内容切换
+    private fun changeExpandView(){
+        tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
+        iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
+        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
     }
 
-    //单屏翻页
-    private fun updateScreenA(){
-        tv_page_a.text="$page/$pageCount"
+    /**
+     * 更新内容
+     */
+    private fun changeContent(){
+        //如果页码超出 则全屏展示最后两页
+        if (page>=pageCount-1){
+            page=if (isExpand) pageCount-2 else pageCount-1
+        }
+
+        tv_page_a.text="${page+1}/$pageCount"
         loadPicture(page,elik_a!!,v_content_a)
-    }
-
-
-    //向前翻页
-    private fun updateScreenFull(){
-
-        if (page<1){
-            //当处于第一页
-            page=1
-            tv_page_a.text="$page/$pageCount"
-            loadPicture(page,elik_a!!,v_content_a)
-
-            page += 1//第二屏页码加一
-            tv_page_b.text="$page/$pageCount"
-            loadPicture(page,elik_b!!,v_content_b)
+        if (isExpand){
+            tv_page_b.text="${page+1+1}/$pageCount"
+            loadPicture(page+1,elik_b!!,v_content_b)
         }
-        else if (page>0&&page+1<=pageCount)
-        {
-            tv_page_a.text="$page/$pageCount"
-            loadPicture(page,elik_a!!,v_content_a)
 
-            page += 1//第二屏页码加一
-            tv_page_b.text="$page/$pageCount"
-            loadPicture(page,elik_b!!,v_content_b)
+        //设置当前展示页以及前一页
+        if (page==0){
+            book?.pageUpUrl=getIndexFile(page)?.path
+            book?.pageUrl=getIndexFile(page)?.path
         }
         else{
-            //当翻页后处于倒数一页
-            page=pageCount-1
-            tv_page_a.text="$page/$pageCount"
-            loadPicture(page,elik_a!!,v_content_a)
-
-            page=pageCount
-            tv_page_b.text="$page/$pageCount"
-            loadPicture(page,elik_b!!,v_content_b)
+            book?.pageUpUrl=getIndexFile(page-1)?.path
+            book?.pageUrl=getIndexFile(page)?.path
         }
 
     }
-
-
 
     //加载图片
     private fun loadPicture(index: Int,elik:EinkPWInterface,view:ImageView) {
         val showFile = getIndexFile(index)
         if (showFile!=null){
-            book?.pageUrl=showFile?.path //设置当前页面路径
-            if (index>1){
-                book?.pageUpUrl=getIndexFile(index-1)?.path
-            }
 
             GlideUtils.setImageFile(this,showFile,view)
 
-            val drawPath=showFile.path.replace(".jpg",".tch")
+            val drawPath=showFile?.path.replace(".jpg",".tch")
             elik?.setLoadFilePath(drawPath,true)
             elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -232,9 +200,7 @@ class BookDetailsActivity: BaseActivity() {
     private fun getIndexFile(index: Int): File? {
         val path=FileAddress().getPathBookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path,".jpg")
-        if (listFiles.size==0)
-            return null
-        return listFiles[index - 1]
+        return if (listFiles.isNullOrEmpty()) null else listFiles[index]
     }
 
     override fun onDestroy() {
@@ -248,6 +214,15 @@ class BookDetailsActivity: BaseActivity() {
             EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 
-
+    override fun onPause() {
+        super.onPause()
+        if (isExpand)
+        {
+            isExpand=!isExpand
+            moveToScreen(isExpand)
+            changeExpandView()
+            changeContent()
+        }
+    }
 
 }

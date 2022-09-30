@@ -16,10 +16,13 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.HomeworkType
+import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SPUtil
@@ -202,6 +205,89 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             if (view != null && view.visibility != View.GONE) {
                 view.visibility = View.GONE
             }
+        }
+    }
+
+    /**
+     * 跳转书籍详情
+     */
+    fun gotoBookDetails(book: Book){
+        if (ActivityManager.getInstance().checkBookIDisExist(book.id))
+        {
+            SToast.showText("本书已经打开,请勿重复打开")
+        }
+        else{
+            var intent=Intent(activity, BookDetailsActivity::class.java)
+            intent.putExtra("book_id",book.id)
+            startActivity(intent)
+        }
+    }
+
+    /**
+     * 跳转作业本
+     */
+    fun gotoHomeworkDrawing(item:HomeworkType){
+        if (ActivityManager.getInstance().checkHomeworkDrawingisExist(item)){
+            SToast.showText(item.name+"已经打开,请勿重复打开")
+        }
+        else{
+            var bundle= Bundle()
+            bundle.putSerializable("homework",item)
+            var intent=Intent(context, HomeworkDrawingActivity::class.java)
+            intent.putExtra("homeworkBundle",bundle)
+            startActivity(intent)
+        }
+    }
+
+    /**
+     * 跳转画本
+     */
+    fun gotoPaintingDrawing(type: Int){
+        if (ActivityManager.getInstance().checkPaintingDrawingIsExist(type))
+        {
+            SToast.showText("画本已经打开,请勿重复打开")
+        }
+        else{
+            var intent=Intent(activity, PaintingDrawingActivity::class.java)
+            intent.flags=type
+            startActivity(intent)
+        }
+    }
+
+    /**
+     * 跳转考卷
+     */
+    fun gotoPaperDrawing(flags: Int,mCourseId:Int,mTypeId:Int){
+        if (ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourseId,mTypeId))
+        {
+            SToast.showText("页面已经打开,请勿重复打开")
+        }
+        else{
+            var intent=Intent(activity, PaperDrawingActivity::class.java)
+            intent.putExtra("courseId",mCourseId)
+            intent.putExtra("categoryId",mTypeId)
+            intent.flags=flags
+            if (flags==1)
+                intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
+        }
+    }
+
+    /**
+     * 跳转笔记书写页面
+     */
+    fun gotoDrawActivity(note: Note) {
+
+        if (ActivityManager.getInstance().checkNoteDrawing(note))
+        {
+            SToast.showText("笔记已经打开,请勿重复打开")
+        }
+        else{
+            var intent = Intent(activity, NoteDrawingActivity::class.java)
+            var bundle = Bundle()
+            bundle.putSerializable("note", note)
+            intent.putExtra("noteBundle", bundle)
+            startActivity(intent)
         }
     }
 

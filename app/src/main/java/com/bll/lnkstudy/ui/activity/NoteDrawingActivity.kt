@@ -38,7 +38,7 @@ class NoteDrawingActivity:BaseAppCompatActivity() ,View.OnClickListener{
     }
 
     override fun initData() {
-        note=intent.getBundleExtra("notes")?.getSerializable("note") as Note
+        note=intent.getBundleExtra("noteBundle")?.getSerializable("note") as Note
         note?.nowDate=System.currentTimeMillis()
         notes=NoteGreenDaoManager.getInstance(this).queryAllNote(note?.type!!)
         if (note?.paths!=null){
