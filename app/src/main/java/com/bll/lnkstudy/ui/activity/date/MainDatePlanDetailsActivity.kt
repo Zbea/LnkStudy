@@ -25,7 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainDatePlanDetailsAppCompatActivity: BaseAppCompatActivity() {
+class MainDatePlanDetailsActivity: BaseAppCompatActivity() {
 
     private var datePlanEvent: DateEvent?=null
     private var mainDateAdapter: MainDateAdapter?=null
@@ -175,8 +175,8 @@ class MainDatePlanDetailsAppCompatActivity: BaseAppCompatActivity() {
                 override fun cancel() {
                 }
                 override fun ok() {
-                    CalendarReminderUtils.deleteCalendarEvent(this@MainDatePlanDetailsAppCompatActivity,datePlanEvent?.startTimeStr+"学习计划")
-                    DateEventGreenDaoManager.getInstance(this@MainDatePlanDetailsAppCompatActivity).deleteDateEvent(datePlanEvent)
+                    CalendarReminderUtils.deleteCalendarEvent(this@MainDatePlanDetailsActivity,datePlanEvent?.startTimeStr+"学习计划")
+                    DateEventGreenDaoManager.getInstance(this@MainDatePlanDetailsActivity).deleteDateEvent(datePlanEvent)
                     EventBus.getDefault().post(DATE_EVENT)
                     finish()
                 }

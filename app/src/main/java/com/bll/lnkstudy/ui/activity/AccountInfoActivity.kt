@@ -104,7 +104,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         }
 
         btn_edit_psd.setOnClickListener {
-            startActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
+            customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
         }
 
         btn_edit_name.setOnClickListener {
@@ -162,7 +162,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
      * 修改名称
      */
     private fun editName(){
-        InputContentDialog(this,tv_name.text.toString()).builder()?.setOnDialogClickListener(object :
+        InputContentDialog(this,screenPos,tv_name.text.toString()).builder()?.setOnDialogClickListener(object :
             InputContentDialog.OnDialogClickListener {
             override fun onClick(string: String) {
                 nickname = string

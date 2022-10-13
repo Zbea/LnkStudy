@@ -1,71 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/icon_book_bg">
+    android:background="@mipmap/icon_book_bg"
+    android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/iv_gj"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="196dp"
+            android:layout_marginBottom="305dp"
+            android:src="@mipmap/icon_bookstore_gj"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
+        <ImageView
+            android:id="@+id/iv_jc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:src="@mipmap/icon_bookstore_jc"
+            app:layout_constraintRight_toLeftOf="@+id/iv_gj"
+            app:layout_constraintTop_toTopOf="@+id/iv_gj" />
 
+        <ImageView
+            android:id="@+id/iv_shkx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="43.5dp"
+            android:src="@mipmap/icon_bookstore_shkx"
+            app:layout_constraintBottom_toTopOf="@+id/iv_gj"
+            app:layout_constraintLeft_toLeftOf="@id/iv_gj" />
 
-    <ImageView
-        android:id="@+id/iv_gj"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="305dp"
-        android:layout_marginEnd="196dp"
-        android:src="@mipmap/icon_bookstore_gj"/>
+        <ImageView
+            android:id="@+id/iv_zrkx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="19dp"
+            android:layout_marginBottom="45dp"
+            android:src="@mipmap/icon_bookstore_zrkx"
+            app:layout_constraintRight_toLeftOf="@+id/iv_shkx"
+            app:layout_constraintTop_toTopOf="@+id/iv_shkx" />
 
-    <ImageView
-        android:id="@+id/iv_jc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/iv_gj"
-        app:layout_constraintRight_toLeftOf="@+id/iv_gj"
-        android:layout_marginEnd="24dp"
-        android:src="@mipmap/icon_bookstore_jc"/>
+        <ImageView
+            android:id="@+id/iv_swkx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1.5dp"
+            android:layout_marginBottom="40dp"
+            android:src="@mipmap/icon_bookstore_swkx"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_zrkx"
+            app:layout_constraintRight_toLeftOf="@+id/iv_zrkx" />
 
-    <ImageView
-        android:id="@+id/iv_shkx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/iv_gj"
-        app:layout_constraintLeft_toLeftOf="@id/iv_gj"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="43.5dp"
-        android:src="@mipmap/icon_bookstore_shkx"/>
-
-    <ImageView
-        android:id="@+id/iv_zrkx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/iv_shkx"
-        app:layout_constraintRight_toLeftOf="@+id/iv_shkx"
-        android:layout_marginRight="19dp"
-        android:layout_marginBottom="45dp"
-        android:src="@mipmap/icon_bookstore_zrkx"/>
-
-    <ImageView
-        android:id="@+id/iv_swkx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_zrkx"
-        app:layout_constraintRight_toLeftOf="@+id/iv_zrkx"
-        android:layout_marginRight="1.5dp"
-        android:layout_marginBottom="40dp"
-        android:src="@mipmap/icon_bookstore_swkx"/>
-
-    <ImageView
-        android:id="@+id/iv_ydcy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/iv_swkx"
-        app:layout_constraintLeft_toLeftOf="@id/iv_swkx"
-        android:layout_marginLeft="123dp"
-        android:layout_marginBottom="84dp"
-        android:src="@mipmap/icon_bookstore_ydcy"/>
-
+        <ImageView
+            android:id="@+id/iv_ydcy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="123dp"
+            android:layout_marginBottom="84dp"
+            android:src="@mipmap/icon_bookstore_ydcy"
+            app:layout_constraintBottom_toTopOf="@id/iv_swkx"
+            app:layout_constraintLeft_toLeftOf="@id/iv_swkx" />
 </androidx.constraintlayout.widget.ConstraintLayout>

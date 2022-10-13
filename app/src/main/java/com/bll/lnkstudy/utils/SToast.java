@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,54 +34,47 @@ public class SToast {
         handler = new Handler(ctx.getMainLooper());
     }
 
-    public static void showText(@StringRes int res) {
-        showText(ctx.getString(res), Toast.LENGTH_SHORT);
+    public static void showText(int screen,@StringRes int res) {
+        showText(screen,ctx.getString(res));
     }
 
-
-    /**
-     * 默认显示短的提示。
-     *
-     * @param str
-     */
-    public static void showText(CharSequence str) {
-        showText(str, Toast.LENGTH_SHORT);
-    }
-
-    public static void showTextLong(CharSequence str) {
-        showText(str, Toast.LENGTH_LONG);
-    }
-
-    public static void showText(@StringRes int res, @IntRange(from = 0, to = 1) int duration) {
-        showText(ctx.getString(res), duration);
-    }
-
-    public static void showText(final CharSequence str, @IntRange(from = 0, to = 1) final int duration) {
+    public static void showText(int screen, final CharSequence str) {
         if (Thread.currentThread().getId() != 1) {
             // 在子线程
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    finalShow(str, duration);
+                    finalShow(screen,str);
                 }
             });
         } else {
-            finalShow(str, duration);
+            finalShow(screen,str);
         }
     }
 
-    private static void finalShow(CharSequence str, @IntRange(from = 0, to = 1) int duration) {
-        if (toast == null) {
-            toast = Toast.makeText(ctx, "----what is this", duration);
-        }
+    private static void finalShow(int screen,CharSequence str) {
+        toast = Toast.makeText(ctx, str, Toast.LENGTH_SHORT);
         TextView text = toast.getView().findViewById(android.R.id.message);
+        text.setWidth(400);
+        text.setGravity(Gravity.CENTER);
         text.setTextColor(Color.WHITE);
         text.setTextSize(20);
         text.setPadding(30, 20, 30, 20);
         toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
-        toast.setText(str);
-        toast.setDuration(duration);
-//        toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 600, 400);
+        if (screen==2||screen==3){
+            toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
+        }
+        else {
+            toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
+        }
+        Log.d("debug",System.currentTimeMillis()+"");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cancel();
+            }
+        },2000);
+
         toast.show();
     }
 
@@ -90,6 +84,7 @@ public class SToast {
      */
     public static void cancel() {
         if (toast != null) {
+            Log.d("debug",System.currentTimeMillis()+"");
             toast.cancel();
         }
     }

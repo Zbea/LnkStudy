@@ -91,7 +91,7 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
     private var listener: OnClickListener? = null
 
-    interface OnClickListener {
+    fun interface OnClickListener {
         fun onClick()
     }
 

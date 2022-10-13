@@ -7,12 +7,13 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 
 
 
-class NoteAddDialog(private val context: Context) {
+class NoteAddDialog(private val context: Context,private val screenPos:Int) {
 
     private var dialog:AlertDialog?=null
 
@@ -26,7 +27,10 @@ class NoteAddDialog(private val context: Context) {
         window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
         layoutParams.width = DP2PX.dip2px(context, 750f)
-        layoutParams.gravity = Gravity.CENTER
+        if (screenPos==3){
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,750f))/2
+        }
         window.attributes = layoutParams
 
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
@@ -85,7 +89,7 @@ class NoteAddDialog(private val context: Context) {
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(type:Int)
     }
 

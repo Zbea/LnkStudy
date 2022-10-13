@@ -68,7 +68,7 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, va
         this.onSelectListener=onSelectListener
     }
 
-    interface OnSelectListener{
+    fun interface OnSelectListener{
         fun onSelect(item: PopWindowBean)
     }
 

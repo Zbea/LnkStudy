@@ -25,7 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainDateAddAppCompatActivity : BaseAppCompatActivity() {
+class MainDateAddActivity : BaseAppCompatActivity() {
 
     private val nowTim = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var type = 0//类型

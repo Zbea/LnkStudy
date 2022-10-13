@@ -1,19 +1,18 @@
 package com.bll.lnkstudy.dialog
 
 import android.content.Context
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 
 
-class CourseModuleDialog(private val context: Context) {
+class CourseModuleDialog(private val context: Context,private val screenPos:Int) {
 
     fun builder(): CourseModuleDialog? {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_course_module, null)
@@ -26,6 +25,11 @@ class CourseModuleDialog(private val context: Context) {
         val layoutParams = window.attributes
         layoutParams.width = DP2PX.dip2px(context, 800f)
         layoutParams.gravity = Gravity.CENTER
+        if (screenPos==3){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,800f))/2
+        }
+
         window.attributes = layoutParams
 
         val ivCancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
@@ -83,7 +87,7 @@ class CourseModuleDialog(private val context: Context) {
 
     private var listener: OnClickListener? = null
 
-    interface OnClickListener {
+    fun interface OnClickListener {
         fun onClick(type:Int)
     }
 

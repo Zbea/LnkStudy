@@ -21,42 +21,42 @@ class LauncherActivity : MainActivity() {
         startRemind()
 
         iv_jc.setOnClickListener {
-            startActivity(
+            customStartActivity(
                 Intent(this, BookStoreActivity::class.java)
                     .putExtra("title", "教材")
             )
         }
 
         iv_gj.setOnClickListener {
-            startActivity(
+            customStartActivity(
                 Intent(this, BookStoreActivity::class.java)
                     .putExtra("title", "古籍")
             )
         }
 
         iv_zrkx.setOnClickListener {
-            startActivity(
+            customStartActivity(
                 Intent(this, BookStoreActivity::class.java)
                     .putExtra("title", "自然科学")
             )
         }
 
         iv_shkx.setOnClickListener {
-            startActivity(
+            customStartActivity(
                 Intent(this, BookStoreActivity::class.java)
                     .putExtra("title", "社会科学")
             )
         }
 
         iv_swkx.setOnClickListener {
-            startActivity(
+            customStartActivity(
                 Intent(this, BookStoreActivity::class.java)
                     .putExtra("title", "思维科学")
             )
         }
 
         iv_ydcy.setOnClickListener {
-            startActivity(
+            customStartActivity(
                 Intent(this, BookStoreActivity::class.java)
                     .putExtra("title", "运动才艺")
             )

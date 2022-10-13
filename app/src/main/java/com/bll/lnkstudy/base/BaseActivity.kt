@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -18,16 +17,21 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.BookDetailsActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SPUtil
@@ -41,15 +45,13 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
-abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
     var screenPos=0
-
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var ivBack: ImageView? = null
     var tvPageTitle: TextView? = null
-    var tvMyCollect: TextView? = null
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
@@ -61,17 +63,18 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
 
         mSaveState=savedInstanceState
         setContentView(layoutId())
+        initCommonTitle()
 
         EventBus.getDefault().register(this)
 
-        initCommonTitle()
-        screenPos=getCurrentScreenPanel()
+        screenPos=getCurrentScreenPos()
+        showLog(localClassName+"当前屏幕：$screenPos")
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
-        mDialog = ProgressDialog(this)
+        mDialog = ProgressDialog(this,screenPos)
         initData()
         initView()
 
@@ -97,7 +100,6 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         ivBack = findViewById(R.id.iv_back)
         ivSave = findViewById(R.id.iv_save)
         tvPageTitle = findViewById(R.id.tv_title)
-        tvMyCollect = findViewById(R.id.tv_myCollect)
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
@@ -153,12 +155,6 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
-    /**
-     * 单双屏展开
-     */
-    public fun moveToScreen(isExpand:Boolean){
-        moveToScreenPanel(if (isExpand) 3 else screenPos )
-    }
 
     /**
      * 消失view
@@ -180,6 +176,29 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
+    /**
+     * 单双屏展开
+     */
+    fun moveToScreen(isExpand:Boolean){
+        moveToScreenPanel(if (isExpand) 3 else screenPos )
+    }
+
+    /**
+     * 得到当前屏幕位置
+     */
+    fun getCurrentScreenPos():Int{
+        return getCurrentScreenPanel()
+    }
+
+    /**
+     * 跳转活动 已经打开过则关闭
+     */
+    fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component.className)
+        startActivity(intent)
+    }
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected fun setStatusBarColor(statusColor: Int) {
         val window = window
@@ -200,24 +219,6 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
-
-    /**
-     * 打卡软键盘
-     */
-    fun openKeyBord(mEditText: EditText, mContext: Context) {
-        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN)
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun closeKeyBord(mEditText: EditText, mContext: Context) {
-        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(mEditText.windowToken, 0)
-    }
-
     /**
      * 关闭软键盘
      */
@@ -226,7 +227,7 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
     }
 
     fun showToast(s:String){
-        SToast.showText(s)
+        SToast.showText(screenPos,s)
     }
 
     fun showLog(s:String){
@@ -307,7 +308,7 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        SToast.showText("连接超时,请重新登陆")
+        showToast("连接超时,请重新登陆")
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
 
@@ -339,6 +340,7 @@ abstract class BaseActivity : Activity(), EasyPermissions.PermissionCallbacks, I
     override fun onPause() {
         super.onPause()
         mDialog!!.dismiss()
+        hideKeyboard()
     }
 
     override fun onDestroy() {

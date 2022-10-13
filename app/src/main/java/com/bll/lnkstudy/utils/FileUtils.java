@@ -146,7 +146,7 @@ public class FileUtils {
      */
     public static List<File> getFiles(String path){
         List<File> files = new ArrayList<>();
-        if("".equals(path)){
+        if(path==null||path.isEmpty()){
             return null;
         }
         File file = new File(path);
@@ -195,10 +195,12 @@ public class FileUtils {
      */
     public static void deleteFile(String path,String name){
         List<File> files=getFiles(path);
-        for (int i = 0; i < files.size(); i++) {
-            File file=files.get(i);
-            if (getFileName(file.getName()).equals(name)){
-                deleteFile(file);
+        if (files!=null){
+            for (int i = 0; i < files.size(); i++) {
+                File file=files.get(i);
+                if (getFileName(file.getName()).equals(name)){
+                    deleteFile(file);
+                }
             }
         }
     }

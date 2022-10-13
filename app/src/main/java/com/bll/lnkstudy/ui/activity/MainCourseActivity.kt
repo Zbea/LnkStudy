@@ -631,7 +631,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
 
     private fun inputContent(v: TextView) {
 
-        InputContentDialog(this,v.text.toString()).builder()?.setOnDialogClickListener(object :
+        InputContentDialog(this,getCurrentScreenPos(),v.text.toString()).builder()?.setOnDialogClickListener(object :
             InputContentDialog.OnDialogClickListener {
             override fun onClick(string: String) {
                 v.text = string

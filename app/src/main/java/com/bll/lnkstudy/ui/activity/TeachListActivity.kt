@@ -50,7 +50,7 @@ class TeachListActivity:BaseAppCompatActivity() {
             val bundle= Bundle()
             bundle.putSerializable("teach", teachs[position])
             intent.putExtra("bundle", bundle)
-            startActivity(intent)
+            customStartActivity(intent)
 
         }
 

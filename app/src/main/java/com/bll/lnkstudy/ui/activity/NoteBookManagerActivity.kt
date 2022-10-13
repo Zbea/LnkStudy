@@ -88,7 +88,7 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
 
     //修改笔记本
     private fun editNoteBook(content:String){
-        NoteBookAddDialog(this,"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener(object :
+        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener(object :
             NoteBookAddDialog.OnDialogClickListener {
             override fun onClick(string: String) {
                 noteBooks[position].name=string

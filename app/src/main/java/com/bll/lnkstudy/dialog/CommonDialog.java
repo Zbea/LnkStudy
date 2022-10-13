@@ -4,13 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bll.lnkstudy.Constants;
 import com.bll.lnkstudy.R;
+import com.bll.lnkstudy.utils.DP2PX;
 
 
 /**
@@ -26,9 +29,14 @@ public class CommonDialog {
     private String content="";//提示文案
     private String cancle="取消";//取消文案
     private String ok ="确认";//确认文案
+    private int screenPos=0;
 
     public CommonDialog(Context context) {
         this.context = context;
+    }
+    public CommonDialog(Context context,int screenPos) {
+        this.context = context;
+        this.screenPos=screenPos;
     }
 
     public CommonDialog setTitle(String title) {
@@ -82,6 +90,12 @@ public class CommonDialog {
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.width = 600;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        if (screenPos==3){
+            lp.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+            lp.x=(Constants.Companion.getWIDTH()- 600)/2;
+        }
+
         window.setAttributes(lp);
         return this;
     }

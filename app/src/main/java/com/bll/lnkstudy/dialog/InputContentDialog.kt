@@ -2,12 +2,15 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 
-class InputContentDialog(val context: Context,val string: String) {
+class InputContentDialog(val context: Context, private val screenPos:Int, val string: String) {
 
 
     fun builder(): InputContentDialog? {
@@ -15,6 +18,14 @@ class InputContentDialog(val context: Context,val string: String) {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_account_edit_name)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog.window
+        val layoutParams=window.attributes
+
+        if (screenPos==3){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+        }
+
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
         val name = dialog.findViewById<EditText>(R.id.ed_name)
@@ -40,7 +51,7 @@ class InputContentDialog(val context: Context,val string: String) {
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(string: String)
     }
 

@@ -60,7 +60,7 @@ class PopWindowRecordSetting(var context:Context, var view: View, val xoff:Int, 
         this.onClickListener=onClickListener
     }
 
-    interface OnClickListener{
+    fun interface OnClickListener{
         fun onClick(type: Int)
     }
 

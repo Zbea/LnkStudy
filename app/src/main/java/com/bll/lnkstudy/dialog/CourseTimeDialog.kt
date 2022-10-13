@@ -73,7 +73,7 @@ class CourseTimeDialog(val context: Context){
 
     private var onClickListener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onSelect(course:String)
     }
 

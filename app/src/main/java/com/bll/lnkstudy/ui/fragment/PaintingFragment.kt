@@ -96,13 +96,13 @@ class PaintingFragment : BaseFragment(){
                     var intent= Intent(activity,ListActivity::class.java)
                     intent.putExtra("title", typeStr)
                     intent.putExtra("type",1)
-                    startActivity(intent)
+                    customStartActivity(intent)
                 }
                 if (typeStr=="硬笔书法"){
                     var intent= Intent(activity,ListActivity::class.java)
                     intent.putExtra("title", typeStr)
                     intent.putExtra("type",2)
-                    startActivity(intent)
+                    customStartActivity(intent)
                 }
             }
 
@@ -121,7 +121,7 @@ class PaintingFragment : BaseFragment(){
         var intent= Intent(activity,ListActivity::class.java)
         intent.putExtra("title", "$dynastyStr   $typeStr" )
         intent.putExtra("type",t)
-        startActivity(intent)
+        customStartActivity(intent)
     }
 
     /**

@@ -197,14 +197,14 @@ class BookCaseTypeFragment: BaseFragment() {
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {
-        val dialogManager= BookManageDialog(requireActivity(),0,book!!)
+        val dialogManager= BookManageDialog(requireActivity(),screenPos,0,book!!)
         dialogManager.builder().setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
             override fun onCollect() {
                 book?.isCollect=true
                 books[pos].isCollect=true
                 mAdapter?.notifyDataSetChanged()
                 BookGreenDaoManager.getInstance(activity).insertOrReplaceBook(book)
-                showToast("收藏成功")
+                showToast(screenPos,"收藏成功")
             }
             override fun onDelete() {
                 delete()
@@ -218,7 +218,7 @@ class BookCaseTypeFragment: BaseFragment() {
 
     //删除书架书籍
     private fun delete(){
-        CommonDialog(activity).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
+        CommonDialog(activity,screenPos).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

@@ -70,7 +70,7 @@ class AppListActivity:BaseAppCompatActivity() {
             if (view.id==R.id.iv_image){
                 if (position==0)
                 {
-                    startActivity(Intent(this,AppDownloadActivity::class.java))
+                    customStartActivity(Intent(this,AppDownloadActivity::class.java))
                 }
                 else{
                     val packageName= apps[position].packageName

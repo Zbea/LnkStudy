@@ -39,7 +39,7 @@ class MessageListActivity:BaseAppCompatActivity() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             lists[position].isLook=true
             mAdapter?.notifyDataSetChanged()
-            MessageDetailsDialog(this, lists[position]).builder()
+            MessageDetailsDialog(this,getCurrentScreenPos(), lists[position]).builder()
         }
         mAdapter?.setType(2)
         pageNumberView()

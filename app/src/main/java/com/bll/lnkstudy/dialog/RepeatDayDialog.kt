@@ -65,7 +65,7 @@ class RepeatDayDialog(val context: Context,val repeatStr: String,val type:Int){
 
     private var repeatListener: OnRepeatListener? = null
 
-    interface OnRepeatListener {
+    fun interface OnRepeatListener {
         fun getRepeat(repeatStr: String?)
     }
 

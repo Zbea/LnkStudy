@@ -78,7 +78,7 @@ class PopWindowDrawSetting(var context:Context, var view: View?) {
         this.onSelectListener=onSelectListener
     }
 
-    interface OnSelectListener{
+    fun interface OnSelectListener{
         fun onSelect(type: Int)
     }
 

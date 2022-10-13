@@ -51,7 +51,7 @@ class ClassGroupAddDialog(private val context: Context) {
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(code: String)
     }
 

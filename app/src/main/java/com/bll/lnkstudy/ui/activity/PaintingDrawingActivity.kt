@@ -79,7 +79,7 @@ class PaintingDrawingActivity : BaseActivity() {
 
         tv_title.setOnClickListener {
             var title=tv_title.text.toString()
-            InputContentDialog(this,title).builder()?.setOnDialogClickListener(object :
+            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener(object :
                 InputContentDialog.OnDialogClickListener {
                 override fun onClick(string: String) {
                     tv_title.text=string
@@ -97,21 +97,49 @@ class PaintingDrawingActivity : BaseActivity() {
         }
 
         btn_page_down.setOnClickListener {
+            val total=paintingLists.size-1
+            if(isExpand){
 
-            if (page + 1 == paintingLists.size) {
-                newHomeWorkContent()
-            } else {
-                page += 1
+                when(page){
+                    total->{
+                        newHomeWorkContent()
+                        newHomeWorkContent()
+                        page==total
+                    }
+                    total-1->{
+                        newHomeWorkContent()
+                        page==total
+                    }
+                    else->{
+                        page+=2
+                    }
+                }
+            }
+            else{
+                if (page >=total) {
+                    newHomeWorkContent()
+                } else {
+                    page += 1
+                }
             }
             changeContent()
         }
 
         btn_page_up.setOnClickListener {
-            //全屏时 page最小为1
-            val min=if (isExpand) 1 else 0
-            if (page > min) {
-                page -= 1
-                changeContent()
+            if(isExpand){
+                if (page>2){
+                    page-=2
+                    changeContent()
+                }
+                else if (page==2){//当页面不够翻两页时
+                    page=1
+                    changeContent()
+                }
+            }else{
+                if (page>0){
+                    page-=1
+                    changeContent()
+                }
             }
         }
 
@@ -344,17 +372,15 @@ class PaintingDrawingActivity : BaseActivity() {
 
     //确认删除
     private fun delete() {
-        if (paintingLists.size > 1) {
-            CommonDialog(this).setContent("确认删除？").builder().setDialogClickListener(object :
-                CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
+        CommonDialog(this,getCurrentScreenPos()).setContent("确认删除？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
 
-                override fun ok() {
-                    deleteContent()
-                }
-            })
-        }
+            override fun ok() {
+                deleteContent()
+            }
+        })
     }
 
     //删除作业
@@ -367,6 +393,9 @@ class PaintingDrawingActivity : BaseActivity() {
         FileUtils.deleteFile(file.parent, pathName)//删除文件
         if (page>0){
             page -= 1
+        }
+        else{
+            newHomeWorkContent()
         }
         changeContent()
 

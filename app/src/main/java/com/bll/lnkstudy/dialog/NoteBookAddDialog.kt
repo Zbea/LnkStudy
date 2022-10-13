@@ -2,17 +2,19 @@ package com.bll.lnkstudy.dialog
 
 import android.content.Context
 import android.view.ContextThemeWrapper
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 
 
-class NoteBookAddDialog(private val context: Context,val title: String,val name:String,val nameHint:String) {
+class NoteBookAddDialog(private val context: Context,private val screenPos:Int,val title: String,val name:String,val nameHint:String) {
 
 
     fun builder(): NoteBookAddDialog? {
@@ -25,6 +27,10 @@ class NoteBookAddDialog(private val context: Context,val title: String,val name:
         window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
         layoutParams.width = DP2PX.dip2px(context, 580f)
+        if (screenPos==3){
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,580f))/2
+        }
         window.attributes = layoutParams
 
         val btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
@@ -57,7 +63,7 @@ class NoteBookAddDialog(private val context: Context,val title: String,val name:
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(string: String)
     }
 

@@ -117,7 +117,7 @@ class PopWindowDrawingButton(val context:Context, val view: View, val type: Int,
         this.onSelectListener=onSelectListener
     }
 
-    interface OnClickListener{
+    fun interface OnClickListener{
         fun onClick(type: Int)
     }
 

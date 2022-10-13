@@ -42,7 +42,6 @@ class RecordListActivity : BaseAppCompatActivity() {
         setPageTitle("$course 朗读录音")
         EventBus.getDefault().register(this)
 
-
         iv_add.setOnClickListener {
             addRecord()
         }
@@ -81,7 +80,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
         var bundle = Bundle()
         bundle.putSerializable("record", item)
-        startActivity(
+        customStartActivity(
             Intent(this@RecordListActivity, RecordActivity::class.java)
                 .putExtra("record", bundle)
         )
@@ -144,7 +143,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
     //修改笔记
     private fun edit(content:String){
-        NoteBookAddDialog(this,"重命名",content,"请输入标题").builder()?.setOnDialogClickListener(object :
+        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener(object :
             NoteBookAddDialog.OnDialogClickListener {
             override fun onClick(string: String) {
                 recordBeans[position].title=string

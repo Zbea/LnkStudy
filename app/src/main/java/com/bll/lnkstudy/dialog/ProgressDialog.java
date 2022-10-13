@@ -3,11 +3,13 @@ package com.bll.lnkstudy.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.bll.lnkstudy.R;
+import com.bll.lnkstudy.ui.activity.MainActivity;
 
 
 public class ProgressDialog {
@@ -15,9 +17,11 @@ public class ProgressDialog {
 
     Context context;
     Dialog mDialog;
+    int screenPos=0;//当前屏幕位置
 
-    public ProgressDialog(Context context) {
+    public ProgressDialog(Context context,int screenPos) {
         this.context = context;
+        this.screenPos=screenPos;
         createDialog();
     }
 
@@ -38,6 +42,19 @@ public class ProgressDialog {
         int height = wm.getDefaultDisplay().getHeight();  //屏幕高
         layoutParams.width = 250;
         layoutParams.height = 250;
+
+        //全屏时 加载在a屏
+        if (screenPos==3 ){
+            layoutParams.gravity= Gravity.CENTER_VERTICAL|Gravity.LEFT;
+            layoutParams.x=570;
+        }
+
+        //主页、全屏时 加载在b屏
+        if (screenPos==3&&context instanceof MainActivity){
+            layoutParams.gravity= Gravity.CENTER_VERTICAL|Gravity.RIGHT;
+            layoutParams.x=570;
+        }
+
         window.setAttributes(layoutParams);
     }
 

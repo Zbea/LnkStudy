@@ -96,7 +96,7 @@ class DateDialog(private val context: Context):NumberPicker.OnValueChangeListene
 
     private var dateListener: DateListener? = null
 
-    interface DateListener {
+    fun interface DateListener {
         fun getDate(dateStr: String?, dateTim: Long)
     }
 

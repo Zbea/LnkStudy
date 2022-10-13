@@ -18,7 +18,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.HomeworkType
-import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -55,6 +54,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var llSearch: LinearLayout?=null
+    var screenPos=0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -80,12 +80,12 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         isViewPrepare = true
         initCommonTitle()
         initView()
-        mDialog = ProgressDialog(activity)
+
+        if (activity is MainActivity)
+            screenPos=(activity as MainActivity).getCurrentScreenPos()
+        mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
     }
-
-
-
 
     private fun lazyLoadDataIfPrepared() {
         if (userVisibleHint && isViewPrepare && !hasLoadData) {
@@ -101,8 +101,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         KeyboardUtils.hideSoftKeyboard(activity)
     }
 
-    fun showToast(s:String){
-        SToast.showText(s)
+    fun showToast(screen:Int ,s:String){
+        SToast.showText(screen,s)
     }
 
     fun showLog(s:String){
@@ -212,84 +212,64 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 跳转书籍详情
      */
     fun gotoBookDetails(book: Book){
-        if (ActivityManager.getInstance().checkBookIDisExist(book.id))
-        {
-            showToast("本书已经打开,请勿重复打开")
-
-        }
-        else{
-            var intent=Intent(activity, BookDetailsActivity::class.java)
-            intent.putExtra("book_id",book.id)
-            startActivity(intent)
-        }
+        ActivityManager.getInstance().checkBookIDisExist(book.id)
+        var intent=Intent(activity, BookDetailsActivity::class.java)
+        intent.putExtra("book_id",book.id)
+        startActivity(intent)
+        if (screenPos!=3)
+            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
      * 跳转作业本
      */
     fun gotoHomeworkDrawing(item:HomeworkType){
-        if (ActivityManager.getInstance().checkHomeworkDrawingisExist(item)){
-            showToast(item.name+"已经打开,请勿重复打开")
-        }
-        else{
-            var bundle= Bundle()
-            bundle.putSerializable("homework",item)
-            var intent=Intent(context, HomeworkDrawingActivity::class.java)
-            intent.putExtra("homeworkBundle",bundle)
-            startActivity(intent)
-        }
+        ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
+        var bundle= Bundle()
+        bundle.putSerializable("homework",item)
+        var intent=Intent(context, HomeworkDrawingActivity::class.java)
+        intent.putExtra("homeworkBundle",bundle)
+        startActivity(intent)
+        if (screenPos!=3)
+            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
      * 跳转画本
      */
     fun gotoPaintingDrawing(type: Int){
-        if (ActivityManager.getInstance().checkPaintingDrawingIsExist(type))
-        {
-            showToast("画本已经打开,请勿重复打开")
-        }
-        else{
-            var intent=Intent(activity, PaintingDrawingActivity::class.java)
-            intent.flags=type
-            startActivity(intent)
-        }
+        ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
+        var intent=Intent(activity, PaintingDrawingActivity::class.java)
+        intent.flags=type
+        startActivity(intent)
+        if (screenPos!=3)
+            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
      * 跳转考卷
      */
     fun gotoPaperDrawing(flags: Int,mCourseId:Int,mTypeId:Int){
-        if (ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourseId,mTypeId))
-        {
-            showToast("页面已经打开,请勿重复打开")
-        }
-        else{
-            var intent=Intent(activity, PaperDrawingActivity::class.java)
-            intent.putExtra("courseId",mCourseId)
-            intent.putExtra("categoryId",mTypeId)
-            intent.flags=flags
-            if (flags==1)
-                intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-        }
+        ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourseId,mTypeId)
+        var intent=Intent(activity, PaperDrawingActivity::class.java)
+        intent.putExtra("courseId",mCourseId)
+        intent.putExtra("categoryId",mTypeId)
+        intent.flags=flags
+        if (flags==1)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        startActivity(intent)
+        if (screenPos!=3)
+            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
-     * 跳转笔记书写页面
+     * 跳转活动
      */
-    fun gotoDrawActivity(note: Note) {
-
-        if (ActivityManager.getInstance().checkNoteDrawing(note))
-        {
-            showToast("笔记已经打开,请勿重复打开")
-        }
-        else{
-            var intent = Intent(activity, NoteDrawingActivity::class.java)
-            var bundle = Bundle()
-            bundle.putSerializable("note", note)
-            intent.putExtra("noteBundle", bundle)
-            startActivity(intent)
-        }
+    fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component.className)
+        startActivity(intent)
+        if (screenPos!=3)
+            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
@@ -345,7 +325,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun login() {
         if (mView==null||activity==null)return
-        SToast.showText("连接超时,请重新登陆")
+        showToast(screenPos,"连接超时,请重新登陆")
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         Handler().postDelayed(Runnable {
@@ -362,7 +342,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun fail(msg: String) {
         if (mView==null||activity==null)return
-        SToast.showText( msg)
+        showToast(screenPos,msg)
     }
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
     }

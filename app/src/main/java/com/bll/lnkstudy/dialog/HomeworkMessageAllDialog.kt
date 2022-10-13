@@ -2,16 +2,19 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.HomeworkMessage
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageAllDialog(val context: Context, val list: List<HomeworkMessage>) {
+class HomeworkMessageAllDialog(val context: Context,val screenPos:Int, val list: List<HomeworkMessage>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:MessageAdapter?=null
@@ -21,6 +24,14 @@ class HomeworkMessageAllDialog(val context: Context, val list: List<HomeworkMess
         dialog = Dialog(context)
         dialog!!.setContentView(R.layout.dialog_homework_message_all)
         dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog?.window
+        val layoutParams =window?.attributes
+        layoutParams?.width=DP2PX.dip2px(context,600f)
+        if (screenPos==3){
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,600f))/2
+        }
+        window?.attributes = layoutParams
         dialog?.show()
 
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
@@ -62,7 +73,7 @@ class HomeworkMessageAllDialog(val context: Context, val list: List<HomeworkMess
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(position: Int,id:String)
     }
 

@@ -70,7 +70,7 @@ class PopWindowBookStoreType(var context:Context, var list:MutableList<BaseTypeB
         this.onSelectListener=onSelectListener
     }
 
-    interface OnSelectListener{
+    fun interface OnSelectListener{
         fun onSelect(baseTypeBean: BaseTypeBean)
     }
 

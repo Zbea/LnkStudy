@@ -88,7 +88,6 @@ public class SystemSettingUtils {
         view.setDrawingCacheEnabled(true);//允许绘制缓存
         Bitmap bitmap = view.getDrawingCache();//绘制
         BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),"screenShot" + System.currentTimeMillis());
-        SToast.showText("截图成功");
     }
 
     /**
@@ -101,7 +100,6 @@ public class SystemSettingUtils {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
         BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),"screenShot" + System.currentTimeMillis());
-        SToast.showText("截图成功");
     }
 
     /**
@@ -114,7 +112,6 @@ public class SystemSettingUtils {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
         BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),picName);
-        SToast.showText("截图成功");
     }
 
     //获取最大多媒体音量

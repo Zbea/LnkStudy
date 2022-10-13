@@ -78,7 +78,7 @@ class DateTimeHourDialog(private val context: Context) {
 
     private var dateListener: DateListener? = null
 
-    interface DateListener {
+    fun interface DateListener {
         fun getDate(dateStr: String?, hourStr: String?,dateTim: Long)
     }
 

@@ -33,7 +33,7 @@ public class Book {
     public String grade ="0"; //年级
     public String version ="0";  //版本
     public Long time;//观看时间
-    public int pageIndex=1;//当前页
+    public int pageIndex=0;//当前页
     public String pageUpUrl;//上一页路径
     public String pageUrl;//当前页路径
     public boolean isCollect=false;//是否收藏

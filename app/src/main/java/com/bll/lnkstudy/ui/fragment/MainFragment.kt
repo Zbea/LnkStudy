@@ -29,7 +29,7 @@ import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.ui.activity.*
-import com.bll.lnkstudy.ui.activity.date.MainDateAppCompatActivity
+import com.bll.lnkstudy.ui.activity.date.MainDateActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -92,11 +92,11 @@ class MainFragment : BaseFragment() {
     @SuppressLint("WrongConstant")
     private fun onClickView() {
         ll_date.setOnClickListener {
-            startActivity(Intent(activity, MainDateAppCompatActivity::class.java))
+            customStartActivity(Intent(activity, MainDateActivity::class.java))
         }
 
         ll_message.setOnClickListener {
-            startActivity(Intent(activity, MessageListActivity::class.java))
+            customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
 
         ll_textbook.setOnClickListener {
@@ -109,7 +109,7 @@ class MainFragment : BaseFragment() {
 
         ll_course.setOnClickListener {
             val courseType = SPUtil.getInt("courseType")
-            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
+            customStartActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
                 .putExtra("courseType", courseType)
             )
         }
@@ -122,14 +122,13 @@ class MainFragment : BaseFragment() {
         GlideUtils.setImageNoCacheUrl(activity,Constants.SCREEN_PATH + "/course.png",iv_course)
 
         iv_course_more.setOnClickListener {
-            CourseModuleDialog(requireActivity()).builder()?.setOnClickListener(object :
-                CourseModuleDialog.OnClickListener {
-                override fun onClick(type: Int) {
-                    startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(0)
-                            .putExtra("courseType", type)
-                    )
-                }
-            })
+            CourseModuleDialog(requireActivity(),screenPos).builder()
+                ?.setOnClickListener { type ->
+                    customStartActivity(Intent(activity, MainCourseActivity::class.java)
+                        .setFlags(0)
+                        .putExtra("courseType", type)
+                )
+            }
         }
 
     }
@@ -203,7 +202,7 @@ class MainFragment : BaseFragment() {
     private fun getEmptyView(title: String): View {
         var emptyView = layoutInflater.inflate(R.layout.common_empty, null)
         emptyView.setOnClickListener {
-            startActivity(Intent(activity, MainDateAppCompatActivity::class.java))
+            customStartActivity(Intent(activity, MainDateActivity::class.java))
         }
         var tv_content = emptyView.findViewById<TextView>(R.id.tv_empty_title)
         tv_content.text = title
@@ -223,7 +222,7 @@ class MainFragment : BaseFragment() {
         messageAdapter?.setOnItemClickListener { adapter, view, position ->
             messageDatas[position].isLook = true
             messageAdapter?.notifyDataSetChanged()
-            MessageDetailsDialog(requireContext(), messageDatas[position]).builder()
+            MessageDetailsDialog(requireContext(),screenPos, messageDatas[position]).builder()
                 ?.setOnDismissListener {
                     messageAdapter?.remove(position)
                 }
@@ -244,7 +243,7 @@ class MainFragment : BaseFragment() {
             val book=BookGreenDaoManager.getInstance(activity).queryTextBook("0",0,course.courseId)
             if(book!=null){
                 var intent=Intent(activity, BookDetailsActivity::class.java).putExtra("book_id", book.id)
-                startActivity(intent)
+                customStartActivity(intent)
             }
         }
 
@@ -274,7 +273,7 @@ class MainFragment : BaseFragment() {
                 intent.putExtra("outImageStr",paper.path)
                 intent.putExtra("bundle",bundle)
                 intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-                startActivity(intent)
+                customStartActivity(intent)
             }
             else{
                 showLoading()
@@ -297,7 +296,7 @@ class MainFragment : BaseFragment() {
             var bundle= Bundle()
             bundle.putSerializable("note",notes[position])
             intent.putExtra("notes",bundle)
-            startActivity(intent)
+            customStartActivity(intent)
         }
 
         findNotes()

@@ -6,9 +6,9 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.ui.fragment.BookCaseFragment
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SToast
 
@@ -16,7 +16,7 @@ import com.bll.lnkstudy.utils.SToast
 /**
  * book收藏、删除、移动
  */
-class BookManageDialog(val context: Context, val type:Int, val book:Book){
+class BookManageDialog(val context: Context,private val screenPos:Int, val type:Int, val book:Book){
 
     fun builder(): BookManageDialog {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_book_manage, null)
@@ -29,6 +29,12 @@ class BookManageDialog(val context: Context, val type:Int, val book:Book){
         val layoutParams = window.attributes
         layoutParams.width = DP2PX.dip2px(context,430F)
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+        if (screenPos==3){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,430F))/2
+        }
+
         window.attributes = layoutParams
 
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)
@@ -50,7 +56,7 @@ class BookManageDialog(val context: Context, val type:Int, val book:Book){
 
         ll_collect.setOnClickListener {
             if (book.isCollect){
-                SToast.showText("已收藏")
+                SToast.showText(0,"已收藏")
                 return@setOnClickListener
             }
             if (onClickListener!=null)

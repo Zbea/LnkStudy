@@ -15,8 +15,7 @@ import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 import pub.devrel.easypermissions.EasyPermissions
 
-class AccountLoginActivity:BaseAppCompatActivity(),
-    IContractView.ILoginView {
+class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     private val presenter=LoginPresenter(this)
     private var token=""

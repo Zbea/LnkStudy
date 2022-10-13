@@ -81,7 +81,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(position: Int)
     }
 

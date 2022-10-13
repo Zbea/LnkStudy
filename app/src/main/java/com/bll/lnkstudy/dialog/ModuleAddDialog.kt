@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.ModuleBean
 import com.bll.lnkstudy.utils.DP2PX
@@ -17,7 +18,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class ModuleAddDialog(private val context: Context,val title:String,val list:MutableList<ModuleBean>) {
+class ModuleAddDialog(private val context: Context,private val screenPos:Int,val title:String,val list:MutableList<ModuleBean>) {
 
     private var dialog:AlertDialog?=null
 
@@ -31,8 +32,12 @@ class ModuleAddDialog(private val context: Context,val title:String,val list:Mut
         window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
         layoutParams.width = DP2PX.dip2px(context, 560f)
-        layoutParams.gravity = Gravity.CENTER
+        if (screenPos==3){
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,560f))/2
+        }
         window.attributes = layoutParams
+
 
         val tvName = dialog?.findViewById<TextView>(R.id.tv_name)
         tvName?.text=title
@@ -69,7 +74,7 @@ class ModuleAddDialog(private val context: Context,val title:String,val list:Mut
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(item:ModuleBean)
     }
 

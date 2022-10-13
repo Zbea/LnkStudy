@@ -65,7 +65,6 @@ class MyApplication : Application(){
         override fun onActivityDestroyed(activity: Activity) {
             Log.d(TAG, "onDestroy: " + activity.componentName.className)
             ActivityManager.getInstance().finishActivity(activity)
-
         }
     }
 

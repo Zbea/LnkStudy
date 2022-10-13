@@ -30,7 +30,7 @@ public class CalendarReminderUtils {
     private static String CALENDARS_NAME = "boohee";
     private static String CALENDARS_ACCOUNT_NAME = "BOOHEE@boohee.com";
     private static String CALENDARS_ACCOUNT_TYPE = "com.android.boohee";
-    private static String CALENDARS_DISPLAY_NAME = "BOOHEE账户";
+    private static String CALENDARS_DISPLAY_NAME = "BOOHEE";
 
     /**
      * 检查是否已经添加了日历账户，如果没有添加先添加一个日历账户再查询

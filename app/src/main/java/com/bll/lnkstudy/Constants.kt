@@ -24,6 +24,9 @@ class Constants private constructor() {
 
     companion object {
 
+            val WIDTH=1404
+            val HEIGHT=1872
+
         const val URL_BASE = "https://api2.bailianlong.com/v1/"
 //        const val URL_BASE = "http://192.168.101.187:10800/v1/"
         val AUTH = "Authorization"

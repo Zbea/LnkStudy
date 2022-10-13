@@ -22,9 +22,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -36,17 +38,20 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
 abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
+    var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var ivBack: ImageView? = null
     var tvPageTitle: TextView? = null
-    var tvMyCollect: TextView? = null
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
@@ -61,7 +66,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     open fun popToStack(fragment: Fragment?) {
-        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentManager= supportFragmentManager
         if (fragment != null) {
             fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
         }
@@ -79,25 +84,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         setContentView(layoutId())
         initCommonTitle()
 
+        screenPos=getCurrentScreenPos()
+        showLog(localClassName+"当前屏幕：$screenPos")
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
-        val decorView = window.decorView
-        // Hide both the navigation bar and the status bar.
-        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-        // a general rule, you should design your app to hide the status bar whenever you
-        // hide the navigation bar.
-        // Hide both the navigation bar and the status bar.
-        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-        // a general rule, you should design your app to hide the status bar whenever you
-        // hide the navigation bar.
-//        val uiOptions = (0
-//                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide naviagtion,and whow again when touch
-//                or View.SYSTEM_UI_FLAG_FULLSCREEN)
-//        decorView.systemUiVisibility = uiOptions
-
-        mDialog = ProgressDialog(this)
+        mDialog = ProgressDialog(this,screenPos)
         initData()
         initView()
 
@@ -123,7 +117,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         ivBack = findViewById(R.id.iv_back)
         ivSave = findViewById(R.id.iv_save)
         tvPageTitle = findViewById(R.id.tv_title)
-        tvMyCollect = findViewById(R.id.tv_myCollect)
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
@@ -201,18 +194,27 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     /**
+     * 单双屏展开
+     */
+    fun moveToScreen(isExpand:Boolean){
+        moveToScreenPanel(if (isExpand) 3 else screenPos )
+    }
+
+    /**
+     * 得到当前屏幕位置
+     */
+    fun getCurrentScreenPos():Int{
+        return this.getCurrentScreenPanel()
+    }
+
+    /**
      * 跳转书籍详情
      */
     fun gotoBookDetails(book: Book){
-        if (ActivityManager.getInstance().checkBookIDisExist(book.id))
-        {
-            showToast("本书已经打开,请勿重新开打")
-        }
-        else{
-            var intent=Intent(this, BookDetailsActivity::class.java)
-            intent.putExtra("book_id",book.id)
-            startActivity(intent)
-        }
+        ActivityManager.getInstance().checkBookIDisExist(book.id)
+        var intent=Intent(this, BookDetailsActivity::class.java)
+        intent.putExtra("book_id",book.id)
+        startActivity(intent)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -235,24 +237,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
     }
 
-
-    /**
-     * 打卡软键盘
-     */
-    fun openKeyBord(mEditText: EditText, mContext: Context) {
-        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN)
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun closeKeyBord(mEditText: EditText, mContext: Context) {
-        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(mEditText.windowToken, 0)
-    }
-
     /**
      * 关闭软键盘
      */
@@ -261,13 +245,20 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     fun showToast(s:String){
-        SToast.showText(s)
+        SToast.showText(screenPos,s)
     }
 
     fun showLog(s:String){
         Log.d("debug",s)
     }
 
+    /**
+     * 跳转活动
+     */
+    fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component.className)
+        startActivity(intent)
+    }
 
     /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
@@ -342,7 +333,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        SToast.showText("连接超时,请重新登陆")
+        showToast("连接超时,请重新登陆")
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
 
@@ -374,7 +365,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     override fun onPause() {
         super.onPause()
         mDialog!!.dismiss()
+        hideKeyboard()
     }
+
 
 }
 

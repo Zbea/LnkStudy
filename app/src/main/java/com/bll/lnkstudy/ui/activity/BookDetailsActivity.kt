@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
@@ -18,7 +19,9 @@ import com.bll.lnkstudy.mvp.model.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParentBean
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details.*
@@ -36,7 +39,7 @@ class BookDetailsActivity: BaseActivity() {
     private var parentItems= mutableListOf<CatalogParentBean>()
     private var childItems= mutableListOf<CatalogChildBean>()
 
-    private var pageCount = 1
+    private var pageCount = 0
     private var page = 0 //当前页码
 
     private var isExpand=false //是否全屏
@@ -177,7 +180,18 @@ class BookDetailsActivity: BaseActivity() {
         val showFile = getIndexFile(index)
         if (showFile!=null){
 
-            GlideUtils.setImageFile(this,showFile,view)
+            val simpleTarget = object : CustomTarget<Drawable>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    view.background = resource
+                }
+            }
+            Glide.with(this)
+                .load(showFile)
+                .thumbnail(0.1f).fitCenter().into(simpleTarget)
+
+//            GlideUtils.setImageFile(this,showFile,view)
 
             val drawPath=showFile?.path.replace(".jpg",".tch")
             elik?.setLoadFilePath(drawPath,true)

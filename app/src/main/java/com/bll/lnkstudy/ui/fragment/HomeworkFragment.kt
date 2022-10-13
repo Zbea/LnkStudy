@@ -68,7 +68,8 @@ class HomeworkFragment : BaseFragment(){
         initTab()
 
         getMessageDatas()
-        loadImage()
+        if (screenPos==3)
+            loadImage()
 
         findDatas(true,0)
     }
@@ -125,28 +126,27 @@ class HomeworkFragment : BaseFragment(){
                 item.isPg=false
                 mAdapter?.notifyDataSetChanged()
                 if(item.isListenToRead){
-                    startActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
-                }
-                else if (item.type==2||item.type==3){
-                    gotoPaperDrawing(0,courseID,item.type)
+                    customStartActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
                 }
                 else{
-                    gotoHomeworkDrawing(item)
+                    if (item.type==2||item.type==3){
+                        gotoPaperDrawing(0,courseID,item.type)
+                    }
+                    else{
+                        gotoHomeworkDrawing(item)
+                    }
                 }
             }
             if (view.id==R.id.tv_message){
                 if (item.message!=null)
-                    HomeworkMessageDialog(requireActivity(),item.message).builder()
+                    HomeworkMessageDialog(requireActivity(),screenPos,item.message).builder()
             }
             if (view.id==R.id.iv_message){
-                homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),messages).builder()
-                homeworkMessageAllDialog?.setOnDialogClickListener(object : HomeworkMessageAllDialog.OnDialogClickListener {
-                    override fun onClick(position:Int,id: String) {
-                        messages.removeAt(position)
-                        homeworkMessageAllDialog?.setData(messages)
-                    }
-
-                })
+                homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),screenPos,messages).builder()
+                homeworkMessageAllDialog?.setOnDialogClickListener { position, id ->
+                    messages.removeAt(position)
+                    homeworkMessageAllDialog?.setData(messages)
+                }
             }
 
         }
@@ -279,36 +279,29 @@ class HomeworkFragment : BaseFragment(){
 
     //添加作业本
     private fun addHomeWorkType(item:HomeworkType){
-        NoteBookAddDialog(requireContext(),"新建作业本","","请输入作业本标题").builder()?.setOnDialogClickListener(
-            object : NoteBookAddDialog.OnDialogClickListener {
-            override fun onClick(string: String) {
-                val time=System.currentTimeMillis()
-                item.name=string
-                item.date=time
-                item.type= mAdapter?.data?.size!!//新增id为该类所有和
-                item.courseId=courseID
+        NoteBookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
+            ?.setOnDialogClickListener { string ->
+            val time = System.currentTimeMillis()
+            item.name = string
+            item.date = time
+            item.type = mAdapter?.data?.size!!//新增id为该类所有和
+            item.courseId = courseID
 
-                HomeworkTypeDaoManager.getInstance(context).insertOrReplace(item)
-                datas.add(item)
-                mAdapter?.notifyDataSetChanged()
-
-
-
-            }
-        })
+            HomeworkTypeDaoManager.getInstance(context).insertOrReplace(item)
+            datas.add(item)
+            mAdapter?.notifyDataSetChanged()
+        }
     }
 
     //添加封面
     private fun addCover(){
         val list=DataBeanManager.getIncetance().homeworkCover
-        ModuleAddDialog(requireContext(),"封面模块",list).builder()?.setOnDialogClickListener(
-            object : ModuleAddDialog.OnDialogClickListener {
-                override fun onClick(moduleBean: ModuleBean) {
-                    addContentModule(moduleBean.resId)
-                }
-
-            }
-        )
+        ModuleAddDialog(requireContext(),screenPos,"封面模块",list).builder()
+            ?.setOnDialogClickListener { moduleBean ->
+            addContentModule(
+                moduleBean.resId
+            )
+        }
     }
 
     //选择内容背景
@@ -328,18 +321,14 @@ class HomeworkFragment : BaseFragment(){
             DataBeanManager.getIncetance().other
         }
 
-        ModuleAddDialog(requireContext(),"作业本模板",list).builder()?.setOnDialogClickListener(
-            object : ModuleAddDialog.OnDialogClickListener {
-                override fun onClick(moduleBean: ModuleBean) {
-                    val item=HomeworkType()
-                    item.resId=ToolUtils.getImageResStr(activity,moduleBean.resContentId)
-                    item.bgResId=ToolUtils.getImageResStr(activity,coverResId)
+        ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
+            ?.setOnDialogClickListener { moduleBean ->
+            val item = HomeworkType()
+            item.resId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+            item.bgResId = ToolUtils.getImageResStr(activity, coverResId)
 
-                    addHomeWorkType(item)
-                }
-
-            }
-        )
+            addHomeWorkType(item)
+        }
 
     }
 
@@ -348,13 +337,11 @@ class HomeworkFragment : BaseFragment(){
         if (popWindowList==null)
         {
             popWindowList= PopWindowList(requireActivity(),popWindowBeans,ivHomework!!,-220,20).builder()
-            popWindowList?.setOnSelectListener(object : PopWindowList.OnSelectListener {
-                override fun onSelect(item: PopWindowBean) {
-                    if (item.id==0){
-                        HomeworkCommitDetailsDialog(requireActivity(),messages).builder()
-                    }
+            popWindowList?.setOnSelectListener { item ->
+                if (item.id == 0) {
+                    HomeworkCommitDetailsDialog(requireActivity(), screenPos, messages).builder()
                 }
-            })
+            }
         }
         else{
             popWindowList?.show()
