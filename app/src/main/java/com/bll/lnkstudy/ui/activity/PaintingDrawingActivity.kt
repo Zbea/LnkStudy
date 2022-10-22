@@ -4,12 +4,14 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.PopWindowDrawingButton
 import com.bll.lnkstudy.manager.PaintingDaoManager
 import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.mvp.model.PaintingBean
@@ -25,7 +27,6 @@ class PaintingDrawingActivity : BaseActivity() {
     private var popWindowDrawingButton: PopWindowDrawingButton? = null
     private var elik_a: EinkPWInterface? = null
     private var elik_b: EinkPWInterface? = null
-    private var popWindow: PopWindowDrawSetting? = null
 
     private var paintingBean: PaintingBean? = null//当前作业内容
     private var paintingBean_a: PaintingBean? = null//a屏作业
@@ -308,67 +309,6 @@ class PaintingDrawingActivity : BaseActivity() {
         }
     }
 
-
-    //手绘设置
-    private fun drawSetting() {
-        if (popWindow == null) {
-            popWindow = PopWindowDrawSetting(this, iv_catalog).builder()
-            popWindow?.setOnSelectListener(object : PopWindowDrawSetting.OnSelectListener {
-                override fun onSelect(type: Int) {
-                    if (type == 1) {
-                        elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-                        elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-                    }
-                    if (type == 2) {
-                        elik_a?.clearContent(null, true, true)
-                        elik_b?.clearContent(null, true, true)
-                        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                    }
-                    if (type == 3) {
-                        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_a?.penSettingWidth = 2
-
-                        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_b?.penSettingWidth = 2
-                    }
-                    if (type == 4) {
-                        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_a?.penSettingWidth = 6
-
-                        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik_b?.penSettingWidth = 6
-                    }
-
-                }
-            })
-        } else {
-            if (popWindow?.isShow() == true) {
-                popWindow?.dismiss()
-                if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                    elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                }
-                if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                    elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                }
-            } else {
-                popWindow?.show()
-            }
-
-        }
-    }
 
     //确认删除
     private fun delete() {

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        android:gravity="center_vertical"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="30dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/iv_back"
+            android:text="标题"
+            android:textColor="@color/black"
+            android:textSize="27sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/tv_title"
+            android:layout_marginTop="@dimen/dp_10"
+            >
+
+            <TextView
+                android:id="@+id/tv_province"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/bg_gary_arch"
+                android:drawableRight="@mipmap/icon_arrow_down"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingEnd="@dimen/dp_20"
+                android:text="广东省"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+            <TextView
+                android:id="@+id/tv_grade"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/bg_gary_arch"
+                android:drawableRight="@mipmap/icon_arrow_down"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingEnd="@dimen/dp_20"
+                android:text="广东省"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+            <TextView
+                android:id="@+id/tv_search"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/bg_gary_arch"
+                android:drawableStart="@mipmap/icon_search"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_20" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/common_xtab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="95dp"
+        android:layout_marginEnd="95dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_weight="1"/>
+
+    <include layout="@layout/common_page_number" />
+
+</LinearLayout>

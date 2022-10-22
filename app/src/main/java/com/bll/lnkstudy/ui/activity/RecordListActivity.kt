@@ -128,29 +128,25 @@ class RecordListActivity : BaseAppCompatActivity() {
 
 
     private fun setSetting(view : View){
-        PopWindowRecordSetting(this,view,-220,-5).builder()
-            ?.setOnClickListener(object : PopWindowRecordSetting.OnClickListener {
-                override fun onClick(type: Int) {
-                    if (type==1){
-                        edit(recordBeans[position].title)
-                    }
-                    if (type==2){
-                        delete()
-                    }
+        PopWindowRecordSetting(this,view,-5).builder()
+            ?.setOnClickListener { type ->
+                if (type == 1) {
+                    edit(recordBeans[position].title)
                 }
-            })
+                if (type == 2) {
+                    delete()
+                }
+            }
     }
 
     //修改笔记
     private fun edit(content:String){
-        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener(object :
-            NoteBookAddDialog.OnDialogClickListener {
-            override fun onClick(string: String) {
-                recordBeans[position].title=string
-                mAdapter?.notifyDataSetChanged()
-                RecordDaoManager.getInstance(this@RecordListActivity).insertOrReplace(recordBeans[position])
-            }
-        })
+        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener { string ->
+            recordBeans[position].title = string
+            mAdapter?.notifyDataSetChanged()
+            RecordDaoManager.getInstance(this@RecordListActivity)
+                .insertOrReplace(recordBeans[position])
+        }
     }
 
     //删除

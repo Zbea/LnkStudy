@@ -28,7 +28,7 @@ class AppListActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle("应用中心")
+        setPageTitle("应用")
 
         initRecycler()
         initRecyclerTool()
@@ -77,6 +77,10 @@ class AppListActivity:BaseAppCompatActivity() {
                     AppUtils.startAPP(this,packageName)
                 }
             }
+            if (view.id==R.id.cb_check){
+                apps[position].isCheck=! apps[position].isCheck
+                mAdapter?.notifyItemChanged(position)
+            }
         }
 
     }
@@ -89,7 +93,10 @@ class AppListActivity:BaseAppCompatActivity() {
         mAdapterTool?.bindToRecyclerView(rv_tool)
         rv_tool.addItemDecoration(SpaceGridItemDeco(0,60))
         mAdapterTool?.setOnItemClickListener { adapter, view, position ->
-
+            if (view.id==R.id.cb_check){
+                toolApps[position].isCheck=! toolApps[position].isCheck
+                mAdapterTool?.notifyItemChanged(position)
+            }
         }
 
     }

@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
@@ -53,7 +52,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var llSearch: LinearLayout?=null
+    var tvSearch: TextView?=null
     var screenPos=0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -131,7 +130,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         ivBack=requireView().findViewById(R.id.iv_back)
         ivHomework=requireView().findViewById(R.id.iv_homework)
         ivManagers = requireView().findViewById(R.id.iv_note_manager)
-        llSearch= requireView().findViewById(R.id.ll_search)
+        tvSearch= requireView().findViewById(R.id.tv_search)
     }
 
     fun setTitle(pageTitle: String) {
@@ -142,10 +141,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
     fun showSearch(isShow:Boolean) {
         if (isShow){
-            showView(llSearch)
+            showView(tvSearch)
         }
         else{
-            disMissView(llSearch)
+            disMissView(tvSearch)
         }
     }
 

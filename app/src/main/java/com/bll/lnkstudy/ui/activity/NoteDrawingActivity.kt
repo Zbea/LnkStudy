@@ -4,14 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.PopWindowDrawSetting
 import com.bll.lnkstudy.dialog.PopWindowDrawingButton
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Note
@@ -27,7 +25,6 @@ class NoteDrawingActivity:BaseAppCompatActivity() ,View.OnClickListener{
     private var elik: EinkPWInterface?=null
     private var notes= mutableListOf<Note>()
 
-    private var popWindow: PopWindowDrawSetting?=null
     private var path=""//文件夹目录地址
     private var paths= mutableListOf<String>()
     private var currentPath=""//当前图片地址
@@ -113,53 +110,6 @@ class NoteDrawingActivity:BaseAppCompatActivity() ,View.OnClickListener{
 
         })
         tv_page_a.text=(pos+1).toString()
-    }
-
-
-
-    private fun showDrawSetting(){
-        if (popWindow==null)
-        {
-            popWindow=PopWindowDrawSetting(this,null).builder()
-            popWindow?.setOnSelectListener(object : PopWindowDrawSetting.OnSelectListener {
-                override fun onSelect(type: Int) {
-                    if (type==1){
-                        elik?.drawObjectType=PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-                    }
-                    if (type==2){
-                        elik?.clearContent(null,true,true)
-                        if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                    }
-                    if (type==3){
-                        if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik?.penSettingWidth=2
-                    }
-                    if (type==4){
-                        if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                            elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                        }
-                        elik?.penSettingWidth=6
-                    }
-
-                }
-            })
-        }
-        else{
-            if (popWindow?.isShow()==true){
-                popWindow?.dismiss()
-                if (elik?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                    elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-                }
-            }
-            else{
-                popWindow?.show()
-            }
-
-        }
     }
 
     //点击按钮弹框

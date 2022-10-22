@@ -139,7 +139,7 @@ public class BookGreenDaoManager {
         WhereCondition whereCondition2=BookDao.Properties.BookType.eq(flag);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookDao.Properties.Time)
-                .offset(page*pageSize).limit(pageSize)
+                .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
         return queryBookList;
     }
@@ -166,7 +166,7 @@ public class BookGreenDaoManager {
         WhereCondition whereCondition2=BookDao.Properties.TextBook.eq(flag);
         List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookDao.Properties.Time)
-                .offset(page*pageSize).limit(pageSize)
+                .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
         return queryBookList;
     }

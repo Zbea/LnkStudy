@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.adapter
 
-import android.widget.CheckBox
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -13,12 +12,9 @@ class AppListAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<
         helper.setImageDrawable(R.id.iv_image,item.image)
 
         helper.setGone(R.id.cb_check,!item.isBase)
-
         helper.setChecked(R.id.cb_check,item.isCheck)
-        helper.getView<CheckBox>(R.id.cb_check).setOnCheckedChangeListener { compoundButton, b ->
-            item.isCheck=b
-        }
-        helper.addOnClickListener(R.id.iv_image)
+
+        helper.addOnClickListener(R.id.iv_image,R.id.cb_check)
 
     }
 

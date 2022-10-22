@@ -55,7 +55,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var llSearch:LinearLayout?=null
+    var tvSearch:TextView?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +103,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
-        llSearch= findViewById(R.id.ll_search)
+        tvSearch= findViewById(R.id.tv_search)
 
     }
 
@@ -118,10 +118,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     fun showSearchView(isShow:Boolean) {
         if (isShow){
-            showView(llSearch)
+            showView(tvSearch)
         }
         else{
-            disMissView(llSearch)
+            disMissView(tvSearch)
         }
     }
 

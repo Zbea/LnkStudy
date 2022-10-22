@@ -21,46 +21,35 @@ class LauncherActivity : MainActivity() {
         startRemind()
 
         iv_jc.setOnClickListener {
-            customStartActivity(
-                Intent(this, BookStoreActivity::class.java)
-                    .putExtra("title", "教材")
-            )
+            gotoBookStore(0)
         }
 
         iv_gj.setOnClickListener {
-            customStartActivity(
-                Intent(this, BookStoreActivity::class.java)
-                    .putExtra("title", "古籍")
-            )
+            gotoBookStore(1)
         }
 
         iv_zrkx.setOnClickListener {
-            customStartActivity(
-                Intent(this, BookStoreActivity::class.java)
-                    .putExtra("title", "自然科学")
-            )
+            gotoBookStore(2)
         }
 
         iv_shkx.setOnClickListener {
-            customStartActivity(
-                Intent(this, BookStoreActivity::class.java)
-                    .putExtra("title", "社会科学")
-            )
+            gotoBookStore(3)
         }
 
         iv_swkx.setOnClickListener {
-            customStartActivity(
-                Intent(this, BookStoreActivity::class.java)
-                    .putExtra("title", "思维科学")
-            )
+            gotoBookStore(4)
         }
 
         iv_ydcy.setOnClickListener {
-            customStartActivity(
-                Intent(this, BookStoreActivity::class.java)
-                    .putExtra("title", "运动才艺")
-            )
+            gotoBookStore(5)
         }
+
+    }
+
+    private fun gotoBookStore(type: Int){
+        val intent=Intent(this,BookStoreActivity::class.java)
+        intent.flags = type
+        customStartActivity(intent)
     }
 
     /**

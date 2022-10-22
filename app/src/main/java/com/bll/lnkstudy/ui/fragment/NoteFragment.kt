@@ -285,7 +285,7 @@ class NoteFragment : BaseFragment() {
     private fun setTopSelectView() {
         if (popWindowList == null) {
             popWindowList =
-                PopWindowList(requireActivity(), popWindowBeans, ivManagers!!, -230, 20).builder()
+                PopWindowList(requireActivity(), popWindowBeans, ivManagers!!, 20).builder()
             popWindowList?.setOnSelectListener { item ->
                 if (item.name == "新建笔记本") {
                     addNoteBook()

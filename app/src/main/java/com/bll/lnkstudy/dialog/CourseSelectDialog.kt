@@ -13,7 +13,7 @@ import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.ui.adapter.CourseAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.widget.SpaceGridItemDeco2
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 
 /**
  * 课程表 课程选择
@@ -45,7 +45,7 @@ class CourseSelectDialog(val context: Context){
         rvList.layoutManager = GridLayoutManager(context,2)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceGridItemDeco2(0,30))
+        rvList?.addItemDecoration(SpaceGridItemDeco(0,30))
         mAdapter.setOnItemClickListener { _, view, position ->
             onClickListener?.onSelect(courses[position])
             dialog.dismiss()

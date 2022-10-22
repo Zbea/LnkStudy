@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_parent"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navigation_height"
+    android:gravity="center_vertical"
+    android:background="@color/white">
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="30dp"
+        android:textColor="@color/black"
+        android:textSize="37sp"
+        android:textStyle="bold"
+        android:text="标题"
+        />
+
+    <TextView
+        android:id="@+id/tv_search"
+        android:layout_width="200dp"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:background="@drawable/bg_gary_arch"
+        android:drawableStart="@mipmap/icon_search"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_20"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_homework"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:visibility="gone"
+        android:src="@mipmap/icon_homework_top"/>
+
+    <ImageView
+        android:id="@+id/iv_note_manager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:visibility="gone"
+        android:src="@mipmap/icon_notebook_manager"/>
+
+
+</LinearLayout>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_fragment_title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:text="我的书籍"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="30dp"
+            android:text="分类显示"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_book_top"
+        android:layout_width="wrap_content"
+        android:layout_height="254dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.bll.lnkstudy.widget.RoundImageView
+            android:id="@+id/iv_content_up"
+            android:layout_width="190dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:padding="2dp"
+            app:radius="6dp"/>
+
+        <RelativeLayout
+            android:layout_width="190dp"
+            android:layout_height="match_parent"
+            android:padding="1dp"
+            android:background="@drawable/bg_black_stroke_5dp_corner">
+
+            <com.bll.lnkstudy.widget.RoundImageView
+                android:id="@+id/iv_content_down"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="2dp"
+                app:radius="6dp" />
+
+            <TextView
+                android:id="@+id/tv_top_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginStart="33dp"
+        android:layout_marginEnd="33dp"
+        />
+
+
+</LinearLayout>

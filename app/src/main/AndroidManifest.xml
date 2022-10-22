@@ -92,7 +92,7 @@
             android:screenOrientation="portrait"
             />
         <activity android:name=".ui.activity.BookStoreTypeActivity"/>
-        <activity android:name=".ui.activity.ListActivity"/>
+        <activity android:name=".ui.activity.MyPaintingListActivity"/>
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.NoteBookManagerActivity"/>
@@ -106,6 +106,7 @@
         <activity android:name=".ui.activity.PaintingDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
+        <activity android:name=".ui.activity.BookCaseTypeActivity"/>
         <activity android:name=".ui.activity.BookCollectActivity"/>
         <activity android:name=".ui.activity.PaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
@@ -113,6 +114,7 @@
         <activity android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom"
             />
+        <activity android:name=".ui.activity.MyWallpaperActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

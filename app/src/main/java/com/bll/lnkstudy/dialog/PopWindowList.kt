@@ -14,9 +14,10 @@ import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, var view: View,val xoff:Int,val yoff:Int) {
+class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, var view: View,val yoff:Int) {
 
     private var mPopupWindow:PopupWindow?=null
+    private var width=0
 
     fun builder(): PopWindowList?{
         val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_list, null, false)
@@ -27,7 +28,6 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, va
         mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
         mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
         mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-
 
         var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
@@ -45,6 +45,10 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, va
                 onSelectListener?.onSelect(list[position])
             dismiss()
         }
+
+        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        width = mPopupWindow?.contentView?.measuredWidth!!
+
         show()
         return this
     }
@@ -57,7 +61,7 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, va
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,xoff, yoff,Gravity.RIGHT);
+            mPopupWindow?.showAsDropDown(view,-width, yoff,Gravity.RIGHT);
         }
     }
 
@@ -71,7 +75,6 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, va
     fun interface OnSelectListener{
         fun onSelect(item: PopWindowBean)
     }
-
 
     private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
 

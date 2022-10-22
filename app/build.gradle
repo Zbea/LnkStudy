@@ -62,6 +62,20 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res/layouts/adapter',
+                            'src/main/res/layouts/common',
+                            'src/main/res/layouts/dialog',
+                            'src/main/res/layouts/ui',
+                            'src/main/res/layouts',
+                            'src/main/res'
+                    ]
+        }
+    }
+
 }
 
 

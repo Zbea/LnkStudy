@@ -3,17 +3,24 @@ package com.bll.lnkstudy.ui.activity
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.APK_PATH
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.FileDownManager
 import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.mvp.presenter.AppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.AppDownloadListAdapter
+import com.bll.lnkstudy.ui.adapter.AppWallpaperListAdapter
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_app_download.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -25,13 +32,21 @@ class AppDownloadActivity:BaseAppCompatActivity(),
     private val presenter=AppPresenter(this)
     private var appBean:AppBean?=null
     private var apps= mutableListOf<AppBean.ListBean>()
+    private var wallpapers= mutableListOf<AppBean.ListBean>()
+    private var paintings= mutableListOf<AppBean.ListBean>()
     private var pageCount = 0
     private var pageIndex = 1 //当前页码
     private var mAdapterDownload:AppDownloadListAdapter?=null
-    private var mWallpaperListAdapter:AppDownloadListAdapter?=null
+    private var mWallpaperListAdapter:AppWallpaperListAdapter?=null
+    private var mPaintingAdapter:AppWallpaperListAdapter?=null
     private var position=0 //当前选择应用位置
     private var currentDownLoadTask: BaseDownloadTask? = null
     private var type=0 //0应用1壁纸
+
+    private var popTimes= mutableListOf<PopWindowBean>()
+    private var popPaintings= mutableListOf<PopWindowBean>()
+    private var popWindowTime:PopWindowList?=null
+    private var popWindowPainting:PopWindowList?=null
 
     override fun onAppList(appBean: AppBean?) {
         this.appBean=appBean
@@ -44,10 +59,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
 
         if (!appBean?.list.isNullOrEmpty()){
             apps=appBean?.list
-            if (type==0)
-                mAdapterDownload?.setNewData(apps)
-            else
-                mWallpaperListAdapter?.setNewData(apps)
+            mAdapterDownload?.setNewData(apps)
         }
     }
 
@@ -69,6 +81,32 @@ class AppDownloadActivity:BaseAppCompatActivity(),
 
     override fun initData() {
         getData()
+
+        for (i in 1..12){
+            val item =AppBean.ListBean()
+            item.name="壁纸$i"
+            item.images=null
+            item.price=i
+            wallpapers.add(item)
+        }
+
+        for (i in 1..12){
+            val item =AppBean.ListBean()
+            item.name="书法$i"
+            item.price=i
+            paintings.add(item)
+        }
+
+        val yeas=DataBeanManager.getIncetance().YEARS
+        for (i in yeas.indices){
+            popTimes.add(PopWindowBean(i,yeas[i],i==0))
+        }
+
+        val paintings=DataBeanManager.getIncetance().PAINTING
+        for (i in paintings.indices){
+            popPaintings.add(PopWindowBean(i,paintings[i],i==0))
+        }
+
     }
 
     override fun initView() {
@@ -76,6 +114,16 @@ class AppDownloadActivity:BaseAppCompatActivity(),
 
         initApp()
         initWallpaper()
+        initPainting()
+
+        tv_time.text=popTimes[0].name
+        tv_time.setOnClickListener {
+            selectorTime()
+        }
+        tv_painting_type.text=popPaintings[0].name
+        tv_painting_type.setOnClickListener {
+            selectorPainting()
+        }
 
         btn_page_up.setOnClickListener {
             if (pageIndex>1){
@@ -93,16 +141,23 @@ class AppDownloadActivity:BaseAppCompatActivity(),
             }
         }
 
-        rg_app.setOnCheckedChangeListener { radioGroup, i ->
-            if (i==R.id.rb_tool){
-                rv_tool.visibility=View.VISIBLE
-                rv_wallpaper.visibility=View.GONE
-                type=0
-            }
-            else{
-                rv_tool.visibility=View.GONE
-                rv_wallpaper.visibility=View.VISIBLE
-                type=1
+        rg_app.setOnCheckedChangeListener { _, i ->
+            when(i){
+                R.id.rb_tool->{
+                    showView(rv_tool)
+                    disMissView(rv_wallpaper,rv_painting,ll_setting)
+                    type=0
+                }
+                R.id.rb_wallpaper->{
+                    showView(rv_wallpaper)
+                    disMissView(rv_tool,rv_painting,ll_setting)
+                    type=1
+                }
+                else->{
+                    showView(rv_painting,ll_setting)
+                    disMissView(rv_tool,rv_wallpaper)
+                    type=2
+                }
             }
             pageIndex=1
         }
@@ -113,13 +168,13 @@ class AppDownloadActivity:BaseAppCompatActivity(),
     private fun getData(){
         val map = HashMap<String, Any>()
         map["pageIndex"] = pageIndex
-        map["pageSize"] = 12
+        map["pageSize"] = Constants.PAGE_SIZE
         presenter.getAppList(map)
     }
 
     private fun initApp(){
         rv_tool.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapterDownload = AppDownloadListAdapter(R.layout.item_app_download, apps)
+        mAdapterDownload = AppDownloadListAdapter(R.layout.item_app_download, null)
         rv_tool.adapter = mAdapterDownload
         mAdapterDownload?.bindToRecyclerView(rv_tool)
         mAdapterDownload?.setOnItemClickListener { adapter, view, position ->
@@ -132,13 +187,59 @@ class AppDownloadActivity:BaseAppCompatActivity(),
     }
 
     private fun initWallpaper(){
-        rv_wallpaper.layoutManager = GridLayoutManager(this,3)//创建布局管理
-        mWallpaperListAdapter = AppDownloadListAdapter(R.layout.item_app_wallpaper, apps)
+        rv_wallpaper.layoutManager = GridLayoutManager(this,4)//创建布局管理
+        mWallpaperListAdapter = AppWallpaperListAdapter(R.layout.item_app_wallpaper, wallpapers)
         rv_wallpaper.adapter = mWallpaperListAdapter
+        rv_wallpaper.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),30))
         mWallpaperListAdapter?.bindToRecyclerView(rv_wallpaper)
         mWallpaperListAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
 
+        }
+    }
+
+    private fun initPainting(){
+        rv_painting.layoutManager = GridLayoutManager(this,4)//创建布局管理
+        mPaintingAdapter = AppWallpaperListAdapter(R.layout.item_app_wallpaper, paintings)
+        rv_painting.adapter = mPaintingAdapter
+        rv_painting.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),30))
+        mPaintingAdapter?.bindToRecyclerView(rv_painting)
+        mPaintingAdapter?.setOnItemClickListener { adapter, view, position ->
+            this.position=position
+
+        }
+    }
+
+
+    /**
+     * 朝代选择器
+     */
+    private fun selectorTime(){
+        if (popWindowTime==null)
+        {
+            popWindowTime= PopWindowList(this,popTimes,tv_time,5).builder()
+            popWindowTime?.setOnSelectListener { item ->
+                tv_time.text=item.name
+            }
+        }
+        else{
+            popWindowTime?.show()
+        }
+    }
+
+    /**
+     * 书画选择器
+     */
+    private fun selectorPainting(){
+        if (popWindowPainting==null)
+        {
+            popWindowPainting= PopWindowList(this,popPaintings,tv_painting_type,5).builder()
+            popWindowPainting?.setOnSelectListener { item ->
+                tv_painting_type.text=item.name
+            }
+        }
+        else{
+            popWindowPainting?.show()
         }
     }
 

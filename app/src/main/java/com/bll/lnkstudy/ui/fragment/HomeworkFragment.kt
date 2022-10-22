@@ -14,9 +14,10 @@ import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco5
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_homework.*
 
@@ -118,7 +119,7 @@ class HomeworkFragment : BaseFragment(){
         rv_list.layoutManager = GridLayoutManager(activity,3)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco5(71,40))
+        rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),40))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val item=datas[position]
             if (view.id==R.id.iv_image){
@@ -336,7 +337,7 @@ class HomeworkFragment : BaseFragment(){
     private fun setPopWindow(){
         if (popWindowList==null)
         {
-            popWindowList= PopWindowList(requireActivity(),popWindowBeans,ivHomework!!,-220,20).builder()
+            popWindowList= PopWindowList(requireActivity(),popWindowBeans,ivHomework!!,20).builder()
             popWindowList?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     HomeworkCommitDetailsDialog(requireActivity(), screenPos, messages).builder()

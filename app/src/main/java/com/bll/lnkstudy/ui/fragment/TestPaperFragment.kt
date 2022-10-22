@@ -11,7 +11,7 @@ import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.utils.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco2
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 import org.greenrobot.eventbus.EventBus
@@ -101,7 +101,7 @@ class TestPaperFragment : BaseFragment(){
         rv_list.layoutManager = GridLayoutManager(activity,2)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco2(0,80))
+        rv_list.addItemDecoration(SpaceGridItemDeco(0,80))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             gotoPaperDrawing(1,course?.courseId!!,items[position].type)
         }

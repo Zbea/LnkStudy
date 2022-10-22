@@ -1,19 +1,21 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.ui.activity.BookCaseTypeActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco4
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import org.greenrobot.eventbus.EventBus
@@ -45,7 +47,7 @@ class BookCaseFragment: BaseFragment() {
         findData()
 
         tv_type.setOnClickListener {
-            (activity as BaseAppCompatActivity).navigationToFragment(BookCaseTypeFragment())
+            customStartActivity(Intent(activity,BookCaseTypeActivity::class.java))
         }
 
         ll_book_top.setOnClickListener {
@@ -66,7 +68,7 @@ class BookCaseFragment: BaseFragment() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco4(63,28))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,23f),28))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             gotoBookDetails(books[position])
         }

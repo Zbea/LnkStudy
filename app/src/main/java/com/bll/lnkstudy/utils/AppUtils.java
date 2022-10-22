@@ -257,6 +257,7 @@ public class AppUtils {
     //根据包名启动app
     public static void startAPP(Context context, String appPackageName) throws Exception {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

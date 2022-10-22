@@ -24,6 +24,7 @@ class Constants private constructor() {
 
     companion object {
 
+            val PAGE_SIZE=12
             val WIDTH=1404
             val HEIGHT=1872
 

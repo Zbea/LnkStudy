@@ -11,12 +11,10 @@ class AppDownloadListAdapter(layoutResId: Int, data: List<AppBean.ListBean>?) : 
 
     override fun convert(helper: BaseViewHolder, item: AppBean.ListBean) {
         helper.setText(R.id.tv_name,item.name)
-        helper.setText(R.id.tv_price,""+item.price+"学豆")
+        helper.setText(R.id.tv_price,""+item.price)
         helper.setText(R.id.btn_download,if (item.status==0) "购买" else "下载")
         val image=helper.getView<ImageView>(R.id.iv_image)
-        GlideUtils.setImageUrl(mContext,item.assetUrl,image)
+        GlideUtils.setImageRoundUrl(mContext,item.assetUrl,image,5)
     }
-
-
 
 }

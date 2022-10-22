@@ -74,7 +74,6 @@ class MainFragment : BaseFragment() {
         EventBus.getDefault().register(this)
         setTitle("首页")
 
-        showSearch(false)
         onClickView()
 
         initDateView()
@@ -92,7 +91,7 @@ class MainFragment : BaseFragment() {
     @SuppressLint("WrongConstant")
     private fun onClickView() {
         ll_date.setOnClickListener {
-            customStartActivity(Intent(activity, MainDateActivity::class.java))
+            customStartActivity(Intent(activity, MyWallpaperActivity::class.java))
         }
 
         ll_message.setOnClickListener {
@@ -295,7 +294,7 @@ class MainFragment : BaseFragment() {
             var intent=Intent(activity, NoteDrawingActivity::class.java)
             var bundle= Bundle()
             bundle.putSerializable("note",notes[position])
-            intent.putExtra("notes",bundle)
+            intent.putExtra("noteBundle",bundle)
             customStartActivity(intent)
         }
 

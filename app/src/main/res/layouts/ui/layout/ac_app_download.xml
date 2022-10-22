@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        android:gravity="center_vertical"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="30dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/iv_back"
+            android:text="标题"
+            android:textColor="@color/black"
+            android:textSize="27sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/tv_title"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:drawableRight="@mipmap/icon_arrow_down"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingStart="@dimen/dp_30"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22"
+                android:background="@drawable/bg_gary_arch"
+                />
+            <TextView
+                android:id="@+id/tv_painting_type"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:drawableRight="@mipmap/icon_arrow_down"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingStart="@dimen/dp_30"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22"
+                android:background="@drawable/bg_gary_arch"
+                />
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/rg_app"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_tool"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="200dp"
+            android:button="@null"
+            android:text="工具"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:textStyle="bold"
+            android:checked="true"
+            android:gravity="center"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_wallpaper"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="67dp"
+            android:button="@null"
+            android:gravity="center"
+            android:text="壁纸"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_painting"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="67dp"
+            android:button="@null"
+            android:gravity="center"
+            android:text="书画"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+    </RadioGroup>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tool"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="28dp"
+        android:layout_weight="1"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="55dp"
+        android:visibility="gone"
+        android:layout_weight="1"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_painting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="55dp"
+        android:visibility="gone"
+        android:layout_weight="1"/>
+
+    <include layout="@layout/common_page_number" />
+
+</LinearLayout>

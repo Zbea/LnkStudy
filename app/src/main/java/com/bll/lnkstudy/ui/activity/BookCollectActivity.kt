@@ -9,7 +9,8 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.adapter.BookAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco4
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_bookcase_mycollect.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -56,7 +57,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco4(50,70))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),DP2PX.dip2px(this,35f)))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             gotoBookDetails(books[position])
         }

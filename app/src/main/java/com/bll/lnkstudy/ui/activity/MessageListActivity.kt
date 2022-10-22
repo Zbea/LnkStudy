@@ -9,7 +9,6 @@ import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.ui.adapter.MainMessageAdapter
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.ac_message_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 

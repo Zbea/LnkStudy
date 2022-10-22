@@ -7,7 +7,7 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
-import com.bll.lnkstudy.widget.SpaceGridItemDeco2
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_teach.*
 
@@ -37,7 +37,7 @@ class TeachFragment : BaseFragment() {
         )
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceGridItemDeco2(0, 90))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(0, 90))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
 //            var bundle=Bundle()
 //            bundle.putSerializable("course",courses[position])

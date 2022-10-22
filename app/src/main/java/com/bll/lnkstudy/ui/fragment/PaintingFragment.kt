@@ -6,7 +6,7 @@ import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.ui.activity.ListActivity
+import com.bll.lnkstudy.ui.activity.MyPaintingListActivity
 import com.bll.lnkstudy.utils.ZipUtils
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_painting.*
@@ -19,8 +19,8 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class PaintingFragment : BaseFragment(){
 
-    private var typeStr="书法"//类型
-    private var dynastyStr="汉朝"//朝代
+    private var typeStr="毛笔书法"//类型
+    private var dynastyStr=""//朝代
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_painting
@@ -36,35 +36,35 @@ class PaintingFragment : BaseFragment(){
 
         iv_han.setOnClickListener {
             dynastyStr="汉朝"
-            onClick(1)
+            onClick()
         }
         iv_tang.setOnClickListener {
             dynastyStr="唐朝"
-            onClick(1)
+            onClick()
         }
         iv_song.setOnClickListener {
             dynastyStr="宋朝"
-            onClick(1)
+            onClick()
         }
         iv_yuan.setOnClickListener {
             dynastyStr="元朝"
-            onClick(1)
+            onClick()
         }
         iv_ming.setOnClickListener {
             dynastyStr="明朝"
-            onClick(1)
+            onClick()
         }
         iv_qing.setOnClickListener {
             dynastyStr="清朝"
-            onClick(1)
+            onClick()
         }
         iv_jd.setOnClickListener {
             dynastyStr="近代"
-            onClick(1)
+            onClick()
         }
         iv_dd.setOnClickListener {
             dynastyStr="当代"
-            onClick(1)
+            onClick()
         }
         iv_hb.setOnClickListener {
             gotoPaintingDrawing(0)
@@ -93,15 +93,14 @@ class PaintingFragment : BaseFragment(){
             override fun onTabSelected(tab: XTabLayout.Tab?) {
                 typeStr=tab?.text.toString()
                 if (typeStr=="素描画"){
-                    var intent= Intent(activity,ListActivity::class.java)
+                    var intent= Intent(activity,MyPaintingListActivity::class.java)
                     intent.putExtra("title", typeStr)
-                    intent.putExtra("type",1)
                     customStartActivity(intent)
                 }
                 if (typeStr=="硬笔书法"){
-                    var intent= Intent(activity,ListActivity::class.java)
+                    var intent= Intent(activity,MyPaintingListActivity::class.java)
                     intent.putExtra("title", typeStr)
-                    intent.putExtra("type",2)
+                    intent.putExtra("type",1)
                     customStartActivity(intent)
                 }
             }
@@ -117,10 +116,9 @@ class PaintingFragment : BaseFragment(){
     }
 
 
-    private fun onClick(t: Int){
-        var intent= Intent(activity,ListActivity::class.java)
+    private fun onClick(){
+        var intent= Intent(activity,MyPaintingListActivity::class.java)
         intent.putExtra("title", "$dynastyStr   $typeStr" )
-        intent.putExtra("type",t)
         customStartActivity(intent)
     }
 

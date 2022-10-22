@@ -13,6 +13,7 @@ import com.bll.lnkstudy.mvp.model.HomeworkType;
 import com.bll.lnkstudy.mvp.model.MainListBean;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.ModuleBean;
+import com.bll.lnkstudy.mvp.model.PopWindowBean;
 import com.bll.lnkstudy.utils.ToolUtils;
 
 import java.util.ArrayList;
@@ -43,6 +44,14 @@ public class DataBeanManager {
             "笔记",
             "书画",
             "义教"};
+
+    public String[] bookStoreType = {
+            "教材",
+            "古籍",
+            "自然科学",
+            "社会科学",
+            "思维科学",
+            "运动才艺"};
 
     public String[] teachList = {
             "课程",
@@ -150,6 +159,15 @@ public class DataBeanManager {
     public String[] SWKX = {
             "人工智能", "模式识别", "心理生理", "语言文字", "数学"
     };//思维科学
+
+
+    public String[] YEARS = {
+            "汉朝", "唐朝", "宋朝", "元朝", "明朝","清朝","近代","当代"
+    };
+
+    public String[] PAINTING = {
+            "毛笔书法", "山水画", "花鸟画", "人物画"
+    };
 
     /**
      * 获取index栏目
@@ -434,26 +452,27 @@ public class DataBeanManager {
 
 
     //年级分类
-    public List<BaseTypeBean> getBookTypeGrade() {
-        List<BaseTypeBean> list = new ArrayList<>();
+    public List<PopWindowBean> getBookTypeGrade() {
+        List<PopWindowBean> list = new ArrayList<>();
 
-        BaseTypeBean baseTypeBean = new BaseTypeBean();
-        baseTypeBean.typeId = 0;
+        PopWindowBean baseTypeBean = new PopWindowBean();
+        baseTypeBean.id = 0;
         baseTypeBean.name = "小学低年级";
+        baseTypeBean.isCheck=true;
         list.add(baseTypeBean);
 
-        BaseTypeBean baseTypeBean1 = new BaseTypeBean();
-        baseTypeBean1.typeId = 1;
+        PopWindowBean baseTypeBean1 = new PopWindowBean();
+        baseTypeBean1.id = 1;
         baseTypeBean1.name = "小学高年级";
         list.add(baseTypeBean1);
 
-        BaseTypeBean baseTypeBean2 = new BaseTypeBean();
-        baseTypeBean2.typeId = 2;
+        PopWindowBean baseTypeBean2 = new PopWindowBean();
+        baseTypeBean2.id = 2;
         baseTypeBean2.name = "初中学生";
         list.add(baseTypeBean2);
 
-        BaseTypeBean baseTypeBean3 = new BaseTypeBean();
-        baseTypeBean3.typeId = 3;
+        PopWindowBean baseTypeBean3 = new PopWindowBean();
+        baseTypeBean3.id = 3;
         baseTypeBean3.name = "高中学生";
         list.add(baseTypeBean3);
 
@@ -754,24 +773,31 @@ public class DataBeanManager {
 
         AppBean appBean1=new AppBean();
         appBean1.appId=1;
-        appBean1.appName="操机技巧";
+        appBean1.appName="操作技巧";
         appBean1.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_cz);
         appBean1.isBase=true;
         apps.add(appBean1);
 
         AppBean appBean2=new AppBean();
         appBean2.appId=2;
-        appBean2.appName="官方壁纸";
-        appBean2.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_wallpaper);
+        appBean2.appName="官方工具";
+        appBean2.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_tool);
         appBean2.isBase=true;
         apps.add(appBean2);
 
         AppBean appBean3=new AppBean();
         appBean3.appId=3;
-        appBean3.appName="设备管家";
-        appBean3.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_steward);
+        appBean3.appName="官方壁纸";
+        appBean3.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_wallpaper);
         appBean3.isBase=true;
         apps.add(appBean3);
+
+        AppBean appBean4=new AppBean();
+        appBean4.appId=4;
+        appBean4.appName="官方书画";
+        appBean4.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_painting);
+        appBean4.isBase=true;
+        apps.add(appBean4);
 
         return apps;
     }

@@ -55,7 +55,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var llSearch:LinearLayout?=null
+    var tvSearch:TextView?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -73,9 +73,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         fragmentManager.popBackStack()
     }
 
-    override fun moveTaskToBack(nonRoot: Boolean): Boolean {
-        return super.moveTaskToBack(true)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +117,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
-        llSearch= findViewById(R.id.ll_search)
+        tvSearch= findViewById(R.id.tv_search)
 
     }
 
@@ -135,10 +132,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     fun showSearchView(isShow:Boolean) {
         if (isShow){
-            showView(llSearch)
+            showView(tvSearch)
         }
         else{
-            disMissView(llSearch)
+            disMissView(tvSearch)
         }
     }
 

@@ -10,9 +10,10 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import com.bll.lnkstudy.R
 
-class PopWindowRecordSetting(var context:Context, var view: View, val xoff:Int, val yoff:Int) {
+class PopWindowRecordSetting(var context:Context, var view: View, val yoff:Int) {
 
     private var mPopupWindow:PopupWindow?=null
+    private var width=0
 
     fun builder(): PopWindowRecordSetting?{
         val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_record_setting, null, false)
@@ -37,6 +38,9 @@ class PopWindowRecordSetting(var context:Context, var view: View, val xoff:Int, 
                 onClickListener?.onClick(2)
         }
 
+        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        width = mPopupWindow?.contentView?.measuredWidth!!
+
         show()
         return this
     }
@@ -49,7 +53,7 @@ class PopWindowRecordSetting(var context:Context, var view: View, val xoff:Int, 
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,xoff, yoff,Gravity.RIGHT);
+            mPopupWindow?.showAsDropDown(view,-width, yoff,Gravity.RIGHT);
         }
     }
 

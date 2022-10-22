@@ -8,19 +8,17 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
-import com.bll.lnkstudy.dialog.PopWindowBookStoreType
+import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.FileDownManager
-import com.bll.lnkstudy.mvp.model.BaseTypeBean
-import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.BookEvent
-import com.bll.lnkstudy.mvp.model.BookStore
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco4
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.android.material.tabs.TabLayout
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
@@ -34,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock
 class BookStoreActivity:BaseAppCompatActivity() ,
     IContractView.IBookStoreView {
 
-    private var title=""
+    private var flags=0
     private val mDownMapPool = HashMap<Long,BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter=BookStorePresenter(this)
@@ -45,11 +43,11 @@ class BookStoreActivity:BaseAppCompatActivity() ,
     private var bookDetailsDialog:BookDetailsDialog?=null
     private var book:Book?=null
 
-    private var popWindowGrade:PopWindowBookStoreType?=null
-    private var popWindowProvince:PopWindowBookStoreType?=null
+    private var popWindowGrade:PopWindowList?=null
+    private var popWindowProvince:PopWindowList?=null
 
-    var provinceList= mutableListOf<BaseTypeBean>()
-    var gradeList= mutableListOf<BaseTypeBean>()
+    var provinceList= mutableListOf<PopWindowBean>()
+    var gradeList= mutableListOf<PopWindowBean>()
     var typeList= mutableListOf<BaseTypeBean>()
 
     override fun onBookStore(bookStore: BookStore?) {
@@ -83,7 +81,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
         showLoading()
         val downloadTask = downLoadStart(bookEvent?.contentUrl!!)
         if (downloadTask !=null){
-            mDownMapPool.put(book?.id!!,downloadTask)
+            mDownMapPool[book?.id!!] = downloadTask
         }
     }
 
@@ -92,15 +90,22 @@ class BookStoreActivity:BaseAppCompatActivity() ,
     }
 
     override fun initData() {
-        title=intent.getStringExtra("title").toString()
+        flags=intent.flags
         getData()
         getDataType()
     }
 
     override fun initView() {
-        setPageTitle(title)
+
+        setPageTitle(DataBeanManager.getIncetance().bookStoreType[flags])
+
         initRecyclerView()
-        showSearchView(true)
+
+        if(typeList.size>0){
+            initTab()
+        }
+
+        initTypeView()
 
         btn_page_up.setOnClickListener {
             if (pageIndex>1){
@@ -128,63 +133,54 @@ class BookStoreActivity:BaseAppCompatActivity() ,
         presenter.getBooks(map)
     }
 
-
     private fun getDataType(){
         gradeList=DataBeanManager.getIncetance().bookTypeGrade
-        if(title=="教材")
-        {
-            gradeList.clear()
-            typeList=DataBeanManager.getIncetance().bookTypeJc
-            xtab.setxTabDisplayNum(typeList.size)
-            for (i in 0..12){
-                var item= BaseTypeBean()
-                item.name= "广东省$i"
-                provinceList.add(item)
+        when(flags){
+            0->{
+                disMissView(tv_search)
+                gradeList.clear()
+                typeList=DataBeanManager.getIncetance().bookTypeJc
+                xtab.setxTabDisplayNum(typeList.size)
+                for (i in 0..12){
+                    provinceList.add(PopWindowBean(i,"广东省$i",i==0))
+                }
+                for (i in 1..6){
+                    gradeList.add(PopWindowBean(i,"$i 年级",i==0))
+                }
             }
-
-            for (i in 1..6){
-                var item= BaseTypeBean()
-                item.name= "$i 年级"
-                gradeList.add(item)
+            1->{
+                disMissView(tv_province)
+                typeList=DataBeanManager.getIncetance().bookTypeGj
+                xtab.setxTabDisplayNum(typeList.size)
+            }
+            2->{
+                disMissView(tv_province)
+                typeList=DataBeanManager.getIncetance().bookTypeZRKX
+                xtab.setxTabDisplayNum(typeList.size)
+            }
+            3->{
+                disMissView(tv_province)
+                typeList=DataBeanManager.getIncetance().bookTypeSHKX
+                xtab.setxTabDisplayNum(typeList.size)
+            }
+            4->{
+                disMissView(tv_province)
+                typeList=DataBeanManager.getIncetance().bookTypeSWKX
+                xtab.setxTabDisplayNum(typeList.size)
+            }
+            else->{
+                disMissView(tv_province)
+                typeList=DataBeanManager.getIncetance().bookTypeYDCY
+                xtab.setxTabDisplayNum(10)
+                xtab.tabMode=TabLayout.MODE_SCROLLABLE
             }
         }
-        if(title=="古籍")
-        {
-            typeList=DataBeanManager.getIncetance().bookTypeGj
-            xtab.setxTabDisplayNum(typeList.size)
-        }
-        if(title=="社会科学")
-        {
-            typeList=DataBeanManager.getIncetance().bookTypeSHKX
-            xtab.setxTabDisplayNum(typeList.size)
-        }
-        if(title=="运动才艺")
-        {
-            typeList=DataBeanManager.getIncetance().bookTypeYDCY
-            xtab.setxTabDisplayNum(10)
-            xtab.tabMode=TabLayout.MODE_SCROLLABLE
-        }
-        if(title=="自然科学")
-        {
-            typeList=DataBeanManager.getIncetance().bookTypeZRKX
-            xtab.setxTabDisplayNum(typeList.size)
-        }
-        if(title=="思维科学")
-        {
-            typeList=DataBeanManager.getIncetance().bookTypeSWKX
-            xtab.setxTabDisplayNum(typeList.size)
-        }
 
-
-        if(typeList.size>0){
-            setTab()
-        }
-        setTypeView()
     }
 
 
-    //设置分类
-    private fun setTypeView(){
+    //设置条件选择
+    private fun initTypeView(){
 
         if (provinceList.size>0){
             tv_province.text=provinceList[0].name
@@ -205,28 +201,23 @@ class BookStoreActivity:BaseAppCompatActivity() ,
         tv_grade.setOnClickListener {
             if (popWindowGrade==null)
             {
-                popWindowGrade=PopWindowBookStoreType(this,gradeList,tv_grade).builder()
-                popWindowGrade?.setOnSelectListener(object : PopWindowBookStoreType.OnSelectListener {
-                    override fun onSelect(baseTypeBean: BaseTypeBean) {
-                        tv_grade.text=baseTypeBean.name
-                    }
-                })
+                popWindowGrade= PopWindowList(this,gradeList,tv_grade,5).builder()
+                popWindowGrade?.setOnSelectListener { item ->
+                    tv_grade.text = item.name
+                }
             }
             else{
                 popWindowGrade?.show()
             }
-
         }
 
         tv_province.setOnClickListener {
             if (popWindowProvince==null)
             {
-                popWindowProvince=PopWindowBookStoreType(this,provinceList,tv_province).builder()
-                popWindowProvince?.setOnSelectListener(object : PopWindowBookStoreType.OnSelectListener {
-                    override fun onSelect(baseTypeBean: BaseTypeBean) {
-                        tv_province.text=baseTypeBean.name
-                    }
-                })
+                popWindowProvince= PopWindowList(this,provinceList,tv_province,5).builder()
+                popWindowProvince?.setOnSelectListener { item ->
+                    tv_province.text = item.name
+                }
             }
             else{
                 popWindowProvince?.show()
@@ -235,7 +226,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
     }
 
     //设置tab分类
-    private fun setTab(){
+    private fun initTab(){
         for (item in typeList){
             xtab?.newTab()?.setText(item.name)?.let { xtab?.addTab(it) }
         }
@@ -243,16 +234,15 @@ class BookStoreActivity:BaseAppCompatActivity() ,
         xtab?.getTabAt(0)?.select()
         xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: XTabLayout.Tab?) {
-
-                if (title=="教材"){
-                    val baseTypeBean=typeList[tab?.position!!]
-                    if (baseTypeBean.typeId==0){
-                        showView(tv_province)
-                    }
-                    else{
-                        disMissView(tv_province)
-                    }
-                }
+//                if (flags==0){
+//                    val baseTypeBean=typeList[tab?.position!!]
+//                    if (baseTypeBean.typeId==0){
+//                        showView(tv_province)
+//                    }
+//                    else{
+//                        disMissView(tv_province)
+//                    }
+//                }
 
             }
 
@@ -272,7 +262,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             rv_list.adapter = mAdapter
             mAdapter?.bindToRecyclerView(rv_list)
             mAdapter?.setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco4(75,20))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),60))
             mAdapter?.setOnItemClickListener { adapter, view, position ->
                 book=books[position]
                 showBookDetails(book)
@@ -291,25 +281,20 @@ class BookStoreActivity:BaseAppCompatActivity() ,
 
         bookDetailsDialog=BookDetailsDialog(this,book!!)
         bookDetailsDialog?.builder()
-        bookDetailsDialog?.setOnClickListener(object : BookDetailsDialog.OnClickListener {
-            override fun onClick() {
-
-                if (book.status==1){
-                    presenter.buyBook(book.id.toString())
-                }
-                else if (book.status==2){
-                    val bookDao=BookGreenDaoManager.getInstance(this@BookStoreActivity).queryBookByBookID(book.id)
-                    if (bookDao==null){
-                        presenter.downBook(book.id.toString())
-                    }
-                    else{
-                        if (bookDetailsDialog!=null)
-                            bookDetailsDialog?.setUnClickBtn("已下载")
-                    }
+        bookDetailsDialog?.setOnClickListener {
+            if (book.status == 1) {
+                presenter.buyBook(book.id.toString())
+            } else if (book.status == 2) {
+                val bookDao = BookGreenDaoManager.getInstance(this@BookStoreActivity)
+                    .queryBookByBookID(book.id)
+                if (bookDao == null) {
+                    presenter.downBook(book.id.toString())
+                } else {
+                    if (bookDetailsDialog != null)
+                        bookDetailsDialog?.setUnClickBtn("已下载")
                 }
             }
-
-        })
+        }
     }
 
     //下载book

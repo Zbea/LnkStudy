@@ -10,8 +10,9 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.adapter.BookAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco5
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
@@ -97,7 +98,7 @@ class TextbookFragment : BaseFragment(){
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco5(71,38))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             gotoBookDetails(books[position])
         }
