@@ -39,6 +39,7 @@ class PaintingDrawingActivity : BaseActivity() {
     private var resId=0
 
 
+
     override fun layoutId(): Int {
         return R.layout.ac_painting_drawing
     }
