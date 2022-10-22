@@ -36,6 +36,7 @@ class PaintingDrawingActivity : BaseActivity() {
     private var isExpand = false //是否是全屏
 
     private var page = 0//页码
+
     private var resId=0
 
 
