@@ -115,13 +115,13 @@ interface APIService{
      * 应用列表
      */
     @GET("applications")
-    fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppBean>>
+    fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppListBean>>
 
     /**
      * 下载软件
      */
     @GET("applications/{id}/download")
-    fun downloadApk(@Path("id") id:String): Observable<BaseResult<AppBean>>
+    fun downloadApk(@Path("id") id:String): Observable<BaseResult<AppListBean>>
 
 
 }

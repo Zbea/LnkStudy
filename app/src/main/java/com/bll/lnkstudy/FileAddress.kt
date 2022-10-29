@@ -4,6 +4,7 @@ import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.BOOK_PICTURE_FILES
 import com.bll.lnkstudy.Constants.Companion.CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
+import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
 import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkstudy.Constants.Companion.ZIP_PATH
@@ -82,6 +83,13 @@ class FileAddress {
      */
     fun getPathNote(typeId: Int?,index:Int):String{
         return "$NOTE_PATH/$mUserId/$typeId/$index"
+    }
+
+    /**
+     * 壁纸、书画
+     */
+    fun getPathImage(type:String, contentId: Int):String{
+        return "$IMAGE_PATH/$mUserId/$type/$contentId"
     }
 
 }

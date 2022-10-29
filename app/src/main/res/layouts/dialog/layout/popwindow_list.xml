@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@mipmap/icon_popwindow_bg"
+    android:maxHeight="600dp"
     android:paddingTop="@dimen/dp_30"
     android:paddingBottom="@dimen/dp_20"
     android:paddingEnd="@dimen/dp_20"

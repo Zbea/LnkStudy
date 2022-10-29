@@ -21,7 +21,7 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?) : BaseMultiItemQuickAdapt
                 val item= item as CatalogParentBean
                 helper.setText(R.id.tv_name, item.title)
                 helper.setText(R.id.tv_page, ""+item.pageNumber)
-                helper.itemView.setOnClickListener { v ->
+                helper.itemView.setOnClickListener {
                     val pos = helper.adapterPosition
                     if (item.hasSubItem()){
                         if (item.isExpanded) {

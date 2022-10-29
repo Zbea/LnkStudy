@@ -349,8 +349,6 @@ public class DataBeanManager {
             courseBean.courseId = i;
             list.add(courseBean);
         }
-
-
         return list;
 
     }

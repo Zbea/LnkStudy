@@ -4,26 +4,29 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <include layout="@layout/common_fragment_title" />
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/common_fragment_title" />
 
     <LinearLayout
         android:id="@+id/ll_tab"
-        android:layout_marginTop="@dimen/navigation_height"
+        android:layout_marginTop="@dimen/dp_15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_title"
         android:orientation="horizontal"
         >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_50"
+            android:layout_marginLeft="78dp"
             android:layout_weight="1"
             />
 
         <ImageView
             android:id="@+id/iv_down"
-            android:layout_width="60dp"
+            android:layout_width="78dp"
             android:layout_height="@dimen/xtab_height"
             android:layout_marginRight="@dimen/dp_10"
             android:src="@mipmap/icon_bookstore_arrow_down"

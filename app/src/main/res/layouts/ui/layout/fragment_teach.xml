@@ -8,19 +8,15 @@
 
     <include layout="@layout/common_fragment_title"/>
 
-    <include
-        layout="@layout/common_xtab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="@dimen/dp_15"/>
+    <include layout="@layout/common_radiogroup"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_margin="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:layout_marginTop="70dp"
         />
 </LinearLayout>

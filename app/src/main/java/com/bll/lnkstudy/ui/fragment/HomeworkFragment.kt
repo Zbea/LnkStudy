@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
@@ -18,7 +17,8 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import kotlinx.android.synthetic.main.common_xtab.*
+import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
 
 
@@ -43,26 +43,14 @@ class HomeworkFragment : BaseFragment(){
 
     override fun initView() {
         setTitle("作业")
-        showHomeworkView()
+        showView(iv_manager)
 
-        var popWindowBean=PopWindowBean()
-        popWindowBean.id=0
-        popWindowBean.name="提交详情"
-        popWindowBean.isCheck=true
-        var popWindowBean1=PopWindowBean()
-        popWindowBean1.id=1
-        popWindowBean1.name="批改详情"
-        popWindowBean1.isCheck=false
+        popWindowBeans.add(PopWindowBean(0,"提交详情",true))
+        popWindowBeans.add(PopWindowBean(1,"批改详情",false))
+        popWindowBeans.add(PopWindowBean(2,"添加作业本",false))
 
-        popWindowBeans.add(popWindowBean)
-        popWindowBeans.add(popWindowBean1)
-
-        ivHomework?.setOnClickListener {
+        iv_manager.setOnClickListener {
             setPopWindow()
-        }
-
-        tv_add.setOnClickListener {
-            addCover()
         }
 
         initRecyclerView()
@@ -80,37 +68,21 @@ class HomeworkFragment : BaseFragment(){
 
     //设置头部索引
     private fun initTab(){
-
         val courses=DataBeanManager.getIncetance().courses
-
-        for (item in courses){
-            xtab?.newTab()?.setText(item.name)?.let { it -> xtab?.addTab(it) }
+        for (i in courses.indices) {
+            rg_group.addView(getRadioButton(i ,courses[i].name,courses.size-1))
         }
-        xtab?.getTabAt(1)?.select()
-        xtab?.getTabAt(0)?.select()
-
-        xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-                courseID= tab?.position!!
-                when(courseID){
-                    0,2->{
-                        findDatas(true,courseID)
-                    }
-                    else->{
-                        findDatas(false,courseID)
-                    }
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            courseID= id
+            when(courseID){
+                0,2->{
+                    findDatas(true,courseID)
                 }
-
+                else->{
+                    findDatas(false,courseID)
+                }
             }
-
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-
-        })
-
+        }
     }
 
 
@@ -138,13 +110,8 @@ class HomeworkFragment : BaseFragment(){
                     }
                 }
             }
-            if (view.id==R.id.tv_message){
-                if (item.message!=null)
-                    HomeworkMessageDialog(requireActivity(),screenPos,item.message).builder()
-            }
-            if (view.id==R.id.iv_message){
-                homeworkMessageAllDialog= HomeworkMessageAllDialog(requireActivity(),screenPos,messages).builder()
-                homeworkMessageAllDialog?.setOnDialogClickListener { position, id ->
+            if (view.id==R.id.ll_message){
+                HomeworkMessageAllDialog(requireActivity(),screenPos,messages).builder()?.setOnDialogClickListener { position, id ->
                     messages.removeAt(position)
                     homeworkMessageAllDialog?.setData(messages)
                 }
@@ -337,10 +304,13 @@ class HomeworkFragment : BaseFragment(){
     private fun setPopWindow(){
         if (popWindowList==null)
         {
-            popWindowList= PopWindowList(requireActivity(),popWindowBeans,ivHomework!!,20).builder()
+            popWindowList= PopWindowList(requireActivity(),popWindowBeans,iv_manager,5).builder()
             popWindowList?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     HomeworkCommitDetailsDialog(requireActivity(), screenPos, messages).builder()
+                }
+                if (item.id==2){
+                    addCover()
                 }
             }
         }

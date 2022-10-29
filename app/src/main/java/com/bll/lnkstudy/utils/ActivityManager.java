@@ -3,12 +3,10 @@ package com.bll.lnkstudy.utils;
 import android.app.Activity;
 
 import com.bll.lnkstudy.mvp.model.HomeworkType;
-import com.bll.lnkstudy.mvp.model.Note;
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity;
-import com.bll.lnkstudy.ui.activity.HomeworkDrawingActivity;
-import com.bll.lnkstudy.ui.activity.NoteDrawingActivity;
-import com.bll.lnkstudy.ui.activity.PaintingDrawingActivity;
-import com.bll.lnkstudy.ui.activity.PaperDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;

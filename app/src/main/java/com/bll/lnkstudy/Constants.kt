@@ -56,6 +56,9 @@ class Constants private constructor() {
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note").path
         //画本保存目录
         val PAINTING_PATH = MyApplication.mContext.getExternalFilesDir("Painting").path
+            //壁纸、书画目录
+        val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image").path
+
         val PATH_SF = "file:///android_asset/sf/"
 
         //eventbus通知标志

@@ -1,8 +1,11 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.mvp.model.AppListBean
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.net.*
+import com.bll.lnkstudy.net.BasePresenter
+import com.bll.lnkstudy.net.BaseResult
+import com.bll.lnkstudy.net.Callback
+import com.bll.lnkstudy.net.RetrofitManager
 
 
 class AppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
@@ -11,12 +14,12 @@ class AppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.I
 
         val app = RetrofitManager.service.getApks(map)
 
-        doRequest(app, object : Callback<AppBean>(view) {
-            override fun failed(tBaseResult: BaseResult<AppBean>): Boolean {
+        doRequest(app, object : Callback<AppListBean>(view) {
+            override fun failed(tBaseResult: BaseResult<AppListBean>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<AppBean>) {
+            override fun success(tBaseResult: BaseResult<AppListBean>) {
                 view.onAppList(tBaseResult.data)
             }
 
@@ -28,13 +31,13 @@ class AppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.I
 
         val download = RetrofitManager.service.downloadApk(id)
 
-        doRequest(download, object : Callback<AppBean>(view) {
-            override fun failed(tBaseResult: BaseResult<AppBean>): Boolean {
+        doRequest(download, object : Callback<AppListBean>(view) {
+            override fun failed(tBaseResult: BaseResult<AppListBean>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<AppBean>) {
-                view.onDownBook(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<AppListBean>) {
+                view.onDown(tBaseResult.data)
             }
 
         }, true)

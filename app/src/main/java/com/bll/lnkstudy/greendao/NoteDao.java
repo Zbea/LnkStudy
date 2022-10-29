@@ -9,7 +9,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
 
-import com.bll.lnkstudy.utils.greendao.NoteConverter;
+import com.bll.lnkstudy.utils.greendao.StringConverter;
 import java.util.List;
 
 import com.bll.lnkstudy.mvp.model.Note;
@@ -39,7 +39,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         public final static Property Paths = new Property(9, String.class, "paths", false, "PATHS");
     }
 
-    private final NoteConverter pathsConverter = new NoteConverter();
+    private final StringConverter pathsConverter = new StringConverter();
 
     public NoteDao(DaoConfig config) {
         super(config);

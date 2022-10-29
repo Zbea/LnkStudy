@@ -19,9 +19,16 @@ public class GlideUtils {
 
 
     public static final void setImageUrl(Context mContext,String url, ImageView imageView){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+
         Glide.with(mContext)
                 .load(url)
+                .apply(requestOptions)
                 .into(imageView);
+
     }
 
     public static final void setImageFile(Context mContext, File file, ImageView imageView){

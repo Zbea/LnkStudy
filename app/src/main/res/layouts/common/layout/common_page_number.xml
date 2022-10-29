@@ -3,11 +3,11 @@
     android:id="@+id/ll_page_number"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_30"
-    android:layout_margin="30dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="35dp"
     android:gravity="center">
 
-    <Button
+    <TextView
         android:id="@+id/btn_page_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         android:textColor="@color/black_50"
         android:textSize="22sp"/>
 
-    <Button
+    <TextView
         android:id="@+id/btn_page_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

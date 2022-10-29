@@ -3,6 +3,7 @@ package com.bll.lnkstudy.mvp.view;
 import com.bll.lnkstudy.mvp.model.AccountList;
 import com.bll.lnkstudy.mvp.model.AccountOrder;
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.AppListBean;
 import com.bll.lnkstudy.mvp.model.BookEvent;
 import com.bll.lnkstudy.mvp.model.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
@@ -54,8 +55,8 @@ public interface IContractView {
 
     //应用
     interface IAPPView extends IBaseView {
-        void onAppList(AppBean appBean);
-        void onDownBook(AppBean appBean);
+        void onAppList(AppListBean appBean);
+        void onDown(AppListBean appBean);
     }
 
 }

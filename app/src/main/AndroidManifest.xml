@@ -81,7 +81,7 @@
         <activity android:name=".ui.activity.date.MainDatePlanDetailsActivity"/>
         <activity android:name=".ui.activity.date.MainDateScheduleDetailsActivity"/>
         <activity android:name=".ui.activity.BookStoreActivity"/>
-        <activity android:name=".ui.activity.BookDetailsActivity"
+        <activity android:name=".ui.activity.drawing.BookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".ui.activity.AppListActivity"/>
@@ -96,25 +96,26 @@
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.NoteBookManagerActivity"/>
-        <activity android:name=".ui.activity.MainReceivePaperDrawingActivity"/>
-        <activity android:name=".ui.activity.NoteDrawingActivity"/>
-        <activity android:name=".ui.activity.HomeworkDrawingActivity"
+        <activity android:name=".ui.activity.drawing.MainReceivePaperDrawingActivity"/>
+        <activity android:name=".ui.activity.drawing.NoteDrawingActivity"/>
+        <activity android:name=".ui.activity.drawing.HomeworkDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.RecordActivity"/>
         <activity android:name=".ui.activity.RecordListActivity"/>
-        <activity android:name=".ui.activity.PaintingDrawingActivity"
+        <activity android:name=".ui.activity.drawing.PaintingDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.BookCaseTypeActivity"/>
         <activity android:name=".ui.activity.BookCollectActivity"/>
-        <activity android:name=".ui.activity.PaperDrawingActivity"
+        <activity android:name=".ui.activity.drawing.PaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom"
             />
         <activity android:name=".ui.activity.MyWallpaperActivity"/>
+        <activity android:name=".ui.activity.AppOfficialActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

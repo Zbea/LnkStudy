@@ -5,14 +5,18 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.PopupWindow
-import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowDrawingButton(val context:Context, val view: View, val type: Int,val yoff:Int) {
+class PopWindowDrawingButton(val context:Context, val view: View,var list:MutableList<PopWindowBean>) {
 
     private var mPopupWindow:PopupWindow?=null
+    private var height=0
 
     fun builder(): PopWindowDrawingButton?{
         val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_drawing_btn, null, false)
@@ -25,67 +29,19 @@ class PopWindowDrawingButton(val context:Context, val view: View, val type: Int,
         mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
         mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
 
-        val ll_content=popView.findViewById<LinearLayout>(R.id.ll_content)
-
-        val tv_save=popView.findViewById<TextView>(R.id.tv_save)
-        tv_save.setOnClickListener {
-            dismiss()
+        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
+        var mAdapter = MAdapter(R.layout.item_popwindow_btn, list)
+        rvList.adapter = mAdapter
+        mAdapter?.bindToRecyclerView(rvList)
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
             if (onSelectListener!=null)
-                onSelectListener?.onClick(1)
-        }
-
-        val tv_commit=popView.findViewById<TextView>(R.id.tv_commit)
-        tv_commit.setOnClickListener {
+                onSelectListener?.onClick(list[position])
             dismiss()
-            if (onSelectListener!=null)
-                onSelectListener?.onClick(2)
         }
 
-        val tv_delete=popView.findViewById<TextView>(R.id.tv_delete)
-        tv_delete.setOnClickListener {
-            dismiss()
-            if (onSelectListener!=null)
-                onSelectListener?.onClick(3)
-        }
-
-        val tv_assist=popView.findViewById<TextView>(R.id.tv_assist)
-        tv_assist.setOnClickListener {
-            dismiss()
-            if (onSelectListener!=null)
-                onSelectListener?.onClick(4)
-        }
-
-        if (type==0){
-            tv_save.visibility=View.VISIBLE
-            tv_commit.visibility=View.VISIBLE
-            tv_delete.visibility=View.VISIBLE
-            tv_assist.visibility=View.GONE
-        }
-        else if (type==1){
-            tv_save.visibility=View.GONE
-            tv_commit.visibility=View.VISIBLE
-            tv_delete.visibility=View.GONE
-            tv_assist.visibility=View.GONE
-        }
-        else if (type==2){
-            tv_save.visibility=View.GONE
-            tv_commit.visibility=View.GONE
-            tv_delete.visibility=View.VISIBLE
-            tv_assist.visibility=View.VISIBLE
-        }
-        else if (type==3){
-            tv_save.visibility=View.GONE
-            tv_commit.visibility=View.GONE
-            tv_delete.visibility=View.VISIBLE
-            tv_assist.visibility=View.GONE
-        }
-        else if (type==4){
-            tv_save.visibility=View.VISIBLE
-            tv_commit.visibility=View.GONE
-            tv_delete.visibility=View.VISIBLE
-            tv_assist.visibility=View.GONE
-        }
-
+        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        height=mPopupWindow?.contentView?.measuredHeight!!
         show()
         return this
     }
@@ -98,15 +54,14 @@ class PopWindowDrawingButton(val context:Context, val view: View, val type: Int,
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,-20, yoff)
+            mPopupWindow?.showAsDropDown(view,-80, -(height+50))
         }
     }
 
-    fun isShow(): Boolean? {
-        return if (mPopupWindow != null) {
-            mPopupWindow?.isShowing
-        } else{
-            false
+    private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
+
+        override fun convert(helper: BaseViewHolder, item: PopWindowBean) {
+            helper.setText(R.id.tv_name,item.name)
         }
     }
 
@@ -118,7 +73,7 @@ class PopWindowDrawingButton(val context:Context, val view: View, val type: Int,
     }
 
     fun interface OnClickListener{
-        fun onClick(type: Int)
+        fun onClick(item: PopWindowBean)
     }
 
 

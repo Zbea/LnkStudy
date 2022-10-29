@@ -11,7 +11,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.FileDownManager
-import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.mvp.model.AppListBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.mvp.presenter.AppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -24,16 +24,17 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_app_download.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
 
 class AppDownloadActivity:BaseAppCompatActivity(),
     IContractView.IAPPView {
 
     private val presenter=AppPresenter(this)
-    private var appBean:AppBean?=null
-    private var apps= mutableListOf<AppBean.ListBean>()
-    private var wallpapers= mutableListOf<AppBean.ListBean>()
-    private var paintings= mutableListOf<AppBean.ListBean>()
+    private var appBean:AppListBean?=null
+    private var apps= mutableListOf<AppListBean.ListBean>()
+    private var wallpapers= mutableListOf<AppListBean.ListBean>()
+    private var paintings= mutableListOf<AppListBean.ListBean>()
     private var pageCount = 0
     private var pageIndex = 1 //当前页码
     private var mAdapterDownload:AppDownloadListAdapter?=null
@@ -48,7 +49,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
     private var popWindowTime:PopWindowList?=null
     private var popWindowPainting:PopWindowList?=null
 
-    override fun onAppList(appBean: AppBean?) {
+    override fun onAppList(appBean: AppListBean?) {
         this.appBean=appBean
         pageCount=appBean?.pageCount!!
         val totalCount=appBean?.totalCount
@@ -63,7 +64,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
         }
     }
 
-    override fun onDownBook(appDown: AppBean?) {
+    override fun onDown(appDown: AppListBean?) {
         apps[position].applicationId=appDown?.applicationId!!
         apps[position].contentUrl=appDown?.contentUrl
         mAdapterDownload?.notifyDataSetChanged()
@@ -83,7 +84,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
         getData()
 
         for (i in 1..12){
-            val item =AppBean.ListBean()
+            val item =AppListBean.ListBean()
             item.name="壁纸$i"
             item.images=null
             item.price=i
@@ -91,7 +92,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
         }
 
         for (i in 1..12){
-            val item =AppBean.ListBean()
+            val item =AppListBean.ListBean()
             item.name="书法$i"
             item.price=i
             paintings.add(item)
@@ -145,16 +146,16 @@ class AppDownloadActivity:BaseAppCompatActivity(),
             when(i){
                 R.id.rb_tool->{
                     showView(rv_tool)
-                    disMissView(rv_wallpaper,rv_painting,ll_setting)
+                    disMissView(rv_wallpaper,rv_painting,ll_painting)
                     type=0
                 }
                 R.id.rb_wallpaper->{
                     showView(rv_wallpaper)
-                    disMissView(rv_tool,rv_painting,ll_setting)
+                    disMissView(rv_tool,rv_painting,ll_painting)
                     type=1
                 }
                 else->{
-                    showView(rv_painting,ll_setting)
+                    showView(rv_painting,ll_painting)
                     disMissView(rv_tool,rv_wallpaper)
                     type=2
                 }
@@ -188,9 +189,9 @@ class AppDownloadActivity:BaseAppCompatActivity(),
 
     private fun initWallpaper(){
         rv_wallpaper.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mWallpaperListAdapter = AppWallpaperListAdapter(R.layout.item_app_wallpaper, wallpapers)
+        mWallpaperListAdapter = AppWallpaperListAdapter(R.layout.item_app_wallpaper, wallpapers,0)
         rv_wallpaper.adapter = mWallpaperListAdapter
-        rv_wallpaper.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),30))
+        rv_wallpaper.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),30))
         mWallpaperListAdapter?.bindToRecyclerView(rv_wallpaper)
         mWallpaperListAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
@@ -200,9 +201,9 @@ class AppDownloadActivity:BaseAppCompatActivity(),
 
     private fun initPainting(){
         rv_painting.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mPaintingAdapter = AppWallpaperListAdapter(R.layout.item_app_wallpaper, paintings)
+        mPaintingAdapter = AppWallpaperListAdapter(R.layout.item_app_wallpaper, paintings,1)
         rv_painting.adapter = mPaintingAdapter
-        rv_painting.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),30))
+        rv_painting.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),30))
         mPaintingAdapter?.bindToRecyclerView(rv_painting)
         mPaintingAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
@@ -244,7 +245,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
     }
 
     //下载应用
-    private fun downLoadStart(bean: AppBean): BaseDownloadTask? {
+    private fun downLoadStart(bean: AppListBean): BaseDownloadTask? {
 
         val targetFileStr=FileAddress().getPathApk(bean.applicationId.toString())
 
@@ -257,7 +258,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
                 return null
             }
         }
-        mDialog?.show()
+        showLoading()
         val download = FileDownManager.with(this).create(bean.contentUrl).setPath(targetFileStr).startDownLoad(object : FileDownManager.DownLoadCallBack {
 
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -265,6 +266,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
+                        hideLoading()
                         installApk(targetFileStr)
                         currentDownLoadTask = null//完成了废弃线程
                     }

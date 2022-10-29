@@ -11,6 +11,7 @@ import com.bll.lnkstudy.ui.adapter.MainMessageAdapter
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_message_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 
 class MessageListActivity:BaseAppCompatActivity() {
 
@@ -28,6 +29,8 @@ class MessageListActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
+
+        showView(cb_all,tv_delete)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MainMessageAdapter(R.layout.item_message, null)

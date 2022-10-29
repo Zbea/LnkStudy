@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_click"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:background="@drawable/bg_line_bottom"
+    android:layout_height="45dp"
     android:gravity="center_vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
-
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    >
 
         <TextView
             android:id="@+id/tv_name"
@@ -17,14 +16,13 @@
             android:lines="1"
             android:ellipsize="end"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:gravity="center"
+            android:layout_marginStart="20dp"
             android:text="1"
             android:textColor="@color/black"
             android:textSize="20sp" />

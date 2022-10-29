@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -6,11 +6,12 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.Paper
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.ac_main_receivepaper_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 
-class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickListener {
+class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
     private var type=1//考卷
     private var mCourseId=0
@@ -38,20 +39,18 @@ class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickLis
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
     private var commitPaths = mutableListOf<String>()
-    private var elik_a: EinkPWInterface? = null
-    private var elik_b: EinkPWInterface? = null
 
     private var pageCount = 0
     private var page = 0 //当前页码
-
-    private var isExpand=true
-
 
     override fun layoutId(): Int {
         return R.layout.ac_main_receivepaper_drawing
     }
 
     override fun initData() {
+
+        isExpand=true
+
         receivePaper=intent.getBundleExtra("bundle")?.getSerializable("receivePaper") as ReceivePaper
         outImageStr = intent.getStringExtra("outImageStr").toString()
         paths = intent.getStringArrayListExtra("imagePaths")!!
@@ -63,9 +62,9 @@ class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickLis
         daoManager= PaperDaoManager.getInstance(this)
         daoContentManager= PaperContentDaoManager.getInstance(this)
 
+        //获取之前所有收到的考卷，用来排序
         papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>
         paperContents= daoContentManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperContent>
-
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -75,34 +74,29 @@ class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickLis
 
     override fun initView() {
 
-        tv_save.setOnClickListener(this)
+        iv_btn.setOnClickListener(this)
         btn_page_up.setOnClickListener(this)
         btn_page_down.setOnClickListener(this)
-
-        disMissView(iv_expand)
 
         elik_a = v_content_a.pwInterFace
         elik_b = v_content_b.pwInterFace
 
         changeExpandView()
 
-        tv_title.text=receivePaper?.title
+        tv_title_a.text=receivePaper?.title
 
         changeContent()
     }
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
-        tv_page_a.visibility = View.VISIBLE
-        tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
-        iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
-        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
-        ll_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
+        showView(v_content_a,ll_page_content_a,v_empty)
+        disMissView(iv_expand,iv_tool_left,iv_tool_right)
     }
 
     override fun onClick(view: View?) {
 
-        if (view == tv_save) {
+        if (view == iv_btn) {
             showLoading()
             Handler().postDelayed(Runnable {
                 commit()
@@ -140,11 +134,6 @@ class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickLis
             hideLoading()
             finish()
 
-        }
-
-        if (view==iv_expand){
-            isExpand=!isExpand
-            changeExpandView()
         }
 
         if (view == btn_page_up) {
@@ -229,10 +218,10 @@ class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickLis
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view: ImageView) {
 
-        GlideUtils.setImageNoCacheUrl(this,paths[index],view)
+        GlideUtils.setImageUrl(this,paths[index],view)
 
-        elik?.setLoadFilePath(drawPaths[index],true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+        elik.setLoadFilePath(drawPaths[index],true)
+        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
 
@@ -253,9 +242,11 @@ class MainReceivePaperDrawingActivity : BaseAppCompatActivity(), View.OnClickLis
 
 
     override fun onBackPressed() {
-        if (type==0){
-            super.onBackPressed()
-        }
+    }
+
+    override fun onErasure() {
+        elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+        elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
     }
 
 }

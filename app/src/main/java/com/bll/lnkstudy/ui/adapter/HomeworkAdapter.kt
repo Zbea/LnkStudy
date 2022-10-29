@@ -40,7 +40,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAd
 
         helper.addOnClickListener(R.id.iv_image)
         helper.addOnClickListener(R.id.tv_message)
-        helper.addOnClickListener(R.id.iv_message)
+        helper.addOnClickListener(R.id.ll_message)
 
 
     }

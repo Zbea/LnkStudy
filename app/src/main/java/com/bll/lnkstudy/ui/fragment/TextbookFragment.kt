@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import androidx.recyclerview.widget.GridLayoutManager
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
@@ -14,7 +13,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.common_xtab.*
+import kotlinx.android.synthetic.main.fragment_painting.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -61,34 +60,24 @@ class TextbookFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
 
-        xtab?.newTab()?.setText("我的课本")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("上期课本")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("参考课本")?.let { it -> xtab?.addTab(it) }
-        xtab?.getTabAt(1)?.select()
-        xtab?.getTabAt(0)?.select()
-
-        xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-                when(tab?.text.toString() ) {
-                    "我的课本" -> {
-                        textbook=0
-                    }
-                    "上期课本" -> {
-                        textbook=1
-                    }
-                    "参考课本" -> {
-                        textbook=2
-                    }
+        var tabStrs= mutableListOf("我的课本","上期课本","参考课本")
+        for (i in tabStrs.indices) {
+            rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
+        }
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            when(tabStrs[id] ) {
+                "我的课本" -> {
+                    textbook=0
                 }
-                findData()
+                "上期课本" -> {
+                    textbook=1
+                }
+                "参考课本" -> {
+                    textbook=2
+                }
             }
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
-            }
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-
-        })
-
+            findData()
+        }
     }
 
     private fun initRecyclerView(){

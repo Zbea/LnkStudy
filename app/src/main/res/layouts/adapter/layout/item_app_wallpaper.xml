@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="195dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center">
 
@@ -10,6 +10,7 @@
         android:layout_width="195dp"
         android:layout_height="260dp"
         android:src="@mipmap/icon_bookcase_book"
+        android:padding="1dp"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         />
 
@@ -55,7 +56,7 @@
             android:gravity="center"
             android:layout_height="@dimen/dp_30"
             android:background="@drawable/bg_black_arch"
-            android:text="下载" />
+            android:text="购买" />
 
         <View
             android:layout_width="match_parent"

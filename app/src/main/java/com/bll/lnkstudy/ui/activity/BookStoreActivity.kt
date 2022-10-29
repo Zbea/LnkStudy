@@ -1,8 +1,9 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.view.View
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -19,11 +20,9 @@ import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import com.google.android.material.tabs.TabLayout
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.common_xtab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
@@ -96,7 +95,6 @@ class BookStoreActivity:BaseAppCompatActivity() ,
     }
 
     override fun initView() {
-
         setPageTitle(DataBeanManager.getIncetance().bookStoreType[flags])
 
         initRecyclerView()
@@ -133,6 +131,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
         presenter.getBooks(map)
     }
 
+    //得到分类数据
     private fun getDataType(){
         gradeList=DataBeanManager.getIncetance().bookTypeGrade
         when(flags){
@@ -140,7 +139,6 @@ class BookStoreActivity:BaseAppCompatActivity() ,
                 disMissView(tv_search)
                 gradeList.clear()
                 typeList=DataBeanManager.getIncetance().bookTypeJc
-                xtab.setxTabDisplayNum(typeList.size)
                 for (i in 0..12){
                     provinceList.add(PopWindowBean(i,"广东省$i",i==0))
                 }
@@ -151,28 +149,22 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             1->{
                 disMissView(tv_province)
                 typeList=DataBeanManager.getIncetance().bookTypeGj
-                xtab.setxTabDisplayNum(typeList.size)
             }
             2->{
                 disMissView(tv_province)
                 typeList=DataBeanManager.getIncetance().bookTypeZRKX
-                xtab.setxTabDisplayNum(typeList.size)
             }
             3->{
                 disMissView(tv_province)
                 typeList=DataBeanManager.getIncetance().bookTypeSHKX
-                xtab.setxTabDisplayNum(typeList.size)
             }
             4->{
                 disMissView(tv_province)
                 typeList=DataBeanManager.getIncetance().bookTypeSWKX
-                xtab.setxTabDisplayNum(typeList.size)
             }
             else->{
                 disMissView(tv_province)
                 typeList=DataBeanManager.getIncetance().bookTypeYDCY
-                xtab.setxTabDisplayNum(10)
-                xtab.tabMode=TabLayout.MODE_SCROLLABLE
             }
         }
 
@@ -227,32 +219,19 @@ class BookStoreActivity:BaseAppCompatActivity() ,
 
     //设置tab分类
     private fun initTab(){
-        for (item in typeList){
-            xtab?.newTab()?.setText(item.name)?.let { xtab?.addTab(it) }
+        for (i in typeList.indices){
+            var radioButton =
+                layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+            radioButton.id = i
+            radioButton.text = typeList[i].name
+            radioButton.isChecked = i == 0
+            var layoutParams = RadioGroup.LayoutParams(
+                RadioGroup.LayoutParams.WRAP_CONTENT,
+                DP2PX.dip2px(this, 45f))
+            layoutParams.marginEnd = if (i == typeList.size-1) 0 else DP2PX.dip2px(this, 44f)
+            radioButton.layoutParams = layoutParams
+            rg_group.addView(radioButton)
         }
-        xtab?.getTabAt(1)?.select()
-        xtab?.getTabAt(0)?.select()
-        xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-//                if (flags==0){
-//                    val baseTypeBean=typeList[tab?.position!!]
-//                    if (baseTypeBean.typeId==0){
-//                        showView(tv_province)
-//                    }
-//                    else{
-//                        disMissView(tv_province)
-//                    }
-//                }
-
-            }
-
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-
-        })
     }
 
     private fun initRecyclerView(){

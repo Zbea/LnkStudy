@@ -1,14 +1,16 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ListBean
@@ -34,11 +36,6 @@ class PaperDrawingActivity: BaseActivity() {
     private var page = 0//页码
     private var pageCount=0
 
-    private var isExpand=false
-
-    private var elik_a: EinkPWInterface?=null
-    private var elik_b: EinkPWInterface?=null
-
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_drawing
     }
@@ -58,31 +55,25 @@ class PaperDrawingActivity: BaseActivity() {
     }
 
     override fun initView() {
+
         if(papers.size>0){
             elik_a=v_content_a.pwInterFace
             elik_b=v_content_b.pwInterFace
             currentPosition=papers.size-1
             changeContent()
         }
+
         changeExpandView()
         bindClick()
     }
 
 
-    //单屏、全屏内容切换
-    private fun changeExpandView(){
-        tv_page_b.visibility = if (isExpand) View.VISIBLE else View.GONE
-        iv_tool_right.visibility=if (isExpand) View.VISIBLE else View.GONE
-        v_content_b.visibility=if (isExpand) View.VISIBLE else View.GONE
-    }
+
 
     private fun bindClick(){
 
         iv_expand.setOnClickListener {
-            isExpand= !isExpand
-            moveToScreen(isExpand)
-            changeExpandView()
-            changeContent()
+            changeExpandContent()
         }
 
         iv_catalog.setOnClickListener {
@@ -128,6 +119,31 @@ class PaperDrawingActivity: BaseActivity() {
             }
 
         }
+
+        iv_btn.setOnClickListener {
+            DrawingCommitDialog(this,getCurrentScreenPos()).builder()
+        }
+    }
+
+    /**
+     * 切换屏幕
+     */
+    private fun changeExpandContent(){
+        changeErasure()
+        isExpand=!isExpand
+        moveToScreen(isExpand)
+        changeExpandView()
+        changeContent()
+    }
+
+    //单屏、全屏内容切换
+    private fun changeExpandView(){
+        showView(ll_page_content_a)
+        ll_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
+        ll_page_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+        v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
+        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
+        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 
     /**
@@ -142,13 +158,11 @@ class PaperDrawingActivity: BaseActivity() {
             list.add(listBean)
         }
         DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                currentPosition = papers[position].index
-                page=0
-                changeContent()
-            }
-        })
+        setOnDialogClickListener { position ->
+            currentPosition = papers[position].index
+            page = 0
+            changeContent()
+        }
     }
 
     /**
@@ -169,7 +183,8 @@ class PaperDrawingActivity: BaseActivity() {
 
         pageCount=paperContents.size
 
-        tv_title.text=paper?.title
+        tv_title_a.text=paper?.title
+        tv_title_b.text=paper?.title
         setPWEnabled(!paper!!.isPg)
 
         loadImage(page,elik_a!!,v_content_a)
@@ -216,10 +231,17 @@ class PaperDrawingActivity: BaseActivity() {
 
     override fun changeScreenPage() {
         if (isExpand){
-            isExpand=!isExpand
-            moveToScreen(isExpand)
-            changeExpandView()
-            changeContent()
+            changeExpandContent()
+        }
+    }
+
+    override fun onErasure() {
+        if (isExpand){
+            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+        }
+        else{
+            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
     }
 

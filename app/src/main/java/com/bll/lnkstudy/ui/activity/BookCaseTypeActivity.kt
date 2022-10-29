@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -16,7 +17,6 @@ import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_bookcase_type.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -103,7 +103,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
         var mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, types)
         rv_type.adapter = mAdapterType
         mAdapterType?.bindToRecyclerView(rv_type)
-        rv_type.addItemDecoration(SpaceItemDeco(0,0,0,26,0))
+        rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,14f),DP2PX.dip2px(this,16f)))
         mAdapterType?.setOnItemClickListener { adapter, view, position ->
             mAdapterType?.getItem(type)?.isCheck=false
             type=position
@@ -119,7 +119,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
     private fun findData(){
         books=BookGreenDaoManager.getInstance(this).queryAllBook("0",type.toString(),pageIndex,12)
         val total=BookGreenDaoManager.getInstance(this).queryAllBook("0",type.toString())
-        pageTotal= ceil((total.size.toDouble()/12)).toInt()
+        pageTotal= ceil((total.size.toDouble()/Constants.PAGE_SIZE)).toInt()
         upDateUI()
     }
 

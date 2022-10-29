@@ -2,7 +2,6 @@ package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -14,33 +13,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity
+import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -335,7 +327,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         SPUtil.removeObj("user")
 
         Handler().postDelayed(Runnable {
-            startActivity(Intent(this, AccountLoginActivity::class.java))
+            val intent=Intent(this, AccountLoginActivity::class.java)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
         }, 500)
     }
@@ -345,7 +339,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     override fun showLoading() {
-        mDialog!!.show()
+        mDialog?.show()
     }
 
     override fun fail(msg: String) {

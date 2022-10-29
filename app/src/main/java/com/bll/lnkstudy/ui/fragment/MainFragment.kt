@@ -3,8 +3,6 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +18,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
+import com.bll.lnkstudy.dialog.PopWindowDateCilck
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
@@ -28,8 +27,13 @@ import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.ReceivePaper
-import com.bll.lnkstudy.ui.activity.*
+import com.bll.lnkstudy.ui.activity.MainActivity
+import com.bll.lnkstudy.ui.activity.MainCourseActivity
+import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.date.MainDateActivity
+import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
+import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -57,7 +61,7 @@ class MainFragment : BaseFragment() {
     private var mainDateAdapter: MainDateAdapter? = null
 
     private var mainTextBookAdapter: MainTextBookAdapter? = null
-    private var popWindow: PopWindowUtil? = null
+    private var popWindow: PopWindowDateCilck? = null
 
     private var notes= mutableListOf<Note>()
     private var mainNoteAdapter: MainNoteAdapter? = null
@@ -73,6 +77,7 @@ class MainFragment : BaseFragment() {
     override fun initView() {
         EventBus.getDefault().register(this)
         setTitle("首页")
+//        showSearch(true)
 
         onClickView()
 
@@ -90,8 +95,12 @@ class MainFragment : BaseFragment() {
 
     @SuppressLint("WrongConstant")
     private fun onClickView() {
+//        tv_search.setOnClickListener {
+//            AppUtils.clearAppData(requireContext())
+//        }
+
         ll_date.setOnClickListener {
-            customStartActivity(Intent(activity, MyWallpaperActivity::class.java))
+            customStartActivity(Intent(activity, MainDateActivity::class.java))
         }
 
         ll_message.setOnClickListener {
@@ -144,7 +153,7 @@ class MainFragment : BaseFragment() {
         rv_plan.adapter = mainDateAdapter
         mainDateAdapter?.bindToRecyclerView(rv_plan)
         rv_plan.addItemDecoration(SpaceItemDeco(0, 0, 0, 0, 0))
-        mainDateAdapter?.emptyView = getEmptyView("去添加学习计划~")
+        mainDateAdapter?.emptyView = getEmptyView("添加学习计划~")
 
         rv_schedule.layoutManager = LinearLayoutManager(activity)//创建布局管理
         mainDateEventScheduleAdapter =
@@ -152,43 +161,35 @@ class MainFragment : BaseFragment() {
         rv_schedule.adapter = mainDateEventScheduleAdapter
         mainDateEventScheduleAdapter?.bindToRecyclerView(rv_schedule)
         rv_schedule.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
-        mainDateEventScheduleAdapter?.emptyView = getEmptyView("去添加日程~")
+        mainDateEventScheduleAdapter?.emptyView = getEmptyView("添加日程~")
 
         rv_day.layoutManager = LinearLayoutManager(activity)//创建布局管理
         mainDateEventDayAdapter = MainDateEventDayAdapter(R.layout.item_date_day_event, dayList)
         rv_day.adapter = mainDateEventDayAdapter
         mainDateEventDayAdapter?.bindToRecyclerView(rv_day)
         rv_day.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
-        mainDateEventDayAdapter?.emptyView = getEmptyView("去添加重要日子~")
+        mainDateEventDayAdapter?.emptyView = getEmptyView("添加重要日子~")
 
         iv_date_more.setOnClickListener {
-
             if (popWindow == null) {
-                val view = LayoutInflater.from(activity)
-                    .inflate(R.layout.popwindow_date_switch_view, null, false)
-                val tvPlan = view.findViewById<TextView>(R.id.tv_plan)
-                tvPlan.setOnClickListener {
-                    rv_plan.visibility = View.VISIBLE
-                    rv_schedule.visibility = View.GONE
-                    rv_day.visibility = View.GONE
-                    popWindow?.dismiss()
+                popWindow=PopWindowDateCilck(requireContext(),iv_date_more).builder()
+                popWindow ?.setOnClickListener {
+                    if (it==0){
+                        rv_plan.visibility = View.VISIBLE
+                        rv_schedule.visibility = View.GONE
+                        rv_day.visibility = View.GONE
+                    }
+                    if (it==1){
+                        rv_plan.visibility = View.GONE
+                        rv_schedule.visibility = View.VISIBLE
+                        rv_day.visibility = View.GONE
+                    }
+                    if (it==2){
+                        rv_plan.visibility = View.GONE
+                        rv_schedule.visibility = View.GONE
+                        rv_day.visibility = View.VISIBLE
+                    }
                 }
-                val tvSchedule = view.findViewById<TextView>(R.id.tv_schedule)
-                tvSchedule.setOnClickListener {
-                    rv_plan.visibility = View.GONE
-                    rv_schedule.visibility = View.VISIBLE
-                    rv_day.visibility = View.GONE
-                    popWindow?.dismiss()
-                }
-                val tvDay = view.findViewById<TextView>(R.id.tv_day)
-                tvDay.setOnClickListener {
-                    rv_plan.visibility = View.GONE
-                    rv_schedule.visibility = View.GONE
-                    rv_day.visibility = View.VISIBLE
-                    popWindow?.dismiss()
-                }
-                popWindow = PopWindowUtil().makePopupWindow(activity, iv_date_more, view, -220, 5, Gravity.RIGHT)
-                popWindow?.show()
             } else {
                 popWindow?.show()
             }
@@ -267,7 +268,7 @@ class MainFragment : BaseFragment() {
             if (files.size==paper.images.size) {
                 var bundle=Bundle()
                 bundle.putSerializable("receivePaper",paper)
-                var intent= Intent(activity,MainReceivePaperDrawingActivity::class.java)
+                var intent= Intent(activity, MainReceivePaperDrawingActivity::class.java)
                 intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
                 intent.putExtra("outImageStr",paper.path)
                 intent.putExtra("bundle",bundle)

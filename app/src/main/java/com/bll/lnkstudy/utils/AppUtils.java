@@ -31,30 +31,6 @@ public class AppUtils {
     public final static String HEIGHT = "height";
 
     /**
-     * px转dp
-     *
-     * @param context The context
-     * @param px      the pixel value
-     * @return value in dp
-     */
-    public static int pxToDp(Context context, float px) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return (int) ((px / displayMetrics.density) + 0.5f);
-    }
-
-    /**
-     * dp转px
-     *
-     * @param context
-     * @param dp
-     * @return
-     */
-    public static int dpToPx(Context context, float dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return (int) ((dp * displayMetrics.density) + 0.5f);
-    }
-
-    /**
      * 获取状态栏高度
      *
      * @param context
@@ -109,7 +85,7 @@ public class AppUtils {
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(
                     context
-                    , "com.bll.utilssdk"
+                    , "com.bll.lnkstudy"
                     , apkFile);
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
@@ -285,7 +261,7 @@ public class AppUtils {
                 if (!packageInfo.packageName.equals(context.getPackageName()))
                 {
                     AppBean myAppInfo = new AppBean();
-                    myAppInfo.appId=4+i;
+                    myAppInfo.appId=5+i;
                     String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     myAppInfo.appName=appName;
                     myAppInfo.packageName=packageInfo.packageName;

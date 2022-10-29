@@ -19,6 +19,7 @@
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
             android:layout_weight="1"
+            android:visibility="gone"
             android:scaleType="fitCenter" />
 
         <com.android.internal.widget.PreferenceImageView
@@ -28,7 +29,6 @@
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
             android:layout_weight="1"
-            android:visibility="gone"
             android:scaleType="fitCenter" />
 
 

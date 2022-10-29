@@ -2,13 +2,12 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.ui.activity.MyPaintingListActivity
 import com.bll.lnkstudy.utils.ZipUtils
-import kotlinx.android.synthetic.main.common_xtab.*
 import kotlinx.android.synthetic.main.fragment_painting.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -19,8 +18,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class PaintingFragment : BaseFragment(){
 
-    private var typeStr="毛笔书法"//类型
-    private var dynastyStr=""//朝代
+    private var typeStr=0//类型
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_painting
@@ -35,42 +33,48 @@ class PaintingFragment : BaseFragment(){
         initTab()
 
         iv_han.setOnClickListener {
-            dynastyStr="汉朝"
-            onClick()
+            onClick(0)
         }
         iv_tang.setOnClickListener {
-            dynastyStr="唐朝"
-            onClick()
+            onClick(1)
         }
         iv_song.setOnClickListener {
-            dynastyStr="宋朝"
-            onClick()
+            onClick(2)
         }
         iv_yuan.setOnClickListener {
-            dynastyStr="元朝"
-            onClick()
+            onClick(3)
         }
         iv_ming.setOnClickListener {
-            dynastyStr="明朝"
-            onClick()
+            onClick(4)
         }
         iv_qing.setOnClickListener {
-            dynastyStr="清朝"
-            onClick()
+            onClick(5)
         }
         iv_jd.setOnClickListener {
-            dynastyStr="近代"
-            onClick()
+            onClick(6)
         }
         iv_dd.setOnClickListener {
-            dynastyStr="当代"
-            onClick()
+            onClick(7)
         }
         iv_hb.setOnClickListener {
             gotoPaintingDrawing(0)
         }
         iv_sf.setOnClickListener {
             gotoPaintingDrawing(1)
+        }
+
+        tv_sm.setOnClickListener {
+            var intent= Intent(activity,MyPaintingListActivity::class.java)
+            intent.putExtra("title", "素描画")
+            intent.flags= Intent.FLAG_GRANT_READ_URI_PERMISSION
+            customStartActivity(intent)
+        }
+
+        tv_yb.setOnClickListener {
+            var intent= Intent(activity,MyPaintingListActivity::class.java)
+            intent.putExtra("title", "硬笔书法")
+            intent.flags=Intent.FLAG_GRANT_READ_URI_PERMISSION
+            customStartActivity(intent)
         }
 
     }
@@ -80,45 +84,21 @@ class PaintingFragment : BaseFragment(){
 
     //设置头部索引
     private fun initTab(){
-        xtab?.newTab()?.setText("毛笔书法")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("山水画")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("花鸟画")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("人物画")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("素描画")?.let { it -> xtab?.addTab(it) }
-        xtab?.newTab()?.setText("硬笔书法")?.let { it -> xtab?.addTab(it) }
-        xtab?.getTabAt(1)?.select()
-        xtab?.getTabAt(0)?.select()
-
-        xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-                typeStr=tab?.text.toString()
-                if (typeStr=="素描画"){
-                    var intent= Intent(activity,MyPaintingListActivity::class.java)
-                    intent.putExtra("title", typeStr)
-                    customStartActivity(intent)
-                }
-                if (typeStr=="硬笔书法"){
-                    var intent= Intent(activity,MyPaintingListActivity::class.java)
-                    intent.putExtra("title", typeStr)
-                    intent.putExtra("type",1)
-                    customStartActivity(intent)
-                }
-            }
-
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-
-        })
-
+        val tabStrs= DataBeanManager.getIncetance().PAINTING
+        for (i in tabStrs.indices) {
+            rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
+        }
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            typeStr= id
+        }
     }
 
-
-    private fun onClick(){
+    private fun onClick(time:Int){
         var intent= Intent(activity,MyPaintingListActivity::class.java)
-        intent.putExtra("title", "$dynastyStr   $typeStr" )
+        intent.putExtra("title", "${DataBeanManager.getIncetance().YEARS[time]}   ${DataBeanManager.getIncetance().PAINTING[typeStr]}" )
+        intent.putExtra("time",time)
+        intent.putExtra("paintingType",typeStr)
+        intent.flags=0
         customStartActivity(intent)
     }
 

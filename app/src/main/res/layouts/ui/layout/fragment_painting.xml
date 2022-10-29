@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -7,13 +7,43 @@
 
     <include layout="@layout/common_fragment_title" />
 
-    <include
-        layout="@layout/common_xtab"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="@dimen/navigation_height"
-        android:layout_marginEnd="60dp" />
+        android:layout_marginTop="@dimen/dp_15"
+        android:orientation="horizontal"
+        >
+        <com.bll.lnkstudy.widget.FlowRadioGroup
+            android:id="@+id/rg_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:id="@+id/tv_sm"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_45"
+            android:layout_marginEnd="44dp"
+            android:layout_marginStart="44dp"
+            android:gravity="center"
+            android:textColor="@color/black_90"
+            android:text="素描画"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_24"
+            />
+
+        <TextView
+            android:id="@+id/tv_yb"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_45"
+            android:gravity="center"
+            android:textColor="@color/black_90"
+            android:textStyle="bold"
+            android:text="硬笔书法"
+            android:textSize="@dimen/sp_24"
+            />
+    </LinearLayout>
 
 
     <LinearLayout
@@ -128,4 +158,4 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>

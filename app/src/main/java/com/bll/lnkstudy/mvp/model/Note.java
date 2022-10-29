@@ -1,8 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
 import com.bll.lnkstudy.utils.SPUtil;
-import com.bll.lnkstudy.utils.greendao.DateRemindConverter;
-import com.bll.lnkstudy.utils.greendao.NoteConverter;
+import com.bll.lnkstudy.utils.greendao.StringConverter;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -10,7 +9,6 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
@@ -31,7 +29,7 @@ public class Note implements Serializable {
     public String resId;//原图id
     public int index=0;//当前文件名的最大值
     public String path;//文件夹地址
-    @Convert(columnType = String.class,converter = NoteConverter.class)
+    @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;//生成图片路径
 
     @Generated(hash = 98933637)

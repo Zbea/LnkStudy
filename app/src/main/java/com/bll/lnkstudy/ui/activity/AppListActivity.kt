@@ -1,9 +1,11 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
@@ -11,12 +13,11 @@ import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
 
-class AppListActivity:BaseAppCompatActivity() {
+class AppListActivity:BaseActivity() {
 
     private var apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null
     private var mAdapterTool:AppListAdapter?=null
-    private var toolApps= mutableListOf<AppBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_app_list
@@ -37,7 +38,9 @@ class AppListActivity:BaseAppCompatActivity() {
             for (item in apps){
                 if (item.isCheck){
                     item.isCheck=false
-                    if(!toolApps.contains(item)){
+                    if (!isAppContains(item,toolApps)){
+                        AppDaoManager.getInstance(this).insertOrReplace(item)
+                        item.id=AppDaoManager.getInstance(this).insertId
                         toolApps.add(item)
                     }
                 }
@@ -47,9 +50,12 @@ class AppListActivity:BaseAppCompatActivity() {
         }
 
         tv_remove.setOnClickListener {
+
             val it=toolApps.iterator()
             while (it.hasNext()){
-                if (it.next().isCheck){
+                val item=it.next()
+                if (item.isCheck){
+                    AppDaoManager.getInstance(this).deleteBean(item)
                     it.remove()
                 }
             }
@@ -58,23 +64,36 @@ class AppListActivity:BaseAppCompatActivity() {
 
     }
 
-
+    @SuppressLint("WrongConstant")
     private fun initRecycler(){
 
         rv_list.layoutManager = GridLayoutManager(this,5)//创建布局管理
-        mAdapter = AppListAdapter(R.layout.item_app_list, apps)
+        mAdapter = AppListAdapter(0,R.layout.item_app_list, apps)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(0,70))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.iv_image){
-                if (position==0)
-                {
-                    customStartActivity(Intent(this,AppDownloadActivity::class.java))
-                }
-                else{
-                    val packageName= apps[position].packageName
-                    AppUtils.startAPP(this,packageName)
+                when(position){
+                    0->{
+                        customStartActivity(Intent(this,AppDownloadActivity::class.java))
+                    }
+                    1->{
+
+                    }
+                    2->{
+
+                    }
+                    3->{
+                        customStartActivity(Intent(this,AppOfficialActivity::class.java).setFlags(0))
+                    }
+                    4->{
+                        customStartActivity(Intent(this,AppOfficialActivity::class.java).setFlags(1))
+                    }
+                    else->{
+                        val packageName= apps[position].packageName
+                        AppUtils.startAPP(this,packageName)
+                    }
                 }
             }
             if (view.id==R.id.cb_check){
@@ -88,11 +107,11 @@ class AppListActivity:BaseAppCompatActivity() {
     private fun initRecyclerTool(){
 
         rv_tool.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapterTool = AppListAdapter(R.layout.item_app_list, toolApps)
+        mAdapterTool = AppListAdapter(0,R.layout.item_app_list, toolApps)
         rv_tool.adapter = mAdapterTool
         mAdapterTool?.bindToRecyclerView(rv_tool)
         rv_tool.addItemDecoration(SpaceGridItemDeco(0,60))
-        mAdapterTool?.setOnItemClickListener { adapter, view, position ->
+        mAdapterTool?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.cb_check){
                 toolApps[position].isCheck=! toolApps[position].isCheck
                 mAdapterTool?.notifyItemChanged(position)
@@ -100,6 +119,5 @@ class AppListActivity:BaseAppCompatActivity() {
         }
 
     }
-
 
 }

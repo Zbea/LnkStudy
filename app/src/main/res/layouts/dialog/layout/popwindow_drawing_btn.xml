@@ -1,53 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/ll_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:background="@mipmap/icon_popwindow_drawing_btn_bg"
-        android:paddingBottom="36dp"
-        >
+    android:id="@+id/ll_content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/icon_popwindow_drawing_btn_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingBottom="13dp">
 
-        <TextView
-            android:id="@+id/tv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:visibility="gone"
-            android:text="保    存"/>
-
-        <TextView
-            android:id="@+id/tv_commit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="提    交"
-            android:visibility="gone"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
-
-        <TextView
-            android:id="@+id/tv_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="删    除"
-            android:visibility="gone"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
-
-        <TextView
-            android:id="@+id/tv_assist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:textColor="@color/black"
-            android:text="规矩图"
-            android:visibility="gone"
-            android:textSize="@dimen/sp_22" />
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

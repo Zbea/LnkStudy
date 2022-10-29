@@ -21,12 +21,15 @@ import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.activity.NoteBookManagerActivity
-import com.bll.lnkstudy.ui.activity.NoteDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.ui.adapter.NoteAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -69,7 +72,8 @@ class NoteFragment : BaseFragment() {
         EventBus.getDefault().register(this)
 
         setTitle("笔记")
-        showNoteView()
+        showView(iv_manager)
+
         bindClick()
 
         initTab()
@@ -162,6 +166,7 @@ class NoteFragment : BaseFragment() {
         mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, noteBooks)
         rv_type.adapter = mAdapterType
         mAdapterType?.bindToRecyclerView(rv_type)
+        rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,22f),20))
         mAdapterType?.setOnItemClickListener { adapter, view, position ->
             noteBooks[positionType]?.isCheck = false
             positionType = position
@@ -215,7 +220,7 @@ class NoteFragment : BaseFragment() {
             }
         }
 
-        ivManagers?.setOnClickListener {
+        iv_manager?.setOnClickListener {
             setTopSelectView()
         }
 
@@ -285,7 +290,7 @@ class NoteFragment : BaseFragment() {
     private fun setTopSelectView() {
         if (popWindowList == null) {
             popWindowList =
-                PopWindowList(requireActivity(), popWindowBeans, ivManagers!!, 20).builder()
+                PopWindowList(requireActivity(), popWindowBeans, iv_manager, 20).builder()
             popWindowList?.setOnSelectListener { item ->
                 if (item.name == "新建笔记本") {
                     addNoteBook()

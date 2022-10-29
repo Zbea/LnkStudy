@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.manager.WallpaperDaoManager
 import com.bll.lnkstudy.mvp.model.WallpaperBean
 import com.bll.lnkstudy.ui.adapter.MyWallpaperAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -25,11 +26,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        for (i in 0..20){
-            val item=WallpaperBean()
-            item.title="壁纸$i"
-            lists.add(item)
-        }
+        lists=WallpaperDaoManager.getInstance(this).queryAll(0)
     }
 
     override fun initView() {

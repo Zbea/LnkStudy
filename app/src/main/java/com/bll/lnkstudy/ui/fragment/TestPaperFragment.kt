@@ -2,17 +2,19 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.GridLayoutManager
-import com.androidkun.xtablayout.XTabLayout
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
+import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.common_xtab.*
+import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -22,6 +24,9 @@ import org.greenrobot.eventbus.ThreadMode
  * 考卷
  */
 class TestPaperFragment : BaseFragment(){
+
+    private var popWindowList: PopWindowList?=null
+    private var popWindowBeans = mutableListOf<PopWindowBean>()
 
     private var mAdapter:TestPaperTypeAdapter?=null
     private var items= mutableListOf<TestPaperType>()
@@ -33,10 +38,18 @@ class TestPaperFragment : BaseFragment(){
 
     override fun initView() {
         setTitle("考卷")
+        showView(iv_manager)
+
+        popWindowBeans.add(PopWindowBean(0,"添加考卷集",true))
+
         EventBus.getDefault().register(this)
         initData()
         initRecyclerView()
         initTab()
+
+        iv_manager.setOnClickListener {
+            showPopWindow()
+        }
 
     }
 
@@ -49,23 +62,12 @@ class TestPaperFragment : BaseFragment(){
         val courses=DataBeanManager.getIncetance().courses
         course=courses[0]
 
-        for (item in courses){
-            xtab?.newTab()?.setText(item.name)?.let { it -> xtab?.addTab(it) }
+        for (i in courses.indices) {
+            rg_group.addView(getRadioButton(i ,courses[i].name,courses.size-1))
         }
-        xtab?.getTabAt(1)?.select()
-        xtab?.getTabAt(0)?.select()
-
-        xtab?.setOnTabSelectedListener(object : XTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: XTabLayout.Tab?) {
-                course=courses[tab?.position!!]
-            }
-            override fun onTabUnselected(tab: XTabLayout.Tab?) {
-            }
-            override fun onTabReselected(tab: XTabLayout.Tab?) {
-            }
-
-        })
-
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            course=courses[id]
+        }
     }
 
     private fun initData(){
@@ -106,6 +108,21 @@ class TestPaperFragment : BaseFragment(){
             gotoPaperDrawing(1,course?.courseId!!,items[position].type)
         }
 
+    }
+
+    private fun showPopWindow(){
+        if (popWindowList==null)
+        {
+            popWindowList= PopWindowList(requireActivity(),popWindowBeans,iv_manager,5).builder()
+            popWindowList?.setOnSelectListener { item ->
+                if (item.id == 0) {
+
+                }
+            }
+        }
+        else{
+            popWindowList?.show()
+        }
     }
 
     /**

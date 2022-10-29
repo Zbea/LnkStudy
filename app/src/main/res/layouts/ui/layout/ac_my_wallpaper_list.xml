@@ -7,8 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_height="@dimen/navigation_height"
         android:background="@color/white">
 
         <ImageView
@@ -16,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:paddingStart="46dp"
+            android:layout_marginStart="52dp"
             android:scaleType="center"
             android:src="@mipmap/icon_back" />
 
@@ -25,26 +24,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/iv_back"
             android:text="标题"
             android:textColor="@color/black"
-            android:textSize="27sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/navigation_text" />
 
         <TextView
             android:id="@+id/tv_ok"
             android:layout_width="118dp"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginEnd="46dp"
-            android:layout_below="@+id/tv_title"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="52dp"
+            android:layout_marginBottom="1dp"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
             android:text="确定"
             android:textColor="@color/black"
-            android:textSize="25sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 

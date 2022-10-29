@@ -2,40 +2,35 @@ package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
+import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.dialog.AppToolDialog
+import com.bll.lnkstudy.dialog.DrawingDraftDialog
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.manager.AppDaoManager
+import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.BookDetailsActivity
-import com.bll.lnkstudy.utils.ActivityManager
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
+import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
@@ -56,7 +51,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var tvSearch:TextView?=null
+    var ivToolLeft: ImageView? = null
+    var ivToolRight: ImageView? = null
+    var toolApps= mutableListOf<AppBean>()
 
+    var ivDraft:ImageView?=null
+    var ivErasure:ImageView?=null
+    var isExpand=false
+    var elik_a: EinkPWInterface? = null
+    var elik_b: EinkPWInterface? = null
+    var isErasure=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,10 +78,59 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
+        val appAlls=AppUtils.scanLocalInstallAppList(this)
+        toolApps= AppDaoManager.getInstance(this).queryAll()
+
+        //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除 没有卸载则拿到对应图标
+        val it=toolApps.iterator()
+        while (it.hasNext()){
+            val item=it.next()
+            if (isAppContains(item,appAlls)){
+                item.image=getAppDrawable(item)
+            }
+            else{
+                it.remove()
+                AppDaoManager.getInstance(this).deleteBean(item)
+            }
+        }
+
         mDialog = ProgressDialog(this,screenPos)
         initData()
         initView()
 
+    }
+
+    /**
+     * 判断app是否已经存在
+     */
+    fun isAppContains(item:AppBean,list: List<AppBean>):Boolean{
+        var isContain=false
+        for (ite in list){
+            if (ite.packageName.equals(item.packageName))
+            {
+                isContain=true
+            }
+        }
+        return isContain
+    }
+
+    /**
+     * 拿到app对应的应用图标
+     */
+    fun getAppDrawable(item:AppBean): Drawable? {
+        val appAlls=AppUtils.scanLocalInstallAppList(this)
+        var drawable: Drawable?=null
+        for (ite in appAlls){
+            if (ite.packageName.equals(item.packageName))
+            {
+                drawable=ite.image
+            }
+        }
+        return drawable
+    }
+
+    private fun showDialogAppTool(scree:Int){
+        AppToolDialog(this,scree,toolApps).builder()
     }
 
     /**
@@ -98,13 +151,85 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
         ivBack = findViewById(R.id.iv_back)
-        ivSave = findViewById(R.id.iv_save)
-        tvPageTitle = findViewById(R.id.tv_title)
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
+        ivSave = findViewById(R.id.iv_save)
+        tvPageTitle = findViewById(R.id.tv_title)
         tvSearch= findViewById(R.id.tv_search)
 
+        ivToolLeft = findViewById(R.id.iv_tool_left)
+        if (ivToolLeft != null) {
+            ivToolLeft?.setOnClickListener {
+                if (getCurrentScreenPos()==3)//全屏时点击左按钮在左
+                {
+                    showDialogAppTool(1)
+                }
+                else{
+                    showDialogAppTool(0)
+                }
+            }
+        }
+
+        ivToolRight = findViewById(R.id.iv_tool_right)
+        if (ivToolRight != null) {
+            ivToolRight?.setOnClickListener {
+                if (getCurrentScreenPos()==3)
+                {
+                    showDialogAppTool(2)
+                }
+                else{
+                    showDialogAppTool(0)
+                }
+            }
+        }
+
+        ivErasure=findViewById(R.id.iv_erasure)
+        if (ivErasure!=null){
+            ivErasure?.setOnClickListener {
+                isErasure=!isErasure
+                if (isErasure){
+                    onErasure()
+                }
+                else{
+                    stopErasure()
+                }
+            }
+        }
+
+        ivDraft = findViewById(R.id.iv_draft)
+        if (ivDraft != null) {
+            ivDraft?.setOnClickListener {
+                DrawingDraftDialog(this,getCurrentScreenPos()).builder()
+            }
+        }
+
+    }
+
+    /**
+     * 设置擦除
+     */
+    open fun onErasure(){
+    }
+
+    /**
+     * 结束擦除
+     * （在展平、收屏时候都结束擦除）
+     */
+    fun stopErasure(){
+        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
+            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+        }
+        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
+            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+        }
+    }
+
+    fun changeErasure(){
+        if (isErasure){
+            isErasure=false
+            stopErasure()
+        }
     }
 
     fun showBackView(isShow:Boolean) {
@@ -227,7 +352,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     fun showToast(s:String){
-        SToast.showText(screenPos,s)
+        SToast.showText(getCurrentScreenPos(),s)
     }
 
     fun showLog(s:String){
@@ -313,7 +438,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         SPUtil.removeObj("user")
 
         Handler().postDelayed(Runnable {
-            startActivity(Intent(this, AccountLoginActivity::class.java))
+            val intent=Intent(this, AccountLoginActivity::class.java)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
         }, 500)
     }
@@ -365,7 +492,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 自动收屏
      */
-    open fun changeScreenPage(){}
+    open fun changeScreenPage(){
+    }
 
 }
 

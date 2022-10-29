@@ -2,14 +2,14 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.widget.ImageView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.mvp.model.AppListBean
 import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppDownloadListAdapter(layoutResId: Int, data: List<AppBean.ListBean>?) : BaseQuickAdapter<AppBean.ListBean, BaseViewHolder>(layoutResId, data) {
+class AppDownloadListAdapter(layoutResId: Int, data: List<AppListBean.ListBean>?) : BaseQuickAdapter<AppListBean.ListBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: AppBean.ListBean) {
+    override fun convert(helper: BaseViewHolder, item: AppListBean.ListBean) {
         helper.setText(R.id.tv_name,item.name)
         helper.setText(R.id.tv_price,""+item.price)
         helper.setText(R.id.btn_download,if (item.status==0) "购买" else "下载")

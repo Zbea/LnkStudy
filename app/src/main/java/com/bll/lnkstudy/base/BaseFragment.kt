@@ -8,9 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
@@ -20,11 +18,13 @@ import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.*
-import com.bll.lnkstudy.utils.ActivityManager
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
+import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.MainActivity
+import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity
+import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -47,8 +47,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var mView:View?=null
     var tvPageTitle: TextView? = null
     var ivBack: ImageView? = null
-    var ivHomework: ImageView? = null
-    var ivManagers: ImageView? = null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
@@ -128,8 +126,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun initCommonTitle() {
         tvPageTitle = requireView().findViewById(R.id.tv_title)
         ivBack=requireView().findViewById(R.id.iv_back)
-        ivHomework=requireView().findViewById(R.id.iv_homework)
-        ivManagers = requireView().findViewById(R.id.iv_note_manager)
         tvSearch= requireView().findViewById(R.id.tv_search)
     }
 
@@ -156,15 +152,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             disMissView(ivBack)
         }
     }
-
-    fun showHomeworkView() {
-        showView(ivHomework)
-    }
-
-    fun showNoteView() {
-        showView(ivManagers)
-    }
-
 
     /**
      * 显示view
@@ -205,6 +192,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
                 view.visibility = View.GONE
             }
         }
+    }
+
+    fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
+        var radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == 0
+        var layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(activity, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
     }
 
     /**
@@ -328,7 +331,9 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         Handler().postDelayed(Runnable {
-            startActivity(Intent(activity, AccountLoginActivity::class.java))
+            val intent=Intent(activity, AccountLoginActivity::class.java)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+            startActivity(intent)
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
         }, 500)
     }

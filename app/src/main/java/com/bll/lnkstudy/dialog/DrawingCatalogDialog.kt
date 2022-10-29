@@ -31,7 +31,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
-        layoutParams.y=DP2PX.dip2px(context,46f)
+        layoutParams.y=DP2PX.dip2px(context,32f)
         window.attributes = layoutParams
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)

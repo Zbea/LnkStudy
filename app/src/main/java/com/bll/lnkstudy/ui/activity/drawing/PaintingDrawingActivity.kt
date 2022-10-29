@@ -1,9 +1,10 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import android.view.View
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
@@ -15,6 +16,7 @@ import com.bll.lnkstudy.dialog.PopWindowDrawingButton
 import com.bll.lnkstudy.manager.PaintingDaoManager
 import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.mvp.model.PaintingBean
+import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_painting_drawing.*
@@ -25,20 +27,14 @@ class PaintingDrawingActivity : BaseActivity() {
 
     private var type = 0
     private var popWindowDrawingButton: PopWindowDrawingButton? = null
-    private var elik_a: EinkPWInterface? = null
-    private var elik_b: EinkPWInterface? = null
 
     private var paintingBean: PaintingBean? = null//当前作业内容
     private var paintingBean_a: PaintingBean? = null//a屏作业
 
     private var paintingLists = mutableListOf<PaintingBean>() //所有作业内容
 
-    private var isExpand = false //是否是全屏
-
     private var page = 0//页码
     private var resId=0
-
-
 
     override fun layoutId(): Int {
         return R.layout.ac_painting_drawing
@@ -57,9 +53,7 @@ class PaintingDrawingActivity : BaseActivity() {
             page = paintingLists.size - 1
 
         } else {
-
             newHomeWorkContent()
-            page = 0
         }
 
     }
@@ -79,19 +73,26 @@ class PaintingDrawingActivity : BaseActivity() {
 
         changeContent()
 
-        tv_title.setOnClickListener {
-            var title=tv_title.text.toString()
-            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener(object :
-                InputContentDialog.OnDialogClickListener {
-                override fun onClick(string: String) {
-                    tv_title.text=string
-                    paintingBean?.title = string
-                    paintingLists[page].title = string
-                    PaintingDaoManager.getInstance(this@PaintingDrawingActivity).insertOrReplace(paintingBean)
-                }
+        tv_title_a.setOnClickListener {
+            var title=tv_title_a.text.toString()
+            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
+                tv_title_a.text = string
+                paintingBean_a?.title = string
+                paintingLists[page-1].title = string
+                PaintingDaoManager.getInstance(this@PaintingDrawingActivity)
+                    .insertOrReplace(paintingBean_a)
+            }
+        }
 
-            })
-
+        tv_title_b.setOnClickListener {
+            var title=tv_title_b.text.toString()
+            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
+                tv_title_b.text = string
+                paintingBean?.title = string
+                paintingLists[page].title = string
+                PaintingDaoManager.getInstance(this@PaintingDrawingActivity)
+                    .insertOrReplace(paintingBean)
+            }
         }
 
         iv_catalog.setOnClickListener {
@@ -146,10 +147,10 @@ class PaintingDrawingActivity : BaseActivity() {
         }
 
         iv_expand.setOnClickListener {
-            isExpand=!isExpand
-            moveToScreen(isExpand)
-            changeExpandView()
-            changeContent()
+            if (paintingLists.size==1){
+                newHomeWorkContent()
+            }
+            changeExpandContent()
         }
 
 
@@ -160,9 +161,25 @@ class PaintingDrawingActivity : BaseActivity() {
 
     }
 
+    /**
+     * 切换屏幕
+     */
+    private fun changeExpandContent(){
+        changeErasure()
+        isExpand=!isExpand
+        moveToScreen(isExpand)
+        changeExpandView()
+        changeContent()
+    }
+
+    /**
+     * 切换屏幕view变化
+     */
     private fun changeExpandView(){
-        v_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
-        tv_page_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+        v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
+        ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
+        v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
+        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 
@@ -178,14 +195,12 @@ class PaintingDrawingActivity : BaseActivity() {
             list.add(listBean)
         }
         DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!= position) {
-                    page = position
-                    changeContent()
-                }
+        setOnDialogClickListener { position ->
+            if (page != position) {
+                page = position
+                changeContent()
             }
-        })
+        }
     }
 
 
@@ -203,46 +218,28 @@ class PaintingDrawingActivity : BaseActivity() {
         if (isExpand) {
             if (page > 0) {
                 paintingBean_a = paintingLists[page - 1]
-            } else {
-                if (paintingLists.size > 1) {
-                    paintingBean = paintingLists[page + 1]
-                    paintingBean_a = paintingLists[page]
-                    page = 1
-                } else {
-                    paintingBean_a = null
-                }
+            }
+            if (page==0){
+                paintingBean = paintingLists[page + 1]
+                paintingBean_a = paintingLists[page]
+                page = 1
             }
         } else {
             paintingBean_a = null
         }
 
+        tv_title_b.text=paintingBean?.title
+        updateImage(elik_b!!, paintingBean?.path!!)
+        tv_page_b.text = (page + 1).toString()
+
         //切换页面内容的一些变化
-        tv_title.text=paintingBean?.title
-        if (paintingBean?.title.isNullOrEmpty())
-        {
-            tv_title.hint="输入标题"
-        }
-
         if (isExpand) {
-            updateImage(elik_b!!, paintingBean?.path!!)
-            tv_page_b.text = (page + 1).toString()
-
             if (paintingBean_a != null) {
+                tv_title_a.text=paintingBean_a?.title
                 v_content_a.setImageResource(resId)
                 updateImage(elik_a!!, paintingBean_a?.path!!)
                 tv_page_a.text = "$page"
             }
-            else{
-                //当只存在一个页面全屏展示时候 a屏不显示东西不能手写
-                v_content_a.setImageResource(0)
-                elik_a?.setPWEnabled(false)
-                tv_page_a.text = ""
-            }
-
-        } else {
-            v_content_a.setImageResource(resId)
-            updateImage(elik_a!!, paintingBean?.path!!)
-            tv_page_a.text = (page + 1).toString()
         }
     }
 
@@ -272,6 +269,7 @@ class PaintingDrawingActivity : BaseActivity() {
         val date = DateUtils.longToString(System.currentTimeMillis())
 
         paintingBean = PaintingBean()
+        paintingBean?.title=if (type==0)"画本${paintingLists.size+1}" else "书法${paintingLists.size+1}"
         paintingBean?.type = type
         paintingBean?.date = System.currentTimeMillis()
         paintingBean?.path = "$path/$date.tch"
@@ -286,25 +284,26 @@ class PaintingDrawingActivity : BaseActivity() {
 
     //
     private fun showPopWindowBtn() {
-        val flag = if (type == 0) 2 else 3
-        val yoff=if (type == 0) -270 else -200
+        val pops= mutableListOf<PopWindowBean>()
+        pops.add(PopWindowBean(0,"删除",false))
+        if (type == 0) {
+            pops.add(PopWindowBean(1,"规矩图",false))
+        }
         if (popWindowDrawingButton == null) {
-            popWindowDrawingButton = PopWindowDrawingButton(this, iv_btn, flag,yoff).builder()
-            popWindowDrawingButton?.setOnSelectListener(object : PopWindowDrawingButton.OnClickListener {
-                override fun onClick(type: Int) {
-                    if (type==3){
-                        delete()
-                    }
-                    if (type==4){
-                        resId = if (resId==0){
-                            R.mipmap.icon_painting_bg_hb
-                        } else{
-                            0
-                        }
-                        setBg()
-                    }
+            popWindowDrawingButton = PopWindowDrawingButton(this, iv_btn, pops).builder()
+            popWindowDrawingButton?.setOnSelectListener { item ->
+                if (item.id == 0) {
+                    delete()
                 }
-            })
+                if (item.id == 1) {
+                    resId = if (resId == 0) {
+                        R.mipmap.icon_painting_bg_hb
+                    } else {
+                        0
+                    }
+                    setBg()
+                }
+            }
         } else {
             popWindowDrawingButton?.show()
         }
@@ -343,11 +342,19 @@ class PaintingDrawingActivity : BaseActivity() {
     }
 
     override fun changeScreenPage() {
+        super.changeScreenPage()
         if (isExpand){
-            isExpand=!isExpand
-            moveToScreen(isExpand)
-            changeExpandView()
-            changeContent()
+            changeExpandContent()
+        }
+    }
+
+    override fun onErasure() {
+        if (isExpand){
+            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+        }
+        else{
+            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
     }
 
