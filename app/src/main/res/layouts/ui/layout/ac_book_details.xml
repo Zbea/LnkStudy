@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_content"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal"
         >
-        <LinearLayout
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_a"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            >
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_a"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitCenter"
-                />
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_b"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:scaleType="fitCenter"
-                android:layout_weight="1"/>
-        </LinearLayout>
-
-    </RelativeLayout>
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            />
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <include
         layout="@layout/common_drawing_bottom"

@@ -5,10 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.HomeworkDao;
-import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
-import com.bll.lnkstudy.mvp.model.Homework;
 import com.bll.lnkstudy.mvp.model.PaintingBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;

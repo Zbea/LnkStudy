@@ -67,7 +67,6 @@ public class SToast {
         else {
             toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
         }
-        Log.d("debug",System.currentTimeMillis()+"");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -84,7 +83,6 @@ public class SToast {
      */
     public static void cancel() {
         if (toast != null) {
-            Log.d("debug",System.currentTimeMillis()+"");
             toast.cancel();
         }
     }

@@ -6,7 +6,7 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopWindowList
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.manager.WallpaperDaoManager
 import com.bll.lnkstudy.mvp.model.AppListBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
@@ -53,12 +53,12 @@ class AppOfficialActivity:BaseAppCompatActivity(){
             items.add(item)
         }
 
-        val yeas=DataBeanManager.getIncetance().YEARS
+        val yeas= DataBeanManager.getIncetance().YEARS
         for (i in yeas.indices){
             popTimes.add(PopWindowBean(i,yeas[i],i==0))
         }
 
-        val paintings=DataBeanManager.getIncetance().PAINTING
+        val paintings= DataBeanManager.getIncetance().PAINTING
         for (i in paintings.indices){
             popPaintings.add(PopWindowBean(i,paintings[i],i==0))
         }

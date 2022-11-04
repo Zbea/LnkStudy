@@ -7,13 +7,14 @@
     android:gravity="center">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="224dp"
+        android:layout_height="298dp">
+
 
         <com.bll.lnkstudy.widget.RoundImageView
             android:id="@+id/iv_image"
-            android:layout_width="224dp"
-            android:layout_height="298dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:src="@mipmap/icon_homework_cover_1" />
 
         <TextView
@@ -30,7 +31,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/ll_message"
+        android:id="@+id/ll_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
@@ -38,6 +39,7 @@
         android:paddingEnd="@dimen/dp_5"
         android:orientation="horizontal">
         <LinearLayout
+            android:id="@+id/ll_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

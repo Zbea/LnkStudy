@@ -2,11 +2,11 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
@@ -14,12 +14,14 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
+import java.io.File
 
 
 /**
@@ -32,10 +34,10 @@ class HomeworkFragment : BaseFragment(){
     private var mAdapter:HomeworkAdapter?=null
 
     private var courseID=0//当前科目id
-    private var datas= mutableListOf<HomeworkType>()
+    private var homeworkTypes= mutableListOf<HomeworkType>()
     private var messages= mutableListOf<HomeworkMessage>()
 
-    private var homeworkMessageAllDialog:HomeworkMessageAllDialog?=null
+    private var homeworkMessageDialog:HomeworkMessageDialog?=null
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework
@@ -68,7 +70,7 @@ class HomeworkFragment : BaseFragment(){
 
     //设置头部索引
     private fun initTab(){
-        val courses=DataBeanManager.getIncetance().courses
+        val courses= DataBeanManager.getIncetance().courses
         for (i in courses.indices) {
             rg_group.addView(getRadioButton(i ,courses[i].name,courses.size-1))
         }
@@ -92,45 +94,52 @@ class HomeworkFragment : BaseFragment(){
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),40))
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            val item=datas[position]
-            if (view.id==R.id.iv_image){
-                item.isMessage=false
-                item.isPg=false
-                mAdapter?.notifyDataSetChanged()
-                if(item.isListenToRead){
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            val item=homeworkTypes[position]
+            item.isMessage=false
+            item.isPg=false
+            mAdapter?.notifyDataSetChanged()
+
+            when(item.state){
+                1->{
                     customStartActivity(Intent(context,RecordListActivity::class.java).putExtra("courseId",courseID))
                 }
-                else{
-                    if (item.type==2||item.type==3){
-                        gotoPaperDrawing(0,courseID,item.type)
-                    }
-                    else{
-                        gotoHomeworkDrawing(item)
-                    }
+                2->{
+                    gotoPaperDrawing(0,courseID,item.typeId)
+                }
+                else->{
+                    gotoHomeworkDrawing(item)
                 }
             }
+        }
+
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.ll_message){
-                HomeworkMessageAllDialog(requireActivity(),screenPos,messages).builder()?.setOnDialogClickListener { position, id ->
+                HomeworkMessageDialog(requireActivity(),screenPos,messages).builder()?.setOnDialogClickListener { position, id ->
                     messages.removeAt(position)
-                    homeworkMessageAllDialog?.setData(messages)
+                    homeworkMessageDialog?.setData(messages)
                 }
             }
 
         }
-
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            showHomeworkManage(position)
+        }
     }
 
 
     //查找分类数据
     private fun findDatas(islg: Boolean,courseID:Int){
-        datas.clear()
-        datas=DataBeanManager.getIncetance().getHomeWorkTypes(islg,courseID,mUser?.grade!!)
-        datas.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID))
+        homeworkTypes.clear()
+        var datas= DataBeanManager.getIncetance().getHomeWorkTypes(islg,courseID,mUser?.grade!!)
+        HomeworkTypeDaoManager.getInstance(context).insertOrReplaceAll(courseID,datas)
 
-        for (item in datas){
+        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,false))
+        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,true))
+
+        for (item in homeworkTypes){
             for (mes in messages){
-                if (item.courseId==mes.courseId&&item.type==mes.homeworkTypeId){
+                if (item.courseId==mes.courseId&&item.typeId==mes.homeworkTypeId){
                     item.isMessage=true
                     item.isPg=mes.isPg
                     item.message=mes
@@ -138,7 +147,7 @@ class HomeworkFragment : BaseFragment(){
             }
         }
 
-        mAdapter?.setNewData(datas)
+        mAdapter?.setNewData(homeworkTypes)
 
     }
 
@@ -179,7 +188,7 @@ class HomeworkFragment : BaseFragment(){
     }
 
     /**
-     * 下载图片
+     * 下载图片、将图片保存到作业
      */
     private fun loadImage(){
         for (item in messages){
@@ -245,6 +254,39 @@ class HomeworkFragment : BaseFragment(){
     }
 
 
+    /**
+     * 长按展示作业换肤、删除
+     */
+    private fun showHomeworkManage(pos:Int):Boolean{
+        val item=homeworkTypes[pos]
+        HomeworkManageDialog(requireContext(),screenPos,item.isCreate).builder().setOnDialogClickListener(object :
+            HomeworkManageDialog.OnDialogClickListener {
+            override fun onSkin() {
+
+                val list= DataBeanManager.getIncetance().homeworkCover
+                ModuleAddDialog(requireContext(),screenPos,"封面模块",list).builder()
+                    ?.setOnDialogClickListener { moduleBean ->
+                        item.bgResId = ToolUtils.getImageResStr(activity, moduleBean.resId)
+                        mAdapter?.notifyDataSetChanged()
+                        HomeworkTypeDaoManager.getInstance(activity).insertOrReplace(item)
+                    }
+            }
+
+            override fun onDelete() {
+                if(item.isCreate){
+                    HomeworkTypeDaoManager.getInstance(activity).deleteBean(item)
+                    val path=FileAddress().getPathHomework(courseID,item.typeId)
+                    FileUtils.deleteFile(File(path))
+                    homeworkTypes.removeAt(pos)
+                    mAdapter?.notifyDataSetChanged()
+                }
+            }
+
+        })
+        return true
+    }
+
+
     //添加作业本
     private fun addHomeWorkType(item:HomeworkType){
         NoteBookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
@@ -252,19 +294,20 @@ class HomeworkFragment : BaseFragment(){
             val time = System.currentTimeMillis()
             item.name = string
             item.date = time
-            item.type = mAdapter?.data?.size!!//新增id为该类所有和
+            item.typeId = System.currentTimeMillis().toInt()
             item.courseId = courseID
+                item.isCreate=true
 
             HomeworkTypeDaoManager.getInstance(context).insertOrReplace(item)
-            datas.add(item)
+            homeworkTypes.add(item)
             mAdapter?.notifyDataSetChanged()
         }
     }
 
     //添加封面
     private fun addCover(){
-        val list=DataBeanManager.getIncetance().homeworkCover
-        ModuleAddDialog(requireContext(),screenPos,"封面模块",list).builder()
+        val list= DataBeanManager.getIncetance().homeworkCover
+        ModuleAddDialog(requireContext(),screenPos,"封面模板",list).builder()
             ?.setOnDialogClickListener { moduleBean ->
             addContentModule(
                 moduleBean.resId
@@ -292,7 +335,7 @@ class HomeworkFragment : BaseFragment(){
         ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
             ?.setOnDialogClickListener { moduleBean ->
             val item = HomeworkType()
-            item.resId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+            item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
             item.bgResId = ToolUtils.getImageResStr(activity, coverResId)
 
             addHomeWorkType(item)

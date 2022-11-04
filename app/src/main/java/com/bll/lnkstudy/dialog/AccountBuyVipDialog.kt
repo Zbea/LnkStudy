@@ -61,7 +61,7 @@ class AccountBuyVipDialog(val context: Context, val list: List<AccountList.ListB
 
     private var listener: OnDialogClickListener? = null
 
-    interface OnDialogClickListener {
+    fun interface OnDialogClickListener {
         fun onClick(id:String)
     }
 

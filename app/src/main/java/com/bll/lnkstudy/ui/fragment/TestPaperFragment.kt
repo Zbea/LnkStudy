@@ -5,15 +5,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.dialog.PopWindowList
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 import org.greenrobot.eventbus.EventBus
@@ -25,7 +23,6 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class TestPaperFragment : BaseFragment(){
 
-    private var popWindowList: PopWindowList?=null
     private var popWindowBeans = mutableListOf<PopWindowBean>()
 
     private var mAdapter:TestPaperTypeAdapter?=null
@@ -38,18 +35,12 @@ class TestPaperFragment : BaseFragment(){
 
     override fun initView() {
         setTitle("考卷")
-        showView(iv_manager)
-
-        popWindowBeans.add(PopWindowBean(0,"添加考卷集",true))
 
         EventBus.getDefault().register(this)
         initData()
         initRecyclerView()
         initTab()
 
-        iv_manager.setOnClickListener {
-            showPopWindow()
-        }
 
     }
 
@@ -59,7 +50,7 @@ class TestPaperFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
 
-        val courses=DataBeanManager.getIncetance().courses
+        val courses= DataBeanManager.getIncetance().courses
         course=courses[0]
 
         for (i in courses.indices) {
@@ -108,21 +99,6 @@ class TestPaperFragment : BaseFragment(){
             gotoPaperDrawing(1,course?.courseId!!,items[position].type)
         }
 
-    }
-
-    private fun showPopWindow(){
-        if (popWindowList==null)
-        {
-            popWindowList= PopWindowList(requireActivity(),popWindowBeans,iv_manager,5).builder()
-            popWindowList?.setOnSelectListener { item ->
-                if (item.id == 0) {
-
-                }
-            }
-        }
-        else{
-            popWindowList?.show()
-        }
     }
 
     /**

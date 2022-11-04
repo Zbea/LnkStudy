@@ -17,22 +17,32 @@ public class HomeworkContent {
     public String bgResId;//作业背景样式id
     public int courseId;//科目id
     public int homeworkTypeId;//作业本分组id
-    public long homeworkId;//作业id
-    
+
+    public String title;
+    public int state;//0未提交1已提交2已批改
     public long date;
-    public String path;//路径
+    public long commitDate;
+    public String folderPath;//文件夹路径
+    public String filePath;//文件路径
+    public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 1478750862)
+
+    @Generated(hash = 2006166801)
     public HomeworkContent(Long id, long userId, String bgResId, int courseId,
-            int homeworkTypeId, long homeworkId, long date, String path, int page) {
+            int homeworkTypeId, String title, int state, long date, long commitDate,
+            String folderPath, String filePath, String pathName, int page) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
         this.courseId = courseId;
         this.homeworkTypeId = homeworkTypeId;
-        this.homeworkId = homeworkId;
+        this.title = title;
+        this.state = state;
         this.date = date;
-        this.path = path;
+        this.commitDate = commitDate;
+        this.folderPath = folderPath;
+        this.filePath = filePath;
+        this.pathName = pathName;
         this.page = page;
     }
     @Generated(hash = 547286208)
@@ -68,11 +78,17 @@ public class HomeworkContent {
     public void setHomeworkTypeId(int homeworkTypeId) {
         this.homeworkTypeId = homeworkTypeId;
     }
-    public long getHomeworkId() {
-        return this.homeworkId;
+    public String getTitle() {
+        return this.title;
     }
-    public void setHomeworkId(long homeworkId) {
-        this.homeworkId = homeworkId;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public int getState() {
+        return this.state;
+    }
+    public void setState(int state) {
+        this.state = state;
     }
     public long getDate() {
         return this.date;
@@ -80,11 +96,29 @@ public class HomeworkContent {
     public void setDate(long date) {
         this.date = date;
     }
-    public String getPath() {
-        return this.path;
+    public long getCommitDate() {
+        return this.commitDate;
     }
-    public void setPath(String path) {
-        this.path = path;
+    public void setCommitDate(long commitDate) {
+        this.commitDate = commitDate;
+    }
+    public String getFolderPath() {
+        return this.folderPath;
+    }
+    public void setFolderPath(String folderPath) {
+        this.folderPath = folderPath;
+    }
+    public String getFilePath() {
+        return this.filePath;
+    }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+    public String getPathName() {
+        return this.pathName;
+    }
+    public void setPathName(String pathName) {
+        this.pathName = pathName;
     }
     public int getPage() {
         return this.page;

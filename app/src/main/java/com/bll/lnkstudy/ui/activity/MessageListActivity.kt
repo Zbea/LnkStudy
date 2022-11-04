@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.ui.adapter.MainMessageAdapter
 import com.bll.lnkstudy.widget.SpaceItemDeco

@@ -5,19 +5,19 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.manager.DataBeanManager
-import com.bll.lnkstudy.manager.FileDownManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -133,12 +133,12 @@ class BookStoreActivity:BaseAppCompatActivity() ,
 
     //得到分类数据
     private fun getDataType(){
-        gradeList=DataBeanManager.getIncetance().bookTypeGrade
+        gradeList= DataBeanManager.getIncetance().bookTypeGrade
         when(flags){
             0->{
                 disMissView(tv_search)
                 gradeList.clear()
-                typeList=DataBeanManager.getIncetance().bookTypeJc
+                typeList= DataBeanManager.getIncetance().bookTypeJc
                 for (i in 0..12){
                     provinceList.add(PopWindowBean(i,"广东省$i",i==0))
                 }
@@ -148,23 +148,23 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             }
             1->{
                 disMissView(tv_province)
-                typeList=DataBeanManager.getIncetance().bookTypeGj
+                typeList= DataBeanManager.getIncetance().bookTypeGj
             }
             2->{
                 disMissView(tv_province)
-                typeList=DataBeanManager.getIncetance().bookTypeZRKX
+                typeList= DataBeanManager.getIncetance().bookTypeZRKX
             }
             3->{
                 disMissView(tv_province)
-                typeList=DataBeanManager.getIncetance().bookTypeSHKX
+                typeList= DataBeanManager.getIncetance().bookTypeSHKX
             }
             4->{
                 disMissView(tv_province)
-                typeList=DataBeanManager.getIncetance().bookTypeSWKX
+                typeList= DataBeanManager.getIncetance().bookTypeSWKX
             }
             else->{
                 disMissView(tv_province)
-                typeList=DataBeanManager.getIncetance().bookTypeYDCY
+                typeList= DataBeanManager.getIncetance().bookTypeYDCY
             }
         }
 
@@ -220,8 +220,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
     //设置tab分类
     private fun initTab(){
         for (i in typeList.indices){
-            var radioButton =
-                layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+            var radioButton = layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
             radioButton.id = i
             radioButton.text = typeList[i].name
             radioButton.isChecked = i == 0
@@ -232,6 +231,9 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             radioButton.layoutParams = layoutParams
             rg_group.addView(radioButton)
         }
+
+        tv_download.visibility=if (flags==0) View.VISIBLE else View.GONE
+
     }
 
     private fun initRecyclerView(){

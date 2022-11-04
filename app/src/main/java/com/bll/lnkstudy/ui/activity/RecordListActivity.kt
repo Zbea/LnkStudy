@@ -11,7 +11,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.dialog.PopWindowRecordSetting
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
@@ -38,7 +38,7 @@ class RecordListActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        var course=DataBeanManager.getIncetance().courses[courseId].name
+        var course= DataBeanManager.getIncetance().courses[courseId].name
         setPageTitle("$course 朗读录音")
         EventBus.getDefault().register(this)
 

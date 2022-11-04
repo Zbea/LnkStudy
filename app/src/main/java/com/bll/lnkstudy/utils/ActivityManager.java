@@ -148,7 +148,7 @@ public class ActivityManager {
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkDrawingActivity.class.getName())) {
                 HomeworkType homeworkType= (HomeworkType) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
-                if (item.courseId==homeworkType.courseId&&item.type==homeworkType.type){
+                if (item.courseId==homeworkType.courseId&&item.typeId ==homeworkType.typeId){
                     activity.finish();
                     it.remove();
                 }

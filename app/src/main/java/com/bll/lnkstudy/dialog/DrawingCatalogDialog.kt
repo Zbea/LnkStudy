@@ -49,6 +49,9 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
             }
         }
         else{
+            val layoutManager=LinearLayoutManager(context)
+            //设置布局管理器
+            rv_list?.layoutManager =layoutManager
             var mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>)
             rv_list?.adapter = mAdapter
             mAdapter?.bindToRecyclerView(rv_list)

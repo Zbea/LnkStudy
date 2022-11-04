@@ -214,14 +214,17 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_catalog_child.xml" value="0.2482363315696649" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_catalog_parent.xml" value="0.2482363315696649" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_drawing_commit_page.xml" value="0.2464726631393298" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_drawing_commit_page_1.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_homework.xml" value="0.33" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_homework_message_all.xml" value="0.25485008818342153" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_homework_message_selector.xml" value="0.23677248677248677" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_my_wallpaper.xml" value="0.24162257495590828" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_painting.xml" value="0.27336860670194" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_popwindow_btn.xml" value="0.2447089947089947" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_popwindow_list.xml" value="0.21693121693121692" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_textbook.xml" value="0.21428571428571427" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_date_title.xml" value="0.24779541446208111" />
-        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_drawing_bottom.xml" value="0.5" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_drawing_bottom.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_fragment_title.xml" value="0.23500881834215168" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_page_number.xml" value="0.23589065255731922" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_radiobutton.xml" value="0.2566137566137566" />
@@ -230,11 +233,14 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_xtab.xml" value="0.24074074074074073" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_app_tool.xml" value="0.21252204585537918" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_book_detail.xml" value="0.21340388007054673" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_book_manage.xml" value="0.5" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_classgroup_add.xml" value="0.21340388007054673" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_drawing_catalog.xml" value="0.2482363315696649" />
-        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_drawing_commit.xml" value="0.25" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_drawing_commit.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_drawing_draft.xml" value="0.33" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_homework_manage.xml" value="0.23589065255731922" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_homework_message.xml" value="0.23809523809523808" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_homework_message_all.xml" value="0.23677248677248677" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_module_add.xml" value="0.23192239858906524" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_repeat_day.xml" value="0.25396825396825395" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_setting.xml" value="0.33" />

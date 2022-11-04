@@ -9,7 +9,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.adapter.BookAdapter
@@ -90,7 +90,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
     //设置tab
     private fun initTab(){
         val types= mutableListOf<BaseTypeBean>()
-        val strings=DataBeanManager.getIncetance().bookType
+        val strings= DataBeanManager.getIncetance().bookType
         for (i in strings.indices){
             var baseTypeBean= BaseTypeBean()
             baseTypeBean.name=strings[i]

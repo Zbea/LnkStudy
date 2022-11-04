@@ -25,9 +25,9 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?) : BaseMultiItemQuickAdapt
                     val pos = helper.adapterPosition
                     if (item.hasSubItem()){
                         if (item.isExpanded) {
-                            collapse(pos)
+                            collapse(pos,false)
                         } else {
-                            expand(pos)
+                            expand(pos,false)
                         }
                     }
                     else{

@@ -13,6 +13,7 @@ import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
@@ -20,7 +21,6 @@ import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowDateCilck
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
@@ -38,6 +38,7 @@ import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -77,7 +78,6 @@ class MainFragment : BaseFragment() {
     override fun initView() {
         EventBus.getDefault().register(this)
         setTitle("首页")
-//        showSearch(true)
 
         onClickView()
 
@@ -95,9 +95,9 @@ class MainFragment : BaseFragment() {
 
     @SuppressLint("WrongConstant")
     private fun onClickView() {
-//        tv_search.setOnClickListener {
-//            AppUtils.clearAppData(requireContext())
-//        }
+        tv_search.setOnClickListener {
+            AppUtils.clearAppData(requireContext())
+        }
 
         ll_date.setOnClickListener {
             customStartActivity(Intent(activity, MainDateActivity::class.java))
@@ -232,7 +232,7 @@ class MainFragment : BaseFragment() {
 
     //课业相关处理
     private fun initTextBookView() {
-        var courses=DataBeanManager.getIncetance().courses
+        var courses= DataBeanManager.getIncetance().courses
         rv_main_textbook.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mainTextBookAdapter = MainTextBookAdapter(R.layout.item_main_textbook, courses)
         rv_main_textbook.adapter = mainTextBookAdapter

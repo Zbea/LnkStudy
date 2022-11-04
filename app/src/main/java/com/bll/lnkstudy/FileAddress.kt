@@ -72,6 +72,12 @@ class FileAddress {
     }
 
     /**
+     * 作业文件夹路径
+     */
+    fun getPathHomework(courseId:Int, typeId:Int?):String{
+        return "$HOMEWORK_PATH/$mUserId/$courseId/$typeId"
+    }
+    /**
      * 作业保存路径
      */
     fun getPathHomework(courseId:Int, typeId:Int?, contentId: Int?):String{

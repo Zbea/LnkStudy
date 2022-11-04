@@ -80,10 +80,9 @@ class BookDetailsActivity : BaseActivity() {
     override fun initView() {
         pageCount = catalogMsg?.totalCount!!
 
-        elik_a = v_content_a.pwInterFace
-        elik_b = v_content_b.pwInterFace
-
         changeExpandView()
+        getElik()
+
         changeContent()
         bindClick()
     }
@@ -92,6 +91,9 @@ class BookDetailsActivity : BaseActivity() {
     private fun bindClick() {
 
         iv_expand.setOnClickListener {
+            changeExpandContent()
+        }
+        iv_expand_a.setOnClickListener {
             changeExpandContent()
         }
 
@@ -126,6 +128,14 @@ class BookDetailsActivity : BaseActivity() {
     }
 
     /**
+     * 获取elik实例
+     */
+    private fun getElik(){
+        elik_a = v_content_a.pwInterFace
+        elik_b = v_content_b.pwInterFace
+    }
+
+    /**
      * 切换屏幕
      */
     private fun changeExpandContent(){
@@ -138,12 +148,11 @@ class BookDetailsActivity : BaseActivity() {
 
     //单屏、全屏内容切换
     private fun changeExpandView() {
-        v_content_a.visibility = View.VISIBLE
+        iv_expand.visibility=if (isExpand) View.GONE else View.VISIBLE
         ll_page_content_a.visibility = View.VISIBLE
         v_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         ll_page_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
-        iv_expand.visibility = if (isExpand) View.GONE else View.VISIBLE
         iv_tool_right.visibility = if (isExpand) View.VISIBLE else View.GONE
     }
 
@@ -237,11 +246,11 @@ class BookDetailsActivity : BaseActivity() {
 
     override fun onErasure() {
         if (isExpand){
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+                elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+                elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
         else{
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+                elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
     }
 

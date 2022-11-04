@@ -8,6 +8,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -15,7 +16,6 @@ import com.bll.lnkstudy.dialog.NoteAddDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
-import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Note

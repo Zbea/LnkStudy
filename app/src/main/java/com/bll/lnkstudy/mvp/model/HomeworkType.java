@@ -1,7 +1,5 @@
 package com.bll.lnkstudy.mvp.model;
 
-import android.graphics.drawable.Drawable;
-
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -10,7 +8,6 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -24,31 +21,34 @@ public class HomeworkType implements Serializable {
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String name;
-    public int type;//作业本分类id
+    public int typeId;//作业本分类id
+    public int state=0;//0普通作业本 1听读本 2题卷本 3课辅习题本
     public long date; //创建时间
-    public String resId; //作业本内容背景id
+    public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
     public int courseId;//科目id
+    public boolean isCreate;//自建作业本
     @Transient
     public boolean isPg;//是否收到批改
-    @Transient
-    public boolean isListenToRead;//是否是听读
     @Transient
     public boolean isMessage;//收到通知
     @Transient
     public HomeworkMessage message;
 
-    @Generated(hash = 1161804354)
-    public HomeworkType(Long id, long userId, String name, int type, long date,
-            String resId, String bgResId, int courseId) {
+    @Generated(hash = 871379035)
+    public HomeworkType(Long id, long userId, String name, int typeId, int state,
+            long date, String contentResId, String bgResId, int courseId,
+            boolean isCreate) {
         this.id = id;
         this.userId = userId;
         this.name = name;
-        this.type = type;
+        this.typeId = typeId;
+        this.state = state;
         this.date = date;
-        this.resId = resId;
+        this.contentResId = contentResId;
         this.bgResId = bgResId;
         this.courseId = courseId;
+        this.isCreate = isCreate;
     }
     @Generated(hash = 302760485)
     public HomeworkType() {
@@ -71,11 +71,17 @@ public class HomeworkType implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public int getType() {
-        return this.type;
+    public int getTypeId() {
+        return this.typeId;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+    public int getState() {
+        return this.state;
+    }
+    public void setState(int state) {
+        this.state = state;
     }
     public long getDate() {
         return this.date;
@@ -83,11 +89,11 @@ public class HomeworkType implements Serializable {
     public void setDate(long date) {
         this.date = date;
     }
-    public String getResId() {
-        return this.resId;
+    public String getContentResId() {
+        return this.contentResId;
     }
-    public void setResId(String resId) {
-        this.resId = resId;
+    public void setContentResId(String contentResId) {
+        this.contentResId = contentResId;
     }
     public String getBgResId() {
         return this.bgResId;
@@ -101,18 +107,11 @@ public class HomeworkType implements Serializable {
     public void setCourseId(int courseId) {
         this.courseId = courseId;
     }
-    public boolean getIsPg() {
-        return this.isPg;
+    public boolean getIsCreate() {
+        return this.isCreate;
     }
-    public void setIsPg(boolean isPg) {
-        this.isPg = isPg;
+    public void setIsCreate(boolean isCreate) {
+        this.isCreate = isCreate;
     }
-    public boolean getIsListenToRead() {
-        return this.isListenToRead;
-    }
-    public void setIsListenToRead(boolean isListenToRead) {
-        this.isListenToRead = isListenToRead;
-    }
-
 
 }

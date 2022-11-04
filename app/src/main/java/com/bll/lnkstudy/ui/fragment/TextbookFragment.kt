@@ -102,17 +102,11 @@ class TextbookFragment : BaseFragment(){
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {
-        val dialogManager= BookManageDialog(requireActivity(),screenPos,1,book!!)
-        dialogManager.builder().setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
+        BookManageDialog(requireActivity(),screenPos,1,book!!).builder()
+            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
             override fun onCollect() {
-                book?.isCollect=true
-                books[position].isCollect=true
-                mAdapter?.notifyDataSetChanged()
-                BookGreenDaoManager.getInstance(activity).insertOrReplaceBook(book)
-                showToast(screenPos,"收藏成功")
             }
             override fun onDelete() {
-                delete()
             }
             override fun onMove() {
                 book?.bookType=1

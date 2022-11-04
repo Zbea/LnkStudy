@@ -8,8 +8,8 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.manager.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.ui.adapter.CourseAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -38,7 +38,7 @@ class CourseSelectDialog(val context: Context){
             dialog.dismiss()
         }
 
-        val courses=DataBeanManager.getIncetance().courses
+        val courses= DataBeanManager.getIncetance().courses
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
         var mAdapter = CourseAdapter(R.layout.item_course, courses)

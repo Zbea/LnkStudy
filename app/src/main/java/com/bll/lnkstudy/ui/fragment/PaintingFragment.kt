@@ -5,7 +5,7 @@ import android.content.Intent
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.ui.activity.MyPaintingListActivity
 import com.bll.lnkstudy.utils.ZipUtils
 import kotlinx.android.synthetic.main.fragment_painting.*

@@ -1,10 +1,8 @@
-package com.bll.lnkstudy.manager;
+package com.bll.lnkstudy;
 
 
 import android.content.Context;
 
-import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.BaseTypeBean;
 import com.bll.lnkstudy.mvp.model.CourseBean;
@@ -386,41 +384,34 @@ public class DataBeanManager {
         List<HomeworkType> list = new ArrayList();
         HomeworkType homeWork = new HomeworkType();
         homeWork.name = "课堂作业本";
-        homeWork.type = 0;
+        homeWork.typeId = 0;
         homeWork.courseId = courseId;
         homeWork.bgResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_1) ;
-        homeWork.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId) ;
+        homeWork.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId) ;
         list.add(homeWork);
 
         HomeworkType homeWork1 = new HomeworkType();
         homeWork1.name = "课外作业本";
-        homeWork1.type = 1;
+        homeWork1.typeId = 1;
         homeWork1.courseId = courseId;
         homeWork1.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_2);
-        homeWork1.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
+        homeWork1.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork1);
 
         HomeworkType homeWork2 = new HomeworkType();
         homeWork2.name = "课堂题卷本";
-        homeWork2.type = 2;
+        homeWork2.typeId = 2;
+        homeWork2.state=2;
         homeWork2.courseId = courseId;
         homeWork2.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_3);
-        homeWork2.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
+        homeWork2.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork2);
-
-        HomeworkType homeWork3 = new HomeworkType();
-        homeWork3.name = "课外题卷本";
-        homeWork3.type = 3;
-        homeWork3.courseId = courseId;
-        homeWork3.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_4);
-        homeWork3.resId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
-        list.add(homeWork3);
 
         if (isLg) {
             HomeworkType homeWork4 = new HomeworkType();
             homeWork4.name = "课文朗读册";
-            homeWork4.type = 4;
-            homeWork4.isListenToRead = true;
+            homeWork4.typeId = 4;
+            homeWork4.state=1;
             homeWork4.courseId = courseId;
             homeWork4.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_4);
             list.add(homeWork4);
@@ -486,15 +477,19 @@ public class DataBeanManager {
         baseTypeBean.typeId = 0;
         baseTypeBean.name = "我的课本";
         list.add(baseTypeBean);
-
         BaseTypeBean baseTypeBean1 = new BaseTypeBean();
         baseTypeBean1.typeId = 1;
-        baseTypeBean1.name = "参考课本";
+        baseTypeBean1.name = "我的课辅";
         list.add(baseTypeBean1);
 
+        BaseTypeBean baseTypeBean2 = new BaseTypeBean();
+        baseTypeBean2.typeId = 2;
+        baseTypeBean2.name = "参考课本";
+        list.add(baseTypeBean2);
+
         BaseTypeBean baseTypeBean3 = new BaseTypeBean();
-        baseTypeBean3.typeId = 2;
-        baseTypeBean3.name = "课辅习题";
+        baseTypeBean3.typeId = 3;
+        baseTypeBean3.name = "参考课辅";
         list.add(baseTypeBean3);
 
         return list;

@@ -98,11 +98,9 @@ public class HomeworkContentDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public  List<HomeworkContent> queryByID(Long homeworkID) {
-        WhereCondition whereCondition=HomeworkContentDao.Properties.HomeworkId.eq(homeworkID);
-        List<HomeworkContent> querys = dao.queryBuilder()
-                .where( whereUser,whereCondition).build().list();
-        return querys;
+    public long getInsertId(){
+        List<HomeworkContent> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
 

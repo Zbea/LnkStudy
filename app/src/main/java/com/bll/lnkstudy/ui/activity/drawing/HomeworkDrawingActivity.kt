@@ -11,17 +11,18 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
-import com.bll.lnkstudy.dialog.PopWindowDrawingButton
+import com.bll.lnkstudy.dialog.DrawingCommitDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.manager.HomeworkDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.HomeworkContent
+import com.bll.lnkstudy.mvp.model.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.HomeworkType
+import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_homework_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
-import java.io.File
 
 class HomeworkDrawingActivity : BaseActivity() {
 
@@ -29,17 +30,14 @@ class HomeworkDrawingActivity : BaseActivity() {
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkType? = null
 
-    private var homework: Homework? = null //新创建作业
-    private var homework_a: Homework? = null //新创建作业 a
     private var homeworkContent: HomeworkContent? = null//当前作业内容
     private var homeworkContent_a: HomeworkContent? = null//a屏作业
 
-    private var homeworkLists = mutableListOf<Homework>() //所有作业
-    private var homeworkContentLists = mutableListOf<HomeworkContent>() //所有作业内容
+    private var homeworks = mutableListOf<HomeworkContent>() //所有作业内容
 
     private var page = 0//页码
-    private var currentPosition = 0//目录位置
     private var messages= mutableListOf<HomeworkMessage>()
+    private var drawingCommitDialog:DrawingCommitDialog?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_homework_drawing
@@ -48,24 +46,15 @@ class HomeworkDrawingActivity : BaseActivity() {
     override fun initData() {
         var bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkType
-        homeworkTypeId = homeworkType?.type!!
+        homeworkTypeId = homeworkType?.typeId!!
         courseId=homeworkType?.courseId!!
 
-        homeworkLists = HomeworkDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
-        homeworkContentLists = HomeworkContentDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
+        homeworks = HomeworkContentDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
 
-        if (homeworkLists.size > 0) {
-
-            currentPosition = getHomeworksMaxIndex()
-            //未做完作业继续 页面最后一张
-            homework = homeworkLists[currentPosition]
-
-            homeworkContent = homeworkContentLists[homeworkContentLists.size - 1]
-
-            page = homeworkContentLists.size - 1
-
+        if (homeworks.size > 0) {
+            homeworkContent = homeworks[homeworks.size - 1]
+            page = homeworks.size - 1
         } else {
-            newHomeWork()
             newHomeWorkContent()
         }
         getMessageDatas()
@@ -109,28 +98,39 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     override fun initView() {
 
-        v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
-        v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.resId))//设置背景
+        v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
+        v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
         elik_a = v_content_a.pwInterFace
         elik_b = v_content_b.pwInterFace
 
         changeContent()
 
-//        tv_title.setOnClickListener {
-//            var title=tv_title.text.toString()
-//            InputContentDialog(this,getCurrentScreenPos(),title).builder()
-//                ?.setOnDialogClickListener { string ->
-//                tv_title.text = string
-//                homework?.title = string
-//                homeworkLists[currentPosition].title = string
-//                HomeworkDaoManager.getInstance(this@HomeworkDrawingActivity)
-//                    .insertOrReplace(homework)
-//            }
-//
-//        }
+        tv_title_a.setOnClickListener {
+            if (homeworkContent_a!=null&&homeworkContent_a?.state==0){
+                var title=tv_title_a.text.toString()
+                InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
+                    tv_title_a.text = string
+                    homeworkContent_a?.title = string
+                    homeworks[page-1].title = string
+                    HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent_a)
+                }
+            }
+        }
+
+        tv_title_b.setOnClickListener {
+            if (homeworkContent?.state==0){
+                var title=tv_title_b.text.toString()
+                InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
+                    tv_title_b.text = string
+                    homeworkContent?.title = string
+                    homeworks[page].title = string
+                    HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent)
+                }
+            }
+        }
 
         btn_page_down.setOnClickListener {
-            val total=homeworkContentLists.size-1
+            val total=homeworks.size-1
             if(isExpand){
                 when(page){
                     total->{
@@ -184,14 +184,17 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
 
         iv_expand.setOnClickListener {
-            if (homeworkContentLists.size==1){
+            if (homeworks.size==1){
                 newHomeWorkContent()
             }
             changeExpandContent()
         }
+        iv_expand_a.setOnClickListener {
+            changeExpandContent()
+        }
 
         iv_btn.setOnClickListener {
-            showPopWindowBtn()
+            commit()
         }
 
     }
@@ -208,9 +211,9 @@ class HomeworkDrawingActivity : BaseActivity() {
     }
 
     private fun changeExpandView(){
+        iv_expand.visibility=if (isExpand) View.GONE else View.VISIBLE
         v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
-        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
@@ -219,49 +222,48 @@ class HomeworkDrawingActivity : BaseActivity() {
      * 弹出目录
      */
     private fun showCatalog(){
+        var titleStr=""
         var list= mutableListOf<ListBean>()
-        for (item in homeworkLists){
+        for (item in homeworks){
             val listBean= ListBean()
             listBean.name=item.title
             listBean.page=item.page
-            list.add(listBean)
+            if (titleStr != item.title)
+            {
+                titleStr=item.title
+                list.add(listBean)
+            }
+
         }
         DrawingCatalogDialog(this,list).builder()?.
         setOnDialogClickListener { position ->
-            if (currentPosition != position) {
-                currentPosition = position
-                page = homeworkLists[position].page
-                changeContent()
-            }
+            page = homeworks[position].page
+            changeContent()
         }
     }
 
     //翻页内容更新切换
     private fun changeContent() {
 
-        homeworkContent = homeworkContentLists[page]
+        homeworkContent = homeworks[page]
 
         if (isExpand) {
             if (page > 0) {
-                homeworkContent_a = homeworkContentLists[page - 1]
+                homeworkContent_a = homeworks[page - 1]
             }
             if (page==0){
                 page=1
-                homeworkContent = homeworkContentLists[page]
-                homeworkContent_a = homeworkContentLists[page-1]
+                homeworkContent = homeworks[page]
+                homeworkContent_a = homeworks[page-1]
             }
         } else {
             homeworkContent_a = null
         }
 
-        homework = HomeworkDaoManager.getInstance(this).queryByID(homeworkContent?.homeworkId)
-        if (homeworkContent_a!=null)
-            homework_a = HomeworkDaoManager.getInstance(this).queryByID(homeworkContent_a?.homeworkId)
-        currentPosition = homework?.index!!//当前作业位置（下标）
 
-        tv_title_b.text=homework?.title
+        tv_title_b.text=homeworkContent?.title
         if (isExpand){
-            tv_title_a.text=homework_a?.title
+            tv_title_a.text=homeworkContent_a?.title
         }
 
         updateUI()
@@ -269,14 +271,14 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     //更新绘图以及页码
     private fun updateUI() {
-        val pageTotal = homeworkContentLists.size
+        val pageTotal = homeworks.size
 
-        updateImage(elik_b!!, homeworkContent?.path!!)
+        updateImage(elik_b!!, homeworkContent?.filePath!!)
         tv_page_b.text = (page + 1).toString()
 
         if (isExpand) {
             if (homeworkContent_a != null) {
-                updateImage(elik_a!!, homeworkContent_a?.path!!)
+                updateImage(elik_a!!, homeworkContent_a?.filePath!!)
                 tv_page_a.text = "$page"
             }
         }
@@ -285,7 +287,6 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
-        showLog(path)
         elik?.setPWEnabled(true)
         elik?.setLoadFilePath(path, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
@@ -302,161 +303,59 @@ class HomeworkDrawingActivity : BaseActivity() {
         })
     }
 
-    //创建新的作业
-    private fun newHomeWork() {
-
-        currentPosition = homeworkLists.size
-
-        homework = Homework()
-        homework?.index = currentPosition
-        homework?.courseId = courseId
-        homework?.startDate = System.currentTimeMillis()
-        homework?.homeworkTypeId = homeworkType?.type
-        homework?.bgResId = homeworkType?.resId
-        homework?.state = 0
-
-        homework?.page = homeworkContentLists.size //设置作业页码 作业内容的第一个
-        homework?.path = FileAddress().getPathHomework(courseId,homeworkType?.type,homeworkContentLists.size)
-
-        HomeworkDaoManager.getInstance(this).insertOrReplace(homework)
-        homework?.id = HomeworkDaoManager.getInstance(this).insertId
-
-        homeworkLists.add(homework!!)
-    }
 
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        homework=homeworkLists[getHomeworksMaxIndex()]
-        var date = DateUtils.longToString(System.currentTimeMillis())
+        val path=FileAddress().getPathHomework(courseId,homeworkType?.typeId,homeworks.size)
+        val pathName = DateUtils.longToString(System.currentTimeMillis())
 
         homeworkContent = HomeworkContent()
         homeworkContent?.courseId = courseId
         homeworkContent?.date = System.currentTimeMillis()
-        homeworkContent?.homeworkTypeId = homework?.homeworkTypeId
-        homeworkContent?.bgResId = homework?.bgResId
-        homeworkContent?.homeworkId = homework?.id
+        homeworkContent?.homeworkTypeId = homeworkType?.typeId
+        homeworkContent?.bgResId = homeworkType?.bgResId
 
-        homeworkContent?.path = "${homework?.path}/$date.tch"
-        homeworkContent?.page = homeworkContentLists.size
+        homeworkContent?.title="未命名${homeworks.size+1}"
+        homeworkContent?.folderPath=path
+        homeworkContent?.filePath = "$path/$pathName.tch"
+        homeworkContent?.pathName=pathName
+        homeworkContent?.page = homeworks.size
+        homeworkContent?.state=0
 
-        page = homeworkContentLists.size
-        homeworkContentLists.add(homeworkContent!!)
+        page = homeworks.size
 
         HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent)
+        val id=HomeworkContentDaoManager.getInstance(this).insertId
+        homeworkContent?.id=id
 
+        homeworks.add(homeworkContent!!)
     }
 
-    /**
-     * 获取当前所有作业最后一个下标
-     */
-    private fun getHomeworksMaxIndex():Int{
-        return homeworkLists.size-1
-    }
-
-    private fun showPopWindowBtn() {
-
-        val pops= mutableListOf<PopWindowBean>()
-        var popWindowDrawingButton = if (homework?.isSave == false) {
-            pops.add(PopWindowBean(0,"保存",false))
-            pops.add(PopWindowBean(1,"提交",false))
-            pops.add(PopWindowBean(2,"删除",false))
-            PopWindowDrawingButton(this, iv_btn, pops)
-        } else if (homework?.isSave == true && homework?.state == 0) {
-            pops.add(PopWindowBean(1,"提交",false))
-            pops.add(PopWindowBean(2,"删除",false))
-            PopWindowDrawingButton(this, iv_btn, pops)
-        } else {
-            return
-        }
-        popWindowDrawingButton.builder()
-        popWindowDrawingButton.setOnSelectListener { item ->
-            if (item.id == 0) {//保存
-                if (homework?.isSave == false) {
-                    save()
-                }
-            }
-            if (item.id == 1) {//提交
-                if (homework?.state == 0) {
-                    commit()
-                }
-            }
-            if (item.id == 2) {
-                if (homework?.isSave == false) {
-                    delete()
-                }
-            }
-        }
-    }
-
-    //保存这次作业
-    private fun save() {
-        val titleStr = tv_title_a.text.toString()
-        if (titleStr.isNullOrEmpty())
-        {
-            showToast("请先输入标题")
-            return
-        }
-        saveNewHomework()
-
-        newHomeWork()
-        newHomeWorkContent()
-
-        changeContent()
-    }
-
-    //保存新增作业
-    private fun saveNewHomework() {
-        homework?.title = tv_title_a.text.toString()
-        homework?.isSave = true
-        homework?.endDate = System.currentTimeMillis()
-
-        homeworkLists[currentPosition] = homework!!
-
-        HomeworkDaoManager.getInstance(this).insertOrReplace(homework)
-    }
 
     //作业提交
     private fun commit() {
-        //如果这是最后一个作业 先保存
-        if (currentPosition == homeworkLists.size - 1) {
-
-            val titleStr = tv_title_a.text.toString()
-            if (titleStr.isNullOrEmpty())
-            {
-                showToast("请先输入标题")
-                return
-            }
-            homework?.state = 1
-            homeworkLists[currentPosition].state = 1
-            saveNewHomework()
-//            selectorHomework()
-
-        } else {
-            homework?.state = 1
-            homeworkLists[currentPosition].state = 1
-            HomeworkDaoManager.getInstance(this@HomeworkDrawingActivity).insertOrReplace(homework)
-//            selectorHomework()
-        }
-    }
-
-    private var selectorDialog:HomeworkMessageSelectorDialog?=null
-    /**
-     * 提交 选择提交那次作业
-     */
-    private fun selectorHomework(){
-        if(selectorDialog==null){
-            selectorDialog= HomeworkMessageSelectorDialog(this,getCurrentScreenPos(),messages).builder()
-            selectorDialog?.setOnDialogClickListener {
-                if (currentPosition == homeworkLists.size - 1) {
-                    newHomeWork()
-                    newHomeWorkContent()
+        if (drawingCommitDialog==null){
+            drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
+            drawingCommitDialog?.setOnDialogClickListener {
+                if (it.contents.size>0){
+                    for (i in it.contents)
+                    {
+                        val pos=i-1
+                        if (pos<homeworks.size){
+                            val item=homeworks[pos]
+                            item.title=it.title
+                            item.state=1
+                            HomeworkContentDaoManager.getInstance(this).insertOrReplace(item)
+                        }
+                    }
                     changeContent()
+
                 }
             }
         }
         else{
-            selectorDialog?.show()
+            drawingCommitDialog?.show()
         }
     }
 
@@ -476,27 +375,10 @@ class HomeworkDrawingActivity : BaseActivity() {
     private fun deleteContent() {
 
         HomeworkContentDaoManager.getInstance(this).deleteBean(homeworkContent)
-        homeworkContentLists.remove(homeworkContent)
-        var pathName = FileUtils.getFileName(File(homeworkContent?.path).name).toString()
-        FileUtils.deleteFile(homework?.path, pathName)//删除文件
+        homeworks.remove(homeworkContent)
+        FileUtils.deleteFile(homeworkContent?.folderPath, homeworkContent?.pathName)//删除文件
 
-        var homeworkContents = HomeworkContentDaoManager.getInstance(this).queryByID(homework?.id)
 
-        if (homeworkContents.size == 0) {
-
-            HomeworkDaoManager.getInstance(this).deleteBean(homework)
-            homeworkLists.remove(homework)
-
-            FileUtils.deleteFile(File(homework?.path))//删除文件夹中的文件
-
-        }
-        if (page>0){
-            page -= 1
-        }else{
-            newHomeWork()
-            newHomeWorkContent()
-        }
-        changeContent()
 
     }
 

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.MainListBean
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
@@ -36,7 +36,7 @@ open class MainActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        mData=DataBeanManager.getIncetance().getIndexData(this)
+        mData= DataBeanManager.getIncetance().getIndexData(this)
     }
 
 

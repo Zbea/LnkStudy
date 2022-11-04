@@ -153,6 +153,10 @@ class PaintingDrawingActivity : BaseActivity() {
             changeExpandContent()
         }
 
+        iv_expand_a.setOnClickListener {
+            changeExpandContent()
+        }
+
 
         iv_btn.setOnClickListener {
             showPopWindowBtn()
@@ -176,10 +180,10 @@ class PaintingDrawingActivity : BaseActivity() {
      * 切换屏幕view变化
      */
     private fun changeExpandView(){
+        iv_expand.visibility = if(isExpand) View.GONE else View.VISIBLE
         v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
-        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 

@@ -21,14 +21,13 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
     fun builder(): HomeworkMessageSelectorDialog? {
 
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_homework_message_all)
+        dialog!!.setContentView(R.layout.dialog_homework_message)
         dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog?.window
         val layoutParams =window?.attributes
-        layoutParams?.width=DP2PX.dip2px(context,600f)
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,600f))/2
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         }
         window?.attributes = layoutParams
         dialog?.show()
@@ -40,6 +39,10 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10,0))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
+            for (item in messages)
+            {
+                item.isSelector=false
+            }
             messages[position].isSelector=true
             mAdapter?.notifyItemChanged(position)
             dismiss()
@@ -73,7 +76,7 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
 
         override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
             helper.setText(R.id.tv_title,item.title)
-            helper.setVisible(R.id.iv_image,item.isSelector)
+            helper.setChecked(R.id.cb_check,item.isSelector)
         }
 
     }

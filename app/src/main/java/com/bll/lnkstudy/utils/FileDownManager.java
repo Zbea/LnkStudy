@@ -1,10 +1,9 @@
-package com.bll.lnkstudy.manager;
+package com.bll.lnkstudy.utils;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.bll.lnkstudy.Constants;
-import com.bll.lnkstudy.utils.SPUtil;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;

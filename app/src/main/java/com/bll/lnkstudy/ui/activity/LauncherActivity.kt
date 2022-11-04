@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.Manifest
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -8,6 +9,7 @@ import android.view.KeyEvent
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.ui.AlarmService
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
+import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
 class LauncherActivity : MainActivity() {
@@ -18,6 +20,15 @@ class LauncherActivity : MainActivity() {
 
     override fun initView() {
         super.initView()
+
+        EasyPermissions.requestPermissions(this,"请求权限",1,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.RECORD_AUDIO
+        )
+
         startRemind()
 
         iv_jc.setOnClickListener {

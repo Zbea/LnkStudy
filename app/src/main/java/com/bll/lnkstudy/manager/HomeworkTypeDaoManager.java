@@ -2,6 +2,7 @@ package com.bll.lnkstudy.manager;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -98,21 +99,45 @@ public class HomeworkTypeDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public HomeworkType queryByID(Long noteID) {
-        WhereCondition whereCondition=HomeworkTypeDao.Properties.Id.eq(noteID);
-        HomeworkType queryNote = dao.queryBuilder().where(whereUser,whereCondition).build().unique();
-        return queryNote;
+
+    /**
+     * 将老师创建作业本保存在本地
+     * @param courseId
+     * @param lists
+     */
+    public void insertOrReplaceAll(int courseId,List<HomeworkType> lists){
+        List<HomeworkType> homeworkTypeList=queryAllByCourseId(courseId,false);
+        for(HomeworkType item:lists){
+            boolean isExist=false;
+            for (HomeworkType ite:homeworkTypeList) {
+                if (item.typeId==ite.typeId){
+                    isExist=true;
+                    break;
+                }
+            }
+            if (!isExist)
+                insertOrReplace(item);
+        }
+
     }
 
-    public List<HomeworkType> queryAll() {
-        List<HomeworkType> queryList = dao.queryBuilder().where(whereUser).build().list();
-        return queryList;
+    /**
+     * 查找作业本
+     * @param courseId
+     * @param isCreate false 老师创建 true 学生创建
+     * @return
+     */
+    public List<HomeworkType> queryAllByCourseId(int courseId,boolean isCreate) {
+        WhereCondition whereCondition=HomeworkTypeDao.Properties.CourseId.eq(courseId);
+        WhereCondition whereCondition1=HomeworkTypeDao.Properties.IsCreate.eq(isCreate);
+        List<HomeworkType> lists = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        return lists;
     }
 
     public List<HomeworkType> queryAllByCourseId(int courseId) {
         WhereCondition whereCondition=HomeworkTypeDao.Properties.CourseId.eq(courseId);
-        List<HomeworkType> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
-        return queryList;
+        List<HomeworkType> lists = dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        return lists;
     }
 
 

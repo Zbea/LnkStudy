@@ -14,22 +14,21 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageAllDialog(val context: Context,val screenPos:Int, val list: List<HomeworkMessage>) {
+class HomeworkMessageDialog(val context: Context, val screenPos:Int, val list: List<HomeworkMessage>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:MessageAdapter?=null
 
-    fun builder(): HomeworkMessageAllDialog? {
+    fun builder(): HomeworkMessageDialog? {
 
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_homework_message_all)
+        dialog!!.setContentView(R.layout.dialog_homework_message)
         dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog?.window
         val layoutParams =window?.attributes
-        layoutParams?.width=DP2PX.dip2px(context,600f)
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,600f))/2
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         }
         window?.attributes = layoutParams
         dialog?.show()

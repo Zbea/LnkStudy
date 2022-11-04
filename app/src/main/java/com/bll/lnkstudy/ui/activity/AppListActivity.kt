@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.manager.DataBeanManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
@@ -24,7 +24,7 @@ class AppListActivity:BaseActivity() {
     }
 
     override fun initData() {
-        apps=DataBeanManager.getIncetance().appBaseList
+        apps= DataBeanManager.getIncetance().appBaseList
         apps.addAll(AppUtils.scanLocalInstallAppList(this))
     }
 

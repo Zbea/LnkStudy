@@ -10,7 +10,6 @@ import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ListBean
@@ -75,6 +74,9 @@ class PaperDrawingActivity: BaseActivity() {
         iv_expand.setOnClickListener {
             changeExpandContent()
         }
+        iv_expand_a.setOnClickListener {
+            changeExpandContent()
+        }
 
         iv_catalog.setOnClickListener {
             showCatalog()
@@ -121,7 +123,7 @@ class PaperDrawingActivity: BaseActivity() {
         }
 
         iv_btn.setOnClickListener {
-            DrawingCommitDialog(this,getCurrentScreenPos()).builder()
+
         }
     }
 
@@ -139,10 +141,10 @@ class PaperDrawingActivity: BaseActivity() {
     //单屏、全屏内容切换
     private fun changeExpandView(){
         showView(ll_page_content_a)
+        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
         ll_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
-        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 
@@ -176,7 +178,8 @@ class PaperDrawingActivity: BaseActivity() {
 
     //内容切换
     private fun changeContent(){
-
+        if(papers.size==0||currentPosition>=papers.size)
+            return
         paper=papers[currentPosition]
 
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContent>

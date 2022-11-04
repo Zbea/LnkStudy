@@ -124,8 +124,8 @@ class BookCaseFragment: BaseFragment() {
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {
-        val dialogManager=BookManageDialog(requireActivity(),screenPos,0,book!!)
-        dialogManager.builder().setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
+        BookManageDialog(requireActivity(),screenPos,0,book!!).builder()
+            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
             override fun onCollect() {
                 book?.isCollect=true
                 books[position].isCollect=true
