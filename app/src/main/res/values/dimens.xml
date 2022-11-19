@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="date_add_event_height">60dp</dimen>
-    <dimen name="navigation_height">87dp</dimen>
+    <dimen name="date_add_event_height">65dp</dimen>
+    <dimen name="navigation_height">90dp</dimen>
     <dimen name="navigation_text">31sp</dimen>
 
     <dimen name="main_content_title_height">48dp</dimen>
@@ -26,6 +26,7 @@
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_22">22sp</dimen>
     <dimen name="sp_24">24sp</dimen>
+    <dimen name="sp_25">25sp</dimen>
     <dimen name="sp_26">26sp</dimen>
     <dimen name="sp_30">30sp</dimen>
     <dimen name="sp_36">36sp</dimen>

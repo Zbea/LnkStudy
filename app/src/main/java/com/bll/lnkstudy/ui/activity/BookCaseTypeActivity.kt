@@ -4,12 +4,12 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.ui.adapter.BookAdapter
@@ -61,7 +61,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),DP2PX.dip2px(this,35f)))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position])
+            gotoBookDetails(books[position].id.toInt())
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             pos=position

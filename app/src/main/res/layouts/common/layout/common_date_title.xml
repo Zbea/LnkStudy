@@ -15,15 +15,6 @@
             android:scaleType="center"
             android:src="@mipmap/icon_back" />
 
-        <TextView
-            android:id="@+id/tv_edit_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="修改"
-            android:textColor="@color/black"
-            android:textSize="@dimen/navigation_text"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -35,36 +26,18 @@
             android:textSize="@dimen/navigation_text" />
 
 
-        <TextView
-            android:id="@+id/tv_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="30dp"
-            android:gravity="center"
-            android:text="编辑"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/tv_delete"
+            android:id="@+id/tv_setting"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="30dp"
-            android:gravity="center"
-            android:text="删除"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/tv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="30dp"
-            android:gravity="center"
+            android:layout_marginEnd="100dp"
+            android:gravity="bottom"
             android:text="保存"
             android:textColor="@color/black"
-            android:textSize="24sp"
-            android:visibility="gone" />
+            android:textSize="28sp"
+            android:visibility="gone"
+             />
 
 
 

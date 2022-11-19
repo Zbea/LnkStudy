@@ -192,6 +192,9 @@ class HomeworkDrawingActivity : BaseActivity() {
         iv_expand_a.setOnClickListener {
             changeExpandContent()
         }
+        iv_expand_b.setOnClickListener {
+            changeExpandContent()
+        }
 
         iv_btn.setOnClickListener {
             commit()
@@ -215,6 +218,16 @@ class HomeworkDrawingActivity : BaseActivity() {
         v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
+        if (isExpand){
+            if (screenPos==1){
+                showView(iv_expand_a)
+                disMissView(iv_expand_b)
+            }
+            else{
+                showView(iv_expand_b)
+                disMissView(iv_expand_a)
+            }
+        }
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 

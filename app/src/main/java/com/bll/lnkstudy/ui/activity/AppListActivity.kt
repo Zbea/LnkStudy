@@ -3,15 +3,18 @@ package com.bll.lnkstudy.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class AppListActivity:BaseActivity() {
 
@@ -118,6 +121,15 @@ class AppListActivity:BaseActivity() {
             }
         }
 
+    }
+
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(msgFlag: String) {
+        if (msgFlag== Constants.APP_EVENT){
+            getAppTool()
+            mAdapterTool?.setNewData(toolApps)
+        }
     }
 
 }

@@ -10,7 +10,7 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
 
 import com.bll.lnkstudy.utils.greendao.DatePlanConverter;
-import com.bll.lnkstudy.utils.greendao.DateRemindConverter;
+import com.bll.lnkstudy.utils.greendao.DateWeekConverter;
 import java.util.List;
 
 import com.bll.lnkstudy.mvp.model.DateEvent;
@@ -35,17 +35,20 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         public final static Property DayLong = new Property(4, Long.class, "dayLong", false, "DAY_LONG");
         public final static Property DayLongStr = new Property(5, String.class, "dayLongStr", false, "DAY_LONG_STR");
         public final static Property Explain = new Property(6, String.class, "explain", false, "EXPLAIN");
-        public final static Property StartTime = new Property(7, Long.class, "startTime", false, "START_TIME");
-        public final static Property EndTime = new Property(8, Long.class, "endTime", false, "END_TIME");
-        public final static Property StartTimeStr = new Property(9, String.class, "startTimeStr", false, "START_TIME_STR");
-        public final static Property EndTimeStr = new Property(10, String.class, "endTimeStr", false, "END_TIME_STR");
-        public final static Property List = new Property(11, String.class, "list", false, "LIST");
-        public final static Property RemindList = new Property(12, String.class, "remindList", false, "REMIND_LIST");
-        public final static Property Repeat = new Property(13, String.class, "repeat", false, "REPEAT");
+        public final static Property IsCountdown = new Property(7, boolean.class, "isCountdown", false, "IS_COUNTDOWN");
+        public final static Property IsRemind = new Property(8, boolean.class, "isRemind", false, "IS_REMIND");
+        public final static Property RemindDay = new Property(9, int.class, "remindDay", false, "REMIND_DAY");
+        public final static Property IsBell = new Property(10, boolean.class, "isBell", false, "IS_BELL");
+        public final static Property StartTime = new Property(11, Long.class, "startTime", false, "START_TIME");
+        public final static Property EndTime = new Property(12, Long.class, "endTime", false, "END_TIME");
+        public final static Property StartTimeStr = new Property(13, String.class, "startTimeStr", false, "START_TIME_STR");
+        public final static Property EndTimeStr = new Property(14, String.class, "endTimeStr", false, "END_TIME_STR");
+        public final static Property Weeks = new Property(15, String.class, "weeks", false, "WEEKS");
+        public final static Property Plans = new Property(16, String.class, "plans", false, "PLANS");
     }
 
-    private final DatePlanConverter listConverter = new DatePlanConverter();
-    private final DateRemindConverter remindListConverter = new DateRemindConverter();
+    private final DateWeekConverter weeksConverter = new DateWeekConverter();
+    private final DatePlanConverter plansConverter = new DatePlanConverter();
 
     public DateEventDao(DaoConfig config) {
         super(config);
@@ -66,13 +69,16 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
                 "\"DAY_LONG\" INTEGER," + // 4: dayLong
                 "\"DAY_LONG_STR\" TEXT," + // 5: dayLongStr
                 "\"EXPLAIN\" TEXT," + // 6: explain
-                "\"START_TIME\" INTEGER," + // 7: startTime
-                "\"END_TIME\" INTEGER," + // 8: endTime
-                "\"START_TIME_STR\" TEXT," + // 9: startTimeStr
-                "\"END_TIME_STR\" TEXT," + // 10: endTimeStr
-                "\"LIST\" TEXT," + // 11: list
-                "\"REMIND_LIST\" TEXT," + // 12: remindList
-                "\"REPEAT\" TEXT);"); // 13: repeat
+                "\"IS_COUNTDOWN\" INTEGER NOT NULL ," + // 7: isCountdown
+                "\"IS_REMIND\" INTEGER NOT NULL ," + // 8: isRemind
+                "\"REMIND_DAY\" INTEGER NOT NULL ," + // 9: remindDay
+                "\"IS_BELL\" INTEGER NOT NULL ," + // 10: isBell
+                "\"START_TIME\" INTEGER," + // 11: startTime
+                "\"END_TIME\" INTEGER," + // 12: endTime
+                "\"START_TIME_STR\" TEXT," + // 13: startTimeStr
+                "\"END_TIME_STR\" TEXT," + // 14: endTimeStr
+                "\"WEEKS\" TEXT," + // 15: weeks
+                "\"PLANS\" TEXT);"); // 16: plans
     }
 
     /** Drops the underlying database table. */
@@ -111,40 +117,39 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         if (explain != null) {
             stmt.bindString(7, explain);
         }
+        stmt.bindLong(8, entity.getIsCountdown() ? 1L: 0L);
+        stmt.bindLong(9, entity.getIsRemind() ? 1L: 0L);
+        stmt.bindLong(10, entity.getRemindDay());
+        stmt.bindLong(11, entity.getIsBell() ? 1L: 0L);
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(8, startTime);
+            stmt.bindLong(12, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(9, endTime);
+            stmt.bindLong(13, endTime);
         }
  
         String startTimeStr = entity.getStartTimeStr();
         if (startTimeStr != null) {
-            stmt.bindString(10, startTimeStr);
+            stmt.bindString(14, startTimeStr);
         }
  
         String endTimeStr = entity.getEndTimeStr();
         if (endTimeStr != null) {
-            stmt.bindString(11, endTimeStr);
+            stmt.bindString(15, endTimeStr);
         }
  
-        List list = entity.getList();
-        if (list != null) {
-            stmt.bindString(12, listConverter.convertToDatabaseValue(list));
+        List weeks = entity.getWeeks();
+        if (weeks != null) {
+            stmt.bindString(16, weeksConverter.convertToDatabaseValue(weeks));
         }
  
-        List remindList = entity.getRemindList();
-        if (remindList != null) {
-            stmt.bindString(13, remindListConverter.convertToDatabaseValue(remindList));
-        }
- 
-        String repeat = entity.getRepeat();
-        if (repeat != null) {
-            stmt.bindString(14, repeat);
+        List plans = entity.getPlans();
+        if (plans != null) {
+            stmt.bindString(17, plansConverter.convertToDatabaseValue(plans));
         }
     }
 
@@ -178,40 +183,39 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         if (explain != null) {
             stmt.bindString(7, explain);
         }
+        stmt.bindLong(8, entity.getIsCountdown() ? 1L: 0L);
+        stmt.bindLong(9, entity.getIsRemind() ? 1L: 0L);
+        stmt.bindLong(10, entity.getRemindDay());
+        stmt.bindLong(11, entity.getIsBell() ? 1L: 0L);
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(8, startTime);
+            stmt.bindLong(12, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(9, endTime);
+            stmt.bindLong(13, endTime);
         }
  
         String startTimeStr = entity.getStartTimeStr();
         if (startTimeStr != null) {
-            stmt.bindString(10, startTimeStr);
+            stmt.bindString(14, startTimeStr);
         }
  
         String endTimeStr = entity.getEndTimeStr();
         if (endTimeStr != null) {
-            stmt.bindString(11, endTimeStr);
+            stmt.bindString(15, endTimeStr);
         }
  
-        List list = entity.getList();
-        if (list != null) {
-            stmt.bindString(12, listConverter.convertToDatabaseValue(list));
+        List weeks = entity.getWeeks();
+        if (weeks != null) {
+            stmt.bindString(16, weeksConverter.convertToDatabaseValue(weeks));
         }
  
-        List remindList = entity.getRemindList();
-        if (remindList != null) {
-            stmt.bindString(13, remindListConverter.convertToDatabaseValue(remindList));
-        }
- 
-        String repeat = entity.getRepeat();
-        if (repeat != null) {
-            stmt.bindString(14, repeat);
+        List plans = entity.getPlans();
+        if (plans != null) {
+            stmt.bindString(17, plansConverter.convertToDatabaseValue(plans));
         }
     }
 
@@ -230,13 +234,16 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // dayLong
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // dayLongStr
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // explain
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // startTime
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // endTime
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // startTimeStr
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // endTimeStr
-            cursor.isNull(offset + 11) ? null : listConverter.convertToEntityProperty(cursor.getString(offset + 11)), // list
-            cursor.isNull(offset + 12) ? null : remindListConverter.convertToEntityProperty(cursor.getString(offset + 12)), // remindList
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // repeat
+            cursor.getShort(offset + 7) != 0, // isCountdown
+            cursor.getShort(offset + 8) != 0, // isRemind
+            cursor.getInt(offset + 9), // remindDay
+            cursor.getShort(offset + 10) != 0, // isBell
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // startTime
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12), // endTime
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // startTimeStr
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // endTimeStr
+            cursor.isNull(offset + 15) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 15)), // weeks
+            cursor.isNull(offset + 16) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 16)) // plans
         );
         return entity;
     }
@@ -250,13 +257,16 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         entity.setDayLong(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setDayLongStr(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setExplain(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setStartTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setEndTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setStartTimeStr(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setEndTimeStr(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setList(cursor.isNull(offset + 11) ? null : listConverter.convertToEntityProperty(cursor.getString(offset + 11)));
-        entity.setRemindList(cursor.isNull(offset + 12) ? null : remindListConverter.convertToEntityProperty(cursor.getString(offset + 12)));
-        entity.setRepeat(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setIsCountdown(cursor.getShort(offset + 7) != 0);
+        entity.setIsRemind(cursor.getShort(offset + 8) != 0);
+        entity.setRemindDay(cursor.getInt(offset + 9));
+        entity.setIsBell(cursor.getShort(offset + 10) != 0);
+        entity.setStartTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setEndTime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
+        entity.setStartTimeStr(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setEndTimeStr(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setWeeks(cursor.isNull(offset + 15) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 15)));
+        entity.setPlans(cursor.isNull(offset + 16) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 16)));
      }
     
     @Override

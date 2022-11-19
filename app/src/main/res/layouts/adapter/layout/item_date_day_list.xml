@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="68dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:text="标题"
+        android:lines="1"
+        android:ellipsize="end"
+        />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:gravity="center"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/ll_countdown"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="还有"/>
+        <TextView
+            android:id="@+id/tv_countdown"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="天"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_remind"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="提前"/>
+        <TextView
+            android:id="@+id/tv_remind"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="天"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

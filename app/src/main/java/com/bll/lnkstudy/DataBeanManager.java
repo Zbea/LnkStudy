@@ -7,6 +7,7 @@ import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.BaseTypeBean;
 import com.bll.lnkstudy.mvp.model.CourseBean;
 import com.bll.lnkstudy.mvp.model.DateRemind;
+import com.bll.lnkstudy.mvp.model.DateWeekBean;
 import com.bll.lnkstudy.mvp.model.HomeworkType;
 import com.bll.lnkstudy.mvp.model.MainListBean;
 import com.bll.lnkstudy.mvp.model.MessageList;
@@ -112,16 +113,7 @@ public class DataBeanManager {
             "swift"};
 
 
-    public String[] dateDayTitle = {
-            "不重复",
-            "每月",
-            "每年"};
-    public String[] dateScheduleTitle = {
-            "不重复",
-            "每天",
-            "每周",
-            "每月",
-            "每年"};
+    public Integer[] dateRemind={1,3,5,7,10,15};
 
     public String[] kmArray = {
             "语文",
@@ -238,75 +230,33 @@ public class DataBeanManager {
         return list;
     }
 
-    /**
-     * 重要日子提醒事件
-     *
-     * @return
-     */
-    public List<DateRemind> getRemindDay() {
+    public List<DateRemind> getRemind() {
         List<DateRemind> list = new ArrayList<DateRemind>();
-        DateRemind remindBean = new DateRemind();
-        remindBean.remind = "当天（上午9点）";
-        remindBean.remindIn = 0;
-        list.add(remindBean);
+        for (int i:dateRemind) {
+            DateRemind dateRemind=new DateRemind();
+            dateRemind.remind=i+"天";
+            dateRemind.remindIn=i;
+            dateRemind.isCheck=i==1;
+            list.add(dateRemind);
+        }
+        return list;
+    }
 
-        DateRemind remindBean1 = new DateRemind();
-        remindBean1.remind = "1天前（上午9点）";
-        remindBean1.remindIn = 1;
-        list.add(remindBean1);
+    public List<DateWeekBean> getWeeks(){
+        List<DateWeekBean> list = new ArrayList<>();
 
-        DateRemind remindBean2 = new DateRemind();
-        remindBean2.remind = "2天前（上午9点）";
-        remindBean2.remindIn = 2;
-        list.add(remindBean2);
-
-        DateRemind remindBean3 = new DateRemind();
-        remindBean3.remind = "3天前（上午9点）";
-        remindBean3.remindIn = 3;
-        list.add(remindBean3);
+        list.add(new DateWeekBean("周一","MO",2,false));
+        list.add(new DateWeekBean("周二","TU",3,false));
+        list.add(new DateWeekBean("周三","WE",4,false));
+        list.add(new DateWeekBean("周四","TH",5,false));
+        list.add(new DateWeekBean("周五","FR",6,false));
+        list.add(new DateWeekBean("周六","SA",7,false));
+        list.add(new DateWeekBean("周日","SU",8,false));
 
         return list;
     }
 
-    /**
-     * 日程提醒事件
-     *
-     * @return
-     */
-    public List<DateRemind> getRemindSchedule() {
-        List<DateRemind> list = new ArrayList<DateRemind>();
-        DateRemind remindBean = new DateRemind();
-        remindBean.remind = "提前5分钟";
-        remindBean.remindIn = 1;
-        list.add(remindBean);
 
-        DateRemind remindBean1 = new DateRemind();
-        remindBean1.remind = "提前10分钟";
-        remindBean1.remindIn = 2;
-        list.add(remindBean1);
-
-        DateRemind remindBean2 = new DateRemind();
-        remindBean2.remind = "提前15分钟";
-        remindBean2.remindIn = 3;
-        list.add(remindBean2);
-
-        DateRemind remindBean3 = new DateRemind();
-        remindBean3.remind = "提前20分钟";
-        remindBean3.remindIn = 4;
-        list.add(remindBean3);
-
-        DateRemind remindBean4 = new DateRemind();
-        remindBean4.remind = "提前25分钟";
-        remindBean4.remindIn = 5;
-        list.add(remindBean4);
-
-        DateRemind remindBean5 = new DateRemind();
-        remindBean5.remind = "提前30分钟";
-        remindBean5.remindIn = 6;
-        list.add(remindBean5);
-
-        return list;
-    }
 
     public List<MessageList> getMessage() {
 
@@ -357,7 +307,7 @@ public class DataBeanManager {
      *
      * @return
      */
-    public List<HomeworkType> getHomeWorkTypes(boolean isLg, int courseId, int grade) {
+    public List<HomeworkType> getHomeWorkTypes( int courseId, int grade) {
         int resId = 0;
         if (courseId == 0) {
             if (grade < 4) {
@@ -407,7 +357,7 @@ public class DataBeanManager {
         homeWork2.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork2);
 
-        if (isLg) {
+        if (courseId==0||courseId==2) {
             HomeworkType homeWork4 = new HomeworkType();
             homeWork4.name = "课文朗读册";
             homeWork4.typeId = 4;

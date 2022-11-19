@@ -13,7 +13,6 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.HomeworkType
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
@@ -213,10 +212,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     /**
      * 跳转书籍详情
      */
-    fun gotoBookDetails(book: Book){
-        ActivityManager.getInstance().checkBookIDisExist(book.id)
+    fun gotoBookDetails(id: Int){
+        ActivityManager.getInstance().checkBookIDisExist(id)
         var intent=Intent(activity, BookDetailsActivity::class.java)
-        intent.putExtra("book_id",book.id)
+        intent.putExtra("book_id",id)
         startActivity(intent)
         if (screenPos!=3)
             ActivityManager.getInstance().finishActivity(activity)

@@ -121,13 +121,13 @@ public class ActivityManager {
      * @param id
      * @return
      */
-    public void checkBookIDisExist(long id){
+    public void checkBookIDisExist(int id){
         Iterator<WeakReference<Activity>> it = stack.iterator();
         while (it.hasNext()) {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(BookDetailsActivity.class.getName())) {
-                long bookId=activity.getIntent().getLongExtra("book_id",0);
+                int bookId=activity.getIntent().getIntExtra("book_id",0);
                 if (bookId==id){
                     activity.finish();
                     it.remove();

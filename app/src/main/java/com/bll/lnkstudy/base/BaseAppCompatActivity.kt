@@ -44,6 +44,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var mSaveState:Bundle?=null
     var ivBack: ImageView? = null
     var tvPageTitle: TextView? = null
+    var tvSetting: TextView? = null
     var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
@@ -77,7 +78,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         showLog(localClassName+"当前屏幕：$screenPos")
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+            setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
         }
 
         mDialog = ProgressDialog(this,screenPos)
@@ -106,6 +107,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         ivBack = findViewById(R.id.iv_back)
         ivSave = findViewById(R.id.iv_save)
         tvPageTitle = findViewById(R.id.tv_title)
+        tvSetting = findViewById(R.id.tv_setting)
         if (ivBack != null) {
             ivBack!!.setOnClickListener { finish() }
         }
@@ -139,6 +141,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         if (tvPageTitle != null) {
             tvPageTitle!!.text = pageTitle
         }
+    }
+
+    fun setPageSetting(setStr:String){
+        if (tvSetting!=null){
+            showView(tvSetting)
+            tvSetting?.text=setStr
+        }
+
     }
 
     /**
@@ -199,10 +209,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 跳转书籍详情
      */
-    fun gotoBookDetails(book: Book){
-        ActivityManager.getInstance().checkBookIDisExist(book.id)
+    fun gotoBookDetails(id: Int){
+        ActivityManager.getInstance().checkBookIDisExist(id)
         var intent=Intent(this, BookDetailsActivity::class.java)
-        intent.putExtra("book_id",book.id)
+        intent.putExtra("book_id",id)
         startActivity(intent)
     }
 

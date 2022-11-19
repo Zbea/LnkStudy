@@ -3,8 +3,6 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
@@ -19,18 +17,20 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.dialog.PopWindowDateCilck
+import com.bll.lnkstudy.dialog.PopWindowDateClick
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
-import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.MainCourseActivity
 import com.bll.lnkstudy.ui.activity.MessageListActivity
-import com.bll.lnkstudy.ui.activity.date.MainDateActivity
+import com.bll.lnkstudy.ui.activity.date.DateActivity
+import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
+import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
+import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
@@ -53,16 +53,13 @@ import java.util.*
  */
 class MainFragment : BaseFragment() {
 
-    private var dayNowLong = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
-    private var planList = mutableListOf<DatePlanBean>()
-    private var scheduleList = mutableListOf<DateEvent>()
+    private var nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+    private var planList = mutableListOf<DateEvent>()
     private var dayList = mutableListOf<DateEvent>()
-    private var mainDateEventScheduleAdapter: MainDateEventScheduleAdapter? = null
-    private var mainDateEventDayAdapter: MainDateEventDayAdapter? = null
-    private var mainDateAdapter: MainDateAdapter? = null
+    private var mPlanAdapter: MainDatePlanAdapter? = null
 
     private var mainTextBookAdapter: MainTextBookAdapter? = null
-    private var popWindow: PopWindowDateCilck? = null
+    private var popWindow: PopWindowDateClick? = null
 
     private var notes= mutableListOf<Note>()
     private var mainNoteAdapter: MainNoteAdapter? = null
@@ -100,7 +97,7 @@ class MainFragment : BaseFragment() {
         }
 
         ll_date.setOnClickListener {
-            customStartActivity(Intent(activity, MainDateActivity::class.java))
+            customStartActivity(Intent(activity, DateActivity::class.java))
         }
 
         ll_message.setOnClickListener {
@@ -142,52 +139,34 @@ class MainFragment : BaseFragment() {
     }
 
     //日历相关内容设置
+    @SuppressLint("WrongConstant")
     private fun initDateView() {
 
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
 
-        findDateList()
-
         rv_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mainDateAdapter = MainDateAdapter(R.layout.item_main_date_plan, planList)
-        rv_plan.adapter = mainDateAdapter
-        mainDateAdapter?.bindToRecyclerView(rv_plan)
-        rv_plan.addItemDecoration(SpaceItemDeco(0, 0, 0, 0, 0))
-        mainDateAdapter?.emptyView = getEmptyView("添加学习计划~")
+        mPlanAdapter = MainDatePlanAdapter(R.layout.item_main_date_plan, null)
+        rv_plan.adapter = mPlanAdapter
+        mPlanAdapter?.bindToRecyclerView(rv_plan)
+        mPlanAdapter?.setOnItemClickListener { adapter, view, position ->
+            val intent=Intent(requireContext(), DatePlanDetailsActivity::class.java)
+            intent.addFlags(1)
+            var bundle = Bundle()
+            bundle.putSerializable("dateEvent", planList[position])
+            intent.putExtra("bundle", bundle)
+            customStartActivity(intent)
+        }
 
-        rv_schedule.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mainDateEventScheduleAdapter =
-            MainDateEventScheduleAdapter(R.layout.item_date_schedule_event, scheduleList)
-        rv_schedule.adapter = mainDateEventScheduleAdapter
-        mainDateEventScheduleAdapter?.bindToRecyclerView(rv_schedule)
-        rv_schedule.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
-        mainDateEventScheduleAdapter?.emptyView = getEmptyView("添加日程~")
-
-        rv_day.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mainDateEventDayAdapter = MainDateEventDayAdapter(R.layout.item_date_day_event, dayList)
-        rv_day.adapter = mainDateEventDayAdapter
-        mainDateEventDayAdapter?.bindToRecyclerView(rv_day)
-        rv_day.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
-        mainDateEventDayAdapter?.emptyView = getEmptyView("添加重要日子~")
 
         iv_date_more.setOnClickListener {
             if (popWindow == null) {
-                popWindow=PopWindowDateCilck(requireContext(),iv_date_more).builder()
+                popWindow=PopWindowDateClick(requireContext(),iv_date_more).builder()
                 popWindow ?.setOnClickListener {
                     if (it==0){
-                        rv_plan.visibility = View.VISIBLE
-                        rv_schedule.visibility = View.GONE
-                        rv_day.visibility = View.GONE
+                        customStartActivity(Intent(requireContext(), DatePlanListActivity::class.java))
                     }
                     if (it==1){
-                        rv_plan.visibility = View.GONE
-                        rv_schedule.visibility = View.VISIBLE
-                        rv_day.visibility = View.GONE
-                    }
-                    if (it==2){
-                        rv_plan.visibility = View.GONE
-                        rv_schedule.visibility = View.GONE
-                        rv_day.visibility = View.VISIBLE
+                        customStartActivity(Intent(requireContext(), DateDayListActivity::class.java))
                     }
                 }
             } else {
@@ -196,19 +175,8 @@ class MainFragment : BaseFragment() {
 
         }
 
-    }
+        findDateList()
 
-    //获得当前空内容
-    private fun getEmptyView(title: String): View {
-        var emptyView = layoutInflater.inflate(R.layout.common_empty, null)
-        emptyView.setOnClickListener {
-            customStartActivity(Intent(activity, MainDateActivity::class.java))
-        }
-        var tv_content = emptyView.findViewById<TextView>(R.id.tv_empty_title)
-        tv_content.text = title
-        tv_content.textSize = 18f
-
-        return emptyView
     }
 
     //消息相关处理
@@ -307,15 +275,8 @@ class MainFragment : BaseFragment() {
      * 通过当天时间查找本地dateEvent事件集合
      */
     private fun findDateList() {
-        scheduleList = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(1,dayNowLong)
-        dayList = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(2,dayNowLong)
-        val datas = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(0,dayNowLong)
-        planList.clear()
-        for (data in datas) {
-            for (item in data.list) {
-                planList.add(item)
-            }
-        }
+        planList = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(0)
+        mPlanAdapter?.setNewData(planList)
     }
 
 
@@ -385,12 +346,6 @@ class MainFragment : BaseFragment() {
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag == DATE_EVENT) {
             findDateList()
-            mainDateEventScheduleAdapter?.setNewData(scheduleList)
-
-            mainDateEventDayAdapter?.setDateLong(dayNowLong)
-            mainDateEventDayAdapter?.setNewData(dayList)
-
-            mainDateAdapter?.setNewData(planList)
         }
         if (msgFlag == COURSE_EVENT) {
             initCourse()

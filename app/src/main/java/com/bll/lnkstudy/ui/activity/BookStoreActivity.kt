@@ -5,6 +5,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.Constants.Companion.BOOK_HOMEWORK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -12,12 +13,14 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -31,7 +34,8 @@ import java.util.concurrent.locks.ReentrantLock
 class BookStoreActivity:BaseAppCompatActivity() ,
     IContractView.IBookStoreView {
 
-    private var flags=0
+    private var flags=0 //书籍类型
+    private var typeId=0 //书籍分类
     private val mDownMapPool = HashMap<Long,BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter=BookStorePresenter(this)
@@ -103,7 +107,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             initTab()
         }
 
-        initTypeView()
+        initSelectorView()
 
         btn_page_up.setOnClickListener {
             if (pageIndex>1){
@@ -172,7 +176,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
 
 
     //设置条件选择
-    private fun initTypeView(){
+    private fun initSelectorView(){
 
         if (provinceList.size>0){
             tv_province.text=provinceList[0].name
@@ -230,6 +234,10 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             layoutParams.marginEnd = if (i == typeList.size-1) 0 else DP2PX.dip2px(this, 44f)
             radioButton.layoutParams = layoutParams
             rg_group.addView(radioButton)
+        }
+
+        rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            typeId=typeList[i].typeId
         }
 
         tv_download.visibility=if (flags==0) View.VISIBLE else View.GONE
@@ -317,6 +325,18 @@ class BookStoreActivity:BaseAppCompatActivity() ,
                         override fun onFinish(success: Boolean) {
                             if (success){
                                 showToast("下载完成")
+                                //书籍中的参考课辅，保存到作业本
+                                if (flags==0&&typeId==3){
+                                    val item=HomeworkType()
+                                    item.typeId= book?.id?.toInt()!!
+                                    item.name=book?.name
+                                    item.state=3
+                                    item.bgResId=ToolUtils.getImageResStr(this@BookStoreActivity,R.mipmap.icon_homework_cover_1)
+                                    item.date=System.currentTimeMillis()
+                                    item.courseId= book?.classX?.toInt()!!
+                                    HomeworkTypeDaoManager.getInstance(this@BookStoreActivity).insertOrReplace(item)
+                                    EventBus.getDefault().post(BOOK_HOMEWORK_EVENT)
+                                }
                                 book?.time=System.currentTimeMillis()//下载时间用于排序
                                 //解压完成就开始存数据库
                                 book?.status=3

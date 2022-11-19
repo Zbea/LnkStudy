@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.APK_PATH
+import com.bll.lnkstudy.Constants.Companion.APP_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopWindowList
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.mvp.model.AppListBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.mvp.presenter.AppPresenter
@@ -19,12 +19,14 @@ import com.bll.lnkstudy.ui.adapter.AppDownloadListAdapter
 import com.bll.lnkstudy.ui.adapter.AppWallpaperListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_app_download.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class AppDownloadActivity:BaseAppCompatActivity(),
@@ -280,6 +282,7 @@ class AppDownloadActivity:BaseAppCompatActivity(),
     //安装apk
     private fun installApk(apkPath: String) {
         AppUtils.installApp(this, apkPath)
+        EventBus.getDefault().post(APP_EVENT)
     }
 
     //是否已经下载安装

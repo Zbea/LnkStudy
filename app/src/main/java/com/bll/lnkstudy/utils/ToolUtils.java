@@ -20,7 +20,7 @@ public class ToolUtils {
 
     //图片唯一值转为资源id
     public static int getImageResId(Context context,String resStr){
-        if (resStr.isEmpty())
+        if (resStr==null)
         {
             return 0;
         }

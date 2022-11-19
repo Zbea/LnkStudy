@@ -48,8 +48,8 @@ class BookDetailsActivity : BaseActivity() {
     }
 
     override fun initData() {
-        val id = intent.getLongExtra("book_id", 0)
-        book = BookGreenDaoManager.getInstance(this).queryBookByBookID(id)
+        val id = intent.getIntExtra("book_id", 0)
+        book = BookGreenDaoManager.getInstance(this).queryBookByBookID(id.toLong())
         page = book?.pageIndex!!
         if (book == null) return
         val cataLogFilePath = FileAddress().getPathBookCatalog(book?.bookPath!!)
@@ -94,6 +94,9 @@ class BookDetailsActivity : BaseActivity() {
             changeExpandContent()
         }
         iv_expand_a.setOnClickListener {
+            changeExpandContent()
+        }
+        iv_expand_b.setOnClickListener {
             changeExpandContent()
         }
 
@@ -154,6 +157,16 @@ class BookDetailsActivity : BaseActivity() {
         ll_page_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
         iv_tool_right.visibility = if (isExpand) View.VISIBLE else View.GONE
+        if (isExpand){
+            if (screenPos==1){
+                showView(iv_expand_a)
+                disMissView(iv_expand_b)
+            }
+            else{
+                showView(iv_expand_b)
+                disMissView(iv_expand_a)
+            }
+        }
     }
 
     /**

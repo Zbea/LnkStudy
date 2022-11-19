@@ -1,12 +1,10 @@
 package com.bll.lnkstudy.dialog
 
+import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
@@ -15,18 +13,15 @@ import com.bll.lnkstudy.utils.DP2PX
 
 class NoteAddDialog(private val context: Context,private val screenPos:Int) {
 
-    private var dialog:AlertDialog?=null
+    private var dialog:Dialog?=null
 
     fun builder(): NoteAddDialog? {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_note_add_module, null)
-        dialog= AlertDialog.Builder(ContextThemeWrapper(context, R.style.styleDialogCustom)).create()
-        dialog?.setView(view)
+        dialog= Dialog(context)
+        dialog?.setContentView(R.layout.dialog_note_add_module)
         dialog?.show()
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
-        layoutParams.width = DP2PX.dip2px(context, 750f)
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,750f))/2

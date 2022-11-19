@@ -56,7 +56,7 @@ class Constants private constructor() {
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note").path
         //画本保存目录
         val PAINTING_PATH = MyApplication.mContext.getExternalFilesDir("Painting").path
-            //壁纸、书画目录
+        //壁纸、书画目录
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image").path
 
         val PATH_SF = "file:///android_asset/sf/"
@@ -64,8 +64,10 @@ class Constants private constructor() {
         //eventbus通知标志
         val AUTO_UPLOAD_EVENT="AutoUploadEvent"
         val DATE_EVENT="DateEvent"
-        val BOOK_EVENT="BookEvent"
-        val TEXT_BOOK_EVENT="TextBookEvent"
+        val BOOK_EVENT="BookEvent"//书籍下载通知
+        val TEXT_BOOK_EVENT="TextBookEvent"//课本下载通知
+        val BOOK_HOMEWORK_EVENT="BookHomeworkEvent"//作业下载通知
+        val APP_EVENT="APPEvent"//应用下载安装通知
         val COURSE_EVENT="CourseEvent"
         val NOTE_BOOK_MANAGER_EVENT="NoteBookManagerEvent"
         val NOTE_EVENT="NoteEvent"

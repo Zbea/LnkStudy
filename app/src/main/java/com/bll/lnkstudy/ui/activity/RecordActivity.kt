@@ -7,8 +7,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_record.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -31,7 +31,7 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        path = File(Constants.RECORD_PATH, "$mUserId/${DateUtils.longToString(recordBean?.date!!)}.amr").toString()
+        path = File(Constants.RECORD_PATH, "${DateUtils.longToString(recordBean?.date!!)}.amr").toString()
     }
 
     override fun initView() {
@@ -77,7 +77,17 @@ class RecordActivity : BaseAppCompatActivity() {
         ll_record_stop.setOnClickListener {
             if (mRecorder != null) {
                 iv_record.setImageResource(R.mipmap.icon_record_file)
+                mRecorder?.setOnErrorListener(null)
+                mRecorder?.setOnInfoListener(null)
+                mRecorder?.setPreviewDisplay(null)
                 mRecorder?.stop()
+//                try {
+//                    mRecorder?.stop()
+//                } catch (e:IllegalStateException) {
+//                    // TODO 如果当前java状态和jni里面的状态不一致，
+//                    mRecorder = null
+//                    mRecorder = MediaRecorder()
+//                }
                 mRecorder?.release()
                 mRecorder = null
 

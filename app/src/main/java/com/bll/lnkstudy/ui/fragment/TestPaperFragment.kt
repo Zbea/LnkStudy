@@ -3,9 +3,9 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.mvp.model.TestPaperType
@@ -64,24 +64,21 @@ class TestPaperFragment : BaseFragment(){
     private fun initData(){
         var testPaper= TestPaperType()
         testPaper.isPg=true
-        testPaper.name="单元测试卷"
+        testPaper.name="单元"
         testPaper.namePath="dy"
         testPaper.type=0
-        testPaper.resId=R.mipmap.icon_testpaper_dy
         items.add(testPaper)
 
         var testPaper3=TestPaperType()
         testPaper3.isPg=true
-        testPaper3.resId=R.mipmap.icon_testpaper_jd
-        testPaper3.name="阶段考试卷"
+        testPaper3.name="阶段"
         testPaper3.namePath="jd"
         testPaper3.type=1
         items.add(testPaper3)
 
         var testPaper4=TestPaperType()
         testPaper4.isPg=true
-        testPaper4.resId=R.mipmap.icon_testpaper_xq
-        testPaper4.name="学期考试卷"
+        testPaper4.name="学期"
         testPaper4.namePath="xq"
         testPaper4.type=2
         items.add(testPaper4)

@@ -1,39 +1,28 @@
 package com.bll.lnkstudy.dialog
 
+import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.GlideUtils
 
 
 class BookDetailsDialog(private val context: Context, private val book: Book) {
 
     private var btn_ok:Button?=null
-    private var dialog: AlertDialog?=null
+    private var dialog: Dialog?=null
 
-    fun builder(): AlertDialog? {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_book_detail, null)
-        dialog= AlertDialog.Builder(ContextThemeWrapper(context, R.style.styleDialogCustom)).create()
-        dialog?.setView(view)
+    fun builder(): Dialog? {
+        dialog= Dialog(context)
+        dialog?.setContentView(R.layout.dialog_book_detail)
         dialog?.show()
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
-        val layoutParams = window.attributes
-        layoutParams.width = DP2PX.dip2px(context, 500f)
-        layoutParams.height = DP2PX.dip2px(context, 400f)
-        layoutParams.gravity = Gravity.CENTER
-        window.attributes = layoutParams
 
-        btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
+        btn_ok = dialog?.findViewById(R.id.btn_ok)
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         val iv_book = dialog?.findViewById<ImageView>(R.id.iv_book)
         val tv_price = dialog?.findViewById<TextView>(R.id.tv_price)

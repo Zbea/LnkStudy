@@ -7,32 +7,11 @@ buildscript {
 }
 
 plugins {
-    id 'com.android.application' version '7.1.3' apply false
-    id 'com.android.library' version '7.1.3' apply false
+    id 'com.android.application' version '7.2.2' apply false
+    id 'com.android.library' version '7.2.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
 }
 
-allprojects {
-//    gradle.projectsEvaluated {
-//        tasks.withType(JavaCompile) {
-//            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
-//        }
-//    }
-
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            Set<File> fileSet = options.bootstrapClasspath.getFiles()
-            List<File> newFileList = new ArrayList<>();
-            //相对位置，根据存放的位置修改路径
-            newFileList.add(new File("./libs/eink/classes.jar"))
-            newFileList.addAll(fileSet)
-            options.bootstrapClasspath = files(
-                    newFileList.toArray()
-            )
-        }
-    }
-
-}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

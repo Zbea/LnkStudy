@@ -65,20 +65,6 @@
                     android:layout_marginEnd="@dimen/dp_10"
                     android:layout_marginBottom="@dimen/dp_10" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_schedule"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/dp_10"
-                    android:visibility="gone" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_day"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/dp_10"
-                    android:visibility="gone" />
-
             </RelativeLayout>
 
 

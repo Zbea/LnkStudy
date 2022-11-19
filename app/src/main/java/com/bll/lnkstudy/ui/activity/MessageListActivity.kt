@@ -2,10 +2,10 @@ package com.bll.lnkstudy.ui.activity
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.ui.adapter.MainMessageAdapter
 import com.bll.lnkstudy.widget.SpaceItemDeco
@@ -24,13 +24,14 @@ class MessageListActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        setPageTitle("消息中心")
         lists= DataBeanManager.getIncetance().message
     }
 
     override fun initView() {
+        setPageTitle("消息中心")
+        setPageSetting("删除")
+        showView(cb_all)
 
-        showView(cb_all,tv_delete)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MainMessageAdapter(R.layout.item_message, null)
@@ -53,7 +54,7 @@ class MessageListActivity:BaseAppCompatActivity() {
             mAdapter?.notifyDataSetChanged()
         }
 
-        tv_delete.setOnClickListener {
+        tv_setting.setOnClickListener {
 
             var datas=mAdapter?.data
             var it=datas?.iterator()

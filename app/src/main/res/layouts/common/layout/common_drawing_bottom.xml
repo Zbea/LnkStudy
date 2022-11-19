@@ -79,17 +79,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:gravity="right"
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/iv_expand_a"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="44dp"
+                android:visibility="gone"
+                android:src="@mipmap/icon_draw_expand" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
             <ImageView
-                android:id="@+id/iv_expand_a"
+                android:id="@+id/iv_expand_b"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="44dp"
+                android:visibility="gone"
                 android:src="@mipmap/icon_draw_expand" />
 
         </LinearLayout>

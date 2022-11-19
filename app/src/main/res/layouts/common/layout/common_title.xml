@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:scaleType="center"
         android:src="@mipmap/icon_back" />
@@ -90,13 +90,12 @@
 
 
     <TextView
-        android:id="@+id/tv_delete"
+        android:id="@+id/tv_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:textColor="@color/black"
-        android:textSize="24sp"
-        android:text="删除"
+        android:textSize="28sp"
         android:visibility="gone"
         />
 
@@ -108,5 +107,12 @@
         android:visibility="gone"
         android:src="@mipmap/icon_save"/>
 
+    <ImageView
+        android:id="@+id/iv_manager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:visibility="gone"
+        android:src="@mipmap/icon_notebook_manager"/>
 
 </LinearLayout>

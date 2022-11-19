@@ -12,7 +12,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAd
 
     override fun convert(helper: BaseViewHolder, item: HomeworkType) {
         helper.setText(R.id.tv_name,item.name)
-        helper.setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext,item.bgResId))
+        helper.setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext,item?.bgResId))
         helper.setVisible(R.id.ll_info,!item.isCreate)
 
         if (item.isPg){

@@ -77,6 +77,9 @@ class PaperDrawingActivity: BaseActivity() {
         iv_expand_a.setOnClickListener {
             changeExpandContent()
         }
+        iv_expand_b.setOnClickListener {
+            changeExpandContent()
+        }
 
         iv_catalog.setOnClickListener {
             showCatalog()
@@ -145,6 +148,19 @@ class PaperDrawingActivity: BaseActivity() {
         ll_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
+        if (flags==0&&isExpand){
+            if (screenPos==1){
+                showView(iv_expand_a)
+                disMissView(iv_expand_b)
+            }
+            else{
+                showView(iv_expand_b)
+                disMissView(iv_expand_a)
+            }
+        }
+        else{
+            disMissView(iv_expand_a,iv_expand_b)
+        }
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 
@@ -233,7 +249,7 @@ class PaperDrawingActivity: BaseActivity() {
     }
 
     override fun changeScreenPage() {
-        if (isExpand){
+        if (flags==0&&isExpand){
             changeExpandContent()
         }
     }

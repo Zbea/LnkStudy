@@ -10,7 +10,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CourseSelectDialog
-import com.bll.lnkstudy.dialog.CourseTimeDialog
+import com.bll.lnkstudy.dialog.CourseTimeSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.CourseGreenDaoManager
 import com.bll.lnkstudy.mvp.model.CourseBean
@@ -576,84 +576,80 @@ class MainCourseActivity : BaseAppCompatActivity() {
      */
     private fun selectCourse(v: TextView) {
         CourseSelectDialog(this).builder()
-            .setOnDialogClickListener(object : CourseSelectDialog.OnDialogClickListener {
-                override fun onSelect(course: CourseBean) {
-                    if (course != null) {
-                        v.text = course.name
-                        course.viewId = v.id
-                        course.type=type
+            .setOnDialogClickListener { course ->
+                if (course != null) {
+                    v.text = course.name
+                    course.viewId = v.id
+                    course.type = type
 
-                        //删除已经存在了的
-                        if (selectLists.size > 0) {
-                            var it = selectLists.iterator()
-                            while (it.hasNext()) {
-                                if (it.next().viewId == course.viewId) {
-                                    it.remove()
-                                }
+                    //删除已经存在了的
+                    if (selectLists.size > 0) {
+                        var it = selectLists.iterator()
+                        while (it.hasNext()) {
+                            if (it.next().viewId == course.viewId) {
+                                it.remove()
                             }
                         }
-                        selectLists.add(course)
                     }
+                    selectLists.add(course)
                 }
-            })
+            }
     }
 
 
-    //时间选择器
-    private fun selectTime(v: TextView,v1: TextView, id: Int) {
-        CourseTimeDialog(this).builder()
-            .setOnDialogClickListener(object : CourseTimeDialog.OnDialogClickListener {
-                override fun onSelect(course: String) {
-                    if (course != null) {
-                        var string=course.split("~")
-                        v.text = string[0]
-                        v1.text=string[1]
-                        var course1 = CourseBean()
-                        course1.name = course
-                        course1.viewId = id
-                        course1.type=type
 
-                        //删除已经存在了的
-                        if (selectLists.size > 0) {
-                            var it = selectLists.iterator()
-                            while (it.hasNext()) {
-                                if (it.next().viewId == id) {
-                                    it.remove()
-                                }
-                            }
-                        }
-                        selectLists.add(course1)
+    //时间选择器
+    private fun selectTime(tvStart: TextView,tvEnd: TextView, id: Int) {
+
+        CourseTimeSelectorDialog(this).builder().setOnDateListener {
+                startStr, endStr->
+
+            tvStart.text = startStr
+            tvEnd.text = endStr
+
+            var course = CourseBean()
+            course.name = "$startStr~$endStr"
+            course.viewId = id
+            course.type = type
+
+            //删除已经存在了的
+            if (selectLists.size > 0) {
+                var it = selectLists.iterator()
+                while (it.hasNext()) {
+                    if (it.next().viewId == id) {
+                        it.remove()
                     }
                 }
-            })
+            }
+            selectLists.add(course)
+
+        }
+
     }
 
 
     private fun inputContent(v: TextView) {
 
-        InputContentDialog(this,getCurrentScreenPos(),v.text.toString()).builder()?.setOnDialogClickListener(object :
-            InputContentDialog.OnDialogClickListener {
-            override fun onClick(string: String) {
-                v.text = string
+        InputContentDialog(this,getCurrentScreenPos(),v.text.toString()).builder()
+            ?.setOnDialogClickListener { string ->
+            v.text = string
 
-                var course = CourseBean()
-                course.viewId = v.id
-                course.name = string
-                course.type=type
+            var course = CourseBean()
+            course.viewId = v.id
+            course.name = string
+            course.type = type
 
-                //删除已经存在了的
-                if (selectLists.size > 0) {
-                    var it = selectLists.iterator()
-                    while (it.hasNext()) {
-                        if (it.next().viewId == v.id) {
-                            it.remove()
-                        }
+            //删除已经存在了的
+            if (selectLists.size > 0) {
+                var it = selectLists.iterator()
+                while (it.hasNext()) {
+                    if (it.next().viewId == v.id) {
+                        it.remove()
                     }
                 }
-                selectLists.add(course)
             }
-
-        })
+            selectLists.add(course)
+        }
 
     }
 

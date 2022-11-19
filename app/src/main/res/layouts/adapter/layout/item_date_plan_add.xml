@@ -6,43 +6,75 @@
     android:background="@drawable/bg_line_bottom"
     android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/tv_start_time"
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:textSize="18sp"
-        android:textColor="@color/black_20"
-        android:gravity="center"
-        android:text="开始"/>
-
-    <TextView
+    <LinearLayout
+        android:id="@+id/ll_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:textSize="20sp"
-        android:textColor="@color/black_20"
-        android:text="~"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:id="@+id/tv_start_time"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="开始时间"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:text="~"/>
+
+        <TextView
+            android:id="@+id/tv_end_time"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="结束时间"/>
+
+    </LinearLayout>
+
+
 
     <TextView
-        android:id="@+id/tv_end_time"
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:textSize="18sp"
-        android:textColor="@color/black_20"
-        android:gravity="center"
-        android:text="结束"/>
+        android:id="@+id/tv_course"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_22"
+        android:layout_marginStart="@dimen/dp_50"
+        android:textColor="@color/black"
+        android:text="科目"/>
 
 
     <EditText
         android:id="@+id/et_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:maxLines="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:lines="1"
         android:background="@color/color_transparent"
-        android:gravity="right|center_vertical"
-        android:textColor="@color/black_20"
-        android:textSize="18sp" />
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_22"
+        android:hint="内容"
+        android:textColorHint="@color/color_text_hint"/>
+
+    <TextView
+        android:id="@+id/tv_remind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:text="提醒"/>
 
 </LinearLayout>

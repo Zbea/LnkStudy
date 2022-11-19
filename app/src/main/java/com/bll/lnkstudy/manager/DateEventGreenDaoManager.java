@@ -8,6 +8,7 @@ import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DateEventDao;
 import com.bll.lnkstudy.greendao.DateEventDao;
+import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.mvp.model.DateEvent;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -112,7 +113,14 @@ public class DateEventGreenDaoManager {
     public List<DateEvent> queryAllDateEvent(int type,long dayTim) {
         WhereCondition whereCondition1=DateEventDao.Properties.Type.eq(type);
         WhereCondition whereCondition2=DateEventDao.Properties.DayLong.ge(dayTim);
-        List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
+        List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventDao.Properties.Id).build().list();
+        return list;
+    }
+
+    //查询所有
+    public List<DateEvent> queryAllDateEvent(int type) {
+        WhereCondition whereCondition1=DateEventDao.Properties.Type.eq(type);
+        List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1).orderDesc(DateEventDao.Properties.Id).build().list();
         return list;
     }
 

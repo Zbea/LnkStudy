@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -12,6 +13,7 @@ import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
+import pub.devrel.easypermissions.EasyPermissions
 
 class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
@@ -42,6 +44,14 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
+
+        EasyPermissions.requestPermissions(this,"请求权限",1,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.RECORD_AUDIO
+        )
 
         ed_user.setText("gq")
         ed_psw.setText("123456")

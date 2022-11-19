@@ -1,12 +1,10 @@
 package com.bll.lnkstudy.dialog
 
+import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.MessageList
@@ -15,21 +13,18 @@ import com.bll.lnkstudy.utils.DP2PX
 
 class MessageDetailsDialog(private val context: Context,val screenPos:Int, private val messageList: MessageList) {
 
-    private var dialog: AlertDialog?=null
+    private var dialog: Dialog?=null
 
-    fun builder(): AlertDialog? {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_message_details, null)
-        dialog= AlertDialog.Builder(ContextThemeWrapper(context, R.style.styleDialogCustom)).create()
-        dialog?.setView(view)
+    fun builder(): Dialog? {
+        dialog= Dialog(context)
+        dialog?.setContentView(R.layout.dialog_message_details)
         dialog?.show()
         val window = dialog?.window
         window?.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window?.attributes
-        layoutParams?.width=DP2PX.dip2px(context, 480f)
-        layoutParams?.height=DP2PX.dip2px(context, 320f)
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,480f))/2
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         }
         window?.attributes = layoutParams
 

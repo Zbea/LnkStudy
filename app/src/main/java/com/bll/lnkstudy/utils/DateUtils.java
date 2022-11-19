@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -33,7 +34,7 @@ public class DateUtils {
         if (sub<daylong){
             day=0;
         }else {
-            day= (int) (sub/daylong);
+            day= (int) Math.ceil (sub/daylong);
         }
         return day;
     }
@@ -77,7 +78,7 @@ public class DateUtils {
             return null;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHMMSS", Locale.CHINA);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.CHINA);
             return sdf.format(new Date(date));
         } catch (Exception e) {
             return null;
@@ -124,6 +125,18 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd HH:mm EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String longToStringCalender(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date));
         } catch (Exception e) {
             return null;
@@ -203,34 +216,54 @@ public class DateUtils {
         }
     }
 
+
     /**
-     * 整数返回星期几
+     * 获取每月第一天为星期几 1周日 7周六
+     */
+    public static int getMonthOneDayWeek(int year,int month){
+        Calendar a = Calendar.getInstance();
+        a.set(Calendar.YEAR, year);
+        a.set(Calendar.MONTH, month);
+        a.set(Calendar.DATE, 1); //把日期设置为当月第一天
+        return a.get(Calendar.DAY_OF_WEEK);
+    }
+
+    /**
+     * 获取当月有几天
+     */
+    public static int getMonthMaxDay(int year,int month) {
+        Calendar a = Calendar.getInstance();
+        a.set(Calendar.YEAR, year);
+        a.set(Calendar.MONTH, month);
+        return a.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 获取当天星期几 2星期一 8星期日
+     * @param date
      * @return
      */
-    public static String intToWeek(int week){
-        String weekStr="";
-        if(week==1){
-            weekStr="星期一";
+    public static int getWeek(long date) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date);
+        int week = cal.get(Calendar.DAY_OF_WEEK);
+        if (week <=1) {
+            week = 8;
         }
-        else if (week==2){
-            weekStr="星期二";
+        return week;
+    }
+
+    public static long dateToStamp(int year,int month,int day) {
+        String s=year+"-"+month+"-"+day;
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+            Date date = simpleDateFormat.parse(s);
+            return date.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        else if (week==3){
-            weekStr="星期三";
-        }
-        else if (week==4){
-            weekStr="星期四";
-        }
-        else if (week==5){
-            weekStr="星期五";
-        }
-        else if (week==6){
-            weekStr="星期六";
-        }
-        else {
-            weekStr="星期天";
-        }
-        return weekStr;
+        return 0;
     }
 
     public static long dateToStamp(String s) {
@@ -272,12 +305,17 @@ public class DateUtils {
         return 0;
     }
 
-    public static String getToDayTime() {
-        String toDay = longToStringDataNoHour(System.currentTimeMillis());
-        //String toDay ="2018-09-07";
+    public static long date4Stamp(String s) {
 
-        return toDay;
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm",Locale.CHINA);
+            Date date = simpleDateFormat.parse(s);
+            return date.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        return 0;
     }
 
 

@@ -1,12 +1,10 @@
 package com.bll.lnkstudy.dialog
 
+import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
@@ -20,18 +18,15 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 class ModuleAddDialog(private val context: Context,private val screenPos:Int,val title:String,val list:MutableList<ModuleBean>) {
 
-    private var dialog:AlertDialog?=null
+    private var dialog:Dialog?=null
 
     fun builder(): ModuleAddDialog? {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_module_add, null)
-        dialog= AlertDialog.Builder(ContextThemeWrapper(context, R.style.styleDialogCustom)).create()
-        dialog?.setView(view)
+        dialog= Dialog(context)
+        dialog?.setContentView(R.layout.dialog_module_add)
         dialog?.show()
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
-        layoutParams.width = DP2PX.dip2px(context, 560f)
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,560f))/2
@@ -45,12 +40,12 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
-        var rvList=view.findViewById<RecyclerView>(R.id.rv_list)
-        rvList.layoutManager = GridLayoutManager(context,2)
+        var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
+        rvList?.layoutManager = GridLayoutManager(context,2)
         var mAdapter =MAdapter(R.layout.item_module, list)
-        rvList.adapter = mAdapter
+        rvList?.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
-        rvList.addItemDecoration(SpaceGridItemDeco(0,20))
+        rvList?.addItemDecoration(SpaceGridItemDeco(0,20))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if (listener!=null)
                 listener?.onClick(list[position])

@@ -1,10 +1,7 @@
 package com.bll.lnkstudy.dialog
 
-import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
-import android.view.LayoutInflater
-import android.view.WindowManager
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +9,6 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.ui.adapter.CourseAdapter
-import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 
 /**
@@ -21,17 +17,11 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 class CourseSelectDialog(val context: Context){
 
     fun builder(): CourseSelectDialog {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_course, null)
-        val dialog = AlertDialog.Builder(ContextThemeWrapper(context, R.style.styleDialogCustom)).create()
-        dialog.setView(view)
+        val dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_course)
         dialog.show()
         val window = dialog.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
-        val layoutParams = window.attributes
-        layoutParams.width = DP2PX.dip2px(context,400F)
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
-        window.attributes = layoutParams
 
         val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
         ivClose.setOnClickListener {

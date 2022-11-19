@@ -98,4 +98,12 @@ class FileAddress {
         return "$IMAGE_PATH/$mUserId/$type/$contentId"
     }
 
+    /**
+     * 草稿纸
+     */
+    fun getPathDraft():String{
+        return "$IMAGE_PATH/$mUserId/draft"
+    }
+
+
 }

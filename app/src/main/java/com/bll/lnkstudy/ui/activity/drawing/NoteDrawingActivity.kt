@@ -159,4 +159,15 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
         elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        elik_a?.saveBitmap(true) {
+            note?.paths = paths
+            note?.path = path
+            NoteGreenDaoManager.getInstance(this@NoteDrawingActivity)
+                .insertOrReplaceNote(note)
+            EventBus.getDefault().post(NOTE_EVENT)
+        }
+    }
+
 }

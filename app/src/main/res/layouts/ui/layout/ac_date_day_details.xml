@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    >
+
+    <include layout="@layout/common_date_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="77dp"
+        android:layout_marginStart="218dp"
+        android:layout_marginEnd="218dp"
+        android:paddingStart="@dimen/dp_60"
+        android:paddingEnd="@dimen/dp_60"
+        android:paddingTop="65dp"
+        android:paddingBottom="77dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_black_stroke_10dp_corner"
+        >
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:textColor="@color/black"
+            android:hint="生日/纪恋日/其他"
+            android:textColorHint="@color/color_text_hint"
+            android:textSize="@dimen/sp_22"
+            android:background="@drawable/bg_line_bottom"
+            />
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="@dimen/dp_40"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:hint="日期"
+            android:textColorHint="@color/color_text_hint"
+            android:textSize="@dimen/sp_22"
+            android:background="@drawable/bg_line_bottom"
+            />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="98dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="计时"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+
+            <TextView
+                android:id="@+id/tv_countdown"
+                android:layout_width="176dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:layout_marginStart="100dp"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22"
+                android:visibility="gone"/>
+
+
+            <Switch
+                android:id="@+id/sh_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="65dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="提醒"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+            <LinearLayout
+                android:id="@+id/ll_remind"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="100dp"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="提前"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/sp_22"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_remind"
+                    android:layout_width="134dp"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:gravity="center"
+                    android:text="1天"
+                    android:paddingEnd="12dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:background="@drawable/bg_black_stroke_5dp_corner"
+                    />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/sh_remind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_bell"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="65dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="铃声"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="100dp"
+                android:src="@mipmap/icon_bell"
+                />
+
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,12 +1,10 @@
 package com.bll.lnkstudy.dialog
 
+import android.app.Dialog
 import android.content.Context
-import android.view.ContextThemeWrapper
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
@@ -15,21 +13,16 @@ import com.bll.lnkstudy.utils.DP2PX
 class CourseModuleDialog(private val context: Context,private val screenPos:Int) {
 
     fun builder(): CourseModuleDialog? {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_course_module, null)
-        var dialog= AlertDialog.Builder(ContextThemeWrapper(context, R.style.styleDialogCustom)).create()
-        dialog?.setView(view)
+        val dialog= Dialog(context)
+        dialog?.setContentView(R.layout.dialog_course_module)
         dialog?.show()
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
-        layoutParams.width = DP2PX.dip2px(context, 800f)
-        layoutParams.gravity = Gravity.CENTER
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,800f))/2
         }
-
         window.attributes = layoutParams
 
         val ivCancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)

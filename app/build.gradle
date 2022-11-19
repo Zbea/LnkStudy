@@ -36,7 +36,7 @@ android {
     }
     greendao{
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 6
+        schemaVersion 9
         //dao的包名
         daoPackage 'com.bll.lnkstudy.greendao'
         //生成数据库文件的目录;
@@ -45,12 +45,7 @@ android {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:app/libs/eink/classes.jar')
-        }
-    }
-
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
+            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
             Set<File> fileSet = options.bootstrapClasspath.getFiles()
             List<File> newFileList =  new ArrayList<>();
             //相对位置，根据存放的位置修改路径
@@ -138,20 +133,3 @@ dependencies {
 
 
 }
-
-//preBuild {
-//    doLast {
-//        def imlFile = file(project.name + ".iml")
-//        println('Change ' + project.name + '.iml order')
-//        try {
-//            def parsedXml = (new XmlParser()).parse(imlFile)
-//            def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
-//            parsedXml.component[1].remove(jdkNode)
-//            def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
-//            new groovy.util.Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
-//            groovy.xml.XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
-//        } catch (FileNotFoundException e) {
-//            // nop, iml not found
-//        }
-//    }
-//}

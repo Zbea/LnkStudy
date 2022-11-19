@@ -156,6 +156,9 @@ class PaintingDrawingActivity : BaseActivity() {
         iv_expand_a.setOnClickListener {
             changeExpandContent()
         }
+        iv_expand_b.setOnClickListener {
+            changeExpandContent()
+        }
 
 
         iv_btn.setOnClickListener {
@@ -184,6 +187,16 @@ class PaintingDrawingActivity : BaseActivity() {
         v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
+        if (isExpand){
+            if (screenPos==1){
+                showView(iv_expand_a)
+                disMissView(iv_expand_b)
+            }
+            else{
+                showView(iv_expand_b)
+                disMissView(iv_expand_a)
+            }
+        }
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
 
@@ -249,9 +262,9 @@ class PaintingDrawingActivity : BaseActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
-        elik?.setPWEnabled(true)
-        elik?.setLoadFilePath(path, true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+        elik.setPWEnabled(true)
+        elik.setLoadFilePath(path, true)
+        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
 
@@ -259,7 +272,7 @@ class PaintingDrawingActivity : BaseActivity() {
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
+                elik.saveBitmap(true) {}
             }
 
         })

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -21,6 +22,9 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 
@@ -44,6 +48,7 @@ class HomeworkFragment : BaseFragment(){
     }
 
     override fun initView() {
+        EventBus.getDefault().register(this)
         setTitle("作业")
         showView(iv_manager)
 
@@ -62,7 +67,7 @@ class HomeworkFragment : BaseFragment(){
         if (screenPos==3)
             loadImage()
 
-        findDatas(true,0)
+        findDatas(0)
     }
 
     override fun lazyLoad() {
@@ -76,14 +81,7 @@ class HomeworkFragment : BaseFragment(){
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             courseID= id
-            when(courseID){
-                0,2->{
-                    findDatas(true,courseID)
-                }
-                else->{
-                    findDatas(false,courseID)
-                }
-            }
+            findDatas(courseID)
         }
     }
 
@@ -107,6 +105,9 @@ class HomeworkFragment : BaseFragment(){
                 2->{
                     gotoPaperDrawing(0,courseID,item.typeId)
                 }
+                3->{
+                    gotoBookDetails(item?.typeId!!)
+                }
                 else->{
                     gotoHomeworkDrawing(item)
                 }
@@ -129,14 +130,15 @@ class HomeworkFragment : BaseFragment(){
 
 
     //查找分类数据
-    private fun findDatas(islg: Boolean,courseID:Int){
+    private fun findDatas(courseID:Int){
         homeworkTypes.clear()
-        var datas= DataBeanManager.getIncetance().getHomeWorkTypes(islg,courseID,mUser?.grade!!)
-        HomeworkTypeDaoManager.getInstance(context).insertOrReplaceAll(courseID,datas)
-
+        var datas= DataBeanManager.getIncetance().getHomeWorkTypes(courseID,mUser?.grade!!)
+        var datas1=HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,false)
+        if (datas.size!=datas1.size){
+            HomeworkTypeDaoManager.getInstance(context).insertOrReplaceAll(courseID,datas)
+        }
         homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,false))
         homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,true))
-
         for (item in homeworkTypes){
             for (mes in messages){
                 if (item.courseId==mes.courseId&&item.typeId==mes.homeworkTypeId){
@@ -296,7 +298,7 @@ class HomeworkFragment : BaseFragment(){
             item.date = time
             item.typeId = System.currentTimeMillis().toInt()
             item.courseId = courseID
-                item.isCreate=true
+            item.isCreate=true
 
             HomeworkTypeDaoManager.getInstance(context).insertOrReplace(item)
             homeworkTypes.add(item)
@@ -318,18 +320,19 @@ class HomeworkFragment : BaseFragment(){
     //选择内容背景
     private fun addContentModule(coverResId:Int){
 
-        var list=if (courseID==0)
-        {
-            DataBeanManager.getIncetance().getYw(mUser?.grade!!)
-        }
-        else if (courseID==1){
-            DataBeanManager.getIncetance().getSx(mUser?.grade!!)
-        }
-        else if (courseID==2){
-            DataBeanManager.getIncetance().getYy(mUser?.grade!!)
-        }
-        else{
-            DataBeanManager.getIncetance().other
+        var list= when (courseID) {
+            0 -> {
+                DataBeanManager.getIncetance().getYw(mUser?.grade!!)
+            }
+            1 -> {
+                DataBeanManager.getIncetance().getSx(mUser?.grade!!)
+            }
+            2 -> {
+                DataBeanManager.getIncetance().getYy(mUser?.grade!!)
+            }
+            else -> {
+                DataBeanManager.getIncetance().other
+            }
         }
 
         ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
@@ -363,6 +366,17 @@ class HomeworkFragment : BaseFragment(){
     }
 
 
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(msgFlag: String) {
+        if (msgFlag== Constants.BOOK_HOMEWORK_EVENT){
+            findDatas(courseID)
+        }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
 
 }

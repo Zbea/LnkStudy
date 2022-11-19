@@ -1,113 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="500dp"
+    android:layout_width="400dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:orientation="vertical"
     android:padding="@dimen/dialog_padding">
-
-    <TextView
-        android:id="@+id/tv_date_today"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:text="日期"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <NumberPicker
-            android:id="@+id/np_year"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:descendantFocusability="blocksDescendants" />
-
-        <TextView
-
-            android:layout_width="50dp"
-            android:layout_height="200dp"
-            android:gravity="center"
-            android:text="年" />
-
-        <NumberPicker
-            android:id="@+id/np_month"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:descendantFocusability="blocksDescendants" />
-
-        <TextView
-
-            android:layout_width="50dp"
-            android:layout_height="200dp"
-            android:gravity="center"
-            android:text="月" />
-
-        <NumberPicker
-            android:id="@+id/np_date"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:descendantFocusability="blocksDescendants" />
-
-        <TextView
-
-            android:layout_width="50dp"
-            android:layout_height="200dp"
-            android:gravity="center"
-            android:text="日" />
-
-    </LinearLayout>
 
     <DatePicker
         android:id="@+id/dp_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:calendarViewShown="false"
-        android:visibility="gone"
-        android:datePickerMode="spinner"></DatePicker>
+        android:datePickerMode="spinner"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="45dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_cancel"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:gravity="center"
             android:text="取消"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/black_20" />
+
 
         <TextView
             android:id="@+id/tv_ok"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_30"
             android:gravity="center"
             android:text="确认"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            />
     </LinearLayout>
 
 </LinearLayout>

@@ -3,8 +3,6 @@ package com.bll.lnkstudy.base
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -21,7 +19,6 @@ import androidx.core.view.ViewCompat
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.AppToolDialog
-import com.bll.lnkstudy.dialog.DrawingDraftDialog
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
@@ -30,6 +27,7 @@ import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.drawing.DraftActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -78,6 +76,18 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
+        getAppTool()
+
+        mDialog = ProgressDialog(this,screenPos)
+        initData()
+        initView()
+
+    }
+
+    /**
+     * 获取工具应用
+     */
+    fun getAppTool(){
         val appAlls=AppUtils.scanLocalInstallAppList(this)
         toolApps= AppDaoManager.getInstance(this).queryAll()
 
@@ -93,11 +103,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 AppDaoManager.getInstance(this).deleteBean(item)
             }
         }
-
-        mDialog = ProgressDialog(this,screenPos)
-        initData()
-        initView()
-
     }
 
     /**
@@ -117,7 +122,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 拿到app对应的应用图标
      */
-    fun getAppDrawable(item:AppBean): Drawable? {
+    private fun getAppDrawable(item:AppBean): Drawable? {
         val appAlls=AppUtils.scanLocalInstallAppList(this)
         var drawable: Drawable?=null
         for (ite in appAlls){
@@ -200,7 +205,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         ivDraft = findViewById(R.id.iv_draft)
         if (ivDraft != null) {
             ivDraft?.setOnClickListener {
-                DrawingDraftDialog(this,getCurrentScreenPos()).builder()
+                startActivity(Intent(this,DraftActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             }
         }
 
@@ -305,7 +310,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 单双屏展开
      */
     fun moveToScreen(isExpand:Boolean){
-        moveToScreenPanel(if (isExpand) 3 else screenPos )
+        moveToScreen(if (isExpand) 3 else screenPos )
+    }
+
+    /**
+     * 换屏 0默认左屏幕 1左屏幕 2右屏幕 3全屏
+     */
+    fun moveToScreen(scree: Int){
+        moveToScreenPanel(scree)
     }
 
     /**
