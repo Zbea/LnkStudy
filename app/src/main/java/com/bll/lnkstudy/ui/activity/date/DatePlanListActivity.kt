@@ -83,7 +83,6 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         }
     }
 
-
     private fun findDatas(){
         plans= DateEventGreenDaoManager.getInstance(this).queryAllDateEvent(0)
         mAdapter?.setNewData(plans)
