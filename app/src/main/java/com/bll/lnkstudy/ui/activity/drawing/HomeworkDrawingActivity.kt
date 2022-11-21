@@ -49,7 +49,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         homeworkTypeId = homeworkType?.typeId!!
         courseId=homeworkType?.courseId!!
 
-        homeworks = HomeworkContentDaoManager.getInstance(this).queryAllByType(courseId, homeworkTypeId)
+        homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(courseId, homeworkTypeId)
 
         if (homeworks.size > 0) {
             homeworkContent = homeworks[homeworks.size - 1]
@@ -112,7 +112,7 @@ class HomeworkDrawingActivity : BaseActivity() {
                     tv_title_a.text = string
                     homeworkContent_a?.title = string
                     homeworks[page-1].title = string
-                    HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent_a)
+                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
                 }
             }
         }
@@ -124,7 +124,7 @@ class HomeworkDrawingActivity : BaseActivity() {
                     tv_title_b.text = string
                     homeworkContent?.title = string
                     homeworks[page].title = string
-                    HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent)
+                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
                 }
             }
         }
@@ -338,8 +338,8 @@ class HomeworkDrawingActivity : BaseActivity() {
 
         page = homeworks.size
 
-        HomeworkContentDaoManager.getInstance(this).insertOrReplace(homeworkContent)
-        val id=HomeworkContentDaoManager.getInstance(this).insertId
+        HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
+        val id=HomeworkContentDaoManager.getInstance().insertId
         homeworkContent?.id=id
 
         homeworks.add(homeworkContent!!)
@@ -359,7 +359,7 @@ class HomeworkDrawingActivity : BaseActivity() {
                             val item=homeworks[pos]
                             item.title=it.title
                             item.state=1
-                            HomeworkContentDaoManager.getInstance(this).insertOrReplace(item)
+                            HomeworkContentDaoManager.getInstance().insertOrReplace(item)
                         }
                     }
                     changeContent()
@@ -387,7 +387,7 @@ class HomeworkDrawingActivity : BaseActivity() {
     //删除作业
     private fun deleteContent() {
 
-        HomeworkContentDaoManager.getInstance(this).deleteBean(homeworkContent)
+        HomeworkContentDaoManager.getInstance().deleteBean(homeworkContent)
         homeworks.remove(homeworkContent)
         FileUtils.deleteFile(homeworkContent?.folderPath, homeworkContent?.pathName)//删除文件
 

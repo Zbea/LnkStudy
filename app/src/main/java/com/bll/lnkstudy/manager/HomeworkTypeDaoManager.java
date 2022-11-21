@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
 import com.bll.lnkstudy.greendao.HomeworkTypeDao;
 import com.bll.lnkstudy.mvp.model.HomeworkType;
 import com.bll.lnkstudy.mvp.model.User;
@@ -17,32 +19,10 @@ import java.util.List;
 
 public class HomeworkTypeDaoManager {
 
-
-    /**
-     * 数据库名字
-     */
-    private String DB_NAME = "plan.db";  //数据库名字
-    /**
-     * Helper
-     */
-    private DaoMaster.DevOpenHelper mHelper;//获取Helper对象
-    /**
-     * 数据库
-     */
-    private SQLiteDatabase db;
-    /**
-     * DaoMaster
-     */
-    private DaoMaster mDaoMaster;
     /**
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     * 上下文
-     */
-    private Context context;
-
     /**
      *
      */
@@ -56,39 +36,21 @@ public class HomeworkTypeDaoManager {
 
     /**
      * 构造初始化
-     *
-     * @param context
      */
-    public HomeworkTypeDaoManager(Context context) {
-        this.context = context;
-        mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
-        mDaoMaster = new DaoMaster(getWritableDatabase());
-        mDaoSession = mDaoMaster.newSession();
+    public HomeworkTypeDaoManager() {
+        mDaoSession = MyApplication.Companion.getMDaoSession();
         dao = mDaoSession.getHomeworkTypeDao(); //note表
     }
 
 
     /**
-     * 获取可写数据库
-     *
-     * @return
-     */
-    private SQLiteDatabase getWritableDatabase() {
-        if (mHelper == null) {
-            mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
-        }
-        db = mHelper.getWritableDatabase();
-        return db;
-    }
-
-    /**
      * 获取单例（context 最好用application的context  防止内存泄漏）
      */
-    public static HomeworkTypeDaoManager getInstance(Context context) {
+    public static HomeworkTypeDaoManager getInstance() {
         if (mDbController == null) {
             synchronized (HomeworkTypeDaoManager.class) {
                 if (mDbController == null) {
-                    mDbController = new HomeworkTypeDaoManager(context);
+                    mDbController = new HomeworkTypeDaoManager();
                 }
             }
         }

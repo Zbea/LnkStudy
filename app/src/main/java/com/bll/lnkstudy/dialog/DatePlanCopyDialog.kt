@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -29,14 +30,16 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
         recyclerview.layoutManager = LinearLayoutManager(context)
         val mAdapter= MyAdapter(R.layout.item_date_plan_copy, plans)
         recyclerview.adapter = mAdapter
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            this.position=position
-            for (item in plans)
-            {
-                item.isCheck=false
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            if (view.id==R.id.cb_check){
+                this.position=position
+                for (item in plans)
+                {
+                    item.isCheck=false
+                }
+                plans[position].isCheck=true
+                mAdapter?.notifyDataSetChanged()
             }
-            plans[position].isCheck=true
-            mAdapter?.notifyDataSetChanged()
         }
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
@@ -45,7 +48,21 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
         cancleTv?.setOnClickListener { dismiss() }
         okTv?.setOnClickListener {
             dismiss()
-            onSelectorListener?.onSelect(position)
+            val item=mAdapter.data[position]
+
+            val dateEvent=DateEvent()
+            dateEvent.title=item.title+"(1)"
+            dateEvent.type=item.type
+            dateEvent.dayLong=item.dayLong
+            dateEvent.startTime=item.startTime
+            dateEvent.startTimeStr=item.startTimeStr
+            dateEvent.endTime=item.endTime
+            dateEvent.endTimeStr=item.endTimeStr
+            dateEvent.weeks=item.weeks
+            dateEvent.plans=item.plans
+            DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
+
+            onSelectorListener?.onSelect(dateEvent)
         }
         return this
     }
@@ -61,7 +78,7 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
     private var onSelectorListener: OnSelectorListener? = null
 
     fun interface OnSelectorListener {
-        fun onSelect(position: Int)
+        fun onSelect(item: DateEvent)
     }
 
     fun setOnSelectorListener(onSelectorListener:OnSelectorListener) {
@@ -73,6 +90,7 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
         override fun convert(helper: BaseViewHolder, item: DateEvent) {
             helper.setText(R.id.tv_title,item.title)
             helper.setChecked(R.id.cb_check,item.isCheck)
+            helper.addOnClickListener(R.id.cb_check)
         }
 
     }

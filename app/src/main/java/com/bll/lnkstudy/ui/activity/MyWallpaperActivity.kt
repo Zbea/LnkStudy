@@ -26,7 +26,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        lists=WallpaperDaoManager.getInstance(this).queryAll(0)
+        lists=WallpaperDaoManager.getInstance().queryAll(0)
     }
 
     override fun initView() {

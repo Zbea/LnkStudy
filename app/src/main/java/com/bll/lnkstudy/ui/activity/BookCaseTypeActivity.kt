@@ -117,8 +117,8 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance(this).queryAllBook("0",type.toString(),pageIndex,12)
-        val total=BookGreenDaoManager.getInstance(this).queryAllBook("0",type.toString())
+        books=BookGreenDaoManager.getInstance().queryAllBook("0",type.toString(),pageIndex,12)
+        val total=BookGreenDaoManager.getInstance().queryAllBook("0",type.toString())
         pageTotal= ceil((total.size.toDouble()/Constants.PAGE_SIZE)).toInt()
         upDateUI()
     }
@@ -140,7 +140,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
                 book?.isCollect=true
                 books[pos].isCollect=true
                 mAdapter?.notifyDataSetChanged()
-                BookGreenDaoManager.getInstance(this@BookCaseTypeActivity).insertOrReplaceBook(book)
+                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                 showToast("收藏成功")
             }
             override fun onDelete() {
@@ -160,7 +160,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
             override fun cancel() {
             }
             override fun ok() {
-                BookGreenDaoManager.getInstance(this@BookCaseTypeActivity).deleteBook(book) //删除本地数据库
+                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                 FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()

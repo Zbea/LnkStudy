@@ -60,7 +60,7 @@ class DateDayListActivity:BaseAppCompatActivity() {
     }
 
     private fun findDatas(){
-        days=DateEventGreenDaoManager.getInstance(this).queryAllDateEvent(1)
+        days=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1)
         mAdapter?.setNewData(days)
     }
 

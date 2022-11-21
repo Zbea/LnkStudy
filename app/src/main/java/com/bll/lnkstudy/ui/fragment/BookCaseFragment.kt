@@ -87,7 +87,7 @@ class BookCaseFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance(activity).queryAllBook("0")
+        books=BookGreenDaoManager.getInstance().queryAllBook("0")
         mAdapter?.setNewData(books)
         onChangeTopView()
     }
@@ -130,7 +130,7 @@ class BookCaseFragment: BaseFragment() {
                 book?.isCollect=true
                 books[position].isCollect=true
                 mAdapter?.notifyDataSetChanged()
-                BookGreenDaoManager.getInstance(activity).insertOrReplaceBook(book)
+                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                 showToast(screenPos,"收藏成功")
             }
             override fun onDelete() {
@@ -150,7 +150,7 @@ class BookCaseFragment: BaseFragment() {
             override fun cancel() {
             }
             override fun ok() {
-                BookGreenDaoManager.getInstance(activity).deleteBook(book) //删除本地数据库
+                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                 FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()

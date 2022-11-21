@@ -133,12 +133,12 @@ class HomeworkFragment : BaseFragment(){
     private fun findDatas(courseID:Int){
         homeworkTypes.clear()
         var datas= DataBeanManager.getIncetance().getHomeWorkTypes(courseID,mUser?.grade!!)
-        var datas1=HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,false)
+        var datas1=HomeworkTypeDaoManager.getInstance().queryAllByCourseId(courseID,false)
         if (datas.size!=datas1.size){
-            HomeworkTypeDaoManager.getInstance(context).insertOrReplaceAll(courseID,datas)
+            HomeworkTypeDaoManager.getInstance().insertOrReplaceAll(courseID,datas)
         }
-        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,false))
-        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance(context).queryAllByCourseId(courseID,true))
+        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance().queryAllByCourseId(courseID,false))
+        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance().queryAllByCourseId(courseID,true))
         for (item in homeworkTypes){
             for (mes in messages){
                 if (item.courseId==mes.courseId&&item.typeId==mes.homeworkTypeId){
@@ -201,8 +201,8 @@ class HomeworkFragment : BaseFragment(){
                 imageDownLoad.startDownload()
                 imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                     override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                        val paperDaoManager=PaperDaoManager.getInstance(requireContext())
-                        val paperContentDaoManager=PaperContentDaoManager.getInstance(requireContext())
+                        val paperDaoManager=PaperDaoManager.getInstance()
+                        val paperContentDaoManager=PaperContentDaoManager.getInstance()
                         if (item.isPg){
                             var paper=paperDaoManager.queryByContentID(item.id)
                             if(paper!=null){
@@ -270,13 +270,13 @@ class HomeworkFragment : BaseFragment(){
                     ?.setOnDialogClickListener { moduleBean ->
                         item.bgResId = ToolUtils.getImageResStr(activity, moduleBean.resId)
                         mAdapter?.notifyDataSetChanged()
-                        HomeworkTypeDaoManager.getInstance(activity).insertOrReplace(item)
+                        HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     }
             }
 
             override fun onDelete() {
                 if(item.isCreate){
-                    HomeworkTypeDaoManager.getInstance(activity).deleteBean(item)
+                    HomeworkTypeDaoManager.getInstance().deleteBean(item)
                     val path=FileAddress().getPathHomework(courseID,item.typeId)
                     FileUtils.deleteFile(File(path))
                     homeworkTypes.removeAt(pos)
@@ -300,7 +300,7 @@ class HomeworkFragment : BaseFragment(){
             item.courseId = courseID
             item.isCreate=true
 
-            HomeworkTypeDaoManager.getInstance(context).insertOrReplace(item)
+            HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
             homeworkTypes.add(item)
             mAdapter?.notifyDataSetChanged()
         }

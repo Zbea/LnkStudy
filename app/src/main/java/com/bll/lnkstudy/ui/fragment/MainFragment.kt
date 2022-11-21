@@ -208,7 +208,7 @@ class MainFragment : BaseFragment() {
         rv_main_textbook?.addItemDecoration(SpaceGridItemDeco(0, 50))
         mainTextBookAdapter?.setOnItemClickListener { adapter, view, position ->
             val course=courses[position]
-            val book=BookGreenDaoManager.getInstance(activity).queryTextBook("0",0,course.courseId)
+            val book=BookGreenDaoManager.getInstance().queryTextBook("0",0,course.courseId)
             if(book!=null){
                 var intent=Intent(activity, BookDetailsActivity::class.java).putExtra("book_id", book.id)
                 customStartActivity(intent)
@@ -275,13 +275,13 @@ class MainFragment : BaseFragment() {
      * 通过当天时间查找本地dateEvent事件集合
      */
     private fun findDateList() {
-        planList = DateEventGreenDaoManager.getInstance(activity).queryAllDateEvent(0)
+        planList = DateEventGreenDaoManager.getInstance().queryAllDateEvent(0)
         mPlanAdapter?.setNewData(planList)
     }
 
 
     private fun findNotes(){
-        notes= NoteGreenDaoManager.getInstance(activity).queryAll()
+        notes= NoteGreenDaoManager.getInstance().queryAll()
         if (notes.size>6){
             notes=notes.subList(0,6)
         }

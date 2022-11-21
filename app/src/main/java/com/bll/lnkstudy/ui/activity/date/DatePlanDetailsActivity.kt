@@ -150,7 +150,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
         dateEvent?.plans=plans
 
-        DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
+        DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
 
         for (item in plans){
             if (item.isRemindStart){

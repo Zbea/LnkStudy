@@ -25,7 +25,7 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        noteBooks= BaseTypeBeanDaoManager.getInstance(this).queryAll()
+        noteBooks= BaseTypeBeanDaoManager.getInstance().queryAll()
     }
 
     override fun initView() {
@@ -52,7 +52,7 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
             if (view.id==R.id.iv_top){
                 var date=noteBooks[0].date
                 noteBooks[position].date=date-1000
-                BaseTypeBeanDaoManager.getInstance(this@NoteBookManagerActivity).insertOrReplace(noteBooks[position])
+                BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteBooks[position])
                 Collections.swap(noteBooks,position,0)
                 setNotify()
             }
@@ -77,9 +77,9 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
                 var noteBook=noteBooks[position]
                 noteBooks.removeAt(position)
                 //删除笔记本
-                BaseTypeBeanDaoManager.getInstance(this@NoteBookManagerActivity).deleteBean(noteBook)
+                BaseTypeBeanDaoManager.getInstance().deleteBean(noteBook)
                 //删除笔记本下的所有笔记
-                NoteGreenDaoManager.getInstance(this@NoteBookManagerActivity).deleteType(noteBook.typeId)
+                NoteGreenDaoManager.getInstance().deleteType(noteBook.typeId)
                 setNotify()
             }
 
@@ -88,14 +88,12 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
 
     //修改笔记本
     private fun editNoteBook(content:String){
-        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener(object :
-            NoteBookAddDialog.OnDialogClickListener {
-            override fun onClick(string: String) {
-                noteBooks[position].name=string
-                BaseTypeBeanDaoManager.getInstance(this@NoteBookManagerActivity).insertOrReplace(noteBooks[position])
-                setNotify()
-            }
-        })
+        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener { string ->
+            noteBooks[position].name = string
+            BaseTypeBeanDaoManager.getInstance()
+                .insertOrReplace(noteBooks[position])
+            setNotify()
+        }
     }
 
 }

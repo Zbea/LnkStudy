@@ -2,11 +2,11 @@ package com.bll.lnkstudy.ui.activity
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopWindowList
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.manager.WallpaperDaoManager
 import com.bll.lnkstudy.mvp.model.AppListBean
 import com.bll.lnkstudy.mvp.model.PopWindowBean
@@ -144,7 +144,7 @@ class AppOfficialActivity:BaseAppCompatActivity(){
                 bean.info=item.introduction
                 bean.price=item.price
                 bean.imageUrl=item.assetUrl
-                WallpaperDaoManager.getInstance(this@AppOfficialActivity).insertOrReplace(bean)
+                WallpaperDaoManager.getInstance().insertOrReplace(bean)
             }
 
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {

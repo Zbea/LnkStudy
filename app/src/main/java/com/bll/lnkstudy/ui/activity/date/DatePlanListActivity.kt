@@ -84,7 +84,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
     }
 
     private fun findDatas(){
-        plans= DateEventGreenDaoManager.getInstance(this).queryAllDateEvent(0)
+        plans= DateEventGreenDaoManager.getInstance().queryAllDateEvent(0)
         mAdapter?.setNewData(plans)
     }
 
@@ -92,15 +92,12 @@ class DatePlanListActivity:BaseAppCompatActivity() {
      * 复制
      */
     private fun setCopy(){
-        DatePlanCopyDialog(this,plans).builder().setOnSelectorListener {
-            val dateEvent=plans[it]
-            dateEvent.id=null
-            dateEvent.title=dateEvent?.title+"(1)"
+        if (plans.size>0){
+            DatePlanCopyDialog(this,plans).builder().setOnSelectorListener {
 
-            plans.add(dateEvent)
-            mAdapter?.notifyDataSetChanged()
-            DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
-//            EventBus.getDefault().post(Constants.DATE_EVENT)
+                DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(it)
+                EventBus.getDefault().post(Constants.DATE_EVENT)
+            }
         }
     }
 

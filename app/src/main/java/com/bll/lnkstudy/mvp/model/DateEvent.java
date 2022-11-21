@@ -34,7 +34,6 @@ public class DateEvent implements Serializable {
     public boolean isCountdown;//是否开启倒计时
     public boolean isRemind;//是否提醒
     public int remindDay=1;//天数 提前多少天提醒
-    public boolean isBell;//是否开启铃声
 
     public Long startTime;//开始时间
     public Long endTime;//结束时间
@@ -50,12 +49,13 @@ public class DateEvent implements Serializable {
     @Transient
     public boolean isCheck;
 
-    @Generated(hash = 608200798)
+
+    @Generated(hash = 784529083)
     public DateEvent(Long id, long userId, int type, String title, Long dayLong,
             String dayLongStr, String explain, boolean isCountdown,
-            boolean isRemind, int remindDay, boolean isBell, Long startTime,
-            Long endTime, String startTimeStr, String endTimeStr,
-            List<DateWeekBean> weeks, List<DatePlanBean> plans) {
+            boolean isRemind, int remindDay, Long startTime, Long endTime,
+            String startTimeStr, String endTimeStr, List<DateWeekBean> weeks,
+            List<DatePlanBean> plans) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -66,7 +66,6 @@ public class DateEvent implements Serializable {
         this.isCountdown = isCountdown;
         this.isRemind = isRemind;
         this.remindDay = remindDay;
-        this.isBell = isBell;
         this.startTime = startTime;
         this.endTime = endTime;
         this.startTimeStr = startTimeStr;
@@ -78,6 +77,7 @@ public class DateEvent implements Serializable {
     @Generated(hash = 1511002217)
     public DateEvent() {
     }
+
 
     public Long getId() {
         return this.id;
@@ -159,14 +159,6 @@ public class DateEvent implements Serializable {
         this.remindDay = remindDay;
     }
 
-    public boolean getIsBell() {
-        return this.isBell;
-    }
-
-    public void setIsBell(boolean isBell) {
-        this.isBell = isBell;
-    }
-
     public Long getStartTime() {
         return this.startTime;
     }
@@ -214,6 +206,7 @@ public class DateEvent implements Serializable {
     public void setPlans(List<DatePlanBean> plans) {
         this.plans = plans;
     }
+
 
 
 }

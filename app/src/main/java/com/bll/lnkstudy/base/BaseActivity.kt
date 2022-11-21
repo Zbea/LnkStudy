@@ -89,7 +89,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      */
     fun getAppTool(){
         val appAlls=AppUtils.scanLocalInstallAppList(this)
-        toolApps= AppDaoManager.getInstance(this).queryAll()
+        toolApps= AppDaoManager.getInstance().queryAll()
 
         //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除 没有卸载则拿到对应图标
         val it=toolApps.iterator()
@@ -100,7 +100,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
             else{
                 it.remove()
-                AppDaoManager.getInstance(this).deleteBean(item)
+                AppDaoManager.getInstance().deleteBean(item)
             }
         }
     }

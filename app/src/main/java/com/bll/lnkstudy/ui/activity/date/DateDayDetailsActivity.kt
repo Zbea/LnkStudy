@@ -43,7 +43,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             tv_remind.text="${dateEvent?.remindDay}天"
             sh_remind.isChecked = dateEvent?.isRemind == true
             ll_remind.visibility=if (dateEvent?.isRemind == true) View.VISIBLE else View.GONE
-            rl_bell.visibility=if (dateEvent?.isRemind == true) View.VISIBLE else View.GONE
+            rl_bell.visibility=if (dateEvent?.isRemind == true) View.VISIBLE else View.INVISIBLE
         }
 
     }
@@ -57,7 +57,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             if (dateDialog==null){
                 dateDialog=DateDialog(this).builder()
                 dateDialog?.setOnDateListener { dateStr, dateTim ->
-                    if (dateTim > nowDate) {
+                    if (dateTim >= nowDate) {
                         dateEvent?.dayLong = dateTim
                         dateEvent?.dayLongStr = dateStr
                         tv_date.text = dateStr
@@ -83,7 +83,8 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             if (isCheck) {
                 showView(rl_bell, ll_remind)
             } else {
-                disMissView(rl_bell, ll_remind)
+                disMissView( ll_remind)
+                rl_bell.visibility=View.INVISIBLE
             }
             dateEvent?.isRemind = isCheck
         }
@@ -103,7 +104,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
                 showToast("请选择日期")
                 return@setOnClickListener
             }
-            DateEventGreenDaoManager.getInstance(this).insertOrReplaceDateEvent(dateEvent)
+            DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
             if(dateEvent?.isRemind==true){
                 CalendarReminderUtils.addCalendarEvent2(this,titleStr,dateEvent?.dayLong!!,dateEvent?.remindDay!!)
             }

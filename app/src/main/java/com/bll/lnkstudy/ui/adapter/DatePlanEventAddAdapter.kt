@@ -25,8 +25,8 @@ class DatePlanEventAddAdapter(layoutResId: Int, data: List<DatePlanBean>?) :
         val et_content=helper.getView<EditText>(R.id.et_content)
         val tv_remind=helper.getView<TextView>(R.id.tv_remind)
 
-        tv_start.text=if (TextUtils.isEmpty(item.startTimeStr)) "开始时间" else item.startTimeStr
-        tv_end.text=if (TextUtils.isEmpty(item.endTimeStr)) "结束时间" else item.endTimeStr
+        tv_start.text=if (TextUtils.isEmpty(item.startTimeStr)) "开始" else item.startTimeStr
+        tv_end.text=if (TextUtils.isEmpty(item.endTimeStr)) "结束" else item.endTimeStr
         tv_course.text=if (TextUtils.isEmpty(item.course)) "科目" else item.course
         et_content.setText(item.content)
 

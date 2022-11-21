@@ -59,8 +59,8 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         mCourseId=receivePaper?.courseId!!
         mCatalogId=receivePaper?.categoryId!!
 
-        daoManager= PaperDaoManager.getInstance(this)
-        daoContentManager= PaperContentDaoManager.getInstance(this)
+        daoManager= PaperDaoManager.getInstance()
+        daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
         papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>

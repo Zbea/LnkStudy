@@ -52,7 +52,7 @@ class RecordActivity : BaseAppCompatActivity() {
             isSave=true
             recordBean?.title=title
             recordBean?.path = path
-            RecordDaoManager.getInstance(this).insertOrReplace(recordBean)
+            RecordDaoManager.getInstance().insertOrReplace(recordBean)
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()
 

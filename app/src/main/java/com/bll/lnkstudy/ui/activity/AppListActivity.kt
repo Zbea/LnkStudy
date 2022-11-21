@@ -42,8 +42,8 @@ class AppListActivity:BaseActivity() {
                 if (item.isCheck){
                     item.isCheck=false
                     if (!isAppContains(item,toolApps)){
-                        AppDaoManager.getInstance(this).insertOrReplace(item)
-                        item.id=AppDaoManager.getInstance(this).insertId
+                        AppDaoManager.getInstance().insertOrReplace(item)
+                        item.id=AppDaoManager.getInstance().insertId
                         toolApps.add(item)
                     }
                 }
@@ -58,7 +58,7 @@ class AppListActivity:BaseActivity() {
             while (it.hasNext()){
                 val item=it.next()
                 if (item.isCheck){
-                    AppDaoManager.getInstance(this).deleteBean(item)
+                    AppDaoManager.getInstance().deleteBean(item)
                     it.remove()
                 }
             }

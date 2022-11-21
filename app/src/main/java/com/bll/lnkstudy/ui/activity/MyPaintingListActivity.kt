@@ -68,8 +68,8 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
     private fun findData(){
 
         if (type==0){
-            lists=WallpaperDaoManager.getInstance(this).queryAllPainting(1,time,paintingType,pageIndex,Constants.PAGE_SIZE)
-            val total= WallpaperDaoManager.getInstance(this).queryAllPainting(1,time,paintingType)
+            lists=WallpaperDaoManager.getInstance().queryAllPainting(1,time,paintingType,pageIndex,Constants.PAGE_SIZE)
+            val total= WallpaperDaoManager.getInstance().queryAllPainting(1,time,paintingType)
             pageTotal= ceil(((total/ Constants.PAGE_SIZE).toDouble())).toInt()
         }
         if (type==1){

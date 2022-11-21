@@ -38,7 +38,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
     override fun initData() {
         note=intent.getBundleExtra("noteBundle")?.getSerializable("note") as Note
         note?.nowDate=System.currentTimeMillis()
-        notes=NoteGreenDaoManager.getInstance(this).queryAllNote(note?.type!!)
+        notes=NoteGreenDaoManager.getInstance().queryAllNote(note?.type!!)
         if (note?.paths!=null){
             paths= note?.paths!!
             path= note?.path.toString()
@@ -126,7 +126,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
                 elik_a?.saveBitmap(true) {
                     note?.paths = paths
                     note?.path = path
-                    NoteGreenDaoManager.getInstance(this@NoteDrawingActivity)
+                    NoteGreenDaoManager.getInstance()
                         .insertOrReplaceNote(note)
                     EventBus.getDefault().post(NOTE_EVENT)
 
@@ -164,8 +164,7 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
         elik_a?.saveBitmap(true) {
             note?.paths = paths
             note?.path = path
-            NoteGreenDaoManager.getInstance(this@NoteDrawingActivity)
-                .insertOrReplaceNote(note)
+            NoteGreenDaoManager.getInstance().insertOrReplaceNote(note)
             EventBus.getDefault().post(NOTE_EVENT)
         }
     }

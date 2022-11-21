@@ -274,7 +274,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
             if (book.status == 1) {
                 presenter.buyBook(book.id.toString())
             } else if (book.status == 2) {
-                val bookDao = BookGreenDaoManager.getInstance(this@BookStoreActivity)
+                val bookDao = BookGreenDaoManager.getInstance()
                     .queryBookByBookID(book.id)
                 if (bookDao == null) {
                     presenter.downBook(book.id.toString())
@@ -334,7 +334,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
                                     item.bgResId=ToolUtils.getImageResStr(this@BookStoreActivity,R.mipmap.icon_homework_cover_1)
                                     item.date=System.currentTimeMillis()
                                     item.courseId= book?.classX?.toInt()!!
-                                    HomeworkTypeDaoManager.getInstance(this@BookStoreActivity).insertOrReplace(item)
+                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                                     EventBus.getDefault().post(BOOK_HOMEWORK_EVENT)
                                 }
                                 book?.time=System.currentTimeMillis()//下载时间用于排序
@@ -343,7 +343,7 @@ class BookStoreActivity:BaseAppCompatActivity() ,
                                 book?.loadState = 1//已经下载
                                 book?.bookPath = FileAddress().getPathBook(fileName)
                                 //下载解压完成后更新存储的book
-                                BookGreenDaoManager.getInstance(this@BookStoreActivity).insertOrReplaceBook(book)
+                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                                 EventBus.getDefault().post(BOOK_EVENT)
                                 //更新列表
                                 mAdapter?.notifyDataSetChanged()

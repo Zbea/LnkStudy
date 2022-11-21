@@ -3,9 +3,11 @@ package com.bll.lnkstudy.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.BaseTypeBeanDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.mvp.model.BaseTypeBean;
 import com.bll.lnkstudy.mvp.model.RecordBean;
@@ -18,32 +20,10 @@ import java.util.List;
 
 public class BaseTypeBeanDaoManager {
 
-
-    /**
-     * 数据库名字
-     */
-    private String DB_NAME = "plan.db";  //数据库名字
-    /**
-     * Helper
-     */
-    private DaoMaster.DevOpenHelper mHelper;//获取Helper对象
-    /**
-     * 数据库
-     */
-    private SQLiteDatabase db;
-    /**
-     * DaoMaster
-     */
-    private DaoMaster mDaoMaster;
     /**
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     * 上下文
-     */
-    private Context context;
-
     /**
      *
      */
@@ -56,40 +36,20 @@ public class BaseTypeBeanDaoManager {
 
     /**
      * 构造初始化
-     *
-     * @param context
      */
-    public BaseTypeBeanDaoManager(Context context) {
-        this.context = context;
-        mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
-        mDaoMaster = new DaoMaster(getWritableDatabase());
-        mDaoSession = mDaoMaster.newSession();
-
+    public BaseTypeBeanDaoManager() {
+        mDaoSession = MyApplication.Companion.getMDaoSession();
         dao = mDaoSession.getBaseTypeBeanDao();
-    }
-
-
-    /**
-     * 获取可写数据库
-     *
-     * @return
-     */
-    private SQLiteDatabase getWritableDatabase() {
-        if (mHelper == null) {
-            mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
-        }
-        db = mHelper.getWritableDatabase();
-        return db;
     }
 
     /**
      * 获取单例（context 最好用application的context  防止内存泄漏）
      */
-    public static BaseTypeBeanDaoManager getInstance(Context context) {
+    public static BaseTypeBeanDaoManager getInstance() {
         if (mDbController == null) {
             synchronized (BaseTypeBeanDaoManager.class) {
                 if (mDbController == null) {
-                    mDbController = new BaseTypeBeanDaoManager(context);
+                    mDbController = new BaseTypeBeanDaoManager();
                 }
             }
         }

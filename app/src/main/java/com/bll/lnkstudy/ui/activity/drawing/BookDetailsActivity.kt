@@ -49,7 +49,7 @@ class BookDetailsActivity : BaseActivity() {
 
     override fun initData() {
         val id = intent.getIntExtra("book_id", 0)
-        book = BookGreenDaoManager.getInstance(this).queryBookByBookID(id.toLong())
+        book = BookGreenDaoManager.getInstance().queryBookByBookID(id.toLong())
         page = book?.pageIndex!!
         if (book == null) return
         val cataLogFilePath = FileAddress().getPathBookCatalog(book?.bookPath!!)
@@ -244,7 +244,7 @@ class BookDetailsActivity : BaseActivity() {
         super.onDestroy()
         book?.time = System.currentTimeMillis()
         book?.pageIndex = page
-        BookGreenDaoManager.getInstance(this).insertOrReplaceBook(book)
+        BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         if (book?.type != "0")
             EventBus.getDefault().post(BOOK_EVENT)
         else

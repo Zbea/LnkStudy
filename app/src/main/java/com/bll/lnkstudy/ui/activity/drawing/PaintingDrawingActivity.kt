@@ -44,7 +44,7 @@ class PaintingDrawingActivity : BaseActivity() {
 
         type = intent.flags
 
-        paintingLists = PaintingDaoManager.getInstance(this).queryAllByType(type)
+        paintingLists = PaintingDaoManager.getInstance().queryAllByType(type)
 
         if (paintingLists.size > 0) {
 
@@ -79,8 +79,7 @@ class PaintingDrawingActivity : BaseActivity() {
                 tv_title_a.text = string
                 paintingBean_a?.title = string
                 paintingLists[page-1].title = string
-                PaintingDaoManager.getInstance(this@PaintingDrawingActivity)
-                    .insertOrReplace(paintingBean_a)
+                PaintingDaoManager.getInstance().insertOrReplace(paintingBean_a)
             }
         }
 
@@ -90,8 +89,7 @@ class PaintingDrawingActivity : BaseActivity() {
                 tv_title_b.text = string
                 paintingBean?.title = string
                 paintingLists[page].title = string
-                PaintingDaoManager.getInstance(this@PaintingDrawingActivity)
-                    .insertOrReplace(paintingBean)
+                PaintingDaoManager.getInstance().insertOrReplace(paintingBean)
             }
         }
 
@@ -294,7 +292,7 @@ class PaintingDrawingActivity : BaseActivity() {
         paintingBean?.page=page
         paintingLists.add(paintingBean!!)
 
-        PaintingDaoManager.getInstance(this).insertOrReplace(paintingBean)
+        PaintingDaoManager.getInstance().insertOrReplace(paintingBean)
 
     }
 
@@ -343,7 +341,7 @@ class PaintingDrawingActivity : BaseActivity() {
     //删除作业
     private fun deleteContent() {
 
-        PaintingDaoManager.getInstance(this).deleteBean(paintingBean)
+        PaintingDaoManager.getInstance().deleteBean(paintingBean)
         paintingLists.remove(paintingBean)
         val file = File(paintingBean?.path)
         val pathName = FileUtils.getFileName(file.name)

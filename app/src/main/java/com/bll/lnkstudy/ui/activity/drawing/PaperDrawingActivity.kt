@@ -46,8 +46,8 @@ class PaperDrawingActivity: BaseActivity() {
         mCatalogId=intent.getIntExtra("categoryId",0)
         pageCount=paperContents.size
 
-        daoManager= PaperDaoManager.getInstance(this)
-        daoContentManager= PaperContentDaoManager.getInstance(this)
+        daoManager= PaperDaoManager.getInstance()
+        daoContentManager= PaperContentDaoManager.getInstance()
 
         papers= daoManager?.queryAll(flags,mCourseId,mCatalogId) as MutableList<Paper>
 

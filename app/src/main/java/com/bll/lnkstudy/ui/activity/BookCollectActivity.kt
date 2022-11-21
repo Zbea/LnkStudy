@@ -75,7 +75,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
             }
             override fun ok() {
                 book?.isCollect=false
-                BookGreenDaoManager.getInstance(this@BookCollectActivity).insertOrReplaceBook(book) //删除本地数据库
+                BookGreenDaoManager.getInstance().insertOrReplaceBook(book) //删除本地数据库
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()
 
@@ -91,7 +91,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll=BookGreenDaoManager.getInstance(this).queryAllBook(true)
+        booksAll=BookGreenDaoManager.getInstance().queryAllBook(true)
         pageNumberView()
     }
 

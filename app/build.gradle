@@ -36,7 +36,7 @@ android {
     }
     greendao{
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 9
+        schemaVersion 16
         //dao的包名
         daoPackage 'com.bll.lnkstudy.greendao'
         //生成数据库文件的目录;
@@ -114,6 +114,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     //数据库存储
     implementation 'org.greenrobot:greendao:3.3.0' // add library greendao
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.0.0'
     //运行时权限
     implementation 'pub.devrel:easypermissions:1.2.0'
     //EventBus

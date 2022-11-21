@@ -29,6 +29,7 @@
                 android:id="@+id/dp_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner" />
 
@@ -54,6 +55,7 @@
                 android:id="@+id/dp_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner"/>
 
@@ -66,7 +68,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_20"
         android:gravity="center"
         android:orientation="horizontal">
 

@@ -38,13 +38,12 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         public final static Property IsCountdown = new Property(7, boolean.class, "isCountdown", false, "IS_COUNTDOWN");
         public final static Property IsRemind = new Property(8, boolean.class, "isRemind", false, "IS_REMIND");
         public final static Property RemindDay = new Property(9, int.class, "remindDay", false, "REMIND_DAY");
-        public final static Property IsBell = new Property(10, boolean.class, "isBell", false, "IS_BELL");
-        public final static Property StartTime = new Property(11, Long.class, "startTime", false, "START_TIME");
-        public final static Property EndTime = new Property(12, Long.class, "endTime", false, "END_TIME");
-        public final static Property StartTimeStr = new Property(13, String.class, "startTimeStr", false, "START_TIME_STR");
-        public final static Property EndTimeStr = new Property(14, String.class, "endTimeStr", false, "END_TIME_STR");
-        public final static Property Weeks = new Property(15, String.class, "weeks", false, "WEEKS");
-        public final static Property Plans = new Property(16, String.class, "plans", false, "PLANS");
+        public final static Property StartTime = new Property(10, Long.class, "startTime", false, "START_TIME");
+        public final static Property EndTime = new Property(11, Long.class, "endTime", false, "END_TIME");
+        public final static Property StartTimeStr = new Property(12, String.class, "startTimeStr", false, "START_TIME_STR");
+        public final static Property EndTimeStr = new Property(13, String.class, "endTimeStr", false, "END_TIME_STR");
+        public final static Property Weeks = new Property(14, String.class, "weeks", false, "WEEKS");
+        public final static Property Plans = new Property(15, String.class, "plans", false, "PLANS");
     }
 
     private final DateWeekConverter weeksConverter = new DateWeekConverter();
@@ -72,13 +71,12 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
                 "\"IS_COUNTDOWN\" INTEGER NOT NULL ," + // 7: isCountdown
                 "\"IS_REMIND\" INTEGER NOT NULL ," + // 8: isRemind
                 "\"REMIND_DAY\" INTEGER NOT NULL ," + // 9: remindDay
-                "\"IS_BELL\" INTEGER NOT NULL ," + // 10: isBell
-                "\"START_TIME\" INTEGER," + // 11: startTime
-                "\"END_TIME\" INTEGER," + // 12: endTime
-                "\"START_TIME_STR\" TEXT," + // 13: startTimeStr
-                "\"END_TIME_STR\" TEXT," + // 14: endTimeStr
-                "\"WEEKS\" TEXT," + // 15: weeks
-                "\"PLANS\" TEXT);"); // 16: plans
+                "\"START_TIME\" INTEGER," + // 10: startTime
+                "\"END_TIME\" INTEGER," + // 11: endTime
+                "\"START_TIME_STR\" TEXT," + // 12: startTimeStr
+                "\"END_TIME_STR\" TEXT," + // 13: endTimeStr
+                "\"WEEKS\" TEXT," + // 14: weeks
+                "\"PLANS\" TEXT);"); // 15: plans
     }
 
     /** Drops the underlying database table. */
@@ -120,36 +118,35 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         stmt.bindLong(8, entity.getIsCountdown() ? 1L: 0L);
         stmt.bindLong(9, entity.getIsRemind() ? 1L: 0L);
         stmt.bindLong(10, entity.getRemindDay());
-        stmt.bindLong(11, entity.getIsBell() ? 1L: 0L);
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(12, startTime);
+            stmt.bindLong(11, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(13, endTime);
+            stmt.bindLong(12, endTime);
         }
  
         String startTimeStr = entity.getStartTimeStr();
         if (startTimeStr != null) {
-            stmt.bindString(14, startTimeStr);
+            stmt.bindString(13, startTimeStr);
         }
  
         String endTimeStr = entity.getEndTimeStr();
         if (endTimeStr != null) {
-            stmt.bindString(15, endTimeStr);
+            stmt.bindString(14, endTimeStr);
         }
  
         List weeks = entity.getWeeks();
         if (weeks != null) {
-            stmt.bindString(16, weeksConverter.convertToDatabaseValue(weeks));
+            stmt.bindString(15, weeksConverter.convertToDatabaseValue(weeks));
         }
  
         List plans = entity.getPlans();
         if (plans != null) {
-            stmt.bindString(17, plansConverter.convertToDatabaseValue(plans));
+            stmt.bindString(16, plansConverter.convertToDatabaseValue(plans));
         }
     }
 
@@ -186,36 +183,35 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         stmt.bindLong(8, entity.getIsCountdown() ? 1L: 0L);
         stmt.bindLong(9, entity.getIsRemind() ? 1L: 0L);
         stmt.bindLong(10, entity.getRemindDay());
-        stmt.bindLong(11, entity.getIsBell() ? 1L: 0L);
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(12, startTime);
+            stmt.bindLong(11, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(13, endTime);
+            stmt.bindLong(12, endTime);
         }
  
         String startTimeStr = entity.getStartTimeStr();
         if (startTimeStr != null) {
-            stmt.bindString(14, startTimeStr);
+            stmt.bindString(13, startTimeStr);
         }
  
         String endTimeStr = entity.getEndTimeStr();
         if (endTimeStr != null) {
-            stmt.bindString(15, endTimeStr);
+            stmt.bindString(14, endTimeStr);
         }
  
         List weeks = entity.getWeeks();
         if (weeks != null) {
-            stmt.bindString(16, weeksConverter.convertToDatabaseValue(weeks));
+            stmt.bindString(15, weeksConverter.convertToDatabaseValue(weeks));
         }
  
         List plans = entity.getPlans();
         if (plans != null) {
-            stmt.bindString(17, plansConverter.convertToDatabaseValue(plans));
+            stmt.bindString(16, plansConverter.convertToDatabaseValue(plans));
         }
     }
 
@@ -237,13 +233,12 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
             cursor.getShort(offset + 7) != 0, // isCountdown
             cursor.getShort(offset + 8) != 0, // isRemind
             cursor.getInt(offset + 9), // remindDay
-            cursor.getShort(offset + 10) != 0, // isBell
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // startTime
-            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12), // endTime
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // startTimeStr
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // endTimeStr
-            cursor.isNull(offset + 15) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 15)), // weeks
-            cursor.isNull(offset + 16) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 16)) // plans
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // startTime
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // endTime
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // startTimeStr
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // endTimeStr
+            cursor.isNull(offset + 14) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 14)), // weeks
+            cursor.isNull(offset + 15) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 15)) // plans
         );
         return entity;
     }
@@ -260,13 +255,12 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         entity.setIsCountdown(cursor.getShort(offset + 7) != 0);
         entity.setIsRemind(cursor.getShort(offset + 8) != 0);
         entity.setRemindDay(cursor.getInt(offset + 9));
-        entity.setIsBell(cursor.getShort(offset + 10) != 0);
-        entity.setStartTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
-        entity.setEndTime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
-        entity.setStartTimeStr(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setEndTimeStr(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setWeeks(cursor.isNull(offset + 15) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 15)));
-        entity.setPlans(cursor.isNull(offset + 16) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 16)));
+        entity.setStartTime(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setEndTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setStartTimeStr(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setEndTimeStr(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setWeeks(cursor.isNull(offset + 14) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 14)));
+        entity.setPlans(cursor.isNull(offset + 15) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 15)));
      }
     
     @Override

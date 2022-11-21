@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NoteBookAddDialog
 import com.bll.lnkstudy.dialog.PopWindowRecordSetting
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
@@ -66,7 +66,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
 
     private fun findDatas() {
-        recordBeans = RecordDaoManager.getInstance(this).queryAllByCourseId(courseId)
+        recordBeans = RecordDaoManager.getInstance().queryAllByCourseId(courseId)
         mAdapter?.setNewData(recordBeans)
     }
 
@@ -144,7 +144,7 @@ class RecordListActivity : BaseAppCompatActivity() {
         NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener { string ->
             recordBeans[position].title = string
             mAdapter?.notifyDataSetChanged()
-            RecordDaoManager.getInstance(this@RecordListActivity)
+            RecordDaoManager.getInstance()
                 .insertOrReplace(recordBeans[position])
         }
     }
@@ -159,7 +159,7 @@ class RecordListActivity : BaseAppCompatActivity() {
                     var item=recordBeans[position]
                     recordBeans.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
-                    RecordDaoManager.getInstance(this@RecordListActivity).deleteBean(item)
+                    RecordDaoManager.getInstance().deleteBean(item)
                 }
 
             })

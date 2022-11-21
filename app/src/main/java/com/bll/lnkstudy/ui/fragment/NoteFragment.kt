@@ -88,21 +88,21 @@ class NoteFragment : BaseFragment() {
     private fun initData() {
 
         noteBooks = DataBeanManager.getIncetance().noteBook
-        var noBooks = BaseTypeBeanDaoManager.getInstance(activity).queryAll()
+        var noBooks = BaseTypeBeanDaoManager.getInstance().queryAll()
         if (noBooks.size < 1) {
             val baseTypeBean = BaseTypeBean()
             baseTypeBean.name = "金句彩段"
             baseTypeBean.typeId = 2
             baseTypeBean.date = System.currentTimeMillis()
             noBooks.add(baseTypeBean)
-            BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(baseTypeBean)
+            BaseTypeBeanDaoManager.getInstance().insertOrReplace(baseTypeBean)
 
             val baseTypeBean1 = BaseTypeBean()
             baseTypeBean1.name = "典型题型"
             baseTypeBean1.typeId = 3
             baseTypeBean1.date = System.currentTimeMillis() + 1000
             noBooks.add(baseTypeBean1)
-            BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(baseTypeBean1)
+            BaseTypeBeanDaoManager.getInstance().insertOrReplace(baseTypeBean1)
         }
         noteBooks.addAll(noBooks)
 
@@ -133,7 +133,7 @@ class NoteFragment : BaseFragment() {
 
     //查找数据
     private fun findDatas() {
-        notes = NoteGreenDaoManager.getInstance(activity).queryAllNote(type)
+        notes = NoteGreenDaoManager.getInstance().queryAllNote(type)
         mAdapter?.setNewData(notes)
     }
 
@@ -261,7 +261,7 @@ class NoteFragment : BaseFragment() {
             ?.setOnDialogClickListener { string ->
                 notes[position].title = string
                 mAdapter?.notifyDataSetChanged()
-                NoteGreenDaoManager.getInstance(activity).insertOrReplaceNote(notes[position])
+                NoteGreenDaoManager.getInstance().insertOrReplaceNote(notes[position])
                 EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
             }
     }
@@ -277,7 +277,7 @@ class NoteFragment : BaseFragment() {
                     var note = notes[position]
                     notes.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
-                    NoteGreenDaoManager.getInstance(activity).deleteNote(note)
+                    NoteGreenDaoManager.getInstance().deleteNote(note)
                     FileUtils.deleteFile(File(note.path))
                     EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                 }
@@ -312,7 +312,7 @@ class NoteFragment : BaseFragment() {
                 noteBook.name = string
                 noteBook.typeId = noteBooks.size
                 noteBooks.add(noteBook)
-                BaseTypeBeanDaoManager.getInstance(activity).insertOrReplace(noteBook)
+                BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteBook)
                 mAdapterType?.notifyDataSetChanged()
             }
     }

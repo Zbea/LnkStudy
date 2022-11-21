@@ -106,8 +106,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
 
         ivSave?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
-            CourseGreenDaoManager.getInstance(this@MainCourseActivity).deleteAll()//清除以前存储的课程
-            CourseGreenDaoManager.getInstance(this@MainCourseActivity).insertAll(selectLists)
+            CourseGreenDaoManager.getInstance().deleteAll()//清除以前存储的课程
+            CourseGreenDaoManager.getInstance().insertAll(selectLists)
             SystemSettingUtils.saveScreenShot(this, grid, "course")
             EventBus.getDefault().post(Constants.COURSE_EVENT)
             SPUtil.putInt("courseType", type)
@@ -283,7 +283,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
         for (i in 1 until row) {
             var id = "1$i".toInt()
             //根据id 查询是否已经存储了对应的时间
-            var course = CourseGreenDaoManager.getInstance(this@MainCourseActivity).queryID(id)
+            var course = CourseGreenDaoManager.getInstance().queryID(id)
             var index = i - 1
 
             var view = getLessonsView(lessons[index])
@@ -388,7 +388,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 var view: TextView? = null
                 var id = (i.toString() + j.toString()).toInt()
                 //根据textview id 查询是否已经存储了对应的课程
-                var course = CourseGreenDaoManager.getInstance(this@MainCourseActivity).queryID(id)
+                var course = CourseGreenDaoManager.getInstance().queryID(id)
 
                 if (type == 0 || type == 1) {
 
