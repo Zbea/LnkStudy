@@ -39,7 +39,7 @@
             android:gravity="center"
             android:text="取消"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
 
@@ -53,7 +53,7 @@
             android:gravity="center"
             android:text="确认"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
     </LinearLayout>

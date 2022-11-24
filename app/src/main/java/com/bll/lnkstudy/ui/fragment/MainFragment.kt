@@ -21,7 +21,7 @@ import com.bll.lnkstudy.dialog.PopWindowDateClick
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEvent
+import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.ui.activity.MainActivity
@@ -29,7 +29,6 @@ import com.bll.lnkstudy.ui.activity.MainCourseActivity
 import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
-import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
@@ -54,8 +53,6 @@ import java.util.*
 class MainFragment : BaseFragment() {
 
     private var nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
-    private var planList = mutableListOf<DateEvent>()
-    private var dayList = mutableListOf<DateEvent>()
     private var mPlanAdapter: MainDatePlanAdapter? = null
 
     private var mainTextBookAdapter: MainTextBookAdapter? = null
@@ -148,15 +145,6 @@ class MainFragment : BaseFragment() {
         mPlanAdapter = MainDatePlanAdapter(R.layout.item_main_date_plan, null)
         rv_plan.adapter = mPlanAdapter
         mPlanAdapter?.bindToRecyclerView(rv_plan)
-        mPlanAdapter?.setOnItemClickListener { adapter, view, position ->
-            val intent=Intent(requireContext(), DatePlanDetailsActivity::class.java)
-            intent.addFlags(1)
-            var bundle = Bundle()
-            bundle.putSerializable("dateEvent", planList[position])
-            intent.putExtra("bundle", bundle)
-            customStartActivity(intent)
-        }
-
 
         iv_date_more.setOnClickListener {
             if (popWindow == null) {
@@ -275,8 +263,12 @@ class MainFragment : BaseFragment() {
      * 通过当天时间查找本地dateEvent事件集合
      */
     private fun findDateList() {
-        planList = DateEventGreenDaoManager.getInstance().queryAllDateEvent(0)
-        mPlanAdapter?.setNewData(planList)
+        val planList = DateEventGreenDaoManager.getInstance().queryAllDateEvent(0)
+        val plans= mutableListOf<DatePlanBean>()
+        for (item in planList){
+            plans.addAll(item.plans)
+        }
+        mPlanAdapter?.setNewData(plans)
     }
 
 

@@ -15,7 +15,7 @@ class DatePlanWeekAdapter(layoutResId: Int, data: List<DateWeekBean>?) :
         helper.setText(R.id.tv_name,item.name)
         helper.setChecked(R.id.cb_week,item.isCheck)
         helper.getView<CheckBox>(R.id.cb_week).setOnClickListener{
-            item.isCheck=true
+            item.isCheck=!item.isCheck
             notifyDataSetChanged()
         }
     }

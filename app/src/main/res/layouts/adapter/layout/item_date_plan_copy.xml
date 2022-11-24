@@ -20,7 +20,8 @@
     <CheckBox
         android:id="@+id/cb_check"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:button="@drawable/bg_check_selector"
         android:layout_marginStart="@dimen/dp_20"/>
 
 </LinearLayout>

@@ -4,8 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@mipmap/icon_popwindow_bg"
-    android:paddingTop="15dp"
-    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="5dp"
     android:paddingStart="@dimen/dp_20"
     android:paddingEnd="@dimen/dp_20">
 

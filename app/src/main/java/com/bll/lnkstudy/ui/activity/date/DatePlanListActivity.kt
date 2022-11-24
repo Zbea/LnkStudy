@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DatePlanCopyDialog
 import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.mvp.model.PopWindowBean
 import com.bll.lnkstudy.ui.adapter.DatePlanListAdapter
+import com.bll.lnkstudy.utils.CalendarReminderUtils
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +25,6 @@ class DatePlanListActivity:BaseAppCompatActivity() {
 
     private var popWindowList: PopWindowList?=null
     private var popWindowBeans = mutableListOf<PopWindowBean>()
-    private var mCopyDialog:DatePlanCopyDialog?=null
 
     private var mAdapter:DatePlanListAdapter?=null
     private var plans= mutableListOf<DateEvent>()
@@ -59,6 +60,31 @@ class DatePlanListActivity:BaseAppCompatActivity() {
             bundle.putSerializable("dateEvent", plans[position])
             intent.putExtra("bundle", bundle)
             customStartActivity(intent)
+        }
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            if (view.id==R.id.iv_delete){
+                CommonDialog(this).setContent("确定要删除？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+
+                        //删除已加入日历
+                        for (item in plans[position]?.plans!!){
+                            if (item.isRemindStart){
+                                CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,plans[position]?.title+"开始："+item.course+item.content)
+                            }
+                            if (item.isRemindEnd){
+                                CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,plans[position]?.title+"结束："+item.course+item.content)
+                            }
+                        }
+
+                        DateEventGreenDaoManager.getInstance().deleteDateEvent(plans[position])
+                        plans.removeAt(position)
+                        mAdapter?.notifyItemRemoved(position)
+                    }
+                })
+            }
         }
 
         findDatas()

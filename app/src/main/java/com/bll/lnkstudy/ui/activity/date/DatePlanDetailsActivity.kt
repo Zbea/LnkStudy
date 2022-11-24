@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity.date
 
-import android.text.TextUtils
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
@@ -26,6 +25,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     private var mAdapter: DatePlanEventAddAdapter? = null
     private var mWeekAdapter: DatePlanWeekAdapter? = null
     private var dateEvent:DateEvent?=null
+    private var oldEvent:DateEvent?=null
     private var weeks= mutableListOf<DateWeekBean>()
     private var dateDialog:DateSelectorDialog?=null
 
@@ -48,6 +48,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         }
         else{
             dateEvent = intent.getBundleExtra("bundle").getSerializable("dateEvent") as DateEvent
+            oldEvent=dateEvent?.clone() as DateEvent
             et_title.setText(dateEvent?.title)
             tv_start_date.text=dateEvent?.startTimeStr
             tv_end_date.text=dateEvent?.endTimeStr
@@ -138,12 +139,17 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             return
         }
 
+        if (dateEvent?.endTimeStr!!.isNullOrEmpty()){
+            showToast("请选择日期")
+            return
+        }
+
         dateEvent?.weeks=selectWeeks
 
         var plans = mutableListOf<DatePlanBean>()
         var items = mAdapter?.data!!
         for (item in items) {
-            if (!TextUtils.isEmpty(item.content) && !TextUtils.isEmpty(item.course) && !TextUtils.isEmpty(item.endTimeStr)) {
+            if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty() && !item.endTimeStr.isNullOrEmpty()) {
                 plans.add(item)
             }
         }
@@ -152,10 +158,22 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
         DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
 
+        //删除原来的日历
+        if (oldEvent!=null){
+            for (item in oldEvent?.plans!!){
+                if (item.isRemindStart){
+                    CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title+"开始："+item.course+item.content)
+                }
+                if (item.isRemindEnd){
+                    CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title+"结束："+item.course+item.content)
+                }
+            }
+        }
+
         for (item in plans){
             if (item.isRemindStart){
                 CalendarReminderUtils.addCalendarEvent(this,
-                    "开始："+item.content,
+                    dateEvent?.title+"开始："+item.course+item.content,
                     item.startTimeStr,
                     dateEvent?.startTime!!,
                     dateEvent?.endTime!!,
@@ -163,7 +181,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             }
             if (item.isRemindEnd){
                 CalendarReminderUtils.addCalendarEvent(this,
-                    "结束："+item.content,
+                    dateEvent?.title+"结束："+item.course+item.content,
                     item.endTimeStr,
                     dateEvent?.startTime!!,
                     dateEvent?.endTime!!,

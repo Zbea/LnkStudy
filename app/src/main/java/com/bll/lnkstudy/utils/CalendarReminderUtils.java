@@ -32,7 +32,7 @@ public class CalendarReminderUtils {
     private static String CALENDARS_NAME = "boohee";
     private static String CALENDARS_ACCOUNT_NAME = "BOOHEE@boohee.com";
     private static String CALENDARS_ACCOUNT_TYPE = "com.android.boohee";
-    private static String CALENDARS_DISPLAY_NAME = "BOOHEE账户";
+    private static String CALENDARS_DISPLAY_NAME = "BOOHEE";
 
     /**
      * 检查是否已经添加了日历账户，如果没有添加先添加一个日历账户再查询
@@ -119,14 +119,12 @@ public class CalendarReminderUtils {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(DateUtils.date3Stamp(DateUtils.longToStringDataNoHour(startDate)+" "+time));//设置开始时间
         long start = mCalendar.getTime().getTime();
-        long end = mCalendar.getTime().getTime();
         ContentValues event = new ContentValues();
         event.put("title", title);
         event.put("calendar_id", calId); //插入账户的id
         event.put(CalendarContract.Events.DTSTART, start);
-        event.put(CalendarContract.Events.DTEND, end);
+        event.put(CalendarContract.Events.DURATION, "P60S");
         event.put(CalendarContract.Events.HAS_ALARM, 1);//设置有闹钟提醒
-
         String weekStr="WKST=SU;BYDAY=";
         for (int i = 0; i < weeks.size(); i++) {
             if (i==weeks.size()-1){
@@ -136,13 +134,23 @@ public class CalendarReminderUtils {
                 weekStr=weekStr+weeks.get(i).identify+",";
             }
         }
-        String dateStr="UNTIL="+DateUtils.longToStringCalender(endDate)+"T000000Z;";
+        String dateStr="UNTIL="+DateUtils.longToStringCalender(endDate)+"T235959Z;";
 
         event.put(CalendarContract.Events.RRULE, "FREQ=WEEKLY;"+dateStr+weekStr);
 
         event.put(CalendarContract.Events.EVENT_TIMEZONE, "Asia/Shanghai");//这个是时区，必须有
         Uri newEvent = context.getContentResolver().insert(Uri.parse(CALENDER_EVENT_URL), event); //添加事件
         if (newEvent == null) { //添加日历事件失败直接返回
+            return;
+        }
+
+        //事件提醒的设定
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Reminders.EVENT_ID, ContentUris.parseId(newEvent));
+        values.put(CalendarContract.Reminders.MINUTES, 0);// 提前多少分钟提醒
+        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+        Uri uri = context.getContentResolver().insert(Uri.parse(CALENDER_REMINDER_URL), values);
+        if (uri == null) { //添加事件提醒失败直接返回
             return;
         }
 
@@ -166,13 +174,13 @@ public class CalendarReminderUtils {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(dateLong);//设置开始时间
         long start = mCalendar.getTime().getTime();
-        long end = mCalendar.getTime().getTime();
         ContentValues event = new ContentValues();
         event.put("title", title);
 //        event.put("description", description);
         event.put("calendar_id", calId); //插入账户的id
         event.put(CalendarContract.Events.DTSTART, start);
-        event.put(CalendarContract.Events.DTEND, end);
+        event.put(CalendarContract.Events.DTEND, start);
+        event.put(CalendarContract.Events.ALL_DAY, 1);
         event.put(CalendarContract.Events.HAS_ALARM, 1);//设置有闹钟提醒
 //        if (repeat.equals("每天"))
 //        {

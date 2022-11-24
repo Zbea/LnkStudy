@@ -7,17 +7,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.ui.adapter.DateDayListAdapter
+import com.bll.lnkstudy.utils.CalendarReminderUtils
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_day_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DateDayListActivity:BaseAppCompatActivity() {
 
+    private val nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var mAdapter:DateDayListAdapter?=null
     private var days= mutableListOf<DateEvent>()
 
@@ -52,15 +58,32 @@ class DateDayListActivity:BaseAppCompatActivity() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val intent=Intent(this,DateDayDetailsActivity::class.java)
             intent.addFlags(1)
-            var bundle = Bundle()
+            val bundle = Bundle()
             bundle.putSerializable("dateEvent", days[position])
             intent.putExtra("bundle", bundle)
             customStartActivity(intent)
         }
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            if (view.id==R.id.iv_delete){
+                CommonDialog(this).setContent("确定要删除？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        //删除加入的日历
+                        CalendarReminderUtils.deleteCalendarEvent(this@DateDayListActivity,days[position].title)
+                        DateEventGreenDaoManager.getInstance().deleteDateEvent(days[position])
+                        days.removeAt(position)
+                        mAdapter?.notifyItemRemoved(position)
+                    }
+                })
+            }
+        }
     }
 
     private fun findDatas(){
-        days=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1)
+        days=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1,nowDate)
+        days.addAll(DateEventGreenDaoManager.getInstance().queryAllDateEvent1(1,nowDate))
         mAdapter?.setNewData(days)
     }
 

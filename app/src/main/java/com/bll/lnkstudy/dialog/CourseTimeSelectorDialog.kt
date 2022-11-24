@@ -39,13 +39,13 @@ class CourseTimeSelectorDialog(private val context: Context) {
             val startHour=tp_start_time?.hour
             val startMinute=tp_start_time?.minute
 
-            val startStr="$startHour:$startMinute"
+            val startStr="${getFormat(startHour!!)}:${getFormat(startMinute!!)}"
             val startLong=DateUtils.date3Stamp("$yearMonth $startStr")
 
             val endHour=tp_end_time?.hour
             val endMinute=tp_end_time?.minute
 
-            val endStr="$endHour:$endMinute"
+            val endStr="${getFormat(endHour!!)}:${getFormat(endMinute!!)}"
             val endLong=DateUtils.date3Stamp("$yearMonth $endStr")
 
             if (endLong>startLong){
@@ -54,6 +54,13 @@ class CourseTimeSelectorDialog(private val context: Context) {
             }
         }
         return this
+    }
+
+    /**
+     * 格式化时间
+     */
+    private fun getFormat(num:Int):String{
+        return if (num<10) "0$num" else "$num"
     }
 
     fun show() {

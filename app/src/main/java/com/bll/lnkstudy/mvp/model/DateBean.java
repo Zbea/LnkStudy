@@ -3,6 +3,8 @@ package com.bll.lnkstudy.mvp.model;
 import com.bll.lnkstudy.utils.date.Lunar;
 import com.bll.lnkstudy.utils.date.Solar;
 
+import java.util.List;
+
 public class DateBean {
 
     public int year;
@@ -15,5 +17,7 @@ public class DateBean {
 
     public Solar solar=new Solar();
     public Lunar lunar=new Lunar();
+
+    public List<DateEvent> dateEvents;
 
 }

@@ -44,14 +44,16 @@
 
 
 
-    <TextView
-        android:id="@+id/tv_course"
+    <EditText
+        android:id="@+id/et_course"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_22"
         android:layout_marginStart="@dimen/dp_50"
         android:textColor="@color/black"
-        android:text="科目"/>
+        android:background="@color/color_transparent"
+        android:hint="科目"
+        android:textColorHint="@color/black"/>
 
 
     <EditText

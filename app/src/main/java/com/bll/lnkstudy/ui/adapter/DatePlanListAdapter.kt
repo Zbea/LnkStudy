@@ -20,13 +20,15 @@ class DatePlanListAdapter(layoutResId: Int, data: List<DateEvent>?) : BaseQuickA
             weekStr += "${week.name}  "
         }
         helper.setText(R.id.tv_week,weekStr)
-        helper.setText(R.id.tv_date, "起始日期  "+item.startTimeStr+"~"+item.endTimeStr)
+        helper.setText(R.id.tv_date, "日期  "+item.startTimeStr+"~"+item.endTimeStr)
 
         var rv=helper.getView<RecyclerView>(R.id.rv_list)
         rv.layoutManager = LinearLayoutManager(mContext)//创建布局管理
         val childAdapter= ChildAdapter(R.layout.item_date_plan_list_child, item.plans)
         rv.adapter = childAdapter
         childAdapter?.bindToRecyclerView(rv)
+
+        helper.addOnClickListener(R.id.iv_delete)
     }
 
     class ChildAdapter(layoutResId: Int, data: List<DatePlanBean>?) : BaseQuickAdapter<DatePlanBean, BaseViewHolder>(layoutResId, data) {

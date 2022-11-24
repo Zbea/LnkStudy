@@ -13,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -21,7 +23,6 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.mvp.model.Book
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -203,7 +204,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      * 得到当前屏幕位置
      */
     fun getCurrentScreenPos():Int{
-        return this.getCurrentScreenPanel()
+        return getCurrentScreenPanel()
     }
 
     /**

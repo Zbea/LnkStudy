@@ -81,10 +81,26 @@ public class DateEventGreenDaoManager {
         return list;
     }
 
+    //查询当天所有已过期日程
+    public List<DateEvent> queryAllDateEvent1(int type,long dayTim) {
+        WhereCondition whereCondition1=DateEventDao.Properties.Type.eq(type);
+        WhereCondition whereCondition2=DateEventDao.Properties.DayLong.lt(dayTim);
+        List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventDao.Properties.Id).build().list();
+        return list;
+    }
+
     //查询所有
     public List<DateEvent> queryAllDateEvent(int type) {
         WhereCondition whereCondition1=DateEventDao.Properties.Type.eq(type);
         List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1).orderDesc(DateEventDao.Properties.Id).build().list();
+        return list;
+    }
+
+    //查询当天重要日子
+    public List<DateEvent> queryAllDateEvent(long dayTim) {
+        WhereCondition whereCondition1=DateEventDao.Properties.Type.eq(1);
+        WhereCondition whereCondition2=DateEventDao.Properties.DayLong.eq(dayTim);
+        List<DateEvent> list = dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventDao.Properties.Id).build().list();
         return list;
     }
 

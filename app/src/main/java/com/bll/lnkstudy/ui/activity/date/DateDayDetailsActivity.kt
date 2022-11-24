@@ -21,6 +21,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
     private var flags=0
     private val nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var dateEvent: DateEvent? = null
+    private var oldEvent:DateEvent?=null
     private var popRemind: PopWindowDateDayRemind? = null
     private var dateDialog:DateDialog?=null
 
@@ -35,6 +36,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             dateEvent?.type=1
         } else {
             dateEvent = intent.getBundleExtra("bundle").getSerializable("dateEvent") as DateEvent
+            oldEvent=dateEvent?.clone() as DateEvent
             et_title.setText(dateEvent?.title)
             tv_date.text = dateEvent?.dayLongStr
             tv_countdown.text = "还有" + DateUtils.sublongToDay(dateEvent?.dayLong!!, nowDate) + "天"
@@ -104,6 +106,12 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
                 showToast("请选择日期")
                 return@setOnClickListener
             }
+            //删除原来的日历
+            if (oldEvent!=null){
+                showLog(oldEvent?.title!!)
+                CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title)
+            }
+
             DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
             if(dateEvent?.isRemind==true){
                 CalendarReminderUtils.addCalendarEvent2(this,titleStr,dateEvent?.dayLong!!,dateEvent?.remindDay!!)

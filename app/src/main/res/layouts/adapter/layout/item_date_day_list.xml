@@ -92,6 +92,13 @@
             android:text="天"/>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_40"
+        android:src="@mipmap/icon_notebook_delete"
+        />
 
 
 </LinearLayout>

@@ -15,7 +15,7 @@ import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class DateEvent implements Serializable {
+public class DateEvent implements Serializable ,Cloneable{
 
     @Transient
     private static final long serialVersionUID = 1L;
@@ -39,6 +39,7 @@ public class DateEvent implements Serializable {
     public Long endTime;//结束时间
     public String startTimeStr;//开始时间
     public String endTimeStr;//结束时间
+    public Integer copyCount;
 
     @Convert(columnType = String.class,converter = DateWeekConverter.class)
     public List<DateWeekBean> weeks;
@@ -49,13 +50,12 @@ public class DateEvent implements Serializable {
     @Transient
     public boolean isCheck;
 
-
-    @Generated(hash = 784529083)
+    @Generated(hash = 631175152)
     public DateEvent(Long id, long userId, int type, String title, Long dayLong,
             String dayLongStr, String explain, boolean isCountdown,
             boolean isRemind, int remindDay, Long startTime, Long endTime,
-            String startTimeStr, String endTimeStr, List<DateWeekBean> weeks,
-            List<DatePlanBean> plans) {
+            String startTimeStr, String endTimeStr, Integer copyCount,
+            List<DateWeekBean> weeks, List<DatePlanBean> plans) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -70,6 +70,7 @@ public class DateEvent implements Serializable {
         this.endTime = endTime;
         this.startTimeStr = startTimeStr;
         this.endTimeStr = endTimeStr;
+        this.copyCount = copyCount;
         this.weeks = weeks;
         this.plans = plans;
     }
@@ -77,7 +78,6 @@ public class DateEvent implements Serializable {
     @Generated(hash = 1511002217)
     public DateEvent() {
     }
-
 
     public Long getId() {
         return this.id;
@@ -207,6 +207,24 @@ public class DateEvent implements Serializable {
         this.plans = plans;
     }
 
+    public Integer getCopyCount() {
+        return this.copyCount;
+    }
 
+    public void setCopyCount(Integer copyCount) {
+        this.copyCount = copyCount;
+    }
+
+
+    @Override
+    public Object clone()  {
+        DateEvent a = null;
+        try {
+            a = (DateEvent) super.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
 
 }

@@ -44,7 +44,16 @@
             android:layout_weight="0.0001"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
+
+            />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_15"
+            android:src="@mipmap/icon_notebook_delete"
             />
 
     </LinearLayout>

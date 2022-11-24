@@ -49,17 +49,8 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
         okTv?.setOnClickListener {
             dismiss()
             val item=mAdapter.data[position]
-
-            val dateEvent=DateEvent()
+            val dateEvent=item.clone() as DateEvent
             dateEvent.title=item.title+"(1)"
-            dateEvent.type=item.type
-            dateEvent.dayLong=item.dayLong
-            dateEvent.startTime=item.startTime
-            dateEvent.startTimeStr=item.startTimeStr
-            dateEvent.endTime=item.endTime
-            dateEvent.endTimeStr=item.endTimeStr
-            dateEvent.weeks=item.weeks
-            dateEvent.plans=item.plans
             DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
 
             onSelectorListener?.onSelect(dateEvent)

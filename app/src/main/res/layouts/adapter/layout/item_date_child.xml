@@ -3,24 +3,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
     >
 
     <TextView
-        android:id="@+id/tv_name"
+        android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="周一"
-        android:textSize="@dimen/sp_22"
+        android:lines="1"
+        android:ellipsize="end"
         android:textColor="@color/black"
+        android:textSize="@dimen/sp_18"
         />
-
-    <CheckBox
-        android:id="@+id/cb_week"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
-        android:button="@drawable/bg_check_selector"
-        />
-
 </LinearLayout>

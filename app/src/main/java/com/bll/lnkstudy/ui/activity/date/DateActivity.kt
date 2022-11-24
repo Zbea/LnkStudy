@@ -4,7 +4,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopWindowDateSelector
+import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateBean
+import com.bll.lnkstudy.mvp.model.DateEvent
 import com.bll.lnkstudy.ui.adapter.DateAdapter
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
@@ -170,6 +172,24 @@ class DateActivity:BaseAppCompatActivity() {
         dateBean.solar= solar
         dateBean.week=DateUtils.getWeek(dateBean.time)
         dateBean.lunar=LunarSolarConverter.SolarToLunar(solar)
+
+        val dateEvents= mutableListOf<DateEvent>()
+        val plans=DateEventGreenDaoManager.getInstance().queryAllDateEvent(0,dateBean.time)
+        for (item in plans){
+            //当天时间是否在日期内
+            if (dateBean.time>=item.startTime&&dateBean.time<=item.endTime){
+                //当天时间是否是学习计划选中的星期
+                for (week in item.weeks){
+                    if (dateBean.week==week.week){
+                        dateEvents.add(item)
+                        break
+                    }
+                }
+            }
+        }
+
+        dateEvents.addAll(DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean.time))
+        dateBean.dateEvents=dateEvents
 
         return dateBean
     }

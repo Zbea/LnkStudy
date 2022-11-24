@@ -42,8 +42,9 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         public final static Property EndTime = new Property(11, Long.class, "endTime", false, "END_TIME");
         public final static Property StartTimeStr = new Property(12, String.class, "startTimeStr", false, "START_TIME_STR");
         public final static Property EndTimeStr = new Property(13, String.class, "endTimeStr", false, "END_TIME_STR");
-        public final static Property Weeks = new Property(14, String.class, "weeks", false, "WEEKS");
-        public final static Property Plans = new Property(15, String.class, "plans", false, "PLANS");
+        public final static Property CopyCount = new Property(14, Integer.class, "copyCount", false, "COPY_COUNT");
+        public final static Property Weeks = new Property(15, String.class, "weeks", false, "WEEKS");
+        public final static Property Plans = new Property(16, String.class, "plans", false, "PLANS");
     }
 
     private final DateWeekConverter weeksConverter = new DateWeekConverter();
@@ -75,8 +76,9 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
                 "\"END_TIME\" INTEGER," + // 11: endTime
                 "\"START_TIME_STR\" TEXT," + // 12: startTimeStr
                 "\"END_TIME_STR\" TEXT," + // 13: endTimeStr
-                "\"WEEKS\" TEXT," + // 14: weeks
-                "\"PLANS\" TEXT);"); // 15: plans
+                "\"COPY_COUNT\" INTEGER," + // 14: copyCount
+                "\"WEEKS\" TEXT," + // 15: weeks
+                "\"PLANS\" TEXT);"); // 16: plans
     }
 
     /** Drops the underlying database table. */
@@ -139,14 +141,19 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
             stmt.bindString(14, endTimeStr);
         }
  
+        Integer copyCount = entity.getCopyCount();
+        if (copyCount != null) {
+            stmt.bindLong(15, copyCount);
+        }
+ 
         List weeks = entity.getWeeks();
         if (weeks != null) {
-            stmt.bindString(15, weeksConverter.convertToDatabaseValue(weeks));
+            stmt.bindString(16, weeksConverter.convertToDatabaseValue(weeks));
         }
  
         List plans = entity.getPlans();
         if (plans != null) {
-            stmt.bindString(16, plansConverter.convertToDatabaseValue(plans));
+            stmt.bindString(17, plansConverter.convertToDatabaseValue(plans));
         }
     }
 
@@ -204,14 +211,19 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
             stmt.bindString(14, endTimeStr);
         }
  
+        Integer copyCount = entity.getCopyCount();
+        if (copyCount != null) {
+            stmt.bindLong(15, copyCount);
+        }
+ 
         List weeks = entity.getWeeks();
         if (weeks != null) {
-            stmt.bindString(15, weeksConverter.convertToDatabaseValue(weeks));
+            stmt.bindString(16, weeksConverter.convertToDatabaseValue(weeks));
         }
  
         List plans = entity.getPlans();
         if (plans != null) {
-            stmt.bindString(16, plansConverter.convertToDatabaseValue(plans));
+            stmt.bindString(17, plansConverter.convertToDatabaseValue(plans));
         }
     }
 
@@ -237,8 +249,9 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // endTime
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // startTimeStr
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // endTimeStr
-            cursor.isNull(offset + 14) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 14)), // weeks
-            cursor.isNull(offset + 15) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 15)) // plans
+            cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14), // copyCount
+            cursor.isNull(offset + 15) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 15)), // weeks
+            cursor.isNull(offset + 16) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 16)) // plans
         );
         return entity;
     }
@@ -259,8 +272,9 @@ public class DateEventDao extends AbstractDao<DateEvent, Long> {
         entity.setEndTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
         entity.setStartTimeStr(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setEndTimeStr(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setWeeks(cursor.isNull(offset + 14) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 14)));
-        entity.setPlans(cursor.isNull(offset + 15) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 15)));
+        entity.setCopyCount(cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14));
+        entity.setWeeks(cursor.isNull(offset + 15) ? null : weeksConverter.convertToEntityProperty(cursor.getString(offset + 15)));
+        entity.setPlans(cursor.isNull(offset + 16) ? null : plansConverter.convertToEntityProperty(cursor.getString(offset + 16)));
      }
     
     @Override

@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DateTimeSelectorDialog(private val context: Context, private val item: DatePlanBean) {
+class DateTimeSelectorDialog(private val context: Context, private val item: DatePlanBean,private val type:Int) {
     private var dialog:Dialog?=null
     private var isRemindStart=false
     private var isRemindEnd=false
@@ -25,6 +25,9 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
         dialog?.show()
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
+
+        isRemindStart=item.isRemindStart
+        isRemindEnd=item.isRemindEnd
 
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
@@ -44,22 +47,28 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
             tp_end_time?.minute=item.endTimeStr.split(":")[1].toInt()
         }
 
+        val ll_remind_start = dialog?.findViewById<LinearLayout>(R.id.ll_remind_start)
+        ll_remind_start?.visibility= if (type==0) View.GONE else View.VISIBLE
+        val ll_remind_end = dialog?.findViewById<LinearLayout>(R.id.ll_remind_end)
+        ll_remind_end?.visibility=  if (type==0) View.GONE else View.VISIBLE
+
         val ll_bell_start = dialog?.findViewById<LinearLayout>(R.id.ll_bell_start)
-        ll_bell_start?.visibility= if (item.isRemindStart) View.VISIBLE else View.INVISIBLE
+        ll_bell_start?.visibility= if (isRemindStart) View.VISIBLE else View.INVISIBLE
         val ll_bell_end = dialog?.findViewById<LinearLayout>(R.id.ll_bell_end)
-        ll_bell_end?.visibility= if (item.isRemindEnd) View.VISIBLE else View.INVISIBLE
+        ll_bell_end?.visibility= if (isRemindEnd) View.VISIBLE else View.INVISIBLE
+
 
         val sh_remind_start = dialog?.findViewById<Switch>(R.id.sh_remind_start)
-        sh_remind_start?.isChecked=item.isRemindStart
-        sh_remind_start?.setOnCheckedChangeListener { compoundButton, b ->
-            isRemindStart=b
-            ll_bell_start?.visibility= if (b) View.VISIBLE else View.INVISIBLE
+        sh_remind_start?.isChecked=isRemindStart
+        sh_remind_start?.setOnClickListener {
+            isRemindStart=!isRemindStart
+            ll_bell_start?.visibility= if (isRemindStart) View.VISIBLE else View.INVISIBLE
         }
         val sh_remind_end = dialog?.findViewById<Switch>(R.id.sh_remind_end)
-        sh_remind_end?.isChecked=item.isRemindEnd
-        sh_remind_end?.setOnCheckedChangeListener { compoundButton, b ->
-            isRemindEnd=b
-            ll_bell_end?.visibility= if (b) View.VISIBLE else View.INVISIBLE
+        sh_remind_end?.isChecked=isRemindEnd
+        sh_remind_end?.setOnClickListener {
+            isRemindEnd=!isRemindEnd
+            ll_bell_end?.visibility= if (isRemindEnd) View.VISIBLE else View.INVISIBLE
         }
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
@@ -71,13 +80,13 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
             val startHour=tp_start_time?.hour
             val startMinute=tp_start_time?.minute
 
-            val startStr="$startHour:$startMinute"
+            val startStr="${getFormat(startHour!!)}:${getFormat(startMinute!!)}"
             val startLong=DateUtils.date3Stamp("$yearMonth $startStr")
 
             val endHour=tp_end_time?.hour
             val endMinute=tp_end_time?.minute
 
-            val endStr="$endHour:$endMinute"
+            val endStr="${getFormat(endHour!!)}:${getFormat(endMinute!!)}"
             val endLong=DateUtils.date3Stamp("$yearMonth $endStr")
 
             if (endLong>startLong){
@@ -86,6 +95,13 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
             }
         }
         return this
+    }
+
+    /**
+     * 格式化时间
+     */
+    private fun getFormat(num:Int):String{
+        return if (num<10) "0$num" else "$num"
     }
 
     fun show() {

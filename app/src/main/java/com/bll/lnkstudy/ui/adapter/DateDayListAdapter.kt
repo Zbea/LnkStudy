@@ -19,7 +19,7 @@ class DateDayListAdapter(layoutResId: Int, data: List<DateEvent>?) : BaseQuickAd
         helper.setText(R.id.tv_remind, item.remindDay.toString())
 
         val day= DateUtils.sublongToDay(item.dayLong, nowLong!!)
-        if (day>0){
+        if (day>=0){
             helper.setText(R.id.tv_countdown, day.toString())
         }
         else{
@@ -29,6 +29,7 @@ class DateDayListAdapter(layoutResId: Int, data: List<DateEvent>?) : BaseQuickAd
 
         helper.setVisible(R.id.ll_countdown,day>0&&item.isCountdown)
         helper.setVisible(R.id.ll_remind,day>0&&item.isRemind)
+        helper.addOnClickListener(R.id.iv_delete)
 
     }
 }

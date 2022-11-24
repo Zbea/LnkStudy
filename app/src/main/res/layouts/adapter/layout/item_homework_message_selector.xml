@@ -9,7 +9,9 @@
     <CheckBox
         android:id="@+id/cb_check"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        />
 
     <TextView
         android:id="@+id/tv_title"
