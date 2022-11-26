@@ -90,9 +90,11 @@
         <activity android:name=".ui.activity.MyPaintingListActivity"/>
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
-        <activity android:name=".ui.activity.NoteBookManagerActivity"/>
+        <activity android:name=".ui.activity.drawing.NoteDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
+        <activity android:name=".ui.activity.NoteTypeManagerActivity"/>
         <activity android:name=".ui.activity.drawing.MainReceivePaperDrawingActivity"/>
-        <activity android:name=".ui.activity.drawing.NoteDrawingActivity"/>
         <activity android:name=".ui.activity.drawing.HomeworkDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />

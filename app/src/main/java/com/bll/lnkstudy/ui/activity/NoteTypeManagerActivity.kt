@@ -5,7 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.NoteBookAddDialog
+import com.bll.lnkstudy.dialog.NotebookAddDialog
 import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
@@ -14,18 +14,18 @@ import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
-class NoteBookManagerActivity : BaseAppCompatActivity() {
+class NoteTypeManagerActivity : BaseAppCompatActivity() {
 
-    private var noteBooks= mutableListOf<BaseTypeBean>()
+    private var noteTypes= mutableListOf<BaseTypeBean>()
     private var mAdapter: NoteBookManagerAdapter? = null
     private var position=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_notebook_manager
+        return R.layout.ac_notetype_manager
     }
 
     override fun initData() {
-        noteBooks= BaseTypeBeanDaoManager.getInstance().queryAll()
+        noteTypes= BaseTypeBeanDaoManager.getInstance().queryAll()
     }
 
     override fun initView() {
@@ -38,22 +38,22 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
     private fun initRecyclerView() {
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, noteBooks)
+        mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, noteTypes)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.iv_edit){
-                editNoteBook(noteBooks[position].name)
+                editNoteBook(noteTypes[position].name)
             }
             if (view.id==R.id.iv_delete){
                 setDeleteView()
             }
             if (view.id==R.id.iv_top){
-                var date=noteBooks[0].date
-                noteBooks[position].date=date-1000
-                BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteBooks[position])
-                Collections.swap(noteBooks,position,0)
+                var date=noteTypes[0].date
+                noteTypes[position].date=date-1000
+                BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
+                Collections.swap(noteTypes,position,0)
                 setNotify()
             }
         }
@@ -74,12 +74,12 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
             override fun cancel() {
             }
             override fun ok() {
-                var noteBook=noteBooks[position]
-                noteBooks.removeAt(position)
+                var noteType=noteTypes[position]
+                noteTypes.removeAt(position)
                 //删除笔记本
-                BaseTypeBeanDaoManager.getInstance().deleteBean(noteBook)
+                BaseTypeBeanDaoManager.getInstance().deleteBean(noteType)
                 //删除笔记本下的所有笔记
-                NoteGreenDaoManager.getInstance().deleteType(noteBook.typeId)
+                NoteGreenDaoManager.getInstance().deleteType(noteType.typeId)
                 setNotify()
             }
 
@@ -88,10 +88,10 @@ class NoteBookManagerActivity : BaseAppCompatActivity() {
 
     //修改笔记本
     private fun editNoteBook(content:String){
-        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener { string ->
-            noteBooks[position].name = string
+        NotebookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener { string ->
+            noteTypes[position].name = string
             BaseTypeBeanDaoManager.getInstance()
-                .insertOrReplace(noteBooks[position])
+                .insertOrReplace(noteTypes[position])
             setNotify()
         }
     }

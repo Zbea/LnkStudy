@@ -9,6 +9,7 @@ import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
 import com.bll.lnkstudy.greendao.HomeworkTypeDao;
 import com.bll.lnkstudy.greendao.NoteDao;
+import com.bll.lnkstudy.mvp.model.HomeworkContent;
 import com.bll.lnkstudy.mvp.model.Note;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -61,23 +62,19 @@ public class NoteGreenDaoManager {
         noteDao.insertOrReplace(bean);
     }
 
-    public Note queryByNoteID(Long noteID) {
-        WhereCondition whereCondition=NoteDao.Properties.Id.eq(noteID);
-        Note queryNote = noteDao.queryBuilder().where(whereUser,whereCondition).build().unique();
-        return queryNote;
+    public long getInsertId(){
+        List<Note> queryList = noteDao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
-    /**
-     * 查找全部笔记，按照自增长id倒序
-     * @return
-     */
     public List<Note> queryAll(){
         return noteDao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Id).build().list();
     }
 
-    public List<Note> queryAllNote(int type) {
+    public List<Note> queryAll(int type,long notebookId) {
         WhereCondition whereCondition=NoteDao.Properties.Type.eq(type);
-        List<Note> list = noteDao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.NowDate).build().list();
+        WhereCondition whereCondition1=NoteDao.Properties.NotebookId.eq(notebookId);
+        List<Note> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         return list;
     }
 

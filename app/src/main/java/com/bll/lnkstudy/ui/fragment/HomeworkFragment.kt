@@ -291,7 +291,7 @@ class HomeworkFragment : BaseFragment(){
 
     //添加作业本
     private fun addHomeWorkType(item:HomeworkType){
-        NoteBookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
+        NotebookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
             ?.setOnDialogClickListener { string ->
             val time = System.currentTimeMillis()
             item.name = string

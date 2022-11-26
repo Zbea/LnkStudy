@@ -20,9 +20,8 @@ import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowDateClick
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.manager.NoteGreenDaoManager
+import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.DatePlanBean
-import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.MainCourseActivity
@@ -58,7 +57,6 @@ class MainFragment : BaseFragment() {
     private var mainTextBookAdapter: MainTextBookAdapter? = null
     private var popWindow: PopWindowDateClick? = null
 
-    private var notes= mutableListOf<Note>()
     private var mainNoteAdapter: MainNoteAdapter? = null
 
     private var receivePapers= mutableListOf<ReceivePaper>()
@@ -242,7 +240,7 @@ class MainFragment : BaseFragment() {
     //作业相关
     private fun initNote(){
 
-        mainNoteAdapter = MainNoteAdapter(R.layout.item_main_note, notes)
+        mainNoteAdapter = MainNoteAdapter(R.layout.item_main_note, null)
         rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
         rv_main_note.adapter = mainNoteAdapter
         mainNoteAdapter?.bindToRecyclerView(rv_main_note)
@@ -250,8 +248,8 @@ class MainFragment : BaseFragment() {
             //跳转手绘
             var intent=Intent(activity, NoteDrawingActivity::class.java)
             var bundle= Bundle()
-            bundle.putSerializable("note",notes[position])
-            intent.putExtra("noteBundle",bundle)
+            bundle.putSerializable("note", mainNoteAdapter?.data?.get(position))
+            intent.putExtra("bundle",bundle)
             customStartActivity(intent)
         }
 
@@ -273,7 +271,7 @@ class MainFragment : BaseFragment() {
 
 
     private fun findNotes(){
-        notes= NoteGreenDaoManager.getInstance().queryAll()
+        var notes= NotebookDaoManager.getInstance().queryAll()
         if (notes.size>6){
             notes=notes.subList(0,6)
         }

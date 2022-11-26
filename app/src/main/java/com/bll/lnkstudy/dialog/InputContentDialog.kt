@@ -23,7 +23,7 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
 
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
-            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
         }
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)

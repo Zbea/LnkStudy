@@ -84,7 +84,7 @@
                     android:background="@drawable/bg_line_bottom"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22" />
+                    android:textSize="@dimen/sp_20" />
 
 
             </LinearLayout>
@@ -112,7 +112,7 @@
                     android:background="@drawable/bg_line_bottom"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22" />
+                    android:textSize="@dimen/sp_20" />
 
 
             </LinearLayout>

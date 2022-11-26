@@ -6,99 +6,255 @@ import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.View
-import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.PopWindowDrawingButton
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteGreenDaoManager
+import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.mvp.model.Note
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.mvp.model.Notebook
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_note_draw_details.*
+import kotlinx.android.synthetic.main.ac_note_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
-import org.greenrobot.eventbus.EventBus
 
-class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
-    private var note:Note?=null
-    private var notes= mutableListOf<Note>()
+class NoteDrawingActivity : BaseActivity() {
 
-    private var path=""//文件夹目录地址
-    private var paths= mutableListOf<String>()
-    private var currentPath=""//当前图片地址
-    private var pos=0//当前下标
+    private var type = 0
+    private var noteBook: Notebook? = null
+    private var note: Note? = null//当前内容
+    private var note_a: Note? = null//a屏内容
+    private var notes = mutableListOf<Note>() //所有内容
+    private var page = 0//页码
+
 
     override fun layoutId(): Int {
-        return R.layout.ac_note_draw_details
+        return R.layout.ac_note_drawing
     }
 
     override fun initData() {
-        note=intent.getBundleExtra("noteBundle")?.getSerializable("note") as Note
-        note?.nowDate=System.currentTimeMillis()
-        notes=NoteGreenDaoManager.getInstance().queryAllNote(note?.type!!)
-        if (note?.paths!=null){
-            paths= note?.paths!!
-            path= note?.path.toString()
+        var bundle = intent.getBundleExtra("bundle")
+        noteBook = bundle?.getSerializable("note") as Notebook
+        type = noteBook?.type!!
+
+        notes = NoteGreenDaoManager.getInstance().queryAll(type,noteBook?.id!!)
+
+        if (notes.size > 0) {
+            note = notes[notes.size - 1]
+            page = notes.size - 1
+        } else {
+            newNoteContent()
         }
-        else{
-            path=FileAddress().getPathNote(note?.type,notes.size+1)
-        }
+
     }
+
 
     override fun initView() {
-        tv_title_b.text=note?.title
 
-        disMissView(iv_tool_left,iv_expand)
+        v_content_a.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
+        v_content_b.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
+        elik_a = v_content_a.pwInterFace
+        elik_b = v_content_b.pwInterFace
 
-        btn_page_down.setOnClickListener(this)
-        btn_page_up.setOnClickListener(this)
-        iv_btn.setOnClickListener(this)
+        changeContent()
 
-        v_content.setImageResource(ToolUtils.getImageResId(this,note?.resId))
-        elik_a=v_content.pwInterFace
-
-        setViewChange()
-
-    }
-
-    override fun onClick(view: View?) {
-        if (view==btn_page_down){
-            pos += 1
-            setViewChange()
-        }
-        if (view==btn_page_up){
-            if (pos>0){
-                pos-=1
-                setViewChange()
+        tv_title_a.setOnClickListener {
+            var title=tv_title_a.text.toString()
+            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
+                tv_title_a.text = string
+                note_a?.title = string
+                notes[page-1].title = string
+                NoteGreenDaoManager.getInstance().insertOrReplaceNote(note_a)
             }
         }
-        if (view==iv_btn){
-            showPopWindowBtn()
+
+        tv_title_b.setOnClickListener {
+            var title=tv_title_b.text.toString()
+            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
+                tv_title_b.text = string
+                note?.title = string
+                notes[page].title = string
+                NoteGreenDaoManager.getInstance().insertOrReplaceNote(note)
+            }
+        }
+
+        btn_page_down.setOnClickListener {
+            val total=notes.size-1
+            if(isExpand){
+                when(page){
+                    total->{
+                        newNoteContent()
+                        newNoteContent()
+                        page==total
+                    }
+                    total-1->{
+                        newNoteContent()
+                        page==total
+                    }
+                    else->{
+                        page+=2
+                    }
+                }
+            }
+            else{
+                when(page){
+                    total->{
+                        newNoteContent()
+                    }
+                    else->{
+                        page += 1
+                    }
+                }
+            }
+            changeContent()
+        }
+
+        btn_page_up.setOnClickListener {
+            if(isExpand){
+                if (page>2){
+                    page-=2
+                    changeContent()
+                }
+                else if (page==2){//当页面不够翻两页时
+                    page=1
+                    changeContent()
+                }
+            }else{
+                if (page>0){
+                    page-=1
+                    changeContent()
+                }
+            }
+
+        }
+
+        iv_catalog.setOnClickListener {
+            showCatalog()
+        }
+
+        iv_expand.setOnClickListener {
+            if (notes.size==1){
+                newNoteContent()
+            }
+            changeExpandContent()
+        }
+        iv_expand_a.setOnClickListener {
+            changeExpandContent()
+        }
+        iv_expand_b.setOnClickListener {
+            changeExpandContent()
+        }
+
+        iv_btn.setOnClickListener {
+
+        }
+
+    }
+
+    /**
+     * 切换屏幕
+     */
+    private fun changeExpandContent(){
+        changeErasure()
+        isExpand=!isExpand
+        moveToScreen(isExpand)
+        changeExpandView()
+        changeContent()
+    }
+
+    private fun changeExpandView(){
+        iv_expand.visibility=if (isExpand) View.GONE else View.VISIBLE
+        v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
+        ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
+        v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
+        if (isExpand){
+            if (screenPos==1){
+                showView(iv_expand_a)
+                disMissView(iv_expand_b)
+            }
+            else{
+                showView(iv_expand_b)
+                disMissView(iv_expand_a)
+            }
+        }
+        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
+    }
+
+    /**
+     * 弹出目录
+     */
+    private fun showCatalog(){
+        var titleStr=""
+        var list= mutableListOf<ListBean>()
+        for (item in notes){
+            val listBean= ListBean()
+            listBean.name=item.title
+            listBean.page=item.page
+            if (titleStr != item.title)
+            {
+                titleStr=item.title
+                list.add(listBean)
+            }
+
+        }
+        DrawingCatalogDialog(this,list).builder()?.
+        setOnDialogClickListener { position ->
+            page = notes[position].page
+            changeContent()
         }
     }
 
+    //翻页内容更新切换
+    private fun changeContent() {
 
-    //得到新路径
-    private fun getNewPath():String{
-        return "$path/${DateUtils.longToString(System.currentTimeMillis())}.tch"
-    }
+        note = notes[page]
 
-
-    //查看内容时的变化
-    private fun setViewChange(){
-        if (pos>=paths.size){ //用来处理 查看笔记时 如果点击新增下一页
-            paths.add(getNewPath())
+        if (isExpand) {
+            if (page > 0) {
+                note_a = notes[page - 1]
+            }
+            if (page==0){
+                page=1
+                note = notes[page]
+                note_a = notes[page-1]
+            }
+        } else {
+            note_a = null
         }
-        changePageView()
+
+
+        tv_title_b.text=note?.title
+        if (isExpand){
+            tv_title_a.text=note_a?.title
+        }
+
+        updateUI()
     }
 
-    private fun changePageView(){
-        currentPath=paths[pos]
-        elik_a?.setLoadFilePath(currentPath,true)
-        elik_a?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+    //更新绘图以及页码
+    private fun updateUI() {
+
+        updateImage(elik_b!!, note?.filePath!!)
+        tv_page_b.text = (page + 1).toString()
+
+        if (isExpand) {
+            if (note_a != null) {
+                updateImage(elik_a!!, note_a?.filePath!!)
+                tv_page_a.text = "$page"
+            }
+        }
+
+    }
+
+    //保存绘图以及更新手绘
+    private fun updateImage(elik: EinkPWInterface, path: String) {
+        elik?.setPWEnabled(true)
+        elik?.setLoadFilePath(path, true)
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
 
@@ -106,66 +262,70 @@ class NoteDrawingActivity:BaseActivity() ,View.OnClickListener{
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik_a?.saveBitmap(true) {}
+                elik?.saveBitmap(true) {}
             }
 
         })
-        tv_page_b.text=(pos+1).toString()
     }
 
-    //点击按钮弹框
-    private fun showPopWindowBtn() {
 
-        val pops= mutableListOf<PopWindowBean>()
-        pops.add(PopWindowBean(0,"保存",false))
-        pops.add(PopWindowBean(1,"删除",false))
+    //创建新的作业内容
+    private fun newNoteContent() {
 
-         PopWindowDrawingButton(this, iv_btn, pops).builder()
-        ?.setOnSelectListener { item ->
-            if (item.id == 0) {
-                elik_a?.saveBitmap(true) {
-                    note?.paths = paths
-                    note?.path = path
-                    NoteGreenDaoManager.getInstance()
-                        .insertOrReplaceNote(note)
-                    EventBus.getDefault().post(NOTE_EVENT)
+        val path=FileAddress().getPathNote(type,noteBook?.id,notes.size)
+        val pathName = DateUtils.longToString(System.currentTimeMillis())
 
-                    finish()
-                }
+        note = Note()
+        note?.date = System.currentTimeMillis()
+        note?.type=type
+        note?.notebookId = noteBook?.id
+        note?.resId = noteBook?.contentResId
+
+        note?.title="未命名${notes.size+1}"
+        note?.folderPath=path
+        note?.filePath = "$path/$pathName.tch"
+        note?.pathName=pathName
+        note?.page = notes.size
+
+        page = notes.size
+
+        NoteGreenDaoManager.getInstance().insertOrReplaceNote(note)
+        val id=NoteGreenDaoManager.getInstance().insertId
+        note?.id=id
+
+        notes.add(note!!)
+    }
+
+
+
+    //删除当前作业内容
+    private fun delete() {
+        CommonDialog(this,getCurrentScreenPos()).setContent("确认删除笔记？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
             }
-
-            if (item.id == 1) {
-                if (paths.size > 1) {
-                    CommonDialog(this@NoteDrawingActivity).setContent("确定删除当前页？").builder()
-                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
-
-                            override fun ok() {
-                                paths.remove(currentPath)
-                                if (pos > 0) {
-                                    pos -= 1
-                                }
-                                FileUtils.deleteFile(path, FileUtils.getFileName(currentPath))
-                                changePageView()
-                            }
-                        })
-                }
+            override fun ok() {
+                NoteGreenDaoManager.getInstance().deleteNote(note)
+                notes.remove(note)
+                FileUtils.deleteFile(note?.folderPath, note?.pathName)//删除文件
             }
+        })
+    }
+
+
+   override fun changeScreenPage() {
+        if (isExpand){
+            changeExpandContent()
         }
     }
 
     override fun onErasure() {
-        elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        elik_a?.saveBitmap(true) {
-            note?.paths = paths
-            note?.path = path
-            NoteGreenDaoManager.getInstance().insertOrReplaceNote(note)
-            EventBus.getDefault().post(NOTE_EVENT)
+        if (isExpand){
+            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+        }
+        else{
+            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
     }
 

@@ -95,7 +95,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
         rl_date.setOnClickListener{
             if (dateDialog==null){
-                dateDialog=DateSelectorDialog(this).builder()
+                dateDialog=DateSelectorDialog(this,screenPos).builder()
                 dateDialog?.setOnDateListener { startStr, startLong, endStr, endLong ->
 
                     dateEvent?.startTime=startLong

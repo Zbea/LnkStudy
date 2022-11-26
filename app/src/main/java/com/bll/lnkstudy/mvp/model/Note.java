@@ -1,18 +1,14 @@
 package com.bll.lnkstudy.mvp.model;
 
 import com.bll.lnkstudy.utils.SPUtil;
-import com.bll.lnkstudy.utils.greendao.StringConverter;
 
-import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class Note implements Serializable {
@@ -21,30 +17,30 @@ public class Note implements Serializable {
     @Id(autoincrement = true)
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
-    @Unique
-    public long date;//创建时间
-    public long nowDate;//最近查看时间
-    public String title;
     public int type;//分类
-    public String resId;//原图id
-    public int index=0;//当前文件名的最大值
-    public String path;//文件夹地址
-    @Convert(columnType = String.class,converter = StringConverter.class)
-    public List<String> paths;//生成图片路径
-
-    @Generated(hash = 98933637)
-    public Note(Long id, long userId, long date, long nowDate, String title,
-            int type, String resId, int index, String path, List<String> paths) {
+    public long notebookId;//笔记本id
+    public long date;//创建时间
+    public String title;
+    public String resId;//背景id
+    public String folderPath;//文件夹路径
+    public String filePath;//文件路径
+    public String pathName;//文件名
+    public int page;//页码
+    @Generated(hash = 1757216792)
+    public Note(Long id, long userId, int type, long notebookId, long date,
+            String title, String resId, String folderPath, String filePath,
+            String pathName, int page) {
         this.id = id;
         this.userId = userId;
-        this.date = date;
-        this.nowDate = nowDate;
-        this.title = title;
         this.type = type;
+        this.notebookId = notebookId;
+        this.date = date;
+        this.title = title;
         this.resId = resId;
-        this.index = index;
-        this.path = path;
-        this.paths = paths;
+        this.folderPath = folderPath;
+        this.filePath = filePath;
+        this.pathName = pathName;
+        this.page = page;
     }
     @Generated(hash = 1272611929)
     public Note() {
@@ -61,17 +57,23 @@ public class Note implements Serializable {
     public void setUserId(long userId) {
         this.userId = userId;
     }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
+    public long getNotebookId() {
+        return this.notebookId;
+    }
+    public void setNotebookId(long notebookId) {
+        this.notebookId = notebookId;
+    }
     public long getDate() {
         return this.date;
     }
     public void setDate(long date) {
         this.date = date;
-    }
-    public long getNowDate() {
-        return this.nowDate;
-    }
-    public void setNowDate(long nowDate) {
-        this.nowDate = nowDate;
     }
     public String getTitle() {
         return this.title;
@@ -79,35 +81,37 @@ public class Note implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public int getType() {
-        return this.type;
-    }
-    public void setType(int type) {
-        this.type = type;
-    }
     public String getResId() {
         return this.resId;
     }
     public void setResId(String resId) {
         this.resId = resId;
     }
-    public int getIndex() {
-        return this.index;
+    public String getFolderPath() {
+        return this.folderPath;
     }
-    public void setIndex(int index) {
-        this.index = index;
+    public void setFolderPath(String folderPath) {
+        this.folderPath = folderPath;
     }
-    public String getPath() {
-        return this.path;
+    public String getFilePath() {
+        return this.filePath;
     }
-    public void setPath(String path) {
-        this.path = path;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
-    public List<String> getPaths() {
-        return this.paths;
+    public String getPathName() {
+        return this.pathName;
     }
-    public void setPaths(List<String> paths) {
-        this.paths = paths;
+    public void setPathName(String pathName) {
+        this.pathName = pathName;
     }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+  
 
 }

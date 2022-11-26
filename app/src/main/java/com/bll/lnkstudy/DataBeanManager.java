@@ -372,23 +372,6 @@ public class DataBeanManager {
     }
 
 
-    public List<BaseTypeBean> getNoteBook() {
-        List<BaseTypeBean> list = new ArrayList<>();
-
-        BaseTypeBean noteBook = new BaseTypeBean();
-        noteBook.name = "我的日记";
-        noteBook.typeId = 0;
-        list.add(noteBook);
-
-        BaseTypeBean noteBook1 = new BaseTypeBean();
-        noteBook1.name = "加锁笔记";
-        noteBook.typeId = 1;
-        list.add(noteBook1);
-
-        return list;
-
-    }
-
 
     //年级分类
     public List<PopWindowBean> getBookTypeGrade() {
@@ -743,6 +726,90 @@ public class DataBeanManager {
         apps.add(appBean4);
 
         return apps;
+    }
+
+
+    //基础笔记分类
+    public List<BaseTypeBean> getNoteBook() {
+        List<BaseTypeBean> list = new ArrayList<>();
+
+        BaseTypeBean noteBook = new BaseTypeBean();
+        noteBook.name = "我的日记";
+        noteBook.typeId = 0;
+        list.add(noteBook);
+
+        BaseTypeBean noteBook1 = new BaseTypeBean();
+        noteBook1.name = "金句彩段";
+        noteBook1.typeId = 1;
+        list.add(noteBook1);
+
+        BaseTypeBean noteBook2 = new BaseTypeBean();
+        noteBook2.name = "典型题型";
+        noteBook2.typeId = 2;
+        list.add(noteBook2);
+
+        return list;
+
+    }
+
+    //日记内容选择
+    public List<ModuleBean> getNoteModuleDiary() {
+        List<ModuleBean> list = new ArrayList<>();
+        ModuleBean moduleBean = new ModuleBean();
+        moduleBean.name = "横格本";
+        moduleBean.resId = R.mipmap.icon_note_module_bg_1;
+        moduleBean.resContentId =  R.mipmap.icon_note_details_bg_6;
+
+        ModuleBean moduleBean1 = new ModuleBean();
+        moduleBean1.name = "方格本";
+        moduleBean1.resId = R.mipmap.icon_note_module_bg_2;
+        moduleBean1.resContentId = R.mipmap.icon_note_details_bg_7;
+
+        list.add(moduleBean);
+        list.add(moduleBean1);
+        return list;
+    }
+
+    //笔记本内容选择
+    public List<ModuleBean> getNoteModuleBook() {
+        List<ModuleBean> list = new ArrayList<>();
+        ModuleBean moduleBean = new ModuleBean();
+        moduleBean.name = "空白本";
+        moduleBean.resId = R.drawable.bg_gray_stroke_10dp_corner;
+        moduleBean.resContentId =  0;
+
+        ModuleBean moduleBean1 = new ModuleBean();
+        moduleBean1.name = "横格本";
+        moduleBean1.resId = R.mipmap.icon_note_module_bg_1;
+        moduleBean1.resContentId = R.mipmap.icon_note_details_bg_1;
+
+        ModuleBean moduleBean2 = new ModuleBean();
+        moduleBean2.name = "方格本";
+        moduleBean2.resId = R.mipmap.icon_note_module_bg_2;
+        moduleBean2.resContentId = R.mipmap.icon_note_details_bg_2;
+
+        ModuleBean moduleBean3 = new ModuleBean();
+        moduleBean3.name = "英语本";
+        moduleBean3.resId = R.mipmap.icon_note_module_bg_3;
+        moduleBean3.resContentId = R.mipmap.icon_note_details_bg_3;
+
+        ModuleBean moduleBean4 = new ModuleBean();
+        moduleBean4.name = "田字本";
+        moduleBean4.resId = R.mipmap.icon_note_module_bg_4;
+        moduleBean4.resContentId = R.mipmap.icon_note_details_bg_4;
+
+        ModuleBean moduleBean5 = new ModuleBean();
+        moduleBean5.name = "五线谱";
+        moduleBean5.resId = R.mipmap.icon_note_module_bg_5;
+        moduleBean5.resContentId = R.mipmap.icon_note_details_bg_5;
+
+        list.add(moduleBean);
+        list.add(moduleBean1);
+        list.add(moduleBean2);
+        list.add(moduleBean3);
+        list.add(moduleBean4);
+        list.add(moduleBean5);
+        return list;
     }
 
 }

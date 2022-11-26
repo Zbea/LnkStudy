@@ -10,7 +10,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.NoteBookAddDialog
+import com.bll.lnkstudy.dialog.NotebookAddDialog
 import com.bll.lnkstudy.dialog.PopWindowRecordSetting
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
@@ -141,7 +141,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
     //修改笔记
     private fun edit(content:String){
-        NoteBookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener { string ->
+        NotebookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener { string ->
             recordBeans[position].title = string
             mAdapter?.notifyDataSetChanged()
             RecordDaoManager.getInstance()
