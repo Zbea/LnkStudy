@@ -12,21 +12,23 @@
         >
         <ImageView
             android:id="@+id/iv_tool_left"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/drawing_bottom_height"
             android:layout_height="match_parent"
             android:layout_marginStart="44dp"
+            android:scaleType="center"
             android:src="@mipmap/icon_draw_tool" />
 
         <ImageView
             android:id="@+id/iv_erasure"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/drawing_bottom_height"
             android:layout_height="match_parent"
             android:layout_marginStart="44dp"
+            android:scaleType="center"
             android:src="@mipmap/icon_draw_erasure" />
 
         <ImageView
             android:id="@+id/btn_page_up"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/drawing_bottom_height"
             android:layout_height="match_parent"
             android:scaleType="center"
             android:layout_marginStart="44dp"
@@ -36,7 +38,7 @@
             android:id="@+id/iv_catalog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"/>
+            />
     </LinearLayout>
 
 
@@ -83,8 +85,9 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_expand_a"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/drawing_bottom_height"
                 android:layout_height="match_parent"
+                android:scaleType="center"
                 android:layout_marginEnd="44dp"
                 android:visibility="gone"
                 android:src="@mipmap/icon_draw_expand" />
@@ -97,9 +100,10 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_expand_b"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/drawing_bottom_height"
                 android:layout_height="match_parent"
                 android:layout_marginStart="44dp"
+                android:scaleType="center"
                 android:visibility="gone"
                 android:src="@mipmap/icon_draw_expand" />
 
@@ -144,33 +148,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginEnd="44dp"/>
+        />
 
     <ImageView
         android:id="@+id/btn_page_down"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/drawing_bottom_height"
         android:layout_height="match_parent"
         android:scaleType="center"
         android:layout_marginEnd="44dp"
         android:src="@mipmap/icon_draw_page_down" />
     <ImageView
         android:id="@+id/iv_draft"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/drawing_bottom_height"
         android:layout_height="match_parent"
         android:layout_marginEnd="44dp"
+        android:scaleType="center"
         android:src="@mipmap/icon_draw_draft" />
     <ImageView
         android:id="@+id/iv_expand"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/drawing_bottom_height"
         android:layout_height="match_parent"
         android:layout_marginEnd="44dp"
+        android:scaleType="center"
         android:src="@mipmap/icon_draw_expand" />
 
     <ImageView
         android:id="@+id/iv_tool_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/drawing_bottom_height"
+        android:layout_height="match_parent"
         android:layout_marginEnd="44dp"
+        android:scaleType="center"
         android:src="@mipmap/icon_draw_tool"
         android:visibility="gone" />
     </LinearLayout>

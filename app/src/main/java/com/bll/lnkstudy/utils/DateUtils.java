@@ -31,7 +31,7 @@ public class DateUtils {
         long daylong=24*60*60*1000;
         long sub=date-now;
         int day = 0;
-        if (sub<daylong){
+        if (sub<0){
             day=-1;
         }else {
             day= (int) Math.ceil (sub/daylong);

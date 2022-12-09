@@ -12,9 +12,9 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.manager.NoteGreenDaoManager
+import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.mvp.model.ListBean
-import com.bll.lnkstudy.mvp.model.Note
+import com.bll.lnkstudy.mvp.model.NoteContent
 import com.bll.lnkstudy.mvp.model.Notebook
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -26,9 +26,9 @@ class NoteDrawingActivity : BaseActivity() {
 
     private var type = 0
     private var noteBook: Notebook? = null
-    private var note: Note? = null//当前内容
-    private var note_a: Note? = null//a屏内容
-    private var notes = mutableListOf<Note>() //所有内容
+    private var noteContent: NoteContent? = null//当前内容
+    private var note_Content_a: NoteContent? = null//a屏内容
+    private var noteContents = mutableListOf<NoteContent>() //所有内容
     private var page = 0//页码
 
 
@@ -41,11 +41,11 @@ class NoteDrawingActivity : BaseActivity() {
         noteBook = bundle?.getSerializable("note") as Notebook
         type = noteBook?.type!!
 
-        notes = NoteGreenDaoManager.getInstance().queryAll(type,noteBook?.id!!)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.id!!)
 
-        if (notes.size > 0) {
-            note = notes[notes.size - 1]
-            page = notes.size - 1
+        if (noteContents.size > 0) {
+            noteContent = noteContents[noteContents.size - 1]
+            page = noteContents.size - 1
         } else {
             newNoteContent()
         }
@@ -66,9 +66,9 @@ class NoteDrawingActivity : BaseActivity() {
             var title=tv_title_a.text.toString()
             InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
                 tv_title_a.text = string
-                note_a?.title = string
-                notes[page-1].title = string
-                NoteGreenDaoManager.getInstance().insertOrReplaceNote(note_a)
+                note_Content_a?.title = string
+                noteContents[page-1].title = string
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
             }
         }
 
@@ -76,14 +76,14 @@ class NoteDrawingActivity : BaseActivity() {
             var title=tv_title_b.text.toString()
             InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
                 tv_title_b.text = string
-                note?.title = string
-                notes[page].title = string
-                NoteGreenDaoManager.getInstance().insertOrReplaceNote(note)
+                noteContent?.title = string
+                noteContents[page].title = string
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
             }
         }
 
         btn_page_down.setOnClickListener {
-            val total=notes.size-1
+            val total=noteContents.size-1
             if(isExpand){
                 when(page){
                     total->{
@@ -137,7 +137,7 @@ class NoteDrawingActivity : BaseActivity() {
         }
 
         iv_expand.setOnClickListener {
-            if (notes.size==1){
+            if (noteContents.size==1){
                 newNoteContent()
             }
             changeExpandContent()
@@ -190,7 +190,7 @@ class NoteDrawingActivity : BaseActivity() {
     private fun showCatalog(){
         var titleStr=""
         var list= mutableListOf<ListBean>()
-        for (item in notes){
+        for (item in noteContents){
             val listBean= ListBean()
             listBean.name=item.title
             listBean.page=item.page
@@ -203,7 +203,7 @@ class NoteDrawingActivity : BaseActivity() {
         }
         DrawingCatalogDialog(this,list).builder()?.
         setOnDialogClickListener { position ->
-            page = notes[position].page
+            page = noteContents[position].page
             changeContent()
         }
     }
@@ -211,25 +211,25 @@ class NoteDrawingActivity : BaseActivity() {
     //翻页内容更新切换
     private fun changeContent() {
 
-        note = notes[page]
+        noteContent = noteContents[page]
 
         if (isExpand) {
             if (page > 0) {
-                note_a = notes[page - 1]
+                note_Content_a = noteContents[page - 1]
             }
             if (page==0){
                 page=1
-                note = notes[page]
-                note_a = notes[page-1]
+                noteContent = noteContents[page]
+                note_Content_a = noteContents[page-1]
             }
         } else {
-            note_a = null
+            note_Content_a = null
         }
 
 
-        tv_title_b.text=note?.title
+        tv_title_b.text=noteContent?.title
         if (isExpand){
-            tv_title_a.text=note_a?.title
+            tv_title_a.text=note_Content_a?.title
         }
 
         updateUI()
@@ -238,12 +238,12 @@ class NoteDrawingActivity : BaseActivity() {
     //更新绘图以及页码
     private fun updateUI() {
 
-        updateImage(elik_b!!, note?.filePath!!)
+        updateImage(elik_b!!, noteContent?.filePath!!)
         tv_page_b.text = (page + 1).toString()
 
         if (isExpand) {
-            if (note_a != null) {
-                updateImage(elik_a!!, note_a?.filePath!!)
+            if (note_Content_a != null) {
+                updateImage(elik_a!!, note_Content_a?.filePath!!)
                 tv_page_a.text = "$page"
             }
         }
@@ -272,28 +272,28 @@ class NoteDrawingActivity : BaseActivity() {
     //创建新的作业内容
     private fun newNoteContent() {
 
-        val path=FileAddress().getPathNote(type,noteBook?.id,notes.size)
+        val path=FileAddress().getPathNote(type,noteBook?.id,noteContents.size)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
-        note = Note()
-        note?.date = System.currentTimeMillis()
-        note?.type=type
-        note?.notebookId = noteBook?.id
-        note?.resId = noteBook?.contentResId
+        noteContent = NoteContent()
+        noteContent?.date = System.currentTimeMillis()
+        noteContent?.type=type
+        noteContent?.notebookId = noteBook?.id
+        noteContent?.resId = noteBook?.contentResId
 
-        note?.title="未命名${notes.size+1}"
-        note?.folderPath=path
-        note?.filePath = "$path/$pathName.tch"
-        note?.pathName=pathName
-        note?.page = notes.size
+        noteContent?.title="未命名${noteContents.size+1}"
+        noteContent?.folderPath=path
+        noteContent?.filePath = "$path/$pathName.tch"
+        noteContent?.pathName=pathName
+        noteContent?.page = noteContents.size
 
-        page = notes.size
+        page = noteContents.size
 
-        NoteGreenDaoManager.getInstance().insertOrReplaceNote(note)
-        val id=NoteGreenDaoManager.getInstance().insertId
-        note?.id=id
+        NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+        val id= NoteContentDaoManager.getInstance().insertId
+        noteContent?.id=id
 
-        notes.add(note!!)
+        noteContents.add(noteContent!!)
     }
 
 
@@ -305,9 +305,9 @@ class NoteDrawingActivity : BaseActivity() {
             override fun cancel() {
             }
             override fun ok() {
-                NoteGreenDaoManager.getInstance().deleteNote(note)
-                notes.remove(note)
-                FileUtils.deleteFile(note?.folderPath, note?.pathName)//删除文件
+                NoteContentDaoManager.getInstance().deleteNote(noteContent)
+                noteContents.remove(noteContent)
+                FileUtils.deleteFile(noteContent?.folderPath, noteContent?.pathName)//删除文件
             }
         })
     }

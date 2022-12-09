@@ -40,6 +40,7 @@
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name = "android.permission.SET_WALLPAPER"/>
 
     <application
         android:name=".MyApplication"
@@ -84,7 +85,6 @@
         <activity android:name=".ui.activity.TeachListActivity" />
         <activity android:name=".ui.activity.TeachActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
             />
         <activity android:name=".ui.activity.BookStoreTypeActivity"/>
         <activity android:name=".ui.activity.MyPaintingListActivity"/>
@@ -122,6 +122,10 @@
         <activity android:name=".ui.activity.date.DateDayDetailsActivity" />
         <activity android:name=".ui.activity.date.DatePlanDetailsActivity"
             android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.CampusModeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             />
 
         <provider

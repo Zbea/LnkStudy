@@ -8,10 +8,7 @@ import android.widget.EditText
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
+import com.bll.lnkstudy.utils.*
 
 
 class NotebookEditPasswordDialog(private val context: Context, private val screenPos:Int) {
@@ -46,8 +43,8 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
             val passwordOldStr=etPasswordOld?.text.toString()
 
 
-            if (passwordOldStr!=notePassword?.password){
-                SToast.showText(screenPos,"输入正确的原密码")
+            if (MD5Utils.digest(passwordOldStr)!=notePassword?.password){
+                SToast.showText(screenPos,"原密码错误")
                 return@setOnClickListener
             }
 
@@ -65,8 +62,8 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
                 return@setOnClickListener
             }
 
-            notePassword.password=passwordStr
-            SPUtil.putObj("notePassword",notePassword)
+            notePassword?.password= MD5Utils.digest(notePassword?.password)
+            SPUtil.putObj("notePassword",notePassword!!)
             dialog.dismiss()
             listener?.onClick()
 

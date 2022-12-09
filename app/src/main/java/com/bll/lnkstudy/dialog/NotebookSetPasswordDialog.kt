@@ -10,10 +10,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
 import com.bll.lnkstudy.mvp.model.PopWindowBean
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
+import com.bll.lnkstudy.utils.*
 
 
 class NotebookSetPasswordDialog(private val context: Context, private val screenPos:Int) {
@@ -83,7 +80,7 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
             val notePassword=NotePassword()
             notePassword.question=tvQuestion.text.toString()
             notePassword.answer=answerStr
-            notePassword.password=passwordStr
+            notePassword.password=MD5Utils.digest(passwordStr)
             SPUtil.putObj("notePassword",notePassword)
             dialog.dismiss()
             listener?.onClick()

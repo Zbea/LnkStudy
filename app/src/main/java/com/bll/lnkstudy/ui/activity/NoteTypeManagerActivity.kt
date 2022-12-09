@@ -7,7 +7,8 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NotebookAddDialog
 import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
-import com.bll.lnkstudy.manager.NoteGreenDaoManager
+import com.bll.lnkstudy.manager.NoteContentDaoManager
+import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
 import kotlinx.android.synthetic.main.fragment_note.*
@@ -78,8 +79,14 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                 noteTypes.removeAt(position)
                 //删除笔记本
                 BaseTypeBeanDaoManager.getInstance().deleteBean(noteType)
-                //删除笔记本下的所有笔记
-                NoteGreenDaoManager.getInstance().deleteType(noteType.typeId)
+
+                val notebooks=NotebookDaoManager.getInstance().queryAll(noteType.typeId)
+                //删除该笔记分类中的所有笔记本及其内容
+                for (note in notebooks){
+                    NotebookDaoManager.getInstance().deleteBean(note)
+                    NoteContentDaoManager.getInstance().deleteType(note.type,note.id)
+                }
+
                 setNotify()
             }
 

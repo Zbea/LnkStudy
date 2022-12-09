@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="35dp"
-    android:layout_height="@dimen/dp_30"
+    android:layout_width="60dp"
+    android:layout_height="@dimen/dp_45"
     >
 
     <ImageView
@@ -19,13 +19,12 @@
         android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:inputType="number"
         android:background="@drawable/bg_gray_stroke_5dp_corner"
-        />
+        android:ellipsize="end"
+        android:gravity="center"
+        android:inputType="number"
+        android:lines="1"
+        android:textColor="@color/black"
+        android:textSize="22sp" />
 
 </RelativeLayout>

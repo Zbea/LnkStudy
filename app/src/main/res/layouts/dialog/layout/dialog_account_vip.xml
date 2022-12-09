@@ -33,7 +33,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_margin="20dp"
             android:orientation="horizontal"
             >
@@ -44,9 +44,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textSize="20sp"
-                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:text="取消"
-                android:textColor="@color/white" />
+                android:textColor="@color/black" />
 
             <View
                 android:layout_width="50dp"
@@ -59,9 +59,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textSize="20sp"
-                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:text="购买"
-                android:textColor="@color/white" />
+                android:textColor="@color/black" />
 
         </LinearLayout>
     </LinearLayout>

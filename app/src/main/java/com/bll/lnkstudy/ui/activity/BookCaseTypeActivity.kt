@@ -72,14 +72,14 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
         btn_page_up.setOnClickListener {
             if(pageIndex>1){
                 pageIndex-=1
-                upDateUI()
+                findData()
             }
         }
 
         btn_page_down.setOnClickListener {
             if(pageIndex<pageTotal){
                 pageIndex+=1
-                upDateUI()
+                findData()
             }
         }
 

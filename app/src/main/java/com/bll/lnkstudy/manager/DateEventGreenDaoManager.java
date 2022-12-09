@@ -1,16 +1,9 @@
 package com.bll.lnkstudy.manager;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.BaseTypeBeanDao;
-import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DateEventDao;
-import com.bll.lnkstudy.greendao.DateEventDao;
-import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
-import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.mvp.model.DateEvent;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;

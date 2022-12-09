@@ -27,7 +27,7 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
         val layoutParams =window?.attributes
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         }
         window?.attributes = layoutParams
         dialog?.show()

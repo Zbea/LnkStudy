@@ -23,7 +23,7 @@ class NoteAddDialog(private val context: Context,private val screenPos:Int,priva
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_notebook_add_module)
         dialog?.show()
-        val width=if (type==0) DP2PX.dip2px(context,440f) else DP2PX.dip2px(context,611f)
+        val width=if (type==0) DP2PX.dip2px(context,450f) else DP2PX.dip2px(context,611f)
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="350dp"
+    android:layout_width="480dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
-    android:padding="@dimen/dp_30"
+    android:padding="@dimen/dp_40"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_30"
+        android:layout_height="@dimen/dp_45"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         >
@@ -24,7 +24,7 @@
             android:text="作业选择"
             android:lines="1"
             android:ellipsize="end"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_20"
             android:textColor="@color/black"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="输入标题"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_20"
             android:textColor="@color/black"
             android:paddingStart="@dimen/dp_5"
             android:paddingEnd="@dimen/dp_5"
@@ -58,16 +58,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal"
         >
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_30"
+            android:layout_height="@dimen/dp_45"
             android:gravity="center"
             android:text="页码"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
             />
 
@@ -86,8 +86,8 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_30"
-                    android:textSize="@dimen/sp_20"
+                    android:layout_height="@dimen/dp_45"
+                    android:textSize="@dimen/sp_22"
                     android:textColor="@color/black"
                     android:gravity="center"
                     android:text="单页"
@@ -105,12 +105,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_30"
                 >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_22"
                     android:textColor="@color/black"
                     android:gravity="center"
                     android:text="批量"
@@ -118,7 +118,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_45"
                     android:orientation="horizontal"
                     android:layout_marginStart="@dimen/dp_10"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"
@@ -126,12 +126,12 @@
 
                     <EditText
                         android:id="@+id/et_page1"
-                        android:layout_width="50dp"
+                        android:layout_width="60dp"
                         android:layout_height="match_parent"
                         android:hint="1"
                         android:gravity="center"
                         android:inputType="number"
-                        android:textSize="@dimen/sp_18"
+                        android:textSize="@dimen/sp_22"
                         android:textColor="@color/black"
                         android:lines="1"
                         android:background="@color/color_transparent"
@@ -147,11 +147,11 @@
                         />
                     <EditText
                         android:id="@+id/et_page2"
-                        android:layout_width="50dp"
+                        android:layout_width="60dp"
                         android:layout_height="match_parent"
                         android:hint="1"
                         android:inputType="number"
-                        android:textSize="@dimen/sp_18"
+                        android:textSize="@dimen/sp_22"
                         android:textColor="@color/black"
                         android:gravity="center"
                         android:lines="1"
@@ -166,29 +166,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_30"
+        android:layout_height="@dimen/dp_45"
         android:layout_marginTop="@dimen/dp_30"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         >
         <TextView
             android:id="@+id/tv_cancel"
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="取消"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
         <TextView
             android:id="@+id/tv_ok"
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_50"
             android:gravity="center"
             android:text="提交"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />

@@ -4,9 +4,9 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.MainListBean
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.EventBus
 
 open class MainActivity : BaseAppCompatActivity() {
 
-    private var lastPosition = 0;
+    private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
     private var mData: ArrayList<MainListBean>? = null
     private var lastFragment: Fragment? = null
@@ -43,7 +43,7 @@ open class MainActivity : BaseAppCompatActivity() {
     override fun initView() {
 
         val eventBusBean=EventBusBean()
-        eventBusBean.id=Constants.SCREEN_EVENT
+        eventBusBean.event=Constants.SCREEN_EVENT
         eventBusBean.screen=getCurrentScreenPos()
         EventBus.getDefault().post(eventBusBean)//发送通知，全屏自动收屏到主页的另外一边
 

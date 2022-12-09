@@ -9,10 +9,7 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
+import com.bll.lnkstudy.utils.*
 
 
 class NotebookPasswordDialog(private val context: Context, private val screenPos:Int) {
@@ -56,7 +53,7 @@ class NotebookPasswordDialog(private val context: Context, private val screenPos
                 return@setOnClickListener
             }
             val notePassword=SPUtil.getObj("notePassword",NotePassword::class.java)
-            if (passwordStr != notePassword?.password){
+            if (MD5Utils.digest(passwordStr) != notePassword?.password){
                 SToast.showText(screenPos,"输入密码错误")
                 return@setOnClickListener
             }

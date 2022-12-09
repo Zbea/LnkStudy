@@ -10,5 +10,6 @@ public class TestPaperType implements Serializable {
     public String namePath;
     public int type;
     public boolean isPg;//是否批改
+    public String bgResId;
 
 }

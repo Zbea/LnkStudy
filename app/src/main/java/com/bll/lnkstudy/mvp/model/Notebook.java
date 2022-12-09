@@ -26,6 +26,7 @@ public class Notebook implements Serializable {
     public String contentResId; //笔记内容背景id
     public boolean isEncrypt;//是否加密
     public String encrypt;//密码
+
     @Generated(hash = 981317526)
     public Notebook(Long id, long userId, String title, int type, long createDate,
             String dateStr, String contentResId, boolean isEncrypt,

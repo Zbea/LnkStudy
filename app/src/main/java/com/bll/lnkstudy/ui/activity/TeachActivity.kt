@@ -24,8 +24,8 @@ class TeachActivity:BaseAppCompatActivity() {
         setPageTitle(teach?.name!!)
 
         jz_vd.setUp(teach?.address, "")
-        jz_vd.startPreloading(); //开始预加载，加载完等待播放
-        jz_vd.startVideoAfterPreloading(); //如果预加载完会开始播放，如果未加载则开始加载
+        jz_vd.startPreloading() //开始预加载，加载完等待播放
+        jz_vd.startVideoAfterPreloading() //如果预加载完会开始播放，如果未加载则开始加载
     }
 
     override fun onBackPressed() {

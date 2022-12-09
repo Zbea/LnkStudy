@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="1021dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_black_stroke_0dp_corner">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_30"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_weight="1"
+            android:textSize="@dimen/sp_26"
+            android:textColor="@color/black"
+            android:text="标题"
+            />
+
+        <ImageView
+            android:id="@+id/iv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:src="@mipmap/icon_close"
+            />
+
+    </LinearLayout>
+
+
+    <cn.jzvd.JzvdStd
+        android:id="@+id/jz_vd"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+</LinearLayout>

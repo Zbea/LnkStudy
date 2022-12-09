@@ -3,7 +3,6 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NotebookDao;
-import com.bll.lnkstudy.mvp.model.Note;
 import com.bll.lnkstudy.mvp.model.Notebook;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -74,6 +73,16 @@ public class NotebookDaoManager {
     public List<Notebook> queryAll(int type) {
         WhereCondition whereCondition=NotebookDao.Properties.Type.eq(type);
         List<Notebook> queryList = dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookDao.Properties.CreateDate).build().list();
+        return queryList;
+    }
+
+    /**
+     * @return
+     */
+    public List<Notebook> queryAll(int type,int page, int pageSize) {
+        WhereCondition whereCondition=NotebookDao.Properties.Type.eq(type);
+        List<Notebook> queryList = dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookDao.Properties.CreateDate)
+                .offset((page-1)*pageSize).limit(pageSize).build().list();
         return queryList;
     }
 

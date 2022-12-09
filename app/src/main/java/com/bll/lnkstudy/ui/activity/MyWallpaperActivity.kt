@@ -57,6 +57,19 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
 
         pageNumberView()
 
+        tv_ok.setOnClickListener {
+            var leftPath=""
+            var rightPath=""
+            for (item in lists){
+                if (item.isLeft){
+                    leftPath=item.paths[0]
+                }
+                if (item.isRight){
+                    rightPath=item.paths[0]
+                }
+            }
+        }
+
     }
 
     //翻页处理

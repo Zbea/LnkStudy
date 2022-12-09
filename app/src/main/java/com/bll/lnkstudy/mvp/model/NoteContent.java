@@ -11,7 +11,8 @@ import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class Note implements Serializable {
+public class NoteContent implements Serializable {
+
     @Transient
     private static final long serialVersionUID = 1L;
     @Id(autoincrement = true)
@@ -26,8 +27,9 @@ public class Note implements Serializable {
     public String filePath;//文件路径
     public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 1757216792)
-    public Note(Long id, long userId, int type, long notebookId, long date,
+
+    @Generated(hash = 998513145)
+    public NoteContent(Long id, long userId, int type, long notebookId, long date,
             String title, String resId, String folderPath, String filePath,
             String pathName, int page) {
         this.id = id;
@@ -42,8 +44,8 @@ public class Note implements Serializable {
         this.pathName = pathName;
         this.page = page;
     }
-    @Generated(hash = 1272611929)
-    public Note() {
+    @Generated(hash = 121893484)
+    public NoteContent() {
     }
     public Long getId() {
         return this.id;
@@ -111,7 +113,5 @@ public class Note implements Serializable {
     public void setPage(int page) {
         this.page = page;
     }
-
-  
-
+    
 }

@@ -124,11 +124,16 @@ public class AppUtils {
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static void clearAppData(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (manager != null) {
-            manager.clearApplicationUserData();
-        }
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                if (manager != null) {
+                    manager.clearApplicationUserData();
+                }
+            }
+        }).start();
+        reOpenApk(context);
     }
 
     /**

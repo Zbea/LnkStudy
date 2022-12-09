@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="500dp"
-    android:layout_height="400dp"
+    android:layout_width="460dp"
+    android:layout_height="380dp"
     android:background="@drawable/dialog_bg"
     android:padding="@dimen/dp_20">
 
@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="作业通知"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_24"
         android:textColor="@color/black"
         android:textStyle="bold"
         />

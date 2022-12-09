@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.view.KeyEvent
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.ui.AlarmService
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
@@ -14,6 +15,9 @@ import java.util.*
 
 class LauncherActivity : MainActivity() {
 
+    private var alarmManager: AlarmManager? = null
+    private var pendingIntent: PendingIntent? = null
+
     override fun layoutId(): Int {
         return R.layout.ac_launcher
     }
@@ -21,7 +25,8 @@ class LauncherActivity : MainActivity() {
     override fun initView() {
         super.initView()
 
-        EasyPermissions.requestPermissions(this,"请求权限",1,
+        EasyPermissions.requestPermissions(
+            this, "请求权限", 1,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_CALENDAR,
@@ -57,14 +62,14 @@ class LauncherActivity : MainActivity() {
 
     }
 
-    private fun gotoBookStore(type: Int){
-        val intent=Intent(this,BookStoreActivity::class.java)
+    private fun gotoBookStore(type: Int) {
+        val intent = Intent(this, BookStoreActivity::class.java)
         intent.flags = type
         customStartActivity(intent)
     }
 
     /**
-     * 开始每天定时任务
+     * 开始每天定时任务 下午三点
      */
     private fun startRemind() {
 
@@ -81,13 +86,14 @@ class LauncherActivity : MainActivity() {
 
         if (currentTimeMillisLong > selectLong) {
             mCalendar.add(Calendar.DAY_OF_MONTH, 1)
+            selectLong = mCalendar.timeInMillis
         }
 
         val intent = Intent(this, AlarmService::class.java)
-        val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
-        alarmManager.setRepeating(
+        intent.action = Constants.ACTION_UPLOAD
+        pendingIntent = PendingIntent.getService(this, 0, intent, 0)
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager?.setRepeating(
             AlarmManager.RTC_WAKEUP, selectLong,
             AlarmManager.INTERVAL_DAY, pendingIntent
         )
@@ -98,10 +104,7 @@ class LauncherActivity : MainActivity() {
      * 停止每天定时任务
      */
     private fun stopRemind() {
-        val intent = Intent(this, AlarmService::class.java)
-        val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
+        alarmManager?.cancel(pendingIntent)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
@@ -116,7 +119,6 @@ class LauncherActivity : MainActivity() {
         super.onDestroy()
         stopRemind()
     }
-
 
 
 }

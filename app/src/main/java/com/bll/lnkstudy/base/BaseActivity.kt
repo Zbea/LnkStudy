@@ -196,6 +196,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             ivErasure?.setOnClickListener {
                 isErasure=!isErasure
                 if (isErasure){
+                    ivErasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
                     onErasure()
                 }
                 else{
@@ -224,6 +225,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * （在展平、收屏时候都结束擦除）
      */
     fun stopErasure(){
+        ivErasure?.setImageResource(R.mipmap.icon_draw_erasure)
         if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
             elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
         }
@@ -232,6 +234,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
+    /**
+     * 自动收屏后自动取消橡皮擦
+     */
     fun changeErasure(){
         if (isErasure){
             isErasure=false
@@ -492,7 +497,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(bean: EventBusBean) {
-        if (bean.id== Constants.SCREEN_EVENT){
+        if (bean.event== Constants.SCREEN_EVENT){
             val screen=bean.screen
             screenPos=when(screen){
                 1->2

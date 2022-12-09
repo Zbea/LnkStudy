@@ -16,7 +16,7 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
     fun builder(): InputContentDialog? {
 
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_account_edit_name)
+        dialog.setContentView(R.layout.dialog_input_name)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog.window
         val layoutParams=window.attributes

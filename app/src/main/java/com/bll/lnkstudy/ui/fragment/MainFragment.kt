@@ -23,6 +23,7 @@ import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.ui.activity.CampusModeActivity
 import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.MainCourseActivity
 import com.bll.lnkstudy.ui.activity.MessageListActivity
@@ -33,7 +34,10 @@ import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.ImageDownLoadUtils
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -51,7 +55,6 @@ import java.util.*
  */
 class MainFragment : BaseFragment() {
 
-    private var nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var mPlanAdapter: MainDatePlanAdapter? = null
 
     private var mainTextBookAdapter: MainTextBookAdapter? = null
@@ -70,6 +73,7 @@ class MainFragment : BaseFragment() {
     override fun initView() {
         EventBus.getDefault().register(this)
         setTitle("首页")
+        showView(tv_search)
 
         onClickView()
 
@@ -88,7 +92,8 @@ class MainFragment : BaseFragment() {
     @SuppressLint("WrongConstant")
     private fun onClickView() {
         tv_search.setOnClickListener {
-            AppUtils.clearAppData(requireContext())
+//            AppUtils.clearAppData(requireContext())
+            customStartActivity(Intent(activity, CampusModeActivity::class.java))
         }
 
         ll_date.setOnClickListener {
