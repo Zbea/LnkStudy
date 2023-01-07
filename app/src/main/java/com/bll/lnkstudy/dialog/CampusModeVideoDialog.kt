@@ -2,10 +2,11 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.net.Uri
 import android.widget.ImageView
+import android.widget.MediaController
 import android.widget.TextView
-import cn.jzvd.Jzvd
-import cn.jzvd.JzvdStd
+import android.widget.VideoView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.ListBean
 
@@ -22,11 +23,12 @@ class CampusModeVideoDialog(val context: Context, val listBean: ListBean) {
         val tvTitle = dialog?.findViewById<TextView>(R.id.tv_title)
         tvTitle.text=listBean.name
 
-        val jzVd=dialog?.findViewById<JzvdStd>(R.id.jz_vd)
-        jzVd.setUp(listBean?.address,"",Jzvd.SCREEN_NORMAL)
-        jzVd.startPreloading() //开始预加载，加载完等待播放
-        jzVd.startVideoAfterPreloading() //如果预加载完会开始播放，如果未加载则开始加载
-
+        val videoView=dialog?.findViewById<VideoView>(R.id.videoView)
+        val mediacontroller = MediaController(context)
+        videoView.setMediaController(mediacontroller)
+        val uri = "android.resource://" + context.packageName + "/" + R.raw.video
+        videoView.setVideoURI(Uri.parse(uri))
+        videoView.start()
 
         val ivCancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         ivCancel?.setOnClickListener {
@@ -34,7 +36,7 @@ class CampusModeVideoDialog(val context: Context, val listBean: ListBean) {
         }
 
         dialog.setOnDismissListener {
-            Jzvd.releaseAllVideos()
+            videoView.stopPlayback()
         }
 
         return this

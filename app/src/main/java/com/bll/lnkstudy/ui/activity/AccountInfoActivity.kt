@@ -148,7 +148,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
                     }
                     override fun ok() {
                         positionGroup=position
-                        presenter.onQuitClassGroup(groups[position].id.toString())
+                        presenter.onQuitClassGroup(groups[position].id)
                     }
                 })
             }
@@ -162,24 +162,18 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
      * 修改名称
      */
     private fun editName(){
-        InputContentDialog(this,screenPos,tv_name.text.toString()).builder()?.setOnDialogClickListener(object :
-            InputContentDialog.OnDialogClickListener {
-            override fun onClick(string: String) {
-                nickname = string
-                presenter.editName(nickname)
-            }
-        })
+        InputContentDialog(this,screenPos,tv_name.text.toString()).builder()?.setOnDialogClickListener { string ->
+            nickname = string
+            presenter.editName(nickname)
+        }
     }
 
     //获取vip列表
     private fun getVipView(list: List<AccountList.ListBean>){
         if (accountBuyVipDialog==null){
             accountBuyVipDialog=AccountBuyVipDialog(this,list).builder()
-            accountBuyVipDialog?.setOnDialogClickListener(object : AccountBuyVipDialog.OnDialogClickListener {
-                override fun onClick(id: String) {
-                    presenter.postVip(id)
-                }
-            })
+            accountBuyVipDialog?.setOnDialogClickListener { id ->
+                presenter.postVip(id) }
         }
         else{
             accountBuyVipDialog?.show()
@@ -188,12 +182,9 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     //加入班群
     private fun addGroup(){
-        ClassGroupAddDialog(this).builder()?.setOnDialogClickListener(object :
-            ClassGroupAddDialog.OnDialogClickListener {
-            override fun onClick(code: String) {
-                presenter.onInsertClassGroup(code)
-            }
-        })
+        ClassGroupAddDialog(this).builder()?.setOnDialogClickListener { code ->
+            presenter.onInsertClassGroup(code)
+        }
     }
 
 

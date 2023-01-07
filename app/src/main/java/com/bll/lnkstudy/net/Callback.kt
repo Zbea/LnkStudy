@@ -29,8 +29,8 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
         if (tBaseResult.code == 0) {
             success(tBaseResult)
         } else {
-            when {
-                tBaseResult.code == 1 -> {
+            when (tBaseResult.code) {
+                -10 -> {
                     IBaseView?.login()
                 }
                 else -> {
@@ -57,9 +57,6 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
             SToast.showText(2,MyApplication.mContext.getString(R.string.parse_data_error))
         } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
             SToast.showText(2,MyApplication.mContext.getString(R.string.connect_error))
-        }else if(code==401)
-        {
-            IBaseView?.login()
         }
         else {
             SToast.showText(2,MyApplication.mContext.getString(R.string.on_server_error))

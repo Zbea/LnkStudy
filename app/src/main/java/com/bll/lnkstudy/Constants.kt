@@ -28,9 +28,9 @@ class Constants private constructor() {
         val WIDTH = 1404
         val HEIGHT = 1872
 
-        const val URL_BASE = "https://api2.bailianlong.com/v1/"
+//        const val URL_BASE = "https://api2.bailianlong.com/v1/"
 
-        //        const val URL_BASE = "http://192.168.101.187:10800/v1/"
+        const val URL_BASE = "http://192.168.101.10:10800/v1/"
         val AUTH = "Authorization"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -86,7 +86,7 @@ class Constants private constructor() {
 
         //定时任务标识
         val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
-        val ACTION_VIDEO = "com.bll.lnkstudy.video"
+        val ACTION_VIDEO = "com.bll.lnkstudy.raw"
     }
 
 }

@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
+    android:paddingTop="@dimen/statusbar_height"
     android:orientation="vertical">
 
     <include layout="@layout/common_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="100dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="100dp"
@@ -213,14 +214,16 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
-            android:layout_height="550dp"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
 
         <Button
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="50dp"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginBottom="100dp"
             android:background="@drawable/bg_btn_black_solid"
             android:text="退出登录"
             android:textColor="@color/white"

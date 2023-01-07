@@ -3,14 +3,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:paddingTop="@dimen/statusbar_height">
 
     <include layout="@layout/common_title"/>
 
-    <cn.jzvd.JzvdStd
-        android:id="@+id/jz_vd"
-        android:layout_width="match_parent"
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="wrap_content"
         android:layout_height="500dp"
-        android:layout_marginTop="200dp"/>
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_gravity="center"
+        />
 
 </LinearLayout>

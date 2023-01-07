@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg_page"
     android:gravity="center_horizontal"
+    android:paddingTop="@dimen/statusbar_height"
     android:orientation="vertical">
 
     <include layout="@layout/common_title" />
@@ -39,12 +40,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/user_tip"
-                android:layout_marginEnd="@dimen/dp_10"
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_20"
                 android:lines="1"
+                android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
 
@@ -70,12 +71,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/psw_tip"
-                android:layout_marginEnd="@dimen/dp_10"
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:inputType="textPassword"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_20"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="@dimen/sp_22"
                 android:textStyle="bold"
                 android:text="姓名" />
 
@@ -103,11 +103,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="请输入姓名"
-                android:layout_marginEnd="@dimen/dp_10"
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
+                android:textSize="@dimen/sp_20"
+                android:lines="1"
+                android:background="@drawable/bg_line_bottom" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_date"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="@dimen/dp_30"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
+                android:textStyle="bold"
+                android:text="生日" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="选择日期"
+                android:textColorHint="@color/color_text_hint"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/sp_20"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -134,12 +164,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/phone_tip"
-                android:layout_marginEnd="@dimen/dp_10"
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
                 android:inputType="phone"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_20"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -178,7 +207,7 @@
                     android:textColor="@color/black"
                     android:gravity="center_vertical"
                     android:inputType="number"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
                     android:background="@null" />
 
@@ -189,7 +218,7 @@
                     android:background="@drawable/bg_gray_stroke_5dp_corner"
                     android:text="获取验证码"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp_20" />
             </LinearLayout>
 
 
@@ -219,7 +248,7 @@
 
                 <RelativeLayout
                     android:layout_width="115dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_gray_stroke_5dp_corner">
@@ -230,7 +259,8 @@
                         android:layout_height="match_parent"
                         android:background="@null"
                         android:gravity="center_vertical"
-                        android:paddingEnd="@dimen/dp_30" />
+                        android:paddingEnd="@dimen/dp_30"
+                        android:spinnerMode="dropdown" />
 
                     <ImageView
                         android:layout_width="@dimen/dp_30"
@@ -242,7 +272,7 @@
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="115dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:layout_marginStart="@dimen/dp_20"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
@@ -253,6 +283,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
+                        android:spinnerMode="dropdown"
                         android:gravity="center_vertical"
                         android:paddingEnd="@dimen/dp_30" />
 
@@ -265,9 +296,9 @@
 
                 </RelativeLayout>
                 <EditText
-                    android:id="@+id/ed_area"
+                    android:id="@+id/et_area"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:hint="详细信息"
                     android:layout_marginStart="@dimen/dp_20"
                     android:textColorHint="@color/color_text_hint"
@@ -275,7 +306,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
@@ -295,16 +326,16 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/ed_school_name"
+                    android:id="@+id/et_school_name"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:hint="学校名称"
                     android:textColorHint="@color/color_text_hint"
                     android:textColor="@color/black"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
@@ -326,22 +357,22 @@
                     android:text="家庭信息" />
 
                 <EditText
-                    android:id="@+id/ed_parent_name"
+                    android:id="@+id/et_parent_name"
                     android:layout_width="200dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:hint="家长姓名"
                     android:textColorHint="@color/color_text_hint"
                     android:textColor="@color/black"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
                 <EditText
-                    android:id="@+id/ed_parent"
+                    android:id="@+id/et_parent"
                     android:layout_width="120dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:hint="家长称谓"
                     android:layout_marginStart="@dimen/dp_20"
                     android:textColorHint="@color/color_text_hint"
@@ -349,13 +380,13 @@
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
                 <EditText
-                    android:id="@+id/ed_parent_phone"
+                    android:id="@+id/et_parent_phone"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:hint="家长电话"
                     android:layout_marginStart="@dimen/dp_20"
                     android:textColorHint="@color/color_text_hint"
@@ -363,8 +394,9 @@
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
+                    android:inputType="phone"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
             </LinearLayout>
@@ -383,16 +415,16 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/ed_address"
+                    android:id="@+id/et_address"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_45"
                     android:hint="家庭地址"
                     android:textColorHint="@color/color_text_hint"
                     android:textColor="@color/black"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
@@ -411,7 +443,7 @@
         android:background="@drawable/bg_gray_stroke_10dp_corner"
         android:text="注册"
         android:textColor="@color/black"
-        android:textSize="24sp" />
+        android:textSize="@dimen/sp_24" />
 
 
 </LinearLayout>

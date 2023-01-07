@@ -16,7 +16,7 @@ object RequestUtils {
      * 根据map 参数返回 一个 requestbody
      * @param map 封装好数据的map
      */
-    fun getBody(map: Map<String, String>): RequestBody {
+    fun getBody(map: Map<String, Any>): RequestBody {
         return RequestBody.create(mediaType, gson.toJson(map))
     }
 

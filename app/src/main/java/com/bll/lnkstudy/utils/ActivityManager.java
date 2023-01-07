@@ -3,6 +3,7 @@ package com.bll.lnkstudy.utils;
 import android.app.Activity;
 
 import com.bll.lnkstudy.mvp.model.HomeworkType;
+import com.bll.lnkstudy.ui.activity.MainActivity;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
@@ -30,6 +31,9 @@ public class ActivityManager {
 
 
     public void addActivity(Activity activity) {
+        if (activity.getClass().getName().equals(MainActivity.class.getName())){
+            finishActivity(MainActivity.class.getName());
+        }
         stack.push(new WeakReference<>(activity));
     }
 
@@ -199,6 +203,5 @@ public class ActivityManager {
             }
         }
     }
-
 
 }

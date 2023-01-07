@@ -42,8 +42,12 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
     }
 
     //加入班群
-    fun onInsertClassGroup(classNum:String) {
-        val insert = RetrofitManager.service.insertGroup(classNum)
+    fun onInsertClassGroup(classNum:Int) {
+
+        val body=RequestUtils.getBody(
+            Pair.create("classNum",classNum)
+        )
+        val insert = RetrofitManager.service.insertGroup(body)
         doRequest(insert, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -55,8 +59,13 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
     }
 
     //退出班群
-    fun onQuitClassGroup(id:String) {
-        val quit= RetrofitManager.service.quitClassGroup(id)
+    fun onQuitClassGroup(id:Int) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("id", id)
+        )
+
+        val quit= RetrofitManager.service.quitClassGroup(body)
         doRequest(quit, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -75,7 +84,9 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<ClassGroup>>) {
-                view.onClassGroupList(tBaseResult.data as List<ClassGroup>)
+                if (!tBaseResult?.data.isNullOrEmpty()){
+                    view.onClassGroupList(tBaseResult.data as List<ClassGroup>)
+                }
             }
         }, boolean)
     }
@@ -84,7 +95,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
     fun editName(name: String) {
 
         val body = RequestUtils.getBody(
-            Pair.create<Any, Any>("nickName", name)
+            Pair.create("nickName", name)
         )
 
         val editName = RetrofitManager.service.editName(body)

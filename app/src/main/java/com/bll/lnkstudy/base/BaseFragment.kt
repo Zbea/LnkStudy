@@ -217,8 +217,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         var intent=Intent(activity, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
         startActivity(intent)
-        if (screenPos!=3)
-            ActivityManager.getInstance().finishActivity(activity)
+//        if (screenPos!=3)
+//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
@@ -231,8 +231,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         var intent=Intent(context, HomeworkDrawingActivity::class.java)
         intent.putExtra("homeworkBundle",bundle)
         startActivity(intent)
-        if (screenPos!=3)
-            ActivityManager.getInstance().finishActivity(activity)
+//        if (screenPos!=3)
+//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
@@ -243,8 +243,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         var intent=Intent(activity, PaintingDrawingActivity::class.java)
         intent.flags=type
         startActivity(intent)
-        if (screenPos!=3)
-            ActivityManager.getInstance().finishActivity(activity)
+//        if (screenPos!=3)
+//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
@@ -259,8 +259,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         if (flags==1)
             intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
         startActivity(intent)
-        if (screenPos!=3)
-            ActivityManager.getInstance().finishActivity(activity)
+//        if (screenPos!=3)
+//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**
@@ -269,8 +269,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component.className)
         startActivity(intent)
-        if (screenPos!=3)
-            ActivityManager.getInstance().finishActivity(activity)
+//        if (screenPos!=3)
+//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**

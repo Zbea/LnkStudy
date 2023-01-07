@@ -4,14 +4,13 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.widget.MediaController
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.CampusModeVideoDialog
 import com.bll.lnkstudy.mvp.model.EventBusBean
 import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.ui.AlarmService
-import kotlinx.android.synthetic.main.ac_campus_mode.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -49,26 +48,6 @@ class CampusModeActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         EventBus.getDefault().register(this)
-
-        btn_play.setOnClickListener{
-//            CampusModeVideoDialog(this,lists[0]).builder()
-        }
-
-        val mediacontroller = MediaController(this)
-        mediacontroller.setAnchorView(videoView);
-
-        videoView.setMediaController(mediacontroller)
-        videoView.setVideoPath(lists[0].address)
-        videoView.requestFocus()
-
-        videoView.setOnCompletionListener {
-            it.release()
-        }
-
-//        videoView.setOnPreparedListener {
-//            videoView.start()
-//        }
-
     }
 
     /**
@@ -112,8 +91,7 @@ class CampusModeActivity:BaseAppCompatActivity() {
     fun onMessageEvent(bean: EventBusBean) {
         if (bean.event== Constants.VIDEO_EVENT){
             val id=bean.id-1
-            showToast(lists[id].name)
-//            CampusModeVideoDialog(this,lists[id]).builder()
+            CampusModeVideoDialog(this,lists[id]).builder()
         }
     }
 

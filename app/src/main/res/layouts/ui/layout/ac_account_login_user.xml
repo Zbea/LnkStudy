@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page">
 
     <RelativeLayout
@@ -137,8 +138,7 @@
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="100dp"
-                android:layout_marginBottom="80dp"
+                android:layout_marginTop="120dp"
                 android:background="@drawable/bg_btn_black_solid"
                 android:text="立即登录"
                 android:textColor="@color/white"

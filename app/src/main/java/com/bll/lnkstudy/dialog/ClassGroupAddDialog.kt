@@ -28,7 +28,7 @@ class ClassGroupAddDialog(private val context: Context) {
             var number=etNumber?.text.toString()
             if (!number.isNullOrEmpty())
             {
-                listener?.onClick(number)
+                listener?.onClick(number.toInt())
                 dialog?.dismiss()
             }
         }
@@ -44,7 +44,7 @@ class ClassGroupAddDialog(private val context: Context) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(code: String)
+        fun onClick(code: Int)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

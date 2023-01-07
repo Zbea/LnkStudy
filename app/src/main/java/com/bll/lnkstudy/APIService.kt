@@ -27,9 +27,9 @@ interface APIService{
     fun getSms(@Query("telNumber") num:String): Observable<BaseResult<Any>>
 
     /**
-     * 注册 "/register"
+     * 注册 "user/createStudent"
      */
-    @POST("register")
+    @POST("user/createStudent")
     fun register(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 忘记密码 "/password"
@@ -81,8 +81,8 @@ interface APIService{
     /**
      * 加入班群
      */
-    @POST("class/insert")
-    fun insertGroup(@Query("classNum") classNum:String): Observable<BaseResult<Any>>
+    @POST("class/addClass")
+    fun insertGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 班群列表
      */
@@ -92,7 +92,7 @@ interface APIService{
      * 退出班群
      */
     @POST("class/quit")
-    fun quitClassGroup(@Query("id") id:String): Observable<BaseResult<Any>>
+    fun quitClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 
     /**

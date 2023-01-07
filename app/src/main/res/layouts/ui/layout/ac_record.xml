@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
+    android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page">
 
     <include layout="@layout/common_title"></include>

@@ -11,6 +11,7 @@ import com.bll.lnkstudy.mvp.model.ListBean
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import java.lang.Math.ceil
 
 class TeachListActivity:BaseAppCompatActivity() {
 
@@ -29,6 +30,7 @@ class TeachListActivity:BaseAppCompatActivity() {
 
         for (index in 0..40){
             var item=ListBean()
+            item.id=index
             item.name="三角函数"
             item.info="北京大学 张老师"
             teachs.add(item)
@@ -60,7 +62,7 @@ class TeachListActivity:BaseAppCompatActivity() {
     //翻页处理
     private fun pageNumberView(){
         var pageTotal=teachs.size //全部数量
-        var pageCount=Math.ceil((pageTotal.toDouble()/30)).toInt()//总共页码
+        var pageCount=ceil((pageTotal.toDouble() / 30)).toInt()//总共页码
         if (pageTotal==0)
         {
             ll_page_number.visibility= View.GONE

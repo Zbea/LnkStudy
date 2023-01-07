@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
-import cn.jzvd.Jzvd
+import android.net.Uri
+import android.widget.MediaController
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.ListBean
@@ -23,22 +24,21 @@ class TeachActivity:BaseAppCompatActivity() {
     override fun initView() {
         setPageTitle(teach?.name!!)
 
-        jz_vd.setUp(teach?.address, "")
-        jz_vd.startPreloading() //开始预加载，加载完等待播放
-        jz_vd.startVideoAfterPreloading() //如果预加载完会开始播放，如果未加载则开始加载
-    }
-
-    override fun onBackPressed() {
-        if (Jzvd.backPress()) {
-            return
+        val mediacontroller = MediaController(this)
+        videoView.setMediaController(mediacontroller)
+        if (teach?.id==0){
+            val uri = "android.resource://" + packageName + "/" + R.raw.video
+            videoView.setVideoURI(Uri.parse(uri))
         }
-        super.onBackPressed()
+        else{
+            videoView.setVideoPath(teach?.address)
+        }
+
     }
 
-    override fun onPause() {
-        super.onPause()
-        Jzvd.releaseAllVideos()
+    override fun onDestroy() {
+        super.onDestroy()
+        videoView.stopPlayback()
     }
-
 
 }

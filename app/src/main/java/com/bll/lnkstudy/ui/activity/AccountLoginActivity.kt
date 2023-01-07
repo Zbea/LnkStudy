@@ -53,7 +53,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             Manifest.permission.RECORD_AUDIO
         )
 
-        ed_user.setText("gq")
+        ed_user.setText("zhufeng")
         ed_psw.setText("123456")
 
 
@@ -68,17 +68,13 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         btn_login.setOnClickListener {
 
             var account = ed_user.text.toString()
-            var password = MD5Utils.digest("" + (System.currentTimeMillis() / 1000).toInt() + "_" + MD5Utils.digest(ed_psw.text.toString()))
-            var timestamp = (System.currentTimeMillis() / 1000).toInt()
-            var role = 2
+            var password = MD5Utils.digest(ed_psw.text.toString())
 
-            var map=HashMap<String,String>()
+            var map=HashMap<String,Any>()
             map ["account"]=account
             map ["password"]=password
-            map ["timestamp"]= timestamp.toString()
-            map ["role"]= role.toString()
-
-            presenter.login(account,password, timestamp,role)
+            map ["role"]= 2
+            presenter.login(map)
 
         }
 

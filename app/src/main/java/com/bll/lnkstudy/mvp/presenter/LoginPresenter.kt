@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import android.util.Pair
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
@@ -8,17 +7,9 @@ import com.bll.lnkstudy.net.*
 
 class LoginPresenter(view: IContractView.ILoginView) : BasePresenter<IContractView.ILoginView>(view) {
 
-    fun login(account: String, password: String, timestamp: Int, role: Int) {
+    fun login(map:HashMap<String,Any>) {
 
-
-        val body = RequestUtils.getBody(
-
-            Pair.create<Any, Any>("account", account),
-            Pair.create<Any, Any>("password", password),
-            Pair.create<Any, Any>("timestamp", timestamp),
-            Pair.create<Any, Any>("role", role)
-
-        )
+        val body = RequestUtils.getBody(map)
 
         val login = RetrofitManager.service.login(body)
         doRequest(login, object : Callback<User>(view) {
@@ -32,7 +23,6 @@ class LoginPresenter(view: IContractView.ILoginView) : BasePresenter<IContractVi
         }, true)
 
     }
-
 
     fun accounts() {
 

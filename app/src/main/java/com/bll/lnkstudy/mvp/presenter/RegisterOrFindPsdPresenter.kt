@@ -7,19 +7,9 @@ import com.bll.lnkstudy.net.*
 
 class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : BasePresenter<IContractView.IRegisterOrFindPsdView>(view) {
 
-    fun register(role: String,account: String, password: String, name: String,phone: String,code: String) {
+    fun register(map:HashMap<String,Any>) {
 
-
-        val body = RequestUtils.getBody(
-
-            Pair.create<Any, Any>("account", account),
-            Pair.create<Any, Any>("password", password),
-            Pair.create<Any, Any>("nickname", name),
-            Pair.create<Any, Any>("role", role),
-            Pair.create<Any, Any>("smsCode", code),
-            Pair.create<Any, Any>("telNumber", phone)
-
-        )
+        val body = RequestUtils.getBody(map)
 
         val register = RetrofitManager.service.register(body)
 
@@ -40,11 +30,11 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
         val body = RequestUtils.getBody(
 
-            Pair.create<Any, Any>("account", account),
-            Pair.create<Any, Any>("password", psd),
-            Pair.create<Any, Any>("role", role),
-            Pair.create<Any, Any>("smsCode", code),
-            Pair.create<Any, Any>("telNumber", phone)
+            Pair.create("account", account),
+            Pair.create("password", psd),
+            Pair.create("role", role),
+            Pair.create("smsCode", code),
+            Pair.create("telNumber", phone)
 
         )
 
@@ -68,8 +58,8 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
         val body = RequestUtils.getBody(
 
-            Pair.create<Any, Any>("password", psd),
-            Pair.create<Any, Any>("smsCode", code),
+            Pair.create("password", psd),
+            Pair.create("smsCode", code),
         )
 
         val findpsd = RetrofitManager.service.editPassword(body)
@@ -104,3 +94,4 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
 
 }
+
