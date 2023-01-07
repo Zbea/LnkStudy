@@ -41,6 +41,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
         }, true)
     }
 
+
     //加入班群
     fun onInsertClassGroup(classNum:Int) {
 
