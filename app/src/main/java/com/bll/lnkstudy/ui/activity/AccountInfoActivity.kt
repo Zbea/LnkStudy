@@ -3,12 +3,9 @@ package com.bll.lnkstudy.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Handler
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.AccountBuyVipDialog
-import com.bll.lnkstudy.dialog.ClassGroupAddDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.mvp.model.AccountList
@@ -16,7 +13,6 @@ import com.bll.lnkstudy.mvp.model.AccountOrder
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.adapter.AccountGroupAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
@@ -26,7 +22,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     private val presenter=AccountInfoPresenter(this)
     private var nickname=""
-    private var mAdapter:AccountGroupAdapter?=null
     private var groups= mutableListOf<ClassGroup>()
     private var positionGroup=0
     private var accountBuyVipDialog:AccountBuyVipDialog?=null
@@ -63,23 +58,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         }
     }
 
-    override fun onInsert() {
-        showToast("加入班群成功")
-        presenter.getClassGroupList(true)
-    }
-
-    override fun onClassGroupList(lists:List<ClassGroup>) {
-        groups= lists as MutableList<ClassGroup>
-        ll_group.visibility=if (groups.size>0) View.VISIBLE else View.GONE
-        mAdapter?.setNewData(groups)
-    }
-
-    override fun onQuit() {
-        showToast("退出班群成功")
-        groups.removeAt(positionGroup)
-        ll_group.visibility=if (groups.size>0) View.VISIBLE else View.GONE
-        mAdapter?.setNewData(groups)
-    }
 
     override fun layoutId(): Int {
         return R.layout.ac_account_info
@@ -96,6 +74,11 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         tv_user.text = mUser?.account
         tv_name.text = mUser?.nickname
         tv_phone.text =  mUser?.telNumber?.substring(0,3)+"****"+mUser?.telNumber?.substring(7,11)
+        tv_birthday.text=DateUtils.intToStringDataNoHour(mUser?.birthdayTime?.times(1000) ?: 0)
+        tv_parent.text=mUser?.parentName
+        tv_parent_name.text=mUser?.parentNickname
+        tv_parent_phone.text=mUser?.parentTel
+        tv_address.text=mUser?.parentAddr
 
         if (mUser?.vipExpiredAt==0) {
             tv_member.text = "普通会员"
@@ -132,30 +115,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             }
         }
 
-        tv_add.setOnClickListener {
-            addGroup()
-        }
-
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = AccountGroupAdapter(R.layout.item_classgroup, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.tv_out){
-                CommonDialog(this).setContent("确认退出班群？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        positionGroup=position
-                        presenter.onQuitClassGroup(groups[position].id)
-                    }
-                })
-            }
-        }
-
-        presenter.getClassGroupList(false)
-
     }
 
     /**
@@ -180,12 +139,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         }
     }
 
-    //加入班群
-    private fun addGroup(){
-        ClassGroupAddDialog(this).builder()?.setOnDialogClickListener { code ->
-            presenter.onInsertClassGroup(code)
-        }
-    }
+
 
 
     override fun onDestroy() {

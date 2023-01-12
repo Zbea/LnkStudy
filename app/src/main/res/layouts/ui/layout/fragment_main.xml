@@ -204,7 +204,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/ll_textbook"
+            android:id="@+id/ll_group"
             style="@style/main_content_size"
             android:background="@mipmap/icon_main_content_bg"
             android:orientation="vertical">
@@ -212,23 +212,23 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_content_title_height"
-                android:drawableLeft="@mipmap/icon_main_textbook"
+                android:drawableLeft="@mipmap/icon_main_group"
                 android:drawablePadding="@dimen/dp_15"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:text="课业进度"
+                android:text="班群管理"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main_textbook"
+                android:id="@+id/rv_main_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_15"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_15"
                 />
 
         </LinearLayout>

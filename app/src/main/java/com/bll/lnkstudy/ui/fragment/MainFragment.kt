@@ -18,19 +18,18 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowDateClick
-import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.mvp.model.ClassGroup
+import com.bll.lnkstudy.mvp.model.ClassGroupUser
 import com.bll.lnkstudy.mvp.model.DatePlanBean
 import com.bll.lnkstudy.mvp.model.ReceivePaper
-import com.bll.lnkstudy.ui.activity.CampusModeActivity
-import com.bll.lnkstudy.ui.activity.MainActivity
-import com.bll.lnkstudy.ui.activity.MainCourseActivity
-import com.bll.lnkstudy.ui.activity.MessageListActivity
+import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
-import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
@@ -53,18 +52,30 @@ import java.util.*
 /**
  * 首页
  */
-class MainFragment : BaseFragment() {
+class MainFragment : BaseFragment(),IContractView.IClassGroupView {
 
+    private var classGroupPresenter=ClassGroupPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
 
-    private var mainTextBookAdapter: MainTextBookAdapter? = null
     private var popWindow: PopWindowDateClick? = null
-
+    private var classGroupAdapter:MainClassGroupAdapter?=null
+    private var groups= mutableListOf<ClassGroup>()
     private var mainNoteAdapter: MainNoteAdapter? = null
-
     private var receivePapers= mutableListOf<ReceivePaper>()
     private var receivePaperAdapter :MainReceivePaperAdapter?=null
     private var positionPaper=0
+
+    override fun onInsert() {
+    }
+    override fun onClassGroupList(classGroups:List<ClassGroup>) {
+        groups= classGroups as MutableList<ClassGroup>
+        classGroupAdapter?.setNewData(groups)
+    }
+    override fun onQuit() {
+    }
+    override fun onUser(lists: MutableList<ClassGroupUser>?) {
+    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main
@@ -73,13 +84,12 @@ class MainFragment : BaseFragment() {
     override fun initView() {
         EventBus.getDefault().register(this)
         setTitle("首页")
-        showView(tv_search)
 
         onClickView()
 
         initDateView()
         initMessageView()
-        initTextBookView()
+        initClassGroupView()
         initHomeWorkView()
         initCourse()
         initNote()
@@ -87,6 +97,7 @@ class MainFragment : BaseFragment() {
     }
 
     override fun lazyLoad() {
+        classGroupPresenter.getClassGroupList(false)
     }
 
     @SuppressLint("WrongConstant")
@@ -104,8 +115,8 @@ class MainFragment : BaseFragment() {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
 
-        ll_textbook.setOnClickListener {
-            (activity as MainActivity).goToTextBook()
+        ll_group.setOnClickListener {
+            customStartActivity(Intent(activity, ClassGroupActivity::class.java))
         }
 
         ll_note.setOnClickListener {
@@ -189,21 +200,14 @@ class MainFragment : BaseFragment() {
         messageAdapter?.setType(1)
     }
 
-    //课业相关处理
-    private fun initTextBookView() {
-        var courses= DataBeanManager.getIncetance().courses
-        rv_main_textbook.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mainTextBookAdapter = MainTextBookAdapter(R.layout.item_main_textbook, courses)
-        rv_main_textbook.adapter = mainTextBookAdapter
-        mainTextBookAdapter?.bindToRecyclerView(rv_main_textbook)
-        rv_main_textbook?.addItemDecoration(SpaceGridItemDeco(0, 50))
-        mainTextBookAdapter?.setOnItemClickListener { adapter, view, position ->
-            val course=courses[position]
-            val book=BookGreenDaoManager.getInstance().queryTextBook("0",0,course.courseId)
-            if(book!=null){
-                var intent=Intent(activity, BookDetailsActivity::class.java).putExtra("book_id", book.id)
-                customStartActivity(intent)
-            }
+    //班群管理
+    private fun initClassGroupView() {
+
+        rv_main_group.layoutManager = LinearLayoutManager(context)//创建布局管理
+        classGroupAdapter = MainClassGroupAdapter(R.layout.item_main_classgroup, null)
+        rv_main_group.adapter = classGroupAdapter
+        classGroupAdapter?.bindToRecyclerView(rv_main_group)
+        classGroupAdapter?.setOnItemChildClickListener { adapter, view, position ->
         }
 
     }
@@ -366,6 +370,9 @@ class MainFragment : BaseFragment() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         loadPapers()
+        classGroupPresenter.getClassGroupList(false)
     }
+
+
 
 }

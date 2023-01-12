@@ -93,7 +93,11 @@ interface APIService{
      */
     @POST("class/quit")
     fun quitClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 通讯录
+     */
+    @GET("class/schoolmateList")
+    fun getClassGroupUser(): Observable<BaseResult<List<ClassGroupUser>>>
 
     /**
      * 书城列表

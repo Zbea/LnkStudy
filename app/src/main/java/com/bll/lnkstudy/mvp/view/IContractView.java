@@ -7,6 +7,7 @@ import com.bll.lnkstudy.mvp.model.AppListBean;
 import com.bll.lnkstudy.mvp.model.BookEvent;
 import com.bll.lnkstudy.mvp.model.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
+import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.net.IBaseView;
 
@@ -34,9 +35,6 @@ public interface IContractView {
         void onEditNameSuccess();
         void getVipList(AccountList list);
         void onVipOrder(AccountOrder order);
-        void onInsert();
-        void onClassGroupList(List<ClassGroup> list);
-        void onQuit();
     }
 
     //钱包页面回调
@@ -59,4 +57,11 @@ public interface IContractView {
         void onDown(AppListBean appBean);
     }
 
+    //班群管理
+    interface IClassGroupView extends IBaseView {
+        void onInsert();
+        void onClassGroupList(List<ClassGroup> classGroups);
+        void onQuit();
+        void onUser(List<ClassGroupUser> lists);
+    }
 }

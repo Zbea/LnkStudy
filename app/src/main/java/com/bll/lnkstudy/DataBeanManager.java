@@ -699,29 +699,29 @@ public class DataBeanManager {
 
         AppBean appBean1=new AppBean();
         appBean1.appId=1;
-        appBean1.appName="操作技巧";
-        appBean1.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_cz);
+        appBean1.appName="官方工具";
+        appBean1.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_tool);
         appBean1.isBase=true;
         apps.add(appBean1);
 
         AppBean appBean2=new AppBean();
         appBean2.appId=2;
-        appBean2.appName="官方工具";
-        appBean2.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_tool);
+        appBean2.appName="官方壁纸";
+        appBean2.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_wallpaper);
         appBean2.isBase=true;
         apps.add(appBean2);
 
         AppBean appBean3=new AppBean();
         appBean3.appId=3;
-        appBean3.appName="官方壁纸";
-        appBean3.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_wallpaper);
+        appBean3.appName="官方书画";
+        appBean3.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_painting);
         appBean3.isBase=true;
         apps.add(appBean3);
 
         AppBean appBean4=new AppBean();
         appBean4.appId=4;
-        appBean4.appName="官方书画";
-        appBean4.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_painting);
+        appBean4.appName="官方书籍";
+        appBean4.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_cz);
         appBean4.isBase=true;
         apps.add(appBean4);
 

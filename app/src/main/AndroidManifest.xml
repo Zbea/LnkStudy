@@ -81,6 +81,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".ui.activity.AppListActivity"/>
+        <activity android:name=".ui.activity.AppOfficialBookActivity"/>
         <activity android:name=".ui.activity.AppDownloadActivity"/>
         <activity android:name=".ui.activity.TeachListActivity" />
         <activity android:name=".ui.activity.TeachActivity"
@@ -127,6 +128,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".ui.activity.ClassGroupActivity" />
+        <activity android:name=".ui.activity.ClassGroupUserActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

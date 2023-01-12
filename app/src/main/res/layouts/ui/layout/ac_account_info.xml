@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:layout_marginStart="100dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="100dp"
@@ -25,7 +26,7 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="账号："
                 android:textColor="@color/black"
@@ -35,7 +36,6 @@
                 android:id="@+id/tv_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -50,7 +50,7 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="姓名："
                 android:textColor="@color/black"
@@ -61,7 +61,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -84,9 +83,29 @@
             android:background="@drawable/bg_line_bottom"
             android:gravity="center_vertical">
 
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="生日："
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_birthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_line_bottom"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="手机："
                 android:textColor="@color/black"
@@ -96,12 +115,10 @@
                 android:id="@+id/tv_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -110,7 +127,7 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="会员："
                 android:textColor="@color/black"
@@ -121,7 +138,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -146,7 +162,7 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="密码："
                 android:textColor="@color/black"
@@ -156,7 +172,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:text="******"
                 android:textSize="20sp"/>
@@ -172,64 +187,102 @@
                 android:textSize="16sp"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/bg_line_bottom"
-            android:gravity="center_vertical">
-
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="班群："
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/black"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:id="@+id/tv_add"
                 android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:text="加入班群"
-                android:background="@drawable/bg_black_solid_10dp_corner"
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                android:text="家庭信息:" />
+
+            <TextView
+                android:id="@+id/tv_parent"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/dp_45"
+                android:textColorHint="@color/color_text_hint"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
+                android:lines="1"
+                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+            <TextView
+                android:id="@+id/tv_parent_name"
+                android:layout_width="120dp"
+                android:layout_height="@dimen/dp_45"
+                android:layout_marginStart="@dimen/dp_20"
+                android:textColorHint="@color/color_text_hint"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
+                android:lines="1"
+                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+            <TextView
+                android:id="@+id/tv_parent_phone"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_45"
+                android:layout_marginStart="@dimen/dp_20"
+                android:textColorHint="@color/color_text_hint"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
+                android:lines="1"
+                android:inputType="phone"
+                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_45"
+                android:textColorHint="@color/color_text_hint"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
+                android:lines="1"
+                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
         </LinearLayout>
 
-        <include
-            android:id="@+id/ll_group"
-            layout="@layout/item_classgroup"
-            android:visibility="gone"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
-            android:layout_marginTop="@dimen/dp_50"
-            android:layout_marginBottom="100dp"
-            android:background="@drawable/bg_btn_black_solid"
-            android:text="退出登录"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_margin="100dp"
+        android:background="@drawable/bg_btn_black_solid"
+        android:text="退出登录"
+        android:textColor="@color/white"
+        android:textSize="24sp" />
 
 
 </LinearLayout>

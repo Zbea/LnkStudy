@@ -85,13 +85,13 @@ class AppListActivity:BaseActivity() {
 
                     }
                     2->{
-
-                    }
-                    3->{
                         customStartActivity(Intent(this,AppOfficialActivity::class.java).setFlags(0))
                     }
-                    4->{
+                    3->{
                         customStartActivity(Intent(this,AppOfficialActivity::class.java).setFlags(1))
+                    }
+                    4->{
+                        customStartActivity(Intent(this,AppOfficialBookActivity::class.java))
                     }
                     else->{
                         val packageName= apps[position].packageName

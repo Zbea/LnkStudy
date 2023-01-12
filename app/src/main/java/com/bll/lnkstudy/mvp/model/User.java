@@ -11,5 +11,11 @@ public class User {
     public int balance;//学豆
     public int vipExpiredAt;//vip时间
     public int grade=3;//年级
+    public String parentName;
+    public String parentNickname;
+    public String parentTel;
+    public String parentAddr;
+    public int birthdayTime;
+
 
 }

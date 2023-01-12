@@ -13,4 +13,5 @@ public class ClassGroup {
     public String studentCount;//人数
     public int studentId;
     public int classId;
+    public long date;
 }
