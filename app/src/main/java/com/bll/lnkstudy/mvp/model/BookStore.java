@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class BookStore {
 
+    public int total;
     public int pageCount;
     public int pageIndex;
     public int pageSize;

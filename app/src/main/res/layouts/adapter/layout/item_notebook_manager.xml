@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:background="@drawable/bg_line_bottom"
-    android:paddingTop="@dimen/dp_30"
-    android:paddingBottom="@dimen/dp_30">
+    android:paddingTop="@dimen/dp_20"
+    android:paddingBottom="@dimen/dp_20">
 
     <TextView
         android:id="@+id/tv_name"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="标题"
-        android:textSize="@dimen/sp_26"
+        android:textSize="@dimen/sp_24"
         android:textColor="@color/black"/>
 
 
@@ -36,7 +36,6 @@
         android:id="@+id/iv_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_30"
         android:src="@mipmap/icon_notebook_top"/>
 
 </LinearLayout>

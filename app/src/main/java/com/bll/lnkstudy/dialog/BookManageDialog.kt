@@ -43,7 +43,7 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
         ll_textbook.visibility= if (type==0) View.GONE else View.VISIBLE
         ll_book.visibility= if (type==0) View.VISIBLE else View.GONE
 
-        tv_name.text=book.name
+        tv_name.text=book.bookName
 
         iv_close.setOnClickListener {
             dialog.dismiss()

@@ -27,7 +27,7 @@ class TextbookFragment : BaseFragment(){
 
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<Book>()
-    private var textbook=0//用来区分课本类型
+    private var textBook="我的课本"//用来区分课本类型
     private var position=0
     private var book:Book?=null
 
@@ -40,7 +40,7 @@ class TextbookFragment : BaseFragment(){
      * 查找本地课本
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance().queryAllBook("0")
+        books=BookGreenDaoManager.getInstance().queryAllTextBook(0,textBook)
         mAdapter?.setNewData(books)
 
     }
@@ -60,22 +60,12 @@ class TextbookFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
 
-        var tabStrs= mutableListOf("我的课本","上期课本","参考课本")
+        var tabStrs= mutableListOf("我的课本","我的课辅","参考课本","上期课本")
         for (i in tabStrs.indices) {
             rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            when(tabStrs[id] ) {
-                "我的课本" -> {
-                    textbook=0
-                }
-                "上期课本" -> {
-                    textbook=1
-                }
-                "参考课本" -> {
-                    textbook=2
-                }
-            }
+            textBook=tabStrs[id]
             findData()
         }
     }
@@ -89,7 +79,7 @@ class TextbookFragment : BaseFragment(){
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].id.toInt())
+            gotoBookDetails(books[position].bookId)
         }
 
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -109,7 +99,6 @@ class TextbookFragment : BaseFragment(){
             override fun onDelete() {
             }
             override fun onMove() {
-                book?.bookType=1
                 BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()

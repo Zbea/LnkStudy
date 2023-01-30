@@ -100,20 +100,26 @@ interface APIService{
     fun getClassGroupUser(): Observable<BaseResult<List<ClassGroupUser>>>
 
     /**
+     * 教材分类
+     */
+    @GET("book/types")
+    fun getBookType(): Observable<BaseResult<BookStoreType>>
+    /**
+     * 教材列表
+     */
+    @GET("textbook/list")
+    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    /**
+     * 教材参考列表
+     */
+    @GET("book/list")
+    fun getTextBookCKs(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    /**
      * 书城列表
      */
-    @GET("books")
+    @GET("book/plus/list")
     fun getBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
-    /**
-     * 购买书籍
-     */
-    @GET("books/{id}/buy")
-    fun buyBook(@Path("id") id:String): Observable<BaseResult<BookEvent>>
-    /**
-     * 下载书籍
-     */
-    @GET("books/{id}/download")
-    fun downloadBook(@Path("id") id:String): Observable<BaseResult<BookEvent>>
+
 
     /**
      * 应用列表

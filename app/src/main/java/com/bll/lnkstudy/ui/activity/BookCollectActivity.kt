@@ -59,7 +59,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),DP2PX.dip2px(this,35f)))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].id.toInt())
+            gotoBookDetails(books[position].bookId)
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             book=books[position]

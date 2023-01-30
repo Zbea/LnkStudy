@@ -16,6 +16,7 @@ public class HomeworkContent {
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String bgResId;//作业背景样式id
     public int courseId;//科目id
+    public String course;
     public int homeworkTypeId;//作业本分组id
 
     public String title;
@@ -27,14 +28,16 @@ public class HomeworkContent {
     public String pathName;//文件名
     public int page;//页码
 
-    @Generated(hash = 2006166801)
+    @Generated(hash = 1388772513)
     public HomeworkContent(Long id, long userId, String bgResId, int courseId,
-            int homeworkTypeId, String title, int state, long date, long commitDate,
-            String folderPath, String filePath, String pathName, int page) {
+            String course, int homeworkTypeId, String title, int state, long date,
+            long commitDate, String folderPath, String filePath, String pathName,
+            int page) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
         this.courseId = courseId;
+        this.course = course;
         this.homeworkTypeId = homeworkTypeId;
         this.title = title;
         this.state = state;
@@ -125,6 +128,12 @@ public class HomeworkContent {
     }
     public void setPage(int page) {
         this.page = page;
+    }
+    public String getCourse() {
+        return this.course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
     }
 
 

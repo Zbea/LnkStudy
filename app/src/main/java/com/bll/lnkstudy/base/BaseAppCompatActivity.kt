@@ -27,6 +27,7 @@ import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.BookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
@@ -215,6 +216,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         var intent=Intent(this, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
         startActivity(intent)
+    }
+
+   fun gotoBookStore(type: String){
+        val intent=Intent(this, BookStoreActivity::class.java)
+        intent.putExtra("category",type)
+        customStartActivity(intent)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

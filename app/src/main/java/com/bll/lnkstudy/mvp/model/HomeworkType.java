@@ -27,6 +27,7 @@ public class HomeworkType implements Serializable {
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
     public int courseId;//科目id
+    public String course;
     public boolean isCreate;//自建作业本
     @Transient
     public boolean isPg;//是否收到批改
@@ -35,10 +36,10 @@ public class HomeworkType implements Serializable {
     @Transient
     public HomeworkMessage message;
 
-    @Generated(hash = 871379035)
+    @Generated(hash = 58585929)
     public HomeworkType(Long id, long userId, String name, int typeId, int state,
             long date, String contentResId, String bgResId, int courseId,
-            boolean isCreate) {
+            String course, boolean isCreate) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -48,6 +49,7 @@ public class HomeworkType implements Serializable {
         this.contentResId = contentResId;
         this.bgResId = bgResId;
         this.courseId = courseId;
+        this.course = course;
         this.isCreate = isCreate;
     }
     @Generated(hash = 302760485)
@@ -112,6 +114,12 @@ public class HomeworkType implements Serializable {
     }
     public void setIsCreate(boolean isCreate) {
         this.isCreate = isCreate;
+    }
+    public String getCourse() {
+        return this.course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
     }
 
 }

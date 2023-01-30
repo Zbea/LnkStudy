@@ -10,11 +10,11 @@ import com.chad.library.adapter.base.BaseViewHolder
 class BookAdapter(layoutResId: Int, data: List<Book>?) : BaseQuickAdapter<Book, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: Book) {
-        helper.setText(R.id.tv_name,item.name)
+        helper.setText(R.id.tv_name,item.bookName)
         val image=helper.getView<ImageView>(R.id.iv_image)
         if(item.pageUrl.isNullOrEmpty())
         {
-            GlideUtils.setImageRoundUrl(mContext,item.assetUrl,image,10)
+            GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,10)
         }
         else{
             GlideUtils.setImageRoundUrl(mContext,item.pageUrl,image,10)

@@ -1,5 +1,139 @@
 {"provinces": [
+	{
 
+		"citys": [
+
+			{
+
+				"citysName": "广州市"
+
+			},
+
+			{
+
+				"citysName": "深圳市"
+
+			},
+
+			{
+
+				"citysName": "清远市"
+
+			},
+
+			{
+
+				"citysName": "韶关市"
+
+			},
+
+			{
+
+				"citysName": "河源市"
+
+			},
+
+			{
+
+				"citysName": "梅州市"
+
+			},
+
+			{
+
+				"citysName": "潮州市"
+
+			},
+
+			{
+
+				"citysName": "汕头市"
+
+			},
+			{
+
+				"citysName": "阳江市"
+
+			},
+
+			{
+
+				"citysName": "揭阳市"
+
+			},
+
+			{
+
+				"citysName": "汕尾市"
+
+			},
+
+			{
+
+				"citysName": "惠州市"
+
+			},
+
+			{
+
+				"citysName": "东莞市"
+
+			},
+
+			{
+
+				"citysName": "珠海市"
+
+			},
+
+			{
+
+				"citysName": "中山市"
+
+			},
+
+			{
+
+				"citysName": "江门市"
+
+			},
+
+			{
+
+				"citysName": "佛山市"
+
+			},
+
+			{
+
+				"citysName": "肇庆市"
+
+			},
+
+			{
+
+				"citysName": "云浮市"
+
+			},
+
+			{
+
+				"citysName": "茂名市"
+
+			},
+
+			{
+
+				"citysName": "湛江市"
+
+			}
+
+
+		],
+
+		"provinceName": "广东省"
+
+	},
 	{
 
 		"citys": [
@@ -2693,13 +2827,6 @@
 				"citysName": "浏阳市"
 
 			},
-
-			{
-
-				"citysName": "津市市"
-
-			},
-
 			{
 
 				"citysName": "沅江市"
@@ -2723,43 +2850,6 @@
 				"citysName": "醴陵市"
 
 			},
-
-			{
-
-				"citysName": "湘乡市"
-
-			},
-
-			{
-
-				"citysName": "韶山市"
-
-			},
-
-			{
-
-				"citysName": "资兴市"
-
-			},
-
-			{
-
-				"citysName": "武冈市"
-
-			},
-
-			{
-
-				"citysName": "洪江市"
-
-			},
-
-			{
-
-				"citysName": "冷水江市"
-
-			},
-
 			{
 
 				"citysName": "涟源市"
@@ -2777,143 +2867,6 @@
 		"provinceName": "湖南省"
 
 	},
-
-	{
-
-		"citys": [
-
-			{
-
-				"citysName": "广州市"
-
-			},
-
-			{
-
-				"citysName": "深圳市"
-
-			},
-
-			{
-
-				"citysName": "清远市"
-
-			},
-
-			{
-
-				"citysName": "韶关市"
-
-			},
-
-			{
-
-				"citysName": "河源市"
-
-			},
-
-			{
-
-				"citysName": "梅州市"
-
-			},
-
-			{
-
-				"citysName": "潮州市"
-
-			},
-
-			{
-
-				"citysName": "汕头市"
-
-			},
-			{
-
-				"citysName": "阳江市"
-
-			},
-
-			{
-
-				"citysName": "揭阳市"
-
-			},
-
-			{
-
-				"citysName": "汕尾市"
-
-			},
-
-			{
-
-				"citysName": "惠州市"
-
-			},
-
-			{
-
-				"citysName": "东莞市"
-
-			},
-
-			{
-
-				"citysName": "珠海市"
-
-			},
-
-			{
-
-				"citysName": "中山市"
-
-			},
-
-			{
-
-				"citysName": "江门市"
-
-			},
-
-			{
-
-				"citysName": "佛山市"
-
-			},
-
-			{
-
-				"citysName": "肇庆市"
-
-			},
-
-			{
-
-				"citysName": "云浮市"
-
-			},
-
-			{
-
-				"citysName": "茂名市"
-
-			},
-
-			{
-
-				"citysName": "湛江市"
-
-			}
-
-
-		],
-
-		"provinceName": "广东省"
-
-	},
-
 	{
 
 		"citys": [

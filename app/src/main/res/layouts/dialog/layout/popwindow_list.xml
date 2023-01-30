@@ -4,13 +4,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@mipmap/icon_popwindow_bg"
-    android:maxHeight="600dp"
     android:paddingTop="@dimen/dp_20"
     android:paddingBottom="@dimen/dp_15"
     android:paddingEnd="@dimen/dp_20"
     android:paddingStart="@dimen/dp_20">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.bll.lnkstudy.widget.MaxRecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

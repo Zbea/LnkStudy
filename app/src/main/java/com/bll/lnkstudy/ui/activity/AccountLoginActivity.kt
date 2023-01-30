@@ -78,6 +78,20 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
         }
 
+//        SPUtil.putObj("token","1877ec544a7b114c94beb38e8ff2b7bf")
+//        val mUser=User()
+//        mUser.accountId=93023769
+//        mUser.role=2
+//        mUser.telNumber="13048803395"
+//        mUser.account="zhufeng"
+//        mUser.nickname="朱"
+//        mUser.birthdayTime= (System.currentTimeMillis()/1000).toInt()
+//        mUser.parentName="朱爸爸"
+//        mUser.parentNickname="爸爸"
+//        mUser.parentTel="13048803395"
+//        mUser.parentAddr="深圳龙华"
+//        SPUtil.putObj("user",mUser)
+
         val tokenStr=SPUtil.getString("token")
 
         if (!tokenStr.isNullOrEmpty() && mUser!=null)

@@ -2,12 +2,11 @@ package com.bll.lnkstudy.mvp.view;
 
 import com.bll.lnkstudy.mvp.model.AccountList;
 import com.bll.lnkstudy.mvp.model.AccountOrder;
-import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.AppListBean;
-import com.bll.lnkstudy.mvp.model.BookEvent;
 import com.bll.lnkstudy.mvp.model.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
+import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.net.IBaseView;
 
@@ -44,11 +43,10 @@ public interface IContractView {
         void checkOrder(AccountOrder order);
     }
 
-    //书城
+    //书城教材
     interface IBookStoreView extends IBaseView {
-        void onBookStore(BookStore bookStore);//商城列表
-        void onBuyBook(BookEvent bookEvent);//购买书籍回调
-        void onDownBook(BookEvent bookEvent);//下载书籍回调
+        void onBook(BookStore bookStore);
+        void onType(BookStoreType bookStoreType);
     }
 
     //应用

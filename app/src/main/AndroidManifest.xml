@@ -87,6 +87,7 @@
         <activity android:name=".ui.activity.TeachActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
+        <activity android:name=".ui.activity.TextBookStoreActivity"/>
         <activity android:name=".ui.activity.BookStoreTypeActivity"/>
         <activity android:name=".ui.activity.MyPaintingListActivity"/>
         <activity android:name=".ui.activity.MessageListActivity"/>

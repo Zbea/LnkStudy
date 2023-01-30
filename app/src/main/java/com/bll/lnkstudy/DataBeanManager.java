@@ -128,28 +128,11 @@ public class DataBeanManager {
     }; //科目的数据
 
     public String[] bookType = {
-            "诗经楚辞", "唐诗宋词", "经典古文",
+            "诗经楚辞", "唐诗宋词", "古代经典",
             "四大名著", "中国科技", "小说散文",
             "外国原著", "历史地理", "政治经济",
-            "军事战略", "科学技术", "艺术才能",
-            "运动健康", "连环漫画"
+            "军事战略", "科学技术", "运动才艺"
     }; //书籍分类
-
-    public String[] ydcy = {
-            "运动", "健康", "棋类",
-            "乐器", "谱曲", "舞蹈",
-            "素描", "绘画", "壁纸",
-            "练字", "演讲", "漫画"
-    }; //运动才艺
-
-    public String[] ZRKX = {
-            "地球天体", "物理化学", "生命生物"
-    };//自然科学
-
-    public String[] SWKX = {
-            "人工智能", "模式识别", "心理生理", "语言文字", "数学"
-    };//思维科学
-
 
     public String[] YEARS = {
             "汉朝", "唐朝", "宋朝", "元朝", "明朝","清朝","近代","当代"
@@ -371,37 +354,6 @@ public class DataBeanManager {
 
     }
 
-
-
-    //年级分类
-    public List<PopWindowBean> getBookTypeGrade() {
-        List<PopWindowBean> list = new ArrayList<>();
-
-        PopWindowBean baseTypeBean = new PopWindowBean();
-        baseTypeBean.id = 0;
-        baseTypeBean.name = "小学低年级";
-        baseTypeBean.isCheck=true;
-        list.add(baseTypeBean);
-
-        PopWindowBean baseTypeBean1 = new PopWindowBean();
-        baseTypeBean1.id = 1;
-        baseTypeBean1.name = "小学高年级";
-        list.add(baseTypeBean1);
-
-        PopWindowBean baseTypeBean2 = new PopWindowBean();
-        baseTypeBean2.id = 2;
-        baseTypeBean2.name = "初中学生";
-        list.add(baseTypeBean2);
-
-        PopWindowBean baseTypeBean3 = new PopWindowBean();
-        baseTypeBean3.id = 3;
-        baseTypeBean3.name = "高中学生";
-        list.add(baseTypeBean3);
-
-
-        return list;
-    }
-
     //教材分类
     public List<BaseTypeBean> getBookTypeJc() {
         List<BaseTypeBean> list = new ArrayList<>();
@@ -424,112 +376,6 @@ public class DataBeanManager {
         baseTypeBean3.typeId = 3;
         baseTypeBean3.name = "参考课辅";
         list.add(baseTypeBean3);
-
-        return list;
-    }
-
-    //古籍分类
-    public List<BaseTypeBean> getBookTypeGj() {
-        List<BaseTypeBean> list = new ArrayList<>();
-
-        BaseTypeBean baseTypeBean = new BaseTypeBean();
-        baseTypeBean.typeId = 0;
-        baseTypeBean.name = "诗经楚辞";
-        list.add(baseTypeBean);
-
-        BaseTypeBean baseTypeBean1 = new BaseTypeBean();
-        baseTypeBean1.typeId = 1;
-        baseTypeBean1.name = "唐诗宋词";
-        list.add(baseTypeBean1);
-
-        BaseTypeBean baseTypeBean2 = new BaseTypeBean();
-        baseTypeBean2.typeId = 2;
-        baseTypeBean2.name = "古代经典";
-        list.add(baseTypeBean2);
-
-        BaseTypeBean baseTypeBean3 = new BaseTypeBean();
-        baseTypeBean3.typeId = 3;
-        baseTypeBean3.name = "四大名著";
-        list.add(baseTypeBean3);
-
-        BaseTypeBean baseTypeBean4 = new BaseTypeBean();
-        baseTypeBean4.typeId = 4;
-        baseTypeBean4.name = "中国科技";
-        list.add(baseTypeBean4);
-
-        return list;
-    }
-
-    //社会科学分类
-    public List<BaseTypeBean> getBookTypeSHKX() {
-        List<BaseTypeBean> list = new ArrayList<>();
-
-        BaseTypeBean baseTypeBean = new BaseTypeBean();
-        baseTypeBean.typeId = 5;
-        baseTypeBean.name = "小说散文";
-        list.add(baseTypeBean);
-
-        BaseTypeBean baseTypeBean1 = new BaseTypeBean();
-        baseTypeBean1.typeId = 6;
-        baseTypeBean1.name = "外国原著";
-        list.add(baseTypeBean1);
-
-        BaseTypeBean baseTypeBean2 = new BaseTypeBean();
-        baseTypeBean2.typeId = 7;
-        baseTypeBean2.name = "历史地理";
-        list.add(baseTypeBean2);
-
-        BaseTypeBean baseTypeBean3 = new BaseTypeBean();
-        baseTypeBean3.typeId = 8;
-        baseTypeBean3.name = "政治经济";
-        list.add(baseTypeBean3);
-
-        BaseTypeBean baseTypeBean4 = new BaseTypeBean();
-        baseTypeBean4.typeId = 9;
-        baseTypeBean4.name = "军事战略";
-        list.add(baseTypeBean4);
-
-        return list;
-    }
-
-    //运动才艺
-    public List<BaseTypeBean> getBookTypeYDCY() {
-        List<BaseTypeBean> list = new ArrayList<>();
-
-        for (int i = 0; i < ydcy.length; i++) {
-            BaseTypeBean baseTypeBean = new BaseTypeBean();
-            baseTypeBean.typeId = i == 0 || i == 1 ? 11 : (i == ydcy.length - 1 ? 13 : 12);
-            baseTypeBean.name = ydcy[i];
-            list.add(baseTypeBean);
-        }
-
-        return list;
-    }
-
-    //思维科学
-    public List<BaseTypeBean> getBookTypeSWKX() {
-        List<BaseTypeBean> list = new ArrayList<>();
-
-        for (int i = 0; i < SWKX.length; i++) {
-            BaseTypeBean baseTypeBean = new BaseTypeBean();
-            baseTypeBean.typeId = 10;
-            baseTypeBean.name = SWKX[i];
-            list.add(baseTypeBean);
-        }
-
-        return list;
-    }
-
-    //自然科学
-    public List<BaseTypeBean> getBookTypeZRKX() {
-        List<BaseTypeBean> list = new ArrayList<>();
-
-        for (int i = 0; i < ZRKX.length; i++) {
-            BaseTypeBean baseTypeBean = new BaseTypeBean();
-            baseTypeBean.typeId = 10;
-            baseTypeBean.name = ZRKX[i];
-            list.add(baseTypeBean);
-        }
 
         return list;
     }

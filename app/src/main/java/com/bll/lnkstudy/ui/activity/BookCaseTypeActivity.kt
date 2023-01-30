@@ -33,7 +33,8 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
 
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<Book>()
-    private var type=0//当前分类
+    private var typePos=0
+    private var typeStr=""//当前分类
     private var pageIndex=1
     private var pageTotal=1
     private var pos=0 //当前书籍位置
@@ -61,7 +62,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),DP2PX.dip2px(this,35f)))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].id.toInt())
+            gotoBookDetails(books[position].bookId)
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
             pos=position
@@ -95,9 +96,10 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
             var baseTypeBean= BaseTypeBean()
             baseTypeBean.name=strings[i]
             baseTypeBean.typeId=i
-            baseTypeBean.isCheck=i==type
+            baseTypeBean.isCheck=i==0
             types.add(baseTypeBean)
         }
+        typeStr=types[0].name
 
         rv_type.layoutManager = GridLayoutManager(this,7)//创建布局管理
         var mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, types)
@@ -105,9 +107,10 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
         mAdapterType?.bindToRecyclerView(rv_type)
         rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,14f),DP2PX.dip2px(this,16f)))
         mAdapterType?.setOnItemClickListener { adapter, view, position ->
-            mAdapterType?.getItem(type)?.isCheck=false
-            type=position
-            mAdapterType?.getItem(type)?.isCheck=true
+            mAdapterType?.getItem(typePos)?.isCheck=false
+            typePos=position
+            mAdapterType?.getItem(typePos)?.isCheck=true
+            typeStr=types[typePos].name
             mAdapterType?.notifyDataSetChanged()
             findData()
         }
@@ -117,8 +120,8 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance().queryAllBook("0",type.toString(),pageIndex,12)
-        val total=BookGreenDaoManager.getInstance().queryAllBook("0",type.toString())
+        books=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr,pageIndex,12)
+        val total=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr)
         pageTotal= ceil((total.size.toDouble()/Constants.PAGE_SIZE)).toInt()
         upDateUI()
     }

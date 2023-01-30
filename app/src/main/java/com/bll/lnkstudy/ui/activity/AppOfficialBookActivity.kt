@@ -4,30 +4,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.BookEvent
-import com.bll.lnkstudy.mvp.model.BookStore
-import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_bookstore.*
 
-class AppOfficialBookActivity: BaseAppCompatActivity(),
-    IContractView.IBookStoreView {
+class AppOfficialBookActivity: BaseAppCompatActivity(){
 
     private var books= mutableListOf<Book>()
     private var mAdapter: BookStoreAdapter?=null
     private var pageCount = 0
     private var pageIndex = 1 //当前页码
-
-    override fun onBookStore(bookStore: BookStore?) {
-    }
-
-    override fun onBuyBook(bookEvent: BookEvent?) {
-    }
-
-    override fun onDownBook(bookEvent: BookEvent?) {
-    }
 
 
     override fun layoutId(): Int {

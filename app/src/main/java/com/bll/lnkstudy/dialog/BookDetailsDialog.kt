@@ -2,6 +2,7 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,17 +30,20 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
         val tv_incetro = dialog?.findViewById<TextView>(R.id.tv_info)
         val tv_book_name = dialog?.findViewById<TextView>(R.id.tv_book_name)
 
-        GlideUtils.setImageUrl(context,book.assetUrl,iv_book)
+        GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-        tv_book_name?.text = book.name
+        tv_book_name?.text = book.bookName
         tv_price?.text = "价格： " + book.price
-        tv_incetro?.text = "简介： " + book.description
+        tv_incetro?.text = "简介： " + book.bookDesc
 
         if (book.status == 1) {
             btn_ok?.text = "点击购买"
         } else {
             btn_ok?.text = "点击下载"
         }
+
+        if (book.loadSate==2)
+            btn_ok?.visibility= View.GONE
 
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
         btn_ok?.setOnClickListener { listener?.onClick() }

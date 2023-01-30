@@ -7,6 +7,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Map;
+
 @Entity
 public class PaperContent {
     @Unique
@@ -15,20 +17,23 @@ public class PaperContent {
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public int type;//0作业1考卷
     public int courseId;//科目id
+    public String course;
     public int categoryId;//考卷分组id
     public int contentId;//考卷id
     public long date;
     public String path;//原图路径
     public String drawPath;//绘图路径
     public int page;//页码
-    @Generated(hash = 1920762037)
-    public PaperContent(Long id, long userId, int type, int courseId,
+
+    @Generated(hash = 671245621)
+    public PaperContent(Long id, long userId, int type, int courseId, String course,
             int categoryId, int contentId, long date, String path, String drawPath,
             int page) {
         this.id = id;
         this.userId = userId;
         this.type = type;
         this.courseId = courseId;
+        this.course = course;
         this.categoryId = categoryId;
         this.contentId = contentId;
         this.date = date;
@@ -98,6 +103,12 @@ public class PaperContent {
     }
     public void setPage(int page) {
         this.page = page;
+    }
+    public String getCourse() {
+        return this.course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
     }
 
 

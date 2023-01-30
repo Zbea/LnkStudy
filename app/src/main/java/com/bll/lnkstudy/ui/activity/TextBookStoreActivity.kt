@@ -3,21 +3,23 @@ package com.bll.lnkstudy.ui.activity
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.Constants.Companion.BOOK_HOMEWORK_EVENT
+import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopWindowList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -28,12 +30,12 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.ceil
 
 /**
- * 书城
+ * 教材书城
  */
-class BookStoreActivity : BaseAppCompatActivity(),
+class TextBookStoreActivity : BaseAppCompatActivity(),
     IContractView.IBookStoreView {
 
-    private var categoryStr = ""//类别
+    private var typeId = 0 //书籍分类
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter = BookStorePresenter(this)
@@ -42,13 +44,16 @@ class BookStoreActivity : BaseAppCompatActivity(),
     private var pageCount = 0
     private var pageIndex = 1 //当前页码
     private var pageSize = 12
+    private var provinceStr = ""
     private var gradeStr = ""
-    private var typeStr = ""//子类
+    private var typeStr = ""
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var book: Book? = null
 
     private var popWindowGrade: PopWindowList? = null
+    private var popWindowProvince: PopWindowList? = null
 
+    private var provinceList = mutableListOf<PopWindowBean>()
     private var gradeList = mutableListOf<PopWindowBean>()
     private var typeList = mutableListOf<BaseTypeBean>()
 
@@ -68,25 +73,12 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
     override fun onType(bookStoreType: BookStoreType?) {
         //年级分类
-        if (bookStoreType?.typeGrade.isNullOrEmpty()) return
-        for (i in bookStoreType?.typeGrade?.indices!!) {
-            gradeList.add(PopWindowBean(i, bookStoreType?.typeGrade[i], i == 0))
+        if (bookStoreType?.grade.isNullOrEmpty()) return
+        for (i in bookStoreType?.grade?.indices!!) {
+            gradeList.add(PopWindowBean(i, bookStoreType?.grade[i], i == 0))
         }
         gradeStr = gradeList[0].name
         initSelectorView()
-
-        //子分类
-        val types = bookStoreType.subType[categoryStr]
-        if (types?.size!! >0){
-            for (item in types!!) {
-                val baseTypeBean = BaseTypeBean()
-                baseTypeBean.name = item
-                typeList.add(baseTypeBean)
-            }
-            typeStr=types[0]
-            initTab()
-        }
-
         getDataBook()
     }
 
@@ -96,21 +88,34 @@ class BookStoreActivity : BaseAppCompatActivity(),
     }
 
     override fun initData() {
-        categoryStr = intent.getStringExtra("category")
+        //获取地区分类
+        val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
+        val cityBean = Gson().fromJson(citysStr, CityBean::class.java)
+        for (i in cityBean.provinces.indices) {
+            provinceList.add(PopWindowBean(i, cityBean.provinces[i].provinceName, i == 0))
+        }
+        provinceStr = provinceList[0].name
+        typeList = DataBeanManager.getIncetance().bookTypeJc
+        typeStr = typeList[0].name
+
         getData()
     }
 
     override fun initView() {
-        setPageTitle(categoryStr)
-        disMissView(tv_province,tv_download)
+        setPageTitle("教材")
+        disMissView(tv_search)
 
         initRecyclerView()
+
+        if (typeList.size > 0) {
+            initTab()
+        }
 
         btn_page_up.setOnClickListener {
             if (pageIndex > 1) {
                 if (pageIndex < pageCount) {
                     pageIndex -= 1
-                    getData()
+                    setFetchData()
                 }
             }
         }
@@ -118,7 +123,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
         btn_page_down.setOnClickListener {
             if (pageIndex < pageCount) {
                 pageIndex += 1
-                getData()
+                setFetchData()
             }
         }
 
@@ -129,21 +134,40 @@ class BookStoreActivity : BaseAppCompatActivity(),
         presenter.getBookType()
     }
 
-    //获取书籍
+    //获取教材
     private fun getDataBook() {
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = 12
+        if (typeId==0){
+            map["area"] = provinceStr
+        }
         map["grade"] = gradeStr
-        map["type"] = categoryStr
-        map["subType"] = typeStr
-        presenter.getBooks(map)
+        map["type"] = typeStr
+        presenter.getTextBooks(map)
+    }
+
+    //获取参考
+    private fun getDataBookCk() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+//        map["area"] = provinceStr
+        map["grade"] = gradeStr
+        map["type"] = typeStr
+        presenter.getTextBookCks(map)
     }
 
     /**
      * 设置分类选择
      */
     private fun initSelectorView() {
+
+        if (provinceList.size > 0) {
+            tv_province.text = provinceList[0].name
+        } else {
+            disMissView(tv_province)
+        }
 
         if (gradeList.size > 0) {
             tv_grade.text = gradeList[0].name
@@ -158,15 +182,40 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     gradeStr = item.name
                     tv_grade.text = gradeStr
                     pageIndex = 1
-                    getDataBook()
+                    setFetchData()
                 }
             } else {
                 popWindowGrade?.show()
             }
         }
 
+        tv_province.setOnClickListener {
+            if (popWindowProvince == null) {
+                popWindowProvince = PopWindowList(this, provinceList, tv_province, 5).builder()
+                popWindowProvince?.setOnSelectListener { item ->
+                    provinceStr = item.name
+                    tv_province.text = item.name
+                    pageIndex = 1
+                    setFetchData()
+                }
+            } else {
+                popWindowProvince?.show()
+            }
+        }
     }
 
+    private fun setFetchData() {
+        when (typeId) {
+            0, 1 -> {
+                showView(tv_province)
+                getDataBook()
+            }
+            2, 3 -> {
+                disMissView(tv_province)
+                getDataBookCk()
+            }
+        }
+    }
 
     //设置tab分类
     private fun initTab() {
@@ -186,9 +235,10 @@ class BookStoreActivity : BaseAppCompatActivity(),
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            typeStr = typeList[i].name
+            typeId = typeList[i].typeId
+            typeStr = typeList[typeId].name
             pageIndex = 1
-            getDataBook()
+            setFetchData()
         }
 
     }
@@ -230,11 +280,11 @@ class BookStoreActivity : BaseAppCompatActivity(),
             val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book?.bookId!!)
             if (localBook == null) {
                 showLoading()
-                book?.loadSate = 1
+                book?.loadSate=1
                 val downloadTask = downLoadStart(book?.downloadUrl!!)
                 mDownMapPool[book?.bookId!!] = downloadTask!!
             } else {
-                book?.loadSate = 2
+                book?.loadSate=2
                 bookDetailsDialog?.setUnClickBtn("已下载")
             }
         }
@@ -284,24 +334,31 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         override fun onFinish(success: Boolean) {
                             if (success) {
                                 showToast("下载完成")
-                                book?.loadSate = 2
-                                book?.category = 1
-                                if (categoryStr=="思维科学"||categoryStr=="自然科学"){
-                                    book?.bookType="科学技术"
+                                //书籍中的参考课辅，保存到作业本
+                                if (typeId == 3) {
+                                    val item = HomeworkType()
+                                    item.typeId = book?.id?.toInt()!!
+                                    item.name = book?.bookName
+                                    item.state = 3
+                                    item.bgResId = ToolUtils.getImageResStr(
+                                        this@TextBookStoreActivity,
+                                        R.mipmap.icon_homework_cover_1
+                                    )
+                                    item.date = System.currentTimeMillis()
+                                    item.courseId = 0
+                                    item.course=book?.subjectName
+                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
+                                    EventBus.getDefault().post(BOOK_HOMEWORK_EVENT)
                                 }
-                                else if (categoryStr=="运动才艺"){
-                                    book?.bookType="运动才艺"
-                                }
-                                else{
-                                    book?.bookType=typeStr
-                                }
+                                book?.loadSate=2
+                                book?.category=0
                                 book?.time = System.currentTimeMillis()//下载时间用于排序
                                 //解压完成就开始存数据库
                                 book?.status = 3
                                 book?.bookPath = FileAddress().getPathBook(fileName)
                                 //下载解压完成后更新存储的book
                                 BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                                EventBus.getDefault().post(BOOK_EVENT)
+                                EventBus.getDefault().post(TEXT_BOOK_EVENT)
                                 //更新列表
                                 mAdapter?.notifyDataSetChanged()
                                 bookDetailsDialog?.dismiss()

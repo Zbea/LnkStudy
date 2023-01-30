@@ -37,36 +37,32 @@ class LauncherActivity : MainActivity() {
         startRemind()
 
         iv_jc.setOnClickListener {
-            gotoBookStore(0)
+            customStartActivity(Intent(this,TextBookStoreActivity::class.java))
         }
 
         iv_gj.setOnClickListener {
-            gotoBookStore(1)
+            gotoBookStore("古籍")
         }
 
         iv_zrkx.setOnClickListener {
-            gotoBookStore(2)
+            gotoBookStore("自然科学")
         }
 
         iv_shkx.setOnClickListener {
-            gotoBookStore(3)
+            gotoBookStore("社会科学")
         }
 
         iv_swkx.setOnClickListener {
-            gotoBookStore(4)
+            gotoBookStore("思维科学")
         }
 
         iv_ydcy.setOnClickListener {
-            gotoBookStore(5)
+            gotoBookStore("运动才艺")
         }
 
     }
 
-    private fun gotoBookStore(type: Int) {
-        val intent = Intent(this, BookStoreActivity::class.java)
-        intent.flags = type
-        customStartActivity(intent)
-    }
+
 
     /**
      * 开始每天定时任务 下午三点
