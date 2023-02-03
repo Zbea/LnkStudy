@@ -9,11 +9,11 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.mvp.model.PopWindowData
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowDrawingButton(val context:Context, val view: View,var list:MutableList<PopWindowBean>) {
+class PopWindowDrawingButton(val context:Context, val view: View,var list:MutableList<PopWindowData>) {
 
     private var mPopupWindow:PopupWindow?=null
     private var height=0
@@ -58,9 +58,9 @@ class PopWindowDrawingButton(val context:Context, val view: View,var list:Mutabl
         }
     }
 
-    private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<PopWindowData>?) : BaseQuickAdapter<PopWindowData, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: PopWindowBean) {
+        override fun convert(helper: BaseViewHolder, item: PopWindowData) {
             helper.setText(R.id.tv_name,item.name)
         }
     }
@@ -73,7 +73,7 @@ class PopWindowDrawingButton(val context:Context, val view: View,var list:Mutabl
     }
 
     fun interface OnClickListener{
-        fun onClick(item: PopWindowBean)
+        fun onClick(item: PopWindowData)
     }
 
 

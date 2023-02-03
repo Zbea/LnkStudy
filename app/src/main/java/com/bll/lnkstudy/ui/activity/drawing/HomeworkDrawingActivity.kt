@@ -14,10 +14,10 @@ import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.mvp.model.HomeworkContent
+import com.bll.lnkstudy.mvp.model.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.HomeworkType
-import com.bll.lnkstudy.mvp.model.ListBean
+import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.DataList
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
@@ -28,12 +28,12 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     private var courseId = 0 //科目id
     private var homeworkTypeId = 0//作业分组id
-    private var homeworkType: HomeworkType? = null
+    private var homeworkType: HomeworkTypeBean? = null
 
-    private var homeworkContent: HomeworkContent? = null//当前作业内容
-    private var homeworkContent_a: HomeworkContent? = null//a屏作业
+    private var homeworkContent: HomeworkContentBean? = null//当前作业内容
+    private var homeworkContent_a: HomeworkContentBean? = null//a屏作业
 
-    private var homeworks = mutableListOf<HomeworkContent>() //所有作业内容
+    private var homeworks = mutableListOf<HomeworkContentBean>() //所有作业内容
 
     private var page = 0//页码
     private var messages= mutableListOf<HomeworkMessage>()
@@ -45,7 +45,7 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     override fun initData() {
         var bundle = intent.getBundleExtra("homeworkBundle")
-        homeworkType = bundle?.getSerializable("homework") as HomeworkType
+        homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         homeworkTypeId = homeworkType?.typeId!!
         courseId=homeworkType?.courseId!!
 
@@ -236,15 +236,15 @@ class HomeworkDrawingActivity : BaseActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<ListBean>()
+        var list= mutableListOf<DataList>()
         for (item in homeworks){
-            val listBean= ListBean()
-            listBean.name=item.title
-            listBean.page=item.page
+            val dataList= DataList()
+            dataList.name=item.title
+            dataList.page=item.page
             if (titleStr != item.title)
             {
                 titleStr=item.title
-                list.add(listBean)
+                list.add(dataList)
             }
 
         }
@@ -323,7 +323,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         val path=FileAddress().getPathHomework(courseId,homeworkType?.typeId,homeworks.size)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
-        homeworkContent = HomeworkContent()
+        homeworkContent = HomeworkContentBean()
         homeworkContent?.courseId = courseId
         homeworkContent?.date = System.currentTimeMillis()
         homeworkContent?.homeworkTypeId = homeworkType?.typeId

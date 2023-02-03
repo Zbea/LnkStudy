@@ -3,14 +3,14 @@ package com.bll.lnkstudy.ui.adapter
 import android.graphics.Typeface
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.HomeworkType
+import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
 import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkAdapter(layoutResId: Int, data: List<HomeworkType>?) : BaseQuickAdapter<HomeworkType, BaseViewHolder>(layoutResId, data) {
+class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: HomeworkType) {
+    override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.setText(R.id.tv_name,item.name)
         helper.setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext,item?.bgResId))
         helper.setVisible(R.id.ll_info,!item.isCreate)

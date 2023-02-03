@@ -6,7 +6,7 @@ import android.os.IBinder
 import android.util.Log
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_EVENT
-import com.bll.lnkstudy.mvp.model.EventBusBean
+import com.bll.lnkstudy.mvp.model.EventBusData
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -29,7 +29,7 @@ class AlarmService:Service() {
             }
             Constants.ACTION_VIDEO->{
                 Log.d("debug",state.toString())
-                val eventBusBean=EventBusBean()
+                val eventBusBean= EventBusData()
                 eventBusBean.event=Constants.VIDEO_EVENT
                 eventBusBean.id=state!!
                 EventBus.getDefault().post(eventBusBean)

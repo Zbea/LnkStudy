@@ -1,15 +1,9 @@
 package com.bll.lnkstudy.manager;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
-import com.bll.lnkstudy.greendao.PaintingBeanDao;
-import com.bll.lnkstudy.greendao.PaperContentDao;
-import com.bll.lnkstudy.mvp.model.PaperContent;
+import com.bll.lnkstudy.greendao.PaperContentBeanDao;
+import com.bll.lnkstudy.mvp.model.PaperContentBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -30,17 +24,17 @@ public class PaperContentDaoManager {
     private static PaperContentDaoManager mDbController;
 
 
-    private PaperContentDao dao;
+    private PaperContentBeanDao dao;
 
     private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= PaperContentDao.Properties.UserId.eq(userId);
+    private WhereCondition whereUser= PaperContentBeanDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
      */
     public PaperContentDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-        dao = mDaoSession.getPaperContentDao();
+        dao = mDaoSession.getPaperContentBeanDao();
     }
 
 
@@ -58,13 +52,13 @@ public class PaperContentDaoManager {
         return mDbController;
     }
 
-    public void insertOrReplace(PaperContent bean) {
+    public void insertOrReplace(PaperContentBean bean) {
         dao.insertOrReplace(bean);
     }
 
     //通过考卷id查询所有试卷
-    public  List<PaperContent> queryByID(int contentId) {
-        WhereCondition whereCondition= PaperContentDao.Properties.ContentId.eq(contentId);
+    public  List<PaperContentBean> queryByID(int contentId) {
+        WhereCondition whereCondition= PaperContentBeanDao.Properties.ContentId.eq(contentId);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
@@ -75,16 +69,16 @@ public class PaperContentDaoManager {
      * @param categoryId //分组id
      * @return
      */
-    public List<PaperContent> queryAll(int type,int courseId, int categoryId) {
-        WhereCondition whereCondition1= PaperContentDao.Properties.Type.eq(type);
-        WhereCondition whereCondition2= PaperContentDao.Properties.CourseId.eq(courseId);
-        WhereCondition whereCondition3= PaperContentDao.Properties.CategoryId.eq(categoryId);
-        List<PaperContent> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().list();
+    public List<PaperContentBean> queryAll(int type, int courseId, int categoryId) {
+        WhereCondition whereCondition1= PaperContentBeanDao.Properties.Type.eq(type);
+        WhereCondition whereCondition2= PaperContentBeanDao.Properties.CourseId.eq(courseId);
+        WhereCondition whereCondition3= PaperContentBeanDao.Properties.CategoryId.eq(categoryId);
+        List<PaperContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().list();
         return queryList;
     }
 
 
-    public void deleteBean(PaperContent bean){
+    public void deleteBean(PaperContentBean bean){
         dao.delete(bean);
     }
 

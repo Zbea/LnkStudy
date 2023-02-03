@@ -7,7 +7,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.mvp.model.CourseBean
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.mvp.model.PopWindowData
 import com.bll.lnkstudy.mvp.model.TestPaperType
 import com.bll.lnkstudy.ui.adapter.TestPaperTypeAdapter
 import com.bll.lnkstudy.utils.ZipUtils
@@ -23,7 +23,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class TestPaperFragment : BaseFragment(){
 
-    private var popWindowBeans = mutableListOf<PopWindowBean>()
+    private var popWindowBeans = mutableListOf<PopWindowData>()
 
     private var mAdapter:TestPaperTypeAdapter?=null
     private var items= mutableListOf<TestPaperType>()

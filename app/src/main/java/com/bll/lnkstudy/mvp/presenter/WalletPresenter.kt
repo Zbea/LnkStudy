@@ -1,6 +1,6 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.AccountList
+import com.bll.lnkstudy.mvp.model.AccountXDList
 import com.bll.lnkstudy.mvp.model.AccountOrder
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
@@ -19,12 +19,12 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
         map.put("pageSize", "10")
 
         val list = RetrofitManager.service.getSMoneyList(map)
-        doRequest(list, object : Callback<AccountList>(view) {
-            override fun failed(tBaseResult: BaseResult<AccountList>): Boolean {
+        doRequest(list, object : Callback<AccountXDList>(view) {
+            override fun failed(tBaseResult: BaseResult<AccountXDList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<AccountList>) {
-                view.getXdList(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<AccountXDList>) {
+                view.onXdList(tBaseResult.data)
             }
 
         }, boolean)

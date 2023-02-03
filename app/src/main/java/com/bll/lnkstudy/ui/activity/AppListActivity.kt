@@ -9,6 +9,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.ui.activity.center.AppCenterActivity
+import com.bll.lnkstudy.ui.activity.center.OfficialAppActivity
+import com.bll.lnkstudy.ui.activity.center.OfficialPaintingActivity
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -16,6 +19,9 @@ import kotlinx.android.synthetic.main.ac_app_list.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+/**
+ * 官方应用
+ */
 class AppListActivity:BaseActivity() {
 
     private var apps= mutableListOf<AppBean>()
@@ -79,19 +85,16 @@ class AppListActivity:BaseActivity() {
             if (view.id==R.id.iv_image){
                 when(position){
                     0->{
-                        customStartActivity(Intent(this,AppDownloadActivity::class.java))
+                        customStartActivity(Intent(this, AppCenterActivity::class.java))
                     }
                     1->{
-
+                        customStartActivity(Intent(this,OfficialAppActivity::class.java))
                     }
                     2->{
-                        customStartActivity(Intent(this,AppOfficialActivity::class.java).setFlags(0))
+                        customStartActivity(Intent(this, OfficialPaintingActivity::class.java).setFlags(1))
                     }
                     3->{
-                        customStartActivity(Intent(this,AppOfficialActivity::class.java).setFlags(1))
-                    }
-                    4->{
-                        customStartActivity(Intent(this,AppOfficialBookActivity::class.java))
+                        customStartActivity(Intent(this, OfficialPaintingActivity::class.java).setFlags(2))
                     }
                     else->{
                         val packageName= apps[position].packageName

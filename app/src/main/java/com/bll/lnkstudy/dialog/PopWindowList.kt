@@ -9,12 +9,12 @@ import android.view.View
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.mvp.model.PopWindowData
 import com.bll.lnkstudy.widget.MaxRecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, var view: View,val yoff:Int) {
+class PopWindowList(var context:Context, var list:MutableList<PopWindowData>, var view: View, val yoff:Int) {
 
     private var mPopupWindow:PopupWindow?=null
     private var width=0
@@ -73,12 +73,12 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowBean>, va
     }
 
     fun interface OnSelectListener{
-        fun onSelect(item: PopWindowBean)
+        fun onSelect(item: PopWindowData)
     }
 
-    private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<PopWindowData>?) : BaseQuickAdapter<PopWindowData, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: PopWindowBean) {
+        override fun convert(helper: BaseViewHolder, item: PopWindowData) {
 
             helper.setText(R.id.tv_name,item.name)
             helper.setVisible(R.id.iv_check,item.isCheck)

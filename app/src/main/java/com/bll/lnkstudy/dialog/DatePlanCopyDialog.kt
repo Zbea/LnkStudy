@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEvent
+import com.bll.lnkstudy.mvp.model.DateEventBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class DatePlanCopyDialog(private val context: Context,private val plans:MutableList<DateEvent>) {
+class DatePlanCopyDialog(private val context: Context,private val plans:MutableList<DateEventBean>) {
 
     private var dialog:Dialog?=null
     private var position=0
@@ -49,11 +49,11 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
         okTv?.setOnClickListener {
             dismiss()
             val item=mAdapter.data[position]
-            val dateEvent=item.clone() as DateEvent
-            dateEvent.title=item.title+"(1)"
-            DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
+            val dateEventBean=item.clone() as DateEventBean
+            dateEventBean.title=item.title+"(1)"
+            DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEventBean)
 
-            onSelectorListener?.onSelect(dateEvent)
+            onSelectorListener?.onSelect(dateEventBean)
         }
         return this
     }
@@ -69,16 +69,16 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
     private var onSelectorListener: OnSelectorListener? = null
 
     fun interface OnSelectorListener {
-        fun onSelect(item: DateEvent)
+        fun onSelect(item: DateEventBean)
     }
 
     fun setOnSelectorListener(onSelectorListener:OnSelectorListener) {
         this.onSelectorListener = onSelectorListener
     }
 
-    class MyAdapter(layoutResId: Int, data: List<DateEvent>) : BaseQuickAdapter<DateEvent, BaseViewHolder>(layoutResId, data) {
+    class MyAdapter(layoutResId: Int, data: List<DateEventBean>) : BaseQuickAdapter<DateEventBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: DateEvent) {
+        override fun convert(helper: BaseViewHolder, item: DateEventBean) {
             helper.setText(R.id.tv_title,item.title)
             helper.setChecked(R.id.cb_check,item.isCheck)
             helper.addOnClickListener(R.id.cb_check)

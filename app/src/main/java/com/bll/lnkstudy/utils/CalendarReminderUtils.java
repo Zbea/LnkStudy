@@ -9,12 +9,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.CalendarContract;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.bll.lnkstudy.mvp.model.DateRemind;
-import com.bll.lnkstudy.mvp.model.DateWeekBean;
+import com.bll.lnkstudy.mvp.model.DateWeek;
 
 import java.util.Calendar;
 import java.util.List;
@@ -110,7 +108,7 @@ public class CalendarReminderUtils {
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void addCalendarEvent(Context context, String title, String time,long startDate, long endDate, List<DateWeekBean> weeks) {
+    public static void addCalendarEvent(Context context, String title, String time,long startDate, long endDate, List<DateWeek> weeks) {
         int calId = checkAndAddCalendarAccount(context); //获取日历账户的id
         if (calId < 0) { //获取账户id失败直接返回，添加日历事件失败
             return;

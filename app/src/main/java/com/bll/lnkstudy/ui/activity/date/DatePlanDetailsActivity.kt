@@ -8,9 +8,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateSelectorDialog
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEvent
-import com.bll.lnkstudy.mvp.model.DatePlanBean
-import com.bll.lnkstudy.mvp.model.DateWeekBean
+import com.bll.lnkstudy.mvp.model.DateEventBean
+import com.bll.lnkstudy.mvp.model.DatePlan
+import com.bll.lnkstudy.mvp.model.DateWeek
 import com.bll.lnkstudy.ui.adapter.DatePlanEventAddAdapter
 import com.bll.lnkstudy.ui.adapter.DatePlanWeekAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
@@ -21,12 +21,12 @@ import org.greenrobot.eventbus.EventBus
 class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
     private var flags=0
-    private var planList = mutableListOf<DatePlanBean>()
+    private var planList = mutableListOf<DatePlan>()
     private var mAdapter: DatePlanEventAddAdapter? = null
     private var mWeekAdapter: DatePlanWeekAdapter? = null
-    private var dateEvent:DateEvent?=null
-    private var oldEvent:DateEvent?=null
-    private var weeks= mutableListOf<DateWeekBean>()
+    private var dateEventBean: DateEventBean?=null
+    private var oldEvent: DateEventBean?=null
+    private var weeks= mutableListOf<DateWeek>()
     private var dateDialog:DateSelectorDialog?=null
 
     override fun layoutId(): Int {
@@ -38,31 +38,31 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         weeks= DataBeanManager.getIncetance().weeks
 
         if (flags==0){
-            dateEvent= DateEvent()
-            dateEvent?.type=0
+            dateEventBean= DateEventBean()
+            dateEventBean?.type=0
 
             for (i in 0..7) {
-                var date = DatePlanBean()
+                var date = DatePlan()
                 planList.add(date)
             }
         }
         else{
-            dateEvent = intent.getBundleExtra("bundle").getSerializable("dateEvent") as DateEvent
-            oldEvent=dateEvent?.clone() as DateEvent
-            et_title.setText(dateEvent?.title)
-            tv_start_date.text=dateEvent?.startTimeStr
-            tv_end_date.text=dateEvent?.endTimeStr
+            dateEventBean = intent.getBundleExtra("bundle").getSerializable("dateEvent") as DateEventBean
+            oldEvent=dateEventBean?.clone() as DateEventBean
+            et_title.setText(dateEventBean?.title)
+            tv_start_date.text=dateEventBean?.startTimeStr
+            tv_end_date.text=dateEventBean?.endTimeStr
 
             for (item in weeks){
-                for (ite in dateEvent?.weeks!!){
+                for (ite in dateEventBean?.weeks!!){
                     if (ite.week==item.week)
                         item.isCheck=ite.isCheck
                 }
             }
-            planList=dateEvent?.plans!!
-            if (dateEvent?.plans?.size!! <8) {
-                for (i in 0 until  8-dateEvent?.plans?.size!!){
-                    var date = DatePlanBean()
+            planList=dateEventBean?.plans!!
+            if (dateEventBean?.plans?.size!! <8) {
+                for (i in 0 until  8-dateEventBean?.plans?.size!!){
+                    var date = DatePlan()
                     planList.add(date)
                 }
             }
@@ -88,7 +88,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         mWeekAdapter?.bindToRecyclerView(rv_week)
 
         iv_add.setOnClickListener {
-            var date = DatePlanBean()
+            var date = DatePlan()
             planList.add(date)
             mAdapter?.notifyDataSetChanged()
         }
@@ -98,12 +98,12 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
                 dateDialog=DateSelectorDialog(this,screenPos).builder()
                 dateDialog?.setOnDateListener { startStr, startLong, endStr, endLong ->
 
-                    dateEvent?.startTime=startLong
-                    dateEvent?.startTimeStr=startStr
+                    dateEventBean?.startTime=startLong
+                    dateEventBean?.startTimeStr=startStr
                     tv_start_date?.text=startStr
-                    dateEvent?.dayLong=endLong
-                    dateEvent?.endTime=endLong
-                    dateEvent?.endTimeStr=endStr
+                    dateEventBean?.dayLong=endLong
+                    dateEventBean?.endTime=endLong
+                    dateEventBean?.endTimeStr=endStr
                     tv_end_date?.text=endStr
                 }
             }
@@ -125,9 +125,9 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             showToast("请输入标题")
             return
         }
-        dateEvent?.title=titleStr
+        dateEventBean?.title=titleStr
 
-        val selectWeeks= mutableListOf<DateWeekBean>()
+        val selectWeeks= mutableListOf<DateWeek>()
 
         for (item in mWeekAdapter?.data!!){
             if (item.isCheck)
@@ -139,14 +139,14 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             return
         }
 
-        if (dateEvent?.endTimeStr!!.isNullOrEmpty()){
+        if (dateEventBean?.endTimeStr!!.isNullOrEmpty()){
             showToast("请选择日期")
             return
         }
 
-        dateEvent?.weeks=selectWeeks
+        dateEventBean?.weeks=selectWeeks
 
-        var plans = mutableListOf<DatePlanBean>()
+        var plans = mutableListOf<DatePlan>()
         var items = mAdapter?.data!!
         for (item in items) {
             if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty() && !item.endTimeStr.isNullOrEmpty()) {
@@ -154,9 +154,9 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             }
         }
 
-        dateEvent?.plans=plans
+        dateEventBean?.plans=plans
 
-        DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEvent)
+        DateEventGreenDaoManager.getInstance().insertOrReplaceDateEvent(dateEventBean)
 
         //删除原来的日历
         if (oldEvent!=null){
@@ -173,18 +173,18 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         for (item in plans){
             if (item.isRemindStart){
                 CalendarReminderUtils.addCalendarEvent(this,
-                    dateEvent?.title+"开始："+item.course+item.content,
+                    dateEventBean?.title+"开始："+item.course+item.content,
                     item.startTimeStr,
-                    dateEvent?.startTime!!,
-                    dateEvent?.endTime!!,
+                    dateEventBean?.startTime!!,
+                    dateEventBean?.endTime!!,
                 selectWeeks)
             }
             if (item.isRemindEnd){
                 CalendarReminderUtils.addCalendarEvent(this,
-                    dateEvent?.title+"结束："+item.course+item.content,
+                    dateEventBean?.title+"结束："+item.course+item.content,
                     item.endTimeStr,
-                    dateEvent?.startTime!!,
-                    dateEvent?.endTime!!,
+                    dateEventBean?.startTime!!,
+                    dateEventBean?.endTime!!,
                     selectWeeks)
             }
         }

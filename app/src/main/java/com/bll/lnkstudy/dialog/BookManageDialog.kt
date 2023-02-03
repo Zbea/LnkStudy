@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SToast
 
@@ -17,7 +17,7 @@ import com.bll.lnkstudy.utils.SToast
 /**
  * book收藏、删除、移动
  */
-class BookManageDialog(val context: Context,private val screenPos:Int, val type:Int, val book:Book){
+class BookManageDialog(val context: Context,private val screenPos:Int, val type:Int, val book: BookBean){
 
     fun builder(): BookManageDialog {
         val dialog = Dialog(context)

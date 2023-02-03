@@ -5,12 +5,8 @@ import android.content.Intent
 import android.os.Handler
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.AccountBuyVipDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.mvp.model.AccountList
-import com.bll.lnkstudy.mvp.model.AccountOrder
-import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.ActivityManager
@@ -22,10 +18,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     private val presenter=AccountInfoPresenter(this)
     private var nickname=""
-    private var groups= mutableListOf<ClassGroup>()
-    private var positionGroup=0
-    private var accountBuyVipDialog:AccountBuyVipDialog?=null
-    private var vipList= mutableListOf<AccountList.ListBean>()
 
     override fun onLogout() {
         SPUtil.putString("token", "")
@@ -42,20 +34,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         showToast("修改姓名成功")
         mUser?.nickname=nickname
         tv_name.text = nickname
-    }
-
-    override fun getVipList(list: AccountList?) {
-        vipList= list?.list as MutableList<AccountList.ListBean>
-        if (vipList.size>0){
-            getVipView(vipList)
-        }
-    }
-
-    override fun onVipOrder(order: AccountOrder?) {
-        runOnUiThread {
-            mUser?.vipExpiredAt = order?.vipExpiredAt
-            tv_member.text = "有效期"+ DateUtils.longToStringData(order?.vipExpiredAt!! * 1000L)
-        }
     }
 
 
@@ -80,12 +58,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         tv_parent_phone.text=mUser?.parentTel
         tv_address.text=mUser?.parentAddr
 
-        if (mUser?.vipExpiredAt==0) {
-            tv_member.text = "普通会员"
-        } else {
-            tv_member.text = "有效期"+ DateUtils.longToStringData(mUser?.vipExpiredAt!! * 1000L)
-        }
-
         btn_edit_psd.setOnClickListener {
             customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
         }
@@ -105,16 +77,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             })
         }
 
-
-        btn_buy_member.setOnClickListener {
-            if (vipList.size>0){
-                getVipView(vipList)
-            }
-            else{
-                presenter.getVipList(true)
-            }
-        }
-
     }
 
     /**
@@ -126,21 +88,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             presenter.editName(nickname)
         }
     }
-
-    //获取vip列表
-    private fun getVipView(list: List<AccountList.ListBean>){
-        if (accountBuyVipDialog==null){
-            accountBuyVipDialog=AccountBuyVipDialog(this,list).builder()
-            accountBuyVipDialog?.setOnDialogClickListener { id ->
-                presenter.postVip(id) }
-        }
-        else{
-            accountBuyVipDialog?.show()
-        }
-    }
-
-
-
 
     override fun onDestroy() {
         super.onDestroy()

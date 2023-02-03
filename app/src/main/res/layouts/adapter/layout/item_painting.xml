@@ -25,7 +25,7 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/black"/>
     </LinearLayout>

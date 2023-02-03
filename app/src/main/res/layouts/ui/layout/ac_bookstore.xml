@@ -96,14 +96,14 @@
             android:id="@+id/tv_download"
             android:layout_width="80dp"
             android:layout_height="@dimen/dp_45"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_45"
+            android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
             android:text="下载"
-            android:layout_marginTop="@dimen/dp_45"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_20" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

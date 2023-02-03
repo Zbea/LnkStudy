@@ -1,13 +1,7 @@
 package com.bll.lnkstudy.manager;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
-import com.bll.lnkstudy.greendao.PaperContentDao;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.mvp.model.RecordBean;
 import com.bll.lnkstudy.mvp.model.User;

@@ -22,7 +22,7 @@ import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.ClassGroupUser
-import com.bll.lnkstudy.mvp.model.DatePlanBean
+import com.bll.lnkstudy.mvp.model.DatePlan
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -271,7 +271,7 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
      */
     private fun findDateList() {
         val planList = DateEventGreenDaoManager.getInstance().queryAllDateEvent(0)
-        val plans= mutableListOf<DatePlanBean>()
+        val plans= mutableListOf<DatePlan>()
         for (item in planList){
             plans.addAll(item.plans)
         }

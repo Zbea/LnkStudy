@@ -13,9 +13,9 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
-import com.bll.lnkstudy.mvp.model.ListBean
-import com.bll.lnkstudy.mvp.model.NoteContent
-import com.bll.lnkstudy.mvp.model.Notebook
+import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.NoteContentBean
+import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
@@ -25,10 +25,10 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 class NoteDrawingActivity : BaseActivity() {
 
     private var type = 0
-    private var noteBook: Notebook? = null
-    private var noteContent: NoteContent? = null//当前内容
-    private var note_Content_a: NoteContent? = null//a屏内容
-    private var noteContents = mutableListOf<NoteContent>() //所有内容
+    private var noteBook: NotebookBean? = null
+    private var noteContent: NoteContentBean? = null//当前内容
+    private var note_Content_a: NoteContentBean? = null//a屏内容
+    private var noteContents = mutableListOf<NoteContentBean>() //所有内容
     private var page = 0//页码
 
 
@@ -38,7 +38,7 @@ class NoteDrawingActivity : BaseActivity() {
 
     override fun initData() {
         var bundle = intent.getBundleExtra("bundle")
-        noteBook = bundle?.getSerializable("note") as Notebook
+        noteBook = bundle?.getSerializable("note") as NotebookBean
         type = noteBook?.type!!
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.id!!)
@@ -189,15 +189,15 @@ class NoteDrawingActivity : BaseActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<ListBean>()
+        var list= mutableListOf<DataList>()
         for (item in noteContents){
-            val listBean= ListBean()
-            listBean.name=item.title
-            listBean.page=item.page
+            val dataList= DataList()
+            dataList.name=item.title
+            dataList.page=item.page
             if (titleStr != item.title)
             {
                 titleStr=item.title
-                list.add(listBean)
+                list.add(dataList)
             }
 
         }
@@ -275,7 +275,7 @@ class NoteDrawingActivity : BaseActivity() {
         val path=FileAddress().getPathNote(type,noteBook?.id,noteContents.size)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
-        noteContent = NoteContent()
+        noteContent = NoteContentBean()
         noteContent?.date = System.currentTimeMillis()
         noteContent?.type=type
         noteContent?.notebookId = noteBook?.id

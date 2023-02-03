@@ -2,16 +2,17 @@ package com.bll.lnkstudy.ui.activity
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.Constants.Companion.PATH_SF
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.manager.WallpaperDaoManager
-import com.bll.lnkstudy.mvp.model.WallpaperBean
+import com.bll.lnkstudy.dialog.ImageDialog
+import com.bll.lnkstudy.manager.PaintingBeanDaoManager
+import com.bll.lnkstudy.mvp.model.PaintingBean
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_my_painting_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import java.io.File
 import kotlin.math.ceil
 
 class MyPaintingListActivity:BaseAppCompatActivity() {
@@ -20,7 +21,7 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
     private var type=0 //type=0 type=1书法
     private var time=0
     private var paintingType=0
-    private var lists= mutableListOf<WallpaperBean>()
+    private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyPaintingAdapter?=null
     private var pageIndex=1 //当前页码
     private var pageTotal=1
@@ -47,7 +48,9 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,19f),0))
-
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            ImageDialog(this,File(lists[position].paths[0])).builder()
+        }
 
         btn_page_up.setOnClickListener {
             if(pageIndex>1){
@@ -66,21 +69,15 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
     }
 
     private fun findData(){
-
         if (type==0){
-            lists=WallpaperDaoManager.getInstance().queryAllPainting(1,time,paintingType,pageIndex,Constants.PAGE_SIZE)
-            val total= WallpaperDaoManager.getInstance().queryAllPainting(1,time,paintingType)
-            pageTotal= ceil(((total/ Constants.PAGE_SIZE).toDouble())).toInt()
+            lists= PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType,pageIndex,Constants.PAGE_SIZE)
+            val total= PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType)
+            pageTotal= ceil(total.toDouble()/ Constants.PAGE_SIZE).toInt()
         }
         if (type==1){
-            var path=assets.list("sf")
-            if (path != null) {
-                for (s in path){
-                    var item=WallpaperBean()
-                    item.imageUrl=PATH_SF+s
-                    lists.add(item)
-                }
-            }
+            lists= PaintingBeanDaoManager.getInstance().queryPaintings(paintingType,pageIndex,Constants.PAGE_SIZE)
+            val total= PaintingBeanDaoManager.getInstance().queryPaintings(paintingType)
+            pageTotal= ceil(total.toDouble()/ Constants.PAGE_SIZE).toInt()
         }
         mAdapter?.setNewData(lists)
         tv_page_current.text=pageIndex.toString()

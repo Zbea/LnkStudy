@@ -7,7 +7,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -25,10 +25,10 @@ import kotlin.math.ceil
 class BookCollectActivity: BaseAppCompatActivity() {
 
     private var mAdapter:BookAdapter?=null
-    private var books= mutableListOf<Book>()
-    private var book:Book?=null
-    private var booksAll= mutableListOf<Book>()//所有数据
-    private var bookMap=HashMap<Int,MutableList<Book>>()//将所有数据按12个分页
+    private var books= mutableListOf<BookBean>()
+    private var book: BookBean?=null
+    private var booksAll= mutableListOf<BookBean>()//所有数据
+    private var bookMap=HashMap<Int,MutableList<BookBean>>()//将所有数据按12个分页
     private var pageIndex=1
 
 

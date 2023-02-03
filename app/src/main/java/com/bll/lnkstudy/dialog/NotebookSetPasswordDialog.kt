@@ -9,13 +9,13 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.mvp.model.PopWindowData
 import com.bll.lnkstudy.utils.*
 
 
 class NotebookSetPasswordDialog(private val context: Context, private val screenPos:Int) {
 
-    private val popWindowBeans= mutableListOf<PopWindowBean>()
+    private val popWindowBeans= mutableListOf<PopWindowData>()
 
     fun builder(): NotebookSetPasswordDialog? {
         var dialog= Dialog(context)
@@ -30,10 +30,34 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
         }
         window.attributes = layoutParams
 
-        popWindowBeans.add(PopWindowBean(0,"爸爸姓名？",false))
-        popWindowBeans.add(PopWindowBean(1,"妈妈姓名？",false))
-        popWindowBeans.add(PopWindowBean(2,"爷爷姓名？",false))
-        popWindowBeans.add(PopWindowBean(3,"奶奶姓名？",false))
+        popWindowBeans.add(
+            PopWindowData(
+                0,
+                "爸爸姓名？",
+                false
+            )
+        )
+        popWindowBeans.add(
+            PopWindowData(
+                1,
+                "妈妈姓名？",
+                false
+            )
+        )
+        popWindowBeans.add(
+            PopWindowData(
+                2,
+                "爷爷姓名？",
+                false
+            )
+        )
+        popWindowBeans.add(
+            PopWindowData(
+                3,
+                "奶奶姓名？",
+                false
+            )
+        )
 
         val btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog?.findViewById<Button>(R.id.btn_cancel)

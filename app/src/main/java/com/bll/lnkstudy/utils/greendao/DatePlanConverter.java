@@ -1,6 +1,6 @@
 package com.bll.lnkstudy.utils.greendao;
 
-import com.bll.lnkstudy.mvp.model.DatePlanBean;
+import com.bll.lnkstudy.mvp.model.DatePlan;
 import com.google.gson.Gson;
 
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -8,28 +8,28 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatePlanConverter implements PropertyConverter<List<DatePlanBean>, String> {
+public class DatePlanConverter implements PropertyConverter<List<DatePlan>, String> {
     @Override
-    public List<DatePlanBean> convertToEntityProperty(String databaseValue) {
+    public List<DatePlan> convertToEntityProperty(String databaseValue) {
         if (databaseValue == null) {
             return null;
         }
         String[] list_str = databaseValue.split("~");
-        List<DatePlanBean> list_transport = new ArrayList<>();
+        List<DatePlan> list_transport = new ArrayList<>();
         for (String s : list_str) {
-            list_transport.add(new Gson().fromJson(s, DatePlanBean.class));
+            list_transport.add(new Gson().fromJson(s, DatePlan.class));
         }
         return list_transport;
     }
 
     @Override
-    public String convertToDatabaseValue(List<DatePlanBean> arrays) {
+    public String convertToDatabaseValue(List<DatePlan> arrays) {
         if (arrays == null) {
             return null;
         } else {
             StringBuilder sb = new StringBuilder();
-            for (DatePlanBean array : arrays) {
-                String str = new Gson().toJson(array,DatePlanBean.class);
+            for (DatePlan array : arrays) {
+                String str = new Gson().toJson(array, DatePlan.class);
                 sb.append(str);
                 sb.append("~");
             }

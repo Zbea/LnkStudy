@@ -8,13 +8,13 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.TimePicker
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DatePlanBean
+import com.bll.lnkstudy.mvp.model.DatePlan
 import com.bll.lnkstudy.utils.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DateTimeSelectorDialog(private val context: Context, private val item: DatePlanBean,private val type:Int) {
+class DateTimeSelectorDialog(private val context: Context, private val item: DatePlan, private val type:Int) {
     private var dialog:Dialog?=null
     private var isRemindStart=false
     private var isRemindEnd=false

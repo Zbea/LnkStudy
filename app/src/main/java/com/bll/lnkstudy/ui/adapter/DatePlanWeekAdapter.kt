@@ -3,14 +3,14 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.widget.CheckBox
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DateWeekBean
+import com.bll.lnkstudy.mvp.model.DateWeek
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class DatePlanWeekAdapter(layoutResId: Int, data: List<DateWeekBean>?) :
-    BaseQuickAdapter<DateWeekBean, BaseViewHolder>(layoutResId, data) {
+class DatePlanWeekAdapter(layoutResId: Int, data: List<DateWeek>?) :
+    BaseQuickAdapter<DateWeek, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: DateWeekBean) {
+    override fun convert(helper: BaseViewHolder, item: DateWeek) {
 
         helper.setText(R.id.tv_name,item.name)
         helper.setChecked(R.id.cb_week,item.isCheck)

@@ -2,8 +2,8 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.NoteContentDao;
-import com.bll.lnkstudy.mvp.model.NoteContent;
+import com.bll.lnkstudy.greendao.NoteContentBeanDao;
+import com.bll.lnkstudy.mvp.model.NoteContentBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -24,17 +24,17 @@ public class NoteContentDaoManager {
     private static NoteContentDaoManager mDbController;
 
 
-    private NoteContentDao noteDao;  //note表
+    private NoteContentBeanDao noteDao;  //note表
 
     private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= NoteContentDao.Properties.UserId.eq(userId);
+    private WhereCondition whereUser= NoteContentBeanDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
      */
     public NoteContentDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-        noteDao = mDaoSession.getNoteContentDao(); //note表
+        noteDao = mDaoSession.getNoteContentBeanDao(); //note表
     }
 
     /**
@@ -51,34 +51,34 @@ public class NoteContentDaoManager {
         return mDbController;
     }
 
-    public void insertOrReplaceNote(NoteContent bean) {
+    public void insertOrReplaceNote(NoteContentBean bean) {
         noteDao.insertOrReplace(bean);
     }
 
     public long getInsertId(){
-        List<NoteContent> queryList = noteDao.queryBuilder().build().list();
+        List<NoteContentBean> queryList = noteDao.queryBuilder().build().list();
         return queryList.get(queryList.size()-1).id;
     }
 
-    public List<NoteContent> queryAll(){
-        return noteDao.queryBuilder().where(whereUser).orderDesc(NoteContentDao.Properties.Id).build().list();
+    public List<NoteContentBean> queryAll(){
+        return noteDao.queryBuilder().where(whereUser).orderDesc(NoteContentBeanDao.Properties.Id).build().list();
     }
 
-    public List<NoteContent> queryAll(int type, long notebookId) {
-        WhereCondition whereCondition=NoteContentDao.Properties.Type.eq(type);
-        WhereCondition whereCondition1=NoteContentDao.Properties.NotebookId.eq(notebookId);
-        List<NoteContent> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+    public List<NoteContentBean> queryAll(int type, long notebookId) {
+        WhereCondition whereCondition=NoteContentBeanDao.Properties.Type.eq(type);
+        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NotebookId.eq(notebookId);
+        List<NoteContentBean> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         return list;
     }
 
-    public void deleteNote(NoteContent noteContent){
+    public void deleteNote(NoteContentBean noteContent){
         noteDao.delete(noteContent);
     }
 
     public void deleteType(int type,long notebookId){
-        WhereCondition whereCondition=NoteContentDao.Properties.Type.eq(type);
-        WhereCondition whereCondition1=NoteContentDao.Properties.NotebookId.eq(notebookId);
-        List<NoteContent> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        WhereCondition whereCondition=NoteContentBeanDao.Properties.Type.eq(type);
+        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NotebookId.eq(notebookId);
+        List<NoteContentBean> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         noteDao.deleteInTx(list);
     }
 

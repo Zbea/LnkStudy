@@ -8,8 +8,8 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CampusModeVideoDialog
-import com.bll.lnkstudy.mvp.model.EventBusBean
-import com.bll.lnkstudy.mvp.model.ListBean
+import com.bll.lnkstudy.mvp.model.EventBusData
+import com.bll.lnkstudy.mvp.model.DataList
 import com.bll.lnkstudy.ui.AlarmService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -19,7 +19,7 @@ import java.util.*
 
 class CampusModeActivity:BaseAppCompatActivity() {
 
-    private var lists= mutableListOf<ListBean>()
+    private var lists= mutableListOf<DataList>()
     private var alarmManagers= mutableListOf<AlarmManager>()
     private var pendingIntents= mutableListOf<PendingIntent>()
 
@@ -28,13 +28,13 @@ class CampusModeActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        val list=ListBean()
+        val list= DataList()
         list.id=1
         list.name="眼保健操"
         list.date="11:05"
         lists.add(list)
 
-        val list1=ListBean()
+        val list1= DataList()
         list1.id=2
         list1.name="课间操"
         list1.date="14:05"
@@ -53,9 +53,9 @@ class CampusModeActivity:BaseAppCompatActivity() {
     /**
      * 开始定时任务
      */
-    private fun startAlarmManager(listBean: ListBean){
+    private fun startAlarmManager(dataList: DataList){
         val simpleDateFormat=SimpleDateFormat("HH:mm")
-        val date=simpleDateFormat.parse(listBean.date)
+        val date=simpleDateFormat.parse(dataList.date)
 
         val mCalendar = Calendar.getInstance()
         val currentTimeMillisLong = System.currentTimeMillis()
@@ -74,9 +74,9 @@ class CampusModeActivity:BaseAppCompatActivity() {
         }
 
         val intent = Intent(this, AlarmService::class.java)
-        intent.putExtra("id",listBean.id)
+        intent.putExtra("id",dataList.id)
         intent.action = Constants.ACTION_VIDEO
-        val pendingIntent = PendingIntent.getService(this, listBean.id, intent, 0)
+        val pendingIntent = PendingIntent.getService(this, dataList.id, intent, 0)
         pendingIntents.add(pendingIntent)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager?.setRepeating(
@@ -88,7 +88,7 @@ class CampusModeActivity:BaseAppCompatActivity() {
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(bean: EventBusBean) {
+    fun onMessageEvent(bean: EventBusData) {
         if (bean.event== Constants.VIDEO_EVENT){
             val id=bean.id-1
             CampusModeVideoDialog(this,lists[id]).builder()

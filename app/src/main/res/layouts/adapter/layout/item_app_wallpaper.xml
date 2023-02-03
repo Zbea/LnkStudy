@@ -26,19 +26,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             android:text="名称"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/black"/>
 
-        <TextView
-            android:id="@+id/tv_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_5"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/black"/>
     </LinearLayout>
 
     <LinearLayout
@@ -50,11 +43,11 @@
 
         <TextView
             android:id="@+id/btn_download"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:textColor="@color/black"
-            android:layout_width="74dp"
+            android:layout_width="80dp"
             android:gravity="center"
-            android:layout_height="@dimen/dp_30"
+            android:layout_height="32dp"
             android:background="@drawable/bg_black_arch"
             android:text="购买" />
 
@@ -65,14 +58,14 @@
             />
 
         <LinearLayout
-            android:layout_width="74dp"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="80dp"
+            android:layout_height="32dp"
             android:gravity="center"
             android:background="@drawable/bg_black_arch"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/tv_price"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

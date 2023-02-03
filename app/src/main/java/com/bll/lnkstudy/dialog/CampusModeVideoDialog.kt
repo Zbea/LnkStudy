@@ -8,9 +8,9 @@ import android.widget.MediaController
 import android.widget.TextView
 import android.widget.VideoView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.ListBean
+import com.bll.lnkstudy.mvp.model.DataList
 
-class CampusModeVideoDialog(val context: Context, val listBean: ListBean) {
+class CampusModeVideoDialog(val context: Context, val dataList: DataList) {
 
     fun builder(): CampusModeVideoDialog? {
 
@@ -21,7 +21,7 @@ class CampusModeVideoDialog(val context: Context, val listBean: ListBean) {
         dialog?.show()
 
         val tvTitle = dialog?.findViewById<TextView>(R.id.tv_title)
-        tvTitle.text=listBean.name
+        tvTitle.text=dataList.name
 
         val videoView=dialog?.findViewById<VideoView>(R.id.videoView)
         val mediacontroller = MediaController(context)

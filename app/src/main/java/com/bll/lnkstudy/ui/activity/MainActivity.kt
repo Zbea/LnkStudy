@@ -7,8 +7,8 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.mvp.model.EventBusBean
-import com.bll.lnkstudy.mvp.model.MainListBean
+import com.bll.lnkstudy.mvp.model.EventBusData
+import com.bll.lnkstudy.mvp.model.MainList
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
 import kotlinx.android.synthetic.main.ac_main.*
@@ -18,7 +18,7 @@ open class MainActivity : BaseAppCompatActivity() {
 
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
-    private var mData: ArrayList<MainListBean>? = null
+    private var mData: ArrayList<MainList>? = null
     private var lastFragment: Fragment? = null
 
     private var mainFragment: MainFragment? = null
@@ -42,7 +42,7 @@ open class MainActivity : BaseAppCompatActivity() {
 
     override fun initView() {
 
-        val eventBusBean=EventBusBean()
+        val eventBusBean= EventBusData()
         eventBusBean.event=Constants.SCREEN_EVENT
         eventBusBean.screen=getCurrentScreenPos()
         EventBus.getDefault().post(eventBusBean)//发送通知，全屏自动收屏到主页的另外一边
@@ -86,11 +86,7 @@ open class MainActivity : BaseAppCompatActivity() {
             customStartActivity(Intent(this,AccountInfoActivity::class.java))
         }
 
-
     }
-
-
-
 
     //跳转课本
     fun goToTextBook(){

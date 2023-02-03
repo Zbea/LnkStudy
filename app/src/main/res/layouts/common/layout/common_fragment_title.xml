@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:visibility="gone"
-        android:src="@mipmap/icon_notebook_manager"/>
+        android:src="@mipmap/icon_manager"/>
 
 
 </LinearLayout>

@@ -2,7 +2,7 @@ package com.bll.lnkstudy.utils;
 
 import android.app.Activity;
 
-import com.bll.lnkstudy.mvp.model.HomeworkType;
+import com.bll.lnkstudy.mvp.model.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.MainActivity;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
@@ -144,14 +144,14 @@ public class ActivityManager {
      * 检查当前作业本是否已经打开
      * @return
      */
-    public void checkHomeworkDrawingisExist(HomeworkType item){
+    public void checkHomeworkDrawingisExist(HomeworkTypeBean item){
 
         Iterator<WeakReference<Activity>> it = stack.iterator();
         while (it.hasNext()) {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkDrawingActivity.class.getName())) {
-                HomeworkType homeworkType= (HomeworkType) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
+                HomeworkTypeBean homeworkType= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
                 if (item.courseId==homeworkType.courseId&&item.typeId ==homeworkType.typeId){
                     activity.finish();
                     it.remove();

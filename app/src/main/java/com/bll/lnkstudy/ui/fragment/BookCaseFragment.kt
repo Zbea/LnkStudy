@@ -9,7 +9,7 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.ui.activity.BookCaseTypeActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -30,8 +30,8 @@ class BookCaseFragment: BaseFragment() {
 
     private var mAdapter: BookAdapter?=null
     private var position=0
-    private var book:Book?=null
-    private var books= mutableListOf<Book>()//所有数据
+    private var book: BookBean?=null
+    private var books= mutableListOf<BookBean>()//所有数据
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase

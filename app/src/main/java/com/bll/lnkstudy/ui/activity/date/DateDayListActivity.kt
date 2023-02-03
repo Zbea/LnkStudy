@@ -9,7 +9,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEvent
+import com.bll.lnkstudy.mvp.model.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DateDayListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.DateUtils
@@ -25,7 +25,7 @@ class DateDayListActivity:BaseAppCompatActivity() {
 
     private val nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var mAdapter:DateDayListAdapter?=null
-    private var days= mutableListOf<DateEvent>()
+    private var days= mutableListOf<DateEventBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_date_day_list

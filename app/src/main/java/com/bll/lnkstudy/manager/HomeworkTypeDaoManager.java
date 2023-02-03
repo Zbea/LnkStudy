@@ -1,15 +1,9 @@
 package com.bll.lnkstudy.manager;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
-import com.bll.lnkstudy.greendao.HomeworkTypeDao;
-import com.bll.lnkstudy.mvp.model.HomeworkType;
+import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
+import com.bll.lnkstudy.mvp.model.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -29,17 +23,17 @@ public class HomeworkTypeDaoManager {
     private static HomeworkTypeDaoManager mDbController;
 
 
-    private HomeworkTypeDao dao;  //note表
+    private HomeworkTypeBeanDao dao;  //note表
 
     private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= HomeworkTypeDao.Properties.UserId.eq(userId);
+    private WhereCondition whereUser= HomeworkTypeBeanDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
      */
     public HomeworkTypeDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-        dao = mDaoSession.getHomeworkTypeDao(); //note表
+        dao = mDaoSession.getHomeworkTypeBeanDao(); //note表
     }
 
 
@@ -57,7 +51,7 @@ public class HomeworkTypeDaoManager {
         return mDbController;
     }
 
-    public void insertOrReplace(HomeworkType bean) {
+    public void insertOrReplace(HomeworkTypeBean bean) {
         dao.insertOrReplace(bean);
     }
 
@@ -67,11 +61,11 @@ public class HomeworkTypeDaoManager {
      * @param courseId
      * @param lists
      */
-    public void insertOrReplaceAll(int courseId,List<HomeworkType> lists){
-        List<HomeworkType> homeworkTypeList=queryAllByCourseId(courseId,false);
-        for(HomeworkType item:lists){
+    public void insertOrReplaceAll(int courseId,List<HomeworkTypeBean> lists){
+        List<HomeworkTypeBean> homeworkTypeList=queryAllByCourseId(courseId,false);
+        for(HomeworkTypeBean item:lists){
             boolean isExist=false;
-            for (HomeworkType ite:homeworkTypeList) {
+            for (HomeworkTypeBean ite:homeworkTypeList) {
                 if (item.typeId==ite.typeId){
                     isExist=true;
                     break;
@@ -89,21 +83,21 @@ public class HomeworkTypeDaoManager {
      * @param isCreate false 老师创建 true 学生创建
      * @return
      */
-    public List<HomeworkType> queryAllByCourseId(int courseId,boolean isCreate) {
-        WhereCondition whereCondition=HomeworkTypeDao.Properties.CourseId.eq(courseId);
-        WhereCondition whereCondition1=HomeworkTypeDao.Properties.IsCreate.eq(isCreate);
-        List<HomeworkType> lists = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+    public List<HomeworkTypeBean> queryAllByCourseId(int courseId, boolean isCreate) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.CourseId.eq(courseId);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCreate.eq(isCreate);
+        List<HomeworkTypeBean> lists = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         return lists;
     }
 
-    public List<HomeworkType> queryAllByCourseId(int courseId) {
-        WhereCondition whereCondition=HomeworkTypeDao.Properties.CourseId.eq(courseId);
-        List<HomeworkType> lists = dao.queryBuilder().where(whereUser,whereCondition).build().list();
+    public List<HomeworkTypeBean> queryAllByCourseId(int courseId) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.CourseId.eq(courseId);
+        List<HomeworkTypeBean> lists = dao.queryBuilder().where(whereUser,whereCondition).build().list();
         return lists;
     }
 
 
-    public void deleteBean(HomeworkType bean){
+    public void deleteBean(HomeworkTypeBean bean){
         dao.delete(bean);
     }
 

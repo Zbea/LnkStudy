@@ -1,17 +1,10 @@
 package com.bll.lnkstudy.manager;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.BaseTypeBeanDao;
-import com.bll.lnkstudy.greendao.BookDao;
-import com.bll.lnkstudy.greendao.DaoMaster;
+import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
-import com.bll.lnkstudy.mvp.model.Book;
+import com.bll.lnkstudy.mvp.model.BookBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -33,10 +26,10 @@ public class BookGreenDaoManager {
      */
     private static BookGreenDaoManager mDbController;
 
-    private BookDao bookDao;  //book表
+    private BookBeanDao bookBeanDao;  //book表
 
     private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    WhereCondition whereUser= BookDao.Properties.UserId.eq(userId);
+    WhereCondition whereUser= BookBeanDao.Properties.UserId.eq(userId);
 
 
     /**
@@ -44,7 +37,7 @@ public class BookGreenDaoManager {
      */
     public BookGreenDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-        bookDao = mDaoSession.getBookDao(); //book表
+        bookBeanDao = mDaoSession.getBookBeanDao(); //book表
     }
 
     /**
@@ -63,85 +56,85 @@ public class BookGreenDaoManager {
 
 
     //增加书籍
-    public void insertOrReplaceBook(Book bean) {
-        bookDao.insertOrReplace(bean);
+    public void insertOrReplaceBook(BookBean bean) {
+        bookBeanDao.insertOrReplace(bean);
     }
 
 
     //根据bookId 查询书籍
-    public Book queryBookByBookID(int bookID) {
-        WhereCondition whereCondition= BookDao.Properties.BookId.eq(bookID);
-        Book queryBook = bookDao.queryBuilder().where(whereUser,whereCondition).build().unique();
+    public BookBean queryBookByBookID(int bookID) {
+        WhereCondition whereCondition= BookBeanDao.Properties.BookId.eq(bookID);
+        BookBean queryBook = bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
         return queryBook;
     }
 
 
     //查询所有书籍
-    public List<Book> queryAllBook(int category) {
-        WhereCondition whereCondition=BookDao.Properties.Category.notEq(category);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookDao.Properties.Time).build().list();
+    public List<BookBean> queryAllBook(int category) {
+        WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(category);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookBeanDao.Properties.Time).build().list();
         return queryBookList;
     }
 
     //根据类别 细分子类
-    public List<Book> queryAllBook(int category,String type) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.notEq(category);
-        WhereCondition whereCondition2=BookDao.Properties.BookType.eq(type);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
-                .orderDesc(BookDao.Properties.Time).build().list();
+    public List<BookBean> queryAllBook(int category, String type) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(category);
+        WhereCondition whereCondition2=BookBeanDao.Properties.BookType.eq(type);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time).build().list();
         return queryBookList;
     }
 
     //根据类别 细分子类 分页处理
-    public List<Book> queryAllBook(int category,String type,int page, int pageSize) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.notEq(category);
-        WhereCondition whereCondition2=BookDao.Properties.BookType.eq(type);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
-                .orderDesc(BookDao.Properties.Time)
+    public List<BookBean> queryAllBook(int category, String type, int page, int pageSize) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(category);
+        WhereCondition whereCondition2=BookBeanDao.Properties.BookType.eq(type);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
         return queryBookList;
     }
 
     //查找已收藏书籍
-    public List<Book> queryAllBook(boolean isCollect) {
-        WhereCondition whereCondition1=BookDao.Properties.IsCollect.eq(isCollect);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1)
-                .orderDesc(BookDao.Properties.Time).build().list();
+    public List<BookBean> queryAllBook(boolean isCollect) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.IsCollect.eq(isCollect);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1)
+                .orderDesc(BookBeanDao.Properties.Time).build().list();
         return queryBookList;
     }
 
     //查找课本 细分子类
-    public List<Book> queryAllTextBook(int category,String textType) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(category);
-        WhereCondition whereCondition2=BookDao.Properties.TextBookType.eq(textType);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
-                .orderDesc(BookDao.Properties.Time).build().list();
+    public List<BookBean> queryAllTextBook(int category, String textType) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(category);
+        WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time).build().list();
         return queryBookList;
     }
 
-    public List<Book> queryAllTextBook(int category,String textType,int page, int pageSize) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(category);
-        WhereCondition whereCondition2=BookDao.Properties.TextBookType.eq(textType);
-        List<Book> queryBookList = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
-                .orderDesc(BookDao.Properties.Time)
+    public List<BookBean> queryAllTextBook(int category, String textType, int page, int pageSize) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(category);
+        WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
         return queryBookList;
     }
 
     //查找课本 细分子类 根据科目查找书籍
-    public Book queryTextBook(int category, String textType, String course) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(category);
-        WhereCondition whereCondition2=BookDao.Properties.TextBookType.eq(textType);
-        WhereCondition whereCondition3=BookDao.Properties.SubjectName.eq(course);
-        Book book = bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().unique();
+    public BookBean queryTextBook(int category, String textType, String course) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(category);
+        WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
+        WhereCondition whereCondition3=BookBeanDao.Properties.SubjectName.eq(course);
+        BookBean book = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().unique();
         return book;
     }
 
     //删除书籍数据d对象
-    public void deleteBook(Book book){
-        bookDao.delete(book);
+    public void deleteBook(BookBean book){
+        bookBeanDao.delete(book);
     }
 
 }

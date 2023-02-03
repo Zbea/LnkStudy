@@ -15,10 +15,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.Book
-import com.bll.lnkstudy.mvp.model.CatalogChildBean
+import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.CatalogChild
 import com.bll.lnkstudy.mvp.model.CatalogMsg
-import com.bll.lnkstudy.mvp.model.CatalogParentBean
+import com.bll.lnkstudy.mvp.model.CatalogParent
 import com.bll.lnkstudy.utils.FileUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -34,11 +34,11 @@ import java.io.File
 class BookDetailsActivity : BaseActivity() {
 
     //屏幕当前位置
-    private var book: Book? = null
+    private var book: BookBean? = null
     private var catalogMsg: CatalogMsg? = null
     private var catalogs = mutableListOf<MultiItemEntity>()
-    private var parentItems = mutableListOf<CatalogParentBean>()
-    private var childItems = mutableListOf<CatalogChildBean>()
+    private var parentItems = mutableListOf<CatalogParent>()
+    private var childItems = mutableListOf<CatalogChild>()
 
     private var pageCount = 0
     private var page = 0 //当前页码
@@ -59,21 +59,21 @@ class BookDetailsActivity : BaseActivity() {
         if (catalogMsg == null) return
 
         for (item in catalogMsg?.contents!!) {
-            var catalogParentBean = CatalogParentBean()
-            catalogParentBean.title = item.title
-            catalogParentBean.pageNumber = item.pageNumber
-            catalogParentBean.picName = item.picName
+            var catalogParent = CatalogParent()
+            catalogParent.title = item.title
+            catalogParent.pageNumber = item.pageNumber
+            catalogParent.picName = item.picName
             for (ite in item.subItems) {
-                var catalogChildBean = CatalogChildBean()
-                catalogChildBean.title = ite.title
-                catalogChildBean.pageNumber = ite.pageNumber
-                catalogChildBean.picName = ite.picName
+                var catalogChild = CatalogChild()
+                catalogChild.title = ite.title
+                catalogChild.pageNumber = ite.pageNumber
+                catalogChild.picName = ite.picName
 
-                catalogParentBean.addSubItem(catalogChildBean)
-                childItems.add(catalogChildBean)
+                catalogParent.addSubItem(catalogChild)
+                childItems.add(catalogChild)
             }
-            parentItems.add(catalogParentBean)
-            catalogs.add(catalogParentBean)
+            parentItems.add(catalogParent)
+            catalogs.add(catalogParent)
         }
     }
 

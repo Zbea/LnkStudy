@@ -25,14 +25,14 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="标题"
+            android:textSize="22sp"
             android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/black"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:orientation="horizontal"
             >
 
@@ -40,18 +40,20 @@
                 android:id="@+id/cb_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="左屏"
+                android:button="@drawable/bg_check_selector"
+                android:text="  左屏"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_20" />
 
             <CheckBox
                 android:id="@+id/cb_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="右屏"
+                android:button="@drawable/bg_check_selector"
+                android:text="  右屏"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_20" />
 
         </RelativeLayout>
 

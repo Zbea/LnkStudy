@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.ModuleBean
+import com.bll.lnkstudy.mvp.model.Module
 import com.bll.lnkstudy.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -66,16 +66,16 @@ class NoteAddDialog(private val context: Context,private val screenPos:Int,priva
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(moduleBean: ModuleBean)
+        fun onClick(module: Module)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
         this.listener = listener
     }
 
-    private class MyAdapter(layoutResId: Int, data: List<ModuleBean>?) : BaseQuickAdapter<ModuleBean, BaseViewHolder>(layoutResId, data) {
+    private class MyAdapter(layoutResId: Int, data: List<Module>?) : BaseQuickAdapter<Module, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: ModuleBean) {
+        override fun convert(helper: BaseViewHolder, item: Module) {
 
             helper.setText(R.id.tv_name,item.name)
             helper.setImageResource(R.id.iv_image,item.resId)

@@ -8,14 +8,14 @@ import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.DateTimeSelectorDialog
-import com.bll.lnkstudy.mvp.model.DatePlanBean
+import com.bll.lnkstudy.mvp.model.DatePlan
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class DatePlanEventAddAdapter(layoutResId: Int, data: List<DatePlanBean>?) :
-    BaseQuickAdapter<DatePlanBean, BaseViewHolder>(layoutResId, data) {
+class DatePlanEventAddAdapter(layoutResId: Int, data: List<DatePlan>?) :
+    BaseQuickAdapter<DatePlan, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: DatePlanBean) {
+    override fun convert(helper: BaseViewHolder, item: DatePlan) {
         val tv_start=helper.getView<TextView>(R.id.tv_start_time)
         val tv_end=helper.getView<TextView>(R.id.tv_end_time)
         val ll_time=helper.getView<LinearLayout>(R.id.ll_time)

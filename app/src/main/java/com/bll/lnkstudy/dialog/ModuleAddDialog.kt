@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.ModuleBean
+import com.bll.lnkstudy.mvp.model.Module
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class ModuleAddDialog(private val context: Context,private val screenPos:Int,val title:String,val list:MutableList<ModuleBean>) {
+class ModuleAddDialog(private val context: Context,private val screenPos:Int,val title:String,val list:MutableList<Module>) {
 
     private var dialog:Dialog?=null
 
@@ -70,16 +70,16 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item:ModuleBean)
+        fun onClick(item: Module)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
         this.listener = listener
     }
 
-    private class MAdapter(layoutResId: Int, data: List<ModuleBean>?) : BaseQuickAdapter<ModuleBean, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<Module>?) : BaseQuickAdapter<Module, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: ModuleBean) {
+        override fun convert(helper: BaseViewHolder, item: Module) {
 
             helper.setText(R.id.tv_name,item.name)
 

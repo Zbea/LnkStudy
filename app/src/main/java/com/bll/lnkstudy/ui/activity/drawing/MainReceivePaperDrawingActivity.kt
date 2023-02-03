@@ -14,8 +14,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.mvp.model.Paper
-import com.bll.lnkstudy.mvp.model.PaperContent
+import com.bll.lnkstudy.mvp.model.PaperBean
+import com.bll.lnkstudy.mvp.model.PaperContentBean
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -31,8 +31,8 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     private var mCatalogId=0
     private var daoManager: PaperDaoManager?=null
     private var daoContentManager: PaperContentDaoManager?=null
-    private var papers= mutableListOf<Paper>()
-    private var paperContents= mutableListOf<PaperContent>()
+    private var papers= mutableListOf<PaperBean>()
+    private var paperContents= mutableListOf<PaperContentBean>()
 
     private var receivePaper: ReceivePaper?=null
     private var outImageStr = ""
@@ -63,8 +63,8 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
-        papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<Paper>
-        paperContents= daoContentManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperContent>
+        papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperBean>
+        paperContents= daoContentManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperContentBean>
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -102,7 +102,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
                 commit()
             },500)
 
-            var paper= Paper()
+            var paper= PaperBean()
             paper.contentId=receivePaper?.id!!
             paper.type=type
             paper.courseId=mCourseId
@@ -118,7 +118,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             daoManager?.insertOrReplace(paper)
 
             for (i in 0 until paths.size){
-                var paperContent= PaperContent()
+                var paperContent= PaperContentBean()
                 paperContent.type=type
                 paperContent.courseId=mCourseId
                 paperContent.categoryId=mCatalogId

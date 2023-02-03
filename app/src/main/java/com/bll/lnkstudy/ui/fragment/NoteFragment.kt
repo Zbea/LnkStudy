@@ -17,8 +17,8 @@ import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.NotePassword
-import com.bll.lnkstudy.mvp.model.Notebook
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.mvp.model.NotebookBean
+import com.bll.lnkstudy.mvp.model.PopWindowData
 import com.bll.lnkstudy.ui.activity.NoteTypeManagerActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
@@ -40,12 +40,12 @@ import kotlin.math.ceil
  * 笔记
  */
 class NoteFragment : BaseFragment() {
-    private var popWindowList: PopWindowList? = null
-    private var popWindowBeans = mutableListOf<PopWindowBean>()
-    private var popWindowMoreBeans = mutableListOf<PopWindowBean>()
+    private var mPopWindow: PopWindowList? = null
+    private var popWindowBeans = mutableListOf<PopWindowData>()
+    private var popWindowMoreBeans = mutableListOf<PopWindowData>()
     private var dialog: NoteAddDialog? = null
     private var noteTypes = mutableListOf<BaseTypeBean>()
-    private var noteBooks = mutableListOf<Notebook>()
+    private var noteBooks = mutableListOf<NotebookBean>()
     private var type = 0 //当前笔记本类型
     private var mAdapter: NotebookAdapter? = null
     private var mAdapterType: BookCaseTypeAdapter? = null
@@ -63,11 +63,35 @@ class NoteFragment : BaseFragment() {
 
     override fun initView() {
 
-        popWindowBeans.add(PopWindowBean(0,"新建笔记本",true))
-        popWindowBeans.add(PopWindowBean(1,"笔记本管理",false))
+        popWindowBeans.add(
+            PopWindowData(
+                0,
+                "新建笔记本",
+                true
+            )
+        )
+        popWindowBeans.add(
+            PopWindowData(
+                1,
+                "笔记本管理",
+                false
+            )
+        )
 
-        popWindowMoreBeans.add(PopWindowBean(0,"重命名",true))
-        popWindowMoreBeans.add(PopWindowBean(1,"删除",false))
+        popWindowMoreBeans.add(
+            PopWindowData(
+                0,
+                "重命名",
+                true
+            )
+        )
+        popWindowMoreBeans.add(
+            PopWindowData(
+                1,
+                "删除",
+                false
+            )
+        )
 
         EventBus.getDefault().register(this)
 
@@ -243,7 +267,7 @@ class NoteFragment : BaseFragment() {
     /**
      * 跳转笔记写作
      */
-    private fun gotoIntent(note: Notebook){
+    private fun gotoIntent(note: NotebookBean){
         var intent = Intent(activity, NoteDrawingActivity::class.java)
         var bundle = Bundle()
         bundle.putSerializable("note", note)
@@ -296,7 +320,7 @@ class NoteFragment : BaseFragment() {
 
     //新建笔记
     private fun createNotebook() {
-        var note = Notebook()
+        var note = NotebookBean()
         if (type==0){
             NotebookAddDiaryDialog(requireContext(), screenPos).builder()
                 ?.setOnDialogClickListener{ name,dateStr->
@@ -363,10 +387,10 @@ class NoteFragment : BaseFragment() {
 
     //顶部弹出选择
     private fun setTopSelectView() {
-        if (popWindowList == null) {
-            popWindowList =
+        if (mPopWindow == null) {
+            mPopWindow =
                 PopWindowList(requireActivity(), popWindowBeans, iv_manager, 20).builder()
-            popWindowList?.setOnSelectListener { item ->
+            mPopWindow?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     addNoteBookType()
                 } else {
@@ -374,7 +398,7 @@ class NoteFragment : BaseFragment() {
                 }
             }
         } else {
-            popWindowList?.show()
+            mPopWindow?.show()
         }
     }
 

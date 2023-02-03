@@ -12,9 +12,9 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.mvp.model.ListBean
-import com.bll.lnkstudy.mvp.model.Paper
-import com.bll.lnkstudy.mvp.model.PaperContent
+import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.PaperBean
+import com.bll.lnkstudy.mvp.model.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_testpaper_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -27,9 +27,9 @@ class PaperDrawingActivity: BaseActivity() {
     private var mCatalogId=0//分组id
     private var daoManager: PaperDaoManager?=null
     private var daoContentManager: PaperContentDaoManager?=null
-    private var papers= mutableListOf<Paper>()
-    private var paperContents= mutableListOf<PaperContent>()
-    private var paper: Paper?=null
+    private var papers= mutableListOf<PaperBean>()
+    private var paperContents= mutableListOf<PaperContentBean>()
+    private var paper: PaperBean?=null
 
     private var currentPosition=0
     private var page = 0//页码
@@ -49,7 +49,7 @@ class PaperDrawingActivity: BaseActivity() {
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
 
-        papers= daoManager?.queryAll(flags,mCourseId,mCatalogId) as MutableList<Paper>
+        papers= daoManager?.queryAll(flags,mCourseId,mCatalogId) as MutableList<PaperBean>
 
     }
 
@@ -168,12 +168,12 @@ class PaperDrawingActivity: BaseActivity() {
      * 弹出目录
      */
     private fun showCatalog(){
-        var list= mutableListOf<ListBean>()
+        var list= mutableListOf<DataList>()
         for (item in papers){
-            val listBean= ListBean()
-            listBean.name=item.title
-            listBean.page=item.page
-            list.add(listBean)
+            val dataList= DataList()
+            dataList.name=item.title
+            dataList.page=item.page
+            list.add(dataList)
         }
         DrawingCatalogDialog(this,list).builder()?.
         setOnDialogClickListener { position ->
@@ -198,7 +198,7 @@ class PaperDrawingActivity: BaseActivity() {
             return
         paper=papers[currentPosition]
 
-        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContent>
+        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
 
         pageCount=paperContents.size
 

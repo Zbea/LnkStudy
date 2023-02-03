@@ -13,10 +13,10 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopWindowDrawingButton
-import com.bll.lnkstudy.manager.PaintingDaoManager
-import com.bll.lnkstudy.mvp.model.ListBean
-import com.bll.lnkstudy.mvp.model.PaintingBean
-import com.bll.lnkstudy.mvp.model.PopWindowBean
+import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
+import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
+import com.bll.lnkstudy.mvp.model.PopWindowData
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_painting_drawing.*
@@ -28,10 +28,10 @@ class PaintingDrawingActivity : BaseActivity() {
     private var type = 0
     private var popWindowDrawingButton: PopWindowDrawingButton? = null
 
-    private var paintingBean: PaintingBean? = null//当前作业内容
-    private var paintingBean_a: PaintingBean? = null//a屏作业
+    private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
+    private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
 
-    private var paintingLists = mutableListOf<PaintingBean>() //所有作业内容
+    private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
 
     private var page = 0//页码
     private var resId=0
@@ -44,11 +44,11 @@ class PaintingDrawingActivity : BaseActivity() {
 
         type = intent.flags
 
-        paintingLists = PaintingDaoManager.getInstance().queryAllByType(type)
+        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(type)
 
         if (paintingLists.size > 0) {
 
-            paintingBean = paintingLists[paintingLists.size - 1]
+            paintingDrawingBean = paintingLists[paintingLists.size - 1]
 
             page = paintingLists.size - 1
 
@@ -77,9 +77,9 @@ class PaintingDrawingActivity : BaseActivity() {
             var title=tv_title_a.text.toString()
             InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
                 tv_title_a.text = string
-                paintingBean_a?.title = string
+                paintingDrawingBean_a?.title = string
                 paintingLists[page-1].title = string
-                PaintingDaoManager.getInstance().insertOrReplace(paintingBean_a)
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
             }
         }
 
@@ -87,9 +87,9 @@ class PaintingDrawingActivity : BaseActivity() {
             var title=tv_title_b.text.toString()
             InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
                 tv_title_b.text = string
-                paintingBean?.title = string
+                paintingDrawingBean?.title = string
                 paintingLists[page].title = string
-                PaintingDaoManager.getInstance().insertOrReplace(paintingBean)
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
             }
         }
 
@@ -202,12 +202,12 @@ class PaintingDrawingActivity : BaseActivity() {
      * 弹出目录
      */
     private fun showCatalog(){
-        var list= mutableListOf<ListBean>()
+        var list= mutableListOf<DataList>()
         for (item in paintingLists){
-            val listBean=ListBean()
-            listBean.name=item.title
-            listBean.page=item.page
-            list.add(listBean)
+            val dataList= DataList()
+            dataList.name=item.title
+            dataList.page=item.page
+            list.add(dataList)
         }
         DrawingCatalogDialog(this,list).builder()?.
         setOnDialogClickListener { position ->
@@ -228,31 +228,31 @@ class PaintingDrawingActivity : BaseActivity() {
     //翻页内容更新切换
     private fun changeContent() {
 
-        paintingBean = paintingLists[page]
+        paintingDrawingBean = paintingLists[page]
 
         if (isExpand) {
             if (page > 0) {
-                paintingBean_a = paintingLists[page - 1]
+                paintingDrawingBean_a = paintingLists[page - 1]
             }
             if (page==0){
-                paintingBean = paintingLists[page + 1]
-                paintingBean_a = paintingLists[page]
+                paintingDrawingBean = paintingLists[page + 1]
+                paintingDrawingBean_a = paintingLists[page]
                 page = 1
             }
         } else {
-            paintingBean_a = null
+            paintingDrawingBean_a = null
         }
 
-        tv_title_b.text=paintingBean?.title
-        updateImage(elik_b!!, paintingBean?.path!!)
+        tv_title_b.text=paintingDrawingBean?.title
+        updateImage(elik_b!!, paintingDrawingBean?.path!!)
         tv_page_b.text = (page + 1).toString()
 
         //切换页面内容的一些变化
         if (isExpand) {
-            if (paintingBean_a != null) {
-                tv_title_a.text=paintingBean_a?.title
+            if (paintingDrawingBean_a != null) {
+                tv_title_a.text=paintingDrawingBean_a?.title
                 v_content_a.setImageResource(resId)
-                updateImage(elik_a!!, paintingBean_a?.path!!)
+                updateImage(elik_a!!, paintingDrawingBean_a?.path!!)
                 tv_page_a.text = "$page"
             }
         }
@@ -283,26 +283,26 @@ class PaintingDrawingActivity : BaseActivity() {
         val path = Constants.PAINTING_PATH + "/$mUserId/$type"
         val date = DateUtils.longToString(System.currentTimeMillis())
 
-        paintingBean = PaintingBean()
-        paintingBean?.title=if (type==0)"画本${paintingLists.size+1}" else "书法${paintingLists.size+1}"
-        paintingBean?.type = type
-        paintingBean?.date = System.currentTimeMillis()
-        paintingBean?.path = "$path/$date.tch"
+        paintingDrawingBean = PaintingDrawingBean()
+        paintingDrawingBean?.title=if (type==0)"画本${paintingLists.size+1}" else "书法${paintingLists.size+1}"
+        paintingDrawingBean?.type = type
+        paintingDrawingBean?.date = System.currentTimeMillis()
+        paintingDrawingBean?.path = "$path/$date.tch"
         page = paintingLists.size
-        paintingBean?.page=page
-        paintingLists.add(paintingBean!!)
+        paintingDrawingBean?.page=page
+        paintingLists.add(paintingDrawingBean!!)
 
-        PaintingDaoManager.getInstance().insertOrReplace(paintingBean)
+        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
 
     }
 
 
     //
     private fun showPopWindowBtn() {
-        val pops= mutableListOf<PopWindowBean>()
-        pops.add(PopWindowBean(0,"删除",false))
+        val pops= mutableListOf<PopWindowData>()
+        pops.add(PopWindowData(0, "删除", false))
         if (type == 0) {
-            pops.add(PopWindowBean(1,"规矩图",false))
+            pops.add(PopWindowData(1, "规矩图", false))
         }
         if (popWindowDrawingButton == null) {
             popWindowDrawingButton = PopWindowDrawingButton(this, iv_btn, pops).builder()
@@ -341,9 +341,9 @@ class PaintingDrawingActivity : BaseActivity() {
     //删除作业
     private fun deleteContent() {
 
-        PaintingDaoManager.getInstance().deleteBean(paintingBean)
-        paintingLists.remove(paintingBean)
-        val file = File(paintingBean?.path)
+        PaintingDrawingDaoManager.getInstance().deleteBean(paintingDrawingBean)
+        paintingLists.remove(paintingDrawingBean)
+        val file = File(paintingDrawingBean?.path)
         val pathName = FileUtils.getFileName(file.name)
         FileUtils.deleteFile(file.parent, pathName)//删除文件
         if (page>0){

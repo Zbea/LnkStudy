@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -11,7 +10,7 @@ import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
-import com.bll.lnkstudy.mvp.model.Book
+import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -32,13 +31,13 @@ import kotlin.math.ceil
 class BookCaseTypeActivity: BaseAppCompatActivity() {
 
     private var mAdapter:BookAdapter?=null
-    private var books= mutableListOf<Book>()
+    private var books= mutableListOf<BookBean>()
     private var typePos=0
     private var typeStr=""//当前分类
     private var pageIndex=1
     private var pageTotal=1
     private var pos=0 //当前书籍位置
-    private var book:Book?=null
+    private var book: BookBean?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_bookcase_type
@@ -112,6 +111,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
             mAdapterType?.getItem(typePos)?.isCheck=true
             typeStr=types[typePos].name
             mAdapterType?.notifyDataSetChanged()
+            pageIndex=1
             findData()
         }
     }
@@ -120,19 +120,12 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr,pageIndex,12)
+        books=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr,pageIndex,Constants.PAGE_SIZE)
         val total=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr)
         pageTotal= ceil((total.size.toDouble()/Constants.PAGE_SIZE)).toInt()
-        upDateUI()
-    }
-
-    //刷新数据
-    private fun upDateUI()
-    {
         mAdapter?.setNewData(books)
         tv_page_current.text=pageIndex.toString()
         tv_page_total.text=pageTotal.toString()
-        ll_page_number.visibility= View.VISIBLE
     }
 
     //长按显示课本管理

@@ -24,7 +24,7 @@ import com.bll.lnkstudy.dialog.AppToolDialog
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
-import com.bll.lnkstudy.mvp.model.EventBusBean
+import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -496,7 +496,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(bean: EventBusBean) {
+    fun onMessageEvent(bean: EventBusData) {
         if (bean.event== Constants.SCREEN_EVENT){
             val screen=bean.screen
             screenPos=when(screen){

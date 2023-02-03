@@ -3,9 +3,9 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.ui.activity.MyPaintingListActivity
 import com.bll.lnkstudy.utils.ZipUtils
 import kotlinx.android.synthetic.main.fragment_painting.*
@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class PaintingFragment : BaseFragment(){
 
-    private var typeStr=0//类型
+    private var typeId=0//类型
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_painting
@@ -66,14 +66,16 @@ class PaintingFragment : BaseFragment(){
         tv_sm.setOnClickListener {
             var intent= Intent(activity,MyPaintingListActivity::class.java)
             intent.putExtra("title", "素描画")
-            intent.flags= Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.putExtra("paintingType",4)
+            intent.flags= 1
             customStartActivity(intent)
         }
 
         tv_yb.setOnClickListener {
             var intent= Intent(activity,MyPaintingListActivity::class.java)
             intent.putExtra("title", "硬笔书法")
-            intent.flags=Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.putExtra("paintingType",5)
+            intent.flags=1
             customStartActivity(intent)
         }
 
@@ -85,19 +87,19 @@ class PaintingFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
         val tabStrs= DataBeanManager.getIncetance().PAINTING
-        for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
+        for (i in 0..3) {
+            rg_group.addView(getRadioButton(i ,tabStrs[i],3))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            typeStr= id
+            typeId= id
         }
     }
 
     private fun onClick(time:Int){
         var intent= Intent(activity,MyPaintingListActivity::class.java)
-        intent.putExtra("title", "${DataBeanManager.getIncetance().YEARS[time]}   ${DataBeanManager.getIncetance().PAINTING[typeStr]}" )
+        intent.putExtra("title", "${DataBeanManager.getIncetance().YEARS[time]}   ${DataBeanManager.getIncetance().PAINTING[typeId]}" )
         intent.putExtra("time",time)
-        intent.putExtra("paintingType",typeStr)
+        intent.putExtra("paintingType",typeId)
         intent.flags=0
         customStartActivity(intent)
     }

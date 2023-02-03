@@ -56,7 +56,7 @@ interface APIService{
      * //获取学豆列表
      */
     @GET("wallets/list")
-    fun getSMoneyList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountList>>
+    fun getSMoneyList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountXDList>>
     /**
      * 提交学豆订单
      */
@@ -67,16 +67,6 @@ interface APIService{
      */
     @GET("wallets/order/{id}")
     fun getOrderStatus(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
-    /**
-     * //获取vip列表
-     */
-    @GET("wallets/vips/list")
-    fun getVipList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountList>>
-    /**
-     * 提交vip订单
-     */
-    @POST("wallets/vips/buy/{id}")
-    fun postOrderVip(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
 
     /**
      * 加入班群
@@ -119,19 +109,33 @@ interface APIService{
      */
     @GET("book/plus/list")
     fun getBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
-
+    /**
+     * 购买书籍
+     */
+    @POST("buy/book/createOrder")
+    fun buyBooks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 应用列表
      */
-    @GET("applications")
-    fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppListBean>>
+    @GET("application/list")
+    fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
 
     /**
-     * 下载软件
+     * 购买apk
      */
-    @GET("applications/{id}/download")
-    fun downloadApk(@Path("id") id:String): Observable<BaseResult<AppListBean>>
+    @POST("buy/book/createOrder")
+    fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
+    /**
+     * 书画、壁纸
+     */
+    @GET("font/draw/list")
+    fun getPaintings(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaintingList>>
 
+    /**
+     * 购买apk
+     */
+    @POST("buy/book/createOrder")
+    fun buyPainting(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 }

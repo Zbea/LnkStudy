@@ -15,7 +15,7 @@ import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
-import com.bll.lnkstudy.mvp.model.CityBean
+import com.bll.lnkstudy.mvp.model.Area
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.DP2PX
@@ -39,7 +39,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private val presenter= RegisterOrFindPsdPresenter(this)
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
-    private var cityBean: CityBean?=null
+    private var area: Area?=null
     private var provinces= mutableListOf<String>()
     private var citys= mutableListOf<String>()
     private var cityAdapter:SpinnerAdapter?=null
@@ -74,13 +74,13 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         flags=intent.flags
 
         val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
-        cityBean = Gson().fromJson(citysStr, CityBean::class.java)
+        area = Gson().fromJson(citysStr, Area::class.java)
 
-        for (item in cityBean?.provinces!!){
+        for (item in area?.provinces!!){
             provinces.add(item.provinceName)
         }
 
-        for (item in cityBean?.provinces!![0].citys){
+        for (item in area?.provinces!![0].citys){
             citys.add(item.citysName)
         }
 
@@ -111,7 +111,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 provinceStr=provinces[p2]
                 citys.clear()
-                for (item in cityBean?.provinces!![p2].citys){
+                for (item in area?.provinces!![p2].citys){
                     citys.add(item.citysName)
                 }
                 cityAdapter?.notifyDataSetChanged()

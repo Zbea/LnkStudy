@@ -81,8 +81,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".ui.activity.AppListActivity"/>
-        <activity android:name=".ui.activity.AppOfficialBookActivity"/>
-        <activity android:name=".ui.activity.AppDownloadActivity"/>
+        <activity android:name=".ui.activity.center.OfficialAppActivity"/>
+        <activity android:name=".ui.activity.center.AppCenterActivity"/>
         <activity android:name=".ui.activity.TeachListActivity" />
         <activity android:name=".ui.activity.TeachActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -114,7 +114,7 @@
             android:theme="@style/activityCustom"
             />
         <activity android:name=".ui.activity.MyWallpaperActivity"/>
-        <activity android:name=".ui.activity.AppOfficialActivity"/>
+        <activity android:name=".ui.activity.center.OfficialPaintingActivity"/>
         <activity android:name=".ui.activity.drawing.DraftActivity"
             android:theme="@style/activityCustom"
             />

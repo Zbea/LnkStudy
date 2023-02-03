@@ -5,8 +5,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopWindowDateSelector
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateBean
-import com.bll.lnkstudy.mvp.model.DateEvent
+import com.bll.lnkstudy.mvp.model.Date
+import com.bll.lnkstudy.mvp.model.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DateAdapter
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
@@ -20,7 +20,7 @@ class DateActivity:BaseAppCompatActivity() {
     private var yearNow=DateUtils.getYear()
     private var monthNow=DateUtils.getMonth()
     private var mAdapter:DateAdapter?=null
-    private var dates= mutableListOf<DateBean>()
+    private var dates= mutableListOf<Date>()
 
     override fun layoutId(): Int {
         return R.layout.ac_date
@@ -127,7 +127,7 @@ class DateActivity:BaseAppCompatActivity() {
 //            val maxDay=DateUtils.getMonthMaxDay(lastYear,lastMonth-1)
 //            val day=maxDay-(week-2)+(i+1)
 //            dates.add(getDateBean(lastYear,lastMonth,day,false))
-            dates.add(DateBean())
+            dates.add(Date())
         }
 
         val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
@@ -141,14 +141,14 @@ class DateActivity:BaseAppCompatActivity() {
             for (i in 0 until 42-dates.size){
 //                val day=i+1
 //                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(DateBean())
+                dates.add(Date())
             }
         }
         else{
             for (i in 0 until 35-dates.size){
 //                val day=i+1
 //                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(DateBean())
+                dates.add(Date())
             }
         }
 
@@ -156,42 +156,42 @@ class DateActivity:BaseAppCompatActivity() {
 
     }
 
-    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean):DateBean{
+    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
         val solar=Solar()
         solar.solarYear=year
         solar.solarMonth=month
         solar.solarDay=day
 
-        val dateBean=DateBean()
-        dateBean.year=year
-        dateBean.month=month
-        dateBean.day=day
-        dateBean.time=DateUtils.dateToStamp("$year-$month-$day")
-        dateBean.isNow=day==DateUtils.getDay()
-        dateBean.isNowMonth=isMonth
-        dateBean.solar= solar
-        dateBean.week=DateUtils.getWeek(dateBean.time)
-        dateBean.lunar=LunarSolarConverter.SolarToLunar(solar)
+        val date= Date()
+        date.year=year
+        date.month=month
+        date.day=day
+        date.time=DateUtils.dateToStamp("$year-$month-$day")
+        date.isNow=day==DateUtils.getDay()
+        date.isNowMonth=isMonth
+        date.solar= solar
+        date.week=DateUtils.getWeek(date.time)
+        date.lunar=LunarSolarConverter.SolarToLunar(solar)
 
-        val dateEvents= mutableListOf<DateEvent>()
-        val plans=DateEventGreenDaoManager.getInstance().queryAllDateEvent(0,dateBean.time)
+        val dateEventBeans= mutableListOf<DateEventBean>()
+        val plans=DateEventGreenDaoManager.getInstance().queryAllDateEvent(0,date.time)
         for (item in plans){
             //当天时间是否在日期内
-            if (dateBean.time>=item.startTime&&dateBean.time<=item.endTime){
+            if (date.time>=item.startTime&&date.time<=item.endTime){
                 //当天时间是否是学习计划选中的星期
                 for (week in item.weeks){
-                    if (dateBean.week==week.week){
-                        dateEvents.add(item)
+                    if (date.week==week.week){
+                        dateEventBeans.add(item)
                         break
                     }
                 }
             }
         }
 
-        dateEvents.addAll(DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean.time))
-        dateBean.dateEvents=dateEvents
+        dateEventBeans.addAll(DateEventGreenDaoManager.getInstance().queryAllDateEvent(date.time))
+        date.dateEventBeans=dateEventBeans
 
-        return dateBean
+        return date
     }
 
 

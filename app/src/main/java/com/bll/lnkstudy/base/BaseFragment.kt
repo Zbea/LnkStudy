@@ -13,7 +13,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.mvp.model.HomeworkType
+import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -224,7 +224,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     /**
      * 跳转作业本
      */
-    fun gotoHomeworkDrawing(item:HomeworkType){
+    fun gotoHomeworkDrawing(item: HomeworkTypeBean){
         ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
         var bundle= Bundle()
         bundle.putSerializable("homework",item)

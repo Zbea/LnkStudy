@@ -33,12 +33,12 @@ import java.io.File
  */
 class HomeworkFragment : BaseFragment(){
 
-    private var popWindowList:PopWindowList?=null
-    private var popWindowBeans = mutableListOf<PopWindowBean>()
+    private var popWindowList: PopWindowList?=null
+    private var popWindowBeans = mutableListOf<PopWindowData>()
     private var mAdapter:HomeworkAdapter?=null
 
     private var courseID=0//当前科目id
-    private var homeworkTypes= mutableListOf<HomeworkType>()
+    private var homeworkTypes= mutableListOf<HomeworkTypeBean>()
     private var messages= mutableListOf<HomeworkMessage>()
 
     private var homeworkMessageDialog:HomeworkMessageDialog?=null
@@ -52,9 +52,27 @@ class HomeworkFragment : BaseFragment(){
         setTitle("作业")
         showView(iv_manager)
 
-        popWindowBeans.add(PopWindowBean(0,"提交详情",true))
-        popWindowBeans.add(PopWindowBean(1,"批改详情",false))
-        popWindowBeans.add(PopWindowBean(2,"添加作业本",false))
+        popWindowBeans.add(
+            PopWindowData(
+                0,
+                "提交详情",
+                true
+            )
+        )
+        popWindowBeans.add(
+            PopWindowData(
+                1,
+                "批改详情",
+                false
+            )
+        )
+        popWindowBeans.add(
+            PopWindowData(
+                2,
+                "添加作业本",
+                false
+            )
+        )
 
         iv_manager.setOnClickListener {
             setPopWindow()
@@ -212,10 +230,10 @@ class HomeworkFragment : BaseFragment(){
                         }
                         else{
                             //查找到之前已经存储的数据、用于页码计算
-                            var papers=paperDaoManager.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<Paper>
-                            var paperContents=paperContentDaoManager.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<PaperContent>
+                            var papers=paperDaoManager.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<PaperBean>
+                            var paperContents=paperContentDaoManager.queryAll(0,item.courseId,item.homeworkTypeId) as MutableList<PaperContentBean>
 
-                            var paper= Paper()
+                            var paper= PaperBean()
                             paper.contentId=item?.id
                             paper.type=0//作业
                             paper.courseId=item?.courseId
@@ -233,7 +251,8 @@ class HomeworkFragment : BaseFragment(){
                             for (i in 0 until map?.size!!){
                                 val path=map[i]
                                 val drawPath=pathStr+"/${i + 1}/draw.tch"
-                                var paperContent= PaperContent()
+                                var paperContent=
+                                    PaperContentBean()
                                 paperContent.type=0
                                 paperContent.courseId=item?.courseId
                                 paperContent.categoryId=item?.homeworkTypeId
@@ -290,7 +309,7 @@ class HomeworkFragment : BaseFragment(){
 
 
     //添加作业本
-    private fun addHomeWorkType(item:HomeworkType){
+    private fun addHomeWorkType(item: HomeworkTypeBean){
         NotebookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
             ?.setOnDialogClickListener { string ->
             val time = System.currentTimeMillis()
@@ -337,7 +356,7 @@ class HomeworkFragment : BaseFragment(){
 
         ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
             ?.setOnDialogClickListener { moduleBean ->
-            val item = HomeworkType()
+            val item = HomeworkTypeBean()
             item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
             item.bgResId = ToolUtils.getImageResStr(activity, coverResId)
 
@@ -350,7 +369,12 @@ class HomeworkFragment : BaseFragment(){
     private fun setPopWindow(){
         if (popWindowList==null)
         {
-            popWindowList= PopWindowList(requireActivity(),popWindowBeans,iv_manager,5).builder()
+            popWindowList= PopWindowList(
+                requireActivity(),
+                popWindowBeans,
+                iv_manager,
+                5
+            ).builder()
             popWindowList?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     HomeworkCommitDetailsDialog(requireActivity(), screenPos, messages).builder()
