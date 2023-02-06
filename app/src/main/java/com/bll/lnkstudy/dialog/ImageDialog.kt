@@ -24,7 +24,7 @@ class ImageDialog(val context: Context, val data:Any) {
 
         val iv_image=dialog.findViewById<ImageView>(R.id.iv_image)
         if (data is String){
-            GlideUtils.setImageRoundUrl(context,data,iv_image,0)
+            GlideUtils.setImageRoundUrl(context,data,iv_image,1)
         }
 
         if (data is File){

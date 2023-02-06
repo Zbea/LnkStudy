@@ -13,9 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -29,10 +27,7 @@ import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.BookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
-import com.bll.lnkstudy.utils.ActivityManager
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
+import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -265,6 +260,22 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component.className)
         startActivity(intent)
+    }
+
+    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+        var radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == 0
+        var layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(this, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
     }
 
     /**

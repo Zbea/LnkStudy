@@ -1,31 +1,35 @@
-package com.bll.lnkstudy.ui.activity.center
+package com.bll.lnkstudy.ui.activity.download
 
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.AppList
-import com.bll.lnkstudy.mvp.presenter.CenterAppPresenter
+import com.bll.lnkstudy.mvp.presenter.DownloadAppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.adapter.AppDownloadListAdapter
+import com.bll.lnkstudy.ui.adapter.DownloadAppAdapter
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_official_app.*
+import kotlinx.android.synthetic.main.ac_download_app.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import kotlin.math.ceil
 
-class OfficialAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
+class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
 
-    private var presenter=CenterAppPresenter(this)
+    private var presenter=DownloadAppPresenter(this)
+    private var type=1
     private var pageCount = 0
     private var pageIndex = 1
     private var pageSize=8
-    private var mAdapter:AppDownloadListAdapter?=null
+    private var mAdapter:DownloadAppAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
     private var app: AppList.ListBean?=null
     private var currentDownLoadTask:BaseDownloadTask?=null
@@ -56,7 +60,7 @@ class OfficialAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_official_app
+        return R.layout.ac_download_app
     }
 
     override fun initData() {
@@ -64,7 +68,17 @@ class OfficialAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
     }
 
     override fun initView() {
-        setPageTitle("官方应用")
+        setPageTitle("应用")
+
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            type = if (id==R.id.rb_official){
+                1
+            }else{
+                2
+            }
+            pageIndex=1
+            fetchData()
+        }
 
         initRecyclerView()
 
@@ -88,9 +102,14 @@ class OfficialAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
 
     private fun initRecyclerView(){
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = AppDownloadListAdapter(R.layout.item_app_download, null)
+        mAdapter = DownloadAppAdapter(R.layout.item_download_app, null)
         rv_list.adapter = mAdapter
+        val layoutParams=LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,52f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,52f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
         mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             app=apps[position]
             if (app?.buyStatus==0){
@@ -118,7 +137,7 @@ class OfficialAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["type"] = 1
+        map["type"] = type
         presenter.getAppList(map)
     }
 

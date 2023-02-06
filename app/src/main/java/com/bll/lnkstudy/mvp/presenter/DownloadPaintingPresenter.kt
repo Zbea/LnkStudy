@@ -8,7 +8,7 @@ import com.bll.lnkstudy.net.*
 /**
  * 书画 壁纸
  */
-class CenterPaintingPresenter(view: IContractView.IPaintingView) : BasePresenter<IContractView.IPaintingView>(view) {
+class DownloadPaintingPresenter(view: IContractView.IPaintingView) : BasePresenter<IContractView.IPaintingView>(view) {
 
     fun getList(map: HashMap<String,Any>) {
 

@@ -4,20 +4,20 @@ import android.net.Uri
 import android.widget.MediaController
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.ItemList
 import kotlinx.android.synthetic.main.ac_teach.*
 
 
 class TeachActivity:BaseAppCompatActivity() {
 
-    private var teach: DataList?=null
+    private var teach: ItemList?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_teach
     }
 
     override fun initData() {
-        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as DataList
+        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as ItemList
 
     }
 

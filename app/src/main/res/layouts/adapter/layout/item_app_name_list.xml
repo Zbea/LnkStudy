@@ -11,9 +11,7 @@
         android:id="@+id/iv_image"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:scaleType="centerInside"
         android:padding="2dp"
-        android:visibility="gone"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         app:radius="@dimen/dp_5"
         />

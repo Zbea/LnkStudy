@@ -9,9 +9,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
-import com.bll.lnkstudy.ui.activity.center.AppCenterActivity
-import com.bll.lnkstudy.ui.activity.center.OfficialAppActivity
-import com.bll.lnkstudy.ui.activity.center.OfficialPaintingActivity
+import com.bll.lnkstudy.ui.activity.download.DownloadAppActivity
+import com.bll.lnkstudy.ui.activity.download.DownloadPaintingActivity
+import com.bll.lnkstudy.ui.activity.download.DownloadWallpaperActivity
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -85,16 +85,13 @@ class AppListActivity:BaseActivity() {
             if (view.id==R.id.iv_image){
                 when(position){
                     0->{
-                        customStartActivity(Intent(this, AppCenterActivity::class.java))
+                        customStartActivity(Intent(this, DownloadAppActivity::class.java))
                     }
                     1->{
-                        customStartActivity(Intent(this,OfficialAppActivity::class.java))
+                        customStartActivity(Intent(this, DownloadWallpaperActivity::class.java))
                     }
                     2->{
-                        customStartActivity(Intent(this, OfficialPaintingActivity::class.java).setFlags(1))
-                    }
-                    3->{
-                        customStartActivity(Intent(this, OfficialPaintingActivity::class.java).setFlags(2))
+                        customStartActivity(Intent(this, DownloadPaintingActivity::class.java))
                     }
                     else->{
                         val packageName= apps[position].packageName

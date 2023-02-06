@@ -2,7 +2,7 @@ package com.bll.lnkstudy.mvp.model;
 
 import java.io.Serializable;
 
-public class DataList implements Serializable {
+public class ItemList implements Serializable {
 
     public int id;
     public String name;

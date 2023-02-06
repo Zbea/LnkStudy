@@ -11,6 +11,8 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.sql.Blob;
+
 @Entity
 public class AppBean {
 

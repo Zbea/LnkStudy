@@ -17,7 +17,7 @@ import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
@@ -236,15 +236,15 @@ class HomeworkDrawingActivity : BaseActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<DataList>()
+        var list= mutableListOf<ItemList>()
         for (item in homeworks){
-            val dataList= DataList()
-            dataList.name=item.title
-            dataList.page=item.page
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
             if (titleStr != item.title)
             {
                 titleStr=item.title
-                list.add(dataList)
+                list.add(itemList)
             }
 
         }
@@ -386,13 +386,9 @@ class HomeworkDrawingActivity : BaseActivity() {
 
     //删除作业
     private fun deleteContent() {
-
         HomeworkContentDaoManager.getInstance().deleteBean(homeworkContent)
         homeworks.remove(homeworkContent)
         FileUtils.deleteFile(homeworkContent?.folderPath, homeworkContent?.pathName)//删除文件
-
-
-
     }
 
    override fun changeScreenPage() {

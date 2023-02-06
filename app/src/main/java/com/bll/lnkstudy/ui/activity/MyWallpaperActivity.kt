@@ -21,6 +21,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyWallpaperAdapter?=null
     private var pageIndex=1 //当前页码
+    private var pageCount=1
     private var listMap=HashMap<Int,MutableList<PaintingBean>>()
 
     override fun layoutId(): Int {
@@ -75,12 +76,26 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
             }
         }
 
+        btn_page_up.setOnClickListener {
+            if(pageIndex>1){
+                pageIndex-=1
+                upDateUI()
+            }
+        }
+
+        btn_page_down.setOnClickListener {
+            if(pageIndex<pageCount){
+                pageIndex+=1
+                upDateUI()
+            }
+        }
+
     }
 
     //翻页处理
     private fun pageNumberView(){
         var pageTotal=lists.size //全部数量
-        var pageCount= ceil(pageTotal.toDouble()/Constants.PAGE_SIZE).toInt()//总共页码
+        pageCount= ceil(pageTotal.toDouble()/Constants.PAGE_SIZE).toInt()//总共页码
         if (pageTotal==0)
         {
             ll_page_number.visibility= View.GONE
@@ -102,19 +117,6 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         tv_page_total.text=pageCount.toString()
         upDateUI()
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                upDateUI()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                upDateUI()
-            }
-        }
 
     }
 

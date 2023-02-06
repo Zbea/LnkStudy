@@ -25,6 +25,7 @@
             android:id="@+id/cb_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/bg_check_selector"
             android:visibility="gone"
             />
 
@@ -32,6 +33,7 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_5"
             android:textSize="@dimen/sp_22"
             android:text="名称"
             android:maxLines="1"

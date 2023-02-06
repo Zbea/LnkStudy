@@ -13,7 +13,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
-import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.NoteContentBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.utils.DateUtils
@@ -189,15 +189,15 @@ class NoteDrawingActivity : BaseActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<DataList>()
+        var list= mutableListOf<ItemList>()
         for (item in noteContents){
-            val dataList= DataList()
-            dataList.name=item.title
-            dataList.page=item.page
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
             if (titleStr != item.title)
             {
                 titleStr=item.title
-                list.add(dataList)
+                list.add(itemList)
             }
 
         }

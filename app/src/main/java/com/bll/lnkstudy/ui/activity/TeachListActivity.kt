@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
-import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -16,10 +16,10 @@ import java.lang.Math.ceil
 class TeachListActivity:BaseAppCompatActivity() {
 
     private var course:CourseBean?=null
-    private var teachs= mutableListOf<DataList>()
+    private var teachs= mutableListOf<ItemList>()
     private var mAdapter:TeachListAdapter?=null
     private var pageIndex=1 //当前页码
-    private var bookMap=HashMap<Int,MutableList<DataList>>()//将所有数据按30个分页
+    private var bookMap=HashMap<Int,MutableList<ItemList>>()//将所有数据按30个分页
 
     override fun layoutId(): Int {
         return R.layout.ac_list
@@ -29,7 +29,7 @@ class TeachListActivity:BaseAppCompatActivity() {
         course= intent.getBundleExtra("bundleCourse")?.getSerializable("course") as CourseBean
 
         for (index in 0..40){
-            var item= DataList()
+            var item= ItemList()
             item.id=index
             item.name="三角函数"
             item.info="北京大学 张老师"

@@ -17,6 +17,7 @@ public class PaintingList {
         public String drawName;
         public String imageUrl;
         public String bodyUrl;
+        public String author;//作者
         public int supply;//1官方2第三方
         public int type;//1壁纸2书画
         public int dynasty;//1汉朝

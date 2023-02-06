@@ -26,8 +26,6 @@ class TextbookFragment : BaseFragment(){
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<BookBean>()
     private var textBook="我的课本"//用来区分课本类型
-    private var position=0
-    private var book: BookBean?=null
     private var pageIndex=1
     private var pageTotal=1
 

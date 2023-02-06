@@ -12,7 +12,7 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.mvp.model.DataList
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PaperBean
 import com.bll.lnkstudy.mvp.model.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
@@ -168,12 +168,12 @@ class PaperDrawingActivity: BaseActivity() {
      * 弹出目录
      */
     private fun showCatalog(){
-        var list= mutableListOf<DataList>()
+        var list= mutableListOf<ItemList>()
         for (item in papers){
-            val dataList= DataList()
-            dataList.name=item.title
-            dataList.page=item.page
-            list.add(dataList)
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
+            list.add(itemList)
         }
         DrawingCatalogDialog(this,list).builder()?.
         setOnDialogClickListener { position ->

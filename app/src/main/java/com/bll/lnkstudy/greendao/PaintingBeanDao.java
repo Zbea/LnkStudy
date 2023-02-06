@@ -41,8 +41,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         public final static Property ImageUrl = new Property(11, String.class, "imageUrl", false, "IMAGE_URL");
         public final static Property BodyUrl = new Property(12, String.class, "bodyUrl", false, "BODY_URL");
         public final static Property Supply = new Property(13, int.class, "supply", false, "SUPPLY");
-        public final static Property Paths = new Property(14, String.class, "paths", false, "PATHS");
-        public final static Property Date = new Property(15, long.class, "date", false, "DATE");
+        public final static Property Author = new Property(14, String.class, "author", false, "AUTHOR");
+        public final static Property Paths = new Property(15, String.class, "paths", false, "PATHS");
+        public final static Property Date = new Property(16, long.class, "date", false, "DATE");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -73,8 +74,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
                 "\"IMAGE_URL\" TEXT," + // 11: imageUrl
                 "\"BODY_URL\" TEXT," + // 12: bodyUrl
                 "\"SUPPLY\" INTEGER NOT NULL ," + // 13: supply
-                "\"PATHS\" TEXT," + // 14: paths
-                "\"DATE\" INTEGER NOT NULL );"); // 15: date
+                "\"AUTHOR\" TEXT," + // 14: author
+                "\"PATHS\" TEXT," + // 15: paths
+                "\"DATE\" INTEGER NOT NULL );"); // 16: date
     }
 
     /** Drops the underlying database table. */
@@ -129,11 +131,16 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         }
         stmt.bindLong(14, entity.getSupply());
  
+        String author = entity.getAuthor();
+        if (author != null) {
+            stmt.bindString(15, author);
+        }
+ 
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(15, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(16, pathsConverter.convertToDatabaseValue(paths));
         }
-        stmt.bindLong(16, entity.getDate());
+        stmt.bindLong(17, entity.getDate());
     }
 
     @Override
@@ -182,11 +189,16 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         }
         stmt.bindLong(14, entity.getSupply());
  
+        String author = entity.getAuthor();
+        if (author != null) {
+            stmt.bindString(15, author);
+        }
+ 
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(15, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(16, pathsConverter.convertToDatabaseValue(paths));
         }
-        stmt.bindLong(16, entity.getDate());
+        stmt.bindLong(17, entity.getDate());
     }
 
     @Override
@@ -211,8 +223,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // imageUrl
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // bodyUrl
             cursor.getInt(offset + 13), // supply
-            cursor.isNull(offset + 14) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 14)), // paths
-            cursor.getLong(offset + 15) // date
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // author
+            cursor.isNull(offset + 15) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 15)), // paths
+            cursor.getLong(offset + 16) // date
         );
         return entity;
     }
@@ -233,8 +246,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         entity.setImageUrl(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setBodyUrl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setSupply(cursor.getInt(offset + 13));
-        entity.setPaths(cursor.isNull(offset + 14) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 14)));
-        entity.setDate(cursor.getLong(offset + 15));
+        entity.setAuthor(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setPaths(cursor.isNull(offset + 15) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 15)));
+        entity.setDate(cursor.getLong(offset + 16));
      }
     
     @Override

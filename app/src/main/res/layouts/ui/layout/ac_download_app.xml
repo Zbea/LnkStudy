@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/statusbar_height">
+
+    <include layout="@layout/common_title" />
+
+    <RadioGroup
+        android:id="@+id/rg_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_15"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_official"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="170dp"
+            android:button="@null"
+            android:text="官方"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:textStyle="bold"
+            android:checked="true"
+            android:gravity="center"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_other"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="44dp"
+            android:button="@null"
+            android:gravity="center"
+            android:text="第三方"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+    </RadioGroup>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include layout="@layout/common_page_number" />
+</LinearLayout>

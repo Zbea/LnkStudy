@@ -193,6 +193,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
+
     fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
         var radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton

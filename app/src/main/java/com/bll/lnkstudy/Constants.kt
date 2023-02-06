@@ -62,7 +62,7 @@ class Constants private constructor() {
         //画本保存目录
         val PAINTING_PATH = MyApplication.mContext.getExternalFilesDir("Painting").path
 
-        //壁纸、书画目录
+        //壁纸、书画、工具栏应用图标目录
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image").path
 
         val PATH_SF = "file:///android_asset/sf/"

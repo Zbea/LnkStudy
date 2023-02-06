@@ -1,7 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
@@ -243,18 +241,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     //设置tab分类
     private fun initTab() {
         for (i in typeList.indices) {
-            var radioButton =
-                layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-            radioButton.id = i
-            radioButton.text = typeList[i]
-            radioButton.isChecked = i == 0
-            var layoutParams = RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.WRAP_CONTENT,
-                DP2PX.dip2px(this, 45f)
-            )
-            layoutParams.marginEnd = if (i == typeList.size - 1) 0 else DP2PX.dip2px(this, 44f)
-            radioButton.layoutParams = layoutParams
-            rg_group.addView(radioButton)
+            rg_group.addView(getRadioButton(i,typeList[i],typeList.size-1))
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->

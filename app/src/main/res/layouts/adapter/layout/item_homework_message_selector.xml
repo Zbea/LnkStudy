@@ -10,6 +10,7 @@
         android:id="@+id/cb_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:button="@drawable/bg_check_selector"
         android:clickable="false"
         />
 

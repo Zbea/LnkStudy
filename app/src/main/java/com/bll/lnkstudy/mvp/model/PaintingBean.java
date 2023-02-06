@@ -36,6 +36,7 @@ public class PaintingBean {
     public String imageUrl;
     public String bodyUrl;
     public int supply;//1官方2第三方
+    public String author;//作者
 
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;//图片保存地址
@@ -44,11 +45,11 @@ public class PaintingBean {
     public boolean isLeft;
     @Transient
     public boolean isRight;
-    @Generated(hash = 1590889903)
+    @Generated(hash = 1515609127)
     public PaintingBean(Long id, long userId, int contentId, int type, int time,
             String timeStr, int paintingType, String paintingTypeStr, String title,
             String info, int price, String imageUrl, String bodyUrl, int supply,
-            List<String> paths, long date) {
+            String author, List<String> paths, long date) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -63,6 +64,7 @@ public class PaintingBean {
         this.imageUrl = imageUrl;
         this.bodyUrl = bodyUrl;
         this.supply = supply;
+        this.author = author;
         this.paths = paths;
         this.date = date;
     }
@@ -164,6 +166,12 @@ public class PaintingBean {
     }
     public void setBodyUrl(String bodyUrl) {
         this.bodyUrl = bodyUrl;
+    }
+    public String getAuthor() {
+        return this.author;
+    }
+    public void setAuthor(String author) {
+        this.author = author;
     }
    
 }

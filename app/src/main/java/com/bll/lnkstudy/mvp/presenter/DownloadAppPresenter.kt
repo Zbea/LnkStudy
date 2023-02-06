@@ -7,7 +7,7 @@ import com.bll.lnkstudy.net.*
 /**
  * 应用相关
  */
-class CenterAppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
+class DownloadAppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
 
     fun getAppList(map: HashMap<String,Any>) {
 
