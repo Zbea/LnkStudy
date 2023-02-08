@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 class HomeworkDrawingActivity : BaseActivity() {
 
-    private var courseId = 0 //科目id
+    private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkTypeBean? = null
 
@@ -47,9 +47,9 @@ class HomeworkDrawingActivity : BaseActivity() {
         var bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         homeworkTypeId = homeworkType?.typeId!!
-        courseId=homeworkType?.courseId!!
+        course=homeworkType?.course!!
 
-        homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(courseId, homeworkTypeId)
+        homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(course, homeworkTypeId)
 
         if (homeworks.size > 0) {
             homeworkContent = homeworks[homeworks.size - 1]
@@ -66,7 +66,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         homeworkMessage.title="语文家庭作业1、3、5页"
         homeworkMessage.date=System.currentTimeMillis()
         homeworkMessage.course="语文"
-        homeworkMessage.courseId=0
         homeworkMessage.state=0
         homeworkMessage.homeworkTypeId=0
 
@@ -75,7 +74,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         homeworkMessage1.title="数学作业"
         homeworkMessage1.date=System.currentTimeMillis()
         homeworkMessage1.course="数学"
-        homeworkMessage1.courseId=1
         homeworkMessage1.state=1
         homeworkMessage1.homeworkTypeId=2
         homeworkMessage1.isPg=true
@@ -85,7 +83,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         homeworkMessage2.title="数学作业112"
         homeworkMessage2.date=System.currentTimeMillis()
         homeworkMessage2.course="数学"
-        homeworkMessage2.courseId=1
         homeworkMessage2.state=1
         homeworkMessage2.homeworkTypeId=3
         homeworkMessage2.isPg=false
@@ -320,11 +317,11 @@ class HomeworkDrawingActivity : BaseActivity() {
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        val path=FileAddress().getPathHomework(courseId,homeworkType?.typeId,homeworks.size)
+        val path=FileAddress().getPathHomework(course,homeworkType?.typeId,homeworks.size)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
         homeworkContent = HomeworkContentBean()
-        homeworkContent?.courseId = courseId
+        homeworkContent?.course = course
         homeworkContent?.date = System.currentTimeMillis()
         homeworkContent?.homeworkTypeId = homeworkType?.typeId
         homeworkContent?.bgResId = homeworkType?.bgResId

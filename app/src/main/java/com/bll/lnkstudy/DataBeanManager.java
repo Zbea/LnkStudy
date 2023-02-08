@@ -33,6 +33,8 @@ public class DataBeanManager {
         return incetance;
     }
 
+    public List<String> courses=new ArrayList<>();
+
     private String[] listTitle = {
             "首页",
             "书架",
@@ -121,17 +123,6 @@ public class DataBeanManager {
 
     public Integer[] dateRemind={1,3,5,7,10,15};
 
-    public String[] kmArray = {
-            "语文",
-            "数学",
-            "英语",
-            "物理",
-            "化学",
-            "地理",
-            "政治",
-            "历史",
-            "生物",
-    }; //科目的数据
 
     public String[] bookType = {
             "诗经楚辞", "唐诗宋词", "古代经典",
@@ -273,44 +264,25 @@ public class DataBeanManager {
     }
 
     /**
-     * 科目列表
-     *
-     * @return
-     */
-    public List<CourseBean> getCourses() {
-
-        List<CourseBean> list = new ArrayList();
-        for (int i = 0; i < kmArray.length; i++) {
-            CourseBean courseBean = new CourseBean();
-            courseBean.name = kmArray[i];
-            courseBean.courseId = i;
-            list.add(courseBean);
-        }
-        return list;
-
-    }
-
-
-    /**
      * 作业分类列表
      *
      * @return
      */
-    public List<HomeworkTypeBean> getHomeWorkTypes(int courseId, int grade) {
+    public List<HomeworkTypeBean> getHomeWorkTypes(String course, int grade) {
         int resId = 0;
-        if (courseId == 0) {
+        if (course.equals("语文")) {
             if (grade < 4) {
                 resId = R.mipmap.icon_homework_yw_tzb;
             } else {
                 resId = R.mipmap.icon_homework_yw_zxzyb;
             }
-        } else if (courseId == 1) {
+        } else if (course.equals("数学")) {
             if (grade < 4) {
                 resId = R.mipmap.icon_homework_sx_sxb;
             } else {
                 resId = R.mipmap.icon_homework_other_lxb;
             }
-        } else if (courseId == 2) {
+        } else if (course.equals("英语")) {
             if (grade < 4) {
                 resId = R.mipmap.icon_homework_yy_xxyyb;
             } else {
@@ -324,7 +296,7 @@ public class DataBeanManager {
         HomeworkTypeBean homeWork = new HomeworkTypeBean();
         homeWork.name = "课堂作业本";
         homeWork.typeId = 0;
-        homeWork.courseId = courseId;
+        homeWork.course = course;
         homeWork.bgResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_1) ;
         homeWork.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId) ;
         list.add(homeWork);
@@ -332,7 +304,7 @@ public class DataBeanManager {
         HomeworkTypeBean homeWork1 = new HomeworkTypeBean();
         homeWork1.name = "课外作业本";
         homeWork1.typeId = 1;
-        homeWork1.courseId = courseId;
+        homeWork1.course = course;
         homeWork1.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_2);
         homeWork1.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork1);
@@ -341,19 +313,19 @@ public class DataBeanManager {
         homeWork2.name = "课堂题卷本";
         homeWork2.typeId = 2;
         homeWork2.state=2;
-        homeWork2.courseId = courseId;
+        homeWork2.course = course;
         homeWork2.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_3);
         homeWork2.contentResId = ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),resId);
         list.add(homeWork2);
 
-        if (courseId==0||courseId==2) {
-            HomeworkTypeBean homeWork4 = new HomeworkTypeBean();
-            homeWork4.name = "课文朗读册";
-            homeWork4.typeId = 4;
-            homeWork4.state=1;
-            homeWork4.courseId = courseId;
-            homeWork4.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_4);
-            list.add(homeWork4);
+        if (course.equals("语文")||course.equals("英语")) {
+            HomeworkTypeBean homeWork3 = new HomeworkTypeBean();
+            homeWork3.name = "课文朗读册";
+            homeWork3.typeId = 3;
+            homeWork3.state=1;
+            homeWork3.course = course;
+            homeWork3.bgResId =ToolUtils.getImageResStr(MyApplication.Companion.getMContext(),R.mipmap.icon_homework_cover_4);
+            list.add(homeWork3);
         }
 
         return list;
@@ -519,7 +491,7 @@ public class DataBeanManager {
         AppBean appBean0=new AppBean();
         appBean0.appId=0;
         appBean0.appName="应用";
-        appBean0.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_tool);
+        appBean0.image= MyApplication.Companion.getMContext().getDrawable(R.mipmap.icon_app_center);
         appBean0.isBase=true;
         apps.add(appBean0);
 

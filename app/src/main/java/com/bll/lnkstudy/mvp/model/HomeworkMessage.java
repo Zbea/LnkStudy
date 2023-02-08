@@ -10,7 +10,6 @@ public class HomeworkMessage implements Serializable {
     public long endDate;
     public int state;
     public String course;
-    public int courseId;
     public int homeworkTypeId;
     public boolean isPg=false;
     public boolean isSelector=false;

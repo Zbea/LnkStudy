@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.schedulers.Schedulers
 import java.io.*
+
 
 /**
  * 数据存储类　
@@ -27,6 +29,11 @@ object SPUtil {
         rootFile = context.cacheDir
     }
 
+    fun putList(key: String,list: MutableList<String>){
+        val listStr= gson.toJson(list)
+        putString(key,listStr)
+    }
+
     fun putString(key: String, value: String) {
         map[key] = value
         Schedulers.io().run {
@@ -43,6 +50,11 @@ object SPUtil {
             }
         }
         return s as String
+    }
+
+    fun getList(key: String): List<String> {
+        return gson.fromJson(getString(key), object : TypeToken<List<String>>() {}.type)
+            ?: return mutableListOf()
     }
 
     fun putInt(key: String, value: Int) {

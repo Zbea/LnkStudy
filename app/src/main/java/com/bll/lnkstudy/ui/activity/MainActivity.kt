@@ -11,6 +11,7 @@ import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.MainList
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
+import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
 
@@ -24,7 +25,7 @@ open class MainActivity : BaseAppCompatActivity() {
     private var mainFragment: MainFragment? = null
     private var bookcaseFragment: BookCaseFragment? = null
     private var textbookFragment: TextbookFragment? = null
-    private var testPaperFragment: TestPaperFragment? = null
+    private var paperFragment: PaperFragment? = null
     private var homeworkFragment: HomeworkFragment? = null
     private var noteFragment: NoteFragment? = null
     private var paintingFragment: PaintingFragment? = null
@@ -37,6 +38,10 @@ open class MainActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         mData= DataBeanManager.getIncetance().getIndexData(this)
+        val courses=SPUtil.getList("courses")
+        if (courses!=null){
+            DataBeanManager.getIncetance().courses=courses
+        }
     }
 
 
@@ -50,7 +55,7 @@ open class MainActivity : BaseAppCompatActivity() {
         mainFragment = MainFragment()
         bookcaseFragment = BookCaseFragment()
         textbookFragment= TextbookFragment()
-        testPaperFragment = TestPaperFragment()
+        paperFragment = PaperFragment()
         homeworkFragment = HomeworkFragment()
         noteFragment= NoteFragment()
         paintingFragment = PaintingFragment()
@@ -72,7 +77,7 @@ open class MainActivity : BaseAppCompatActivity() {
                 1 -> switchFragment(lastFragment, bookcaseFragment)//书架
                 2 -> switchFragment(lastFragment, textbookFragment)//课本
                 3 -> switchFragment(lastFragment, homeworkFragment)//作业
-                4 -> switchFragment(lastFragment, testPaperFragment)//考卷
+                4 -> switchFragment(lastFragment, paperFragment)//考卷
                 5 -> switchFragment(lastFragment, noteFragment)//笔记
                 6 -> switchFragment(lastFragment, paintingFragment)//书画
                 7 -> switchFragment(lastFragment, teachFragment)//义教

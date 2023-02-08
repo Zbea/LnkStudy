@@ -3,52 +3,45 @@ package com.bll.lnkstudy.dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.PopWindowData
-import com.bll.lnkstudy.widget.MaxRecyclerView
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowList(var context:Context, var list:MutableList<PopWindowData>, var view: View, val yoff:Int) {
+class PopupDrawingManage(val context:Context, val view: View, var list:MutableList<PopupBean>) {
 
     private var mPopupWindow:PopupWindow?=null
-    private var width=0
+    private var height=0
 
-    fun builder(): PopWindowList?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_list, null, false)
+    fun builder(): PopupDrawingManage?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_drawing_btn, null, false)
         mPopupWindow = PopupWindow(context)
         mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         // 设置PopupWindow的内容view
         mPopupWindow?.contentView=popView
         mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
         mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
         mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
 
-        var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
+        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
+        var mAdapter = MAdapter(R.layout.item_popwindow_btn, list)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            for (item in list)
-            {
-                item.isCheck=false
-            }
-            list[position].isCheck=true
-            mAdapter?.notifyDataSetChanged()
             if (onSelectListener!=null)
-                onSelectListener?.onSelect(list[position])
+                onSelectListener?.onClick(list[position])
             dismiss()
         }
 
         popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        width = mPopupWindow?.contentView?.measuredWidth!!
-
+        height=mPopupWindow?.contentView?.measuredHeight!!
         show()
         return this
     }
@@ -61,30 +54,28 @@ class PopWindowList(var context:Context, var list:MutableList<PopWindowData>, va
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,-width, yoff,Gravity.RIGHT);
+            mPopupWindow?.showAsDropDown(view,80, -(height+50))
         }
     }
 
-   private var onSelectListener:OnSelectListener?=null
+    private class MAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
 
-    fun setOnSelectListener(onSelectListener:OnSelectListener)
+        override fun convert(helper: BaseViewHolder, item: PopupBean) {
+            helper.setText(R.id.tv_name,item.name)
+        }
+    }
+
+   private var onSelectListener:OnClickListener?=null
+
+    fun setOnSelectListener(onSelectListener:OnClickListener)
     {
         this.onSelectListener=onSelectListener
     }
 
-    fun interface OnSelectListener{
-        fun onSelect(item: PopWindowData)
+    fun interface OnClickListener{
+        fun onClick(item: PopupBean)
     }
 
-    private class MAdapter(layoutResId: Int, data: List<PopWindowData>?) : BaseQuickAdapter<PopWindowData, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: PopWindowData) {
-
-            helper.setText(R.id.tv_name,item.name)
-            helper.setVisible(R.id.iv_check,item.isCheck)
-
-        }
-
-    }
 
 }

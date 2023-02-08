@@ -9,7 +9,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
-import kotlinx.android.synthetic.main.ac_list.*
+import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import java.lang.Math.ceil
 
@@ -22,7 +22,7 @@ class TeachListActivity:BaseAppCompatActivity() {
     private var bookMap=HashMap<Int,MutableList<ItemList>>()//将所有数据按30个分页
 
     override fun layoutId(): Int {
-        return R.layout.ac_list
+        return R.layout.ac_teach_list
     }
 
     override fun initData() {

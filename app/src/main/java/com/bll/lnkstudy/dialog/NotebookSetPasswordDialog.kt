@@ -9,13 +9,13 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
-import com.bll.lnkstudy.mvp.model.PopWindowData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.*
 
 
 class NotebookSetPasswordDialog(private val context: Context, private val screenPos:Int) {
 
-    private val popWindowBeans= mutableListOf<PopWindowData>()
+    private val popWindowBeans= mutableListOf<PopupBean>()
 
     fun builder(): NotebookSetPasswordDialog? {
         var dialog= Dialog(context)
@@ -31,28 +31,28 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
         window.attributes = layoutParams
 
         popWindowBeans.add(
-            PopWindowData(
+            PopupBean(
                 0,
                 "爸爸姓名？",
                 false
             )
         )
         popWindowBeans.add(
-            PopWindowData(
+            PopupBean(
                 1,
                 "妈妈姓名？",
                 false
             )
         )
         popWindowBeans.add(
-            PopWindowData(
+            PopupBean(
                 2,
                 "爷爷姓名？",
                 false
             )
         )
         popWindowBeans.add(
-            PopWindowData(
+            PopupBean(
                 3,
                 "奶奶姓名？",
                 false
@@ -67,7 +67,7 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
         val etPasswordQuestion=dialog?.findViewById<EditText>(R.id.et_question_password)
         val tvQuestion=dialog?.findViewById<TextView>(R.id.tv_question_password)
         tvQuestion.setOnClickListener {
-            PopWindowList(context, popWindowBeans, tvQuestion, 5).builder()
+            PopupList(context, popWindowBeans, tvQuestion, 5).builder()
             ?.setOnSelectListener { item ->
                 tvQuestion.text = item.name
             }

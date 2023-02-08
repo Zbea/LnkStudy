@@ -7,12 +7,12 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
-import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.BookStore
 import com.bll.lnkstudy.mvp.model.BookStoreType
-import com.bll.lnkstudy.mvp.model.PopWindowData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
@@ -50,9 +50,9 @@ class BookStoreActivity : BaseAppCompatActivity(),
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: BookBean? = null
 
-    private var popWindowGrade: PopWindowList? = null
+    private var popWindowGrade: PopupList? = null
 
-    private var gradeList = mutableListOf<PopWindowData>()
+    private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
     override fun onBook(bookStore: BookStore?) {
@@ -74,7 +74,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
         if (bookStoreType?.typeGrade.isNullOrEmpty()) return
         for (i in bookStoreType?.typeGrade?.indices!!) {
             gradeList.add(
-                PopWindowData(
+                PopupBean(
                     i,
                     bookStoreType.typeGrade[i],
                     i == 0
@@ -164,7 +164,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
         tv_grade.setOnClickListener {
             if (popWindowGrade == null) {
-                popWindowGrade = PopWindowList(this, gradeList, tv_grade, 5).builder()
+                popWindowGrade = PopupList(this, gradeList, tv_grade,tv_grade.width, 5).builder()
                 popWindowGrade?.setOnSelectListener { item ->
                     gradeStr = item.name
                     tv_grade.text = gradeStr

@@ -61,9 +61,9 @@ public class HomeworkContentDaoManager {
     }
 
 
-    public List<HomeworkContentBean> queryAllByType(int courseId, int homeworkTypeId) {
+    public List<HomeworkContentBean> queryAllByType(String course, int homeworkTypeId) {
 
-        WhereCondition whereCondition= HomeworkContentBeanDao.Properties.CourseId.eq(courseId);
+        WhereCondition whereCondition= HomeworkContentBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
 
         List<HomeworkContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();

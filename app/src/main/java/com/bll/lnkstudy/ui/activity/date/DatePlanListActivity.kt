@@ -9,10 +9,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DatePlanCopyDialog
-import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEventBean
-import com.bll.lnkstudy.mvp.model.PopWindowData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.adapter.DatePlanListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
@@ -23,8 +23,8 @@ import org.greenrobot.eventbus.ThreadMode
 
 class DatePlanListActivity:BaseAppCompatActivity() {
 
-    private var popWindowList: PopWindowList?=null
-    private var popWindowBeans = mutableListOf<PopWindowData>()
+    private var popupList: PopupList?=null
+    private var popWindowBeans = mutableListOf<PopupBean>()
 
     private var mAdapter:DatePlanListAdapter?=null
     private var plans= mutableListOf<DateEventBean>()
@@ -35,14 +35,14 @@ class DatePlanListActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         popWindowBeans.add(
-            PopWindowData(
+            PopupBean(
                 0,
                 "添加",
                 true
             )
         )
         popWindowBeans.add(
-            PopWindowData(
+            PopupBean(
                 1,
                 "复制",
                 false
@@ -104,10 +104,10 @@ class DatePlanListActivity:BaseAppCompatActivity() {
     }
 
     private fun setPopWindow(){
-        if (popWindowList==null)
+        if (popupList==null)
         {
-            popWindowList= PopWindowList(this,popWindowBeans,iv_manager,5).builder()
-            popWindowList?.setOnSelectListener { item ->
+            popupList= PopupList(this,popWindowBeans,iv_manager,5).builder()
+            popupList?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     customStartActivity(Intent(this,DatePlanDetailsActivity::class.java).addFlags(0))
                 }
@@ -117,7 +117,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
             }
         }
         else{
-            popWindowList?.show()
+            popupList?.show()
         }
     }
 

@@ -7,7 +7,7 @@
     android:background="@color/bg_page"
     >
 
-    <include layout="@layout/common_date_title"/>
+    <include layout="@layout/common_title"/>
 
     <LinearLayout
         android:layout_width="match_parent"

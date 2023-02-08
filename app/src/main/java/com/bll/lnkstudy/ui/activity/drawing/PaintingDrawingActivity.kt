@@ -12,11 +12,11 @@ import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.PopWindowDrawingButton
+import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.PopWindowData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_painting_drawing.*
@@ -26,7 +26,7 @@ import java.io.File
 class PaintingDrawingActivity : BaseActivity() {
 
     private var type = 0
-    private var popWindowDrawingButton: PopWindowDrawingButton? = null
+    private var popupDrawingManage: PopupDrawingManage? = null
 
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
@@ -299,14 +299,14 @@ class PaintingDrawingActivity : BaseActivity() {
 
     //
     private fun showPopWindowBtn() {
-        val pops= mutableListOf<PopWindowData>()
-        pops.add(PopWindowData(0, "删除", false))
+        val pops= mutableListOf<PopupBean>()
+        pops.add(PopupBean(0, "删除", false))
         if (type == 0) {
-            pops.add(PopWindowData(1, "规矩图", false))
+            pops.add(PopupBean(1, "规矩图", false))
         }
-        if (popWindowDrawingButton == null) {
-            popWindowDrawingButton = PopWindowDrawingButton(this, iv_btn, pops).builder()
-            popWindowDrawingButton?.setOnSelectListener { item ->
+        if (popupDrawingManage == null) {
+            popupDrawingManage = PopupDrawingManage(this, iv_btn, pops).builder()
+            popupDrawingManage?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     delete()
                 }
@@ -320,7 +320,7 @@ class PaintingDrawingActivity : BaseActivity() {
                 }
             }
         } else {
-            popWindowDrawingButton?.show()
+            popupDrawingManage?.show()
         }
     }
 

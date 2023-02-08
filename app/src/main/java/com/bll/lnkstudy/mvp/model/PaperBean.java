@@ -8,6 +8,9 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+/**
+ * 本次考试
+ */
 @Entity
 public class PaperBean {
     @Unique
@@ -17,7 +20,6 @@ public class PaperBean {
     @Unique
     public int contentId;//这次考卷id
     public int type;//0作业1考卷
-    public int courseId;//科目id
     public String course;//科目
     public int categoryId;//考卷分组id
     public String category;//考卷分组标题
@@ -34,16 +36,15 @@ public class PaperBean {
 
     public String images;//下载地址
 
-    @Generated(hash = 1210374408)
-    public PaperBean(Long id, long userId, int contentId, int type, int courseId,
-            String course, int categoryId, String category, int index, String title,
-            int rank, double score, long createDate, long date, String path,
-            int page, boolean isPg, String images) {
+    @Generated(hash = 1392193337)
+    public PaperBean(Long id, long userId, int contentId, int type, String course,
+            int categoryId, String category, int index, String title, int rank,
+            double score, long createDate, long date, String path, int page,
+            boolean isPg, String images) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
         this.type = type;
-        this.courseId = courseId;
         this.course = course;
         this.categoryId = categoryId;
         this.category = category;
@@ -93,14 +94,6 @@ public class PaperBean {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public int getCourseId() {
-        return this.courseId;
-    }
-
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
     }
 
     public String getCourse() {
@@ -206,5 +199,6 @@ public class PaperBean {
     public void setImages(String images) {
         this.images = images;
     }
+
 
 }

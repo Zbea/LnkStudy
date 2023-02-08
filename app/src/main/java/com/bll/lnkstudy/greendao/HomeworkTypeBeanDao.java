@@ -32,9 +32,8 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         public final static Property Date = new Property(5, long.class, "date", false, "DATE");
         public final static Property ContentResId = new Property(6, String.class, "contentResId", false, "CONTENT_RES_ID");
         public final static Property BgResId = new Property(7, String.class, "bgResId", false, "BG_RES_ID");
-        public final static Property CourseId = new Property(8, int.class, "courseId", false, "COURSE_ID");
-        public final static Property Course = new Property(9, String.class, "course", false, "COURSE");
-        public final static Property IsCreate = new Property(10, boolean.class, "isCreate", false, "IS_CREATE");
+        public final static Property Course = new Property(8, String.class, "course", false, "COURSE");
+        public final static Property IsCreate = new Property(9, boolean.class, "isCreate", false, "IS_CREATE");
     }
 
 
@@ -58,9 +57,8 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
                 "\"DATE\" INTEGER NOT NULL ," + // 5: date
                 "\"CONTENT_RES_ID\" TEXT," + // 6: contentResId
                 "\"BG_RES_ID\" TEXT," + // 7: bgResId
-                "\"COURSE_ID\" INTEGER NOT NULL ," + // 8: courseId
-                "\"COURSE\" TEXT," + // 9: course
-                "\"IS_CREATE\" INTEGER NOT NULL );"); // 10: isCreate
+                "\"COURSE\" TEXT," + // 8: course
+                "\"IS_CREATE\" INTEGER NOT NULL );"); // 9: isCreate
     }
 
     /** Drops the underlying database table. */
@@ -96,13 +94,12 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         if (bgResId != null) {
             stmt.bindString(8, bgResId);
         }
-        stmt.bindLong(9, entity.getCourseId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(10, course);
+            stmt.bindString(9, course);
         }
-        stmt.bindLong(11, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(10, entity.getIsCreate() ? 1L: 0L);
     }
 
     @Override
@@ -132,13 +129,12 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         if (bgResId != null) {
             stmt.bindString(8, bgResId);
         }
-        stmt.bindLong(9, entity.getCourseId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(10, course);
+            stmt.bindString(9, course);
         }
-        stmt.bindLong(11, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(10, entity.getIsCreate() ? 1L: 0L);
     }
 
     @Override
@@ -157,9 +153,8 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
             cursor.getLong(offset + 5), // date
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // contentResId
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // bgResId
-            cursor.getInt(offset + 8), // courseId
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // course
-            cursor.getShort(offset + 10) != 0 // isCreate
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // course
+            cursor.getShort(offset + 9) != 0 // isCreate
         );
         return entity;
     }
@@ -174,9 +169,8 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         entity.setDate(cursor.getLong(offset + 5));
         entity.setContentResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setBgResId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setCourseId(cursor.getInt(offset + 8));
-        entity.setCourse(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setIsCreate(cursor.getShort(offset + 10) != 0);
+        entity.setCourse(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setIsCreate(cursor.getShort(offset + 9) != 0);
      }
     
     @Override

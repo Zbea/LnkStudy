@@ -20,7 +20,6 @@
         android:layout_marginLeft="@dimen/dp_15"
         android:lines="1"
         android:ellipsize="end"
-        android:maxWidth="180dp"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20" />
 

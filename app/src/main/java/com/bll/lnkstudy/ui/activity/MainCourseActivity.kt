@@ -578,20 +578,22 @@ class MainCourseActivity : BaseAppCompatActivity() {
         CourseSelectDialog(this).builder()
             .setOnDialogClickListener { course ->
                 if (course != null) {
-                    v.text = course.name
-                    course.viewId = v.id
-                    course.type = type
+                    v.text = course
+                    var courseBean=CourseBean()
+                    courseBean.name=course
+                    courseBean.viewId = v.id
+                    courseBean.type = type
 
                     //删除已经存在了的
                     if (selectLists.size > 0) {
                         var it = selectLists.iterator()
                         while (it.hasNext()) {
-                            if (it.next().viewId == course.viewId) {
+                            if (it.next().viewId == courseBean.viewId) {
                                 it.remove()
                             }
                         }
                     }
-                    selectLists.add(course)
+                    selectLists.add(courseBean)
                 }
             }
     }

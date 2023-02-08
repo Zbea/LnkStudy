@@ -14,8 +14,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.PaperBean
 import com.bll.lnkstudy.mvp.model.PaperContentBean
+import com.bll.lnkstudy.mvp.model.PaperTypeBean
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -27,7 +29,7 @@ import org.greenrobot.eventbus.EventBus
 class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
     private var type=1//考卷
-    private var mCourseId=0
+    private var course=""
     private var mCatalogId=0
     private var daoManager: PaperDaoManager?=null
     private var daoContentManager: PaperContentDaoManager?=null
@@ -48,7 +50,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initData() {
-
         isExpand=true
 
         receivePaper=intent.getBundleExtra("bundle")?.getSerializable("receivePaper") as ReceivePaper
@@ -56,15 +57,15 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         paths = intent.getStringArrayListExtra("imagePaths")!!
         pageCount = paths.size
 
-        mCourseId=receivePaper?.courseId!!
+        course=receivePaper?.course!!
         mCatalogId=receivePaper?.categoryId!!
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
-        papers= daoManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperBean>
-        paperContents= daoContentManager?.queryAll(type,mCourseId,mCatalogId) as MutableList<PaperContentBean>
+        papers= daoManager?.queryAll(type,course,mCatalogId) as MutableList<PaperBean>
+        paperContents= daoContentManager?.queryAll(type,course,mCatalogId) as MutableList<PaperContentBean>
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -102,11 +103,18 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
                 commit()
             },500)
 
-            var paper= PaperBean()
+            //保存本次考试的 试卷分类
+            val paperTypeBean=PaperTypeBean()
+            paperTypeBean.course=receivePaper?.course
+            paperTypeBean.name=receivePaper?.category
+            paperTypeBean.type=receivePaper?.type!!
+            PaperTypeDaoManager.getInstance().insertOrReplace(paperTypeBean)
+
+            //保存本次考试
+            val paper= PaperBean()
             paper.contentId=receivePaper?.id!!
             paper.type=type
-            paper.courseId=mCourseId
-            paper.course=receivePaper?.course
+            paper.course=course
             paper.categoryId=mCatalogId
             paper.category=receivePaper?.category
             paper.title=receivePaper?.title
@@ -118,9 +126,10 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             daoManager?.insertOrReplace(paper)
 
             for (i in 0 until paths.size){
-                var paperContent= PaperContentBean()
+                //保存本次考试的试卷内容
+                val paperContent= PaperContentBean()
                 paperContent.type=type
-                paperContent.courseId=mCourseId
+                paperContent.course=course
                 paperContent.categoryId=mCatalogId
                 paperContent.contentId=paper?.contentId
                 paperContent.path=paths[i]
@@ -178,11 +187,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             val mergePathStr = "$outImageStr/$index/merge.png"//合并后图片地址
 
             val oldBitmap = BitmapFactory.decodeFile(path)
-            var drawBitmap = if (FileUtils.isExist(drawPath)) {
-                BitmapFactory.decodeFile(drawPath)
-            } else {
-                null
-            }
+            var drawBitmap = if (FileUtils.isExist(drawPath)) BitmapFactory.decodeFile(drawPath) else null
             if (drawBitmap != null) {
                 val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                 BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge")

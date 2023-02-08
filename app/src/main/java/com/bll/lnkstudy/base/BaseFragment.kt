@@ -251,10 +251,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     /**
      * 跳转考卷
      */
-    fun gotoPaperDrawing(flags: Int,mCourseId:Int,mTypeId:Int){
-        ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourseId,mTypeId)
+    fun gotoPaperDrawing(flags: Int,mCourse:String,mTypeId:Int){
+        ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourse,mTypeId)
         var intent=Intent(activity, PaperDrawingActivity::class.java)
-        intent.putExtra("courseId",mCourseId)
+        intent.putExtra("course",mCourse)
         intent.putExtra("categoryId",mTypeId)
         intent.flags=flags
         if (flags==1)

@@ -27,14 +27,13 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
-        public final static Property CourseId = new Property(3, int.class, "courseId", false, "COURSE_ID");
-        public final static Property Course = new Property(4, String.class, "course", false, "COURSE");
-        public final static Property CategoryId = new Property(5, int.class, "categoryId", false, "CATEGORY_ID");
-        public final static Property ContentId = new Property(6, int.class, "contentId", false, "CONTENT_ID");
-        public final static Property Date = new Property(7, long.class, "date", false, "DATE");
-        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
-        public final static Property DrawPath = new Property(9, String.class, "drawPath", false, "DRAW_PATH");
-        public final static Property Page = new Property(10, int.class, "page", false, "PAGE");
+        public final static Property Course = new Property(3, String.class, "course", false, "COURSE");
+        public final static Property CategoryId = new Property(4, int.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property ContentId = new Property(5, int.class, "contentId", false, "CONTENT_ID");
+        public final static Property Date = new Property(6, long.class, "date", false, "DATE");
+        public final static Property Path = new Property(7, String.class, "path", false, "PATH");
+        public final static Property DrawPath = new Property(8, String.class, "drawPath", false, "DRAW_PATH");
+        public final static Property Page = new Property(9, int.class, "page", false, "PAGE");
     }
 
 
@@ -53,14 +52,13 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"TYPE\" INTEGER NOT NULL ," + // 2: type
-                "\"COURSE_ID\" INTEGER NOT NULL ," + // 3: courseId
-                "\"COURSE\" TEXT," + // 4: course
-                "\"CATEGORY_ID\" INTEGER NOT NULL ," + // 5: categoryId
-                "\"CONTENT_ID\" INTEGER NOT NULL ," + // 6: contentId
-                "\"DATE\" INTEGER NOT NULL ," + // 7: date
-                "\"PATH\" TEXT," + // 8: path
-                "\"DRAW_PATH\" TEXT," + // 9: drawPath
-                "\"PAGE\" INTEGER NOT NULL );"); // 10: page
+                "\"COURSE\" TEXT," + // 3: course
+                "\"CATEGORY_ID\" INTEGER NOT NULL ," + // 4: categoryId
+                "\"CONTENT_ID\" INTEGER NOT NULL ," + // 5: contentId
+                "\"DATE\" INTEGER NOT NULL ," + // 6: date
+                "\"PATH\" TEXT," + // 7: path
+                "\"DRAW_PATH\" TEXT," + // 8: drawPath
+                "\"PAGE\" INTEGER NOT NULL );"); // 9: page
     }
 
     /** Drops the underlying database table. */
@@ -79,26 +77,25 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getType());
-        stmt.bindLong(4, entity.getCourseId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(5, course);
+            stmt.bindString(4, course);
         }
-        stmt.bindLong(6, entity.getCategoryId());
-        stmt.bindLong(7, entity.getContentId());
-        stmt.bindLong(8, entity.getDate());
+        stmt.bindLong(5, entity.getCategoryId());
+        stmt.bindLong(6, entity.getContentId());
+        stmt.bindLong(7, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(9, path);
+            stmt.bindString(8, path);
         }
  
         String drawPath = entity.getDrawPath();
         if (drawPath != null) {
-            stmt.bindString(10, drawPath);
+            stmt.bindString(9, drawPath);
         }
-        stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(10, entity.getPage());
     }
 
     @Override
@@ -111,26 +108,25 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getType());
-        stmt.bindLong(4, entity.getCourseId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(5, course);
+            stmt.bindString(4, course);
         }
-        stmt.bindLong(6, entity.getCategoryId());
-        stmt.bindLong(7, entity.getContentId());
-        stmt.bindLong(8, entity.getDate());
+        stmt.bindLong(5, entity.getCategoryId());
+        stmt.bindLong(6, entity.getContentId());
+        stmt.bindLong(7, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(9, path);
+            stmt.bindString(8, path);
         }
  
         String drawPath = entity.getDrawPath();
         if (drawPath != null) {
-            stmt.bindString(10, drawPath);
+            stmt.bindString(9, drawPath);
         }
-        stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(10, entity.getPage());
     }
 
     @Override
@@ -144,14 +140,13 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // type
-            cursor.getInt(offset + 3), // courseId
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // course
-            cursor.getInt(offset + 5), // categoryId
-            cursor.getInt(offset + 6), // contentId
-            cursor.getLong(offset + 7), // date
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // path
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // drawPath
-            cursor.getInt(offset + 10) // page
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // course
+            cursor.getInt(offset + 4), // categoryId
+            cursor.getInt(offset + 5), // contentId
+            cursor.getLong(offset + 6), // date
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // path
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // drawPath
+            cursor.getInt(offset + 9) // page
         );
         return entity;
     }
@@ -161,14 +156,13 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setType(cursor.getInt(offset + 2));
-        entity.setCourseId(cursor.getInt(offset + 3));
-        entity.setCourse(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setCategoryId(cursor.getInt(offset + 5));
-        entity.setContentId(cursor.getInt(offset + 6));
-        entity.setDate(cursor.getLong(offset + 7));
-        entity.setPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setDrawPath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPage(cursor.getInt(offset + 10));
+        entity.setCourse(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setCategoryId(cursor.getInt(offset + 4));
+        entity.setContentId(cursor.getInt(offset + 5));
+        entity.setDate(cursor.getLong(offset + 6));
+        entity.setPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setDrawPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setPage(cursor.getInt(offset + 9));
      }
     
     @Override

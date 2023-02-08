@@ -58,8 +58,8 @@ public class RecordDaoManager {
     }
 
 
-    public List<RecordBean> queryAllByCourseId(int courseId) {
-        WhereCondition whereCondition=RecordBeanDao.Properties.CourseId.eq(courseId);
+    public List<RecordBean> queryAllByCourse(String course) {
+        WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         List<RecordBean> queryList = recordBeanDao.queryBuilder().where(whereUser,whereCondition)
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
         return queryList;

@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.activity.date
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.PopWindowDateSelector
+import com.bll.lnkstudy.dialog.PopupDateSelector
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.Date
 import com.bll.lnkstudy.mvp.model.DateEventBean
@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.ac_date.*
 
 class DateActivity:BaseAppCompatActivity() {
 
-    private var yearPop:PopWindowDateSelector?=null
-    private var monthPop:PopWindowDateSelector?=null
+    private var yearPop:PopupDateSelector?=null
+    private var monthPop:PopupDateSelector?=null
     private var yearNow=DateUtils.getYear()
     private var monthNow=DateUtils.getMonth()
     private var mAdapter:DateAdapter?=null
@@ -40,7 +40,7 @@ class DateActivity:BaseAppCompatActivity() {
         tv_year.setOnClickListener {
             val list= arrayListOf(2017,2018,2019,2020,2021,2022,2023,2024,2025,2026)
             if (yearPop==null){
-                yearPop=PopWindowDateSelector(this,tv_year,list,0).builder()
+                yearPop=PopupDateSelector(this,tv_year,list,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
@@ -60,7 +60,7 @@ class DateActivity:BaseAppCompatActivity() {
                 list.add(i)
             }
             if (monthPop==null){
-                monthPop=PopWindowDateSelector(this,tv_month,list,1).builder()
+                monthPop=PopupDateSelector(this,tv_month,list,1).builder()
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()

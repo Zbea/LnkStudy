@@ -7,7 +7,6 @@ public class ReceivePaper implements Serializable {
     public int id;
     public int type;//类型 0收到作业 1收到试卷
     public String title;//作业标题
-    public int courseId;//科目id
     public String course;//科目
 
     public String content;//作业内容

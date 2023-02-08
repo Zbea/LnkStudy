@@ -17,13 +17,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.dialog.PopWindowDateClick
+import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.ClassGroupUser
-import com.bll.lnkstudy.mvp.model.DatePlan
-import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.*
@@ -47,6 +44,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Date
 
 
 /**
@@ -57,7 +55,6 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
     private var classGroupPresenter=ClassGroupPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
 
-    private var popWindow: PopWindowDateClick? = null
     private var classGroupAdapter:MainClassGroupAdapter?=null
     private var groups= mutableListOf<ClassGroup>()
     private var mainNoteAdapter: MainNoteAdapter? = null
@@ -153,6 +150,10 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
     @SuppressLint("WrongConstant")
     private fun initDateView() {
 
+        val lists= mutableListOf<PopupBean>()
+        lists.add(PopupBean(0,"学习计划"))
+        lists.add(PopupBean(1,"重要日子"))
+
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
 
         rv_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
@@ -161,20 +162,15 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
         mPlanAdapter?.bindToRecyclerView(rv_plan)
 
         iv_date_more.setOnClickListener {
-            if (popWindow == null) {
-                popWindow=PopWindowDateClick(requireContext(),iv_date_more).builder()
-                popWindow ?.setOnClickListener {
-                    if (it==0){
-                        customStartActivity(Intent(requireContext(), DatePlanListActivity::class.java))
-                    }
-                    if (it==1){
-                        customStartActivity(Intent(requireContext(), DateDayListActivity::class.java))
-                    }
-                }
-            } else {
-                popWindow?.show()
-            }
 
+            PopupClick(requireContext(),lists,iv_date_more,5).builder()?.setOnSelectListener{
+                if (it.id==0){
+                    customStartActivity(Intent(requireContext(), DatePlanListActivity::class.java))
+                }
+                if (it.id==1){
+                    customStartActivity(Intent(requireContext(), DateDayListActivity::class.java))
+                }
+            }
         }
 
         findDateList()
@@ -293,17 +289,15 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
         receivePaper1.id=1
         receivePaper1.title="数学期中考试"
         receivePaper1.course="数学"
-        receivePaper1.courseId=1
-        receivePaper1.category="期中考试"
-        receivePaper1.categoryId=1
+        receivePaper1.category="单元"
+        receivePaper1.categoryId=0
         receivePaper1.createDate=System.currentTimeMillis()
 
         var receivePaper2= ReceivePaper()
         receivePaper2.id=2
-        receivePaper2.title="英语期中考试"
-        receivePaper2.course="英语"
-        receivePaper2.courseId=1
-        receivePaper2.category="期中考试"
+        receivePaper2.title="语文期中考试"
+        receivePaper2.course="语文"
+        receivePaper2.category="阶段"
         receivePaper2.categoryId=1
         receivePaper2.createDate=System.currentTimeMillis()
         receivePaper2.images= arrayOf(
@@ -356,8 +350,7 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
             findNotes()
         }
         if (msgFlag== RECEIVE_PAPER_COMMIT_EVENT){
-            receivePapers.removeAt(positionPaper)
-            receivePaperAdapter?.setNewData(receivePapers)
+            receivePaperAdapter?.remove(positionPaper)
         }
     }
 

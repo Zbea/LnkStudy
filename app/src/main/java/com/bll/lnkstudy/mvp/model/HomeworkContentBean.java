@@ -15,8 +15,7 @@ public class HomeworkContentBean {
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String bgResId;//作业背景样式id
-    public int courseId;//科目id
-    public String course;
+    public String course;//科目
     public int homeworkTypeId;//作业本分组id
 
     public String title;
@@ -27,15 +26,13 @@ public class HomeworkContentBean {
     public String filePath;//文件路径
     public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 1317193493)
-    public HomeworkContentBean(Long id, long userId, String bgResId, int courseId,
-            String course, int homeworkTypeId, String title, int state, long date,
-            long commitDate, String folderPath, String filePath, String pathName,
-            int page) {
+    @Generated(hash = 1263198300)
+    public HomeworkContentBean(Long id, long userId, String bgResId, String course,
+            int homeworkTypeId, String title, int state, long date, long commitDate,
+            String folderPath, String filePath, String pathName, int page) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
-        this.courseId = courseId;
         this.course = course;
         this.homeworkTypeId = homeworkTypeId;
         this.title = title;
@@ -67,12 +64,6 @@ public class HomeworkContentBean {
     }
     public void setBgResId(String bgResId) {
         this.bgResId = bgResId;
-    }
-    public int getCourseId() {
-        return this.courseId;
-    }
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
     }
     public String getCourse() {
         return this.course;
@@ -134,6 +125,7 @@ public class HomeworkContentBean {
     public void setPage(int page) {
         this.page = page;
     }
+
 
 
 }

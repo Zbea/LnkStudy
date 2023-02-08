@@ -5,7 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
-import com.bll.lnkstudy.dialog.PopWindowDateDayRemind
+import com.bll.lnkstudy.dialog.PopupDateDayRemind
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.DateEventBean
 import com.bll.lnkstudy.utils.CalendarReminderUtils
@@ -22,7 +22,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
     private val nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
     private var dateEventBean: DateEventBean? = null
     private var oldEvent: DateEventBean?=null
-    private var popRemind: PopWindowDateDayRemind? = null
+    private var popRemind: PopupDateDayRemind? = null
     private var dateDialog:DateDialog?=null
 
     override fun layoutId(): Int {
@@ -127,7 +127,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
      */
     private fun showRemind() {
         if (popRemind == null) {
-            popRemind = PopWindowDateDayRemind(this, tv_remind, dateEventBean?.remindDay!!).builder()
+            popRemind = PopupDateDayRemind(this, tv_remind, dateEventBean?.remindDay!!).builder()
             popRemind?.setOnSelectListener {
                 tv_remind.text = it.remind
                 dateEventBean?.remindDay = it.remindIn

@@ -7,8 +7,8 @@ import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.WalletBuyXdDialog
-import com.bll.lnkstudy.mvp.model.AccountXDList
 import com.bll.lnkstudy.mvp.model.AccountOrder
+import com.bll.lnkstudy.mvp.model.AccountXDList
 import com.bll.lnkstudy.mvp.presenter.WalletPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.SPUtil
@@ -76,12 +76,10 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     private fun getXdView(){
         if (xdDialog==null){
             xdDialog= WalletBuyXdDialog(this,xdList).builder()
-            xdDialog?.setOnDialogClickListener(object : WalletBuyXdDialog.OnDialogClickListener {
-                override fun onClick(id: String) {
-                    xdDialog?.dismiss()
-                    walletPresenter.postXdOrder(id)
-                }
-            })
+            xdDialog?.setOnDialogClickListener { id ->
+                xdDialog?.dismiss()
+                walletPresenter.postXdOrder(id)
+            }
         }
         else{
             xdDialog?.show()

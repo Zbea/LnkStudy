@@ -18,7 +18,7 @@ import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.NotePassword
 import com.bll.lnkstudy.mvp.model.NotebookBean
-import com.bll.lnkstudy.mvp.model.PopWindowData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.activity.NoteTypeManagerActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
@@ -40,9 +40,9 @@ import kotlin.math.ceil
  * 笔记
  */
 class NoteFragment : BaseFragment() {
-    private var mPopWindow: PopWindowList? = null
-    private var popWindowBeans = mutableListOf<PopWindowData>()
-    private var popWindowMoreBeans = mutableListOf<PopWindowData>()
+    private var mPopWindow: PopupList? = null
+    private var popWindowBeans = mutableListOf<PopupBean>()
+    private var popWindowMoreBeans = mutableListOf<PopupBean>()
     private var dialog: NoteAddDialog? = null
     private var noteTypes = mutableListOf<BaseTypeBean>()
     private var noteBooks = mutableListOf<NotebookBean>()
@@ -63,35 +63,11 @@ class NoteFragment : BaseFragment() {
 
     override fun initView() {
 
-        popWindowBeans.add(
-            PopWindowData(
-                0,
-                "新建笔记本",
-                true
-            )
-        )
-        popWindowBeans.add(
-            PopWindowData(
-                1,
-                "笔记本管理",
-                false
-            )
-        )
+        popWindowBeans.add(PopupBean(0, "新建笔记本", true))
+        popWindowBeans.add(PopupBean(1, "笔记本管理", false))
 
-        popWindowMoreBeans.add(
-            PopWindowData(
-                0,
-                "重命名",
-                true
-            )
-        )
-        popWindowMoreBeans.add(
-            PopWindowData(
-                1,
-                "删除",
-                false
-            )
-        )
+        popWindowMoreBeans.add(PopupBean(0, "重命名", true))
+        popWindowMoreBeans.add(PopupBean(1, "删除", false))
 
         EventBus.getDefault().register(this)
 
@@ -138,7 +114,7 @@ class NoteFragment : BaseFragment() {
                 setPassword()
             }
             if (view.id == R.id.iv_more) {
-                PopWindowList(requireActivity(), popWindowMoreBeans, view, 0).builder()
+                PopupList(requireActivity(), popWindowMoreBeans, view, 0).builder()
                 ?.setOnSelectListener { item ->
                     if (item.id == 0) {
                         editNotebook(noteBooks[position].title)
@@ -389,7 +365,7 @@ class NoteFragment : BaseFragment() {
     private fun setTopSelectView() {
         if (mPopWindow == null) {
             mPopWindow =
-                PopWindowList(requireActivity(), popWindowBeans, iv_manager, 20).builder()
+                PopupList(requireActivity(), popWindowBeans, iv_manager, 20).builder()
             mPopWindow?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     addNoteBookType()

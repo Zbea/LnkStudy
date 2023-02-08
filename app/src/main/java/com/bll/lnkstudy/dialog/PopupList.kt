@@ -3,23 +3,26 @@ package com.bll.lnkstudy.dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DateRemind
+import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.widget.MaxRecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowDateDayRemind(var context:Context,var view: View,val day:Int) {
+class PopupList(var context:Context, var list:MutableList<PopupBean>, var view: View, val width:Int, val yoff:Int) {
+
+    constructor(context: Context, list:MutableList<PopupBean>, view: View, yoff: Int) : this(context, list, view, 0,yoff)
 
     private var mPopupWindow:PopupWindow?=null
+    private var xoff=0
 
-    fun builder(): PopWindowDateDayRemind?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_list, null, false)
+    fun builder(): PopupList?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
         mPopupWindow = PopupWindow(context)
         mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         // 设置PopupWindow的内容view
@@ -27,17 +30,13 @@ class PopWindowDateDayRemind(var context:Context,var view: View,val day:Int) {
         mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
         mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
         mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-        mPopupWindow?.width=view.width
-
-        val list=DataBeanManager.getIncetance().remind
-        for (item in list)
-        {
-            item.isCheck = item.remindIn==day
+        if (width!=0){
+            mPopupWindow?.width=width
         }
 
-        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list,list)
+        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
@@ -52,6 +51,9 @@ class PopWindowDateDayRemind(var context:Context,var view: View,val day:Int) {
             dismiss()
         }
 
+        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        xoff = mPopupWindow?.contentView?.measuredWidth!!
+
         show()
         return this
     }
@@ -64,7 +66,7 @@ class PopWindowDateDayRemind(var context:Context,var view: View,val day:Int) {
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,0, 5)
+            mPopupWindow?.showAsDropDown(view,if(width!=0) 0 else -xoff, yoff,Gravity.RIGHT)
         }
     }
 
@@ -76,14 +78,14 @@ class PopWindowDateDayRemind(var context:Context,var view: View,val day:Int) {
     }
 
     fun interface OnSelectListener{
-        fun onSelect(item: DateRemind)
+        fun onSelect(item: PopupBean)
     }
 
-    private class MAdapter(layoutResId: Int, data: List<DateRemind>?) : BaseQuickAdapter<DateRemind, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: DateRemind) {
+        override fun convert(helper: BaseViewHolder, item: PopupBean) {
 
-            helper.setText(R.id.tv_name,item.remind)
+            helper.setText(R.id.tv_name,item.name)
             helper.setVisible(R.id.iv_check,item.isCheck)
 
         }

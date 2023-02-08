@@ -10,13 +10,13 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import com.bll.lnkstudy.R
 
-class PopWindowRecordSetting(var context:Context, var view: View, val yoff:Int) {
+class PopupRecordManage(var context:Context, var view: View, val yoff:Int) {
 
     private var mPopupWindow:PopupWindow?=null
     private var width=0
 
-    fun builder(): PopWindowRecordSetting?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_record_setting, null, false)
+    fun builder(): PopupRecordManage?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_record_setting, null, false)
         mPopupWindow = PopupWindow(context)
         mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         // 设置PopupWindow的内容view

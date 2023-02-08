@@ -152,7 +152,7 @@ public class ActivityManager {
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkDrawingActivity.class.getName())) {
                 HomeworkTypeBean homeworkType= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
-                if (item.courseId==homeworkType.courseId&&item.typeId ==homeworkType.typeId){
+                if (item.course==homeworkType.course&&item.typeId ==homeworkType.typeId){
                     activity.finish();
                     it.remove();
                 }
@@ -186,7 +186,7 @@ public class ActivityManager {
      * 检查当前画本是否打开
      * @return
      */
-    public void checkPaperDrawingIsExist(int mflags,int mCourseId,int mTypeId){
+    public void checkPaperDrawingIsExist(int mflags,String mCourse,int mTypeId){
 
         Iterator<WeakReference<Activity>> it = stack.iterator();
         while (it.hasNext()) {
@@ -194,9 +194,9 @@ public class ActivityManager {
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(PaperDrawingActivity.class.getName())) {
                 int flags= activity.getIntent().getFlags();
-                int courseId= activity.getIntent().getIntExtra("courseId",0);
+                String course= activity.getIntent().getStringExtra("course");
                 int categoryId= activity.getIntent().getIntExtra("categoryId",0);
-                if (flags==mflags && courseId==mCourseId && categoryId==mTypeId){
+                if (flags==mflags && course==mCourse && categoryId==mTypeId){
                     activity.finish();
                     it.remove();
                 }

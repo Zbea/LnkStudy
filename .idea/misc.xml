@@ -273,6 +273,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/adapter/layout/item_textbook.xml" value="0.21428571428571427" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_book_empty.xml" value="0.176953125" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_course_date.xml" value="0.24118165784832452" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_course_lessons.xml" value="0.2078125" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_date_title.xml" value="0.24779541446208111" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_drawing_bottom.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/common/layout/common_empty.xml" value="0.22971781305114639" />
@@ -323,6 +324,8 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_repeat_day.xml" value="0.25396825396825395" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/dialog_setting.xml" value="0.33" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/pop_date_number_selector.xml" value="0.2310405643738977" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/popup_date_switch_view.xml" value="0.176171875" />
+        <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/popup_list.xml" value="0.191015625" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/popwindow_bookstore_type.xml" value="0.2535273368606702" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/popwindow_date_number_selector.xml" value="0.25970017636684306" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layouts/dialog/layout/popwindow_date_remind.xml" value="0.24779541446208111" />

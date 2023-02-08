@@ -28,20 +28,19 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property ContentId = new Property(2, int.class, "contentId", false, "CONTENT_ID");
         public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
-        public final static Property CourseId = new Property(4, int.class, "courseId", false, "COURSE_ID");
-        public final static Property Course = new Property(5, String.class, "course", false, "COURSE");
-        public final static Property CategoryId = new Property(6, int.class, "categoryId", false, "CATEGORY_ID");
-        public final static Property Category = new Property(7, String.class, "category", false, "CATEGORY");
-        public final static Property Index = new Property(8, int.class, "index", false, "INDEX");
-        public final static Property Title = new Property(9, String.class, "title", false, "TITLE");
-        public final static Property Rank = new Property(10, int.class, "rank", false, "RANK");
-        public final static Property Score = new Property(11, double.class, "score", false, "SCORE");
-        public final static Property CreateDate = new Property(12, long.class, "createDate", false, "CREATE_DATE");
-        public final static Property Date = new Property(13, long.class, "date", false, "DATE");
-        public final static Property Path = new Property(14, String.class, "path", false, "PATH");
-        public final static Property Page = new Property(15, int.class, "page", false, "PAGE");
-        public final static Property IsPg = new Property(16, boolean.class, "isPg", false, "IS_PG");
-        public final static Property Images = new Property(17, String.class, "images", false, "IMAGES");
+        public final static Property Course = new Property(4, String.class, "course", false, "COURSE");
+        public final static Property CategoryId = new Property(5, int.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property Category = new Property(6, String.class, "category", false, "CATEGORY");
+        public final static Property Index = new Property(7, int.class, "index", false, "INDEX");
+        public final static Property Title = new Property(8, String.class, "title", false, "TITLE");
+        public final static Property Rank = new Property(9, int.class, "rank", false, "RANK");
+        public final static Property Score = new Property(10, double.class, "score", false, "SCORE");
+        public final static Property CreateDate = new Property(11, long.class, "createDate", false, "CREATE_DATE");
+        public final static Property Date = new Property(12, long.class, "date", false, "DATE");
+        public final static Property Path = new Property(13, String.class, "path", false, "PATH");
+        public final static Property Page = new Property(14, int.class, "page", false, "PAGE");
+        public final static Property IsPg = new Property(15, boolean.class, "isPg", false, "IS_PG");
+        public final static Property Images = new Property(16, String.class, "images", false, "IMAGES");
     }
 
 
@@ -61,20 +60,19 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"CONTENT_ID\" INTEGER NOT NULL UNIQUE ," + // 2: contentId
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
-                "\"COURSE_ID\" INTEGER NOT NULL ," + // 4: courseId
-                "\"COURSE\" TEXT," + // 5: course
-                "\"CATEGORY_ID\" INTEGER NOT NULL ," + // 6: categoryId
-                "\"CATEGORY\" TEXT," + // 7: category
-                "\"INDEX\" INTEGER NOT NULL ," + // 8: index
-                "\"TITLE\" TEXT," + // 9: title
-                "\"RANK\" INTEGER NOT NULL ," + // 10: rank
-                "\"SCORE\" REAL NOT NULL ," + // 11: score
-                "\"CREATE_DATE\" INTEGER NOT NULL ," + // 12: createDate
-                "\"DATE\" INTEGER NOT NULL ," + // 13: date
-                "\"PATH\" TEXT," + // 14: path
-                "\"PAGE\" INTEGER NOT NULL ," + // 15: page
-                "\"IS_PG\" INTEGER NOT NULL ," + // 16: isPg
-                "\"IMAGES\" TEXT);"); // 17: images
+                "\"COURSE\" TEXT," + // 4: course
+                "\"CATEGORY_ID\" INTEGER NOT NULL ," + // 5: categoryId
+                "\"CATEGORY\" TEXT," + // 6: category
+                "\"INDEX\" INTEGER NOT NULL ," + // 7: index
+                "\"TITLE\" TEXT," + // 8: title
+                "\"RANK\" INTEGER NOT NULL ," + // 9: rank
+                "\"SCORE\" REAL NOT NULL ," + // 10: score
+                "\"CREATE_DATE\" INTEGER NOT NULL ," + // 11: createDate
+                "\"DATE\" INTEGER NOT NULL ," + // 12: date
+                "\"PATH\" TEXT," + // 13: path
+                "\"PAGE\" INTEGER NOT NULL ," + // 14: page
+                "\"IS_PG\" INTEGER NOT NULL ," + // 15: isPg
+                "\"IMAGES\" TEXT);"); // 16: images
     }
 
     /** Drops the underlying database table. */
@@ -94,39 +92,38 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getContentId());
         stmt.bindLong(4, entity.getType());
-        stmt.bindLong(5, entity.getCourseId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(6, course);
+            stmt.bindString(5, course);
         }
-        stmt.bindLong(7, entity.getCategoryId());
+        stmt.bindLong(6, entity.getCategoryId());
  
         String category = entity.getCategory();
         if (category != null) {
-            stmt.bindString(8, category);
+            stmt.bindString(7, category);
         }
-        stmt.bindLong(9, entity.getIndex());
+        stmt.bindLong(8, entity.getIndex());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(10, title);
+            stmt.bindString(9, title);
         }
-        stmt.bindLong(11, entity.getRank());
-        stmt.bindDouble(12, entity.getScore());
-        stmt.bindLong(13, entity.getCreateDate());
-        stmt.bindLong(14, entity.getDate());
+        stmt.bindLong(10, entity.getRank());
+        stmt.bindDouble(11, entity.getScore());
+        stmt.bindLong(12, entity.getCreateDate());
+        stmt.bindLong(13, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(15, path);
+            stmt.bindString(14, path);
         }
-        stmt.bindLong(16, entity.getPage());
-        stmt.bindLong(17, entity.getIsPg() ? 1L: 0L);
+        stmt.bindLong(15, entity.getPage());
+        stmt.bindLong(16, entity.getIsPg() ? 1L: 0L);
  
         String images = entity.getImages();
         if (images != null) {
-            stmt.bindString(18, images);
+            stmt.bindString(17, images);
         }
     }
 
@@ -141,39 +138,38 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getContentId());
         stmt.bindLong(4, entity.getType());
-        stmt.bindLong(5, entity.getCourseId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(6, course);
+            stmt.bindString(5, course);
         }
-        stmt.bindLong(7, entity.getCategoryId());
+        stmt.bindLong(6, entity.getCategoryId());
  
         String category = entity.getCategory();
         if (category != null) {
-            stmt.bindString(8, category);
+            stmt.bindString(7, category);
         }
-        stmt.bindLong(9, entity.getIndex());
+        stmt.bindLong(8, entity.getIndex());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(10, title);
+            stmt.bindString(9, title);
         }
-        stmt.bindLong(11, entity.getRank());
-        stmt.bindDouble(12, entity.getScore());
-        stmt.bindLong(13, entity.getCreateDate());
-        stmt.bindLong(14, entity.getDate());
+        stmt.bindLong(10, entity.getRank());
+        stmt.bindDouble(11, entity.getScore());
+        stmt.bindLong(12, entity.getCreateDate());
+        stmt.bindLong(13, entity.getDate());
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(15, path);
+            stmt.bindString(14, path);
         }
-        stmt.bindLong(16, entity.getPage());
-        stmt.bindLong(17, entity.getIsPg() ? 1L: 0L);
+        stmt.bindLong(15, entity.getPage());
+        stmt.bindLong(16, entity.getIsPg() ? 1L: 0L);
  
         String images = entity.getImages();
         if (images != null) {
-            stmt.bindString(18, images);
+            stmt.bindString(17, images);
         }
     }
 
@@ -189,20 +185,19 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // contentId
             cursor.getInt(offset + 3), // type
-            cursor.getInt(offset + 4), // courseId
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // course
-            cursor.getInt(offset + 6), // categoryId
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // category
-            cursor.getInt(offset + 8), // index
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // title
-            cursor.getInt(offset + 10), // rank
-            cursor.getDouble(offset + 11), // score
-            cursor.getLong(offset + 12), // createDate
-            cursor.getLong(offset + 13), // date
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // path
-            cursor.getInt(offset + 15), // page
-            cursor.getShort(offset + 16) != 0, // isPg
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // images
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // course
+            cursor.getInt(offset + 5), // categoryId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // category
+            cursor.getInt(offset + 7), // index
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // title
+            cursor.getInt(offset + 9), // rank
+            cursor.getDouble(offset + 10), // score
+            cursor.getLong(offset + 11), // createDate
+            cursor.getLong(offset + 12), // date
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // path
+            cursor.getInt(offset + 14), // page
+            cursor.getShort(offset + 15) != 0, // isPg
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16) // images
         );
         return entity;
     }
@@ -213,20 +208,19 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setContentId(cursor.getInt(offset + 2));
         entity.setType(cursor.getInt(offset + 3));
-        entity.setCourseId(cursor.getInt(offset + 4));
-        entity.setCourse(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCategoryId(cursor.getInt(offset + 6));
-        entity.setCategory(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setIndex(cursor.getInt(offset + 8));
-        entity.setTitle(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setRank(cursor.getInt(offset + 10));
-        entity.setScore(cursor.getDouble(offset + 11));
-        entity.setCreateDate(cursor.getLong(offset + 12));
-        entity.setDate(cursor.getLong(offset + 13));
-        entity.setPath(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setPage(cursor.getInt(offset + 15));
-        entity.setIsPg(cursor.getShort(offset + 16) != 0);
-        entity.setImages(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setCourse(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setCategoryId(cursor.getInt(offset + 5));
+        entity.setCategory(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setIndex(cursor.getInt(offset + 7));
+        entity.setTitle(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setRank(cursor.getInt(offset + 9));
+        entity.setScore(cursor.getDouble(offset + 10));
+        entity.setCreateDate(cursor.getLong(offset + 11));
+        entity.setDate(cursor.getLong(offset + 12));
+        entity.setPath(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setPage(cursor.getInt(offset + 14));
+        entity.setIsPg(cursor.getShort(offset + 15) != 0);
+        entity.setImages(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
      }
     
     @Override

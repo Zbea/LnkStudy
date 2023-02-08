@@ -74,14 +74,14 @@ class FileAddress {
     /**
      * 作业文件夹路径
      */
-    fun getPathHomework(courseId:Int, typeId:Int?):String{
-        return "$HOMEWORK_PATH/$mUserId/$courseId/$typeId"
+    fun getPathHomework(course:String, typeId:Int):String{
+        return "$HOMEWORK_PATH/$mUserId/$course/$typeId"
     }
     /**
      * 作业保存路径
      */
-    fun getPathHomework(courseId:Int, typeId:Int?, contentId: Int?):String{
-        return "$HOMEWORK_PATH/$mUserId/$courseId/$typeId/$contentId"
+    fun getPathHomework(course:String, typeId:Int?, contentId: Int?):String{
+        return "$HOMEWORK_PATH/$mUserId/$course/$typeId/$contentId"
     }
 
     /**

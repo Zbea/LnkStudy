@@ -1,22 +1,20 @@
 package com.bll.lnkstudy.ui.activity
 
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
-import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -50,11 +48,11 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: BookBean? = null
 
-    private var popWindowGrade: PopWindowList? = null
-    private var popWindowProvince: PopWindowList? = null
+    private var popWindowGrade: PopupList? = null
+    private var popWindowProvince: PopupList? = null
 
-    private var provinceList = mutableListOf<PopWindowData>()
-    private var gradeList = mutableListOf<PopWindowData>()
+    private var provinceList = mutableListOf<PopupBean>()
+    private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
     override fun onBook(bookStore: BookStore?) {
@@ -76,7 +74,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         if (bookStoreType?.grade.isNullOrEmpty()) return
         for (i in bookStoreType?.grade?.indices!!) {
             gradeList.add(
-                PopWindowData(
+                PopupBean(
                     i,
                     bookStoreType?.grade[i],
                     i == 0
@@ -105,7 +103,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         val area = Gson().fromJson(citysStr, Area::class.java)
         for (i in area.provinces.indices) {
             provinceList.add(
-                PopWindowData(
+                PopupBean(
                     i,
                     area.provinces[i].provinceName,
                     i == 0
@@ -197,7 +195,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         tv_grade.text = gradeList[0].name
         tv_grade.setOnClickListener {
             if (popWindowGrade == null) {
-                popWindowGrade = PopWindowList(this, gradeList, tv_grade, 5).builder()
+                popWindowGrade = PopupList(this, gradeList, tv_grade,tv_grade.width, 5).builder()
                 popWindowGrade?.setOnSelectListener { item ->
                     gradeStr = item.name
                     tv_grade.text = gradeStr
@@ -212,7 +210,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         tv_province.text = provinceStr
         tv_province.setOnClickListener {
             if (popWindowProvince == null) {
-                popWindowProvince = PopWindowList(this, provinceList, tv_province, 5).builder()
+                popWindowProvince = PopupList(this, provinceList, tv_province,tv_province.width, 5).builder()
                 popWindowProvince?.setOnSelectListener { item ->
                     provinceStr = item.name
                     tv_province.text = item.name
@@ -376,6 +374,14 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 //                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
 //                                    EventBus.getDefault().post(BOOK_HOMEWORK_EVENT)
 //                                }
+                    //设置全部科目
+                    val courses=DataBeanManager.getIncetance().courses
+                    if (!courses.contains(book.subjectName)){
+                        courses.add(book.subjectName)
+                        SPUtil.putList("courses",courses)
+                        EventBus.getDefault().post(COURSE_EVENT)
+                    }
+
                     showToast("${book.bookName}下载完成")
                     book?.textBookType = typeStr
                     book?.loadSate = 2

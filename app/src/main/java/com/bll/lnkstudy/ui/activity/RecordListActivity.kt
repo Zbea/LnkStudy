@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NotebookAddDialog
-import com.bll.lnkstudy.dialog.PopWindowRecordSetting
+import com.bll.lnkstudy.dialog.PopupRecordManage
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
@@ -23,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode
 class RecordListActivity : BaseAppCompatActivity() {
 
     private var mAdapter: RecordAdapter? = null
-    private var courseId = 0
+    private var course = ""
     private var recordBeans = mutableListOf<RecordBean>()
     private var currentPos = 0//当前点击位置
     private var position = 0//当前点击位置
@@ -34,11 +33,10 @@ class RecordListActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        courseId = intent.getIntExtra("courseId", 0)
+        course = intent.getStringExtra("course")
     }
 
     override fun initView() {
-        var course= DataBeanManager.getIncetance().courses[courseId].name
         setPageTitle("$course 朗读录音")
         EventBus.getDefault().register(this)
 
@@ -66,7 +64,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
 
     private fun findDatas() {
-        recordBeans = RecordDaoManager.getInstance().queryAllByCourseId(courseId)
+        recordBeans = RecordDaoManager.getInstance().queryAllByCourse(course)
         mAdapter?.setNewData(recordBeans)
     }
 
@@ -76,7 +74,7 @@ class RecordListActivity : BaseAppCompatActivity() {
         val time = System.currentTimeMillis()
         var item = RecordBean()
         item.date = time
-        item.courseId = courseId
+        item.course = course
 
         var bundle = Bundle()
         bundle.putSerializable("record", item)
@@ -128,7 +126,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
 
     private fun setSetting(view : View){
-        PopWindowRecordSetting(this,view,-5).builder()
+        PopupRecordManage(this,view,-5).builder()
             ?.setOnClickListener { type ->
                 if (type == 1) {
                     edit(recordBeans[position].title)

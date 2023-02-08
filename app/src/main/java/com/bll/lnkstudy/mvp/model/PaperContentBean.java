@@ -9,6 +9,9 @@ import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.Map;
 
+/**
+ * 考卷试卷
+ */
 @Entity
 public class PaperContentBean {
     @Unique
@@ -16,7 +19,6 @@ public class PaperContentBean {
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public int type;//0作业1考卷
-    public int courseId;//科目id
     public String course;
     public int categoryId;//考卷分组id
     public int contentId;//考卷id
@@ -24,14 +26,13 @@ public class PaperContentBean {
     public String path;//原图路径
     public String drawPath;//绘图路径
     public int page;//页码
-    @Generated(hash = 436294201)
-    public PaperContentBean(Long id, long userId, int type, int courseId,
-            String course, int categoryId, int contentId, long date, String path,
-            String drawPath, int page) {
+    @Generated(hash = 1939447536)
+    public PaperContentBean(Long id, long userId, int type, String course,
+            int categoryId, int contentId, long date, String path, String drawPath,
+            int page) {
         this.id = id;
         this.userId = userId;
         this.type = type;
-        this.courseId = courseId;
         this.course = course;
         this.categoryId = categoryId;
         this.contentId = contentId;
@@ -60,12 +61,6 @@ public class PaperContentBean {
     }
     public void setType(int type) {
         this.type = type;
-    }
-    public int getCourseId() {
-        return this.courseId;
-    }
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
     }
     public String getCourse() {
         return this.course;

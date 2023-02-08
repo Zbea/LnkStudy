@@ -10,12 +10,12 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.WheelView
 
-class PopWindowDateSelector(var context:Context, var view: View, val nums:List<Int>, val type: Int) {
+class PopupDateSelector(var context:Context, var view: View, val nums:List<Int>, val type: Int) {
 
     private var mPopupWindow:PopupWindow?=null
 
-    fun builder(): PopWindowDateSelector?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_date_number_selector, null, false)
+    fun builder(): PopupDateSelector?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_date_number_selector, null, false)
         mPopupWindow = PopupWindow(context)
         mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         // 设置PopupWindow的内容view

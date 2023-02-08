@@ -22,11 +22,10 @@ public class HomeworkTypeBean implements Serializable {
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String name;
     public int typeId;//作业本分类id
-    public int state=0;//0普通作业本 1听读本 2题卷本 3课辅习题本
+    public int state;//0普通作业本 1听读本 2题卷本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
-    public int courseId;//科目id
     public String course;
     public boolean isCreate;//自建作业本
     @Transient
@@ -35,9 +34,10 @@ public class HomeworkTypeBean implements Serializable {
     public boolean isMessage;//收到通知
     @Transient
     public HomeworkMessage message;
-    @Generated(hash = 743607381)
+    @Generated(hash = 1997014846)
+
     public HomeworkTypeBean(Long id, long userId, String name, int typeId,
-            int state, long date, String contentResId, String bgResId, int courseId,
+            int state, long date, String contentResId, String bgResId,
             String course, boolean isCreate) {
         this.id = id;
         this.userId = userId;
@@ -47,7 +47,6 @@ public class HomeworkTypeBean implements Serializable {
         this.date = date;
         this.contentResId = contentResId;
         this.bgResId = bgResId;
-        this.courseId = courseId;
         this.course = course;
         this.isCreate = isCreate;
     }
@@ -101,12 +100,6 @@ public class HomeworkTypeBean implements Serializable {
     }
     public void setBgResId(String bgResId) {
         this.bgResId = bgResId;
-    }
-    public int getCourseId() {
-        return this.courseId;
-    }
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
     }
     public String getCourse() {
         return this.course;

@@ -70,13 +70,13 @@ public class PaperDaoManager {
     /**
      *
      * @param type //作业还是考卷
-     * @param courseId //科目id
+     * @param course //科目id
      * @param categoryId //分组id
      * @return
      */
-    public List<PaperBean> queryAll(int type, int courseId, int categoryId) {
+    public List<PaperBean> queryAll(int type, String course, int categoryId) {
         WhereCondition whereCondition1= PaperBeanDao.Properties.Type.eq(type);
-        WhereCondition whereCondition2= PaperBeanDao.Properties.CourseId.eq(courseId);
+        WhereCondition whereCondition2= PaperBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition3= PaperBeanDao.Properties.CategoryId.eq(categoryId);
         List<PaperBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().list();
         return queryList;

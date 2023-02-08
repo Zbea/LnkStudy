@@ -58,11 +58,11 @@ public class HomeworkTypeDaoManager {
 
     /**
      * 将老师创建作业本保存在本地
-     * @param courseId
+     * @param course
      * @param lists
      */
-    public void insertOrReplaceAll(int courseId,List<HomeworkTypeBean> lists){
-        List<HomeworkTypeBean> homeworkTypeList=queryAllByCourseId(courseId,false);
+    public void insertOrReplaceAll(String course,List<HomeworkTypeBean> lists){
+        List<HomeworkTypeBean> homeworkTypeList=queryAllByCourse(course,false);
         for(HomeworkTypeBean item:lists){
             boolean isExist=false;
             for (HomeworkTypeBean ite:homeworkTypeList) {
@@ -79,19 +79,19 @@ public class HomeworkTypeDaoManager {
 
     /**
      * 查找作业本
-     * @param courseId
+     * @param course
      * @param isCreate false 老师创建 true 学生创建
      * @return
      */
-    public List<HomeworkTypeBean> queryAllByCourseId(int courseId, boolean isCreate) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.CourseId.eq(courseId);
+    public List<HomeworkTypeBean> queryAllByCourse(String course, boolean isCreate) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCreate.eq(isCreate);
         List<HomeworkTypeBean> lists = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         return lists;
     }
 
-    public List<HomeworkTypeBean> queryAllByCourseId(int courseId) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.CourseId.eq(courseId);
+    public List<HomeworkTypeBean> queryAllByCourse(String course) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         List<HomeworkTypeBean> lists = dao.queryBuilder().where(whereUser,whereCondition).build().list();
         return lists;
     }

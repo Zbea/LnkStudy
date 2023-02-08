@@ -8,11 +8,11 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ImageDialog
-import com.bll.lnkstudy.dialog.PopWindowList
+import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.PaintingBean
 import com.bll.lnkstudy.mvp.model.PaintingList
-import com.bll.lnkstudy.mvp.model.PopWindowData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.DownloadPaintingPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadPaintingAdapter
@@ -33,10 +33,10 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private var pageSize=6
     private var mAdapter:DownloadPaintingAdapter?=null
 
-    private var popTimes= mutableListOf<PopWindowData>()
-    private var popPaintings= mutableListOf<PopWindowData>()
-    private var popWindowTime:PopWindowList?=null
-    private var popWindowPainting:PopWindowList?=null
+    private var popTimes= mutableListOf<PopupBean>()
+    private var popPaintings= mutableListOf<PopupBean>()
+    private var popWindowTime:PopupList?=null
+    private var popWindowPainting:PopupList?=null
     private var position=0
 
     private var supply=1//官方
@@ -70,13 +70,25 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
         val yeas= DataBeanManager.getIncetance().YEARS
         for (i in yeas.indices){
-            popTimes.add(PopWindowData(i+1, yeas[i], i == 0))
+            popTimes.add(
+                PopupBean(
+                    i + 1,
+                    yeas[i],
+                    i == 0
+                )
+            )
         }
         dynasty=popTimes[0].id
 
         val paintings= DataBeanManager.getIncetance().PAINTING
         for (i in paintings.indices){
-            popPaintings.add(PopWindowData(i+1, paintings[i], i == 0))
+            popPaintings.add(
+                PopupBean(
+                    i + 1,
+                    paintings[i],
+                    i == 0
+                )
+            )
         }
         paintingType=popPaintings[0].id
 
@@ -232,7 +244,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private fun selectorTime(){
         if (popWindowTime==null)
         {
-            popWindowTime= PopWindowList(this,popTimes,tv_time,5).builder()
+            popWindowTime= PopupList(this,popTimes,tv_time,tv_time.width,5).builder()
             popWindowTime?.setOnSelectListener { item ->
                 tv_time.text=item.name
                 dynasty=item.id
@@ -251,7 +263,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private fun selectorPainting(){
         if (popWindowPainting==null)
         {
-            popWindowPainting= PopWindowList(this,popPaintings,tv_painting_type,5).builder()
+            popWindowPainting= PopupList(this,popPaintings,tv_painting_type,tv_painting_type.width,5).builder()
             popWindowPainting?.setOnSelectListener { item ->
                 tv_painting_type.text=item.name
                 paintingType=item.id
