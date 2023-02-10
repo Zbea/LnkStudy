@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
@@ -40,7 +41,6 @@ import kotlin.math.ceil
  * 笔记
  */
 class NoteFragment : BaseFragment() {
-    private var mPopWindow: PopupList? = null
     private var popWindowBeans = mutableListOf<PopupBean>()
     private var popWindowMoreBeans = mutableListOf<PopupBean>()
     private var dialog: NoteAddDialog? = null
@@ -161,7 +161,13 @@ class NoteFragment : BaseFragment() {
         }
 
         iv_manager?.setOnClickListener {
-            setTopSelectView()
+            PopupClick(requireActivity(), popWindowBeans, iv_manager, 5).builder()?.setOnSelectListener { item ->
+                if (item.id == 0) {
+                    addNoteBookType()
+                } else {
+                    customStartActivity(Intent(activity, NoteTypeManagerActivity::class.java))
+                }
+            }
         }
 
         iv_down.setOnClickListener {
@@ -227,10 +233,11 @@ class NoteFragment : BaseFragment() {
     private fun findDatas() {
         noteBooks = NotebookDaoManager.getInstance().queryAll(type,pageIndex,10)
         val total= NotebookDaoManager.getInstance().queryAll(type)
-        pageTotal= ceil((total.size.toDouble()/10)).toInt()
+        pageTotal= ceil(total.size.toDouble()/10).toInt()
         mAdapter?.setNewData(noteBooks)
         tv_page_current.text=pageIndex.toString()
         tv_page_total.text=pageTotal.toString()
+        ll_page_number.visibility=if (pageTotal==0) View.GONE else View.VISIBLE
     }
 
     //设置所有数据为不选中
@@ -359,25 +366,6 @@ class NoteFragment : BaseFragment() {
 
             })
     }
-
-
-    //顶部弹出选择
-    private fun setTopSelectView() {
-        if (mPopWindow == null) {
-            mPopWindow =
-                PopupList(requireActivity(), popWindowBeans, iv_manager, 20).builder()
-            mPopWindow?.setOnSelectListener { item ->
-                if (item.id == 0) {
-                    addNoteBookType()
-                } else {
-                    customStartActivity(Intent(activity, NoteTypeManagerActivity::class.java))
-                }
-            }
-        } else {
-            mPopWindow?.show()
-        }
-    }
-
 
     //新建笔记分类
     private fun addNoteBookType() {

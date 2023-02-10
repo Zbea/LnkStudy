@@ -9,7 +9,7 @@ import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
-import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
@@ -102,47 +102,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             Handler().postDelayed(Runnable {
                 commit()
             },500)
-
-            //保存本次考试的 试卷分类
-            val paperTypeBean=PaperTypeBean()
-            paperTypeBean.course=receivePaper?.course
-            paperTypeBean.name=receivePaper?.category
-            paperTypeBean.type=receivePaper?.type!!
-            PaperTypeDaoManager.getInstance().insertOrReplace(paperTypeBean)
-
-            //保存本次考试
-            val paper= PaperBean()
-            paper.contentId=receivePaper?.id!!
-            paper.type=type
-            paper.course=course
-            paper.categoryId=mCatalogId
-            paper.category=receivePaper?.category
-            paper.title=receivePaper?.title
-            paper.path=receivePaper?.path
-            paper.page=paperContents.size
-            paper.index=papers.size
-            paper.createDate=receivePaper?.createDate!!
-            paper.images=receivePaper?.images?.toString()
-            daoManager?.insertOrReplace(paper)
-
-            for (i in 0 until paths.size){
-                //保存本次考试的试卷内容
-                val paperContent= PaperContentBean()
-                paperContent.type=type
-                paperContent.course=course
-                paperContent.categoryId=mCatalogId
-                paperContent.contentId=paper?.contentId
-                paperContent.path=paths[i]
-                paperContent.drawPath=drawPaths[i]
-                paperContent.date=receivePaper?.createDate!!
-                paperContent.page=paperContents.size+i
-                daoContentManager?.insertOrReplace(paperContent)
-            }
-
-            EventBus.getDefault().post(RECEIVE_PAPER_COMMIT_EVENT)
-            hideLoading()
-            finish()
-
         }
 
         if (view == btn_page_up) {
@@ -198,8 +157,47 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             commitPaths.add(mergePathStr)
         }
 
-    }
+        //保存本次考试的 试卷分类
+        val paperTypeBean= PaperTypeBean()
+        paperTypeBean.course=course
+        paperTypeBean.name=receivePaper?.category
+        paperTypeBean.type=mCatalogId
+        PaperTypeDaoManager.getInstance().insertOrReplace(paperTypeBean)
 
+        //保存本次考试
+        val paper= PaperBean()
+        paper.contentId=receivePaper?.id!!
+        paper.type=type
+        paper.course=course
+        paper.categoryId=mCatalogId
+        paper.category=receivePaper?.category
+        paper.title=receivePaper?.title
+        paper.path=receivePaper?.path
+        paper.page=paperContents.size
+        paper.index=papers.size
+        paper.createDate=receivePaper?.createDate!!
+        paper.images=receivePaper?.images?.toString()
+        daoManager?.insertOrReplace(paper)
+
+        for (i in 0 until paths.size){
+            //保存本次考试的试卷内容
+            val paperContent= PaperContentBean()
+            paperContent.type=type
+            paperContent.course=course
+            paperContent.categoryId=mCatalogId
+            paperContent.contentId=paper?.contentId
+            paperContent.path=paths[i]
+            paperContent.drawPath=drawPaths[i]
+            paperContent.date=receivePaper?.createDate!!
+            paperContent.page=paperContents.size+i
+            daoContentManager?.insertOrReplace(paperContent)
+        }
+
+        EventBus.getDefault().post(Constants.RECEIVE_PAPER_COMMIT_EVENT)
+        hideLoading()
+        finish()
+
+    }
 
     //内容切换
     private fun changeContent(){

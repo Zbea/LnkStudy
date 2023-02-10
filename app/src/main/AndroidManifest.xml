@@ -106,7 +106,7 @@
         <activity android:name=".ui.activity.drawing.PaintingDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
-        <activity android:name=".ui.activity.BookCaseTypeActivity"/>
+        <activity android:name=".ui.activity.BookCaseTypeListActivity"/>
         <activity android:name=".ui.activity.BookCollectActivity"/>
         <activity android:name=".ui.activity.drawing.PaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>

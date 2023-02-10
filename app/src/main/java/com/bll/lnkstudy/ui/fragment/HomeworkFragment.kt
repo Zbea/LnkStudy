@@ -231,8 +231,7 @@ class HomeworkFragment : BaseFragment(){
                             for (i in 0 until map?.size!!){
                                 val path=map[i]
                                 val drawPath=pathStr+"/${i + 1}/draw.tch"
-                                var paperContent=
-                                    PaperContentBean()
+                                var paperContent= PaperContentBean()
                                 paperContent.type=0
                                 paperContent.course=item?.course
                                 paperContent.categoryId=item?.homeworkTypeId
@@ -334,15 +333,21 @@ class HomeworkFragment : BaseFragment(){
             }
         }
 
-        ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
-            ?.setOnDialogClickListener { moduleBean ->
+        if (list.size>1){
+            ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
+                ?.setOnDialogClickListener { moduleBean ->
+                    val item = HomeworkTypeBean()
+                    item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+                    item.bgResId = ToolUtils.getImageResStr(activity, coverResId)
+                    addHomeWorkType(item)
+                }
+        }
+        else{
             val item = HomeworkTypeBean()
-            item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+            item.contentResId = ToolUtils.getImageResStr(activity, list[0].resContentId)
             item.bgResId = ToolUtils.getImageResStr(activity, coverResId)
-
             addHomeWorkType(item)
         }
-
     }
 
     //更新数据

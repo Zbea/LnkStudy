@@ -8,6 +8,7 @@ import com.bll.lnkstudy.mvp.model.BaseTypeBean;
 import com.bll.lnkstudy.mvp.model.CourseBean;
 import com.bll.lnkstudy.mvp.model.DateRemind;
 import com.bll.lnkstudy.mvp.model.DateWeek;
+import com.bll.lnkstudy.mvp.model.Grade;
 import com.bll.lnkstudy.mvp.model.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.MainList;
 import com.bll.lnkstudy.mvp.model.MessageList;
@@ -277,13 +278,13 @@ public class DataBeanManager {
                 resId = R.mipmap.icon_homework_yw_zxzyb;
             }
         } else if (course.equals("数学")) {
-            if (grade < 4) {
+            if (grade < 7) {
                 resId = R.mipmap.icon_homework_sx_sxb;
             } else {
                 resId = R.mipmap.icon_homework_other_lxb;
             }
         } else if (course.equals("英语")) {
-            if (grade < 4) {
+            if (grade < 7) {
                 resId = R.mipmap.icon_homework_yy_xxyyb;
             } else {
                 resId = R.mipmap.icon_homework_yy_zxyyb;
@@ -352,22 +353,43 @@ public class DataBeanManager {
             module2.resContentId = R.mipmap.icon_homework_yw_pyb;
 
             Module module3 = new Module();
-            module3.name = "写字本";
+            module3.name = "作文本";
             module3.resId = R.mipmap.icon_homework_yw_xzb_1;
             module3.resContentId = R.mipmap.icon_homework_yw_xzb;
+
+            Module module4 = new Module();
+            module4.name = "横格本";
+            module4.resId = R.mipmap.icon_homework_other_lxb_1;
+            module4.resContentId = R.mipmap.icon_homework_other_lxb;
 
             list.add(module);
             list.add(module1);
             list.add(module2);
             list.add(module3);
-        } else {
+            list.add(module4);
+        }
+        else if (grade>3 && grade<7){
             Module module = new Module();
-            module.name = "中学练习本";
+            module.name = "作文本";
+            module.resId = R.mipmap.icon_homework_yw_xzb_1;
+            module.resContentId = R.mipmap.icon_homework_yw_xzb;
+
+            Module module1 = new Module();
+            module1.name = "横格本";
+            module1.resId = R.mipmap.icon_homework_other_lxb_1;
+            module1.resContentId = R.mipmap.icon_homework_other_lxb;
+
+            list.add(module);
+            list.add(module1);
+        }
+        else {
+            Module module = new Module();
+            module.name = "练习本";
             module.resId = R.mipmap.icon_homework_other_lxb_1;
             module.resContentId = R.mipmap.icon_homework_other_lxb;
 
             Module module1 = new Module();
-            module1.name = "中学作文本";
+            module1.name = "作文本";
             module1.resId = R.mipmap.icon_homework_yw_zxzyb_1;
             module1.resContentId = R.mipmap.icon_homework_yw_zxzyb;
 
@@ -380,33 +402,19 @@ public class DataBeanManager {
     //数学作业本
     public List<Module> getSx(int grade) {
         List<Module> list = new ArrayList<>();
-        if (grade <= 3) {
+        if (grade < 7) {
             Module module = new Module();
-            module.name = "空白";
-            module.resId = R.drawable.bg_black_stroke_5dp_corner;
-            module.resContentId = 0;
-
-            Module module1 = new Module();
-            module1.name = "小学数学本";
-            module1.resId = R.mipmap.icon_homework_sx_sxb_1;
-            module1.resContentId = R.mipmap.icon_homework_sx_sxb;
-
+            module.name = "数学本";
+            module.resId = R.mipmap.icon_homework_sx_sxb_1;
+            module.resContentId = R.mipmap.icon_homework_sx_sxb;
             list.add(module);
-            list.add(module1);
-
         } else {
             Module module = new Module();
-            module.name = "空白";
-            module.resId = R.drawable.bg_black_stroke_5dp_corner;
-            module.resContentId = 0;
-
-            Module module1 = new Module();
-            module1.name = "中学练习本";
-            module1.resId = R.mipmap.icon_homework_other_lxb_1;
-            module1.resContentId = R.mipmap.icon_homework_other_lxb;
-
+            module.name = "数学本";
+            module.resId = R.mipmap.icon_homework_other_lxb_1;
+            module.resContentId = R.mipmap.icon_homework_other_lxb;
             list.add(module);
-            list.add(module1);
+
         }
         return list;
     }
@@ -414,33 +422,18 @@ public class DataBeanManager {
     //英语作业本
     public List<Module> getYy(int grade) {
         List<Module> list = new ArrayList<>();
-        if (grade <= 3) {
+        if (grade < 7) {
             Module module = new Module();
-            module.name = "空白";
-            module.resId = R.drawable.bg_black_stroke_5dp_corner;
-            module.resContentId = 0;
-
-            Module module1 = new Module();
-            module1.name = "小学英语本";
-            module1.resId = R.mipmap.icon_homework_yy_xxyyb_1;
-            module1.resContentId = R.mipmap.icon_homework_yy_xxyyb;
-
+            module.name = "英语本";
+            module.resId = R.mipmap.icon_homework_yy_xxyyb_1;
+            module.resContentId = R.mipmap.icon_homework_yy_xxyyb;
             list.add(module);
-            list.add(module1);
-
         } else {
             Module module = new Module();
-            module.name = "中学英语本";
+            module.name = "英语本";
             module.resId = R.mipmap.icon_homework_yy_zxyyb_1;
             module.resContentId = R.mipmap.icon_homework_yy_zxyyb;
-
-            Module module1 = new Module();
-            module1.name = "中学练习本";
-            module1.resId = R.mipmap.icon_homework_other_lxb_1;
-            module1.resContentId = R.mipmap.icon_homework_other_lxb;
-
             list.add(module);
-            list.add(module1);
         }
         return list;
     }
@@ -449,17 +442,10 @@ public class DataBeanManager {
     public List<Module> getOther() {
         List<Module> list = new ArrayList<>();
         Module module = new Module();
-        module.name = "空白";
-        module.resId = R.drawable.bg_black_stroke_5dp_corner;
-        module.resContentId = 0;
-
-        Module module1 = new Module();
-        module1.name = "中学练习本";
-        module1.resId = R.mipmap.icon_homework_other_lxb_1;
-        module1.resContentId = R.mipmap.icon_homework_other_lxb;
-
+        module.name = "练习本";
+        module.resId = R.mipmap.icon_homework_other_lxb_1;
+        module.resContentId = R.mipmap.icon_homework_other_lxb;
         list.add(module);
-        list.add(module1);
         return list;
     }
 
@@ -594,6 +580,27 @@ public class DataBeanManager {
         list.add(module4);
         list.add(module5);
         return list;
+    }
+
+    /**
+     * 得到年级
+     * @return
+     */
+    public List<Grade> getGrades(){
+        List<Grade> grades=new ArrayList<>();
+        grades.add(new Grade("一年级",1));
+        grades.add(new Grade("二年级",2));
+        grades.add(new Grade("三年级",3));
+        grades.add(new Grade("四年级",4));
+        grades.add(new Grade("五年级",5));
+        grades.add(new Grade("六年级",6));
+        grades.add(new Grade("初一",7));
+        grades.add(new Grade("初二",8));
+        grades.add(new Grade("初三",9));
+        grades.add(new Grade("高一",10));
+        grades.add(new Grade("高二",11));
+        grades.add(new Grade("高三",12));
+        return grades;
     }
 
 }

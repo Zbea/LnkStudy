@@ -26,11 +26,8 @@ class BookCollectActivity: BaseAppCompatActivity() {
 
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<BookBean>()
-    private var book: BookBean?=null
-    private var booksAll= mutableListOf<BookBean>()//所有数据
-    private var bookMap=HashMap<Int,MutableList<BookBean>>()//将所有数据按12个分页
     private var pageIndex=1
-
+    private var pageTotal=1
 
     override fun layoutId(): Int {
         return R.layout.ac_bookcase_mycollect
@@ -46,8 +43,21 @@ class BookCollectActivity: BaseAppCompatActivity() {
 
         initRecyclerView()
 
-        findData()
+        btn_page_up.setOnClickListener {
+            if(pageIndex>1){
+                pageIndex-=1
+                findData()
+            }
+        }
 
+        btn_page_down.setOnClickListener {
+            if(pageIndex<pageTotal){
+                pageIndex+=1
+                findData()
+            }
+        }
+
+        findData()
     }
 
 
@@ -62,13 +72,12 @@ class BookCollectActivity: BaseAppCompatActivity() {
             gotoBookDetails(books[position].bookId)
         }
         mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-            book=books[position]
-            cancel()
+            cancel(books[position])
         }
     }
 
     //取消收藏
-    private fun cancel(): Boolean {
+    private fun cancel(book:BookBean): Boolean {
         CommonDialog(this).setContent("确认取消收藏？").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
@@ -91,58 +100,13 @@ class BookCollectActivity: BaseAppCompatActivity() {
      * 查找本地书籍
      */
     private fun findData(){
-        booksAll=BookGreenDaoManager.getInstance().queryAllBook(true)
-        pageNumberView()
-    }
-
-    //翻页处理
-    private fun pageNumberView(){
-        bookMap.clear()
-        pageIndex=1
-        var pageTotal=booksAll.size
-        var toIndex=12
-        var pageCount= ceil(pageTotal.toDouble()/toIndex).toInt()
-        if (pageTotal==0)
-        {
-            ll_page_number.visibility= View.GONE
-            return
-        }
-
-        for(i in 0 until pageCount){
-            var index=i*toIndex
-            if(index+toIndex>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
-                toIndex=pageTotal-index
-            }
-            var newList = booksAll.subList(index,index+toIndex)
-            bookMap[i+1]=newList
-        }
-
-        tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageCount.toString()
-        upDateUI()
-
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                upDateUI()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                upDateUI()
-            }
-        }
-
-    }
-
-    //刷新数据
-    private fun upDateUI()
-    {
-        books= bookMap[pageIndex]!!
+        books = BookGreenDaoManager.getInstance().queryAllBook(true, pageIndex, 12)
+        val total = BookGreenDaoManager.getInstance().queryAllBook(true)
+        pageTotal = ceil(total.size.toDouble() / 12).toInt()
         mAdapter?.setNewData(books)
-        tv_page_current.text=pageIndex.toString()
+        tv_page_current.text = pageIndex.toString()
+        tv_page_total.text = pageTotal.toString()
+        ll_page_number.visibility=if (pageTotal==0) View.GONE else View.VISIBLE
     }
 
     //更新数据
@@ -152,7 +116,6 @@ class BookCollectActivity: BaseAppCompatActivity() {
             findData()
         }
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

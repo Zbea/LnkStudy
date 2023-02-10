@@ -44,19 +44,17 @@
         android:layout_marginBottom="80dp" />
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        >
+        android:orientation="vertical">
 
         <include
             layout="@layout/common_page_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true" />
 
         <ImageView
             android:id="@+id/tv_add"

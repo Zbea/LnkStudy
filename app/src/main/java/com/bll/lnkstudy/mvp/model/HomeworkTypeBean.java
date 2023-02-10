@@ -34,8 +34,8 @@ public class HomeworkTypeBean implements Serializable {
     public boolean isMessage;//收到通知
     @Transient
     public HomeworkMessage message;
-    @Generated(hash = 1997014846)
 
+    @Generated(hash = 1997014846)
     public HomeworkTypeBean(Long id, long userId, String name, int typeId,
             int state, long date, String contentResId, String bgResId,
             String course, boolean isCreate) {

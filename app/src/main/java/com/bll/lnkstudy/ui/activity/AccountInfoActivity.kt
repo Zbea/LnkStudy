@@ -3,10 +3,13 @@ package com.bll.lnkstudy.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Handler
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.PopupList
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.ActivityManager
@@ -18,6 +21,10 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     private val presenter=AccountInfoPresenter(this)
     private var nickname=""
+
+    private var popupGradeWindow: PopupList?=null
+    private var grades= mutableListOf<PopupBean>()
+    private var grade=1
 
     override fun onLogout() {
         SPUtil.putString("token", "")
@@ -42,6 +49,10 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     }
 
     override fun initData() {
+        val datas= DataBeanManager.getIncetance().grades
+        for (i in datas.indices){
+            grades.add(PopupBean(i + 1, datas[i].name, i == 0))
+        }
     }
 
     @SuppressLint("WrongConstant")
@@ -51,12 +62,14 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
         tv_user.text = mUser?.account
         tv_name.text = mUser?.nickname
+        tv_account_id.text=mUser?.accountId.toString()
         tv_phone.text =  mUser?.telNumber?.substring(0,3)+"****"+mUser?.telNumber?.substring(7,11)
         tv_birthday.text=DateUtils.intToStringDataNoHour(mUser?.birthdayTime?.times(1000) ?: 0)
         tv_parent.text=mUser?.parentName
         tv_parent_name.text=mUser?.parentNickname
         tv_parent_phone.text=mUser?.parentTel
         tv_address.text=mUser?.parentAddr
+        tv_grade.text=grades[mUser?.grade?.minus(1)!!].name
 
         btn_edit_psd.setOnClickListener {
             customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
@@ -64,6 +77,10 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
         btn_edit_name.setOnClickListener {
             editName()
+        }
+
+        btn_edit_grade.setOnClickListener {
+            selectorGrade()
         }
 
         btn_logout.setOnClickListener {
@@ -77,6 +94,23 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             })
         }
 
+    }
+
+    /**
+     * 年级选择
+     */
+    private fun selectorGrade(){
+        if (popupGradeWindow==null)
+        {
+            popupGradeWindow= PopupList(this,grades,btn_edit_grade,15).builder()
+            popupGradeWindow?.setOnSelectListener { item ->
+                tv_grade.text=item.name
+                grade=item.id
+            }
+        }
+        else{
+            popupGradeWindow?.show()
+        }
     }
 
     /**

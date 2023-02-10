@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="名称"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_24" />
 
         <TextView
             android:id="@+id/tv_message_content"
@@ -35,7 +35,7 @@
             android:text="内容"
             android:maxLines="1"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_20" />
 
     </LinearLayout>
     <TextView

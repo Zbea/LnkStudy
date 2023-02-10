@@ -12,10 +12,13 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
+import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.Area
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.DP2PX
@@ -46,6 +49,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var provinceStr=""
     private var cityStr=""
     private var brithday=0L
+
+    private var popupGradeWindow:PopupList?=null
+    private var grades= mutableListOf<PopupBean>()
+    private var grade=1
 
     override fun onSms() {
         showToast("发送验证码成功")
@@ -82,6 +89,11 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
 
         for (item in area?.provinces!![0].citys){
             citys.add(item.citysName)
+        }
+
+        val datas=DataBeanManager.getIncetance().grades
+        for (i in datas.indices){
+            grades.add(PopupBean(i + 1, datas[i].name, i == 0))
         }
 
     }
@@ -141,14 +153,16 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         }
 
         btn_code.setOnClickListener {
-
             val phone=ed_phone.text.toString().trim()
             if (!ToolUtils.isPhoneNum(phone)) {
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
             presenter.sms(phone)
+        }
 
+        tv_grade.setOnClickListener {
+            selectorGrade()
         }
 
         btn_register.setOnClickListener {
@@ -292,7 +306,22 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
 
     }
 
-
+    /**
+     * 年级选择
+     */
+    private fun selectorGrade(){
+        if (popupGradeWindow==null)
+        {
+            popupGradeWindow= PopupList(this,grades,tv_grade,5).builder()
+            popupGradeWindow?.setOnSelectListener { item ->
+                tv_grade.text=item.name
+                grade=item.id
+            }
+        }
+        else{
+            popupGradeWindow?.show()
+        }
+    }
 
     private fun setIntent(){
         val intent = Intent()

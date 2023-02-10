@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -324,6 +324,22 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_22"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_grade"
+                    android:layout_width="115dp"
+                    android:layout_height="@dimen/dp_45"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:paddingEnd="@dimen/dp_5"
+                    android:paddingStart="@dimen/dp_10"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:hint="年级"
+                    android:textColorHint="@color/color_text_hint"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"
+                    />
 
                 <EditText
                     android:id="@+id/et_school_name"

@@ -32,7 +32,6 @@ class MessageListActivity:BaseAppCompatActivity() {
         setPageSetting("删除")
         showView(cb_all)
 
-
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MainMessageAdapter(R.layout.item_message, null)
         rv_list.adapter = mAdapter

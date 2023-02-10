@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -17,7 +18,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_bookcase_type.*
+import kotlinx.android.synthetic.main.ac_bookcase_type_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -28,7 +29,7 @@ import kotlin.math.ceil
 /**
  * 书架分类
  */
-class BookCaseTypeActivity: BaseAppCompatActivity() {
+class BookCaseTypeListActivity: BaseAppCompatActivity() {
 
     private var mAdapter:BookAdapter?=null
     private var books= mutableListOf<BookBean>()
@@ -40,7 +41,7 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
     private var book: BookBean?=null
 
     override fun layoutId(): Int {
-        return R.layout.ac_bookcase_type
+        return R.layout.ac_bookcase_type_list
     }
 
     override fun initData() {
@@ -84,7 +85,6 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
         }
 
         findData()
-
     }
 
     //设置tab
@@ -120,12 +120,13 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr,pageIndex,Constants.PAGE_SIZE)
-        val total=BookGreenDaoManager.getInstance().queryAllBook(0,typeStr)
+        books=BookGreenDaoManager.getInstance().queryAllBook(typeStr,pageIndex,Constants.PAGE_SIZE)
+        val total=BookGreenDaoManager.getInstance().queryAllBook(typeStr)
         pageTotal= ceil((total.size.toDouble()/Constants.PAGE_SIZE)).toInt()
         mAdapter?.setNewData(books)
         tv_page_current.text=pageIndex.toString()
         tv_page_total.text=pageTotal.toString()
+        ll_page_number.visibility=if (total.size==0) View.GONE else View.VISIBLE
     }
 
     //长按显示课本管理
@@ -161,7 +162,6 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()
                 EventBus.getDefault().post(BOOK_EVENT)
-
             }
         })
     }
@@ -173,7 +173,6 @@ class BookCaseTypeActivity: BaseAppCompatActivity() {
             findData()
         }
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

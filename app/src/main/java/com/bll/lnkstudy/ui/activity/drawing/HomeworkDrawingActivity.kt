@@ -9,7 +9,6 @@ import android.view.View
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
-import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
@@ -19,7 +18,6 @@ import com.bll.lnkstudy.mvp.model.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_homework_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -247,7 +245,7 @@ class HomeworkDrawingActivity : BaseActivity() {
         }
         DrawingCatalogDialog(this,list).builder()?.
         setOnDialogClickListener { position ->
-            page = homeworks[position].page
+            page = list[position].page
             changeContent()
         }
     }
@@ -367,25 +365,6 @@ class HomeworkDrawingActivity : BaseActivity() {
         else{
             drawingCommitDialog?.show()
         }
-    }
-
-    //删除当前作业内容
-    private fun delete() {
-        CommonDialog(this,getCurrentScreenPos()).setContent("确认删除作业内容？").builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                deleteContent()
-            }
-        })
-    }
-
-    //删除作业
-    private fun deleteContent() {
-        HomeworkContentDaoManager.getInstance().deleteBean(homeworkContent)
-        homeworks.remove(homeworkContent)
-        FileUtils.deleteFile(homeworkContent?.folderPath, homeworkContent?.pathName)//删除文件
     }
 
    override fun changeScreenPage() {

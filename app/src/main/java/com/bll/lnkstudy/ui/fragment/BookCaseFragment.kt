@@ -10,7 +10,7 @@ import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
-import com.bll.lnkstudy.ui.activity.BookCaseTypeActivity
+import com.bll.lnkstudy.ui.activity.BookCaseTypeListActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
@@ -47,7 +47,7 @@ class BookCaseFragment: BaseFragment() {
         findData()
 
         tv_type.setOnClickListener {
-            customStartActivity(Intent(activity,BookCaseTypeActivity::class.java))
+            customStartActivity(Intent(activity,BookCaseTypeListActivity::class.java))
         }
 
         ll_book_top.setOnClickListener {
@@ -87,7 +87,7 @@ class BookCaseFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findData(){
-        books=BookGreenDaoManager.getInstance().queryAllBook(0)
+        books=BookGreenDaoManager.getInstance().queryAllBook()
         mAdapter?.setNewData(books)
         onChangeTopView()
     }

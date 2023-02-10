@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
@@ -29,11 +30,9 @@ class TextbookFragment : BaseFragment(){
     private var pageIndex=1
     private var pageTotal=1
 
-
     override fun getLayoutId(): Int {
         return R.layout.fragment_textbook
     }
-
 
     override fun initView() {
         EventBus.getDefault().register(this)
@@ -76,7 +75,6 @@ class TextbookFragment : BaseFragment(){
     }
 
     private fun initRecyclerView(){
-
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
@@ -93,14 +91,13 @@ class TextbookFragment : BaseFragment(){
      * 查找本地课本
      */
     private fun findData(){
-        books = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook, pageIndex, 9)
-        val total = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook)
+        books = BookGreenDaoManager.getInstance().queryAllTextBook( textBook, pageIndex, 9)
+        val total = BookGreenDaoManager.getInstance().queryAllTextBook(textBook)
         pageTotal = ceil((total.size.toDouble() / 9)).toInt()
-
         mAdapter?.setNewData(books)
         tv_page_current.text = pageIndex.toString()
         tv_page_total.text = pageTotal.toString()
-
+        ll_page_number.visibility=if (pageTotal==0) View.GONE else View.VISIBLE
     }
 
     //更新数据
