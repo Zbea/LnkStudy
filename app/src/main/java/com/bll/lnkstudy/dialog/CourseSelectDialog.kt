@@ -27,7 +27,7 @@ class CourseSelectDialog(val context: Context){
             dialog.dismiss()
         }
 
-        val courses= DataBeanManager.getIncetance().courses
+        val courses= DataBeanManager.courses
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
         var mAdapter = CourseAdapter(R.layout.item_course, courses)

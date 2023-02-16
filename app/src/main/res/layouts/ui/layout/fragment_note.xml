@@ -1,71 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/bg_page"
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/ll_title"
-        layout="@layout/common_fragment_title" />
+    <include layout="@layout/common_fragment_title" />
 
     <LinearLayout
-        android:id="@+id/ll_tab"
-        android:layout_marginTop="@dimen/dp_15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_title"
-        android:orientation="horizontal"
-        >
+        android:layout_marginTop="@dimen/dp_15"
+        android:orientation="horizontal">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="78dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/iv_down"
             android:layout_width="78dp"
             android:layout_height="@dimen/xtab_height"
             android:layout_marginRight="@dimen/dp_10"
-            android:src="@mipmap/icon_bookstore_arrow_down"
-            android:scaleType="centerInside"/>
+            android:scaleType="centerInside"
+            android:src="@mipmap/icon_bookstore_arrow_down" />
 
     </LinearLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/ll_tab"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_25"
-        android:layout_marginBottom="80dp" />
+        android:layout_weight="1" />
 
+    <include layout="@layout/common_page_number" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/common_page_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true" />
-
-        <ImageView
-            android:id="@+id/tv_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:src="@mipmap/icon_note_add" />
-    </RelativeLayout>
-
-
-
-</RelativeLayout>
+</LinearLayout>

@@ -29,7 +29,7 @@ class PopupDateDayRemind(var context:Context, var view: View, val day:Int) {
         mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
         mPopupWindow?.width=view.width
 
-        val list=DataBeanManager.getIncetance().remind
+        val list=DataBeanManager.remind
         for (item in list)
         {
             item.isCheck = item.remindIn==day

@@ -27,7 +27,7 @@ class TeachFragment : BaseFragment() {
     override fun initView() {
         setTitle("义教")
 
-        courses=DataBeanManager.getIncetance().courses
+        courses=DataBeanManager.courses
 
         initTab()
 
@@ -48,7 +48,7 @@ class TeachFragment : BaseFragment() {
     //设置头部索引
     private fun initTab() {
 
-        val teachList = DataBeanManager.getIncetance().teachList
+        val teachList = DataBeanManager.teachList
 
         for (i in teachList.indices) {
             rg_group.addView(getRadioButton(i ,teachList[i],teachList.size-1))
@@ -59,19 +59,19 @@ class TeachFragment : BaseFragment() {
                     mAdapter?.setNewData(courses)
                 }
                 1 -> {
-                    mAdapter?.setNewData(DataBeanManager.getIncetance().teachTYList.asList())
+                    mAdapter?.setNewData(DataBeanManager.teachTYList.asList())
                 }
                 2 -> {
-                    mAdapter?.setNewData(DataBeanManager.getIncetance().teachMSList.asList())
+                    mAdapter?.setNewData(DataBeanManager.teachMSList.asList())
                 }
                 3 -> {
-                    mAdapter?.setNewData(DataBeanManager.getIncetance().teachWDList.asList())
+                    mAdapter?.setNewData(DataBeanManager.teachWDList.asList())
                 }
                 4 -> {
-                    mAdapter?.setNewData(DataBeanManager.getIncetance().teachYJList.asList())
+                    mAdapter?.setNewData(DataBeanManager.teachYJList.asList())
                 }
                 else -> {
-                    mAdapter?.setNewData(DataBeanManager.getIncetance().teachBCList.asList())
+                    mAdapter?.setNewData(DataBeanManager.teachBCList.asList())
                 }
             }
         }

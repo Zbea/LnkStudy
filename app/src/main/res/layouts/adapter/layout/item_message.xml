@@ -3,15 +3,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_line_bottom"
     android:gravity="center"
     android:padding="@dimen/dp_10">
-
-    <CheckBox
-        android:id="@+id/cb_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:button="@drawable/bg_check_selector"
-        android:layout_marginEnd="@dimen/dp_20"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -34,12 +28,13 @@
             android:layout_marginTop="10dp"
             android:text="内容"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:ellipsize="end"
+            android:textColor="@color/black_20"
             android:textSize="@dimen/sp_20" />
 
     </LinearLayout>
     <TextView
-        android:id="@+id/tv_time"
+        android:id="@+id/tv_message_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_15"

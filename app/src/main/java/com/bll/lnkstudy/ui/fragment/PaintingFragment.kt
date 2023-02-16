@@ -86,7 +86,7 @@ class PaintingFragment : BaseFragment(){
 
     //设置头部索引
     private fun initTab(){
-        val tabStrs= DataBeanManager.getIncetance().PAINTING
+        val tabStrs= DataBeanManager.PAINTING
         for (i in 0..3) {
             rg_group.addView(getRadioButton(i ,tabStrs[i],3))
         }
@@ -97,7 +97,7 @@ class PaintingFragment : BaseFragment(){
 
     private fun onClick(time:Int){
         var intent= Intent(activity,MyPaintingListActivity::class.java)
-        intent.putExtra("title", "${DataBeanManager.getIncetance().YEARS[time]}   ${DataBeanManager.getIncetance().PAINTING[typeId]}" )
+        intent.putExtra("title", "${DataBeanManager.YEARS[time]}   ${DataBeanManager.PAINTING[typeId]}" )
         intent.putExtra("time",time)
         intent.putExtra("paintingType",typeId)
         intent.flags=0

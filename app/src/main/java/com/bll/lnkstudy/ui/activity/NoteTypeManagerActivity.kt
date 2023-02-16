@@ -75,7 +75,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
             override fun cancel() {
             }
             override fun ok() {
-                var noteType=noteTypes[position]
+                val noteType=noteTypes[position]
                 noteTypes.removeAt(position)
                 //删除笔记本
                 BaseTypeBeanDaoManager.getInstance().deleteBean(noteType)

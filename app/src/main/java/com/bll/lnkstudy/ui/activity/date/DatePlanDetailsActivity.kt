@@ -35,7 +35,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         flags=intent.flags
-        weeks= DataBeanManager.getIncetance().weeks
+        weeks= DataBeanManager.weeks
 
         if (flags==0){
             dateEventBean= DateEventBean()

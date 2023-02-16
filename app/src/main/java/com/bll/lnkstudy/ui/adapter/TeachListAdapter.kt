@@ -11,11 +11,12 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TeachListAdapter(layoutResId: Int, data: List<ItemList>?) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: ItemList) {
-
-        helper.setText(R.id.tv_name,item.name)
-        helper.setText(R.id.tv_info,item.info)
+        item.run {
+            helper.run {
+                setText(R.id.tv_name,name)
+                setText(R.id.tv_info,info)
+            }
+        }
     }
-
-
 
 }

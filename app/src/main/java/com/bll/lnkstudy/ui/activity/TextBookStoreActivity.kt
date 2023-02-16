@@ -111,7 +111,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
             )
         }
         provinceStr = provinceList[0].name
-        typeList = DataBeanManager.getIncetance().textbookType.toMutableList()
+        typeList = DataBeanManager.textbookType.toMutableList()
         typeList.removeAt(3)
         typeStr = typeList[0]
 
@@ -146,7 +146,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
         tv_download?.setOnClickListener {
 
-            val tasks= mutableListOf<BaseDownloadTask>()
+            val tasks = mutableListOf<BaseDownloadTask>()
             if (typeId == 0) {
                 for (item in books) {
                     val localBook =
@@ -195,7 +195,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         tv_grade.text = gradeList[0].name
         tv_grade.setOnClickListener {
             if (popWindowGrade == null) {
-                popWindowGrade = PopupList(this, gradeList, tv_grade,tv_grade.width, 5).builder()
+                popWindowGrade = PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
                 popWindowGrade?.setOnSelectListener { item ->
                     gradeStr = item.name
                     tv_grade.text = gradeStr
@@ -210,7 +210,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         tv_province.text = provinceStr
         tv_province.setOnClickListener {
             if (popWindowProvince == null) {
-                popWindowProvince = PopupList(this, provinceList, tv_province,tv_province.width, 5).builder()
+                popWindowProvince =
+                    PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
                 popWindowProvince?.setOnSelectListener { item ->
                     provinceStr = item.name
                     tv_province.text = item.name
@@ -239,7 +240,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     //设置tab分类
     private fun initTab() {
         for (i in typeList.indices) {
-            rg_group.addView(getRadioButton(i,typeList[i],typeList.size-1))
+            rg_group.addView(getRadioButton(i, typeList[i], typeList.size - 1))
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
@@ -334,9 +335,9 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    unzip(book,targetFileStr,fileName)
+                    unzip(book, targetFileStr, fileName)
                     lock.unlock()
-                    if (mDownMapPool.entries.size==0){
+                    if (mDownMapPool.entries.size == 0) {
                         mDialog?.dismiss()
                     }
                 }
@@ -354,7 +355,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     /**
      * 解压
      */
-    private fun unzip(book: BookBean, targetFileStr:String, fileName:String){
+    private fun unzip(book: BookBean, targetFileStr: String, fileName: String) {
         ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
             override fun onFinish(success: Boolean) {
                 if (success) {
@@ -375,19 +376,22 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 //                                    EventBus.getDefault().post(BOOK_HOMEWORK_EVENT)
 //                                }
                     //设置全部科目
-                    val courses=DataBeanManager.getIncetance().courses
-                    if (!courses.contains(book.subjectName)){
+                    val courses = DataBeanManager.courses
+                    if (!courses.contains(book.subjectName)) {
                         courses.add(book.subjectName)
-                        SPUtil.putList("courses",courses)
+                        SPUtil.putList("courses", courses)
                         EventBus.getDefault().post(COURSE_EVENT)
                     }
 
-                    showToast("${book.bookName}下载完成")
-                    book?.textBookType = typeStr
-                    book?.loadSate = 2
-                    book?.category = 0
-                    book?.time = System.currentTimeMillis()//下载时间用于排序
-                    book?.bookPath = FileAddress().getPathBook(fileName)
+                    book?.run {
+                        showToast("${bookName}下载完成")
+                        textBookType = typeStr
+                        loadSate = 2
+                        category = 0
+                        time = System.currentTimeMillis()//下载时间用于排序
+                        bookPath = FileAddress().getPathBook(fileName)
+                    }
+
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)

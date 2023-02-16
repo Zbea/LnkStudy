@@ -4,6 +4,8 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
@@ -14,7 +16,10 @@ import com.bll.lnkstudy.dialog.PopupRecordManage
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
-import kotlinx.android.synthetic.main.ac_record_list.*
+import com.bll.lnkstudy.utils.DP2PX
+import kotlinx.android.synthetic.main.ac_list.*
+import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -29,7 +34,7 @@ class RecordListActivity : BaseAppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
 
     override fun layoutId(): Int {
-        return R.layout.ac_record_list
+        return R.layout.ac_list
     }
 
     override fun initData() {
@@ -40,14 +45,23 @@ class RecordListActivity : BaseAppCompatActivity() {
         setPageTitle("$course 朗读录音")
         EventBus.getDefault().register(this)
 
-        iv_add.setOnClickListener {
+        showView(iv_manager)
+        iv_manager.setImageResource(R.mipmap.icon_group_add)
+        disMissView(ll_page_number)
+
+        iv_manager.setOnClickListener {
             addRecord()
         }
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = RecordAdapter(R.layout.item_record, recordBeans)
         rv_list.adapter = mAdapter
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),DP2PX.dip2px(this,50f),20)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
         mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id == R.id.iv_record) {

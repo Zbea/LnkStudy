@@ -52,7 +52,7 @@ object SPUtil {
         return s as String
     }
 
-    fun getList(key: String): List<String> {
+    fun getList(key: String): MutableList<String> {
         return gson.fromJson(getString(key), object : TypeToken<List<String>>() {}.type)
             ?: return mutableListOf()
     }

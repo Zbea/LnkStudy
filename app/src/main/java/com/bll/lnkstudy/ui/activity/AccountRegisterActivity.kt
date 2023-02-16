@@ -91,7 +91,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             citys.add(item.citysName)
         }
 
-        val datas=DataBeanManager.getIncetance().grades
+        val datas=DataBeanManager.grades
         for (i in datas.indices){
             grades.add(PopupBean(i + 1, datas[i].name, i == 0))
         }

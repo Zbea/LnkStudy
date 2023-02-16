@@ -298,22 +298,24 @@ class BookStoreActivity : BaseAppCompatActivity(),
         ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
             override fun onFinish(success: Boolean) {
                 if (success) {
-                    showToast("${book.bookName}下载完成")
-                    book?.loadSate = 2
-                    book?.category = 1
-                    when (categoryStr) {
-                        "思维科学", "自然科学" -> {
-                            book?.bookType="科学技术"
+                    book.run {
+                        showToast("${bookName}下载完成")
+                        when (categoryStr) {
+                            "思维科学", "自然科学" -> {
+                                bookType="科学技术"
+                            }
+                            "运动才艺" -> {
+                                bookType="运动才艺"
+                            }
+                            else -> {
+                                bookType=typeStr
+                            }
                         }
-                        "运动才艺" -> {
-                            book?.bookType="运动才艺"
-                        }
-                        else -> {
-                            book?.bookType=typeStr
-                        }
+                        loadSate = 2
+                        category = 1
+                        time = System.currentTimeMillis()//下载时间用于排序
+                        bookPath = FileAddress().getPathBook(fileName)
                     }
-                    book?.time = System.currentTimeMillis()//下载时间用于排序
-                    book?.bookPath = FileAddress().getPathBook(fileName)
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     EventBus.getDefault().post(BOOK_EVENT)

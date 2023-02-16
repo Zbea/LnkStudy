@@ -58,7 +58,7 @@ class PaperFragment : BaseFragment(){
     //设置头部索引
     private fun initTab(){
         rg_group.removeAllViews()
-        val courses= DataBeanManager.getIncetance().courses
+        val courses= DataBeanManager.courses
         if (courses.size>0){
             course=courses[0]
             for (i in courses.indices) {

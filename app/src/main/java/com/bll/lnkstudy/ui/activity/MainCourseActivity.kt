@@ -525,49 +525,46 @@ class MainCourseActivity : BaseAppCompatActivity() {
 
     //获得第二列课节view
     private fun getLessonsView(resId: Int): View {
-        var view = layoutInflater.inflate(R.layout.common_course_lessons, null)
-        var ivName = view.findViewById<ImageView>(R.id.iv_name)
-        ivName.setImageResource(resId)
-
-        return view
+        return layoutInflater.inflate(R.layout.common_course_lessons, null).also {
+            it.findViewById<ImageView>(R.id.iv_name).also { iv -> iv.setImageResource(resId) }
+        }
     }
 
     //获取星期
     private fun getWeekView(resId: Int): View {
-        var view = ImageView(this)
-        view.setImageResource(resId)
-        view.scaleType = ImageView.ScaleType.CENTER
-        view.setPadding(0,0,0,10)
-        return view
+        return ImageView(this).also {
+            it.setImageResource(resId)
+            it.scaleType = ImageView.ScaleType.CENTER
+        }
     }
 
     //获得课程
     private fun getCourseView(): TextView {
-        var view = TextView(this)
-        view.setTextColor(Color.BLACK)
-        view.textSize = 46f
-        view.gravity = Gravity.CENTER
-        return view
+        return TextView(this).also {
+            it.setTextColor(Color.BLACK)
+            it.textSize = 46f
+            it.gravity = Gravity.CENTER
+        }
     }
 
     //空白view
     private fun getCourseView1(): TextView {
-        var view = TextView(this)
-        view.setTextColor(Color.BLACK)
-        view.textSize = 20f
-        view.gravity = Gravity.CENTER
-        view.setPadding(20, 0, 20, 0)
-        return view
+        return TextView(this).also {
+            it.setTextColor(Color.BLACK)
+            it.textSize = 20f
+            it.gravity = Gravity.CENTER
+            it.setPadding(20, 0, 20, 0)
+        }
     }
 
     //获得第一列 时间
     private fun getDateView(resId: Int, padding: Int): View {
-        var view = layoutInflater.inflate(R.layout.common_course_date, null)
-        var tv1 = view.findViewById<ImageView>(R.id.tv_1)
-        tv1.setImageResource(resId)
-        tv1.setPadding(0, 0, 0, padding)
-
-        return view
+        return layoutInflater.inflate(R.layout.common_course_date, null).also {
+            it.findViewById<ImageView>(R.id.tv_1).also { image ->
+                image.setImageResource(resId)
+                image.setPadding(0, 0, 0, padding)
+            }
+        }
     }
 
 

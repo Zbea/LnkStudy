@@ -24,7 +24,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class AppListActivity:BaseActivity() {
 
-    private var apps= mutableListOf<AppBean>()
+    private val apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null
     private var mAdapterTool:AppListAdapter?=null
 
@@ -33,7 +33,7 @@ class AppListActivity:BaseActivity() {
     }
 
     override fun initData() {
-        apps= DataBeanManager.getIncetance().appBaseList
+        apps.addAll(DataBeanManager.appBaseList)
         apps.addAll(AppUtils.scanLocalInstallAppList(this))
     }
 

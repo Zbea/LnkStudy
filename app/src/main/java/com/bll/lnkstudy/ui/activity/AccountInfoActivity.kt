@@ -49,7 +49,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     }
 
     override fun initData() {
-        val datas= DataBeanManager.getIncetance().grades
+        val datas= DataBeanManager.grades
         for (i in datas.indices){
             grades.add(PopupBean(i + 1, datas[i].name, i == 0))
         }
@@ -127,6 +127,4 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         super.onDestroy()
         mUser?.let { SPUtil.putObj("user", it) }
     }
-
-
 }

@@ -63,7 +63,7 @@ class TextbookFragment : BaseFragment(){
 
     //设置头部索引
     private fun initTab(){
-        var tabStrs= DataBeanManager.getIncetance().textbookType
+        var tabStrs= DataBeanManager.textbookType
         for (i in tabStrs.indices) {
             rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
         }

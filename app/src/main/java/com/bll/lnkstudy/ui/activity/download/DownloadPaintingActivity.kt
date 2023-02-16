@@ -68,7 +68,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
     override fun initData() {
 
-        val yeas= DataBeanManager.getIncetance().YEARS
+        val yeas= DataBeanManager.YEARS
         for (i in yeas.indices){
             popTimes.add(
                 PopupBean(
@@ -80,7 +80,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         }
         dynasty=popTimes[0].id
 
-        val paintings= DataBeanManager.getIncetance().PAINTING
+        val paintings= DataBeanManager.PAINTING
         for (i in paintings.indices){
             popPaintings.add(
                 PopupBean(

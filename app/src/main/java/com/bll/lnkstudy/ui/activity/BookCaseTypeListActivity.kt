@@ -90,7 +90,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
     //设置tab
     private fun initTab(){
         val types= mutableListOf<BaseTypeBean>()
-        val strings= DataBeanManager.getIncetance().bookType
+        val strings= DataBeanManager.bookType
         for (i in strings.indices){
             var baseTypeBean= BaseTypeBean()
             baseTypeBean.name=strings[i]

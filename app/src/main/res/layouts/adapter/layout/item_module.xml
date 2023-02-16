@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="210dp"
-        android:layout_height="260dp"
+        android:layout_width="180dp"
+        android:layout_height="220dp"
         android:scaleType="centerInside"/>
 
     <TextView

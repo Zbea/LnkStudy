@@ -21,7 +21,7 @@
         android:id="@+id/tv_search"
         android:layout_width="200dp"
         android:layout_height="@dimen/dp_50"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="@dimen/dp_40"
         android:layout_alignParentEnd="true"
         android:background="@drawable/bg_gary_arch"
         android:drawableStart="@mipmap/icon_search"
@@ -34,7 +34,7 @@
         android:id="@+id/iv_manager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="@dimen/dp_40"
         android:visibility="gone"
         android:src="@mipmap/icon_manager"/>
 

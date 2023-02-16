@@ -62,7 +62,7 @@ public class CommonDialog {
         WindowManager.LayoutParams lp = window.getAttributes();
         if (screenPos==3){
             lp.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-            lp.x=(Constants.Companion.getWIDTH()- 600)/2;
+            lp.x=(Constants.WIDTH- 600)/2;
         }
         window.setAttributes(lp);
 

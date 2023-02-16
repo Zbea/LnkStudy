@@ -26,10 +26,12 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
         dialog?.show()
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val width=if (list.size>4) DP2PX.dip2px(context,700f) else DP2PX.dip2px(context,500f)
         val layoutParams = window.attributes
+        layoutParams.width=width
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,560f))/2
+            layoutParams?.x=(Constants.WIDTH- width)/2
         }
         window.attributes = layoutParams
 
@@ -41,11 +43,11 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
         var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        rvList?.layoutManager = GridLayoutManager(context,2)
+        rvList?.layoutManager = GridLayoutManager(context,if (list.size>4) 3 else 2)
         var mAdapter =MAdapter(R.layout.item_module, list)
         rvList?.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceGridItemDeco(0,20))
+        rvList?.addItemDecoration(SpaceGridItemDeco(0,40))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if (listener!=null)
                 listener?.onClick(list[position])

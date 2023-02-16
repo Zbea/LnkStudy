@@ -35,7 +35,6 @@ import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
@@ -179,21 +178,16 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
 
     //消息相关处理
     private fun initMessageView() {
-        val messageDatas = DataBeanManager.getIncetance().message
+        val messageDatas = DataBeanManager.message
         rv_main_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        var messageAdapter = MainMessageAdapter(R.layout.item_main_message, messageDatas)
+        var messageAdapter = MessageAdapter(R.layout.item_main_message, messageDatas)
         rv_main_message.adapter = messageAdapter
         messageAdapter?.bindToRecyclerView(rv_main_message)
-        rv_main_message.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
         messageAdapter?.setOnItemClickListener { adapter, view, position ->
             messageDatas[position].isLook = true
             messageAdapter?.notifyDataSetChanged()
             MessageDetailsDialog(requireContext(),screenPos, messageDatas[position]).builder()
-                ?.setOnDismissListener {
-                    messageAdapter?.remove(position)
-                }
         }
-        messageAdapter?.setType(1)
     }
 
     //班群管理
@@ -203,8 +197,6 @@ class MainFragment : BaseFragment(),IContractView.IClassGroupView {
         classGroupAdapter = MainClassGroupAdapter(R.layout.item_main_classgroup, null)
         rv_main_group.adapter = classGroupAdapter
         classGroupAdapter?.bindToRecyclerView(rv_main_group)
-        classGroupAdapter?.setOnItemChildClickListener { adapter, view, position ->
-        }
 
     }
 

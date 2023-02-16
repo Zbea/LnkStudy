@@ -55,6 +55,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         iv_manager.setImageResource(R.mipmap.icon_group_user)
         iv_save.setImageResource(R.mipmap.icon_group_add)
 
+        showLog(System.currentTimeMillis().toString())
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = ClassGroupAdapter(R.layout.item_classgroup, groups)

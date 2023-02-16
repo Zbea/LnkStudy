@@ -19,7 +19,7 @@ open class MainActivity : BaseAppCompatActivity() {
 
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
-    private var mData: ArrayList<MainList>? = null
+    private var mData= mutableListOf<MainList>()
     private var lastFragment: Fragment? = null
 
     private var mainFragment: MainFragment? = null
@@ -37,10 +37,10 @@ open class MainActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        mData= DataBeanManager.getIncetance().getIndexData(this)
+        mData= DataBeanManager.getIndexData()
         val courses=SPUtil.getList("courses")
         if (courses!=null){
-            DataBeanManager.getIncetance().courses=courses
+            DataBeanManager.courses=courses
         }
     }
 

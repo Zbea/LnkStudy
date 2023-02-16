@@ -33,7 +33,7 @@
             android:id="@+id/tv_search"
             android:layout_width="200dp"
             android:layout_height="@dimen/dp_50"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/bg_gary_arch"
             android:drawableStart="@mipmap/icon_search"
             android:gravity="center_vertical"
@@ -53,7 +53,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:layout_marginEnd="@dimen/dp_30"
+                android:layout_marginEnd="@dimen/dp_40"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:paddingEnd="@dimen/dp_20"
                 android:paddingStart="@dimen/dp_30"
@@ -77,23 +77,11 @@
         </LinearLayout>
     </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/cb_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:text=" 全选"
-        android:button="@drawable/bg_check_selector"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:visibility="gone"
-        />
-
     <TextView
         android:id="@+id/tv_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="@dimen/dp_40"
         android:textColor="@color/black"
         android:textSize="28sp"
         android:visibility="gone"
@@ -103,7 +91,7 @@
         android:id="@+id/iv_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_40"
         android:visibility="gone"
         android:src="@mipmap/icon_save"/>
 
@@ -111,7 +99,7 @@
         android:id="@+id/iv_manager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_40"
         android:visibility="gone"
         android:src="@mipmap/icon_manager"/>
 

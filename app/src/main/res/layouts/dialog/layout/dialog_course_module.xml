@@ -17,9 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="模板"
+            android:text="课程表模板"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -35,7 +35,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal">
 
 
@@ -50,20 +50,21 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_course_1"/>
+                android:src="@mipmap/icon_course_1" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="五天六节课"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_20"
+                 />
         </LinearLayout>
 
         <View
             android:layout_width="@dimen/dp_30"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp" />
 
         <LinearLayout
             android:id="@+id/ll_2"
@@ -76,17 +77,17 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_course_2"/>
+                android:src="@mipmap/icon_course_2" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="六天六节课"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_20"
+                 />
         </LinearLayout>
-
 
 
     </LinearLayout>
@@ -109,20 +110,21 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_course_3"/>
+                android:src="@mipmap/icon_course_3" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="五天七节课"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_20"
+                 />
         </LinearLayout>
 
         <View
             android:layout_width="@dimen/dp_30"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp" />
 
         <LinearLayout
             android:id="@+id/ll_4"
@@ -135,17 +137,17 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_course_4"/>
+                android:src="@mipmap/icon_course_4" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="六天七节课"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_20"
+                />
         </LinearLayout>
-
 
 
     </LinearLayout>
@@ -168,20 +170,21 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_course_5"/>
+                android:src="@mipmap/icon_course_5" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="五天八节课"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_20"
+                />
         </LinearLayout>
 
         <View
             android:layout_width="@dimen/dp_30"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp" />
 
         <LinearLayout
             android:id="@+id/ll_6"
@@ -194,17 +197,17 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_course_6"/>
+                android:src="@mipmap/icon_course_6" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="六天八节课"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_20"
+                />
         </LinearLayout>
-
 
 
     </LinearLayout>

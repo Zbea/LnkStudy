@@ -9,17 +9,16 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 class BookAdapter(layoutResId: Int, data: List<BookBean>?) : BaseQuickAdapter<BookBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: BookBean) {
-        helper.setText(R.id.tv_name,item.bookName)
-        val image=helper.getView<ImageView>(R.id.iv_image)
-        if(item.pageUrl.isNullOrEmpty())
-        {
-            GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,10)
+    override fun convert(helper: BaseViewHolder, item: BookBean) = item.run{
+        helper.run {
+            setText(R.id.tv_name,bookName)
+            val image=getView<ImageView>(R.id.iv_image)
+            if(pageUrl.isNullOrEmpty()) {
+                GlideUtils.setImageRoundUrl(mContext,imageUrl,image,10)
+            } else{
+                GlideUtils.setImageRoundUrl(mContext,pageUrl,image,10)
+            }
         }
-        else{
-            GlideUtils.setImageRoundUrl(mContext,item.pageUrl,image,10)
-        }
-
     }
 
 }
