@@ -5,37 +5,35 @@
     android:layout_height="wrap_content"
     android:gravity="center">
 
-
-    <LinearLayout
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+    <RelativeLayout
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:orientation="vertical"
+        android:padding="1dp"
         android:background="@drawable/bg_black_stroke_10dp_corner">
         <ImageView
             android:id="@+id/iv_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
             />
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_18"
             android:gravity="center"
-            android:layout_margin="@dimen/dp_10"
+            android:layout_margin="@dimen/dp_5"
             android:textColor="@color/black"/>
-    </LinearLayout>
-
-
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_16"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="38dp"
-        android:gravity="center"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:textSize="@dimen/sp_18"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_10"
         android:textColor="@color/black"/>
 
 </LinearLayout>

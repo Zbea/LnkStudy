@@ -8,6 +8,8 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.PaintingList;
+import com.bll.lnkstudy.mvp.model.TeachingVideoList;
+import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.net.IBaseView;
 
@@ -67,5 +69,12 @@ public interface IContractView {
         void onClassGroupList(List<ClassGroup> classGroups);
         void onQuit();
         void onUser(List<ClassGroupUser> lists);
+    }
+
+    //教学视频
+    interface ITeachingVideoView extends IBaseView {
+        void onList(TeachingVideoList list);
+        void onCourse(TeachingVideoType type);//视频 课程分类
+        void onType(TeachingVideoType type);//视频 其他分类
     }
 }

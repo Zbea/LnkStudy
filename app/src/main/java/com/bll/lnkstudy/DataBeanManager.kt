@@ -33,66 +33,6 @@ object DataBeanManager {
         "参考教材",
         "往期教材"
     )
-    val teachList = arrayOf(
-        "课程",
-        "体育",
-        "美术",
-        "舞蹈",
-        "演讲",
-        "编程"
-    )
-    val teachTYList = arrayOf(
-        "球类",
-        "棋类",
-        "田径",
-        "体操",
-        "跳水",
-        "游泳",
-        "皮艇",
-        "击剑",
-        "举重",
-        "摔跤",
-        "射击",
-        "拳击",
-        "跆拳道",
-        "自行车",
-        "滑雪",
-        "滑冰",
-        "冰球",
-        "冰壶"
-    )
-    val teachMSList = arrayOf(
-        "绘画",
-        "雕塑",
-        "书法",
-        "篆刻",
-        "建筑",
-        "摄影",
-        "工艺",
-        "设计"
-    )
-    val teachWDList = arrayOf(
-        "芭蕾",
-        "名族",
-        "现代",
-        "古典",
-        "拉丁",
-        "交际",
-        "爵士",
-        "街舞"
-    )
-    val teachYJList = arrayOf(
-        "命题",
-        "即兴",
-        "辩论",
-        "背诵"
-    )
-    val teachBCList = arrayOf(
-        "go",
-        "Android",
-        "python",
-        "swift"
-    )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
     val bookType = arrayOf(
         "诗经楚辞", "唐诗宋词", "古代经典",

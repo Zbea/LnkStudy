@@ -62,23 +62,21 @@ class BookCaseFragment: BaseFragment() {
     }
 
     private fun initRecyclerView(){
-
-        rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_book, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,23f),28))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].bookId)
+        mAdapter = BookAdapter(R.layout.item_book, null).apply {
+            rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
+            rv_list.adapter = mAdapter
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_book_empty)
+            rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,23f),28))
+            setOnItemClickListener { adapter, view, position ->
+                gotoBookDetails(books[position].bookId)
+            }
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                this@BookCaseFragment.position=position
+                book=books[position]
+                onLongClick()
+            }
         }
-
-        mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-            this.position=position
-            book=books[position]
-            onLongClick()
-        }
-
     }
 
 

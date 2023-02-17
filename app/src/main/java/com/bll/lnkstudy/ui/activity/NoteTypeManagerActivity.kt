@@ -51,7 +51,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                 setDeleteView()
             }
             if (view.id==R.id.iv_top){
-                var date=noteTypes[0].date
+                val date=noteTypes[0].date
                 noteTypes[position].date=date-1000
                 BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
                 Collections.swap(noteTypes,position,0)

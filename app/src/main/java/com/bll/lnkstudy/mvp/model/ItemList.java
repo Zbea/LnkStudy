@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class ItemList implements Serializable {
 
+    //教学
+    public int type;
+    public String desc;
+
     public int id;
     public String name;
     public String date;

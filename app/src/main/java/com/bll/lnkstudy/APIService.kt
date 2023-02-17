@@ -138,4 +138,29 @@ interface APIService{
      */
     @POST("buy/book/createOrder")
     fun buyPainting(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 教学视频 课程列表
+     */
+    @GET("subject/video/list")
+    fun getTeachCourseList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TeachingVideoList>>
+
+    /**
+     * 教学视频 课程分类
+     */
+    @GET("subject/video/types")
+    fun getTeachCourseType(): Observable<BaseResult<TeachingVideoType>>
+
+    /**
+     * 视频列表
+     */
+    @GET("talent/video/list")
+    fun getTeachList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TeachingVideoList>>
+
+    /**
+     * 视频分类
+     */
+    @GET("talent/video/types")
+    fun getTeachType(): Observable<BaseResult<TeachingVideoType>>
+
 }

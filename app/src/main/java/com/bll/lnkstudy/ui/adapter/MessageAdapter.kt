@@ -13,10 +13,7 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList>?) : BaseQu
             helper.run {
                 setText(R.id.tv_message_name,name)
                 setText(R.id.tv_message_content,content)
-                val tvTime=getView<TextView>(R.id.tv_message_time)
-                if (tvTime!=null){
-                    tvTime.text=createTime
-                }
+                getView<TextView>(R.id.tv_message_time)?.text=createTime
             }
         }
     }

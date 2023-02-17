@@ -78,41 +78,40 @@ class HomeworkFragment : BaseFragment(){
     }
 
     private fun initRecyclerView(){
-        mAdapter = HomeworkAdapter(R.layout.item_homework, null)
-        rv_list.layoutManager = GridLayoutManager(activity,3)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),40))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val item=homeworkTypes[position]
-            item.isMessage=false
-            item.isPg=false
-            mAdapter?.notifyDataSetChanged()
+        mAdapter = HomeworkAdapter(R.layout.item_homework, null).apply {
+            rv_list.layoutManager = GridLayoutManager(activity,3)
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),40))
+            setOnItemClickListener { adapter, view, position ->
+                val item= homeworkTypes[position]
+                item.isMessage=false
+                item.isPg=false
+                notifyDataSetChanged()
 
-            when(item.state){
-                1->{
-                    customStartActivity(Intent(context,RecordListActivity::class.java).putExtra("course",course))
-                }
-                2->{
-                    gotoPaperDrawing(0,course,item.typeId)
-                }
-                else->{
-                    gotoHomeworkDrawing(item)
+                when(item.state){
+                    1->{
+                        customStartActivity(Intent(context,RecordListActivity::class.java).putExtra("course",course))
+                    }
+                    2->{
+                        gotoPaperDrawing(0,course,item.typeId)
+                    }
+                    else->{
+                        gotoHomeworkDrawing(item)
+                    }
                 }
             }
-        }
-
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.ll_message){
-                HomeworkMessageDialog(requireActivity(),screenPos,messages).builder()?.setOnDialogClickListener { position, id ->
-                    messages.removeAt(position)
-                    homeworkMessageDialog?.setData(messages)
+           setOnItemChildClickListener { adapter, view, position ->
+                if (view.id==R.id.ll_message){
+                    HomeworkMessageDialog(requireActivity(),screenPos,messages).builder()?.setOnDialogClickListener { position, id ->
+                        messages.removeAt(position)
+                        homeworkMessageDialog?.setData(messages)
+                    }
                 }
             }
-
-        }
-        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
-            showHomeworkManage(position)
+            setOnItemLongClickListener { adapter, view, position ->
+                showHomeworkManage(position)
+            }
         }
     }
 

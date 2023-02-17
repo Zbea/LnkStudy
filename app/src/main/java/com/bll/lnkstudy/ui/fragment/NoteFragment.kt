@@ -86,68 +86,67 @@ class NoteFragment : BaseFragment() {
 
 
     private fun initRecyclerView() {
-        rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mAdapter = NotebookAdapter(R.layout.item_note, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val notebook=noteBooks[position]
-            if (type==0){
-                if (notebook.isEncrypt){
-                    NotebookPasswordDialog(requireContext(),screenPos).builder()?.setOnDialogClickListener{
+        mAdapter = NotebookAdapter(R.layout.item_note, null).apply {
+            rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setOnItemClickListener { adapter, view, position ->
+                val notebook=noteBooks[position]
+                if (type==0){
+                    if (notebook.isEncrypt){
+                        NotebookPasswordDialog(requireContext(),screenPos).builder()?.setOnDialogClickListener{
+                            gotoIntent(notebook)
+                        }
+                    }
+                    else{
                         gotoIntent(notebook)
                     }
-                }
-                else{
+
+                }else{
                     gotoIntent(notebook)
                 }
-
-            }else{
-                gotoIntent(notebook)
             }
-
-        }
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            this.position = position
-            if (view.id == R.id.iv_encrypt) {
-                setPassword()
-            }
-            if (view.id == R.id.iv_more) {
-                PopupList(requireActivity(), popWindowMoreBeans, view, 0).builder()
-                ?.setOnSelectListener { item ->
-                    when (item.id) {
-                        0 -> {
-                            editNotebook(noteBooks[position].title)
-                        }
-                        else -> {
-                            deleteNotebook()
-                        }
-                    }
+            setOnItemChildClickListener { adapter, view, position ->
+                this@NoteFragment.position = position
+                if (view.id == R.id.iv_encrypt) {
+                    setPassword()
                 }
-            }
+                if (view.id == R.id.iv_more) {
+                    PopupList(requireActivity(), popWindowMoreBeans, view, 0).builder()
+                        ?.setOnSelectListener { item ->
+                            when (item.id) {
+                                0 -> {
+                                    editNotebook(noteBooks[position].title)
+                                }
+                                else -> {
+                                    deleteNotebook()
+                                }
+                            }
+                        }
+                }
 
+            }
         }
+
     }
 
     //设置头部索引
     private fun initTab() {
-
-        rv_type.layoutManager = GridLayoutManager(activity, 5)//创建布局管理
-        mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, noteTypes)
-        rv_type.adapter = mAdapterType
-        mAdapterType?.bindToRecyclerView(rv_type)
-        rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,22f),20))
-        mAdapterType?.setOnItemClickListener { _, _, position ->
-            noteTypes[positionType].isCheck = false
-            positionType = position
-            noteTypes[positionType].isCheck = true
-            mAdapterType?.notifyDataSetChanged()
-
-            type = noteTypes[positionType].typeId
-            pageIndex=1
-            pageTotal=1
-            findDatas()
-
+        mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, noteTypes).apply {
+            rv_type.layoutManager = GridLayoutManager(activity, 5)//创建布局管理
+            rv_type.adapter = this
+            bindToRecyclerView(rv_type)
+            rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,22f),20))
+            setOnItemClickListener { _, _, position ->
+                noteTypes[positionType].isCheck = false
+                positionType = position
+                noteTypes[positionType].isCheck = true
+                notifyDataSetChanged()
+                type = noteTypes[positionType].typeId
+                pageIndex=1
+                pageTotal=1
+                findDatas()
+            }
         }
 
     }

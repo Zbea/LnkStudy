@@ -62,18 +62,21 @@ class BookCollectActivity: BaseAppCompatActivity() {
 
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_book_type, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,23f),DP2PX.dip2px(this,35f)))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].bookId)
+        mAdapter=BookAdapter(R.layout.item_book_type, null)
+        mAdapter?.run {
+            rv_list.layoutManager = GridLayoutManager(this@BookCollectActivity,4)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_book_empty)
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@BookCollectActivity,23f),DP2PX.dip2px(this@BookCollectActivity,35f)))
+            setOnItemClickListener { adapter, view, position ->
+                gotoBookDetails(books[position].bookId)
+            }
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                cancel(books[position])
+            }
         }
-        mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-            cancel(books[position])
-        }
+
     }
 
     //取消收藏

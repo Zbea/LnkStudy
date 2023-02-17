@@ -1,38 +1,31 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.net.Uri
 import android.widget.MediaController
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import kotlinx.android.synthetic.main.ac_teach.*
 
 
 class TeachActivity:BaseAppCompatActivity() {
 
-    private var teach: ItemList?=null
+    private var teach: TeachingVideoList.ItemBean?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_teach
     }
 
     override fun initData() {
-        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as ItemList
+        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as TeachingVideoList.ItemBean
 
     }
 
     override fun initView() {
-        setPageTitle(teach?.name!!)
+        setPageTitle(teach?.videoName!!)
 
         val mediacontroller = MediaController(this)
         videoView.setMediaController(mediacontroller)
-        if (teach?.id==0){
-            val uri = "android.resource://" + packageName + "/" + R.raw.video
-            videoView.setVideoURI(Uri.parse(uri))
-        }
-        else{
-            videoView.setVideoPath(teach?.address)
-        }
+        videoView.setVideoPath(teach?.bodyUrl)
 
     }
 

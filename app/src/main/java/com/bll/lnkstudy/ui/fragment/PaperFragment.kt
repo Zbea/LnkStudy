@@ -43,16 +43,15 @@ class PaperFragment : BaseFragment(){
 
     @SuppressLint("WrongConstant")
     private fun initRecyclerView(){
-
-        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,items)
-        rv_list.layoutManager = GridLayoutManager(activity,2)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(0,80))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoPaperDrawing(1,course,items[position].type)
+        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,items).apply {
+            rv_list.layoutManager = GridLayoutManager(activity,2)
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            rv_list.addItemDecoration(SpaceGridItemDeco(0,80))
+            setOnItemClickListener { adapter, view, position ->
+                gotoPaperDrawing(1,course,items[position].type)
+            }
         }
-
     }
 
     //设置头部索引

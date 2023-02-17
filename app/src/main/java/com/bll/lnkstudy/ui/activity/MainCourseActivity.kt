@@ -486,9 +486,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
                         }
                     }
 
-
-
-                    var params = GridLayout.LayoutParams()
+                    val params = GridLayout.LayoutParams()
                     when (j) {
                         5 -> {
                             view.setBackgroundResource(R.drawable.bg_course_3)

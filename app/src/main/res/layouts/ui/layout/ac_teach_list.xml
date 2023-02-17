@@ -45,9 +45,10 @@
                 android:layout_marginEnd="@dimen/dp_40"
                 android:drawableEnd="@mipmap/icon_arrow_down"
                 android:paddingEnd="@dimen/dp_20"
-                android:paddingStart="@dimen/dp_30"
+                android:paddingStart="@dimen/dp_20"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
+                android:visibility="gone"
                 android:background="@drawable/bg_gary_arch"
                 />
             <TextView
@@ -57,9 +58,10 @@
                 android:gravity="center_vertical"
                 android:drawableEnd="@mipmap/icon_arrow_down"
                 android:paddingEnd="@dimen/dp_20"
-                android:paddingStart="@dimen/dp_30"
+                android:paddingStart="@dimen/dp_20"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
+                android:visibility="gone"
                 android:background="@drawable/bg_gary_arch"
                 />
 
@@ -73,9 +75,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_weight="1" />
 
     <include layout="@layout/common_page_number" />

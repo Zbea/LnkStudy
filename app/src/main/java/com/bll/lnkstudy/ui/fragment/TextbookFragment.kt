@@ -75,16 +75,16 @@ class TextbookFragment : BaseFragment(){
     }
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_textbook, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),38))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].bookId)
+        mAdapter = BookAdapter(R.layout.item_textbook, null).apply {
+            rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_book_empty)
+            rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),38))
+            setOnItemClickListener { adapter, view, position ->
+                gotoBookDetails(books[position].bookId)
+            }
         }
-
     }
 
     /**

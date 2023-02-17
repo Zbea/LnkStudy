@@ -63,28 +63,25 @@ open class MainActivity : BaseAppCompatActivity() {
 
         switchFragment(lastFragment, mainFragment)
 
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mHomeAdapter = MainListAdapter(R.layout.item_main_list, mData)
-        rv_list.adapter = mHomeAdapter
-        mHomeAdapter?.bindToRecyclerView(rv_list)
-        mHomeAdapter?.setOnItemClickListener { adapter, view, position ->
-
-            mHomeAdapter?.updateItem(lastPosition, false)//原来的位置去掉勾选
-            mHomeAdapter?.updateItem(position, true)//更新新的位置
-
-            when (position) {
-                0 -> switchFragment(lastFragment, mainFragment)//首页
-                1 -> switchFragment(lastFragment, bookcaseFragment)//书架
-                2 -> switchFragment(lastFragment, textbookFragment)//课本
-                3 -> switchFragment(lastFragment, homeworkFragment)//作业
-                4 -> switchFragment(lastFragment, paperFragment)//考卷
-                5 -> switchFragment(lastFragment, noteFragment)//笔记
-                6 -> switchFragment(lastFragment, paintingFragment)//书画
-                7 -> switchFragment(lastFragment, teachFragment)//义教
+        mHomeAdapter = MainListAdapter(R.layout.item_main_list, mData).apply {
+            rv_list.layoutManager = LinearLayoutManager(this@MainActivity)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setOnItemClickListener { adapter, view, position ->
+                updateItem(lastPosition, false)//原来的位置去掉勾选
+                updateItem(position, true)//更新新的位置
+                when (position) {
+                    0 -> switchFragment(lastFragment, mainFragment)//首页
+                    1 -> switchFragment(lastFragment, bookcaseFragment)//书架
+                    2 -> switchFragment(lastFragment, textbookFragment)//课本
+                    3 -> switchFragment(lastFragment, homeworkFragment)//作业
+                    4 -> switchFragment(lastFragment, paperFragment)//考卷
+                    5 -> switchFragment(lastFragment, noteFragment)//笔记
+                    6 -> switchFragment(lastFragment, paintingFragment)//书画
+                    7 -> switchFragment(lastFragment, teachFragment)//义教
+                }
+                lastPosition=position
             }
-
-            lastPosition=position
-
         }
 
         iv_user.setOnClickListener {
