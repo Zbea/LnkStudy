@@ -113,36 +113,40 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         else{
             setPageTitle("注册账号")
         }
-
-        sp_province.dropDownWidth=DP2PX.dip2px(this,115f)
-        sp_province.setPopupBackgroundResource(R.drawable.bg_gray_stroke_5dp_corner)
-        val mAdapter=SpinnerAdapter(this,provinces)
-        sp_province.adapter=mAdapter
-        sp_province.setSelection(0)
-        sp_province.onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                provinceStr=provinces[p2]
-                citys.clear()
-                for (item in area?.provinces!![p2].citys){
-                    citys.add(item.citysName)
+        sp_province.apply {
+            dropDownWidth=DP2PX.dip2px(this@AccountRegisterActivity,115f)
+            setPopupBackgroundResource(R.drawable.bg_gray_stroke_5dp_corner)
+            val mAdapter=SpinnerAdapter(this@AccountRegisterActivity,provinces)
+            adapter=mAdapter
+            setSelection(0)
+            onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    provinceStr=provinces[p2]
+                    citys.clear()
+                    for (item in area?.provinces!![p2].citys){
+                        citys.add(item.citysName)
+                    }
+                    cityAdapter?.notifyDataSetChanged()
                 }
-                cityAdapter?.notifyDataSetChanged()
-            }
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
             }
         }
 
-        sp_city.dropDownWidth=DP2PX.dip2px(this,115f)
-        sp_city.setPopupBackgroundResource(R.drawable.bg_gray_stroke_5dp_corner)
-        cityAdapter=SpinnerAdapter(this,citys)
-        sp_province.setSelection(0)
-        sp_city.adapter=cityAdapter
-        sp_city.onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                cityStr=citys[p2]
+        sp_city.apply {
+            dropDownWidth=DP2PX.dip2px(this@AccountRegisterActivity,115f)
+            setPopupBackgroundResource(R.drawable.bg_gray_stroke_5dp_corner)
+            cityAdapter=SpinnerAdapter(this@AccountRegisterActivity,citys)
+            setSelection(0)
+            adapter=cityAdapter
+            onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    cityStr=citys[p2]
+                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
+
         }
 
         ll_date.setOnClickListener {

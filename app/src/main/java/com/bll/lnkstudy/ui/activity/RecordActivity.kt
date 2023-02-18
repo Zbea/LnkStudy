@@ -43,8 +43,8 @@ class RecordActivity : BaseAppCompatActivity() {
                 showToast("请先录音")
                 return@setOnClickListener
             }
-            var title=et_title.text.toString()
-            if (title.isNullOrEmpty()){
+            val title=et_title.text.toString()
+            if (title.isEmpty()){
                 showToast("请输入标题")
                 return@setOnClickListener
             }
@@ -58,55 +58,56 @@ class RecordActivity : BaseAppCompatActivity() {
 
         }
 
-
         ll_record.setOnClickListener {
-            mRecorder = MediaRecorder()
-            iv_record.setImageResource(R.mipmap.icon_record_show)
-            mRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-            mRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB)
-            mRecorder?.setOutputFile(path)
-            mRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
-            try {
-                mRecorder?.prepare()//准备
-                mRecorder?.start()//开始录音
-            } catch (e: IOException) {
-                e.printStackTrace();
+            mPlayer?.run {
+                release()
+                null
             }
-
+            mRecorder = MediaRecorder().apply {
+                iv_record.setImageResource(R.mipmap.icon_record_show)
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.AMR_WB)
+                setOutputFile(path)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
+                try {
+                    prepare()//准备
+                    start()//开始录音
+                } catch (e: IOException) {
+                    e.printStackTrace();
+                }
+            }
         }
+
         ll_record_stop.setOnClickListener {
-            if (mRecorder != null) {
+            mRecorder?.apply {
                 iv_record.setImageResource(R.mipmap.icon_record_file)
-                mRecorder?.setOnErrorListener(null)
-                mRecorder?.setOnInfoListener(null)
-                mRecorder?.setPreviewDisplay(null)
-                mRecorder?.stop()
-//                try {
-//                    mRecorder?.stop()
-//                } catch (e:IllegalStateException) {
-//                    // TODO 如果当前java状态和jni里面的状态不一致，
-//                    mRecorder = null
-//                    mRecorder = MediaRecorder()
-//                }
-                mRecorder?.release()
-                mRecorder = null
-
-                prepare()
+                setOnErrorListener(null)
+                setOnInfoListener(null)
+                setPreviewDisplay(null)
+                stop()
+                release()
+                mRecorder=null
+                startPrepare()
             }
         }
+
         ll_record_play.setOnClickListener {
             if(mRecorder!=null){
                 showToast("正在录音")
                 return@setOnClickListener
             }
-            if (mPlayer!=null){
-                if (mPlayer?.isPlaying==true){
-                    mPlayer?.pause()
+            mPlayer?.apply {
+                if (isPlaying){
+                    iv_play.setImageResource(R.mipmap.icon_record_play)
+                    tv_play.text="播放"
+                    pause()
                 }
                 else{
-                    mPlayer?.start()
+                    iv_play.setImageResource(R.mipmap.icon_record_pause)
+                    tv_play.text="暂停"
+                    start()
                 }
-                changePlayView()
+
             }
         }
 
@@ -121,47 +122,36 @@ class RecordActivity : BaseAppCompatActivity() {
     }
 
     //播放更新准备
-    private fun prepare(){
-        mPlayer = MediaPlayer()
-        mPlayer?.setDataSource(path)
-        mPlayer?.setOnCompletionListener {
-            iv_play.setImageResource(R.mipmap.icon_record_play)
-            tv_play.text="播放"
-        }
-        mPlayer?.prepare()
-    }
-
-    private fun changePlayView(){
-        if (mPlayer?.isPlaying==true){
-            iv_play.setImageResource(R.mipmap.icon_record_pause)
-            tv_play.text="暂停"
-        }
-        else{
-            iv_play.setImageResource(R.mipmap.icon_record_play)
-            tv_play.text="播放"
+    private fun startPrepare(){
+        mPlayer = MediaPlayer().apply {
+            setDataSource(path)
+            setOnCompletionListener {
+                iv_play.setImageResource(R.mipmap.icon_record_play)
+                tv_play.text="播放"
+            }
+            prepare()
         }
     }
 
     //快进1秒
     private fun forWard(){
-        if(mPlayer != null&&mPlayer?.isPlaying==true){
-            var position = mPlayer?.currentPosition
-            if (position != null) {
-                mPlayer?.seekTo(position + 1000)
-            }
+        mPlayer?.apply {
+            if (isPlaying) seekTo(currentPosition + 1000)
         }
     }
 
     //后退一秒
     private fun backWard(){
-        if(mPlayer != null&&mPlayer?.isPlaying==true){
-            var position = mPlayer?.currentPosition
-            if(position!! > 1000){
-                position-=1000
-            }else{
-                position = 0
+        mPlayer?.apply {
+            if (isPlaying){
+                var position = currentPosition
+                if(position > 1000){
+                    position-=1000
+                }else{
+                    position = 0
+                }
+                seekTo(position)
             }
-            mPlayer?.seekTo(position)
         }
     }
 
@@ -172,15 +162,15 @@ class RecordActivity : BaseAppCompatActivity() {
         if (!isSave){
             FileUtils.deleteFile(File(path))
         }
-
-        if (mRecorder!=null){
-            mRecorder?.stop()
-            mRecorder?.release()
-            mRecorder = null
+        mRecorder?.run {
+            stop()
+            release()
+            null
         }
-        if (mPlayer!=null){
-            mPlayer?.release()
-            mPlayer = null
+
+        mPlayer?.run {
+            release()
+            null
         }
     }
 

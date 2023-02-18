@@ -41,15 +41,15 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(titleStr)
-
-        rv_list.layoutManager = GridLayoutManager(this,2)//创建布局管理
-        mAdapter = MyPaintingAdapter(R.layout.item_download_painting, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,30f),130))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            ImageDialog(this,File(lists[position].paths[0])).builder()
+        mAdapter = MyPaintingAdapter(R.layout.item_download_painting, null).apply {
+            rv_list.layoutManager = GridLayoutManager(this@MyPaintingListActivity,2)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@MyPaintingListActivity,30f),130))
+            setOnItemClickListener { adapter, view, position ->
+                ImageDialog(this@MyPaintingListActivity,File(lists[position].paths[0])).builder()
+            }
         }
 
         btn_page_up.setOnClickListener {

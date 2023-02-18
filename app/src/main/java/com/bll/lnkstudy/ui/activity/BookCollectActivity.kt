@@ -62,8 +62,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
 
 
     private fun initRecyclerView(){
-        mAdapter=BookAdapter(R.layout.item_book_type, null)
-        mAdapter?.run {
+        mAdapter=BookAdapter(R.layout.item_book_type, null).apply {
             rv_list.layoutManager = GridLayoutManager(this@BookCollectActivity,4)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)

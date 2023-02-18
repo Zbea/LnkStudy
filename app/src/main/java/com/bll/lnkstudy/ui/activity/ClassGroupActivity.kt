@@ -56,23 +56,22 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         iv_save.setImageResource(R.mipmap.icon_group_add)
 
         showLog(System.currentTimeMillis().toString())
-
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = ClassGroupAdapter(R.layout.item_classgroup, groups)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id == R.id.tv_out) {
-                CommonDialog(this).setContent("确认退出班群？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-
-                        override fun ok() {
-                            positionGroup = position
-                            presenter.onQuitClassGroup(groups[position].id)
-                        }
-                    })
+        mAdapter = ClassGroupAdapter(R.layout.item_classgroup, groups).apply {
+            rv_list.layoutManager = LinearLayoutManager(this@ClassGroupActivity)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setOnItemChildClickListener { adapter, view, position ->
+                if (view.id == R.id.tv_out) {
+                    CommonDialog(this@ClassGroupActivity).setContent("确认退出班群？").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                positionGroup = position
+                                presenter.onQuitClassGroup(groups[position].id)
+                            }
+                        })
+                }
             }
         }
 

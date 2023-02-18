@@ -14,22 +14,23 @@ class DateDayListAdapter(layoutResId: Int, data: List<DateEventBean>?) : BaseQui
     private var nowLong= DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
 
     override fun convert(helper: BaseViewHolder, item: DateEventBean) {
-        helper.setText(R.id.tv_title, item.title)
-        helper.setText(R.id.tv_date, item.dayLongStr)
-        helper.setText(R.id.tv_remind, item.remindDay.toString())
+        helper.apply {
+            setText(R.id.tv_title, item.title)
+            setText(R.id.tv_date, item.dayLongStr)
+            setText(R.id.tv_remind, item.remindDay.toString())
 
-        val day= DateUtils.sublongToDay(item.dayLong, nowLong!!)
-        if (day>=0){
-            helper.setText(R.id.tv_countdown, day.toString())
+            val day= DateUtils.sublongToDay(item.dayLong, nowLong!!)
+            if (day>=0){
+                setText(R.id.tv_countdown, day.toString())
+            }
+            else{
+                setTextColor(R.id.tv_title,mContext.getColor(R.color.gray) )
+                setTextColor(R.id.tv_date,mContext.getColor(R.color.gray) )
+            }
+
+            setVisible(R.id.ll_countdown,day>0&&item.isCountdown)
+            setVisible(R.id.ll_remind,day>0&&item.isRemind)
+            addOnClickListener(R.id.iv_delete)
         }
-        else{
-            helper.setTextColor(R.id.tv_title,mContext.getColor(R.color.gray) )
-            helper.setTextColor(R.id.tv_date,mContext.getColor(R.color.gray) )
-        }
-
-        helper.setVisible(R.id.ll_countdown,day>0&&item.isCountdown)
-        helper.setVisible(R.id.ll_remind,day>0&&item.isRemind)
-        helper.addOnClickListener(R.id.iv_delete)
-
     }
 }

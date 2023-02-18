@@ -56,18 +56,19 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
         initTab()
 
         rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_book_type, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),DP2PX.dip2px(this,35f)))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoBookDetails(books[position].bookId)
-        }
-        mAdapter?.onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-            pos=position
-            book=books[position]
-            onLongClick()
+        mAdapter = BookAdapter(R.layout.item_book_type, null).apply {
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_book_empty)
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@BookCaseTypeListActivity,22f),DP2PX.dip2px(this@BookCaseTypeListActivity,35f)))
+            setOnItemClickListener { adapter, view, position ->
+                gotoBookDetails(books[position].bookId)
+            }
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                pos=position
+                book=books[position]
+                onLongClick()
+            }
         }
 
         btn_page_up.setOnClickListener {

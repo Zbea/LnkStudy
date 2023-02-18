@@ -39,23 +39,24 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
     private fun initRecyclerView() {
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, noteTypes)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            this.position=position
-            if (view.id==R.id.iv_edit){
-                editNoteBook(noteTypes[position].name)
-            }
-            if (view.id==R.id.iv_delete){
-                setDeleteView()
-            }
-            if (view.id==R.id.iv_top){
-                val date=noteTypes[0].date
-                noteTypes[position].date=date-1000
-                BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
-                Collections.swap(noteTypes,position,0)
-                setNotify()
+        mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, noteTypes).apply {
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setOnItemChildClickListener { adapter, view, position ->
+                this@NoteTypeManagerActivity.position=position
+                if (view.id==R.id.iv_edit){
+                    editNoteBook(noteTypes[position].name)
+                }
+                if (view.id==R.id.iv_delete){
+                    setDeleteView()
+                }
+                if (view.id==R.id.iv_top){
+                    val date=noteTypes[0].date
+                    noteTypes[position].date=date-1000
+                    BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
+                    Collections.swap(noteTypes,position,0)
+                    setNotify()
+                }
             }
         }
 

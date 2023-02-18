@@ -16,14 +16,15 @@ class PopupDateSelector(var context:Context, var view: View, val nums:List<Int>,
 
     fun builder(): PopupDateSelector?{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_date_number_selector, null, false)
-        mPopupWindow = PopupWindow(context)
-        mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        // 设置PopupWindow的内容view
-        mPopupWindow?.contentView=popView
-        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
-        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
-        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-        mPopupWindow?.width=view.width
+        mPopupWindow = PopupWindow(context).apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // 设置PopupWindow的内容view
+            contentView=popView
+            isFocusable=true // 设置PopupWindow可获得焦点
+            isTouchable=true // 设置PopupWindow可触摸
+            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+            width=view.width
+        }
 
         var pos=0
         if (type==0){

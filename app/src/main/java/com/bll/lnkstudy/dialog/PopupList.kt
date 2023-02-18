@@ -23,15 +23,16 @@ class PopupList(var context:Context, var list:MutableList<PopupBean>, var view: 
 
     fun builder(): PopupList?{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
-        mPopupWindow = PopupWindow(context)
-        mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        // 设置PopupWindow的内容view
-        mPopupWindow?.contentView=popView
-        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
-        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
-        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-        if (width!=0){
-            mPopupWindow?.width=width
+        mPopupWindow = PopupWindow(context).apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // 设置PopupWindow的内容view
+            contentView=popView
+            isFocusable=true // 设置PopupWindow可获得焦点
+            isTouchable=true // 设置PopupWindow可触摸
+            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+            if (this@PopupList.width!=0){
+                width=this@PopupList.width
+            }
         }
 
         var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)

@@ -20,14 +20,14 @@ class PopupDrawingManage(val context:Context, val view: View, var list:MutableLi
 
     fun builder(): PopupDrawingManage?{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_drawing_btn, null, false)
-        mPopupWindow = PopupWindow(context)
-        mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        // 设置PopupWindow的内容view
-        mPopupWindow?.contentView=popView
-        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
-        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
-        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+        mPopupWindow = PopupWindow(context).apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // 设置PopupWindow的内容view
+            contentView=popView
+            isFocusable=true // 设置PopupWindow可获得焦点
+            isTouchable=true // 设置PopupWindow可触摸
+            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+        }
 
         var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理

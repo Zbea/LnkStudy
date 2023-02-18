@@ -17,7 +17,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_teach.*
-import java.lang.Math.ceil
 
 /**
  * 教学
@@ -101,9 +100,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             }
             pageNumberView()
         }
-
     }
-
 
     //翻页处理
     private fun pageNumberView(){
@@ -113,7 +110,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             disMissView(ll_page_number)
             return
         }
-        pageCount=ceil(pageTotal.toDouble()/pageSize).toInt()
+        pageCount= kotlin.math.ceil(pageTotal.toDouble() / pageSize).toInt()
         var toIndex=pageSize
         for(i in 0 until pageCount){
             var index=i*pageSize

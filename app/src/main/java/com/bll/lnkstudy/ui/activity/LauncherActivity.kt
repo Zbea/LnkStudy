@@ -59,40 +59,39 @@ class LauncherActivity : MainActivity() {
         iv_ydcy.setOnClickListener {
             gotoBookStore("运动才艺")
         }
-
     }
-
-
 
     /**
      * 开始每天定时任务 下午三点
      */
     private fun startRemind() {
 
-        val mCalendar = Calendar.getInstance()
-        val currentTimeMillisLong = System.currentTimeMillis()
-        mCalendar.timeInMillis = currentTimeMillisLong
-        mCalendar.timeZone = TimeZone.getTimeZone("GMT+8")
-        mCalendar.set(Calendar.HOUR_OF_DAY, 15)
-        mCalendar.set(Calendar.MINUTE, 0)
-        mCalendar.set(Calendar.SECOND, 0)
-        mCalendar.set(Calendar.MILLISECOND, 0)
+         Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
 
-        var selectLong = mCalendar.timeInMillis
+            var selectLong = timeInMillis
 
-        if (currentTimeMillisLong > selectLong) {
-            mCalendar.add(Calendar.DAY_OF_MONTH, 1)
-            selectLong = mCalendar.timeInMillis
+            if (currentTimeMillisLong > selectLong) {
+                add(Calendar.DAY_OF_MONTH, 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@LauncherActivity, AlarmService::class.java)
+            intent.action = Constants.ACTION_UPLOAD
+            pendingIntent = PendingIntent.getService(this@LauncherActivity, 0, intent, 0)
+            alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager?.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.INTERVAL_DAY, pendingIntent
+            )
         }
 
-        val intent = Intent(this, AlarmService::class.java)
-        intent.action = Constants.ACTION_UPLOAD
-        pendingIntent = PendingIntent.getService(this, 0, intent, 0)
-        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager?.setRepeating(
-            AlarmManager.RTC_WAKEUP, selectLong,
-            AlarmManager.INTERVAL_DAY, pendingIntent
-        )
 
     }
 

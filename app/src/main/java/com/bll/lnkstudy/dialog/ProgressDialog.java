@@ -14,7 +14,6 @@ import com.bll.lnkstudy.ui.activity.MainActivity;
 
 public class ProgressDialog {
 
-
     Context context;
     Dialog mDialog;
     int screenPos=0;//当前屏幕位置

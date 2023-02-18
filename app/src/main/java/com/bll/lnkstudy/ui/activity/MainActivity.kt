@@ -44,13 +44,12 @@ open class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-
     override fun initView() {
-
-        val eventBusBean= EventBusData()
-        eventBusBean.event=Constants.SCREEN_EVENT
-        eventBusBean.screen=getCurrentScreenPos()
-        EventBus.getDefault().post(eventBusBean)//发送通知，全屏自动收屏到主页的另外一边
+        //发送通知，全屏自动收屏到主页的另外一边
+        EventBus.getDefault().post(EventBusData().apply {
+            event=Constants.SCREEN_EVENT
+            screen=getCurrentScreenPos()
+        })
 
         mainFragment = MainFragment()
         bookcaseFragment = BookCaseFragment()
@@ -88,14 +87,6 @@ open class MainActivity : BaseAppCompatActivity() {
             customStartActivity(Intent(this,AccountInfoActivity::class.java))
         }
 
-    }
-
-    //跳转课本
-    fun goToTextBook(){
-        mHomeAdapter?.updateItem(lastPosition, false)//原来的位置去掉勾选
-        mHomeAdapter?.updateItem(2, true)//更新新的位置
-        switchFragment(lastFragment, textbookFragment)
-        lastPosition=2
     }
 
     //跳转笔记

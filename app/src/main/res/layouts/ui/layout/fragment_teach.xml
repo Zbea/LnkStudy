@@ -19,5 +19,6 @@
         android:layout_marginTop="50dp"
         />
 
-    <include layout="@layout/common_page_number"/>
+    <include layout="@layout/common_page_number"
+        android:visibility="gone"/>
 </LinearLayout>

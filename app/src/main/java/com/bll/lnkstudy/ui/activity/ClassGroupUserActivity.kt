@@ -38,10 +38,10 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
         setPageTitle("通讯录")
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = ClassGroupUserAdapter(R.layout.item_classgroup_user, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-
+        mAdapter = ClassGroupUserAdapter(R.layout.item_classgroup_user, null).apply {
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+        }
     }
 
 

@@ -35,14 +35,15 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     override fun initView() {
         setPageTitle("壁纸更换")
 
-        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapter = MyWallpaperAdapter(R.layout.item_my_wallpaper, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,19f),0))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            ImageDialog(this, File(lists[position].paths[0])).builder()
+        mAdapter = MyWallpaperAdapter(R.layout.item_my_wallpaper, null).apply {
+            rv_list.layoutManager = GridLayoutManager(this@MyWallpaperActivity,4)//创建布局管理
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@MyWallpaperActivity,19f),0))
+            setOnItemClickListener { adapter, view, position ->
+                ImageDialog(this@MyWallpaperActivity, File(lists[position].paths[0])).builder()
+            }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val index=(pageIndex-1)* Constants.PAGE_SIZE+position
