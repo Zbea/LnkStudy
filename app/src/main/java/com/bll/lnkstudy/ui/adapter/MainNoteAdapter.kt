@@ -9,8 +9,10 @@ import com.chad.library.adapter.base.BaseViewHolder
 class MainNoteAdapter(layoutResId: Int, data: List<NotebookBean>?) : BaseQuickAdapter<NotebookBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: NotebookBean) {
-        helper.setText(R.id.tv_title,item.title)
-        helper.setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.createDate))
+        helper.apply {
+            setText(R.id.tv_title,item.title)
+            setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.createDate))
+        }
     }
 
 }

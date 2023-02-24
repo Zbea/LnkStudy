@@ -8,9 +8,11 @@ import com.chad.library.adapter.base.BaseViewHolder
 class MainClassGroupAdapter(layoutResId: Int, data: MutableList<ClassGroup>?) : BaseQuickAdapter<ClassGroup, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: ClassGroup) {
-        helper.setText(R.id.tv_groupNumber,item.classNum)
-        helper.setText(R.id.tv_teacher,item.teacher)
-        helper.setText(R.id.tv_course,item.subject)
+        helper.apply {
+            setText(R.id.tv_groupNumber,item.classNum)
+            setText(R.id.tv_teacher,item.teacher)
+            setText(R.id.tv_course,item.subject)
+        }
     }
 
 

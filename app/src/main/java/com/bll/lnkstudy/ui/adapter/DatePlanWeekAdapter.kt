@@ -11,12 +11,13 @@ class DatePlanWeekAdapter(layoutResId: Int, data: List<DateWeek>?) :
     BaseQuickAdapter<DateWeek, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: DateWeek) {
-
-        helper.setText(R.id.tv_name,item.name)
-        helper.setChecked(R.id.cb_week,item.isCheck)
-        helper.getView<CheckBox>(R.id.cb_week).setOnClickListener{
-            item.isCheck=!item.isCheck
-            notifyDataSetChanged()
+        helper.apply {
+            setText(R.id.tv_name,item.name)
+            setChecked(R.id.cb_week,item.isCheck)
+            getView<CheckBox>(R.id.cb_week).setOnClickListener{
+                item.isCheck=!item.isCheck
+                notifyDataSetChanged()
+            }
         }
     }
 }

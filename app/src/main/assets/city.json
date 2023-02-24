@@ -294,11 +294,7 @@
 
 			},
 
-			{
-
-				"citysName": "冀州市"
-
-			},
+		
 
 			{
 
@@ -311,6 +307,18 @@
 				"citysName": "南宫市"
 
 			},
+
+                                                {
+
+				"citysName": "平泉市"
+
+			},
+                                                {
+
+				"citysName": "滦州市"
+
+			},
+
 
 			{
 
@@ -408,7 +416,7 @@
 
 			{
 
-				"citysName": "潞城市"
+				"citysName": "怀仁市"
 
 			},
 
@@ -1153,7 +1161,16 @@
 				"citysName": "东宁市"
 
 			},
+                                                {
 
+				"citysName": "嫩江市"
+
+			},
+                                               {
+
+				"citysName": "漠河市"
+
+			},
 			{
 
 				"citysName": "抚远市"
@@ -1316,7 +1333,7 @@
 
 			{
 
-				"citysName": "海门市"
+				"citysName": "海安市"
 
 			},
 
@@ -1452,7 +1469,7 @@
 
 			{
 
-				"citysName": "临安市"
+				"citysName": "玉环市"
 
 			},
 
@@ -1557,7 +1574,11 @@
 				"citysName": "乐清市"
 
 			},
+                                                {
 
+				"citysName": "龙港市"
+
+			},
 			{
 
 				"citysName": "龙泉市"
@@ -1699,7 +1720,21 @@
 				"citysName": "界首市"
 
 			},
+                                                {
 
+				"citysName": "无为市"
+
+			},
+                                                {
+
+				"citysName": "潜山市"
+
+			},
+                                                {
+
+				"citysName": "广德市"
+
+			},
 			{
 
 				"citysName": "宁国市"
@@ -1778,7 +1813,7 @@
 
 			{
 
-				"citysName": "长乐市"
+				"citysName": "永安市"
 
 			},
 
@@ -1800,11 +1835,6 @@
 
 			},
 
-			{
-
-				"citysName": "永安市"
-
-			},
 
 			{
 
@@ -1824,12 +1854,7 @@
 
 			},
 
-			{
-
-				"citysName": "龙海市"
-
-			},
-
+			
 			{
 
 				"citysName": "漳平市"
@@ -1971,7 +1996,16 @@
 				"citysName": "高安市"
 
 			},
+                                                {
 
+				"citysName": "庐山市"
+
+			},
+                                                {
+
+				"citysName": "龙南市"
+
+			},
 			{
 
 				"citysName": "井冈山市"
@@ -2078,12 +2112,7 @@
 
 			},
 
-			{
-
-				"citysName": "莱芜市"
-
-			},
-
+			
 			{
 
 				"citysName": "滨州市"
@@ -2104,7 +2133,7 @@
 
 			{
 
-				"citysName": "即墨市"
+				"citysName": "邹平市"
 
 			},
 
@@ -2396,7 +2425,7 @@
 
 			{
 
-				"citysName": "偃师市"
+				"citysName": "长垣市"
 
 			},
 
@@ -2715,7 +2744,16 @@
 				"citysName": "天门市"
 
 			},
+                                               {
 
+				"citysName": "京山市"
+
+			},
+                                                {
+
+				"citysName": "监利市"
+
+			},
 			{
 
 				"citysName": "潜江市"
@@ -2855,7 +2893,56 @@
 				"citysName": "涟源市"
 
 			},
+                                                {
 
+				"citysName": "宁乡市"
+
+			},
+                                                 {
+
+				"citysName": "湘乡市"
+
+			},
+                                                {
+
+				"citysName": "韶山市"
+
+			},
+                                                {
+
+				"citysName": "武冈市"
+
+			},
+                                                 {
+
+				"citysName": "邵东市"
+
+			},
+                                                {
+
+				"citysName": "津市市"
+
+			},
+                                                 {
+
+				"citysName": "资兴市"
+
+			},
+                                                {
+
+				"citysName": "祁阳市"
+
+			},
+                                                {
+
+				"citysName": "洪江市"
+
+			},
+                                                  {
+
+				"citysName": "冷水江市"
+
+			},
 			{
 
 				"citysName": "吉首市"
@@ -2987,7 +3074,12 @@
 
 			{
 
-				"citysName": "宜州市"
+				"citysName": "横州市"
+
+			},
+                                               {
+
+				"citysName": "平果市"
 
 			},
 
@@ -2996,7 +3088,11 @@
 				"citysName": "合山市"
 
 			},
+                                                {
 
+				"citysName": "荔浦市"
+
+			},
 			{
 
 				"citysName": "靖西市"
@@ -3274,7 +3370,23 @@
 				"citysName": "康定市"
 
 			},
+                                               {
 
+				"citysName": "会理市 "
+
+			},
+
+                                                  {
+
+				"citysName": "隆昌市 "
+
+			},
+
+                                                {
+
+				"citysName": "射洪市 "
+
+			},
 			{
 
 				"citysName": "马尔康市"
@@ -3362,7 +3474,21 @@
 				"citysName": "兴义市"
 
 			},
+                                                {
 
+				"citysName": "盘州市"
+
+			},
+                                                {
+
+				"citysName": "黔西市"
+
+			},
+                                               {
+
+				"citysName": "兴仁市"
+
+			},
 			{
 
 				"citysName": "福泉市"
@@ -3509,7 +3635,18 @@
 
 				"citysName": "腾冲市"
 
-			}
+			},
+
+
+			{
+
+				"citysName": "泸水市"
+                                                },
+
+			{
+
+				"citysName": "禄丰市"
+                                                }
 
 		],
 
@@ -3583,19 +3720,38 @@
 
 			{
 
-				"citysName": "韩城"
+				"citysName": "韩城市"
 
 			},
 
 			{
 
-				"citysName": "华阴"
+				"citysName": "华阴市"
 
 			},
+                                                {
 
+				"citysName": "彬州市"
+
+			},
+                                               {
+
+				"citysName": "子长市"
+
+			},
+                                                {
+
+				"citysName": "神木市"
+
+			},
+                                                {
+
+				"citysName": "旬阳市"
+
+			},
 			{
 
-				"citysName": "兴平"
+				"citysName": "兴平市"
 
 			}
 
@@ -3698,7 +3854,11 @@
 				"citysName": "临夏市"
 
 			},
+                                                {
 
+				"citysName": "华亭市"
+
+			},
 			{
 
 				"citysName": "合作市"
@@ -3739,6 +3899,16 @@
 
 			},
 
+                                                {
+
+				"citysName": "同仁市"
+
+			},
+                                               {
+
+				"citysName": "茫崖市"
+
+			},
 			{
 
 				"citysName": "玉树市"
@@ -3778,6 +3948,12 @@
 				"citysName": "林芝市"
 
 			},
+                                                {
+
+				"citysName": "那曲市"
+
+			},
+
 
 			{
 
@@ -4166,6 +4342,31 @@
 			{
 
 				"citysName": "可克达拉市"
+
+			},
+                                               {
+
+				"citysName": "库车市"
+
+			},
+                                                {
+
+				"citysName": "沙湾市"
+
+			},
+                                                {
+
+				"citysName": "胡杨河市"
+
+			},
+                                                {
+
+				"citysName": "新星市"
+
+			},
+                                                {
+
+				"citysName": "白杨市"
 
 			},
 

@@ -38,9 +38,15 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     }
 
     override fun onEditNameSuccess() {
-        showToast("修改姓名成功")
+        showToast("修改成功")
         mUser?.nickname=nickname
         tv_name.text = nickname
+    }
+
+    override fun onEditGradeSuccess() {
+        showToast("修改成功")
+        mUser?.grade=grade
+        tv_grade.text = DataBeanManager.grades[grade-1].desc
     }
 
 
@@ -49,10 +55,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     }
 
     override fun initData() {
-        val datas= DataBeanManager.grades
-        for (i in datas.indices){
-            grades.add(PopupBean(i + 1, datas[i].name, i == 0))
-        }
+        grades=DataBeanManager.popupGrades
     }
 
     @SuppressLint("WrongConstant")
@@ -60,16 +63,19 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
         setPageTitle("我的账户")
 
-        tv_user.text = mUser?.account
-        tv_name.text = mUser?.nickname
-        tv_account_id.text=mUser?.accountId.toString()
-        tv_phone.text =  mUser?.telNumber?.substring(0,3)+"****"+mUser?.telNumber?.substring(7,11)
-        tv_birthday.text=DateUtils.intToStringDataNoHour(mUser?.birthdayTime?.times(1000) ?: 0)
-        tv_parent.text=mUser?.parentName
-        tv_parent_name.text=mUser?.parentNickname
-        tv_parent_phone.text=mUser?.parentTel
-        tv_address.text=mUser?.parentAddr
-        tv_grade.text=grades[mUser?.grade?.minus(1)!!].name
+        mUser?.apply {
+            tv_user.text = account
+            tv_name.text = nickname
+            tv_account_id.text=accountId.toString()
+            tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
+            tv_birthday.text=DateUtils.intToStringDataNoHour(birthdayTime)
+            tv_parent.text=parentName
+            tv_parent_name.text=parentNickname
+            tv_parent_phone.text=parentTel
+            tv_address.text=parentAddr
+            if(grade>0)
+                tv_grade.text=grades[grade-1].name
+        }
 
         btn_edit_psd.setOnClickListener {
             customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
@@ -106,6 +112,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             popupGradeWindow?.setOnSelectListener { item ->
                 tv_grade.text=item.name
                 grade=item.id
+                presenter.editGrade(grade)
             }
         }
         else{
@@ -125,6 +132,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     override fun onDestroy() {
         super.onDestroy()
-        mUser?.let { SPUtil.putObj("user", it) }
+        SPUtil.putObj("user", mUser!!)
     }
 }

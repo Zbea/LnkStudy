@@ -18,7 +18,9 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.Area
+import com.bll.lnkstudy.mvp.model.Grade
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.DP2PX
@@ -37,8 +39,9 @@ import kotlinx.android.synthetic.main.ac_account_register.*
 //6. 验证码规则数字即可
  */
 class AccountRegisterActivity : BaseAppCompatActivity(),
-    IContractView.IRegisterOrFindPsdView {
+    IContractView.IRegisterOrFindPsdView,IContractView.ICommonView {
 
+    private val commonPresenter=CommonPresenter(this)
     private val presenter= RegisterOrFindPsdPresenter(this)
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
@@ -53,6 +56,16 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var popupGradeWindow:PopupList?=null
     private var grades= mutableListOf<PopupBean>()
     private var grade=1
+
+    override fun onList(grade: MutableList<Grade>?) {
+        if (grade?.size!! >0){
+            DataBeanManager.grades=grade
+            for (i in grade.indices){
+                grades.add(PopupBean(i + 1, grade[i].desc, i == 0))
+            }
+            tv_grade.text=grades[0].name
+        }
+    }
 
     override fun onSms() {
         showToast("发送验证码成功")
@@ -91,27 +104,32 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             citys.add(item.citysName)
         }
 
-        val datas=DataBeanManager.grades
-        for (i in datas.indices){
-            grades.add(PopupBean(i + 1, datas[i].name, i == 0))
+        grades=DataBeanManager.popupGrades
+        if (grades.size>0){
+            tv_grade.text=grades[0].name
+        }
+        else{
+            commonPresenter.getGrades()
         }
 
     }
 
     override fun initView() {
 
-        if (flags==2){
-            setPageTitle("修改密码")
-            disMissView(ll_name,ll_date,ll_user,ll_school)
-            btn_register.text="提交"
-        }
-        else if (flags==1){
-            setPageTitle("找回密码")
-            disMissView(ll_name,ll_date,ll_school)
-            btn_register.text="提交"
-        }
-        else{
-            setPageTitle("注册账号")
+        when (flags) {
+            2 -> {
+                setPageTitle("修改密码")
+                disMissView(ll_name,ll_date,ll_user,ll_school)
+                btn_register.text="提交"
+            }
+            1 -> {
+                setPageTitle("找回密码")
+                disMissView(ll_name,ll_date,ll_school)
+                btn_register.text="提交"
+            }
+            else -> {
+                setPageTitle("注册账号")
+            }
         }
         sp_province.apply {
             dropDownWidth=DP2PX.dip2px(this@AccountRegisterActivity,115f)
@@ -209,78 +227,80 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             }
 
 
-            if (flags==0){
-                if (account.isNullOrEmpty()) {
-                    showToast("请输入用户名")
-                    return@setOnClickListener
-                }
-                if (name.isNullOrEmpty()) {
-                    showToast("请输入姓名")
-                    return@setOnClickListener
-                }
-                if (birthdayStr.isNullOrEmpty()) {
-                    showToast("请选择出生年月")
-                    return@setOnClickListener
-                }
-                if (!ToolUtils.isLetterOrDigit(account, 4, 12)) {
-                    showToast(getString(R.string.user_tip))
-                    return@setOnClickListener
-                }
-                if (provinceStr.isNullOrEmpty()||cityStr.isNullOrEmpty()) {
-                    showToast("请选择省市")
-                    return@setOnClickListener
-                }
-                if (area.isNullOrEmpty()) {
-                    showToast("请输入学校地址")
-                    return@setOnClickListener
-                }
-                if (schoolName.isNullOrEmpty()) {
-                    showToast("请输入学校名称")
-                    return@setOnClickListener
-                }
-                if (parentName.isNullOrEmpty()) {
-                    showToast("请输入家长名称")
-                    return@setOnClickListener
-                }
-                if (parent.isNullOrEmpty()) {
-                    showToast("请输入家长称谓")
-                    return@setOnClickListener
-                }
-                if (parentPhone.isNullOrEmpty()) {
-                    showToast("请输入家长电话")
-                    return@setOnClickListener
-                }
-                if (address.isNullOrEmpty()) {
-                    showToast("请输入家庭住址")
-                    return@setOnClickListener
-                }
+            when (flags) {
+                0 -> {
+                    if (account.isNullOrEmpty()) {
+                        showToast("请输入用户名")
+                        return@setOnClickListener
+                    }
+                    if (name.isNullOrEmpty()) {
+                        showToast("请输入姓名")
+                        return@setOnClickListener
+                    }
+                    if (birthdayStr.isNullOrEmpty()) {
+                        showToast("请选择出生年月")
+                        return@setOnClickListener
+                    }
+                    if (!ToolUtils.isLetterOrDigit(account, 4, 12)) {
+                        showToast(getString(R.string.user_tip))
+                        return@setOnClickListener
+                    }
+                    if (provinceStr.isNullOrEmpty()||cityStr.isNullOrEmpty()) {
+                        showToast("请选择省市")
+                        return@setOnClickListener
+                    }
+                    if (area.isNullOrEmpty()) {
+                        showToast("请输入学校地址")
+                        return@setOnClickListener
+                    }
+                    if (schoolName.isNullOrEmpty()) {
+                        showToast("请输入学校名称")
+                        return@setOnClickListener
+                    }
+                    if (parentName.isNullOrEmpty()) {
+                        showToast("请输入家长名称")
+                        return@setOnClickListener
+                    }
+                    if (parent.isNullOrEmpty()) {
+                        showToast("请输入家长称谓")
+                        return@setOnClickListener
+                    }
+                    if (parentPhone.isNullOrEmpty()) {
+                        showToast("请输入家长电话")
+                        return@setOnClickListener
+                    }
+                    if (address.isNullOrEmpty()) {
+                        showToast("请输入家庭住址")
+                        return@setOnClickListener
+                    }
 
-                val map=HashMap<String,Any>()
-                map["account"]=account
-                map["password"]=MD5Utils.digest(psd)
-                map["nickname"]=name
-                map["code"]=code
-                map["telNumber"]=phone
-                map["addr"]= "$provinceStr,$cityStr"
-                map["addrInfo"]=area
-                map["schoolName"]=schoolName
-                map["parentName"]=parentName
-                map["parentNickname"]=parent
-                map["parentTel"]=parentPhone
-                map["parentAddr"]=address
-                map["birthdayTime"]=brithday/1000
-
-                presenter.register(map)
-            }
-            else if (flags==1){
-                if (account.isNullOrEmpty()) {
-                    showToast("请输入用户名")
-                    return@setOnClickListener
+                    val map=HashMap<String,Any>()
+                    map["account"]=account
+                    map["password"]=MD5Utils.digest(psd)
+                    map["nickname"]=name
+                    map["code"]=code
+                    map["telNumber"]=phone
+                    map["addr"]= "$provinceStr,$cityStr"
+                    map["addrInfo"]=area
+                    map["schoolName"]=schoolName
+                    map["parentName"]=parentName
+                    map["parentNickname"]=parent
+                    map["parentTel"]=parentPhone
+                    map["parentAddr"]=address
+                    map["birthdayTime"]=brithday/1000
+                    map["grade"]=grade
+                    presenter.register(map)
                 }
-                presenter.findPsd("2",account,MD5Utils.digest(psd),phone, code)
-            }
-            else{
-                presenter.editPsd(MD5Utils.digest(psd),code)
+                1 -> {
+                    if (account.isNullOrEmpty()) {
+                        showToast("请输入用户名")
+                        return@setOnClickListener
+                    }
+                    presenter.findPsd("2",account,MD5Utils.digest(psd),phone, code)
+                }
+                else -> {
+                    presenter.editPsd(MD5Utils.digest(psd),code)
+                }
             }
 
         }
@@ -357,6 +377,8 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             return view
         }
     }
+
+
 
 
 }

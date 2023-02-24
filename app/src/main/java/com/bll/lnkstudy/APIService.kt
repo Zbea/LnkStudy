@@ -47,6 +47,11 @@ interface APIService{
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改姓名 "/accounts/changeGrade"
+     */
+    @POST("accounts/changeGrade")
+    fun editGrade(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 退出登录 "/accounts/logout"
      */
     @POST("accounts/logout")
@@ -162,5 +167,11 @@ interface APIService{
      */
     @GET("talent/video/types")
     fun getTeachType(): Observable<BaseResult<TeachingVideoType>>
+
+    /**
+     * 公共年级接口
+     */
+    @GET("userTypes")
+    fun getCommonGrade(): Observable<BaseResult<CommonBean>>
 
 }

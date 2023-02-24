@@ -1,12 +1,12 @@
 package com.bll.lnkstudy.mvp.model;
 
 public class Grade {
-    public String name;
-    public int grade;
+    public String desc;
+    public int type;
 
-    public Grade(String name, int grade) {
-        this.name = name;
-        this.grade = grade;
+    public Grade(String desc, int type) {
+        this.desc = desc;
+        this.type = type;
     }
 
     public Grade(){

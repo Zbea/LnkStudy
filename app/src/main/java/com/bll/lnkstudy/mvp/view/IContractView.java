@@ -7,6 +7,7 @@ import com.bll.lnkstudy.mvp.model.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
+import com.bll.lnkstudy.mvp.model.Grade;
 import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
@@ -35,6 +36,7 @@ public interface IContractView {
     interface IAccountInfoView extends IBaseView {
         void onLogout();
         void onEditNameSuccess();
+        void onEditGradeSuccess();
     }
 
     //钱包页面回调
@@ -76,5 +78,10 @@ public interface IContractView {
         void onList(TeachingVideoList list);
         void onCourse(TeachingVideoType type);//视频 课程分类
         void onType(TeachingVideoType type);//视频 其他分类
+    }
+
+    //公共接口
+    interface ICommonView extends IBaseView {
+        void onList(List<Grade> grades);
     }
 }

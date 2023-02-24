@@ -12,6 +12,4 @@ class MainReceivePaperAdapter(layoutResId: Int, data: List<ReceivePaper>?) : Bas
         helper.setText(R.id.tv_type,if (item.type==0) "课件作业" else "${item.category}")
     }
 
-
-
 }

@@ -4,9 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.mvp.model.Grade
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.MD5Utils
@@ -15,10 +18,17 @@ import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 import pub.devrel.easypermissions.EasyPermissions
 
-class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
+class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView,IContractView.ICommonView {
 
+    private val commonPresenter=CommonPresenter(this)
     private val presenter=LoginPresenter(this)
     private var token=""
+
+    override fun onList(grades: MutableList<Grade>?) {
+        if (grades != null) {
+            DataBeanManager.grades=grades
+        }
+    }
 
     override fun getLogin(user: User?) {
         token= user?.token.toString()
@@ -40,6 +50,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     }
 
     override fun initData() {
+        commonPresenter.getGrades()
     }
 
     @SuppressLint("WrongConstant")
@@ -67,30 +78,16 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
         btn_login.setOnClickListener {
 
-            var account = ed_user.text.toString()
-            var password = MD5Utils.digest(ed_psw.text.toString())
+            val account = ed_user.text.toString()
+            val password = MD5Utils.digest(ed_psw.text.toString())
 
-            var map=HashMap<String,Any>()
+            val map=HashMap<String,Any>()
             map ["account"]=account
             map ["password"]=password
             map ["role"]= 2
             presenter.login(map)
 
         }
-
-//        SPUtil.putObj("token","1877ec544a7b114c94beb38e8ff2b7bf")
-//        val mUser=User()
-//        mUser.accountId=93023769
-//        mUser.role=2
-//        mUser.telNumber="13048803395"
-//        mUser.account="zhufeng"
-//        mUser.nickname="朱"
-//        mUser.birthdayTime= (System.currentTimeMillis()/1000).toInt()
-//        mUser.parentName="朱爸爸"
-//        mUser.parentNickname="爸爸"
-//        mUser.parentTel="13048803395"
-//        mUser.parentAddr="深圳龙华"
-//        SPUtil.putObj("user",mUser)
 
         val tokenStr=SPUtil.getString("token")
 
@@ -119,7 +116,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             ed_user.setText(data?.getStringExtra("user"))
             ed_psw.setText(data?.getStringExtra("psw"))
         }
-
     }
 
 

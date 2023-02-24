@@ -8,6 +8,7 @@ import com.bll.lnkstudy.utils.ToolUtils
 object DataBeanManager {
 
     var courses= mutableListOf<String>()
+    var grades= mutableListOf<Grade>()
 
     private val listTitle = arrayOf(
         "首页",
@@ -46,6 +47,15 @@ object DataBeanManager {
     val PAINTING = arrayOf(
         "毛笔书法", "山水画", "花鸟画", "人物画", "素描画", "硬笔书法"
     )
+
+    val popupGrades: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in grades.indices){
+                list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
+            }
+            return list
+        }
 
     /**
      * 获取index栏目
@@ -467,28 +477,6 @@ object DataBeanManager {
                 resContentId = R.mipmap.icon_note_details_bg_5
             })
             return list
-        }
-
-    /**
-     * 得到年级
-     * @return
-     */
-    val grades: List<Grade>
-        get() {
-            val grades: MutableList<Grade> = ArrayList()
-            grades.add(Grade("一年级", 1))
-            grades.add(Grade("二年级", 2))
-            grades.add(Grade("三年级", 3))
-            grades.add(Grade("四年级", 4))
-            grades.add(Grade("五年级", 5))
-            grades.add(Grade("六年级", 6))
-            grades.add(Grade("初一", 7))
-            grades.add(Grade("初二", 8))
-            grades.add(Grade("初三", 9))
-            grades.add(Grade("高一", 10))
-            grades.add(Grade("高二", 11))
-            grades.add(Grade("高三", 12))
-            return grades
         }
 
 }

@@ -9,10 +9,10 @@ import com.chad.library.adapter.base.BaseViewHolder
 class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuickAdapter<PaperTypeBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: PaperTypeBean) {
-        helper.setVisible(R.id.ll_rank,item.isPg)
-        helper.setText(R.id.tv_name,item.name)
+        helper.apply {
+            setVisible(R.id.ll_rank,item.isPg)
+            setText(R.id.tv_name,item.name)
+        }
     }
-
-
 
 }
