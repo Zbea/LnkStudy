@@ -66,7 +66,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(0, DP2PX.dip2px(activity, 30f)))
+            rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 30f)))
             setOnItemClickListener { _, _, position ->
                 val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
                 val bundle= Bundle()

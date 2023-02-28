@@ -97,7 +97,7 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
         rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
         mAdapter = DownloadWallpaperAdapter(R.layout.item_download_wallpaper, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,22f),30))
+        rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this,22f),30))
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(DP2PX.dip2px(this,28f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,28f),0)
         layoutParams.weight=1f

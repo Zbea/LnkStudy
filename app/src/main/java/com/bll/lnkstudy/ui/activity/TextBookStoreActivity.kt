@@ -263,7 +263,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this, 22f), 60))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             mBook = books[position]
             showBookDetails(mBook!!)

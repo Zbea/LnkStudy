@@ -19,23 +19,23 @@ class NotebookAddDiaryDialog(private val context: Context, private val screenPos
 
     @SuppressLint("SetTextI18n")
     fun builder(): NotebookAddDiaryDialog? {
-        var dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_notebook_add_diary)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams = window.attributes
+        val dialog= Dialog(context)
+        dialog.setContentView(R.layout.dialog_notebook_add_diary)
+        dialog.show()
+        val window = dialog.window
+        window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window?.attributes
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
         }
-        window.attributes = layoutParams
+        window?.attributes = layoutParams
 
-        val btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog?.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
+        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
 
-        val etName=dialog?.findViewById<EditText>(R.id.et_name)
-        val tvDate=dialog?.findViewById<TextView>(R.id.tv_date)
+        val etName=dialog.findViewById<EditText>(R.id.et_name)
+        val tvDate=dialog.findViewById<TextView>(R.id.tv_date)
         tvDate.setOnClickListener {
             if (dateDialog==null){
                 dateDialog=DateSelectorDialog(context,screenPos).builder()
@@ -48,7 +48,7 @@ class NotebookAddDiaryDialog(private val context: Context, private val screenPos
             }
         }
 
-        btn_cancel?.setOnClickListener { dialog?.dismiss() }
+        btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
             val nameStr=etName?.text.toString()
             val dateStr=tvDate?.text.toString()

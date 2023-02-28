@@ -80,7 +80,7 @@ class TextbookFragment : BaseFragment(){
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),38))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
                 gotoBookDetails(books[position].bookId)
             }

@@ -42,13 +42,14 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
-        var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        rvList?.layoutManager = GridLayoutManager(context,if (list.size>4) 3 else 2)
-        var mAdapter =MAdapter(R.layout.item_module, list)
+        val count=if (list.size>4) 3 else 2
+        val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
+        rvList?.layoutManager = GridLayoutManager(context,count)
+        val mAdapter =MAdapter(R.layout.item_module, list)
         rvList?.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceGridItemDeco(0,40))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        mAdapter.bindToRecyclerView(rvList)
+        rvList?.addItemDecoration(SpaceGridItemDeco(count,40))
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             if (listener!=null)
                 listener?.onClick(list[position])
             dismiss()

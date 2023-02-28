@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
@@ -60,7 +61,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@BookCaseTypeListActivity,22f),DP2PX.dip2px(this@BookCaseTypeListActivity,35f)))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@BookCaseTypeListActivity,22f),DP2PX.dip2px(this@BookCaseTypeListActivity,35f)))
             setOnItemClickListener { adapter, view, position ->
                 gotoBookDetails(books[position].bookId)
             }
@@ -89,6 +90,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
     }
 
     //设置tab
+    @SuppressLint("NotifyDataSetChanged")
     private fun initTab(){
         val types= mutableListOf<BaseTypeBean>()
         val strings= DataBeanManager.bookType
@@ -102,16 +104,16 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
         typeStr=types[0].name
 
         rv_type.layoutManager = GridLayoutManager(this,7)//创建布局管理
-        var mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, types)
+        val mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, types)
         rv_type.adapter = mAdapterType
         mAdapterType?.bindToRecyclerView(rv_type)
-        rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this,14f),DP2PX.dip2px(this,16f)))
-        mAdapterType?.setOnItemClickListener { adapter, view, position ->
-            mAdapterType?.getItem(typePos)?.isCheck=false
+        rv_type.addItemDecoration(SpaceGridItemDeco1(7,DP2PX.dip2px(this,14f),DP2PX.dip2px(this,16f)))
+        mAdapterType.setOnItemClickListener { adapter, view, position ->
+            mAdapterType.getItem(typePos)?.isCheck=false
             typePos=position
-            mAdapterType?.getItem(typePos)?.isCheck=true
+            mAdapterType.getItem(typePos)?.isCheck=true
             typeStr=types[typePos].name
-            mAdapterType?.notifyDataSetChanged()
+            mAdapterType.notifyDataSetChanged()
             pageIndex=1
             findData()
         }

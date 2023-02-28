@@ -65,8 +65,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView,ICo
         )
 
         ed_user.setText("zhufeng")
-        ed_psw.setText("123456")
-
+        ed_psw.setText("12345678")
 
         tv_register.setOnClickListener {
             startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(0), 0)

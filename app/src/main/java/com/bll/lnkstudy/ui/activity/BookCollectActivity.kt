@@ -67,7 +67,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@BookCollectActivity,23f),DP2PX.dip2px(this@BookCollectActivity,35f)))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@BookCollectActivity,23f),DP2PX.dip2px(this@BookCollectActivity,35f)))
             setOnItemClickListener { adapter, view, position ->
                 gotoBookDetails(books[position].bookId)
             }

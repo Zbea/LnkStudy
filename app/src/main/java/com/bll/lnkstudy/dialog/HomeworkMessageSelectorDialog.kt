@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.dialog
 
-import android.annotation.Nullable
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
@@ -37,14 +36,14 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
         recyclerview.layoutManager = LinearLayoutManager(context)
         val mAdapter= MessageAdapter(R.layout.item_homework_message_selector, messages)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10,0))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10))
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             for (item in messages)
             {
                 item.isSelector=false
             }
             messages[position].isSelector=true
-            mAdapter?.notifyItemChanged(position)
+            mAdapter.notifyItemChanged(position)
             dismiss()
             listener?.onClick(messages[position])
         }
@@ -68,7 +67,7 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
         fun onClick(item: HomeworkMessage)
     }
 
-    fun setOnDialogClickListener(@Nullable listener: OnDialogClickListener){
+    fun setOnDialogClickListener(listener: OnDialogClickListener){
         this.listener = listener
     }
 

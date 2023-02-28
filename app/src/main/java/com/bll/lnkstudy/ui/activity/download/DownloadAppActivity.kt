@@ -101,33 +101,36 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
     }
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = DownloadAppAdapter(R.layout.item_download_app, null)
-        rv_list.adapter = mAdapter
+
         val layoutParams=LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(DP2PX.dip2px(this,52f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,52f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_empty)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            app=apps[position]
-            if (app?.buyStatus==0){
-                val map = HashMap<String, Any>()
-                map["type"] = 4
-                map["bookId"] = app?.applicationId!!
-                presenter.buyApk(map)
-            }
-            else{
-                if (!isInstalled()) {
-                    if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-                        currentDownLoadTask = downLoadStart(app!!)
-                    } else {
-                        showToast("正在下载安装")
+        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
+        mAdapter = DownloadAppAdapter(R.layout.item_download_app, null).apply {
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
+            setOnItemClickListener { adapter, view, position ->
+                app=apps[position]
+                if (app?.buyStatus==0){
+                    val map = HashMap<String, Any>()
+                    map["type"] = 4
+                    map["bookId"] = app?.applicationId!!
+                    presenter.buyApk(map)
+                }
+                else{
+                    if (!isInstalled()) {
+                        if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
+                            currentDownLoadTask = downLoadStart(app!!)
+                        } else {
+                            showToast("正在下载安装")
+                        }
                     }
                 }
             }
         }
+
     }
 
     /**

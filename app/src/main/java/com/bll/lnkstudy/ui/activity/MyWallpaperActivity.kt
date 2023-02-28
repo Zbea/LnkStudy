@@ -40,7 +40,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@MyWallpaperActivity,19f),0))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@MyWallpaperActivity,19f),0))
             setOnItemClickListener { adapter, view, position ->
                 ImageDialog(this@MyWallpaperActivity, File(lists[position].paths[0])).builder()
             }

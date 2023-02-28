@@ -47,7 +47,7 @@ class PaperFragment : BaseFragment(){
             rv_list.layoutManager = GridLayoutManager(activity,2)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(0,80))
+            rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
             setOnItemClickListener { adapter, view, position ->
                 gotoPaperDrawing(1,course,items[position].type)
             }

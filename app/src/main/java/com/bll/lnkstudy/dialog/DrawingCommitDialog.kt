@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.dialog
 
-import android.annotation.Nullable
 import android.app.Dialog
 import android.content.Context
 import android.text.Editable
@@ -70,7 +69,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         rvList?.layoutManager = GridLayoutManager(context,4)
         rvList?.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceGridItemDeco(0,10))
+        rvList?.addItemDecoration(SpaceGridItemDeco(4,10))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             if (list[position].isAdd){
                 val homeworkCommit=HomeworkCommit()
@@ -137,7 +136,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         fun onClick(item: HomeworkCommit)
     }
 
-    fun setOnDialogClickListener(@Nullable listener: OnDialogClickListener) {
+    fun setOnDialogClickListener(listener: OnDialogClickListener) {
         this.listener = listener
     }
 
@@ -153,7 +152,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
                 }
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val str=p0.toString()
-                    if (!str.isNullOrEmpty())
+                    if (str.isNotEmpty())
                         item.page=str.toInt()
                 }
                 override fun afterTextChanged(p0: Editable?) {

@@ -80,7 +80,7 @@ class AppListActivity:BaseActivity() {
         mAdapter = AppListAdapter(0,R.layout.item_app_list, apps)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(0,70))
+        rv_list.addItemDecoration(SpaceGridItemDeco(5,70))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.iv_image){
                 when(position){
@@ -113,7 +113,7 @@ class AppListActivity:BaseActivity() {
         mAdapterTool = AppListAdapter(0,R.layout.item_app_list, toolApps)
         rv_tool.adapter = mAdapterTool
         mAdapterTool?.bindToRecyclerView(rv_tool)
-        rv_tool.addItemDecoration(SpaceGridItemDeco(0,60))
+        rv_tool.addItemDecoration(SpaceGridItemDeco(4,60))
         mAdapterTool?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.cb_check){
                 toolApps[position].isCheck=! toolApps[position].isCheck

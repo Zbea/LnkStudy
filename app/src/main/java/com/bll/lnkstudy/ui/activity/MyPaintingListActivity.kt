@@ -46,7 +46,7 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(this@MyPaintingListActivity,30f),130))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(2,DP2PX.dip2px(this@MyPaintingListActivity,30f),130))
             setOnItemClickListener { adapter, view, position ->
                 ImageDialog(this@MyPaintingListActivity,File(lists[position].paths[0])).builder()
             }

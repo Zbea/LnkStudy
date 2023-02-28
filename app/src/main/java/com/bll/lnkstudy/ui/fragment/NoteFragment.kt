@@ -136,7 +136,7 @@ class NoteFragment : BaseFragment() {
             rv_type.layoutManager = GridLayoutManager(activity, 5)//创建布局管理
             rv_type.adapter = this
             bindToRecyclerView(rv_type)
-            rv_type.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,22f),20))
+            rv_type.addItemDecoration(SpaceGridItemDeco1(5,DP2PX.dip2px(activity,22f),20))
             setOnItemClickListener { _, _, position ->
                 noteTypes[positionType].isCheck = false
                 positionType = position

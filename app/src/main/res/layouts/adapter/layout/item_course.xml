@@ -3,15 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:gravity="center">
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:text="科目"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20" />
+        android:textSize="@dimen/sp_22" />
 
 </LinearLayout>

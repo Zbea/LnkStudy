@@ -82,7 +82,7 @@ class HomeworkFragment : BaseFragment(){
             rv_list.layoutManager = GridLayoutManager(activity,3)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,33f),40))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity,33f),40))
             setOnItemClickListener { adapter, view, position ->
                 val item= homeworkTypes[position]
                 item.isMessage=false

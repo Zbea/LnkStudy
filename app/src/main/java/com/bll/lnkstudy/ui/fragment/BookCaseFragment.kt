@@ -67,7 +67,7 @@ class BookCaseFragment: BaseFragment() {
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity,23f),28))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
                 gotoBookDetails(books[position].bookId)
             }

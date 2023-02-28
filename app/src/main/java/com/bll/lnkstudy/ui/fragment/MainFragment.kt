@@ -211,7 +211,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
             rv_main_receivePaper.layoutManager = GridLayoutManager(activity, 2)
             rv_main_receivePaper.adapter = this
             bindToRecyclerView(rv_main_receivePaper)
-            rv_main_receivePaper.addItemDecoration(SpaceGridItemDeco(0, 10))
+            rv_main_receivePaper.addItemDecoration(SpaceGridItemDeco(2, 10))
             setOnItemClickListener { adapter, view, position ->
                 positionPaper = position
                 val paper = receivePapers[positionPaper]

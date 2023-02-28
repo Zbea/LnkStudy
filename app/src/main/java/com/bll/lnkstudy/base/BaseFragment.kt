@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.base
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -54,15 +53,12 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
-            val parent: ViewGroup? = container
-            parent?.removeView(parent)
+            container?.removeView(container)
         } else {
             mView = inflater.inflate(getLayoutId(), container,false)
         }
-
         return mView
     }
-
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -121,8 +117,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     abstract fun lazyLoad()
 
-    @SuppressLint("WrongViewCast")
-    fun initCommonTitle() {
+    private fun initCommonTitle() {
         tvPageTitle = requireView().findViewById(R.id.tv_title)
         ivBack=requireView().findViewById(R.id.iv_back)
         tvSearch= requireView().findViewById(R.id.tv_search)
@@ -268,7 +263,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 跳转活动
      */
     fun customStartActivity(intent: Intent){
-        ActivityManager.getInstance().finishActivity(intent.component.className)
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
 //        if (screenPos!=3)
 //            ActivityManager.getInstance().finishActivity(activity)

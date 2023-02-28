@@ -38,7 +38,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val list: L
         recyclerview.layoutManager = LinearLayoutManager(context)
         mAdapter= MessageAdapter(R.layout.item_homework_message_all, list)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10,0))
+        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.tv_delete){
                 CommonDialog(context).setContent("确定删除此通知？").builder()

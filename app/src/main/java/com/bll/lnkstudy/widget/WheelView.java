@@ -7,12 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -351,8 +348,6 @@ public class WheelView extends ScrollView {
             paint.setColor(Color.parseColor("#d8d8d8"));
             paint.setStrokeWidth(2);
         }
-
-
         background = new Drawable() {
             @Override
             public void draw(Canvas canvas) {
@@ -441,9 +436,9 @@ public class WheelView extends ScrollView {
 
     private int getViewMeasuredHeight(View view) {
 
-        int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int width = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
 
-        int expandSpec = View.MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, View.MeasureSpec.AT_MOST);
+        int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
 
         view.measure(width, expandSpec);
 

@@ -143,7 +143,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         rv_list.layoutManager = GridLayoutManager(this,2)//创建布局管理
         mAdapter = DownloadPaintingAdapter(R.layout.item_download_painting, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco1(distance,100))
+        rv_list.addItemDecoration(SpaceGridItemDeco1(2,distance,100))
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(distance,DP2PX.dip2px(this,50f),distance,0)
         layoutParams.weight=1f
