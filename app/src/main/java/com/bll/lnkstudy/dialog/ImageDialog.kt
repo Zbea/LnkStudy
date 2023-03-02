@@ -11,27 +11,25 @@ class ImageDialog(val context: Context, val data:Any) {
 
     fun builder(): ImageDialog? {
 
-        val dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_image)
-        dialog?.show()
-        val window=dialog?.window!!
-        window.setBackgroundDrawableResource(android.R.color.transparent)
+         Dialog(context).apply {
+            setContentView(R.layout.dialog_image)
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+            show()
 
-        val iv_close=dialog.findViewById<ImageView>(R.id.iv_close)
-        iv_close.setOnClickListener {
-            dialog.dismiss()
+            val iv_close=findViewById<ImageView>(R.id.iv_close)
+            iv_close.setOnClickListener {
+                dismiss()
+            }
+
+            val iv_image=findViewById<ImageView>(R.id.iv_image)
+            if (data is String){
+                GlideUtils.setImageRoundUrl(context,data,iv_image,1)
+            }
+
+            if (data is File){
+                GlideUtils.setImageFile(context,data,iv_image)
+            }
         }
-
-        val iv_image=dialog.findViewById<ImageView>(R.id.iv_image)
-        if (data is String){
-            GlideUtils.setImageRoundUrl(context,data,iv_image,1)
-        }
-
-        if (data is File){
-            GlideUtils.setImageFile(context,data,iv_image)
-        }
-
-
         return this
     }
 

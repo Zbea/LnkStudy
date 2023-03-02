@@ -15,7 +15,7 @@ class PopupRecordManage(var context:Context, var view: View, val yoff:Int) {
     private var mPopupWindow:PopupWindow?=null
     private var width=0
 
-    fun builder(): PopupRecordManage?{
+    fun builder(): PopupRecordManage{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_record_setting, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

@@ -21,15 +21,14 @@ class NotebookAddDiaryDialog(private val context: Context, private val screenPos
     fun builder(): NotebookAddDiaryDialog? {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_notebook_add_diary)
-        dialog.show()
-        val window = dialog.window
-        window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams = window?.attributes
+        val window = dialog.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
         if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
         }
-        window?.attributes = layoutParams
+        dialog.show()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)

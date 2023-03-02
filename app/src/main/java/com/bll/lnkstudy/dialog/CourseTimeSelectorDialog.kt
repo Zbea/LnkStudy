@@ -16,10 +16,8 @@ class CourseTimeSelectorDialog(private val context: Context) {
     fun builder(): CourseTimeSelectorDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_course_time_selector)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
-
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val yearMonth=simpleDateFormat.format(Date())

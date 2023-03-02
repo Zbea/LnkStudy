@@ -22,9 +22,8 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
     fun builder(): DateTimeSelectorDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_date_time_selector)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         isRemindStart=item.isRemindStart
         isRemindEnd=item.isRemindEnd

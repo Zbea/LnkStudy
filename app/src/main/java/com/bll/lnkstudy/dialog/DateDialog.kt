@@ -15,9 +15,8 @@ class DateDialog(private val context: Context){
     fun builder(): DateDialog {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_date)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
         var okTv = dialog?.findViewById<TextView>(R.id.tv_ok)

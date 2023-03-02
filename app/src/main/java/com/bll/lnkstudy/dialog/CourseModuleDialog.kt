@@ -14,19 +14,18 @@ class CourseModuleDialog(private val context: Context,private val screenPos:Int)
 
     fun builder(): CourseModuleDialog? {
         val dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_course_module)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_course_module)
+        val window = dialog.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,800f))/2
         }
-        window.attributes = layoutParams
+        dialog.show()
 
-        val ivCancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
-        val tvModule1 = dialog?.findViewById<LinearLayout>(R.id.ll_1)
+        val ivCancel = dialog.findViewById<ImageView>(R.id.iv_cancel)
+        val tvModule1 = dialog.findViewById<LinearLayout>(R.id.ll_1)
         tvModule1?.setOnClickListener {
             dialog?.dismiss()
             if (listener!=null)

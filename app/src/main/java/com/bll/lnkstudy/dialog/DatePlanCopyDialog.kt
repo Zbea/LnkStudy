@@ -20,9 +20,8 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
     fun builder(): DatePlanCopyDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_date_plan_copy)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
         plans[0].isCheck=true

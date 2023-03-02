@@ -206,7 +206,6 @@ class NoteFragment : BaseFragment() {
      * tab数据设置
      */
     private fun findTabs() {
-
         noteTypes = DataBeanManager.noteBook
         noteTypes.addAll( BaseTypeBeanDaoManager.getInstance().queryAll())
         setAllCheckFalse(noteTypes)
@@ -284,7 +283,7 @@ class NoteFragment : BaseFragment() {
                 }
             }
             else{
-                CommonDialog(activity,screenPos).setContent("设置日记密码？").builder()
+                CommonDialog(requireActivity(),screenPos).setContent("设置日记密码？").builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
@@ -304,7 +303,7 @@ class NoteFragment : BaseFragment() {
 
     //新建笔记
     private fun createNotebook() {
-        var note = NotebookBean()
+        val note = NotebookBean()
         if (type==0) NotebookAddDiaryDialog(requireContext(), screenPos).builder()
             ?.setOnDialogClickListener{ name,dateStr->
                 note.title = name
@@ -312,10 +311,9 @@ class NoteFragment : BaseFragment() {
                 note.type = type
                 note.dateStr=dateStr
                 note.contentResId=resId
-                if (noteBooks.size==10)
-                    pageIndex+=1
+                pageIndex=1
                 NotebookDaoManager.getInstance().insertOrReplace(note)
-                EventBus.getDefault().post(NOTE_EVENT)
+                findDatas()
             }
         else NotebookAddDialog(requireContext(), screenPos,"新建笔记", "", "请输入笔记标题").builder()
             ?.setOnDialogClickListener { string ->
@@ -323,8 +321,7 @@ class NoteFragment : BaseFragment() {
                 note.createDate = System.currentTimeMillis()
                 note.type = type
                 note.contentResId=resId
-                if (noteBooks.size==10)
-                    pageIndex+=1
+                pageIndex=1
                 NotebookDaoManager.getInstance().insertOrReplace(note)
                 EventBus.getDefault().post(NOTE_EVENT)
             }
@@ -345,7 +342,7 @@ class NoteFragment : BaseFragment() {
 
     //删除
     private fun deleteNotebook() {
-        CommonDialog(activity,screenPos).setContent("确定删除笔记？").builder()
+        CommonDialog(requireActivity(),screenPos).setContent("确定删除笔记？").builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

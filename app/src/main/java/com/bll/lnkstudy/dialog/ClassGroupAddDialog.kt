@@ -12,24 +12,23 @@ class ClassGroupAddDialog(private val context: Context) {
 
 
     fun builder(): ClassGroupAddDialog? {
-        var dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_classgroup_add)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val dialog= Dialog(context)
+        dialog.setContentView(R.layout.dialog_classgroup_add)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
 
-        val btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog?.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
+        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
 
-        val etNumber=dialog?.findViewById<EditText>(R.id.et_number)
+        val etNumber=dialog.findViewById<EditText>(R.id.et_number)
 
-        btn_cancel?.setOnClickListener { dialog?.dismiss() }
+        btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
-            var number=etNumber?.text.toString()
-            if (!number.isNullOrEmpty())
+            val number=etNumber?.text.toString()
+            if (number.isNotEmpty())
             {
                 listener?.onClick(number.toInt())
-                dialog?.dismiss()
+                dialog.dismiss()
             }
         }
 

@@ -15,31 +15,30 @@ import com.bll.lnkstudy.utils.*
 class NotebookFindPasswordDialog(private val context: Context, private val screenPos:Int) {
 
     fun builder(): NotebookFindPasswordDialog? {
-        var dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_notebook_find_password)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val dialog= Dialog(context)
+        dialog.setContentView(R.layout.dialog_notebook_find_password)
+        val window = dialog.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         }
-        window.attributes = layoutParams
+        dialog.show()
 
         val notePassword=SPUtil.getObj("notePassword",NotePassword::class.java)
 
-        val btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog?.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
+        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
 
-        val etPassword=dialog?.findViewById<EditText>(R.id.et_password)
-        val etPasswordAgain=dialog?.findViewById<EditText>(R.id.et_password_again)
-        val etPasswordFind=dialog?.findViewById<EditText>(R.id.et_question_password)
-        val tvFind=dialog?.findViewById<TextView>(R.id.tv_question_password)
+        val etPassword=dialog.findViewById<EditText>(R.id.et_password)
+        val etPasswordAgain=dialog.findViewById<EditText>(R.id.et_password_again)
+        val etPasswordFind=dialog.findViewById<EditText>(R.id.et_question_password)
+        val tvFind=dialog.findViewById<TextView>(R.id.tv_question_password)
         tvFind.text=notePassword?.question
 
 
-        btn_cancel?.setOnClickListener { dialog?.dismiss() }
+        btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
             val passwordAgainStr=etPasswordAgain?.text.toString()

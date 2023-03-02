@@ -19,16 +19,14 @@ class DateSelectorDialog(private val context: Context, private val screenPos:Int
     fun builder(): DateSelectorDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_date_selector)
-        dialog?.show()
-        val window = dialog?.window
+        val window = dialog?.window!!
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
-
         val layoutParams = window.attributes
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,580f))/2
         }
-        window.attributes = layoutParams
+        dialog?.show()
 
         val dp_start = dialog?.findViewById<DatePicker>(R.id.dp_start)
 //        ((dp_start?.getChildAt(0) as ViewGroup).getChildAt(0) as ViewGroup).getChildAt(0).visibility=View.GONE

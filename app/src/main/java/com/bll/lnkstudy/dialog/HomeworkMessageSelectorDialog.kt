@@ -20,15 +20,14 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
     fun builder(): HomeworkMessageSelectorDialog? {
 
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_homework_message)
-        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setContentView(R.layout.dialog_homework_message)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog?.window
         val layoutParams =window?.attributes
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         }
-        window?.attributes = layoutParams
         dialog?.show()
 
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)

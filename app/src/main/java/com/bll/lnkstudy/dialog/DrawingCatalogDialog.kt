@@ -23,16 +23,13 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
     fun builder(): DrawingCatalogDialog? {
 
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_drawing_catalog)
-        dialog?.show()
-
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
+        dialog?.setContentView(R.layout.dialog_drawing_catalog)
+        val window = dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
         layoutParams.y=DP2PX.dip2px(context,32f)
-        window.attributes = layoutParams
+        dialog?.show()
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)
 

@@ -34,7 +34,7 @@ class AppListActivity:BaseActivity() {
 
     override fun initData() {
         apps.addAll(DataBeanManager.appBaseList)
-        apps.addAll(AppUtils.scanLocalInstallAppList(this))
+        apps.addAll(getLocalApp())
     }
 
     override fun initView() {

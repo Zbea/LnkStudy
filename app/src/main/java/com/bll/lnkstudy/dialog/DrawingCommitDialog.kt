@@ -37,8 +37,8 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 480f)) / 2
         }
-        window?.attributes = layoutParams
         dialog?.show()
+
         dialog?.setOnDismissListener {
             KeyboardUtils.hideSoftKeyboard(context)
         }

@@ -17,20 +17,20 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
 
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_input_name)
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        val window=dialog.window
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog.window!!
         val layoutParams=window.attributes
-
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
         }
+        dialog.show()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
         val name = dialog.findViewById<EditText>(R.id.ed_name)
         name.hint=string
-        dialog.show()
+
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()

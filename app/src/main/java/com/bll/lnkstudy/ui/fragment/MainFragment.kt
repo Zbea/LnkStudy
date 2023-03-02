@@ -221,9 +221,9 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
                     paths.add(file.path)
                 }
                 if (files.size == paper.images.size) {
-                    var bundle = Bundle()
+                    val bundle = Bundle()
                     bundle.putSerializable("receivePaper", paper)
-                    var intent = Intent(activity, MainReceivePaperDrawingActivity::class.java)
+                    val intent = Intent(activity, MainReceivePaperDrawingActivity::class.java)
                     intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
                     intent.putExtra("outImageStr", paper.path)
                     intent.putExtra("bundle", bundle)
@@ -255,7 +255,6 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
         findNotes()
     }
 
-
     /**
      * 通过当天时间查找本地dateEvent事件集合
      */
@@ -268,7 +267,6 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
         mPlanAdapter?.setNewData(plans)
     }
 
-
     private fun findNotes() {
         var notes = NotebookDaoManager.getInstance().queryAll()
         if (notes.size > 6) {
@@ -279,19 +277,19 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
 
     private fun findReceivePapers() {
 
-        var receivePaper1 = ReceivePaper()
+        val receivePaper1 = ReceivePaper()
         receivePaper1.id = 1
         receivePaper1.title = "数学期中考试"
         receivePaper1.course = "数学"
-        receivePaper1.category = "单元"
+        receivePaper1.category = "单元考试卷"
         receivePaper1.categoryId = 0
         receivePaper1.createDate = System.currentTimeMillis()
 
-        var receivePaper2 = ReceivePaper()
+        val receivePaper2 = ReceivePaper()
         receivePaper2.id = 2
         receivePaper2.title = "语文期中考试"
         receivePaper2.course = "语文"
-        receivePaper2.category = "阶段"
+        receivePaper2.category = "阶段考试卷"
         receivePaper2.categoryId = 1
         receivePaper2.createDate = System.currentTimeMillis()
         receivePaper2.images = arrayOf(

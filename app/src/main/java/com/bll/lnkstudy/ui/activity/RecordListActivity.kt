@@ -38,7 +38,7 @@ class RecordListActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        course = intent.getStringExtra("course")
+        course = intent.getStringExtra("course").toString()
     }
 
     override fun initView() {

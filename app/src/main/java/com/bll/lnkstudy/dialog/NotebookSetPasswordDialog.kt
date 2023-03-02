@@ -17,18 +17,17 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
-    fun builder(): NotebookSetPasswordDialog? {
-        var dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_notebook_set_password)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+    fun builder(): NotebookSetPasswordDialog {
+        val dialog= Dialog(context)
+        dialog.setContentView(R.layout.dialog_notebook_set_password)
+        val window = dialog.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         }
-        window.attributes = layoutParams
+        dialog.show()
 
         popWindowBeans.add(
             PopupBean(
@@ -59,13 +58,13 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
             )
         )
 
-        val btn_ok = dialog?.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog?.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
+        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
 
-        val etPassword=dialog?.findViewById<EditText>(R.id.et_password)
-        val etPasswordAgain=dialog?.findViewById<EditText>(R.id.et_password_again)
-        val etPasswordQuestion=dialog?.findViewById<EditText>(R.id.et_question_password)
-        val tvQuestion=dialog?.findViewById<TextView>(R.id.tv_question_password)
+        val etPassword=dialog.findViewById<EditText>(R.id.et_password)
+        val etPasswordAgain=dialog.findViewById<EditText>(R.id.et_password_again)
+        val etPasswordQuestion=dialog.findViewById<EditText>(R.id.et_question_password)
+        val tvQuestion=dialog.findViewById<TextView>(R.id.tv_question_password)
         tvQuestion.setOnClickListener {
             PopupList(context, popWindowBeans, tvQuestion, 5).builder()
             ?.setOnSelectListener { item ->
@@ -73,7 +72,7 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
             }
         }
 
-        btn_cancel?.setOnClickListener { dialog?.dismiss() }
+        btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
             val passwordAgainStr=etPasswordAgain?.text.toString()

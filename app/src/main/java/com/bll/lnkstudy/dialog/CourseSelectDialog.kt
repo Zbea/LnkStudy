@@ -18,10 +18,8 @@ class CourseSelectDialog(val context: Context){
     fun builder(): CourseSelectDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_course)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
-        val window = dialog.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
-
         val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
         ivClose.setOnClickListener {
             dialog.dismiss()

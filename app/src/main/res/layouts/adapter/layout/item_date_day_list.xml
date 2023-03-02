@@ -97,7 +97,7 @@
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_40"
-        android:src="@mipmap/icon_notebook_delete"
+        android:src="@mipmap/icon_delete"
         />
 
 

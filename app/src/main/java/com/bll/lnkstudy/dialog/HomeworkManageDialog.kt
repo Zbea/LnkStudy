@@ -15,16 +15,14 @@ class HomeworkManageDialog(val context: Context, private val screenPos: Int,priv
     fun builder(): HomeworkManageDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_homework_manage)
-        dialog.show()
-        val window = dialog.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val window = dialog.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         if (screenPos == 3) {
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams.x = (Constants.WIDTH - DP2PX.dip2px(context, 430F)) / 2
         }
-
-        window.attributes = layoutParams
+        dialog.show()
 
         val iv_close = dialog.findViewById<ImageView>(R.id.iv_close)
         val ll_skin = dialog.findViewById<LinearLayout>(R.id.ll_skin)

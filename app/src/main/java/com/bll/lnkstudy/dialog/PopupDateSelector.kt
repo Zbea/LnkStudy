@@ -14,7 +14,7 @@ class PopupDateSelector(var context:Context, var view: View, val nums:List<Int>,
 
     private var mPopupWindow:PopupWindow?=null
 
-    fun builder(): PopupDateSelector?{
+    fun builder(): PopupDateSelector{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_date_number_selector, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

@@ -19,9 +19,8 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
     fun builder(): Dialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_book_detail)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         btn_ok = dialog?.findViewById(R.id.btn_ok)
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)

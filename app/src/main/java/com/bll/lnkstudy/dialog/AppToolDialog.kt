@@ -17,10 +17,8 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
     private var dialog:Dialog?=null
 
     fun builder(): AppToolDialog? {
-
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_app_tool)
-        dialog?.show()
+        dialog?.setContentView(R.layout.dialog_app_tool)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window?.attributes
@@ -30,7 +28,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
         if (screenPos==2){
             layoutParams?.gravity = Gravity.BOTTOM or Gravity.RIGHT
         }
-        window?.attributes = layoutParams
+        dialog?.show()
 
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)

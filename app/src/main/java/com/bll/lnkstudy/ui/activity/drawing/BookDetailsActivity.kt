@@ -200,11 +200,9 @@ class BookDetailsActivity : BaseActivity() {
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
         val showFile = getIndexFile(index)
         if (showFile != null) {
-
             val simpleTarget = object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
-
                 override fun onResourceReady(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
@@ -214,11 +212,12 @@ class BookDetailsActivity : BaseActivity() {
             }
             Glide.with(this)
                 .load(showFile)
+                .skipMemoryCache(true)
                 .thumbnail(0.1f).fitCenter().into(simpleTarget)
 
             val drawPath = showFile?.path.replace(".jpg", ".tch")
-            elik?.setLoadFilePath(drawPath, true)
-            elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+            elik.setLoadFilePath(drawPath, true)
+            elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
                 }
 

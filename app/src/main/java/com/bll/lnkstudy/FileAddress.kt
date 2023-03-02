@@ -68,7 +68,7 @@ class FileAddress {
      * categoryId分类id contentId内容id
      */
     fun getPathTestPaper(categoryId:Int,contentId:Int):String{
-        return "$TESTPAPER_PATH/$mUserId/$categoryId/$contentId"
+        return "$TESTPAPER_PATH/$mUserId/examType$categoryId/$contentId"
     }
 
     /**

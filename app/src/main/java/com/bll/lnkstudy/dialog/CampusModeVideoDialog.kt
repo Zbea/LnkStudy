@@ -15,22 +15,22 @@ class CampusModeVideoDialog(val context: Context, val itemList: ItemList) {
     fun builder(): CampusModeVideoDialog? {
 
         val dialog = Dialog(context)
-        dialog?.setContentView(R.layout.dialog_campus_mode_video)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog?.setCanceledOnTouchOutside(true)
-        dialog?.show()
+        dialog.setContentView(R.layout.dialog_campus_mode_video)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.show()
 
-        val tvTitle = dialog?.findViewById<TextView>(R.id.tv_title)
+        val tvTitle = dialog.findViewById<TextView>(R.id.tv_title)
         tvTitle.text=itemList.name
 
-        val videoView=dialog?.findViewById<VideoView>(R.id.videoView)
+        val videoView=dialog.findViewById<VideoView>(R.id.videoView)
         val mediacontroller = MediaController(context)
         videoView.setMediaController(mediacontroller)
         val uri = "android.resource://" + context.packageName + "/" + R.raw.video
         videoView.setVideoURI(Uri.parse(uri))
         videoView.start()
 
-        val ivCancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
+        val ivCancel = dialog.findViewById<ImageView>(R.id.iv_cancel)
         ivCancel?.setOnClickListener {
             dialog.dismiss()
         }

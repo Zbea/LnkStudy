@@ -90,14 +90,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 获取工具应用
      */
     fun getAppTool(){
-        val appAlls=AppUtils.scanLocalInstallAppList(this)
         toolApps= AppDaoManager.getInstance().queryAll()
-
         //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除 没有卸载则拿到对应图标
         val it=toolApps.iterator()
         while (it.hasNext()){
             val item=it.next()
-            if (isAppContains(item,appAlls)){
+            if (isAppContains(item,getLocalApp())){
                 item.image=getAppDrawable(item)
             }
             else{
@@ -125,9 +123,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 拿到app对应的应用图标
      */
     private fun getAppDrawable(item:AppBean): Drawable? {
-        val appAlls=AppUtils.scanLocalInstallAppList(this)
         var drawable: Drawable?=null
-        for (ite in appAlls){
+        for (ite in getLocalApp()){
             if (ite.packageName.equals(item.packageName))
             {
                 drawable=ite.image
@@ -136,8 +133,25 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         return drawable
     }
 
+    /**
+     * 拿到本地全部应用
+     */
+    fun getLocalApp():List<AppBean>{
+        return AppUtils.scanLocalInstallAppList(this)
+    }
+
+    /**
+     * 工具栏弹窗
+     */
     private fun showDialogAppTool(scree:Int){
-        AppToolDialog(this,scree,toolApps).builder()
+        val tools= mutableListOf<AppBean>()
+        tools.add(AppBean().apply {
+            appName="几何绘图"
+            image=resources.getDrawable(R.mipmap.icon_app_geometry)
+            packageName="com.android.htfyunnote"
+        })
+        tools.addAll(toolApps)
+        AppToolDialog(this,scree,tools).builder()
     }
 
     /**

@@ -18,7 +18,7 @@ class PopupDateDayRemind(var context:Context, var view: View, val day:Int) {
 
     private var mPopupWindow:PopupWindow?=null
 
-    fun builder(): PopupDateDayRemind?{
+    fun builder(): PopupDateDayRemind{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -36,18 +36,18 @@ class PopupDateDayRemind(var context:Context, var view: View, val day:Int) {
             item.isCheck = item.remindIn==day
         }
 
-        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        val rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list,list)
+        val mAdapter = MAdapter(R.layout.item_popwindow_list,list)
         rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        mAdapter.bindToRecyclerView(rvList)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             for (item in list)
             {
                 item.isCheck=false
             }
             list[position].isCheck=true
-            mAdapter?.notifyDataSetChanged()
+            mAdapter.notifyDataSetChanged()
             if (onSelectListener!=null)
                 onSelectListener?.onSelect(list[position])
             dismiss()

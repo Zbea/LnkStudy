@@ -23,17 +23,16 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
     fun builder(): ModuleAddDialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_module_add)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val window = dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         val width=if (list.size>4) DP2PX.dip2px(context,700f) else DP2PX.dip2px(context,500f)
         val layoutParams = window.attributes
         layoutParams.width=width
         if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- width)/2
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- width)/2
         }
-        window.attributes = layoutParams
+        dialog?.show()
 
 
         val tvName = dialog?.findViewById<TextView>(R.id.tv_name)

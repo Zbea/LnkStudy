@@ -18,7 +18,7 @@ class PopupDrawingManage(val context:Context, val view: View, var list:MutableLi
     private var mPopupWindow:PopupWindow?=null
     private var height=0
 
-    fun builder(): PopupDrawingManage?{
+    fun builder(): PopupDrawingManage{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_drawing_btn, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -29,12 +29,12 @@ class PopupDrawingManage(val context:Context, val view: View, var list:MutableLi
             isOutsideTouchable=true // 设置非PopupWindow区域可触摸
         }
 
-        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        val rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_btn, list)
+        val mAdapter = MAdapter(R.layout.item_popwindow_btn, list)
         rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        mAdapter.bindToRecyclerView(rvList)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             if (onSelectListener!=null)
                 onSelectListener?.onClick(list[position])
             dismiss()

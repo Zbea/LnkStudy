@@ -18,15 +18,14 @@ class MessageDetailsDialog(private val context: Context,val screenPos:Int, priva
     fun builder(): Dialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_message_details)
-        dialog?.show()
-        val window = dialog?.window
-        window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams = window?.attributes
+        val window = dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
         if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         }
-        window?.attributes = layoutParams
+        dialog?.show()
 
         val ivCancel = dialog?.findViewById<ImageView>(R.id.iv_close)
         ivCancel?.setOnClickListener { dialog?.dismiss() }

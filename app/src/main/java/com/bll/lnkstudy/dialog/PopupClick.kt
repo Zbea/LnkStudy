@@ -21,7 +21,7 @@ class PopupClick(var context:Context, var list:MutableList<PopupBean>, var view:
     private var mPopupWindow:PopupWindow?=null
     private var xoff=0
 
-    fun builder(): PopupClick?{
+    fun builder(): PopupClick{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -35,9 +35,9 @@ class PopupClick(var context:Context, var list:MutableList<PopupBean>, var view:
             }
         }
 
-        var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
+        val rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
+        val mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
