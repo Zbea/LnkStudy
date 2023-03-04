@@ -36,8 +36,14 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            val packageName= lists[position].packageName
-            AppUtils.startAPP(context,packageName)
+            if (position==0){
+                dismiss()
+                listener?.onClick(position)
+            }
+            else{
+                val packageName= lists[position].packageName
+                AppUtils.startAPP(context,packageName)
+            }
         }
 
         return this
@@ -58,6 +64,16 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
             helper.setText(R.id.tv_name,item.appName)
             helper.setImageDrawable(R.id.iv_image,item.image)
         }
+    }
+
+    var listener: OnDialogClickListener? = null
+
+    fun interface OnDialogClickListener {
+        fun onClick(position: Int)
+    }
+
+    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
+        listener = onDialogClickListener
     }
 
 }

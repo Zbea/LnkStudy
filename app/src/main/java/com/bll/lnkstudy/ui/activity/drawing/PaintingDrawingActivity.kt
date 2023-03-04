@@ -6,6 +6,8 @@ import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.widget.LinearLayout
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseActivity
@@ -17,9 +19,10 @@ import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_painting_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
@@ -37,7 +40,7 @@ class PaintingDrawingActivity : BaseActivity() {
     private var resId=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_painting_drawing
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -68,8 +71,11 @@ class PaintingDrawingActivity : BaseActivity() {
 
         setBg()
 
-        elik_a = v_content_a.pwInterFace
-        elik_b = v_content_b.pwInterFace
+        val distance=DP2PX.dip2px(this,80f)
+        val layoutParams=LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(distance,0,distance,0)
+        v_content_a.layoutParams=layoutParams
+        v_content_b.layoutParams=layoutParams
 
         changeContent()
 

@@ -25,7 +25,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_book_details.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -44,7 +44,7 @@ class BookDetailsActivity : BaseActivity() {
     private var page = 0 //当前页码
 
     override fun layoutId(): Int {
-        return R.layout.ac_book_details
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -81,7 +81,6 @@ class BookDetailsActivity : BaseActivity() {
         pageCount = catalogMsg?.totalCount!!
 
         changeExpandView()
-        getElik()
 
         changeContent()
         bindClick()
@@ -128,14 +127,6 @@ class BookDetailsActivity : BaseActivity() {
             page += if (isExpand) 2 else 1
             changeContent()
         }
-    }
-
-    /**
-     * 获取elik实例
-     */
-    private fun getElik(){
-        elik_a = v_content_a.pwInterFace
-        elik_b = v_content_b.pwInterFace
     }
 
     /**

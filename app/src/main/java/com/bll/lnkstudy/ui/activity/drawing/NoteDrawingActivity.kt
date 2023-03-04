@@ -19,7 +19,7 @@ import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_note_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 class NoteDrawingActivity : BaseActivity() {
@@ -31,9 +31,8 @@ class NoteDrawingActivity : BaseActivity() {
     private var noteContents = mutableListOf<NoteContentBean>() //所有内容
     private var page = 0//页码
 
-
     override fun layoutId(): Int {
-        return R.layout.ac_note_drawing
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -57,8 +56,6 @@ class NoteDrawingActivity : BaseActivity() {
 
         v_content_a.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
         v_content_b.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
-        elik_a = v_content_a.pwInterFace
-        elik_b = v_content_b.pwInterFace
 
         changeContent()
 

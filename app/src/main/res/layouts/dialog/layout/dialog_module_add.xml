@@ -22,8 +22,8 @@
             android:gravity="center"
             android:text="模板"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="26sp" />
 
         <ImageView
             android:id="@+id/iv_cancel"

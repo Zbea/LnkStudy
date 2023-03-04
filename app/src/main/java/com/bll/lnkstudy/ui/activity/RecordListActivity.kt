@@ -12,8 +12,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.NotebookAddDialog
-import com.bll.lnkstudy.dialog.PopupRecordManage
+import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.RecordDaoManager
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -32,6 +33,7 @@ class RecordListActivity : BaseAppCompatActivity() {
     private var currentPos = 0//当前点击位置
     private var position = 0//当前点击位置
     private var mediaPlayer: MediaPlayer? = null
+    private var pops= mutableListOf<PopupBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_list
@@ -39,6 +41,9 @@ class RecordListActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         course = intent.getStringExtra("course").toString()
+
+        pops.add(PopupBean(0,"编辑",R.mipmap.icon_notebook_edit))
+        pops.add(PopupBean(1,"删除",R.mipmap.icon_delete))
     }
 
     override fun initView() {
@@ -140,15 +145,15 @@ class RecordListActivity : BaseAppCompatActivity() {
 
 
     private fun setSetting(view : View){
-        PopupRecordManage(this,view,-5).builder()
-            ?.setOnClickListener { type ->
-                if (type == 1) {
-                    edit(recordBeans[position].title)
-                }
-                if (type == 2) {
-                    delete()
-                }
+        PopupClick(this,pops,view,5).builder().setOnSelectListener{
+            if (it.id == 0) {
+                edit(recordBeans[position].title)
             }
+            if (it.id == 0) {
+                delete()
+            }
+        }
+
     }
 
     //修改笔记

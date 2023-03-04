@@ -17,12 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
+            android:layout_margin="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="22sp"
-            android:visibility="gone" />
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/tv_dialog_content"

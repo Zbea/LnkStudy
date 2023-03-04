@@ -22,7 +22,7 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
         val layoutParams=window.attributes
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
-            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         }
         dialog.show()
 

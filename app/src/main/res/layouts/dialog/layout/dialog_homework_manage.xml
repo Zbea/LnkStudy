@@ -20,8 +20,8 @@
             android:maxLines="1"
             android:layout_marginRight="20dp"
             android:text="设置"
-            android:textSize="30sp"
             android:textStyle="bold"
+            android:textSize="26sp"
             android:textColor="@color/black"/>
 
         <ImageView

@@ -17,7 +17,7 @@
             android:layout_centerVertical="true"
             android:text="选择科目"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_26"
             android:textStyle="bold" />
 
         <ImageView

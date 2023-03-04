@@ -16,7 +16,7 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PaperBean
 import com.bll.lnkstudy.mvp.model.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
-import kotlinx.android.synthetic.main.ac_testpaper_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 
@@ -36,13 +36,13 @@ class PaperDrawingActivity: BaseActivity() {
     private var pageCount=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_testpaper_drawing
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
         flags=intent.flags
         isExpand= flags == 1
-        course=intent.getStringExtra("course")
+        course=intent.getStringExtra("course").toString()
         mCatalogId=intent.getIntExtra("categoryId",0)
         pageCount=paperContents.size
 
@@ -56,8 +56,6 @@ class PaperDrawingActivity: BaseActivity() {
     override fun initView() {
 
         if(papers.size>0){
-            elik_a=v_content_a.pwInterFace
-            elik_b=v_content_b.pwInterFace
             currentPosition=papers.size-1
             changeContent()
         }
@@ -65,9 +63,6 @@ class PaperDrawingActivity: BaseActivity() {
         changeExpandView()
         bindClick()
     }
-
-
-
 
     private fun bindClick(){
 
@@ -143,9 +138,9 @@ class PaperDrawingActivity: BaseActivity() {
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
-        showView(ll_page_content_a)
+        showView(ll_page_content_a,v_content_a)
         iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
-        ll_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
+        v_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         if (flags==0&&isExpand){
@@ -214,7 +209,9 @@ class PaperDrawingActivity: BaseActivity() {
                 tv_page_b.text="${paperContents[page+1].page+1}"
             }
             else{
-                unloadImage(v_content_b)
+                //不显示 ，不能手写
+                v_content_b.setImageResource(0)
+                elik_b?.setPWEnabled(false)
                 tv_page_b.text=""
             }
         }
@@ -224,12 +221,13 @@ class PaperDrawingActivity: BaseActivity() {
 
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
+        elik.setPWEnabled(true)
 
-        var testPaperContent=paperContents[index]
+        val testPaperContent=paperContents[index]
         GlideUtils.setImageNoCacheUrl(this,testPaperContent.path,view)
 
-        elik?.setLoadFilePath(testPaperContent.drawPath,true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+        elik.setLoadFilePath(testPaperContent.drawPath,true)
+        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
 
@@ -237,15 +235,9 @@ class PaperDrawingActivity: BaseActivity() {
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
+                elik.saveBitmap(true) {}
             }
-
         })
-    }
-
-    //不显示不能手写
-    private fun unloadImage(view:ImageView){
-        view.setImageResource(0)
     }
 
     override fun changeScreenPage() {

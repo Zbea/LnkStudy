@@ -21,10 +21,13 @@ import androidx.core.view.ViewCompat
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.AppToolDialog
+import com.bll.lnkstudy.dialog.DrawingGeometryAxisDialog
+import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.EventBusData
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -33,6 +36,8 @@ import com.bll.lnkstudy.ui.activity.drawing.DraftActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -78,12 +83,122 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
+        elik_a = v_content_a.pwInterFace
+        elik_b = v_content_b.pwInterFace
+
         getAppTool()
 
         mDialog = ProgressDialog(this,screenPos)
         initData()
         initView()
 
+        initGeometryView()
+    }
+
+    /**
+     * 几何绘图
+     */
+    private fun initGeometryView(){
+
+        iv_geometry.setOnClickListener {
+            setViewElikUnable(ll_geometry)
+            showView(ll_geometry)
+            disMissView(iv_geometry)
+        }
+
+        iv_line.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LINE)
+        }
+
+        iv_rectangle.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RECTANGLE)
+        }
+
+        tv_circle.setOnClickListener {
+            val pops= mutableListOf<PopupBean>()
+            pops.add(PopupBean(0,"圆心",R.mipmap.icon_geometry_circle_1))
+            pops.add(PopupBean(1,"两点",R.mipmap.icon_geometry_circle_2))
+            pops.add(PopupBean(2,"三点",R.mipmap.icon_geometry_circle_3))
+            PopupClick(this,pops,tv_circle,5).builder().setOnSelectListener{
+                when(it.id){
+                    0->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE)
+                    1->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE2)
+                    else->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE3)
+                }
+            }
+        }
+
+        iv_arc.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ARC)
+        }
+
+        iv_oval.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_OVAL)
+        }
+
+        iv_vertical.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_VERTICALLINE)
+        }
+
+        iv_parabola.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_PARABOLA)
+        }
+
+        iv_angle.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
+        }
+
+        iv_axis.setOnClickListener {
+            DrawingGeometryAxisDialog(this,getCurrentScreenPos()).builder().setOnDialogClickListener {
+                    isScale, value, type ->
+                elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
+                elik_a?.setDrawAxisProperty(type, value, isScale)
+                elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
+                elik_b?.setDrawAxisProperty(type, value, isScale)
+            }
+        }
+
+        tv_gray_line.setOnClickListener {
+            val pops= mutableListOf<PopupBean>()
+            pops.add(PopupBean(0,"黑线",false))
+            pops.add(PopupBean(1,"灰线",false))
+            pops.add(PopupBean(2,"虚线",false))
+            PopupClick(this,pops,tv_gray_line,5).builder().setOnSelectListener{
+                tv_gray_line.text=it.name
+                when(it.id){
+                    0->{
+
+                    }
+                    1->{
+
+                    }
+                    else->{
+
+                    }
+                }
+            }
+        }
+
+        tv_reduce.setOnClickListener {
+            setDrawing()
+            disMissView(ll_geometry)
+            showView(iv_geometry)
+            setViewElikUnable(iv_geometry)
+        }
+
+        tv_out.setOnClickListener {
+            setDrawing()
+            disMissView(ll_geometry,iv_geometry)
+        }
+
+    }
+
+    /**
+     * 设置笔类型
+     */
+    private fun setDrawOjectType(type:Int){
+        elik_a?.drawObjectType = type
+        elik_b?.drawObjectType = type
     }
 
     /**
@@ -148,10 +263,23 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         tools.add(AppBean().apply {
             appName="几何绘图"
             image=resources.getDrawable(R.mipmap.icon_app_geometry)
-            packageName="com.android.htfyunnote"
+//            packageName="com.android.htfyunnote"
         })
         tools.addAll(toolApps)
-        AppToolDialog(this,scree,tools).builder()
+        AppToolDialog(this,scree,tools).builder()?.setDialogClickListener{ pos->
+            if (pos==0){
+                setViewElikUnable(ll_geometry)
+                showView(ll_geometry)
+            }
+        }
+    }
+
+    /**
+     * 设置不能手写
+     */
+    private fun setViewElikUnable(view:View){
+        elik_a?.addOnTopView(view)
+        elik_b?.addOnTopView(view)
     }
 
     /**
@@ -240,6 +368,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      */
     fun stopErasure(){
         ivErasure?.setImageResource(R.mipmap.icon_draw_erasure)
+        setDrawing()
+    }
+
+    /**
+     * 恢复手写
+      */
+    private fun setDrawing(){
         if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
             elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
         }
@@ -352,7 +487,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 跳转活动 已经打开过则关闭
      */
     fun customStartActivity(intent: Intent){
-        ActivityManager.getInstance().finishActivity(intent.component.className)
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
     }
 

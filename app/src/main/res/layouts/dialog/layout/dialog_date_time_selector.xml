@@ -24,7 +24,8 @@
                 android:layout_height="wrap_content"
                 android:text="开始"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textStyle="bold"
+                android:textSize="26sp" />
 
             <TimePicker
                 android:id="@+id/tp_start_time"
@@ -111,7 +112,8 @@
                 android:layout_height="wrap_content"
                 android:text="结束"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textStyle="bold"
+                android:textSize="26sp" />
 
             <TimePicker
                 android:id="@+id/tp_end_time"

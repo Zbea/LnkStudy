@@ -16,7 +16,7 @@
         android:layout_gravity="center_horizontal"
         android:text="购买学豆"
         android:textColor="@color/black"
-        android:textSize="32sp"
+        android:textSize="26sp"
         android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView

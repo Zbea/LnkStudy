@@ -39,8 +39,8 @@ class PopupClick(var context:Context, var list:MutableList<PopupBean>, var view:
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
         val mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        mAdapter.bindToRecyclerView(rvList)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             if (onSelectListener!=null)
                 onSelectListener?.onSelect(list[position])
             dismiss()
@@ -80,7 +80,8 @@ class PopupClick(var context:Context, var list:MutableList<PopupBean>, var view:
 
         override fun convert(helper: BaseViewHolder, item: PopupBean) {
             helper.setText(R.id.tv_name,item.name)
-            helper.setGone(R.id.iv_check,false)
+            helper.setImageResource(R.id.iv_check,item.resId)
+            helper.setGone(R.id.iv_check, item.resId!=0)
         }
 
     }

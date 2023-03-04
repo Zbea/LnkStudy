@@ -23,7 +23,7 @@ class NotebookAddDialog(private val context: Context, private val screenPos:Int,
         val layoutParams = window.attributes
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         }
         dialog.show()
 

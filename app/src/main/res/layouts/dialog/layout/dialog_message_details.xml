@@ -18,8 +18,8 @@
             android:layout_centerVertical="true"
             android:text="周老师"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="26sp" />
 
         <ImageView
             android:id="@+id/iv_close"

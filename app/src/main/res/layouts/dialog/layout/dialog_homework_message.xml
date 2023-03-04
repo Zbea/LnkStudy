@@ -10,9 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="作业通知"
-        android:textSize="@dimen/sp_24"
-        android:textColor="@color/black"
         android:textStyle="bold"
+        android:textSize="26sp"
+        android:textColor="@color/black"
         />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -21,7 +21,7 @@ class NotebookDeletePasswordDialog(private val context: Context, private val scr
         val layoutParams = window.attributes
         if (screenPos==3){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
+            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         }
         dialog.show()
 

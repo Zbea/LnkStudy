@@ -1,3 +1,4 @@
+import groovy.xml.XmlUtil
 
 plugins {
     id 'com.android.application'
@@ -45,15 +46,7 @@ android {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
-            Set<File> fileSet = options.bootstrapClasspath.getFiles()
-            List<File> newFileList =  new ArrayList<>();
-            //相对位置，根据存放的位置修改路径
-            newFileList.add(new File("./libs/eink/classes.jar"))
-            newFileList.addAll(fileSet)
-            options.bootstrapClasspath = files(
-                    newFileList.toArray()
-            )
+            options.compilerArgs.add('-Xbootclasspath/p:app/libs/eink/classes.jar')
         }
     }
 
@@ -133,4 +126,21 @@ dependencies {
     implementation("net.lingala.zip4j:zip4j:2.11.1")
 
 
+}
+
+preBuild {
+    doLast {
+        def imlFile = file(project.name + ".iml")
+        println 'Change ' + project.name + '.iml order'
+        try {
+            def parsedXml = (new XmlParser()).parse(imlFile)
+            def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
+            parsedXml.component[1].remove(jdkNode)
+            def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
+            new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
+            XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
+        } catch (FileNotFoundException ignore) {
+            // nop, iml not found
+        }
+    }
 }

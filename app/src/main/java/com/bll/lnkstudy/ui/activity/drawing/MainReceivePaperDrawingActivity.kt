@@ -22,7 +22,7 @@ import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
-import kotlinx.android.synthetic.main.ac_main_receivepaper_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 
@@ -46,7 +46,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     private var page = 0 //当前页码
 
     override fun layoutId(): Int {
-        return R.layout.ac_main_receivepaper_drawing
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -78,9 +78,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
         iv_btn.setOnClickListener(this)
         btn_page_up.setOnClickListener(this)
         btn_page_down.setOnClickListener(this)
-
-        elik_a = v_content_a.pwInterFace
-        elik_b = v_content_b.pwInterFace
 
         changeExpandView()
 
@@ -211,7 +208,8 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
                 tv_page_b.text="${page+1+1}/$pageCount"
             }
             else{
-                unloadImage(v_content_b)
+                elik_b?.setPWEnabled(false)
+                v_content_b.setImageResource(0)
                 tv_page_b.text=""
             }
         }
@@ -220,6 +218,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
 
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view: ImageView) {
+        elik.setPWEnabled(true)
 
         GlideUtils.setImageUrl(this,paths[index],view)
 
@@ -232,17 +231,11 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
+                elik.saveBitmap(true) {}
             }
 
         })
     }
-
-    //不显示不能手写
-    private fun unloadImage(view: ImageView){
-        view.setImageResource(0)
-    }
-
 
     override fun onBackPressed() {
     }

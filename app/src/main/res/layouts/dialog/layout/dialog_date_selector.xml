@@ -24,7 +24,8 @@
                 android:layout_height="wrap_content"
                 android:text="开始"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textStyle="bold"
+                android:textSize="26sp" />
 
             <DatePicker
                 android:id="@+id/dp_start"
@@ -49,7 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="结束"
-                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textSize="26sp"
                 android:textColor="@color/black"
                 />
 
