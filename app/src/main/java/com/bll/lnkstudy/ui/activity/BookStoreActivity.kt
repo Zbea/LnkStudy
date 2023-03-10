@@ -114,7 +114,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
     override fun initView() {
         setPageTitle(categoryStr)
-        disMissView(tv_province,tv_download)
+        disMissView(tv_province,tv_download,tv_semester)
 
         initRecyclerView()
 
@@ -299,17 +299,17 @@ class BookStoreActivity : BaseAppCompatActivity(),
         ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
             override fun onFinish(success: Boolean) {
                 if (success) {
-                    book.run {
+                    book.apply {
                         showToast("${bookName}下载完成")
-                        when (categoryStr) {
+                        bookType = when (categoryStr) {
                             "思维科学", "自然科学" -> {
-                                bookType="科学技术"
+                                "科学技术"
                             }
                             "运动才艺" -> {
-                                bookType="运动才艺"
+                                "运动才艺"
                             }
                             else -> {
-                                bookType=typeStr
+                                typeStr
                             }
                         }
                         loadSate = 2

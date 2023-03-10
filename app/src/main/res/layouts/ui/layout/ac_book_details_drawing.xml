@@ -2,13 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/drawing_bottom_height"
+        android:layout_above="@+id/ll_bottom"
         android:orientation="horizontal">
 
         <com.android.internal.widget.PreferenceImageView
@@ -40,6 +39,9 @@
         android:id="@+id/ll_geometry"
         layout="@layout/common_drawing_geometry"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/statusbar_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         />
 
     <ImageView

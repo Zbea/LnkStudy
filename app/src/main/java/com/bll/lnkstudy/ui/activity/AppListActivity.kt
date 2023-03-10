@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.activity.download.DownloadAppActivity
@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode
 /**
  * 官方应用
  */
-class AppListActivity:BaseActivity() {
+class AppListActivity:BaseDrawingActivity() {
 
     private val apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null

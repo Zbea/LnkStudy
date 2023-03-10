@@ -6,12 +6,11 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 
-class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
+class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListener {
 
     private var type=1//考卷
     private var course=""
@@ -143,7 +142,7 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
             val mergePathStr = "$outImageStr/$index/merge.png"//合并后图片地址
 
             val oldBitmap = BitmapFactory.decodeFile(path)
-            var drawBitmap = if (FileUtils.isExist(drawPath)) BitmapFactory.decodeFile(drawPath) else null
+            val drawBitmap = if (FileUtils.isExist(drawPath)) BitmapFactory.decodeFile(drawPath) else null
             if (drawBitmap != null) {
                 val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                 BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge")
@@ -238,11 +237,6 @@ class MainReceivePaperDrawingActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-    }
-
-    override fun onErasure() {
-        elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
     }
 
 }

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.base
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
@@ -30,6 +29,7 @@ import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.common_title.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -39,13 +39,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var ivBack: ImageView? = null
-    var tvPageTitle: TextView? = null
-    var tvSetting: TextView? = null
-    var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var tvSearch:TextView?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -99,53 +94,39 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      */
     abstract fun initView()
 
-    @SuppressLint("WrongViewCast")
-    fun initCommonTitle() {
-        ivBack = findViewById(R.id.iv_back)
-        ivSave = findViewById(R.id.iv_save)
-        tvPageTitle = findViewById(R.id.tv_title)
-        tvSetting = findViewById(R.id.tv_setting)
-        if (ivBack != null) {
-            ivBack!!.setOnClickListener { finish() }
-        }
-        tvSearch= findViewById(R.id.tv_search)
-
+    private fun initCommonTitle() {
+        iv_back?.setOnClickListener { finish() }
     }
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
-            showView(ivBack)
+            showView(iv_back)
         }
         else{
-            disMissView(ivBack)
+            disMissView(iv_back)
         }
     }
 
     fun showSearchView(isShow:Boolean) {
         if (isShow){
-            showView(tvSearch)
+            showView(tv_search)
         }
         else{
-            disMissView(tvSearch)
+            disMissView(tv_search)
         }
     }
 
     fun showSaveView() {
-        showView(ivSave)
+        showView(iv_save)
     }
 
     fun setPageTitle(pageTitle: String) {
-        if (tvPageTitle != null) {
-            tvPageTitle!!.text = pageTitle
-        }
+        tv_title?.text = pageTitle
     }
 
     fun setPageSetting(setStr:String){
-        if (tvSetting!=null){
-            showView(tvSetting)
-            tvSetting?.text=setStr
-        }
-
+        showView(tv_setting)
+        tv_setting?.text=setStr
     }
 
     /**

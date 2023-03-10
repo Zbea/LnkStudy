@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
@@ -25,6 +27,7 @@ import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -43,12 +46,9 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 多种状态的 View 的切换
      */
     var mView:View?=null
-    var tvPageTitle: TextView? = null
-    var ivBack: ImageView? = null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var tvSearch: TextView?=null
     var screenPos=0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -118,34 +118,21 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     abstract fun lazyLoad()
 
     private fun initCommonTitle() {
-        tvPageTitle = requireView().findViewById(R.id.tv_title)
-        ivBack=requireView().findViewById(R.id.iv_back)
-        tvSearch= requireView().findViewById(R.id.tv_search)
     }
 
     fun setTitle(pageTitle: String) {
-        if (tvPageTitle != null) {
-            tvPageTitle?.text = pageTitle
-        }
+        tv_title?.text = pageTitle
     }
 
     fun showSearch(isShow:Boolean) {
         if (isShow){
-            showView(tvSearch)
+            showView(tv_search)
         }
         else{
-            disMissView(tvSearch)
+            disMissView(tv_search)
         }
     }
 
-    fun showBackView(isShow:Boolean) {
-        if (isShow){
-            showView(ivBack)
-        }
-        else{
-            disMissView(ivBack)
-        }
-    }
 
     /**
      * 显示view

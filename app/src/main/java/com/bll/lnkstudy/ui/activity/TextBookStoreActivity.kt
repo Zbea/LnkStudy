@@ -45,12 +45,11 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
+    private var semesterStr="上学期"
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: BookBean? = null
 
-    private var popWindowGrade: PopupList? = null
-    private var popWindowProvince: PopupList? = null
-
+    private var semesterList = mutableListOf<PopupBean>()
     private var provinceList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
@@ -73,13 +72,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         //年级分类
         if (bookStoreType?.grade.isNullOrEmpty()) return
         for (i in bookStoreType?.grade?.indices!!) {
-            gradeList.add(
-                PopupBean(
-                    i,
-                    bookStoreType?.grade[i],
-                    i == 0
-                )
-            )
+            gradeList.add(PopupBean(i, bookStoreType?.grade[i], i == 0))
         }
         gradeStr = gradeList[0].name
         initSelectorView()
@@ -102,18 +95,13 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
         val area = Gson().fromJson(citysStr, Area::class.java)
         for (i in area.provinces.indices) {
-            provinceList.add(
-                PopupBean(
-                    i,
-                    area.provinces[i].provinceName,
-                    i == 0
-                )
-            )
+            provinceList.add(PopupBean(i, area.provinces[i].provinceName, i == 0))
         }
         provinceStr = provinceList[0].name
         typeList = DataBeanManager.textbookType.toMutableList()
         typeList.removeAt(3)
         typeStr = typeList[0]
+        semesterList=DataBeanManager.semesters
 
         getData()
     }
@@ -175,6 +163,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         map["area"] = provinceStr
         map["grade"] = gradeStr
         map["type"] = typeStr
+        map["semester"]=semesterStr
         presenter.getTextBooks(map)
     }
 
@@ -184,6 +173,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         map["page"] = pageIndex
         map["size"] = pageSize
         map["grade"] = gradeStr
+        map["semester"]=semesterStr
         presenter.getTextBookCks(map)
     }
 
@@ -194,33 +184,35 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
         tv_grade.text = gradeList[0].name
         tv_grade.setOnClickListener {
-            if (popWindowGrade == null) {
-                popWindowGrade = PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
-                popWindowGrade?.setOnSelectListener { item ->
-                    gradeStr = item.name
-                    tv_grade.text = gradeStr
-                    pageIndex = 1
-                    setFetchData()
-                }
-            } else {
-                popWindowGrade?.show()
+            PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
+            .setOnSelectListener { item ->
+                gradeStr = item.name
+                tv_grade.text = gradeStr
+                pageIndex = 1
+                setFetchData()
             }
         }
 
         tv_province.text = provinceStr
         tv_province.setOnClickListener {
-            if (popWindowProvince == null) {
-                popWindowProvince =
-                    PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
-                popWindowProvince?.setOnSelectListener { item ->
-                    provinceStr = item.name
-                    tv_province.text = item.name
+            PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
+            .setOnSelectListener { item ->
+                provinceStr = item.name
+                tv_province.text = item.name
+                pageIndex = 1
+                setFetchData()
+            }
+        }
+
+        tv_semester.text = semesterStr
+        tv_semester.setOnClickListener {
+            PopupList(this, semesterList, tv_semester, 5).builder()
+                .setOnSelectListener { item ->
+                    semesterStr = item.name
+                    tv_semester.text = item.name
                     pageIndex = 1
                     setFetchData()
                 }
-            } else {
-                popWindowProvince?.show()
-            }
         }
     }
 
@@ -383,7 +375,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                         EventBus.getDefault().post(COURSE_EVENT)
                     }
 
-                    book?.run {
+                    book.apply {
                         showToast("${bookName}下载完成")
                         textBookType = typeStr
                         loadSate = 2

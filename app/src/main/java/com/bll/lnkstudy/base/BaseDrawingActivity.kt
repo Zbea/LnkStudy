@@ -32,12 +32,14 @@ import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.drawing.DraftActivity
+import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -45,23 +47,14 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
-abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var ivBack: ImageView? = null
-    var tvPageTitle: TextView? = null
-    var ivSave: ImageView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var tvSearch:TextView?=null
-    var ivToolLeft: ImageView? = null
-    var ivToolRight: ImageView? = null
     var toolApps= mutableListOf<AppBean>()
-
-    var ivDraft:ImageView?=null
-    var ivErasure:ImageView?=null
     var isExpand=false
     var elik_a: EinkPWInterface? = null
     var elik_b: EinkPWInterface? = null
@@ -83,8 +76,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
-        elik_a = v_content_a.pwInterFace
-        elik_b = v_content_b.pwInterFace
+        if (v_content_a!=null && v_content_b!=null){
+            elik_a = v_content_a?.pwInterFace
+            elik_b = v_content_b?.pwInterFace
+        }
 
         getAppTool()
 
@@ -100,21 +95,21 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      */
     private fun initGeometryView(){
 
-        iv_geometry.setOnClickListener {
+        iv_geometry?.setOnClickListener {
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             disMissView(iv_geometry)
         }
 
-        iv_line.setOnClickListener {
+        iv_line?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LINE)
         }
 
-        iv_rectangle.setOnClickListener {
+        iv_rectangle?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RECTANGLE)
         }
 
-        tv_circle.setOnClickListener {
+        ll_circle?.setOnClickListener {
             val pops= mutableListOf<PopupBean>()
             pops.add(PopupBean(0,"圆心",R.mipmap.icon_geometry_circle_1))
             pops.add(PopupBean(1,"两点",R.mipmap.icon_geometry_circle_2))
@@ -128,27 +123,27 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
 
-        iv_arc.setOnClickListener {
+        iv_arc?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ARC)
         }
 
-        iv_oval.setOnClickListener {
+        iv_oval?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_OVAL)
         }
 
-        iv_vertical.setOnClickListener {
+        iv_vertical?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_VERTICALLINE)
         }
 
-        iv_parabola.setOnClickListener {
+        iv_parabola?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_PARABOLA)
         }
 
-        iv_angle.setOnClickListener {
+        iv_angle?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
         }
 
-        iv_axis.setOnClickListener {
+        iv_axis?.setOnClickListener {
             DrawingGeometryAxisDialog(this,getCurrentScreenPos()).builder().setOnDialogClickListener {
                     isScale, value, type ->
                 elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
@@ -158,7 +153,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
 
-        tv_gray_line.setOnClickListener {
+        tv_gray_line?.setOnClickListener {
             val pops= mutableListOf<PopupBean>()
             pops.add(PopupBean(0,"黑线",false))
             pops.add(PopupBean(1,"灰线",false))
@@ -179,14 +174,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
 
-        tv_reduce.setOnClickListener {
+        tv_reduce?.setOnClickListener {
             setDrawing()
             disMissView(ll_geometry)
             showView(iv_geometry)
             setViewElikUnable(iv_geometry)
         }
 
-        tv_out.setOnClickListener {
+        tv_out?.setOnClickListener {
             setDrawing()
             disMissView(ll_geometry,iv_geometry)
         }
@@ -299,59 +294,42 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
-        ivBack = findViewById(R.id.iv_back)
-        if (ivBack != null) {
-            ivBack!!.setOnClickListener { finish() }
-        }
-        ivSave = findViewById(R.id.iv_save)
-        tvPageTitle = findViewById(R.id.tv_title)
-        tvSearch= findViewById(R.id.tv_search)
 
-        ivToolLeft = findViewById(R.id.iv_tool_left)
-        if (ivToolLeft != null) {
-            ivToolLeft?.setOnClickListener {
-                if (getCurrentScreenPos()==3)//全屏时点击左按钮在左
-                {
-                    showDialogAppTool(1)
-                }
-                else{
-                    showDialogAppTool(0)
-                }
+        iv_back?.setOnClickListener { finish() }
+
+        iv_tool_left?.setOnClickListener {
+            if (getCurrentScreenPos()==3)//全屏时点击左按钮在左
+            {
+                showDialogAppTool(1)
+            }
+            else{
+                showDialogAppTool(0)
             }
         }
 
-        ivToolRight = findViewById(R.id.iv_tool_right)
-        if (ivToolRight != null) {
-            ivToolRight?.setOnClickListener {
-                if (getCurrentScreenPos()==3)
-                {
-                    showDialogAppTool(2)
-                }
-                else{
-                    showDialogAppTool(0)
-                }
+        iv_tool_right?.setOnClickListener {
+            if (getCurrentScreenPos()==3)
+            {
+                showDialogAppTool(2)
+            }
+            else{
+                showDialogAppTool(0)
             }
         }
 
-        ivErasure=findViewById(R.id.iv_erasure)
-        if (ivErasure!=null){
-            ivErasure?.setOnClickListener {
-                isErasure=!isErasure
-                if (isErasure){
-                    ivErasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
-                    onErasure()
-                }
-                else{
-                    stopErasure()
-                }
+        iv_erasure?.setOnClickListener {
+            isErasure=!isErasure
+            if (isErasure){
+                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
+                onErasure()
+            }
+            else{
+                stopErasure()
             }
         }
 
-        ivDraft = findViewById(R.id.iv_draft)
-        if (ivDraft != null) {
-            ivDraft?.setOnClickListener {
-                startActivity(Intent(this,DraftActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            }
+        iv_draft?.setOnClickListener {
+            startActivity(Intent(this,DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
 
     }
@@ -359,15 +337,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 设置擦除
      */
-    open fun onErasure(){
+    private fun onErasure(){
+        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CHOICERASE)
     }
 
     /**
      * 结束擦除
      * （在展平、收屏时候都结束擦除）
      */
-    fun stopErasure(){
-        ivErasure?.setImageResource(R.mipmap.icon_draw_erasure)
+    private fun stopErasure(){
+        iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
         setDrawing()
     }
 
@@ -375,12 +354,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 恢复手写
       */
     private fun setDrawing(){
-        if (elik_a?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-        }
-        if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-        }
+        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
     }
 
     /**
@@ -395,30 +369,28 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
-            showView(ivBack)
+            showView(iv_back)
         }
         else{
-            disMissView(ivBack)
+            disMissView(iv_back)
         }
     }
 
     fun showSearchView(isShow:Boolean) {
         if (isShow){
-            showView(tvSearch)
+            showView(tv_search)
         }
         else{
-            disMissView(tvSearch)
+            disMissView(tv_search)
         }
     }
 
     fun showSaveView() {
-        showView(ivSave)
+        showView(iv_save)
     }
 
     fun setPageTitle(pageTitle: String) {
-        if (tvPageTitle != null) {
-            tvPageTitle!!.text = pageTitle
-        }
+        tv_title?.text = pageTitle
     }
 
     /**

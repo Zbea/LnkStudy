@@ -10,6 +10,7 @@ import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_record.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.IOException
@@ -38,7 +39,7 @@ class RecordActivity : BaseAppCompatActivity() {
         setPageTitle("录音")
         showSaveView()
 
-        ivSave?.setOnClickListener {
+        iv_save?.setOnClickListener {
             if (!FileUtils.isExist(path)) {
                 showToast("请先录音")
                 return@setOnClickListener

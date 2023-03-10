@@ -479,4 +479,14 @@ object DataBeanManager {
             return list
         }
 
+
+    //学期选择
+    val semesters: MutableList<PopupBean>
+        get() {
+            val list = mutableListOf<PopupBean>()
+            list.add(PopupBean(0,"上学期",true))
+            list.add(PopupBean(1,"下学期",false))
+            return list
+        }
+
 }

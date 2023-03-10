@@ -10,7 +10,7 @@ import android.widget.RadioButton
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_drawing_draft.*
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.ac_drawing_draft.*
 /**
  * 草稿纸
  */
-class DraftActivity:BaseActivity(){
+class DraftDrawingActivity:BaseDrawingActivity(){
 
     private var eink: EinkPWInterface?=null
     private val paths= mutableListOf<String>()

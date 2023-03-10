@@ -115,7 +115,7 @@
             android:theme="@style/activityCustom"
             />
         <activity android:name=".ui.activity.MyWallpaperActivity"/>
-        <activity android:name=".ui.activity.drawing.DraftActivity"
+        <activity android:name=".ui.activity.drawing.DraftDrawingActivity"
             android:theme="@style/activityCustom"
             />
         <activity android:name=".ui.activity.date.DateActivity" />

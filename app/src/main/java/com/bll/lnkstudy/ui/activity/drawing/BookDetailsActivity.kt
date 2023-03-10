@@ -5,14 +5,13 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
@@ -25,13 +24,13 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.ac_book_details_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity : BaseActivity() {
+class BookDetailsActivity : BaseDrawingActivity() {
 
     //屏幕当前位置
     private var book: BookBean? = null
@@ -44,37 +43,39 @@ class BookDetailsActivity : BaseActivity() {
     private var page = 0 //当前页码
 
     override fun layoutId(): Int {
-        return R.layout.ac_drawing
+        return R.layout.ac_book_details_drawing
     }
 
     override fun initData() {
         val id = intent.getIntExtra("book_id", 0)
         book = BookGreenDaoManager.getInstance().queryBookByBookID(id)
-        page = book?.pageIndex!!
         if (book == null) return
+        page = book?.pageIndex!!
         val cataLogFilePath = FileAddress().getPathBookCatalog(book?.bookPath!!)
-        val cataMsgStr =
-            FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
-        catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
-        if (catalogMsg == null) return
+        if (FileUtils.isExist(cataLogFilePath))
+        {
+            val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
+            catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
 
-        for (item in catalogMsg?.contents!!) {
-            var catalogParent = CatalogParent()
-            catalogParent.title = item.title
-            catalogParent.pageNumber = item.pageNumber
-            catalogParent.picName = item.picName
-            for (ite in item.subItems) {
-                var catalogChild = CatalogChild()
-                catalogChild.title = ite.title
-                catalogChild.pageNumber = ite.pageNumber
-                catalogChild.picName = ite.picName
+            for (item in catalogMsg?.contents!!) {
+                val catalogParent = CatalogParent()
+                catalogParent.title = item.title
+                catalogParent.pageNumber = item.pageNumber
+                catalogParent.picName = item.picName
+                for (ite in item.subItems) {
+                    val catalogChild = CatalogChild()
+                    catalogChild.title = ite.title
+                    catalogChild.pageNumber = ite.pageNumber
+                    catalogChild.picName = ite.picName
 
-                catalogParent.addSubItem(catalogChild)
-                childItems.add(catalogChild)
+                    catalogParent.addSubItem(catalogChild)
+                    childItems.add(catalogChild)
+                }
+                parentItems.add(catalogParent)
+                catalogs.add(catalogParent)
             }
-            parentItems.add(catalogParent)
-            catalogs.add(catalogParent)
         }
+
     }
 
     override fun initView() {
@@ -142,8 +143,8 @@ class BookDetailsActivity : BaseActivity() {
 
     //单屏、全屏内容切换
     private fun changeExpandView() {
+        showView(v_content_a,ll_page_content_a)
         iv_expand.visibility=if (isExpand) View.GONE else View.VISIBLE
-        ll_page_content_a.visibility = View.VISIBLE
         v_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         ll_page_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
         v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
@@ -244,16 +245,6 @@ class BookDetailsActivity : BaseActivity() {
     override fun changeScreenPage() {
         if (isExpand) {
             changeExpandContent()
-        }
-    }
-
-    override fun onErasure() {
-        if (isExpand){
-                elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-                elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
-        else{
-                elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
     }
 

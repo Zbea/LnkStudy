@@ -4,11 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
@@ -20,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 
-class PaperDrawingActivity: BaseActivity() {
+class PaperDrawingActivity: BaseDrawingActivity() {
 
     private var flags=0//0作业 1考卷
     private var course=""
@@ -246,14 +245,5 @@ class PaperDrawingActivity: BaseActivity() {
         }
     }
 
-    override fun onErasure() {
-        if (isExpand){
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
-        else{
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
-    }
 
 }

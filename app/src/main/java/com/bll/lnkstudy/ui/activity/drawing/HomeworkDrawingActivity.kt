@@ -4,11 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
@@ -22,7 +21,7 @@ import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
-class HomeworkDrawingActivity : BaseActivity() {
+class HomeworkDrawingActivity : BaseDrawingActivity() {
 
     private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
@@ -368,16 +367,6 @@ class HomeworkDrawingActivity : BaseActivity() {
    override fun changeScreenPage() {
         if (isExpand){
             changeExpandContent()
-        }
-    }
-
-    override fun onErasure() {
-        if (isExpand){
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
-        else{
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
         }
     }
 

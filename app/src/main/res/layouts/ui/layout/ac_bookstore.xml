@@ -67,6 +67,19 @@
                 android:textSize="@dimen/sp_22" />
 
             <TextView
+                android:id="@+id/tv_semester"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:background="@drawable/bg_gary_arch"
+                android:drawableRight="@mipmap/icon_arrow_down"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingEnd="@dimen/dp_20"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+            <TextView
                 android:id="@+id/tv_search"
                 android:layout_width="200dp"
                 android:layout_height="@dimen/dp_50"

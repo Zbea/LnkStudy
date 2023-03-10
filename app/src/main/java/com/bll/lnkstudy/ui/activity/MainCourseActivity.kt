@@ -17,6 +17,7 @@ import com.bll.lnkstudy.mvp.model.CourseBean
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_course.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 
 //课程表
@@ -104,7 +105,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
         setPageTitle("课程表   编辑")
         showSaveView()
 
-        ivSave?.setOnClickListener {
+        iv_save?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
             CourseGreenDaoManager.getInstance().deleteAll()//清除以前存储的课程
             CourseGreenDaoManager.getInstance().insertAll(selectLists)

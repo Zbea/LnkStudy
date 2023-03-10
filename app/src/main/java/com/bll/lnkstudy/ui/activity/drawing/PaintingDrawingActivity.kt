@@ -4,13 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
-class PaintingDrawingActivity : BaseActivity() {
+class PaintingDrawingActivity : BaseDrawingActivity() {
 
     private var type = 0
     private var popupDrawingManage: PopupDrawingManage? = null
@@ -74,13 +73,14 @@ class PaintingDrawingActivity : BaseActivity() {
         val distance=DP2PX.dip2px(this,80f)
         val layoutParams=LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(distance,0,distance,0)
+        layoutParams.weight=1f
         v_content_a.layoutParams=layoutParams
         v_content_b.layoutParams=layoutParams
 
         changeContent()
 
         tv_title_a.setOnClickListener {
-            var title=tv_title_a.text.toString()
+            val title=tv_title_a.text.toString()
             InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
                 tv_title_a.text = string
                 paintingDrawingBean_a?.title = string
@@ -90,7 +90,7 @@ class PaintingDrawingActivity : BaseActivity() {
         }
 
         tv_title_b.setOnClickListener {
-            var title=tv_title_b.text.toString()
+            val title=tv_title_b.text.toString()
             InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
                 tv_title_b.text = string
                 paintingDrawingBean?.title = string
@@ -187,9 +187,11 @@ class PaintingDrawingActivity : BaseActivity() {
      * 切换屏幕view变化
      */
     private fun changeExpandView(){
+
         iv_expand.visibility = if(isExpand) View.GONE else View.VISIBLE
         v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
+        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         if (isExpand){
             if (screenPos==1){
@@ -201,7 +203,7 @@ class PaintingDrawingActivity : BaseActivity() {
                 disMissView(iv_expand_a)
             }
         }
-        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
+
     }
 
     /**
@@ -368,16 +370,5 @@ class PaintingDrawingActivity : BaseActivity() {
             changeExpandContent()
         }
     }
-
-    override fun onErasure() {
-        if (isExpand){
-            elik_a?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
-        else{
-            elik_b?.drawObjectType= PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-        }
-    }
-
 
 }
