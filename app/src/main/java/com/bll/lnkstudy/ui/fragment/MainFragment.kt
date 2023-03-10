@@ -22,6 +22,7 @@ import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
+import com.bll.lnkstudy.mvp.presenter.MainPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
@@ -49,29 +50,35 @@ import java.util.Date
 /**
  * 首页
  */
-class MainFragment : BaseFragment(), IContractView.IClassGroupView {
+class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView.IPaperView {
 
     private var classGroupPresenter = ClassGroupPresenter(this)
+    private var mPaperPresenter=MainPaperPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
-
     private var classGroupAdapter: MainClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
     private var mainNoteAdapter: MainNoteAdapter? = null
-    private var receivePapers = mutableListOf<ReceivePaper>()
+    private var receivePapers = mutableListOf<ReceivePaper.PaperBean>()
     private var receivePaperAdapter: MainReceivePaperAdapter? = null
     private var positionPaper = 0
 
-    override fun onInsert() {
+    override fun onList(receivePaper: ReceivePaper?) {
+        receivePapers= receivePaper?.list as MutableList<ReceivePaper.PaperBean>
+        receivePaperAdapter?.setNewData(receivePapers)
+        loadPapers()
+    }
+    override fun onCommitSuccess() {
     }
 
+
+    override fun onInsert() {
+    }
     override fun onClassGroupList(classGroups: List<ClassGroup>) {
         groups = classGroups as MutableList<ClassGroup>
         classGroupAdapter?.setNewData(groups)
     }
-
     override fun onQuit() {
     }
-
     override fun onUser(lists: MutableList<ClassGroupUser>?) {
     }
 
@@ -166,7 +173,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
         }
 
         iv_date_more.setOnClickListener {
-            PopupClick(requireContext(), lists, iv_date_more, 5).builder()?.setOnSelectListener {
+            PopupClick(requireContext(), lists, iv_date_more, 5).builder().setOnSelectListener {
                 if (it.id == 0) {
                     customStartActivity(Intent(requireContext(), DatePlanListActivity::class.java))
                 }
@@ -220,7 +227,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
                 for (file in files) {
                     paths.add(file.path)
                 }
-                if (files.size == paper.images.size) {
+                if (files.size == paper.imageUrl.split(",").toTypedArray().size) {
                     val bundle = Bundle()
                     bundle.putSerializable("receivePaper", paper)
                     val intent = Intent(activity, MainReceivePaperDrawingActivity::class.java)
@@ -276,42 +283,21 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
     }
 
     private fun findReceivePapers() {
-
-        val receivePaper1 = ReceivePaper()
-        receivePaper1.id = 1
-        receivePaper1.title = "数学期中考试"
-        receivePaper1.course = "数学"
-        receivePaper1.category = "单元考试卷"
-        receivePaper1.categoryId = 0
-        receivePaper1.createDate = System.currentTimeMillis()
-
-        val receivePaper2 = ReceivePaper()
-        receivePaper2.id = 2
-        receivePaper2.title = "语文期中考试"
-        receivePaper2.course = "语文"
-        receivePaper2.category = "阶段考试卷"
-        receivePaper2.categoryId = 1
-        receivePaper2.createDate = System.currentTimeMillis()
-        receivePaper2.images = arrayOf(
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-9%2F18%2F1c04fc93-c130-4779-8c4f-718922afd68e%2F1c04fc93-c130-4779-8c4f-718922afd68e1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659079134&t=aea0e93799e11e4154452df47c03f710",
-            "http://files.eduuu.com/img/2012/12/14/165129_50cae891a6231.jpg",
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile1.renrendoc.com%2Ffileroot_temp2%2F2020-11%2F13%2Fa7590e12-844e-482c-aeb7-f06a8b248c6b%2Fa7590e12-844e-482c-aeb7-f06a8b248c6b1.gif&refer=http%3A%2F%2Ffile1.renrendoc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1659771383&t=800602d745210c44e69f6f4e274f30b5"
-        )
-        receivePapers.add(receivePaper1)
-        receivePapers.add(receivePaper2)
-
-        loadPapers()
+        val map=HashMap<String,Any>()
+        map["size"] = 100
+        mPaperPresenter.getList(map)
     }
 
     //下载收到的图片
     private fun loadPapers() {
         for (item in receivePapers) {
             //设置路径
-            val file = File(FileAddress().getPathTestPaper(item.categoryId, item.id))
+            val file = File(FileAddress().getPathTestPaper(item.examId, item.id))
             item.path = file.path
             val files = FileUtils.getFiles(file.path)
-            if (files == null || files.size != item.images.size) {
-                val imageDownLoad = ImageDownLoadUtils(activity, item.images, file.path)
+            val images=item.imageUrl.split(",").toTypedArray()
+            if (files == null || files.size != images.size) {
+                val imageDownLoad = ImageDownLoadUtils(activity,images, file.path)
                 imageDownLoad.startDownload()
                 imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                     override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
@@ -355,9 +341,11 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView {
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
+        findReceivePapers()
         loadPapers()
         classGroupPresenter.getClassGroupList(false)
     }
+
 
 
 }

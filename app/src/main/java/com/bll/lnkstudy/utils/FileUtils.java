@@ -206,6 +206,8 @@ public class FileUtils {
     }
 
     public static void deleteFile(File file){
+        if (file == null || !file.exists() )
+            return;
         // 判断传递进来的是文件还是文件夹,如果是文件,直接删除,如果是文件夹,则判断文件夹里面有没有东西
         if (file.isDirectory()) {
             // 如果是目录,就删除目录下所有的文件和文件夹
@@ -216,16 +218,17 @@ public class FileUtils {
                 if (f.isFile()) {
                     // 删除文件
                     f.delete();
-                } else if (file.isDirectory()) {
+                } else{
                     // 如果是文件夹,就递归调用文件夹的方法
                     deleteFile(f);
                 }
             }
             file.delete();
         }
-        file.delete();
+        else {
+            file.delete();
+        }
     }
-
     /**
      * 文件夹排序
      * @param files

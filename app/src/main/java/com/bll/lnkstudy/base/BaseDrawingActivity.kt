@@ -33,6 +33,7 @@ import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -182,6 +183,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         }
 
         tv_out?.setOnClickListener {
+            if (this.localClassName == MainReceivePaperDrawingActivity::class.java.name) return@setOnClickListener
             setDrawing()
             disMissView(ll_geometry,iv_geometry)
         }
@@ -272,7 +274,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     /**
      * 设置不能手写
      */
-    private fun setViewElikUnable(view:View){
+    fun setViewElikUnable(view:View){
         elik_a?.addOnTopView(view)
         elik_b?.addOnTopView(view)
     }

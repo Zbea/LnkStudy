@@ -3,11 +3,19 @@ package com.bll.lnkstudy
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
 
 interface APIService{
+
+    /**
+     * 文件上传
+     */
+    @Multipart
+    @POST("file/manyUpload")
+    fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
 
     /**
      * 用户登录 "/login"
@@ -173,5 +181,16 @@ interface APIService{
      */
     @GET("userTypes")
     fun getCommonGrade(): Observable<BaseResult<CommonBean>>
+
+    /**
+     * 学生获取考卷
+     */
+    @GET("student/task/list")
+    fun getPapersList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ReceivePaper>>
+    /**
+     * 学生提交考卷
+     */
+    @POST("student/task/pushExamWork")
+    fun commitPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

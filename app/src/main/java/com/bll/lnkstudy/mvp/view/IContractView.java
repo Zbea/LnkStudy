@@ -9,6 +9,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.Grade;
 import com.bll.lnkstudy.mvp.model.PaintingList;
+import com.bll.lnkstudy.mvp.model.ReceivePaper;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
@@ -17,6 +18,12 @@ import com.bll.lnkstudy.net.IBaseView;
 import java.util.List;
 
 public interface IContractView {
+
+    //文件上传
+    interface IFileUploadView extends IBaseView{
+        void onSuccess(List<String> urls);
+    }
+
 
     //登录
     interface ILoginView extends IBaseView {
@@ -83,5 +90,11 @@ public interface IContractView {
     //公共接口
     interface ICommonView extends IBaseView {
         void onList(List<Grade> grades);
+    }
+
+    //公共接口
+    interface IPaperView extends IBaseView {
+        void onList(ReceivePaper receivePaper);
+        void onCommitSuccess();
     }
 }
