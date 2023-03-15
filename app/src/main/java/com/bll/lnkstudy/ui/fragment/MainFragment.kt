@@ -22,7 +22,7 @@ import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
-import com.bll.lnkstudy.mvp.presenter.MainPaperPresenter
+import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
@@ -53,7 +53,7 @@ import java.util.Date
 class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView.IPaperView {
 
     private var classGroupPresenter = ClassGroupPresenter(this)
-    private var mPaperPresenter=MainPaperPresenter(this)
+    private var mPaperPresenter=TestPaperPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var classGroupAdapter: MainClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
@@ -68,6 +68,9 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         loadPapers()
     }
     override fun onCommitSuccess() {
+    }
+    override fun onDeleteSuccess() {
+        TODO("Not yet implemented")
     }
 
 

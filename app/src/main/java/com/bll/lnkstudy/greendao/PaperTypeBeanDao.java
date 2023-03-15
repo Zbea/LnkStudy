@@ -48,7 +48,7 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"NAME\" TEXT," + // 2: name
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
-                "\"COURSE\" TEXT UNIQUE );"); // 4: course
+                "\"COURSE\" TEXT);"); // 4: course
     }
 
     /** Drops the underlying database table. */

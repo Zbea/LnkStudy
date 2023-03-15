@@ -96,5 +96,7 @@ public interface IContractView {
     interface IPaperView extends IBaseView {
         void onList(ReceivePaper receivePaper);
         void onCommitSuccess();
+        void onDeleteSuccess();
+
     }
 }

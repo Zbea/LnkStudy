@@ -12,6 +12,7 @@ class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuick
         helper.apply {
             setVisible(R.id.ll_rank,item.isPg)
             setText(R.id.tv_name,item.name)
+            setText(R.id.tv_score,item.score.toString())
         }
     }
 

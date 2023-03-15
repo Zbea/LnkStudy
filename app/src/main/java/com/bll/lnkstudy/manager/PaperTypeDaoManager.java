@@ -60,8 +60,7 @@ public class PaperTypeDaoManager {
 
     public List<PaperTypeBean> queryAll(String course) {
         WhereCondition whereCondition= PaperTypeBeanDao.Properties.Course.eq(course);
-        List<PaperTypeBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     public void deleteBean(PaperTypeBean bean){

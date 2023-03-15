@@ -18,6 +18,9 @@ public class ReceivePaper implements Serializable {
         @SerializedName("taskId")
         public int examId;//收到考卷 分类id
         public String examName;//收到考卷 分类名称
+        public int score;
+        public String submitUrl;
+        public String studentUrl;
         @SerializedName("taskImageId")
         public String imageUrl;
         public String path;//文件夹路径

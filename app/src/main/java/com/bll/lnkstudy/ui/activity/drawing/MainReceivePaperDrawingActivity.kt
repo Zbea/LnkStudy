@@ -19,7 +19,7 @@ import com.bll.lnkstudy.mvp.model.PaperContentBean
 import com.bll.lnkstudy.mvp.model.PaperTypeBean
 import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
-import com.bll.lnkstudy.mvp.presenter.MainPaperPresenter
+import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -34,11 +34,11 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
     ,IContractView.IPaperView,IContractView.IFileUploadView{
 
     private val mUploadPresenter=FileUploadPresenter(this)
-    private val mPaperPresenter=MainPaperPresenter(this)
+    private val mPaperPresenter=TestPaperPresenter(this)
 
-    private var type=1//考卷
+    private var type=1//1考卷0作业
     private var course=""
-    private var mCatalogId=0
+    private var examId=0
     private var daoManager: PaperDaoManager?=null
     private var daoContentManager: PaperContentDaoManager?=null
     private var papers= mutableListOf<PaperBean>()
@@ -64,19 +64,30 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
     override fun onList(receivePaper: ReceivePaper?) {
     }
     override fun onCommitSuccess() {
+        //判断是否已经存在之前的分类
+        var boolean=false
+        val paperTypes=PaperTypeDaoManager.getInstance().queryAll(course)
+        for (paperType in paperTypes){
+            if (paperType.name==receivePaper?.examName){
+                boolean=true
+            }
+        }
+
         //保存本次考试的 试卷分类
-        PaperTypeDaoManager.getInstance().insertOrReplace( PaperTypeBean().apply {
-            course=course
-            name=receivePaper?.examName
-            type=mCatalogId
-        })
+        if (!boolean){
+            PaperTypeDaoManager.getInstance().insertOrReplace( PaperTypeBean().apply {
+                course=this@MainReceivePaperDrawingActivity.course
+                name=receivePaper?.examName
+                type=examId
+            })
+        }
 
         //保存本次考试
         val paper= PaperBean().apply {
             contentId=receivePaper?.id!!
-            type=type
-            course=course
-            categoryId=mCatalogId
+            type=this@MainReceivePaperDrawingActivity.type
+            course=this@MainReceivePaperDrawingActivity.course
+            categoryId=this@MainReceivePaperDrawingActivity.examId
             category=receivePaper?.examName
             title=receivePaper?.title
             path=receivePaper?.path
@@ -87,16 +98,16 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
         }
         daoManager?.insertOrReplace(paper)
 
-        for (i in 0 until paths.size){
+        for (i in paths.indices){
             //合图完毕之后删除 手写
             FileUtils.deleteFile(File("$outImageStr/${i+1}/"))
 
             //保存本次考试的试卷内容
             val paperContent= PaperContentBean().apply {
-                type=type
-                course=course
-                categoryId=mCatalogId
-                contentId=paper?.contentId
+                type=this@MainReceivePaperDrawingActivity.type
+                course=this@MainReceivePaperDrawingActivity.course
+                categoryId=this@MainReceivePaperDrawingActivity.examId
+                contentId=paper.contentId
                 path=paths[i]
                 drawPath=drawPaths[i]
                 date=receivePaper?.date!!*1000
@@ -107,6 +118,10 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
 
         EventBus.getDefault().post(Constants.RECEIVE_PAPER_COMMIT_EVENT)
         finish()
+    }
+
+    override fun onDeleteSuccess() {
+        TODO("Not yet implemented")
     }
 
 
@@ -123,14 +138,14 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
         pageCount = paths.size
 
         course=receivePaper?.subject!!
-        mCatalogId=receivePaper?.examId!!
+        examId=receivePaper?.examId!!
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
-        papers= daoManager?.queryAll(type,course,mCatalogId) as MutableList<PaperBean>
-        paperContents= daoContentManager?.queryAll(type,course,mCatalogId) as MutableList<PaperContentBean>
+        papers= daoManager?.queryAll(type,course,examId) as MutableList<PaperBean>
+        paperContents= daoContentManager?.queryAll(type,course,examId) as MutableList<PaperContentBean>
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")

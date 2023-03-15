@@ -18,12 +18,13 @@ public class PaperTypeBean  {
     @Id(autoincrement = true)
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
-    public String name;
-    public int type;
-    @Unique
+    public String name;//考卷分类
+    public int type;//考卷分类id
     public String course;
     @Transient
     public boolean isPg;//是否批改
+    @Transient
+    public int score;
 
     public PaperTypeBean(String name, int type, boolean isPg) {
         this.name = name;

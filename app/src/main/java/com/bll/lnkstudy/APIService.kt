@@ -192,5 +192,11 @@ interface APIService{
      */
     @POST("student/task/pushExamWork")
     fun commitPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 学生下载完老师发送的已批改试卷删除
+     */
+    @POST("student/task/deleteTag")
+    fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
 
 }
