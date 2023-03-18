@@ -1,6 +1,9 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.homework;
 
+import com.bll.lnkstudy.DataBeanManager;
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
+import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -19,13 +22,15 @@ public class HomeworkTypeBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
     public String name;
+    @SerializedName("taskId")
     public int typeId;//作业本分类id
-    public int state;//0普通作业本 1听读本 2题卷本
+    @SerializedName("subType")
+    public int state;//2普通作业本 3听读本 1题卷本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
-    public String bgResId;//当前作业本背景样式id
+    public String bgResId= DataBeanManager.INSTANCE.getHomeworkCoverStr();//当前作业本背景样式id
     public String course;
     public boolean isCreate;//自建作业本
     @Transient

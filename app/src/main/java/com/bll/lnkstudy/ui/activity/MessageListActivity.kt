@@ -18,7 +18,6 @@ class MessageListActivity:BaseAppCompatActivity() {
 
     private var lists= mutableListOf<MessageList>()
     private var mAdapter:MessageAdapter?=null
-    private var pageIndex=1 //当前页码
 
     override fun layoutId(): Int {
         return R.layout.ac_list
@@ -68,27 +67,14 @@ class MessageListActivity:BaseAppCompatActivity() {
 
         tv_page_current.text=pageIndex.toString()
         tv_page_total.text=pageCount.toString()
-        upDateUI()
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                upDateUI()
-            }
-        }
+        fetchData()
 
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                upDateUI()
-            }
-        }
 
     }
 
-    //刷新数据
-    private fun upDateUI()
-    {
+
+    override fun fetchData() {
         mAdapter?.setNewData(lists)
         tv_page_current.text=pageIndex.toString()
     }

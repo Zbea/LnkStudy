@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.utils.ToolUtils
+import java.util.*
 
 object DataBeanManager {
 
@@ -180,12 +181,12 @@ object DataBeanManager {
             return list
         }
 
+
     /**
-     * 作业分类列表
-     *
+     * 获取老师下发作业本对应的内容默认背景图
      * @return
      */
-    fun getHomeWorkTypes(courseStr: String, grade: Int): MutableList<HomeworkTypeBean> {
+    fun getHomeWorkContentStr(courseStr: String, grade: Int): String {
         val resId = when (courseStr) {
             "语文" -> {
                 if (grade < 7) {
@@ -213,40 +214,7 @@ object DataBeanManager {
             }
         }
 
-        val list= ArrayList<HomeworkTypeBean>()
-        list.add(HomeworkTypeBean().apply {
-            name = "课堂作业本"
-            typeId = 0
-            course = courseStr
-            bgResId = ToolUtils.getImageResStr(mContext, R.mipmap.icon_homework_cover_1)
-            contentResId = ToolUtils.getImageResStr(mContext, resId)
-        })
-        list.add(HomeworkTypeBean().apply {
-            name = "课外作业本"
-            typeId = 1
-            course = courseStr
-            bgResId = ToolUtils.getImageResStr(mContext, R.mipmap.icon_homework_cover_2)
-            contentResId = ToolUtils.getImageResStr(mContext, resId)
-        })
-        list.add(HomeworkTypeBean().apply {
-            name = "课堂题卷本"
-            typeId = 2
-            state = 2
-            course = courseStr
-            bgResId = ToolUtils.getImageResStr(mContext, R.mipmap.icon_homework_cover_3)
-            contentResId = ToolUtils.getImageResStr(mContext, resId)
-        })
-
-        if (courseStr == "语文" || courseStr == "英语") {
-            list.add(HomeworkTypeBean().apply {
-                name = "课堂题卷本"
-                typeId = 3
-                state = 1
-                course = courseStr
-                bgResId = ToolUtils.getImageResStr(mContext, R.mipmap.icon_homework_cover_4)
-            })
-        }
-        return list
+        return ToolUtils.getImageResStr(mContext, resId)
     }
 
     //语文作业本
@@ -381,6 +349,15 @@ object DataBeanManager {
             })
             return list
         }
+
+    /**
+     * 老师下发作业本随机得到背景图
+     */
+    fun getHomeworkCoverStr(): String {
+        val covers = homeworkCover
+        val index = Random().nextInt(covers.size)
+        return ToolUtils.getImageResStr(mContext, covers[index].resId)
+    }
 
     val appBaseList: List<AppBean>
         get() {

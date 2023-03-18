@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
@@ -30,12 +29,10 @@ import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import kotlin.math.ceil
 
 /**
  * 笔记
@@ -53,14 +50,13 @@ class NoteFragment : BaseFragment() {
     private var positionType = 0//当前笔记本标记
     private var isDown = false //是否向下打开
 
-    private var pageIndex=1
-    private var pageTotal=1
-
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
     }
 
     override fun initView() {
+        pageSize=10
+
         popWindowBeans.add(PopupBean(0, "笔记本管理", true))
         popWindowBeans.add(PopupBean(1, "新建笔记本", false))
         popWindowBeans.add(PopupBean(2, "新建笔记", false))
@@ -113,7 +109,7 @@ class NoteFragment : BaseFragment() {
                 }
                 if (view.id == R.id.iv_more) {
                     PopupList(requireActivity(), popWindowMoreBeans, view, 0).builder()
-                        ?.setOnSelectListener { item ->
+                        .setOnSelectListener { item ->
                             when (item.id) {
                                 0 -> {
                                     editNotebook(noteBooks[position].title)
@@ -144,8 +140,8 @@ class NoteFragment : BaseFragment() {
                 notifyDataSetChanged()
                 type = noteTypes[positionType].typeId
                 pageIndex=1
-                pageTotal=1
-                findDatas()
+                pageCount=1
+                fetchData()
             }
         }
 
@@ -154,7 +150,7 @@ class NoteFragment : BaseFragment() {
     private fun bindClick() {
 
         iv_manager?.setOnClickListener {
-            PopupList(requireActivity(), popWindowBeans, iv_manager, 5).builder()?.setOnSelectListener { item ->
+            PopupList(requireActivity(), popWindowBeans, iv_manager, 5).builder().setOnSelectListener { item ->
                 when (item.id) {
                     0 -> {
                         customStartActivity(Intent(activity, NoteTypeManagerActivity::class.java))
@@ -185,21 +181,6 @@ class NoteFragment : BaseFragment() {
             findTabs()
         }
 
-
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                findDatas()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageTotal){
-                pageIndex+=1
-                findDatas()
-            }
-        }
-
     }
 
     /**
@@ -227,21 +208,9 @@ class NoteFragment : BaseFragment() {
 
         mAdapterType?.setNewData(noteTypes)
         type = noteTypes[positionType].typeId
-        findDatas()
+        fetchData()
     }
 
-    /**
-     * 笔记本数据
-     */
-    private fun findDatas() {
-        noteBooks = NotebookDaoManager.getInstance().queryAll(type,pageIndex,10)
-        val total= NotebookDaoManager.getInstance().queryAll(type)
-        pageTotal= ceil(total.size.toDouble()/10).toInt()
-        mAdapter?.setNewData(noteBooks)
-        tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageTotal.toString()
-        ll_page_number.visibility=if (pageTotal==0) View.GONE else View.VISIBLE
-    }
 
     //设置所有数据为不选中
     private fun setAllCheckFalse(tabs:List<BaseTypeBean>){
@@ -266,7 +235,7 @@ class NoteFragment : BaseFragment() {
      */
     private fun setPassword(){
         when (val notePassword=SPUtil.getObj("notePassword",NotePassword::class.java)) {
-            null -> NotebookSetPasswordDialog(requireContext(),screenPos).builder()?.setOnDialogClickListener {
+            null -> NotebookSetPasswordDialog(requireContext(),screenPos).builder().setOnDialogClickListener {
                 val note = noteBooks[position]
                 note.isEncrypt=true
                 note.encrypt=SPUtil.getObj("notePassword",NotePassword::class.java)?.password
@@ -313,7 +282,7 @@ class NoteFragment : BaseFragment() {
                 note.contentResId=resId
                 pageIndex=1
                 NotebookDaoManager.getInstance().insertOrReplace(note)
-                findDatas()
+                fetchData()
             }
         else NotebookAddDialog(requireContext(), screenPos,"新建笔记", "", "请输入笔记标题").builder()
             ?.setOnDialogClickListener { string ->
@@ -401,7 +370,7 @@ class NoteFragment : BaseFragment() {
             findTabs()
         }
         if (msgFlag == NOTE_EVENT) {
-            findDatas()
+            fetchData()
         }
         if (msgFlag == AUTO_UPLOAD_EVENT) {
             autoZip()
@@ -413,5 +382,11 @@ class NoteFragment : BaseFragment() {
         EventBus.getDefault().unregister(this)
     }
 
+    override fun fetchData() {
+        noteBooks = NotebookDaoManager.getInstance().queryAll(type,pageIndex,10)
+        val total= NotebookDaoManager.getInstance().queryAll(type)
+        setPageNumber(total.size)
+        mAdapter?.setNewData(noteBooks)
+    }
 
 }

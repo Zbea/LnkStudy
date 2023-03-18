@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.HomeworkCommit
-import com.bll.lnkstudy.mvp.model.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SToast
@@ -56,11 +56,11 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         val et_page2 = dialog?.findViewById<EditText>(R.id.et_page2)
 
         val list= mutableListOf<HomeworkCommit>()
-        val homeworkCommit=HomeworkCommit()
+        val homeworkCommit= HomeworkCommit()
         homeworkCommit.isAdd=false
         list.add(homeworkCommit)
 
-        val homeworkCommit1=HomeworkCommit()
+        val homeworkCommit1= HomeworkCommit()
         homeworkCommit1.isAdd=true
         list.add(homeworkCommit1)
 
@@ -72,7 +72,8 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         rvList?.addItemDecoration(SpaceGridItemDeco(4,10))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             if (list[position].isAdd){
-                val homeworkCommit=HomeworkCommit()
+                val homeworkCommit=
+                    HomeworkCommit()
                 homeworkCommit.isAdd=false
                 list.add(list.size-1,homeworkCommit)
                 mAdapter?.setNewData(list)

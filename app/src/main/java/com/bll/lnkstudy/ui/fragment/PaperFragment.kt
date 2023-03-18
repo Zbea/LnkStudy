@@ -154,15 +154,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         }
     }
 
-    /**
-     * 学生获取老师下发考卷
-     */
-    private fun fetchData(){
-        val map= HashMap<String,Any>()
-        map["size"] = 100
-        map["sendStatus"]=2
-        mPresenter.getList(map)
-    }
 
     //下载收到的图片
     private fun loadPapers(papers:MutableList<ReceivePaper.PaperBean>) {
@@ -190,12 +181,16 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden){
-            findData()
-            fetchData()
-        }
+    override fun refreshData() {
+        findData()
+        fetchData()
+    }
+
+    override fun fetchData() {
+        val map= HashMap<String,Any>()
+        map["size"] = 100
+        map["sendStatus"]=2
+        mPresenter.getList(map)
     }
 
 }

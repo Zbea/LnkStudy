@@ -154,6 +154,7 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
     }
 
     override fun initView() {
+        setDrawingTitleClick(false)
         showView(iv_geometry)
         setViewElikUnable(iv_geometry)
 

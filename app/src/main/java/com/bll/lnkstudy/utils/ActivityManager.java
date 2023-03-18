@@ -2,7 +2,7 @@ package com.bll.lnkstudy.utils;
 
 import android.app.Activity;
 
-import com.bll.lnkstudy.mvp.model.HomeworkTypeBean;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.MainActivity;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;

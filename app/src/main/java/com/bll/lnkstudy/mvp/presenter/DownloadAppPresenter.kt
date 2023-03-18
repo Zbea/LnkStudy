@@ -19,7 +19,8 @@ class DownloadAppPresenter(view: IContractView.IAPPView) : BasePresenter<IContra
             }
 
             override fun success(tBaseResult: BaseResult<AppList>) {
-                view.onAppList(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onAppList(tBaseResult.data)
             }
 
         }, true)

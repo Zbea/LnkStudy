@@ -1,6 +1,7 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.homework.HomeworkType
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -197,6 +198,12 @@ interface APIService{
      */
     @POST("student/task/deleteTag")
     fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 获取作业本分类
+     */
+    @GET("task/list/job/")
+    fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
 
 
 }

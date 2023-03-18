@@ -8,10 +8,17 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.PaperBean
+import com.bll.lnkstudy.mvp.model.PaperContentBean
+import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -31,17 +38,42 @@ import java.io.File
 /**
  * 作业
  */
-class HomeworkFragment : BaseFragment(){
+class HomeworkFragment : BaseFragment(),IHomeworkView{
 
+    private val mPresenter=HomeworkPresenter(this)
     private var popWindowBeans = mutableListOf<PopupBean>()
     private var mAdapter:HomeworkAdapter?=null
 
     private var courses= mutableListOf<String>()
-    private var course=""//当前科目
+    private var mCourse=""//当前科目
     private var homeworkTypes= mutableListOf<HomeworkTypeBean>()
     private var messages= mutableListOf<HomeworkMessage>()
 
     private var homeworkMessageDialog:HomeworkMessageDialog?=null
+
+    override fun onTypeList(list: MutableList<HomeworkTypeBean>?) {
+        homeworkTypes.clear()
+        if (!list.isNullOrEmpty()){
+            for (item in list){
+                item.contentResId=DataBeanManager.getHomeWorkContentStr(mCourse,mUser?.grade!!)
+                item.course=mCourse
+            }
+            homeworkTypes.addAll(list)
+        }
+        homeworkTypes.addAll(getLocalHomeworkTypeData())
+        for (item in homeworkTypes){
+            for (mes in messages){
+                if (item.course==mes.course&&item.typeId==mes.homeworkTypeId){
+                    item.isMessage=true
+                    item.isPg=mes.isPg
+                    item.message=mes
+                }
+            }
+        }
+        mAdapter?.setNewData(homeworkTypes)
+    }
+
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework
@@ -58,11 +90,18 @@ class HomeworkFragment : BaseFragment(){
 
         iv_manager.setOnClickListener {
             PopupList(requireActivity(), popWindowBeans, iv_manager, 5).builder()
-                ?.setOnSelectListener { item ->
-                    if (item.id == 1)
-                        HomeworkCommitDetailsDialog(requireActivity(), screenPos, messages).builder()
-                    if (item.id==0)
-                        addCover()
+                .setOnSelectListener { item ->
+                    when(item.id){
+                        0->{
+                            addCover()
+                        }
+                        1->{
+                            HomeworkCommitDetailsDialog(requireActivity(), screenPos, messages).builder()
+                        }
+                        else->{
+
+                        }
+                    }
                 }
         }
 
@@ -90,11 +129,11 @@ class HomeworkFragment : BaseFragment(){
                 notifyDataSetChanged()
 
                 when(item.state){
-                    1->{
-                        customStartActivity(Intent(context,RecordListActivity::class.java).putExtra("course",course))
+                    3->{
+                        customStartActivity(Intent(context,RecordListActivity::class.java).putExtra("course",mCourse))
                     }
-                    2->{
-                        gotoPaperDrawing(0,course,item.typeId)
+                    1->{
+                        gotoPaperDrawing(0,mCourse,item.typeId)
                     }
                     else->{
                         gotoHomeworkDrawing(item)
@@ -110,7 +149,10 @@ class HomeworkFragment : BaseFragment(){
                 }
             }
             setOnItemLongClickListener { adapter, view, position ->
-                showHomeworkManage(position)
+                if (homeworkTypes[position].isCreate){
+                    showHomeworkManage(position)
+                }
+                true
             }
         }
     }
@@ -120,40 +162,42 @@ class HomeworkFragment : BaseFragment(){
         rg_group.removeAllViews()
         courses=DataBeanManager.courses
         if (courses.size>0){
-            course=courses[0]
+            mCourse=courses[0]
             for (i in courses.indices) {
                 rg_group.addView(getRadioButton(i ,courses[i],courses.size-1))
             }
             rg_group.setOnCheckedChangeListener { radioGroup, id ->
-                course= courses[id]
-                findData()
+                mCourse= courses[id]
+                fetchData()
             }
-            findData()
+            fetchData()
         }
     }
 
-    //查找分类数据
-    private fun findData(){
-        homeworkTypes.clear()
-        val baseDatas= DataBeanManager.getHomeWorkTypes(course,mUser?.grade!!)
-        homeworkTypes.addAll(baseDatas)
-        homeworkTypes.addAll(HomeworkTypeDaoManager.getInstance().queryAllByCourse(course,true))
-        for (item in homeworkTypes){
-            for (mes in messages){
-                if (item.course==mes.course&&item.typeId==mes.homeworkTypeId){
-                    item.isMessage=true
-                    item.isPg=mes.isPg
-                    item.message=mes
-                }
+    /**
+     * 获取本地作业本
+     */
+    private fun getLocalHomeworkTypeData():MutableList<HomeworkTypeBean>{
+        return HomeworkTypeDaoManager.getInstance().queryAllByCourse(mCourse,true)
+    }
+
+
+    /**
+     * 判断 作业本是否已经保存本地
+     */
+    private fun isSaveHomework(item: HomeworkTypeBean):Boolean{
+        var isSave=false
+        for (list in getLocalHomeworkTypeData()){
+            if (item.name==list.name&&item.typeId==list.typeId){
+                isSave=true
             }
         }
-
-        mAdapter?.setNewData(homeworkTypes)
-
+        return isSave
     }
 
     private fun getMessageDatas(){
-        val homeworkMessage=HomeworkMessage()
+        val homeworkMessage=
+            HomeworkMessage()
         homeworkMessage.id=0
         homeworkMessage.title="语文家庭作业1、3、5页"
         homeworkMessage.date=System.currentTimeMillis()
@@ -161,7 +205,8 @@ class HomeworkFragment : BaseFragment(){
         homeworkMessage.state=0
         homeworkMessage.homeworkTypeId=0
 
-        val homeworkMessage1=HomeworkMessage()
+        val homeworkMessage1=
+            HomeworkMessage()
         homeworkMessage1.id=1
         homeworkMessage1.title="数学作业"
         homeworkMessage1.date=System.currentTimeMillis()
@@ -170,7 +215,8 @@ class HomeworkFragment : BaseFragment(){
         homeworkMessage1.homeworkTypeId=2
         homeworkMessage1.isPg=true
 
-        val homeworkMessage2=HomeworkMessage()
+        val homeworkMessage2=
+            HomeworkMessage()
         homeworkMessage2.id=2
         homeworkMessage2.title="数学作业112"
         homeworkMessage2.date=System.currentTimeMillis()
@@ -193,14 +239,14 @@ class HomeworkFragment : BaseFragment(){
             if (item.homeworkTypeId==2||item.homeworkTypeId==3){
                 //设置路径
                 val pathStr=FileAddress().getPathHomework(item.course,item.homeworkTypeId,item.id)
-                var imageDownLoad= ImageDownLoadUtils(activity,if (item.isPg)item.pgImages else item.images,pathStr)
+                val imageDownLoad= ImageDownLoadUtils(activity,if (item.isPg)item.pgImages else item.images,pathStr)
                 imageDownLoad.startDownload()
                 imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                     override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
                         val paperDaoManager=PaperDaoManager.getInstance()
                         val paperContentDaoManager=PaperContentDaoManager.getInstance()
                         if (item.isPg){
-                            var paper=paperDaoManager.queryByContentID(item.id)
+                            val paper=paperDaoManager.queryByContentID(item.id)
                             if(paper!=null){
                                 paper.isPg=true
                                 paperDaoManager.insertOrReplace(paper)
@@ -208,32 +254,32 @@ class HomeworkFragment : BaseFragment(){
                         }
                         else{
                             //查找到之前已经存储的数据、用于页码计算
-                            var papers=paperDaoManager.queryAll(0,item.course,item.homeworkTypeId) as MutableList<PaperBean>
-                            var paperContents=paperContentDaoManager.queryAll(0,item.course,item.homeworkTypeId) as MutableList<PaperContentBean>
+                            val papers=paperDaoManager.queryAll(0,item.course,item.homeworkTypeId) as MutableList<PaperBean>
+                            val paperContents=paperContentDaoManager.queryAll(0,item.course,item.homeworkTypeId) as MutableList<PaperContentBean>
 
-                            var paper= PaperBean().apply {
-                                contentId=item?.id
+                            val paper= PaperBean().apply {
+                                contentId=item.id
                                 type=0//作业
-                                course=item?.course
-                                categoryId=item?.homeworkTypeId
-                                title=item?.title
+                                course= item.course
+                                categoryId=item.homeworkTypeId
+                                title=item.title
                                 path=pathStr
                                 page=paperContents.size //子内容的第一个页码位置
                                 index=papers.size //作业位置
-                                createDate=item?.date
-                                images=item?.images?.toString()
+                                createDate=item.date
+                                images=item.images?.toString()
                                 isPg=false
                             }
                             paperDaoManager.insertOrReplace(paper)
                             for (i in 0 until map?.size!!){
-                                var paperContent= PaperContentBean().apply {
+                                val paperContent= PaperContentBean().apply {
                                     type=0
-                                    course=item?.course
-                                    categoryId=item?.homeworkTypeId
-                                    contentId=paper?.contentId
+                                    course=item.course
+                                    categoryId=item.homeworkTypeId
+                                    contentId=paper.contentId
                                     path=map[i]
                                     drawPath=pathStr+"/${i + 1}/draw.tch"
-                                    date=item?.date
+                                    date=item.date
                                     page=paperContents.size+i
                                 }
                                 paperContentDaoManager.insertOrReplace(paperContent)
@@ -253,7 +299,7 @@ class HomeworkFragment : BaseFragment(){
     /**
      * 长按展示作业换肤、删除
      */
-    private fun showHomeworkManage(pos:Int):Boolean{
+    private fun showHomeworkManage(pos:Int){
         val item=homeworkTypes[pos]
         HomeworkManageDialog(requireContext(),screenPos,item.isCreate).builder().setOnDialogClickListener(object :
             HomeworkManageDialog.OnDialogClickListener {
@@ -269,17 +315,18 @@ class HomeworkFragment : BaseFragment(){
             }
 
             override fun onDelete() {
-                if(item.isCreate){
-                    HomeworkTypeDaoManager.getInstance().deleteBean(item)
-                    val path=FileAddress().getPathHomework(course,item.typeId)
-                    FileUtils.deleteFile(File(path))
-                    homeworkTypes.removeAt(pos)
-                    mAdapter?.notifyDataSetChanged()
-                }
+                //删除本地当前作业本
+                HomeworkTypeDaoManager.getInstance().deleteBean(item)
+                //删除作本内容
+                HomeworkContentDaoManager.getInstance().deleteAll(mCourse,item.typeId)
+                //删除本地文件
+                val path=FileAddress().getPathHomework(mCourse,item.typeId)
+                FileUtils.deleteFile(File(path))
+                homeworkTypes.removeAt(pos)
+                mAdapter?.notifyDataSetChanged()
             }
 
         })
-        return true
     }
 
 
@@ -287,12 +334,13 @@ class HomeworkFragment : BaseFragment(){
     private fun addHomeWorkType(item: HomeworkTypeBean){
         NotebookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
             ?.setOnDialogClickListener { string ->
-                item.run {
+                item.apply {
                     name = string
                     date = System.currentTimeMillis()
                     typeId = System.currentTimeMillis().toInt()
-                    course = course
+                    course = mCourse
                     isCreate=true
+                    state=2
                 }
             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
             homeworkTypes.add(item)
@@ -314,7 +362,7 @@ class HomeworkFragment : BaseFragment(){
     //选择内容背景
     private fun addContentModule(coverResId:Int){
 
-        val list= when (course) {
+        val list= when (mCourse) {
             "语文" -> {
                 DataBeanManager.getYw(mUser?.grade!!)
             }
@@ -332,7 +380,8 @@ class HomeworkFragment : BaseFragment(){
         if (list.size>1){
             ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    val item = HomeworkTypeBean()
+                    val item =
+                        HomeworkTypeBean()
                     item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
                     item.bgResId = ToolUtils.getImageResStr(activity, coverResId)
                     addHomeWorkType(item)
@@ -350,7 +399,7 @@ class HomeworkFragment : BaseFragment(){
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag== Constants.BOOK_HOMEWORK_EVENT){
-            findData()
+            fetchData()
         }
         if (msgFlag==Constants.COURSE_EVENT){
             //刷新科目
@@ -361,6 +410,14 @@ class HomeworkFragment : BaseFragment(){
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun refreshData() {
+        fetchData()
+    }
+
+    override fun fetchData() {
+        mPresenter.getTypeList(mCourse)
     }
 
 }

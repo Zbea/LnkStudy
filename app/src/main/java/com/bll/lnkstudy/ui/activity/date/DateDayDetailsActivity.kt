@@ -35,7 +35,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             dateEventBean = DateEventBean()
             dateEventBean?.type=1
         } else {
-            dateEventBean = intent.getBundleExtra("bundle").getSerializable("dateEvent") as DateEventBean
+            dateEventBean = intent.getBundleExtra("bundle")?.getSerializable("dateEvent") as DateEventBean
             oldEvent=dateEventBean?.clone() as DateEventBean
             et_title.setText(dateEventBean?.title)
             tv_date.text = dateEventBean?.dayLongStr

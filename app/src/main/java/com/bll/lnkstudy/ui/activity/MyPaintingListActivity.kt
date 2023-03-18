@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -11,9 +10,7 @@ import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_my_painting_list.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
-import kotlin.math.ceil
 
 class MyPaintingListActivity:BaseAppCompatActivity() {
 
@@ -23,15 +20,13 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
     private var paintingType=0
     private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyPaintingAdapter?=null
-    private var pageIndex=1 //当前页码
-    private var pageTotal=1
-    private val pageSize=6
 
     override fun layoutId(): Int {
         return R.layout.ac_my_painting_list
     }
 
     override fun initData() {
+        pageSize=6
         titleStr= intent.getStringExtra("title").toString()
         time=intent.getIntExtra("time",0)
         paintingType=intent.getIntExtra("paintingType",0)
@@ -52,39 +47,23 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
             }
         }
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                findData()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageTotal){
-                pageIndex+=1
-                findData()
-            }
-        }
-        findData()
+        fetchData()
     }
 
-    private fun findData(){
+
+    override fun fetchData() {
+        var total=0
         if (type==0){
-            lists=PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType,pageIndex,pageSize)
-            val total= PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType)
-            pageTotal= ceil(total.toDouble()/ pageSize).toInt()
+            lists= PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType,pageIndex,pageSize)
+            total= PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType)
         }
         else{
             lists= PaintingBeanDaoManager.getInstance().queryPaintings(paintingType,pageIndex,pageSize)
-            val total= PaintingBeanDaoManager.getInstance().queryPaintings(paintingType)
-            pageTotal= ceil(total.toDouble()/ pageSize).toInt()
+            total= PaintingBeanDaoManager.getInstance().queryPaintings(paintingType)
         }
-
+        setPageNumber(total)
         mAdapter?.setNewData(lists)
-        tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageTotal.toString()
-        ll_page_number.visibility=if (pageTotal==0) View.GONE else View.VISIBLE
-    }
 
+    }
 
 }

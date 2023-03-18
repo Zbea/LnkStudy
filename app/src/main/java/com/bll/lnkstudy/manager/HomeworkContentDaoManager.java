@@ -3,7 +3,7 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
-import com.bll.lnkstudy.mvp.model.HomeworkContentBean;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -69,6 +69,15 @@ public class HomeworkContentDaoManager {
         List<HomeworkContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
 //                .orderDesc(HomeworkContentDao.Properties.Date).build().list();
         return queryList;
+    }
+
+    public void deleteAll(String course, int homeworkTypeId) {
+
+        WhereCondition whereCondition= HomeworkContentBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
+        List<HomeworkContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+
+        dao.deleteInTx(queryList);
     }
 
 

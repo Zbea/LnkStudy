@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.homework;
 
 import java.io.Serializable;
 

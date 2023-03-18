@@ -14,8 +14,8 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
@@ -28,8 +28,10 @@ import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_page_number.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import kotlin.math.ceil
 
 
 abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView {
@@ -50,6 +52,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=0
+
+    var pageIndex=1 //当前页码
+    var pageCount=1 //全部数据
+    var pageSize=0 //一页数据
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -118,6 +124,21 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     abstract fun lazyLoad()
 
     private fun initCommonTitle() {
+
+        btn_page_up?.setOnClickListener {
+            if(pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
+        }
+
+        btn_page_down?.setOnClickListener {
+            if(pageIndex<pageCount){
+                pageIndex+=1
+                fetchData()
+            }
+        }
+
     }
 
     fun setTitle(pageTitle: String) {
@@ -175,6 +196,21 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
+    /**
+     * 设置翻页
+     */
+    fun setPageNumber(total:Int){
+        if (ll_page_number!=null){
+            pageCount = ceil(total.toDouble() / pageSize).toInt()
+            if (total == 0) {
+                disMissView(ll_page_number)
+            } else {
+                tv_page_current.text = pageIndex.toString()
+                tv_page_total.text = pageCount.toString()
+                showView(ll_page_number)
+            }
+        }
+    }
 
     fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
         var radioButton =
@@ -335,5 +371,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     override fun onComplete() {
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden){
+            refreshData()
+        }
+    }
+
+    /**
+     * 页面切换刷新数据
+     */
+    open fun refreshData(){
+
+    }
+
+    open fun fetchData(){
+
+    }
 
 }

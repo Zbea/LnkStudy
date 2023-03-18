@@ -29,9 +29,11 @@ import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import kotlin.math.ceil
 
 
 abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
@@ -41,6 +43,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
+
+    var pageIndex=1 //当前页码
+    var pageCount=1 //全部数据
+    var pageSize=0 //一页数据
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -96,6 +102,20 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     private fun initCommonTitle() {
         iv_back?.setOnClickListener { finish() }
+
+        btn_page_up?.setOnClickListener {
+            if(pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
+        }
+
+        btn_page_down?.setOnClickListener {
+            if(pageIndex<pageCount){
+                pageIndex+=1
+                fetchData()
+            }
+        }
     }
 
     fun showBackView(isShow:Boolean) {
@@ -198,6 +218,22 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         val intent=Intent(this, BookStoreActivity::class.java)
         intent.putExtra("category",type)
         customStartActivity(intent)
+    }
+
+    /**
+     * 设置翻页
+     */
+    fun setPageNumber(total:Int){
+        if (ll_page_number!=null){
+            pageCount = ceil(total.toDouble() / pageSize).toInt()
+            if (total == 0) {
+                disMissView(ll_page_number)
+            } else {
+                tv_page_current.text = pageIndex.toString()
+                tv_page_total.text = pageCount.toString()
+                showView(ll_page_number)
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -369,6 +405,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         hideKeyboard()
     }
 
+    open fun fetchData(){
+
+    }
 
 }
 

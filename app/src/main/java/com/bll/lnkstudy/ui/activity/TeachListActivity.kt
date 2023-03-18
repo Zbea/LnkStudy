@@ -14,8 +14,6 @@ import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import kotlinx.android.synthetic.main.ac_teach_list.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlin.math.ceil
 
 class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView {
 
@@ -29,24 +27,13 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     private var semesters= mutableListOf<PopupBean>()
     private var datas= mutableListOf<TeachingVideoList.ItemBean>()
     private var mAdapter:TeachListAdapter?=null
-    private var pageIndex=1 //当前页码
-    private var pageCount=1
-    private val pageSize=20
 
     private var popWindowGrade:PopupList?=null
     private var popWindowSemester:PopupList?=null
 
-    override fun onList(list: TeachingVideoList?) {
-        pageCount = ceil(list?.total?.toDouble()!! / pageSize).toInt()
-        val totalTotal = list?.total
-        if (totalTotal == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        datas=list?.list
+    override fun onList(list: TeachingVideoList) {
+        setPageNumber(list.total)
+        datas=list.list
         mAdapter?.setNewData(datas)
 
     }
@@ -62,9 +49,10 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     }
 
     override fun initData() {
+        pageSize=20
         flags=intent.flags
-        item= intent.getBundleExtra("bundle").getSerializable("item") as ItemList
-        type=intent.getBundleExtra("bundle").getSerializable("type") as TeachingVideoType
+        item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
+        type=intent.getBundleExtra("bundle")?.getSerializable("type") as TeachingVideoType
 
         val gradeItems=type?.grades!!
         if (gradeItems.size>0){
@@ -86,24 +74,10 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
             }
         }
 
-        setFetchData()
+        fetchData()
     }
 
-    private fun setFetchData(){
-        val map=HashMap<String,Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["grade"] = grade
-        if (flags==0){
-            map["type"] = item?.type!!
-            map["semester"] = semester
-            mPresenter.getCourseList(map)
-        }
-        else{
-            map["subType"] = item?.type!!
-            mPresenter.getList(map)
-        }
-    }
+
 
     override fun initView() {
         setPageTitle(item?.desc!!)
@@ -123,20 +97,6 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
             }
         }
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                setFetchData()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                setFetchData()
-            }
-        }
-
         initSelectorView()
 
     }
@@ -153,7 +113,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
                     grade = item.id
                     tv_grade.text = item.name
                     pageIndex = 1
-                    setFetchData()
+                    fetchData()
                 }
             } else {
                 popWindowGrade?.show()
@@ -167,7 +127,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
                     semester=item.id
                     tv_semester.text = item.name
                     pageIndex = 1
-                    setFetchData()
+                    fetchData()
                 }
             } else {
                 popWindowSemester?.show()
@@ -175,5 +135,20 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         }
     }
 
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["grade"] = grade
+        if (flags==0){
+            map["type"] = item?.type!!
+            map["semester"] = semester
+            mPresenter.getCourseList(map)
+        }
+        else{
+            map["subType"] = item?.type!!
+            mPresenter.getList(map)
+        }
+    }
 
 }

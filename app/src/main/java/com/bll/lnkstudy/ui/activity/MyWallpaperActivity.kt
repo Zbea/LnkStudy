@@ -20,8 +20,6 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
 
     private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyWallpaperAdapter?=null
-    private var pageIndex=1 //当前页码
-    private var pageTotal=1
     private var listMap=HashMap<Int,MutableList<PaintingBean>>()
 
     override fun layoutId(): Int {
@@ -29,6 +27,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
+        pageSize=12
         lists= PaintingBeanDaoManager.getInstance().queryWallpapers()
     }
 
@@ -77,26 +76,13 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
             }
         }
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                upDateUI()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageTotal){
-                pageIndex+=1
-                upDateUI()
-            }
-        }
 
     }
 
     //翻页处理
     private fun pageNumberView(){
-        var pageTotal=lists.size //全部数量
-        this.pageTotal = ceil(pageTotal.toDouble()/Constants.PAGE_SIZE).toInt()//总共页码
+        val pageTotal=lists.size //全部数量
+        pageCount = ceil(pageTotal.toDouble()/Constants.PAGE_SIZE).toInt()//总共页码
         if (pageTotal==0)
         {
             ll_page_number.visibility= View.GONE
@@ -105,7 +91,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         }
 
         var toIndex=Constants.PAGE_SIZE
-        for(i in 0 until this.pageTotal){
+        for(i in 0 until pageCount){
             var index=i*Constants.PAGE_SIZE
             if(index+Constants.PAGE_SIZE>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
                 toIndex=pageTotal-index
@@ -114,16 +100,14 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
             listMap[i+1]=newList
         }
 
-        upDateUI()
+        fetchData()
 
     }
 
-    //刷新数据
-    private fun upDateUI()
-    {
+    override fun fetchData() {
         mAdapter?.setNewData(listMap[pageIndex]!!)
         tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageTotal.toString()
+        tv_page_total.text=pageCount.toString()
     }
 
 }

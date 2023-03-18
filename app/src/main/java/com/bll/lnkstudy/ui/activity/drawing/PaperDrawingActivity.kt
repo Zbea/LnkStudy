@@ -53,12 +53,11 @@ class PaperDrawingActivity: BaseDrawingActivity() {
     }
 
     override fun initView() {
-
+        setDrawingTitleClick(false)
         if(papers.size>0){
             currentPosition=papers.size-1
             changeContent()
         }
-
         changeExpandView()
         bindClick()
     }

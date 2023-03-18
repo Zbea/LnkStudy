@@ -28,7 +28,6 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.math.ceil
 
 /**
  * 书城
@@ -42,9 +41,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
-    private var pageCount = 0
-    private var pageIndex = 1 //当前页码
-    private var pageSize = 12
     private var gradeStr = ""
     private var typeStr = ""//子类
     private var bookDetailsDialog: BookDetailsDialog? = null
@@ -55,16 +51,8 @@ class BookStoreActivity : BaseAppCompatActivity(),
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
-    override fun onBook(bookStore: BookStore?) {
-        pageCount = ceil(bookStore?.total?.toDouble()!! / pageSize).toInt()
-        val totalCount = bookStore.total
-        if (totalCount == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
+    override fun onBook(bookStore: BookStore) {
+        setPageNumber(bookStore.total)
         books = bookStore.list
         mAdapter?.setNewData(books)
     }
@@ -92,7 +80,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
             initTab()
         }
 
-        getDataBook()
+        fetchData()
     }
 
     override fun buyBookSuccess() {
@@ -107,6 +95,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
     }
 
     override fun initData() {
+        pageSize=12
         categoryStr = intent.getStringExtra("category").toString()
         getData()
     }
@@ -117,39 +106,11 @@ class BookStoreActivity : BaseAppCompatActivity(),
         disMissView(tv_province,tv_download,tv_semester)
 
         initRecyclerView()
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex > 1) {
-                if (pageIndex < pageCount) {
-                    pageIndex -= 1
-                    getData()
-                }
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if (pageIndex < pageCount) {
-                pageIndex += 1
-                getData()
-            }
-        }
-
     }
 
     //获取数据
     private fun getData() {
         presenter.getBookType()
-    }
-
-    //获取书籍
-    private fun getDataBook() {
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = 12
-        map["grade"] = gradeStr
-        map["type"] = categoryStr
-        map["subType"] = typeStr
-        presenter.getBooks(map)
     }
 
     /**
@@ -170,7 +131,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     gradeStr = item.name
                     tv_grade.text = gradeStr
                     pageIndex = 1
-                    getDataBook()
+                    fetchData()
                 }
             } else {
                 popWindowGrade?.show()
@@ -191,7 +152,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             typeStr = typeList[i]
             pageIndex = 1
-            getDataBook()
+            fetchData()
         }
 
     }
@@ -369,6 +330,16 @@ class BookStoreActivity : BaseAppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         FileDownloader.getImpl().pauseAll()
+    }
+
+    override fun fetchData() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["grade"] = gradeStr
+        map["type"] = categoryStr
+        map["subType"] = typeStr
+        presenter.getBooks(map)
     }
 
 }

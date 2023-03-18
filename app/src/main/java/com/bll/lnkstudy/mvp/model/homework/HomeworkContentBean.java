@@ -1,5 +1,6 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.homework;
 
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -13,7 +14,7 @@ public class HomeworkContentBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
     public String bgResId;//作业背景样式id
     public String course;//科目
     public int homeworkTypeId;//作业本分组id

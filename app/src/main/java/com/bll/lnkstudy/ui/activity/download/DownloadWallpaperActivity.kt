@@ -17,31 +17,18 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_download_app.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlin.math.ceil
 
 class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingView{
 
     private val presenter=DownloadPaintingPresenter(this)
     private var items= mutableListOf<PaintingList.ListBean>()
-    private var pageCount = 0
-    private var pageIndex = 1 //当前页码
-    private var pageSize=12
     private var mAdapter:DownloadWallpaperAdapter?=null
     private var supply=1//官方
     private var position=0
 
-    override fun onList(bean: PaintingList?) {
-        pageCount = ceil(bean?.total?.toDouble()!! / pageSize).toInt()
-        val totalCount = bean.total
-        if (totalCount == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        items=bean?.list
+    override fun onList(bean: PaintingList) {
+        setPageNumber(bean.total)
+        items=bean.list
         mAdapter?.setNewData(items)
     }
 
@@ -55,6 +42,7 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
     }
 
     override fun initData() {
+        pageSize=12
     }
 
     override fun initView() {
@@ -71,22 +59,6 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
         }
 
         initRecyclerView()
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex>1){
-                if(pageIndex<pageCount){
-                    pageIndex-=1
-                    fetchData()
-                }
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                fetchData()
-            }
-        }
 
         fetchData()
 
@@ -130,17 +102,6 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
         }
     }
 
-    /**
-     * 请求数据
-     */
-    private fun fetchData(){
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["supply"]=supply
-        map["type"]=1
-        presenter.getList(map)
-    }
 
     /**
      * 下载
@@ -181,4 +142,14 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
 
         })
     }
+
+    override fun fetchData() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["supply"]=supply
+        map["type"]=1
+        presenter.getList(map)
+    }
+
 }

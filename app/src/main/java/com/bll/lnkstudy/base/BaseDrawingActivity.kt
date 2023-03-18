@@ -20,11 +20,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.dialog.AppToolDialog
-import com.bll.lnkstudy.dialog.DrawingGeometryAxisDialog
-import com.bll.lnkstudy.dialog.PopupClick
-import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.AppDaoManager
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -60,6 +58,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     var elik_a: EinkPWInterface? = null
     var elik_b: EinkPWInterface? = null
     var isErasure=false
+    var isTitleClick=true//标题是否可以编辑
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +88,90 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         initView()
 
         initGeometryView()
+    }
+
+
+    /**
+     *  加载布局
+     */
+    abstract fun layoutId(): Int
+
+    /**
+     * 初始化数据
+     */
+    abstract fun initData()
+
+    /**
+     * 初始化 View
+     */
+    abstract fun initView()
+
+    @SuppressLint("WrongViewCast")
+    fun initCommonTitle() {
+
+        iv_back?.setOnClickListener { finish() }
+
+        iv_tool_left?.setOnClickListener {
+            if (getCurrentScreenPos()==3)//全屏时点击左按钮在左
+            {
+                showDialogAppTool(1)
+            }
+            else{
+                showDialogAppTool(0)
+            }
+        }
+
+        iv_tool_right?.setOnClickListener {
+            if (getCurrentScreenPos()==3)
+            {
+                showDialogAppTool(2)
+            }
+            else{
+                showDialogAppTool(0)
+            }
+        }
+
+        iv_erasure?.setOnClickListener {
+            isErasure=!isErasure
+            if (isErasure){
+                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
+                onErasure()
+            }
+            else{
+                stopErasure()
+            }
+        }
+
+        iv_draft?.setOnClickListener {
+            startActivity(Intent(this,DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+
+        tv_title_a?.setOnClickListener {
+            if (isTitleClick){
+                val title=tv_title_a.text.toString()
+                var type=getCurrentScreenPos()
+                if (type==3)
+                    type=1
+                InputContentDialog(this,type,title).builder()?.setOnDialogClickListener { string ->
+                    tv_title_a.text = string
+                    setDrawingTitle_a(string)
+                }
+            }
+        }
+
+        tv_title_b?.setOnClickListener {
+            if (isTitleClick){
+                val title=tv_title_b.text.toString()
+                var type=getCurrentScreenPos()
+                if (type==3)
+                    type=2
+                InputContentDialog(this,type,title).builder()?.setOnDialogClickListener { string ->
+                    tv_title_b.text = string
+                    setDrawingTitle_b(string)
+                }
+            }
+        }
+
     }
 
     /**
@@ -199,6 +282,13 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     }
 
     /**
+     * 设置标题是否可以编辑
+     */
+    fun setDrawingTitleClick(boolean: Boolean){
+        isTitleClick=boolean
+    }
+
+    /**
      * 获取工具应用
      */
     fun getAppTool(){
@@ -280,63 +370,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     }
 
     /**
-     *  加载布局
-     */
-    abstract fun layoutId(): Int
-
-    /**
-     * 初始化数据
-     */
-    abstract fun initData()
-
-    /**
-     * 初始化 View
-     */
-    abstract fun initView()
-
-    @SuppressLint("WrongViewCast")
-    fun initCommonTitle() {
-
-        iv_back?.setOnClickListener { finish() }
-
-        iv_tool_left?.setOnClickListener {
-            if (getCurrentScreenPos()==3)//全屏时点击左按钮在左
-            {
-                showDialogAppTool(1)
-            }
-            else{
-                showDialogAppTool(0)
-            }
-        }
-
-        iv_tool_right?.setOnClickListener {
-            if (getCurrentScreenPos()==3)
-            {
-                showDialogAppTool(2)
-            }
-            else{
-                showDialogAppTool(0)
-            }
-        }
-
-        iv_erasure?.setOnClickListener {
-            isErasure=!isErasure
-            if (isErasure){
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
-                onErasure()
-            }
-            else{
-                stopErasure()
-            }
-        }
-
-        iv_draft?.setOnClickListener {
-            startActivity(Intent(this,DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        }
-
-    }
-
-    /**
      * 设置擦除
      */
     private fun onErasure(){
@@ -367,6 +400,20 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
             isErasure=false
             stopErasure()
         }
+    }
+
+    /**
+     * 标题a操作
+     */
+    open fun setDrawingTitle_a(title:String){
+
+    }
+
+    /**
+     * 标题a操作
+     */
+    open fun setDrawingTitle_b(title:String){
+
     }
 
     fun showBackView(isShow:Boolean) {

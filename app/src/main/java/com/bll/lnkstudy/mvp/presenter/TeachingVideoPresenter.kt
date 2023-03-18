@@ -18,7 +18,8 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePrese
                 return false
             }
             override fun success(tBaseResult: BaseResult<TeachingVideoList>) {
-                view.onList(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onList(tBaseResult.data)
             }
         }, true)
     }
@@ -30,7 +31,8 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePrese
                 return false
             }
             override fun success(tBaseResult: BaseResult<TeachingVideoType>) {
-                view.onCourse(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onCourse(tBaseResult.data)
             }
         }, false)
     }

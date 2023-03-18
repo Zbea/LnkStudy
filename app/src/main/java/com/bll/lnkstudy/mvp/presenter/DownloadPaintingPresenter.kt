@@ -20,7 +20,8 @@ class DownloadPaintingPresenter(view: IContractView.IPaintingView) : BasePresent
             }
 
             override fun success(tBaseResult: BaseResult<PaintingList>) {
-                view.onList(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onList(tBaseResult.data)
             }
 
         }, true)

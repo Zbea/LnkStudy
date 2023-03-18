@@ -47,7 +47,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             }
         }
         else{
-            dateEventBean = intent.getBundleExtra("bundle").getSerializable("dateEvent") as DateEventBean
+            dateEventBean = intent.getBundleExtra("bundle")?.getSerializable("dateEvent") as DateEventBean
             oldEvent=dateEventBean?.clone() as DateEventBean
             et_title.setText(dateEventBean?.title)
             tv_start_date.text=dateEventBean?.startTimeStr

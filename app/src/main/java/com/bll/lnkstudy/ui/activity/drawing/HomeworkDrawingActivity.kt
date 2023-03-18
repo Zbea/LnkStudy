@@ -10,11 +10,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.mvp.model.HomeworkContentBean
-import com.bll.lnkstudy.mvp.model.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
@@ -58,7 +57,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
     }
 
     private fun getMessageDatas(){
-        val homeworkMessage= HomeworkMessage()
+        val homeworkMessage=
+            HomeworkMessage()
         homeworkMessage.id=0
         homeworkMessage.title="语文家庭作业1、3、5页"
         homeworkMessage.date=System.currentTimeMillis()
@@ -66,7 +66,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         homeworkMessage.state=0
         homeworkMessage.homeworkTypeId=0
 
-        val homeworkMessage1= HomeworkMessage()
+        val homeworkMessage1=
+            HomeworkMessage()
         homeworkMessage1.id=1
         homeworkMessage1.title="数学作业"
         homeworkMessage1.date=System.currentTimeMillis()
@@ -75,7 +76,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         homeworkMessage1.homeworkTypeId=2
         homeworkMessage1.isPg=true
 
-        val homeworkMessage2= HomeworkMessage()
+        val homeworkMessage2=
+            HomeworkMessage()
         homeworkMessage2.id=2
         homeworkMessage2.title="数学作业112"
         homeworkMessage2.date=System.currentTimeMillis()
@@ -96,30 +98,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
 
         changeContent()
-
-        tv_title_a.setOnClickListener {
-            if (homeworkContent_a!=null&&homeworkContent_a?.state==0){
-                var title=tv_title_a.text.toString()
-                InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
-                    tv_title_a.text = string
-                    homeworkContent_a?.title = string
-                    homeworks[page-1].title = string
-                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
-                }
-            }
-        }
-
-        tv_title_b.setOnClickListener {
-            if (homeworkContent?.state==0){
-                var title=tv_title_b.text.toString()
-                InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
-                    tv_title_b.text = string
-                    homeworkContent?.title = string
-                    homeworks[page].title = string
-                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-                }
-            }
-        }
 
         btn_page_down.setOnClickListener {
             val total=homeworks.size-1
@@ -193,6 +171,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         }
 
     }
+
+
 
     /**
      * 切换屏幕
@@ -315,7 +295,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         val path=FileAddress().getPathHomework(course,homeworkType?.typeId,homeworks.size)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
-        homeworkContent = HomeworkContentBean()
+        homeworkContent =
+            HomeworkContentBean()
         homeworkContent?.course = course
         homeworkContent?.date = System.currentTimeMillis()
         homeworkContent?.homeworkTypeId = homeworkType?.typeId
@@ -368,6 +349,18 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         if (isExpand){
             changeExpandContent()
         }
+    }
+
+    override fun setDrawingTitle_a(title:String) {
+        homeworkContent_a?.title = title
+        homeworks[page-1].title = title
+        HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
+    }
+
+    override fun setDrawingTitle_b(title:String) {
+        homeworkContent?.title = title
+        homeworks[page].title = title
+        HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
     }
 
 }

@@ -17,6 +17,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_teach.*
+import java.lang.Math.ceil
 
 /**
  * 教学
@@ -30,17 +31,14 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
     private var lists = mutableListOf<ItemList>()//列表数据
     private var tabs= mutableListOf<ItemList>()//tab分类
     private var flags=0//0课程 1其他
-    private var pageIndex=1 //当前页码
-    private var pageCount=1
-    private val pageSize=8
     private val map= mutableMapOf<Int,List<ItemList>>()
 
     override fun onList(list: TeachingVideoList?) {
 
     }
-    override fun onCourse(type: TeachingVideoType?) {
+    override fun onCourse(type: TeachingVideoType) {
         courseType=type
-        lists=type?.types!!
+        lists=type.types
         pageNumberView()
     }
 
@@ -56,6 +54,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
 
     override fun initView() {
         setTitle("义教")
+        pageSize=8
 
         tabs.add(ItemList().apply {
             type=0
@@ -70,7 +69,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             setOnItemClickListener { _, _, position ->
                 val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
                 val bundle= Bundle()
-                bundle.putSerializable("item", data?.get(position))
+                bundle.putSerializable("item", data[position])
                 bundle.putSerializable("type",if (flags==0) courseType else videoType)
                 intent.putExtra("bundle", bundle)
                 customStartActivity(intent)
@@ -104,60 +103,35 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
 
     //翻页处理
     private fun pageNumberView(){
-        showView(ll_page_number)
         val pageTotal= lists.size
-        if (pageTotal==0){
-            disMissView(ll_page_number)
-            return
-        }
-        pageCount= kotlin.math.ceil(pageTotal.toDouble() / pageSize).toInt()
+        setPageNumber(pageTotal)
+        pageCount= ceil(pageTotal.toDouble() / pageSize).toInt()
         var toIndex=pageSize
         for(i in 0 until pageCount){
             var index=i*pageSize
             if(index+pageSize>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
                 toIndex=pageTotal-index
             }
-            var newList = lists.subList(index,index+toIndex)
+            val newList = lists.subList(index,index+toIndex)
             map[i+1]=newList
         }
-
-        tv_page_total.text=pageCount.toString()
-        upDateUI()
-
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                upDateUI()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                upDateUI()
-            }
-        }
-
+        fetchData()
     }
 
-    //刷新数据
-    private fun upDateUI()
-    {
+
+    override fun refreshData() {
+        if (courseType==null){
+            mPresenter.getCourseType()
+        }
+        if (videoType==null){
+            mPresenter.getType()
+        }
+    }
+
+    override fun fetchData() {
         lists= (map[pageIndex] as MutableList<ItemList>?)!!
         mAdapter?.setNewData(lists)
         tv_page_current.text=pageIndex.toString()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if(!hidden){
-            if (courseType==null){
-                mPresenter.getCourseType()
-            }
-            if (videoType==null){
-                mPresenter.getType()
-            }
-        }
     }
 
 }

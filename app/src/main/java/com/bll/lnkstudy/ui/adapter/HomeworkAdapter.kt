@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.adapter
 import android.graphics.Typeface
 import android.widget.TextView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

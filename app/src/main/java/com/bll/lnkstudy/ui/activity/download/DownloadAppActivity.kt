@@ -17,34 +17,21 @@ import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_download_app.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import kotlin.math.ceil
 
 class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
 
     private var presenter=DownloadAppPresenter(this)
     private var type=1
-    private var pageCount = 0
-    private var pageIndex = 1
-    private var pageSize=8
     private var mAdapter:DownloadAppAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
     private var app: AppList.ListBean?=null
     private var currentDownLoadTask:BaseDownloadTask?=null
 
-    override fun onAppList(appBean: AppList?) {
-        pageCount = ceil(appBean?.total?.toDouble()!! / pageSize).toInt()
-        val totalCount = appBean.total
-        if (totalCount == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        apps=appBean?.list
+    override fun onAppList(appBean: AppList) {
+        setPageNumber(appBean.total)
+        apps=appBean.list
         mAdapter?.setNewData(apps)
     }
 
@@ -64,6 +51,7 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
     }
 
     override fun initData() {
+        pageSize=8
         fetchData()
     }
 
@@ -81,22 +69,6 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
         }
 
         initRecyclerView()
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex>1){
-                if(pageIndex<pageCount){
-                    pageIndex-=1
-                    fetchData()
-                }
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                fetchData()
-            }
-        }
 
     }
 
@@ -133,16 +105,6 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
 
     }
 
-    /**
-     * 请求数据
-     */
-    private fun fetchData(){
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["type"] = type
-        presenter.getAppList(map)
-    }
 
     //下载应用
     private fun downLoadStart(bean: AppList.ListBean): BaseDownloadTask? {
@@ -203,5 +165,12 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
         return false
     }
 
+    override fun fetchData() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["type"] = type
+        presenter.getAppList(map)
+    }
 
 }

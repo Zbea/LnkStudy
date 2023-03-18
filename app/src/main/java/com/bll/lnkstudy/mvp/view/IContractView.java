@@ -13,6 +13,8 @@ import com.bll.lnkstudy.mvp.model.ReceivePaper;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkType;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.net.IBaseView;
 
 import java.util.List;
@@ -98,5 +100,13 @@ public interface IContractView {
         void onCommitSuccess();
         void onDeleteSuccess();
 
+    }
+
+    //作业
+    interface IHomeworkView extends IBaseView{
+        /**
+         * 获取作业分类
+         */
+        void onTypeList(List<HomeworkTypeBean> list);
     }
 }

@@ -20,8 +20,12 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog.window!!
         val layoutParams=window.attributes
-        if (screenPos==3){
+        if (screenPos==1){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
+        }
+        else{
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         }
         dialog.show()
@@ -36,8 +40,8 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
             dialog.dismiss()
         }
         btn_ok.setOnClickListener {
-            var content = name.text.toString()
-            if (!content.isNullOrEmpty()) {
+            val content = name.text.toString()
+            if (content.isNotEmpty()) {
                 dialog.dismiss()
                 listener?.onClick(content)
             }

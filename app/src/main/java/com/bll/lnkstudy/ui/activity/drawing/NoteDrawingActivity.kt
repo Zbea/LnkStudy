@@ -10,7 +10,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.NoteContentBean
@@ -57,26 +56,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         v_content_b.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
 
         changeContent()
-
-        tv_title_a.setOnClickListener {
-            var title=tv_title_a.text.toString()
-            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
-                tv_title_a.text = string
-                note_Content_a?.title = string
-                noteContents[page-1].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-            }
-        }
-
-        tv_title_b.setOnClickListener {
-            var title=tv_title_b.text.toString()
-            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
-                tv_title_b.text = string
-                noteContent?.title = string
-                noteContents[page].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-            }
-        }
 
         btn_page_down.setOnClickListener {
             val total=noteContents.size-1
@@ -313,6 +292,18 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         if (isExpand){
             changeExpandContent()
         }
+    }
+
+    override fun setDrawingTitle_a(title: String) {
+        note_Content_a?.title = title
+        noteContents[page-1].title = title
+        NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
+    }
+
+    override fun setDrawingTitle_b(title: String) {
+        noteContent?.title = title
+        noteContents[page].title = title
+        NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
     }
 
 }

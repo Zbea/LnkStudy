@@ -26,8 +26,6 @@ public class DaoMaster extends AbstractDaoMaster {
         BookBeanDao.createTable(db, ifNotExists);
         CourseBeanDao.createTable(db, ifNotExists);
         DateEventBeanDao.createTable(db, ifNotExists);
-        HomeworkContentBeanDao.createTable(db, ifNotExists);
-        HomeworkTypeBeanDao.createTable(db, ifNotExists);
         NoteContentBeanDao.createTable(db, ifNotExists);
         NotebookBeanDao.createTable(db, ifNotExists);
         PaintingBeanDao.createTable(db, ifNotExists);
@@ -36,6 +34,8 @@ public class DaoMaster extends AbstractDaoMaster {
         PaperContentBeanDao.createTable(db, ifNotExists);
         PaperTypeBeanDao.createTable(db, ifNotExists);
         RecordBeanDao.createTable(db, ifNotExists);
+        HomeworkContentBeanDao.createTable(db, ifNotExists);
+        HomeworkTypeBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -45,8 +45,6 @@ public class DaoMaster extends AbstractDaoMaster {
         BookBeanDao.dropTable(db, ifExists);
         CourseBeanDao.dropTable(db, ifExists);
         DateEventBeanDao.dropTable(db, ifExists);
-        HomeworkContentBeanDao.dropTable(db, ifExists);
-        HomeworkTypeBeanDao.dropTable(db, ifExists);
         NoteContentBeanDao.dropTable(db, ifExists);
         NotebookBeanDao.dropTable(db, ifExists);
         PaintingBeanDao.dropTable(db, ifExists);
@@ -55,6 +53,8 @@ public class DaoMaster extends AbstractDaoMaster {
         PaperContentBeanDao.dropTable(db, ifExists);
         PaperTypeBeanDao.dropTable(db, ifExists);
         RecordBeanDao.dropTable(db, ifExists);
+        HomeworkContentBeanDao.dropTable(db, ifExists);
+        HomeworkTypeBeanDao.dropTable(db, ifExists);
     }
 
     /**
@@ -78,8 +78,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(BookBeanDao.class);
         registerDaoClass(CourseBeanDao.class);
         registerDaoClass(DateEventBeanDao.class);
-        registerDaoClass(HomeworkContentBeanDao.class);
-        registerDaoClass(HomeworkTypeBeanDao.class);
         registerDaoClass(NoteContentBeanDao.class);
         registerDaoClass(NotebookBeanDao.class);
         registerDaoClass(PaintingBeanDao.class);
@@ -88,6 +86,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(PaperContentBeanDao.class);
         registerDaoClass(PaperTypeBeanDao.class);
         registerDaoClass(RecordBeanDao.class);
+        registerDaoClass(HomeworkContentBeanDao.class);
+        registerDaoClass(HomeworkTypeBeanDao.class);
     }
 
     public DaoSession newSession() {

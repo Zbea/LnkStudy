@@ -20,17 +20,12 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_download_app.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import kotlin.math.ceil
 
 class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingView{
 
     private val presenter=DownloadPaintingPresenter(this)
     private var items= mutableListOf<PaintingList.ListBean>()
-    private var pageCount = 0
-    private var pageIndex = 1 //当前页码
-    private var pageSize=6
     private var mAdapter:DownloadPaintingAdapter?=null
 
     private var popTimes= mutableListOf<PopupBean>()
@@ -43,17 +38,9 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private var dynasty=0 //年代
     private var paintingType=0 //书画内容
 
-    override fun onList(bean: PaintingList?) {
-        pageCount = ceil(bean?.total?.toDouble()!! / pageSize).toInt()
-        val totalCount = bean.total
-        if (totalCount == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        items=bean?.list
+    override fun onList(bean: PaintingList) {
+        setPageNumber(bean.total)
+        items=bean.list
         mAdapter?.setNewData(items)
     }
 
@@ -67,7 +54,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     }
 
     override fun initData() {
-
+        pageSize=6
         val yeas= DataBeanManager.YEARS
         for (i in yeas.indices){
             popTimes.add(
@@ -119,23 +106,6 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         tv_painting_type.setOnClickListener {
             selectorPainting()
         }
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex>1){
-                if(pageIndex<pageCount){
-                    pageIndex-=1
-                    fetchData()
-                }
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                fetchData()
-            }
-        }
-
     }
 
     private fun initRecyclerView(){
@@ -176,21 +146,6 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         }
     }
 
-    /**
-     * 请求数据
-     */
-    private fun fetchData(){
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["supply"]=supply
-        map["type"]=2
-        if (paintingType!=5&&paintingType!=6){
-            map["dynasty"] =dynasty
-        }
-        map["subType"]=paintingType
-        presenter.getList(map)
-    }
 
     /**
      * 下载
@@ -276,7 +231,18 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         }
     }
 
-
+    override fun fetchData() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["supply"]=supply
+        map["type"]=2
+        if (paintingType!=5&&paintingType!=6){
+            map["dynasty"] =dynasty
+        }
+        map["subType"]=paintingType
+        presenter.getList(map)
+    }
 
 
 }

@@ -79,6 +79,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
+        setDrawingTitleClick(false)
         pageCount = catalogMsg?.totalCount!!
 
         changeExpandView()

@@ -20,12 +20,10 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.math.ceil
 
 /**
  * 教材书城
@@ -39,9 +37,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
-    private var pageCount = 0
-    private var pageIndex = 1 //当前页码
-    private var pageSize = 12
     private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
@@ -54,17 +49,9 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
-    override fun onBook(bookStore: BookStore?) {
-        pageCount = ceil(bookStore?.total?.toDouble()!! / pageSize).toInt()
-        val totalCount = bookStore?.total
-        if (totalCount == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        books = bookStore?.list
+    override fun onBook(bookStore: BookStore) {
+        setPageNumber(bookStore.total)
+        books = bookStore.list
         mAdapter?.setNewData(books)
     }
 
@@ -91,6 +78,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     }
 
     override fun initData() {
+        pageSize=12
         //获取地区分类
         val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
         val area = Gson().fromJson(citysStr, Area::class.java)
@@ -114,22 +102,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
         if (typeList.size > 0) {
             initTab()
-        }
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex > 1) {
-                if (pageIndex < pageCount) {
-                    pageIndex -= 1
-                    setFetchData()
-                }
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if (pageIndex < pageCount) {
-                pageIndex += 1
-                setFetchData()
-            }
         }
 
         tv_download?.setOnClickListener {
@@ -189,7 +161,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                 gradeStr = item.name
                 tv_grade.text = gradeStr
                 pageIndex = 1
-                setFetchData()
+                fetchData()
             }
         }
 
@@ -200,7 +172,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                 provinceStr = item.name
                 tv_province.text = item.name
                 pageIndex = 1
-                setFetchData()
+                fetchData()
             }
         }
 
@@ -211,23 +183,11 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     semesterStr = item.name
                     tv_semester.text = item.name
                     pageIndex = 1
-                    setFetchData()
+                    fetchData()
                 }
         }
     }
 
-    private fun setFetchData() {
-        when (typeId) {
-            0, 1 -> {
-                showView(tv_province)
-                getDataBook()
-            }
-            else -> {
-                disMissView(tv_province)
-                getDataBookCk()
-            }
-        }
-    }
 
     //设置tab分类
     private fun initTab() {
@@ -244,7 +204,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                 disMissView(tv_download)
             }
             pageIndex = 1
-            setFetchData()
+            fetchData()
         }
 
     }
@@ -437,6 +397,19 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         FileDownloader.getImpl().pauseAll()
+    }
+
+    override fun fetchData() {
+        when (typeId) {
+            0, 1 -> {
+                showView(tv_province)
+                getDataBook()
+            }
+            else -> {
+                disMissView(tv_province)
+                getDataBookCk()
+            }
+        }
     }
 
 }

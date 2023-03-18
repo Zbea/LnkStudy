@@ -12,7 +12,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -78,26 +77,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         v_content_b.layoutParams=layoutParams
 
         changeContent()
-
-        tv_title_a.setOnClickListener {
-            val title=tv_title_a.text.toString()
-            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
-                tv_title_a.text = string
-                paintingDrawingBean_a?.title = string
-                paintingLists[page-1].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-            }
-        }
-
-        tv_title_b.setOnClickListener {
-            val title=tv_title_b.text.toString()
-            InputContentDialog(this,getCurrentScreenPos(),title).builder()?.setOnDialogClickListener { string ->
-                tv_title_b.text = string
-                paintingDrawingBean?.title = string
-                paintingLists[page].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-            }
-        }
 
         iv_catalog.setOnClickListener {
             showCatalog()
@@ -369,6 +348,18 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         if (isExpand){
             changeExpandContent()
         }
+    }
+
+    override fun setDrawingTitle_a(title: String) {
+        paintingDrawingBean_a?.title = title
+        paintingLists[page-1].title = title
+        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+    }
+
+    override fun setDrawingTitle_b(title: String) {
+        paintingDrawingBean?.title = title
+        paintingLists[page].title = title
+        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
     }
 
 }
