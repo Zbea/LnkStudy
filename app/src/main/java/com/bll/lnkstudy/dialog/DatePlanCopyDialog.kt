@@ -29,7 +29,7 @@ class DatePlanCopyDialog(private val context: Context,private val plans:MutableL
         recyclerview.layoutManager = LinearLayoutManager(context)
         val mAdapter= MyAdapter(R.layout.item_date_plan_copy, plans)
         recyclerview.adapter = mAdapter
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+        mAdapter.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.cb_check){
                 this.position=position
                 for (item in plans)

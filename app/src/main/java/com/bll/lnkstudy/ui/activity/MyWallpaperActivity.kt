@@ -32,7 +32,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle("壁纸更换")
+        setPageTitle(R.string.download_wallpaper)
 
         mAdapter = MyWallpaperAdapter(R.layout.item_my_wallpaper, null).apply {
             rv_list.layoutManager = GridLayoutManager(this@MyWallpaperActivity,4)//创建布局管理

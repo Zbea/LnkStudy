@@ -36,17 +36,17 @@ class RecordActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle("录音")
+        setPageTitle(R.string.record_title_str)
         showSaveView()
 
         iv_save?.setOnClickListener {
             if (!FileUtils.isExist(path)) {
-                showToast("请先录音")
+                showToast(R.string.toast_record)
                 return@setOnClickListener
             }
             val title=et_title.text.toString()
             if (title.isEmpty()){
-                showToast("请输入标题")
+                showToast(R.string.toast_input_title)
                 return@setOnClickListener
             }
 
@@ -94,18 +94,18 @@ class RecordActivity : BaseAppCompatActivity() {
 
         ll_record_play.setOnClickListener {
             if(mRecorder!=null){
-                showToast("正在录音")
+                showToast(R.string.toast_recording)
                 return@setOnClickListener
             }
             mPlayer?.apply {
                 if (isPlaying){
                     iv_play.setImageResource(R.mipmap.icon_record_play)
-                    tv_play.text="播放"
+                    tv_play.setText(R.string.play)
                     pause()
                 }
                 else{
                     iv_play.setImageResource(R.mipmap.icon_record_pause)
-                    tv_play.text="暂停"
+                    tv_play.setText(R.string.pause)
                     start()
                 }
 
@@ -128,7 +128,7 @@ class RecordActivity : BaseAppCompatActivity() {
             setDataSource(path)
             setOnCompletionListener {
                 iv_play.setImageResource(R.mipmap.icon_record_play)
-                tv_play.text="播放"
+                tv_play.setText(R.string.play)
             }
             prepare()
         }

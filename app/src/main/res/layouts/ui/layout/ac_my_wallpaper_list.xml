@@ -41,7 +41,7 @@
             android:layout_marginBottom="1dp"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
-            android:text="确定"
+            android:text="@string/ok"
             android:textColor="@color/black"
             android:textSize="24sp" />
 

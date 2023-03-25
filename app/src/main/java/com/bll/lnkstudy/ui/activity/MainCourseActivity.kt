@@ -101,8 +101,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
-
-        setPageTitle("课程表   编辑")
+        setPageTitle(R.string.course_title_str)
         showSaveView()
 
         iv_save?.setOnClickListener {

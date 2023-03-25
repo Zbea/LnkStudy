@@ -34,27 +34,15 @@ class DatePlanListActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        popWindowBeans.add(
-            PopupBean(
-                0,
-                "添加",
-                true
-            )
-        )
-        popWindowBeans.add(
-            PopupBean(
-                1,
-                "复制",
-                false
-            )
-        )
+        popWindowBeans.add(PopupBean(0, getString(R.string.add), true))
+        popWindowBeans.add(PopupBean(0, getString(R.string.copy), true))
     }
 
     @SuppressLint("WrongConstant")
     override fun initView() {
         EventBus.getDefault().register(this)
 
-        setPageTitle("学习计划")
+        setPageTitle(R.string.date_plan)
         showView(iv_manager)
 
         iv_manager?.setOnClickListener {
@@ -75,7 +63,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.iv_delete){
-                CommonDialog(this).setContent("确定要删除？").builder().setDialogClickListener(object :
+                CommonDialog(this).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
@@ -84,10 +72,12 @@ class DatePlanListActivity:BaseAppCompatActivity() {
                         //删除已加入日历
                         for (item in plans[position]?.plans!!){
                             if (item.isRemindStart){
-                                CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,plans[position]?.title+"开始："+item.course+item.content)
+                                CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,
+                                    plans[position].title +"开始："+item.course+item.content)
                             }
                             if (item.isRemindEnd){
-                                CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,plans[position]?.title+"结束："+item.course+item.content)
+                                CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,
+                                    plans[position].title +"结束："+item.course+item.content)
                             }
                         }
 

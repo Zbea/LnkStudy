@@ -7,8 +7,7 @@ import com.bll.lnkstudy.net.*
 
 class TestPaperPresenter(view: IContractView.IPaperView): BasePresenter<IContractView.IPaperView>(view) {
 
-    fun getList(map:HashMap<String,Any>) {
-
+    fun getList(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getPapersList(map)
         doRequest(type, object : Callback<ReceivePaper>(view) {
             override fun failed(tBaseResult: BaseResult<ReceivePaper>): Boolean {

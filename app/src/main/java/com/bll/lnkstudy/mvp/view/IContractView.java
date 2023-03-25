@@ -108,5 +108,6 @@ public interface IContractView {
          * 获取作业分类
          */
         void onTypeList(List<HomeworkTypeBean> list);
+        void onList(ReceivePaper receivePaper);
     }
 }

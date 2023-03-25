@@ -103,8 +103,15 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SToast.showText(screen,s)
     }
 
+    fun showToast(screen:Int ,sId:Int){
+        SToast.showText(screen,sId)
+    }
+
     fun showLog(s:String){
         Log.d("debug",s)
+    }
+    fun showLog(sId:Int){
+        Log.d("debug",getString(sId))
     }
 
     /**
@@ -144,6 +151,11 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun setTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }
+
+    fun setTitle(titleId: Int) {
+        tv_title?.setText(titleId)
+    }
+
 
     fun showSearch(isShow:Boolean) {
         if (isShow){
@@ -345,7 +357,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun login() {
         if (mView==null||activity==null)return
-        showToast(screenPos,"连接超时,请重新登陆")
+        showToast(screenPos,R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         Handler().postDelayed(Runnable {

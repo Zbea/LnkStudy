@@ -25,23 +25,23 @@ class BookStoreTypeActivity:BaseAppCompatActivity() {
         }
 
         iv_gj.setOnClickListener {
-            gotoBookStore("古籍")
+            gotoBookStore(getString(R.string.book_tab_gj))
         }
 
         iv_zrkx.setOnClickListener {
-            gotoBookStore("自然科学")
+            gotoBookStore(getString(R.string.book_tab_zrkx))
         }
 
         iv_shkx.setOnClickListener {
-            gotoBookStore("社会科学")
+            gotoBookStore(getString(R.string.book_tab_shkx))
         }
 
         iv_swkx.setOnClickListener {
-            gotoBookStore("思维科学")
+            gotoBookStore(getString(R.string.book_tab_sxkx))
         }
 
         iv_ydcy.setOnClickListener {
-            gotoBookStore("运动才艺")
+            gotoBookStore(getString(R.string.book_tab_ydcy))
         }
     }
 

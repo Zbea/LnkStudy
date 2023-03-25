@@ -18,7 +18,6 @@ import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSession
 import javax.net.ssl.X509TrustManager
 
 
@@ -104,12 +103,7 @@ object RetrofitManager{
     }
 
     private fun getNameVerifier():HostnameVerifier{
-        return object : HostnameVerifier {
-            override fun verify(p0: String?, p1: SSLSession?): Boolean {
-                return true
-            }
-
-        }
+        return HostnameVerifier { p0, p1 -> true }
     }
 
 

@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
-                android:text="年"
+                android:text="@string/year"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_26" />
 
@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="月"
+                android:text="@string/month"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_26" />
 
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期一"
+            android:text="@string/week_1"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期二"
+            android:text="@string/week_2"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />
@@ -124,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期三"
+            android:text="@string/week_3"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />
@@ -133,7 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期四"
+            android:text="@string/week_4"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期五"
+            android:text="@string/week_5"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />
@@ -151,7 +151,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期六"
+            android:text="@string/week_6"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />
@@ -160,7 +160,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="星期日"
+            android:text="@string/week_7"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             />

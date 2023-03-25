@@ -46,7 +46,7 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
     }
 
     override fun initView() {
-        setPageTitle("壁纸")
+        setPageTitle(R.string.download_wallpaper)
 
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             supply = if (id==R.id.rb_official){
@@ -89,7 +89,7 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
                         onDownload()
                     }
                     else{
-                        showToast("已下载")
+                        showToast(R.string.toast_downloaded)
                     }
                 }
                 else{

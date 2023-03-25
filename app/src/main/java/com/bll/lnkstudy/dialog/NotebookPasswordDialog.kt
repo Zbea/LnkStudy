@@ -45,13 +45,13 @@ class NotebookPasswordDialog(private val context: Context, private val screenPos
         btn_cancel?.setOnClickListener { dialog?.dismiss() }
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
-            if (passwordStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"输入密码")
+            if (passwordStr.isEmpty()){
+                SToast.showText(screenPos,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
             val notePassword=SPUtil.getObj("notePassword",NotePassword::class.java)
             if (MD5Utils.digest(passwordStr) != notePassword?.password){
-                SToast.showText(screenPos,"输入密码错误")
+                SToast.showText(screenPos,R.string.toast_password_error)
                 return@setOnClickListener
             }
             listener?.onClick()

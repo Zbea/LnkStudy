@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="取消"
+                android:text="@string/cancel"
                 android:textColor="@color/black_30"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -67,7 +67,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="确定"
+                android:text="@string/ok"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />

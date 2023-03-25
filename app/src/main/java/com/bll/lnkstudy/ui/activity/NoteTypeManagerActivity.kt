@@ -30,7 +30,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle("笔记本管理")
+        setPageTitle(R.string.note_manage_str)
 
         initRecyclerView()
     }
@@ -71,7 +71,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
 
     //删除
     private fun setDeleteView(){
-        CommonDialog(this).setContent("确定要删除该条笔记本？").builder()
+        CommonDialog(this).setContent(R.string.notebook_is_delete_tips).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
@@ -96,7 +96,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
 
     //修改笔记本
     private fun editNoteBook(content:String){
-        NotebookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener { string ->
+        NotebookAddDialog(this,getCurrentScreenPos(),getString(R.string.rename),content,getString(R.string.notebook_create_hint)).builder()?.setOnDialogClickListener { string ->
             noteTypes[position].name = string
             BaseTypeBeanDaoManager.getInstance()
                 .insertOrReplace(noteTypes[position])

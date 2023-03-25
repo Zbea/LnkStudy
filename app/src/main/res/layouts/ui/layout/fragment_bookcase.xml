@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
-            android:text="我的书籍"
+            android:text="@string/book_my"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24"
             android:textStyle="bold" />
@@ -26,9 +26,9 @@
             android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/dp_40"
-            android:text="分类显示"
+            android:text="@string/book_type_title"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24" />
 
@@ -68,7 +68,7 @@
                 android:id="@+id/tv_top_page"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 

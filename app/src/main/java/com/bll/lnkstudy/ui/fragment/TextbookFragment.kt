@@ -23,7 +23,7 @@ class TextbookFragment : BaseFragment(){
 
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<BookBean>()
-    private var textBook="我的课本"//用来区分课本类型
+    private var textBook=""//用来区分课本类型
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_textbook
@@ -32,7 +32,7 @@ class TextbookFragment : BaseFragment(){
     override fun initView() {
         pageSize=9
         EventBus.getDefault().register(this)
-        setTitle("课本")
+        setTitle(R.string.main_textbook_title)
 
         initTab()
         initRecyclerView()
@@ -45,7 +45,8 @@ class TextbookFragment : BaseFragment(){
 
     //设置头部索引
     private fun initTab(){
-        var tabStrs= DataBeanManager.textbookType
+        val tabStrs= DataBeanManager.textbookType
+        textBook=tabStrs[0]
         for (i in tabStrs.indices) {
             rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
         }

@@ -38,12 +38,12 @@ class NotebookDeletePasswordDialog(private val context: Context, private val scr
             val passwordStr=etPassword?.text.toString()
 
             if (passwordStr.isEmpty()){
-                SToast.showText(screenPos,"输入密码")
+                SToast.showText(screenPos,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
 
             if (MD5Utils.digest(passwordStr)!=notePassword?.password){
-                SToast.showText(screenPos,"密码输入错误")
+                SToast.showText(screenPos,R.string.toast_password_error)
                 return@setOnClickListener
             }
 

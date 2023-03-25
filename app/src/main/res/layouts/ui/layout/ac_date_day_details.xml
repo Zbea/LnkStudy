@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:textColor="@color/black"
-            android:hint="生日/纪恋日/其他"
+            android:hint="@string/date_day_title_hint"
             android:textColorHint="@color/color_text_hint"
             android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_line_bottom"
@@ -40,7 +42,7 @@
             android:layout_marginTop="@dimen/dp_40"
             android:textColor="@color/black"
             android:gravity="center_vertical"
-            android:hint="日期"
+            android:hint="@string/date_day_date_hint"
             android:textColorHint="@color/color_text_hint"
             android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_line_bottom"
@@ -59,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="计时"
+                android:text="@string/date_day_time_str"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22" />
 
@@ -83,7 +85,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
         </RelativeLayout>
@@ -100,7 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="提醒"
+                android:text="@string/date_day_remind_str"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22" />
 
@@ -117,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="提前"
+                    android:text="@string/date_day_ahead_str"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_22" />
 
@@ -127,12 +130,12 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_10"
                     android:background="@drawable/bg_black_stroke_5dp_corner"
-                    android:drawableRight="@mipmap/icon_arrow_down"
                     android:gravity="center"
                     android:paddingEnd="12dp"
-                    android:text="1天"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22" />
+                    android:textSize="@dimen/sp_22"
+                    app:drawableRightCompat="@mipmap/icon_arrow_down"
+                    tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
 
@@ -141,7 +144,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
         </RelativeLayout>
@@ -160,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="铃声"
+                android:text="@string/date_day_bell_str"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22" />
 

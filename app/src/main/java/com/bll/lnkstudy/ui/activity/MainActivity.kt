@@ -11,7 +11,6 @@ import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.MainList
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
-import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
 
@@ -38,10 +37,8 @@ open class MainActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         mData= DataBeanManager.getIndexData()
-        val courses=SPUtil.getList("courses")
-        if (courses!=null){
-            DataBeanManager.courses=courses
-        }
+//        val courses= SPUtil.getList("courses")
+//        DataBeanManager.courses=courses
     }
 
     override fun initView() {

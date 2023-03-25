@@ -59,7 +59,7 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val li
         override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
             helper.setText(R.id.tv_title,item.title)
             helper.setText(R.id.tv_date, DateUtils.longToStringNoYear(item.date))
-            helper.setText(R.id.tv_state,if (item.state==0) "未提交" else "已提交")
+            helper.setText(R.id.tv_state,if (item.state==0) mContext.getString(R.string.homework_state_no) else mContext.getString(R.string.homework_state_yes))
             helper.setTextColor(R.id.tv_state,if (item.state==0)
                 mContext.resources.getColor(R.color.black) else mContext.resources.getColor(R.color.gray))
         }

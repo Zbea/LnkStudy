@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="选择科目"
+            android:text="@string/subject_selector_str"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_26"
             android:textStyle="bold" />

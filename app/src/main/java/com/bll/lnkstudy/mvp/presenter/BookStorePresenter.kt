@@ -82,7 +82,8 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
             }
 
             override fun success(tBaseResult: BaseResult<BookStoreType>) {
-                view.onType(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onType(tBaseResult.data)
             }
 
         }, true)

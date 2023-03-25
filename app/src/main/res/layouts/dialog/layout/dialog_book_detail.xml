@@ -92,7 +92,7 @@
             android:layout_height="@dimen/dp_45"
             android:layout_gravity="right"
             android:background="@drawable/bg_black_solid_10dp_corner"
-            android:text="立即购买"
+            android:text="@string/book_buy_str"
             android:textColor="@color/white"
             android:textSize="20sp" />
 

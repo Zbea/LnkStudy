@@ -72,11 +72,10 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         rvList?.addItemDecoration(SpaceGridItemDeco(4,10))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             if (list[position].isAdd){
-                val homeworkCommit=
-                    HomeworkCommit()
+                val homeworkCommit= HomeworkCommit()
                 homeworkCommit.isAdd=false
                 list.add(list.size-1,homeworkCommit)
-                mAdapter?.setNewData(list)
+                mAdapter.setNewData(list)
             }
         }
 
@@ -113,7 +112,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
                 listener?.onClick(item)
                 dismiss()
             } else {
-                SToast.showText(if (screenPos == 3) 2 else screenPos, "请选择提交的作业")
+                SToast.showText(if (screenPos == 3) 2 else screenPos, R.string.toast_homework_selector)
             }
 
         }

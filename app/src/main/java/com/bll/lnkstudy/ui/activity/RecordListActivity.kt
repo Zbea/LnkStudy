@@ -42,12 +42,12 @@ class RecordListActivity : BaseAppCompatActivity() {
     override fun initData() {
         course = intent.getStringExtra("course").toString()
 
-        pops.add(PopupBean(0,"编辑",R.mipmap.icon_notebook_edit))
-        pops.add(PopupBean(1,"删除",R.mipmap.icon_delete))
+        pops.add(PopupBean(0,getString(R.string.edit),R.mipmap.icon_notebook_edit))
+        pops.add(PopupBean(1,getString(R.string.delete),R.mipmap.icon_delete))
     }
 
     override fun initView() {
-        setPageTitle("$course 朗读录音")
+        setPageTitle(course+getString(R.string.record_read))
         EventBus.getDefault().register(this)
 
         showView(iv_manager)
@@ -158,7 +158,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
     //修改笔记
     private fun edit(content:String){
-        NotebookAddDialog(this,getCurrentScreenPos(),"重命名",content,"请输入标题").builder()?.setOnDialogClickListener { string ->
+        NotebookAddDialog(this,getCurrentScreenPos(),getString(R.string.rename),content,getString(R.string.toast_input_title)).builder()?.setOnDialogClickListener { string ->
             recordBeans[position].title = string
             mAdapter?.notifyDataSetChanged()
             RecordDaoManager.getInstance()
@@ -168,7 +168,7 @@ class RecordListActivity : BaseAppCompatActivity() {
 
     //删除
     private fun delete(){
-        CommonDialog(this).setContent("确定删除？").builder()
+        CommonDialog(this).setContent(R.string.item_is_delete_tips).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

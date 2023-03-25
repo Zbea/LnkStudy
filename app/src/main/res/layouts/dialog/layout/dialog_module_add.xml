@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="模板"
+            android:text="@string/module"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="26sp" />

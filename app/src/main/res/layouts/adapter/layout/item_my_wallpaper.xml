@@ -10,7 +10,6 @@
         android:id="@+id/iv_image"
         android:layout_width="205dp"
         android:layout_height="274dp"
-        android:src="@mipmap/icon_bookcase_book"
         android:padding="1dp"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         app:radius="5dp"
@@ -41,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/bg_check_selector"
-                android:text="  左屏"
+                android:text="@string/left_screen"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20" />
 
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:button="@drawable/bg_check_selector"
-                android:text="  右屏"
+                android:text="@string/right_screen"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20" />
 

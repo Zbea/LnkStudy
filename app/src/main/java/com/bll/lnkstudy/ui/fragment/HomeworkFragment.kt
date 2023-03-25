@@ -15,6 +15,7 @@ import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.PaperBean
 import com.bll.lnkstudy.mvp.model.PaperContentBean
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.ReceivePaper
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
@@ -73,6 +74,9 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
         mAdapter?.setNewData(homeworkTypes)
     }
 
+    override fun onList(receivePaper: ReceivePaper?) {
+
+    }
 
 
     override fun getLayoutId(): Int {
@@ -81,12 +85,12 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setTitle("作业")
+        setTitle(R.string.main_homework_title)
         showView(iv_manager)
 
-        popWindowBeans.add(PopupBean(0, "新建作业本", true))
-        popWindowBeans.add(PopupBean(1, "提交详情", false))
-        popWindowBeans.add(PopupBean(2, "批改详情", false))
+        popWindowBeans.add(PopupBean(0, getString(R.string.homework_create_str), true))
+        popWindowBeans.add(PopupBean(1, getString(R.string.homework_commit_details_str), false))
+        popWindowBeans.add(PopupBean(2, getString(R.string.homework_correct_details_str), false))
 
         iv_manager.setOnClickListener {
             PopupList(requireActivity(), popWindowBeans, iv_manager, 5).builder()
@@ -142,7 +146,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
             }
            setOnItemChildClickListener { adapter, view, position ->
                 if (view.id==R.id.ll_message){
-                    HomeworkMessageDialog(requireActivity(),screenPos,messages).builder()?.setOnDialogClickListener { position, id ->
+                    HomeworkMessageDialog(requireActivity(),screenPos,homeworkTypes[position].name,messages).builder()?.setOnDialogClickListener { position, id ->
                         messages.removeAt(position)
                         homeworkMessageDialog?.setData(messages)
                     }
@@ -306,7 +310,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
             override fun onSkin() {
 
                 val list= DataBeanManager.homeworkCover
-                ModuleAddDialog(requireContext(),screenPos,"封面模块",list).builder()
+                ModuleAddDialog(requireContext(),screenPos,getString(R.string.homework_cover_module_str),list).builder()
                     ?.setOnDialogClickListener { moduleBean ->
                         item.bgResId = ToolUtils.getImageResStr(activity, moduleBean.resId)
                         mAdapter?.notifyDataSetChanged()
@@ -332,7 +336,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
 
     //添加作业本
     private fun addHomeWorkType(item: HomeworkTypeBean){
-        NotebookAddDialog(requireContext(),screenPos,"新建作业本","","请输入作业本标题").builder()
+        NotebookAddDialog(requireContext(),screenPos,getString(R.string.homework_create_str),"",getString(R.string.homework_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 item.apply {
                     name = string
@@ -351,7 +355,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
     //添加封面
     private fun addCover(){
         val list= DataBeanManager.homeworkCover
-        ModuleAddDialog(requireContext(),screenPos,"封面模板",list).builder()
+        ModuleAddDialog(requireContext(),screenPos,getString(R.string.homework_cover_module_str),list).builder()
             ?.setOnDialogClickListener { moduleBean ->
             addContentModule(
                 moduleBean.resId
@@ -378,7 +382,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
         }
 
         if (list.size>1){
-            ModuleAddDialog(requireContext(),screenPos,"作业本模板",list).builder()
+            ModuleAddDialog(requireContext(),screenPos,getString(R.string.homework_module_str),list).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     val item =
                         HomeworkTypeBean()
@@ -417,7 +421,21 @@ class HomeworkFragment : BaseFragment(),IHomeworkView{
     }
 
     override fun fetchData() {
-        mPresenter.getTypeList(mCourse)
+        val classGroups=DataBeanManager.classGroups
+        var teacherId=0
+        for (classGroup in classGroups){
+            if (classGroup.subject==mCourse){
+                teacherId=classGroup.teacherId
+            }
+        }
+        val map=HashMap<String,Any>()
+        map["size"]=100
+        map["grade"]=mUser?.grade!!
+        map["type"]=2
+        map["userId"]=teacherId
+        mPresenter.getTypeList(map)
+
+        mPresenter.getList()
     }
 
 }

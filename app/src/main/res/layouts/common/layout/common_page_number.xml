@@ -16,7 +16,7 @@
         android:layout_marginEnd="20dp"
         android:textColor="@color/black"
         android:background="@color/color_transparent"
-        android:text="上一页"/>
+        android:text="@string/page_up_string"/>
 
     <TextView
         android:id="@+id/tv_page_current"
@@ -47,6 +47,6 @@
         android:layout_marginStart="20dp"
         android:textColor="@color/black"
         android:background="@color/color_transparent"
-        android:text="下一页"/>
+        android:text="@string/page_down_string"/>
 
 </LinearLayout>

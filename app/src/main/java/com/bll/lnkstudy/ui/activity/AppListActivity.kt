@@ -38,7 +38,7 @@ class AppListActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        setPageTitle("应用")
+        setPageTitle(R.string.download_app)
 
         initRecycler()
         initRecyclerTool()

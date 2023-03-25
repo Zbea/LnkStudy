@@ -35,7 +35,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setPageTitle("我的收藏")
+        setPageTitle(R.string.book_collect_str)
 
         initRecyclerView()
 
@@ -62,7 +62,7 @@ class BookCollectActivity: BaseAppCompatActivity() {
 
     //取消收藏
     private fun cancel(book:BookBean): Boolean {
-        CommonDialog(this).setContent("确认取消收藏？").builder().setDialogClickListener(object :
+        CommonDialog(this).setContent(R.string.book_is_collect_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

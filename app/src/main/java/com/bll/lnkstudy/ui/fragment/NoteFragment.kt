@@ -57,16 +57,16 @@ class NoteFragment : BaseFragment() {
     override fun initView() {
         pageSize=10
 
-        popWindowBeans.add(PopupBean(0, "笔记本管理", true))
-        popWindowBeans.add(PopupBean(1, "新建笔记本", false))
-        popWindowBeans.add(PopupBean(2, "新建笔记", false))
+        popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str), true))
+        popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str), false))
+        popWindowBeans.add(PopupBean(2, getString(R.string.note_create_str), false))
 
-        popWindowMoreBeans.add(PopupBean(0, "重命名", true))
-        popWindowMoreBeans.add(PopupBean(1, "删除", false))
+        popWindowMoreBeans.add(PopupBean(0, getString(R.string.rename), true))
+        popWindowMoreBeans.add(PopupBean(1, getString(R.string.delete), false))
 
         EventBus.getDefault().register(this)
 
-        setTitle("笔记")
+        setTitle(R.string.main_note_title)
         showView(iv_manager)
 
         bindClick()
@@ -160,7 +160,7 @@ class NoteFragment : BaseFragment() {
                     }
                     else -> {
                         val list=if (type==0) DataBeanManager.noteModuleDiary else DataBeanManager.noteModuleBook
-                        ModuleAddDialog(requireContext(),screenPos,"笔记模板",list).builder()
+                        ModuleAddDialog(requireContext(),screenPos,getString(R.string.note_module_str),list).builder()
                             ?.setOnDialogClickListener { moduleBean ->
                                 resId= ToolUtils.getImageResStr(activity, moduleBean.resContentId)
                                 createNotebook()
@@ -252,7 +252,7 @@ class NoteFragment : BaseFragment() {
                 }
             }
             else{
-                CommonDialog(requireActivity(),screenPos).setContent("设置日记密码？").builder()
+                CommonDialog(requireActivity(),screenPos).setContent(R.string.note_is_set_diary_password_tips).builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
@@ -284,7 +284,7 @@ class NoteFragment : BaseFragment() {
                 NotebookDaoManager.getInstance().insertOrReplace(note)
                 fetchData()
             }
-        else NotebookAddDialog(requireContext(), screenPos,"新建笔记", "", "请输入笔记标题").builder()
+        else NotebookAddDialog(requireContext(), screenPos,getString(R.string.note_create_str), "", getString(R.string.note_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 note.title = string
                 note.createDate = System.currentTimeMillis()
@@ -300,7 +300,7 @@ class NoteFragment : BaseFragment() {
 
     //修改笔记
     private fun editNotebook(content: String) {
-        NotebookAddDialog(requireContext(), screenPos,"重命名", content, "请输入笔记标题").builder()
+        NotebookAddDialog(requireContext(), screenPos,getString(R.string.rename), content, getString(R.string.note_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 noteBooks[position].title = string
                 mAdapter?.notifyDataSetChanged()
@@ -311,7 +311,7 @@ class NoteFragment : BaseFragment() {
 
     //删除
     private fun deleteNotebook() {
-        CommonDialog(requireActivity(),screenPos).setContent("确定删除笔记？").builder()
+        CommonDialog(requireActivity(),screenPos).setContent(R.string.note_is_delete_tips).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
@@ -331,7 +331,7 @@ class NoteFragment : BaseFragment() {
 
     //新建笔记分类
     private fun addNoteBookType() {
-        NotebookAddDialog(requireContext(), screenPos,"新建笔记分类", "", "输入笔记分类").builder()
+        NotebookAddDialog(requireContext(), screenPos,getString(R.string.notebook_create_str), "", getString(R.string.notebook_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 val noteBook = BaseTypeBean().apply {
                     name = string

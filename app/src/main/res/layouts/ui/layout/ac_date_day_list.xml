@@ -38,7 +38,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="日期"
+            android:text="@string/date_day_date_hint"
             />
 
         <TextView
@@ -48,7 +48,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="倒计时"/>
+            android:text="@string/date_day_time_str"/>
 
         <TextView
             android:layout_width="104dp"
@@ -57,7 +57,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="提醒"
+            android:text="@string/date_day_remind_str"
             />
 
         <ImageView

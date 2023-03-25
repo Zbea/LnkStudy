@@ -29,7 +29,7 @@ class PaintingFragment : BaseFragment(){
 
         EventBus.getDefault().register(this)
 
-        setTitle("书画")
+        setTitle(R.string.main_painting_title)
         initTab()
 
         iv_han.setOnClickListener {
@@ -65,7 +65,7 @@ class PaintingFragment : BaseFragment(){
 
         tv_sm.setOnClickListener {
             var intent= Intent(activity,MyPaintingListActivity::class.java)
-            intent.putExtra("title", "素描画")
+            intent.putExtra("title", getString(R.string.painting_smh))
             intent.putExtra("paintingType",4)
             intent.flags= 1
             customStartActivity(intent)
@@ -73,7 +73,7 @@ class PaintingFragment : BaseFragment(){
 
         tv_yb.setOnClickListener {
             var intent= Intent(activity,MyPaintingListActivity::class.java)
-            intent.putExtra("title", "硬笔书法")
+            intent.putExtra("title", getString(R.string.painting_ybsf))
             intent.putExtra("paintingType",5)
             intent.flags=1
             customStartActivity(intent)
@@ -88,7 +88,7 @@ class PaintingFragment : BaseFragment(){
     private fun initTab(){
         val tabStrs= DataBeanManager.PAINTING
         for (i in 0..3) {
-            rg_group.addView(getRadioButton(i ,tabStrs[i],3))
+            rg_group.addView(getRadioButton(i ,getString(tabStrs[i]),3))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             typeId= id
@@ -97,7 +97,7 @@ class PaintingFragment : BaseFragment(){
 
     private fun onClick(time:Int){
         var intent= Intent(activity,MyPaintingListActivity::class.java)
-        intent.putExtra("title", "${DataBeanManager.YEARS[time]}   ${DataBeanManager.PAINTING[typeId]}" )
+        intent.putExtra("title", "${getString(DataBeanManager.YEARS[time])}   ${getString(DataBeanManager.PAINTING[typeId])}" )
         intent.putExtra("time",time)
         intent.putExtra("paintingType",typeId)
         intent.flags=0

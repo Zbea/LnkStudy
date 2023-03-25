@@ -12,16 +12,20 @@ class DownloadPaintingAdapter(layoutResId: Int, data: List<PaintingList.ListBean
     override fun convert(helper: BaseViewHolder, item: PaintingList.ListBean) {
         helper.apply {
             setText(R.id.tv_name,item.drawName)
-            setText(R.id.tv_price,"价格："+if (item.price==0)"免费" else "${item.price} 学豆")
-            setText(R.id.btn_download,if (item.buyStatus==1) "下载" else "购买")
-            setText(R.id.tv_author,"作者：${item.author}")
-            setText(R.id.tv_introduce,"简介：${item.drawDesc}")
+            setText(R.id.tv_price,getString(R.string.price)+"："+if (item.price==0) getString(R.string.free) else "${item.price}"+getString(R.string.xd))
+            setText(R.id.btn_download,if (item.buyStatus==1) getString(R.string.download) else getString(R.string.buy))
+            setText(R.id.tv_author,getString(R.string.author)+"：${item.author}")
+            setText(R.id.tv_introduce,getString(R.string.introduction)+"：${item.drawDesc}")
 
             val image=getView<ImageView>(R.id.iv_image)
             GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,5)
 
             addOnClickListener(R.id.btn_download)
         }
+    }
+
+    fun getString(resId:Int):String{
+        return mContext.getString(resId)
     }
 
 }

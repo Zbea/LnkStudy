@@ -202,7 +202,7 @@ interface APIService{
     /**
      * 获取作业本分类
      */
-    @GET("task/list/job/")
+    @GET("common/type/list")
     fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
 
 

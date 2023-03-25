@@ -1,14 +1,333 @@
 <resources>
     <string name="app_name">墨之屏学习系统</string>
     <string name="authority">com.bll.lnkstudy</string>
+    <string name="request_success">请求成功</string>
     <string name="net_work_error">检查网络是否连接</string>
     <string name="connect_server_timeout">无法连接到服务器</string>
     <string name="parse_data_error">解析数据错误</string>
     <string name="connect_error">未连接到服务器</string>
     <string name="on_server_error">服务器开小差，请重试</string>
+    <string name="login_timeout">连接超时,请重新登陆</string>
 
-    <string name="user_tip">请输入4-12位数字、字母的用户名</string>
-    <string name="psw_tip">请输入6-20数字、字母的密码</string>
+    <string name="user_tip">请输入4–12位数字、字母的用户名</string>
+    <string name="psw_tip">请输入6–20数字、字母的密码</string>
     <string name="phone_tip">请正确输入11位手机号码</string>
+
+    <string name="toast_input_title">请输入标题</string>
+    <string name="toast_select_date">请选择日期</string>
+    <string name="toast_select_week">请选择星期</string>
+    <string name="toast_download_install">正在下载安装...</string>
+    <string name="toast_downloaded">已下载</string>
+    <string name="toast_edit_success">修改成功</string>
+    <string name="toast_message_code_success">验证码发送成功</string>
+    <string name="toast_register_success">注册成功</string>
+    <string name="toast_set_password_success">设置密码成功</string>
+    <string name="toast_edit_password_success">修改密码成功</string>
+    <string name="toast_input_phone">请输入电话号码</string>
+    <string name="toast_input_message_code">请输入验证码</string>
+    <string name="toast_input_account">请输入用户名</string>
+    <string name="toast_input_name">请输入姓名</string>
+    <string name="toast_input_birthday">请选择出生年月</string>
+    <string name="toast_input_city">请选择省市</string>
+    <string name="toast_input_school_address">请输入学校地址</string>
+    <string name="toast_input_school_name">请输入学校名称</string>
+    <string name="toast_input_parent">请输入家长名称</string>
+    <string name="toast_input_parent_name">请输入家长称谓</string>
+    <string name="toast_input_parent_phone">请输入家长电话</string>
+    <string name="toast_input_parent_address">请输入家庭住址</string>
+    <string name="toast_password_error">密码错误</string>
+    <string name="toast_password_input_question">请输入密保答案</string>
+    <string name="toast_password_question_error">密保错误</string>
+
+    <string name="item_is_delete_tips">确定删除？</string>
+    <string name="account_is_logout_tips">确定退出登录？</string>
+
+    <string name="page_up_string">上一页</string>
+    <string name="page_down_string">下一页</string>
+
+    <string name="xd">学豆</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确认</string>
+    <string name="add">添加</string>
+    <string name="copy">复制</string>
+    <string name="save">保存</string>
+    <string name="rename">重命名</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="author">作者</string>
+    <string name="introduction">简介</string>
+    <string name="subject">科目</string>
+    <string name="content">内容</string>
+    <string name="start">开始</string>
+    <string name="end">结束</string>
+    <string name="date">日期</string>
+    <string name="buy">购买</string>
+    <string name="download">下载</string>
+    <string name="free">免费</string>
+    <string name="price">价格</string>
+    <string name="account">账户</string>
+    <string name="logout">退出登录</string>
+    <string name="quit">退出</string>
+    <string name="login">登录</string>
+    <string name="id">I   D</string>
+    <string name="name">姓名</string>
+    <string name="name_1">名称</string>
+    <string name="grade">年级</string>
+    <string name="birthday">生日</string>
+    <string name="phone">手机</string>
+    <string name="password">密码</string>
+    <string name="family">家庭信息</string>
+    <string name="commit">提交</string>
+    <string name="tool">工具</string>
+    <string name="eliminate">剔除</string>
+    <string name="press">出版社</string>
+    <string name="addressList">通讯录</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="collect">收藏</string>
+    <string name="move">移动</string>
+    <string name="catalog">目录</string>
+    <string name="page">页码</string>
+    <string name="setting">设置</string>
+    <string name="skin">换肤</string>
+    <string name="module">模板</string>
+    <string name="gplot">规矩图</string>
+    <string name="unnamed">未命名</string>
+    <string name="drawing">画本</string>
+    <string name="calligraphy">书法</string>
+
+    <string name="scale">刻度</string>
+    <string name="axis_one">一维坐标</string>
+    <string name="axis_two">二维坐标</string>
+    <string name="axis_three">三维坐标</string>
+    <string name="line">直线</string>
+    <string name="rectangle">矩形</string>
+    <string name="circle">圆</string>
+    <string name="arc">圆弧</string>
+    <string name="oval">椭圆</string>
+    <string name="vertical">垂线</string>
+    <string name="parabola">抛物线</string>
+    <string name="angle">角度</string>
+    <string name="axis">坐标</string>
+    <string name="lengthen">延长</string>
+    <string name="excision">切除</string>
+    <string name="grayLine">灰线</string>
+    <string name="reduce">托盘</string>
+    <string name="circle_1">圆心</string>
+    <string name="circle_2">两点</string>
+    <string name="circle_3">三点</string>
+    <string name="line_black">黑线</string>
+    <string name="line_gray">灰线</string>
+    <string name="line_dotted">虚线</string>
+    <string name="geometry_title_str">几何绘图</string>
+
+    <string name="semester_last">上学期</string>
+    <string name="semester_next">下学期</string>
+
+    <string name="official_str">官方</string>
+    <string name="thirdParty_str">第三方</string>
+
+    <string name="course">课程</string>
+    <string name="course_chinese">语文</string>
+    <string name="course_english">英语</string>
+    <string name="course_math">数学</string>
+    <string name="course_other">其他</string>
+
+    <string name="my_account">我的账户</string>
+    <string name="edit_name">修改姓名</string>
+    <string name="edit_grade">修改年级</string>
+    <string name="edit_password">修改密码</string>
+    <string name="main_home_title">首页</string>
+    <string name="register">注册账号</string>
+    <string name="find_password">找回密码</string>
+    <string name="login_input_account_hint">输入账号</string>
+    <string name="login_input_password_hint">输入密码</string>
+    <string name="get_message_code">获取验证码</string>
+    <string name="scan_code_pay_str">请扫描二维码支付</string>
+    <string name="buy_xd_str">购买学豆</string>
+    <string name="buy_pay_type">支付方式</string>
+
+    <string name="main_bookcase_title">书架</string>
+    <string name="main_textbook_title">课本</string>
+    <string name="main_homework_title">作业</string>
+    <string name="main_testpaper_title">考卷</string>
+    <string name="main_note_title">笔记</string>
+    <string name="main_painting_title">书画</string>
+    <string name="main_teach_title">义教</string>
+    <string name="main_teaching">教材</string>
+
+    <string name="textbook_tab_text">我的课本</string>
+    <string name="textbook_tab_course">我的课辅</string>
+    <string name="textbook_tab_teaching">参考教材</string>
+    <string name="textbook_tab_oldteaching">往期教材</string>
+
+    <string name="book_tab_gj">古籍</string>
+    <string name="book_tab_zrkx">自然科学</string>
+    <string name="book_tab_shkx">社会科学</string>
+    <string name="book_tab_sxkx">思维科学</string>
+
+    <string name="book_tab_sjcc">诗经楚辞</string>
+    <string name="book_tab_tssc">唐诗宋词</string>
+    <string name="book_tab_gdjd">古代经典</string>
+    <string name="book_tab_sdmz">四大名著</string>
+    <string name="book_tab_zgkj">中国科技</string>
+    <string name="book_tab_xssw">小说散文</string>
+    <string name="book_tab_wgyz">外国原著</string>
+    <string name="book_tab_lsdl">历史地理</string>
+    <string name="book_tab_zzjj">政治经济</string>
+    <string name="book_tab_jszl">军事战略</string>
+    <string name="book_tab_kxjs">科学技术</string>
+    <string name="book_tab_ydcy">运动才艺</string>
+
+    <string name="age_han">汉朝</string>
+    <string name="age_tang">唐朝</string>
+    <string name="age_song">宋朝</string>
+    <string name="age_yuan">元朝</string>
+    <string name="age_ming">明朝</string>
+    <string name="age_qing">清朝</string>
+    <string name="age_jin">近代</string>
+    <string name="age_dan">当代</string>
+
+    <string name="painting_mbsf">毛笔书法</string>
+    <string name="painting_ssh">山水画</string>
+    <string name="painting_hnh">花鸟画</string>
+    <string name="painting_rwh">人物画</string>
+    <string name="painting_smh">素描画</string>
+    <string name="painting_ybsf">硬笔书法</string>
+
+    <string name="note_tab_diary">我的日记</string>
+    <string name="note_tab_article">金句彩段</string>
+    <string name="note_tab_topic">典型题型</string>
+    <string name="note_type_hgb">横格本</string>
+    <string name="note_type_fgb">方格本</string>
+    <string name="note_type_kbb">空白本</string>
+    <string name="note_type_yyb">英语本</string>
+    <string name="note_type_tzb">田字本</string>
+    <string name="note_type_wxp">五线谱</string>
+
+    <string name="download_app">应用</string>
+    <string name="download_painting">书画</string>
+    <string name="download_wallpaper">壁纸</string>
+
+    <string name="homework_type_pytzb">拼音田字本</string>
+    <string name="homework_type_tzb">田字本</string>
+    <string name="homework_type_pyb">拼音本</string>
+    <string name="homework_type_zwb">作文本</string>
+    <string name="homework_type_lxb">练习本</string>
+    <string name="homework_type_sxb">数学本</string>
+    <string name="homework_type_yyb">英语本</string>
+
+    <string name="week_1">周一</string>
+    <string name="week_2">周二</string>
+    <string name="week_3">周三</string>
+    <string name="week_4">周四</string>
+    <string name="week_5">周五</string>
+    <string name="week_6">周六</string>
+    <string name="week_7">周日</string>
+
+    <string name="main_class_schedule">课程表</string>
+    <string name="main_message">信息</string>
+    <string name="main_receive_paper">收到考卷</string>
+    <string name="main_classgroup">班群管理</string>
+
+    <string name="date_plan">学习计划</string>
+    <string name="date_day">重要日子</string>
+
+    <string name="book_my">我的书籍</string>
+    <string name="book_type_title">分类展示</string>
+    <string name="book_collect_success">收藏成功</string>
+    <string name="book_collect_str">我的收藏</string>
+    <string name="book_collected">已收藏</string>
+    <string name="book_is_collect_tips">确定取消收藏？</string>
+    <string name="book_download_fail">下载失败</string>
+    <string name="book_download_success">下载成功</string>
+    <string name="book_decompression_fail">解压失败</string>
+    <string name="book_download_str">点击下载</string>
+    <string name="book_buy_str">点击购买</string>
+
+    <string name="note_manage_str">笔记本管理</string>
+    <string name="notebook_create_str">新建笔记本</string>
+    <string name="note_create_str">新建笔记</string>
+    <string name="note_create_title">新建笔记</string>
+    <string name="note_create_hint">输入笔记标题</string>
+    <string name="notebook_create_title">新建笔记本分类</string>
+    <string name="notebook_create_hint">输入笔记分类名称</string>
+    <string name="note_module_str">笔记模板</string>
+    <string name="note_is_set_diary_password_tips">设置日记密码？</string>
+    <string name="note_is_delete_tips">确定删除笔记？</string>
+    <string name="notebook_is_delete_tips">确定删除笔记本？</string>
+    <string name="note_delete_diary_password">删除日记密码</string>
+    <string name="password_input">输入密码</string>
+    <string name="password_old">原先密码</string>
+    <string name="password_new">新设密码</string>
+    <string name="password_again">再输密码</string>
+    <string name="password_old_error">原密码错误</string>
+    <string name="password_again_error">再次输入密码</string>
+    <string name="password_different">密码输入不一致</string>
+    <string name="password_question_str">输入密保</string>
+    <string name="password_question_select_str">选择问题</string>
+    <string name="password_father_name">爸爸姓名？</string>
+    <string name="password_mother_name">妈妈姓名？</string>
+    <string name="password_grandfather_name">爷爷姓名？</string>
+    <string name="password_grandmother_name">奶奶姓名？</string>
+    <string name="password_set">设置密码</string>
+    <string name="password_set_question">设置密保</string>
+
+    <string name="homework_create_str">新建作业本</string>
+    <string name="homework_create_hint">输入作业本标题</string>
+    <string name="homework_commit_details_str">提交详情</string>
+    <string name="homework_correct_details_str">批改详情</string>
+    <string name="homework_cover_module_str">封面模板</string>
+    <string name="homework_module_str">作业本模板</string>
+    <string name="homework_assign">作业布置</string>
+    <string name="homework_state">提交状态</string>
+    <string name="homework_time">提交时间</string>
+    <string name="homework_state_no">未提交</string>
+    <string name="homework_state_yes">已提交</string>
+    <string name="homework_message">作业通知</string>
+
+    <string name="testpaper_score_str">批改分</string>
+
+    <string name="date_title_str">日历</string>
+    <string name="day">天</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="date_day_title_hint">生日/纪恋日/其他</string>
+    <string name="date_day_date_hint">日期</string>
+    <string name="date_day_time_str">倒计时</string>
+    <string name="date_day_remind_str">提醒</string>
+    <string name="date_day_bell_str">铃声</string>
+    <string name="date_day_ahead_str">提前</string>
+    <string name="date_day_residual_str">剩余</string>
+    <string name="date_plan_title_str">标题</string>
+    <string name="date_plan_start_str">开始日期</string>
+    <string name="date_plan_end_str">结束日期</string>
+
+    <string name="classGroup_manager_str">班群管理</string>
+    <string name="toast_add_classGroup_success">加入班群成功</string>
+    <string name="toast_out_classGroup_success">退出班群成功</string>
+    <string name="classGroup_is_classGroup_tips">确定退出班群？</string>
+    <string name="classGroup_add_str">加入班群</string>
+    <string name="classGroup_input_code_hint">输入班群号</string>
+
+    <string name="course_title_str">课程表    编辑</string>
+    <string name="message_title_str">信息中心</string>
+    <string name="left_screen">  左屏</string>
+    <string name="right_screen">  右屏</string>
+
+    <string name="record_title_str">录音</string>
+    <string name="record_end_str">结束录音</string>
+    <string name="toast_record">请先录音</string>
+    <string name="toast_recording">正在录音…</string>
+    <string name="backward">倒退</string>
+    <string name="forward">快进</string>
+    <string name="record_read">朗读录音</string>
+    <string name="course_module">课程表模板</string>
+    <string name="subject_selector_str">科目选择</string>
+    <string name="single_page">单页</string>
+    <string name="multi_page">批量</string>
+    <string name="homework_selector">作业选择</string>
+    <string name="toast_homework_selector">请选择提交的作业</string>
+
 
 </resources>

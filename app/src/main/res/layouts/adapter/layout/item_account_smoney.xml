@@ -10,9 +10,8 @@
         android:layout_width="100dp"
         android:layout_height="45dp"
         android:gravity="center"
-        android:text="500"
         android:textColor="@color/black"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
 

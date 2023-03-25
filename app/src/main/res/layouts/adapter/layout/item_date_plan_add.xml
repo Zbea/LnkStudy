@@ -20,7 +20,7 @@
             android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
             android:gravity="center"
-            android:text="开始"/>
+            android:text="@string/start"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
             android:gravity="center"
-            android:text="结束"/>
+            android:text="@string/end"/>
 
     </LinearLayout>
 
@@ -52,7 +52,7 @@
         android:layout_marginStart="@dimen/dp_50"
         android:textColor="@color/black"
         android:background="@color/color_transparent"
-        android:hint="科目"
+        android:hint="@string/subject"
         android:textColorHint="@color/black"/>
 
 
@@ -68,7 +68,7 @@
         android:gravity="center_vertical"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
-        android:hint="内容"
+        android:hint="@string/content"
         android:textColorHint="@color/black"/>
 
     <TextView
@@ -77,6 +77,6 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
-        android:text="提醒"/>
+        android:text="@string/date_day_remind_str"/>
 
 </LinearLayout>

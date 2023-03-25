@@ -26,7 +26,6 @@
             android:layout_marginBottom="@dimen/dp_5"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="标题"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24" />
 
@@ -36,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black_20"
-            android:text="价格："
             android:textSize="@dimen/sp_18" />
 
         <TextView
@@ -45,7 +43,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black_20"
-            android:text="作者："
             android:textSize="@dimen/sp_18" />
 
         <TextView
@@ -56,7 +53,6 @@
             android:ellipsize="end"
             android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black_20"
-            android:text="简介："
             android:textSize="@dimen/sp_18" />
 
         <LinearLayout
@@ -66,16 +62,13 @@
             android:gravity="right"
             android:orientation="horizontal">
 
-
-
-
             <TextView
                 android:id="@+id/btn_download"
                 android:layout_width="80dp"
                 android:layout_height="32dp"
                 android:background="@drawable/bg_black_arch"
                 android:gravity="center"
-                android:text="购买"
+                android:text="@string/buy"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20" />
 

@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:layout_marginRight="20dp"
-            android:text="设置"
+            android:text="@string/setting"
             android:textStyle="bold"
             android:textSize="26sp"
             android:textColor="@color/black"/>
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_15"
                 android:gravity="right"
-                android:text="换肤"
+                android:text="@string/skin"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_15"
                 android:gravity="right"
-                android:text="删除"
+                android:text="@string/delete"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
         </LinearLayout>

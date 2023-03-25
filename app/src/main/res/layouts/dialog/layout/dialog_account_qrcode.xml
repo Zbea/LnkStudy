@@ -13,7 +13,7 @@
         android:textSize="26sp"
         android:textColor="@color/black"
         android:layout_gravity="center_horizontal"
-        android:text="请扫描二维码支付"/>
+        android:text="@string/scan_code_pay_str"/>
     <ImageView
         android:id="@+id/iv_qrcode"
         android:layout_width="300dp"

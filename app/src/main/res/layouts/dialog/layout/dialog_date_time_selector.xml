@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="开始"
+                android:text="@string/start"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="26sp" />
@@ -110,7 +110,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="结束"
+                android:text="@string/end"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="26sp" />
@@ -203,7 +203,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textColor="@color/black"
             android:textSize="22sp" />
 
@@ -215,7 +215,7 @@
             android:layout_marginStart="@dimen/dp_50"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
-            android:text="确认"
+            android:text="@string/ok"
             android:textColor="@color/black"
             android:textSize="22sp" />
     </LinearLayout>

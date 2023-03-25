@@ -28,7 +28,7 @@ class MessageListActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle("消息中心")
+        setPageTitle(R.string.message_title_str)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MessageAdapter(R.layout.item_message, null).apply {

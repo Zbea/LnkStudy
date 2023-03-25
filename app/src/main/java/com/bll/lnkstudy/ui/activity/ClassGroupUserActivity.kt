@@ -35,7 +35,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
     }
 
     override fun initView() {
-        setPageTitle("通讯录")
+        setPageTitle(R.string.addressList)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = ClassGroupUserAdapter(R.layout.item_classgroup_user, null).apply {

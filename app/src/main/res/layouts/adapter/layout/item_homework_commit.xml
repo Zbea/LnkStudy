@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:text="作业布置"
+        android:text="@string/homework_assign"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
         />
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="提交状态"
+        android:text="@string/homework_state"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
         />
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="提交时间"
+        android:text="@string/homework_time"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
         />

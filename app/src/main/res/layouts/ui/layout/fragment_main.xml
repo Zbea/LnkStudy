@@ -97,7 +97,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="课程表"
+                    android:text="@string/main_class_schedule"
                     android:textSize="@dimen/sp_20"
                     android:textStyle="bold" />
 
@@ -148,7 +148,7 @@
                 android:layout_marginLeft="@dimen/dp_20"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:text="信息"
+                android:text="@string/main_message"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 
@@ -177,7 +177,7 @@
                 android:layout_marginLeft="@dimen/dp_20"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:text="收到考卷"
+                android:text="@string/main_receive_paper"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 
@@ -217,7 +217,7 @@
                 android:layout_marginLeft="@dimen/dp_20"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:text="班群管理"
+                android:text="@string/main_classgroup"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 
@@ -252,7 +252,7 @@
                 android:layout_marginLeft="@dimen/dp_20"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:text="笔记"
+                android:text="@string/main_note_title"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 

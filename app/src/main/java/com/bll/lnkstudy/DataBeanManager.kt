@@ -9,31 +9,18 @@ import java.util.*
 object DataBeanManager {
 
     var courses= mutableListOf<String>()
+    var classGroups= mutableListOf<ClassGroup>()
     var grades= mutableListOf<Grade>()
 
     private val listTitle = arrayOf(
-        "首页",
-        "书架",
-        "课本",
-        "作业",
-        "考卷",
-        "笔记",
-        "书画",
-        "义教"
-    )
-    val bookStoreType = arrayOf(
-        "教材",
-        "古籍",
-        "自然科学",
-        "社会科学",
-        "思维科学",
-        "运动才艺"
+        R.string.main_home_title,R.string.main_bookcase_title,
+        R.string.main_textbook_title,R.string.main_homework_title,
+        R.string.main_testpaper_title,R.string.main_painting_title,
+        R.string.main_painting_title,R.string.main_teach_title
     )
     val textbookType = arrayOf(
-        "我的课本",
-        "我的课辅",
-        "参考教材",
-        "往期教材"
+        mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
+        mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_oldteaching)
     )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
     val bookType = arrayOf(
@@ -41,12 +28,25 @@ object DataBeanManager {
         "四大名著", "中国科技", "小说散文",
         "外国原著", "历史地理", "政治经济",
         "军事战略", "科学技术", "运动才艺"
-    ) //书籍分类
+    )
+//    val bookType = arrayOf(
+//        R.string.book_tab_sjcc,R.string.book_tab_tssc,
+//        R.string.book_tab_gdjd,R.string.book_tab_sdmz,
+//        R.string.book_tab_zgkj,R.string.book_tab_xssw,
+//        R.string.book_tab_wgyz,R.string.book_tab_lsdl,
+//        R.string.book_tab_zzjj,R.string.book_tab_jszl,
+//        R.string.book_tab_kxjs,R.string.book_tab_ydcy
+//    ) //书籍分类
     val YEARS = arrayOf(
-        "汉朝", "唐朝", "宋朝", "元朝", "明朝", "清朝", "近代", "当代"
+        R.string.age_han,R.string.age_tang,
+        R.string.age_song,R.string.age_yuan,
+        R.string.age_ming,R.string.age_qing,
+        R.string.age_jin,R.string.age_dan
     )
     val PAINTING = arrayOf(
-        "毛笔书法", "山水画", "花鸟画", "人物画", "素描画", "硬笔书法"
+        R.string.painting_mbsf,R.string.painting_ssh,
+        R.string.painting_hnh,R.string.painting_rwh,
+        R.string.painting_smh,R.string.painting_ybsf
     )
 
     val popupGrades: MutableList<PopupBean>
@@ -71,56 +71,56 @@ object DataBeanManager {
             icon = mContext.getDrawable(R.mipmap.icon_main_sy)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
             checked = true
-            name = listTitle[0]
+            name = mContext.getString(listTitle[0])
         }
 
         val h1 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_sj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
             checked = false
-            name = listTitle[1]
+            name = mContext.getString(listTitle[1])
         }
 
         val h2 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_kb)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_kb_check)
             checked = false
-            name = listTitle[2]
+            name = mContext.getString(listTitle[2])
         }
 
         val h3 = MainList().apply {
            icon = mContext.getDrawable(R.mipmap.icon_main_zy)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_zy_check)
             checked = false
-            name = listTitle[3]
+            name = mContext.getString(listTitle[3])
         }
 
         val h4 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_ks)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_ks_check)
             checked = false
-            name = listTitle[4]
+            name = mContext.getString(listTitle[4])
         }
 
         val h5 = MainList().apply {
            icon = mContext.getDrawable(R.mipmap.icon_main_bj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_bj_check)
             checked = false
-            name = listTitle[5]
+            name = mContext.getString(listTitle[5])
         }
 
         val h6 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_sh)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sh_check)
             checked = false
-            name = listTitle[6]
+            name = mContext.getString(listTitle[6])
         }
 
         val h7 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_yj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
             checked = false
-            name = listTitle[7]
+            name = mContext.getString(listTitle[7])
         }
 
         list.add(h0)
@@ -139,7 +139,7 @@ object DataBeanManager {
             val list= mutableListOf<DateRemind>()
             for (i in dateRemind) {
                 list.add(DateRemind().apply {
-                    remind = i.toString() + "天"
+                    remind = i.toString() + mContext.getString(R.string.day)
                     remindIn = i
                     isCheck = i == 1
                 })
@@ -150,13 +150,13 @@ object DataBeanManager {
     val weeks: MutableList<DateWeek>
         get() {
             val list= mutableListOf<DateWeek>()
-            list.add(DateWeek("周一", "MO", 2, false))
-            list.add(DateWeek("周二", "TU", 3, false))
-            list.add(DateWeek("周三", "WE", 4, false))
-            list.add(DateWeek("周四", "TH", 5, false))
-            list.add(DateWeek("周五", "FR", 6, false))
-            list.add(DateWeek("周六", "SA", 7, false))
-            list.add(DateWeek("周日", "SU", 8, false))
+            list.add(DateWeek(mContext.getString(R.string.week_1), "MO", 2, false))
+            list.add(DateWeek(mContext.getString(R.string.week_2), "TU", 3, false))
+            list.add(DateWeek(mContext.getString(R.string.week_3), "WE", 4, false))
+            list.add(DateWeek(mContext.getString(R.string.week_4), "TH", 5, false))
+            list.add(DateWeek(mContext.getString(R.string.week_5), "FR", 6, false))
+            list.add(DateWeek(mContext.getString(R.string.week_6), "SA", 7, false))
+            list.add(DateWeek(mContext.getString(R.string.week_7), "SU", 8, false))
             return list
         }
 
@@ -188,7 +188,7 @@ object DataBeanManager {
      */
     fun getHomeWorkContentStr(courseStr: String, grade: Int): String {
         val resId = when (courseStr) {
-            "语文" -> {
+            "语文"-> {
                 if (grade < 7) {
                     R.mipmap.icon_homework_other_xxlxb
                 } else {
@@ -222,27 +222,27 @@ object DataBeanManager {
         val list= mutableListOf<Module>()
         if (grade <= 3) {
             val module = Module().apply {
-                name = "拼音田字本"
+                name = mContext.getString(R.string.homework_type_pytzb)
                 resId = R.mipmap.icon_homework_yw_pytzb_1
                 resContentId = R.mipmap.icon_homework_yw_pytzb
             }
             val module1 = Module().apply {
-               name = "田字本"
+               name = mContext.getString(R.string.homework_type_tzb)
                 resId = R.mipmap.icon_homework_yw_tzb_1
                 resContentId = R.mipmap.icon_homework_yw_tzb
             }
             val module2 = Module().apply {
-                name = "拼音本"
+                name = mContext.getString(R.string.homework_type_pyb)
                 resId = R.mipmap.icon_homework_yw_pyb_1
                 resContentId = R.mipmap.icon_homework_yw_pyb
             }
             val module3 = Module().apply {
-               name = "作文本"
+               name = mContext.getString(R.string.homework_type_zwb)
                 resId = R.mipmap.icon_homework_yw_zwb_1
                 resContentId = R.mipmap.icon_homework_yw_zwb
             }
             val module4 = Module().apply {
-                name = "练习本"
+                name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_other_lxb_1
                 resContentId = R.mipmap.icon_homework_other_xxlxb
             }
@@ -253,12 +253,12 @@ object DataBeanManager {
             list.add(module4)
         } else if (grade in 4..6) {
             val module = Module().apply {
-                name = "作文本"
+                name = mContext.getString(R.string.homework_type_zwb)
                 resId = R.mipmap.icon_homework_yw_zwb_1
                 resContentId = R.mipmap.icon_homework_yw_zwb
             }
             val module1 = Module().apply {
-                name = "练习本"
+                name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_other_lxb_1
                 resContentId = R.mipmap.icon_homework_other_xxlxb
             }
@@ -266,12 +266,12 @@ object DataBeanManager {
             list.add(module1)
         } else {
             val module = Module().apply {
-                name = "练习本"
+                name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_other_lxb_1
                 resContentId = R.mipmap.icon_homework_other_lxb
             }
             val module1 = Module().apply {
-                name = "作文本"
+                name = mContext.getString(R.string.homework_type_zwb)
                 resId = R.mipmap.icon_homework_yw_zwb_1
                 resContentId = R.mipmap.icon_homework_yw_zxzwb
             }
@@ -286,13 +286,13 @@ object DataBeanManager {
         val list=mutableListOf<Module>()
         if (grade < 7) {
             list.add(Module().apply {
-                name = "数学本"
+                name = mContext.getString(R.string.homework_type_sxb)
                 resId = R.mipmap.icon_homework_sx_sxb_1
                 resContentId = R.mipmap.icon_homework_sx_sxb
             })
         } else {
             list.add(Module().apply {
-                name = "数学本"
+                name = mContext.getString(R.string.homework_type_sxb)
                 resId = R.mipmap.icon_homework_other_lxb_1
                 resContentId = R.mipmap.icon_homework_other_lxb
             })
@@ -305,13 +305,13 @@ object DataBeanManager {
         val list=mutableListOf<Module>()
         if (grade < 7) {
             list.add(Module().apply {
-                name = "英语本"
+                name = mContext.getString(R.string.homework_type_yyb)
                 resId = R.mipmap.icon_homework_yy_xxyyb_1
                 resContentId = R.mipmap.icon_homework_yy_xxyyb
             })
         } else {
             list.add(Module().apply {
-                name = "英语本"
+                name = mContext.getString(R.string.homework_type_yyb)
                 resId = R.mipmap.icon_homework_yy_zxyyb_1
                 resContentId = R.mipmap.icon_homework_yy_zxyyb
             })
@@ -324,7 +324,7 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<Module>()
             list.add(Module().apply {
-                name = "练习本"
+                name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_other_lxb_1
                 resContentId = R.mipmap.icon_homework_other_lxb
             })
@@ -364,19 +364,19 @@ object DataBeanManager {
             val apps= mutableListOf<AppBean>()
             apps.add(AppBean().apply {
                 appId = 0
-                appName = "应用"
+                appName = mContext.getString(R.string.download_app)
                 image = mContext.getDrawable(R.mipmap.icon_app_center)
                 isBase = true
             })
             apps.add(AppBean().apply {
                 appId = 1
-                appName = "壁纸"
+                appName = mContext.getString(R.string.download_wallpaper)
                 image = mContext.getDrawable(R.mipmap.icon_app_wallpaper)
                 isBase = true
             })
             apps.add(AppBean().apply {
                 appId = 2
-                appName = "书画"
+                appName = mContext.getString(R.string.download_painting)
                 image = mContext.getDrawable(R.mipmap.icon_app_painting)
                 isBase = true
             })
@@ -388,15 +388,15 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<BaseTypeBean>()
             list.add(BaseTypeBean().apply {
-                name = "我的日记"
+                name = mContext.getString(R.string.note_tab_diary)
                 typeId = 0
             })
             list.add(BaseTypeBean().apply {
-                name = "金句彩段"
+                name = mContext.getString(R.string.note_tab_article)
                 typeId = 1
             })
             list.add(BaseTypeBean().apply {
-                name = "典型题型"
+                name = mContext.getString(R.string.note_tab_topic)
                 typeId = 2
             })
             return list
@@ -407,12 +407,12 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<Module>()
             list.add(Module().apply {
-                name = "横格本"
+                name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_6
             })
             list.add(Module().apply {
-                name = "方格本"
+                name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_7
             })
@@ -424,32 +424,32 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<Module>()
             list.add(Module().apply {
-                name = "空白本"
+                name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
             })
             list.add(Module().apply {
-                name = "横格本"
+                name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_1
             })
             list.add(Module().apply {
-                name = "方格本"
+                name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_2
             })
             list.add(Module().apply {
-                name = "英语本"
+                name = mContext.getString(R.string.note_type_yyb)
                 resId = R.mipmap.icon_note_module_bg_3
                 resContentId = R.mipmap.icon_note_details_bg_3
             })
             list.add(Module().apply {
-                name = "田字本"
+                name = mContext.getString(R.string.note_type_tzb)
                 resId = R.mipmap.icon_note_module_bg_4
                 resContentId = R.mipmap.icon_note_details_bg_4
             })
             list.add(Module().apply {
-                name = "五线谱"
+                name = mContext.getString(R.string.note_type_wxp)
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
             })
@@ -461,8 +461,8 @@ object DataBeanManager {
     val semesters: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
-            list.add(PopupBean(0,"上学期",true))
-            list.add(PopupBean(1,"下学期",false))
+            list.add(PopupBean(0, mContext.getString(R.string.semester_last),true))
+            list.add(PopupBean(1,mContext.getString(R.string.semester_next),false))
             return list
         }
 

@@ -48,7 +48,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
         pageSize=12
         EventBus.getDefault().register(this)
 
-        setPageTitle("分类展示")
+        setPageTitle(R.string.book_type_title)
         showSearchView(true)
 
         initTab()
@@ -78,7 +78,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
         val types= mutableListOf<BaseTypeBean>()
         val strings= DataBeanManager.bookType
         for (i in strings.indices){
-            var baseTypeBean= BaseTypeBean()
+            val baseTypeBean= BaseTypeBean()
             baseTypeBean.name=strings[i]
             baseTypeBean.typeId=i
             baseTypeBean.isCheck=i==0
@@ -112,7 +112,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
                 books[pos].isCollect=true
                 mAdapter?.notifyDataSetChanged()
                 BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                showToast("收藏成功")
+                showToast(R.string.book_collect_success)
             }
             override fun onDelete() {
                 delete()
@@ -126,7 +126,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
 
     //删除书架书籍
     private fun delete(){
-        CommonDialog(this,screenPos).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
+        CommonDialog(this,screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

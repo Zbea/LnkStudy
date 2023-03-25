@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="工具栏"
+            android:text="@string/tool"
             android:layout_marginStart="76dp"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_36"/>
@@ -56,7 +56,7 @@
                     android:id="@+id/tv_add"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_50"
-                    android:text="添加"
+                    android:text="@string/add"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_26"
                     android:gravity="center"
@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_50"
                     android:layout_marginTop="35dp"
-                    android:text="剔除"
+                    android:text="@string/eliminate"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_26"
                     android:gravity="center"

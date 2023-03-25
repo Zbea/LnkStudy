@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="批改分"
+                    android:text="@string/testpaper_score_str"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_16" />
 

@@ -53,12 +53,12 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun initView() {
-        setTitle("义教")
+        setTitle(R.string.main_teach_title)
         pageSize=8
 
         tabs.add(ItemList().apply {
             type=0
-            desc="课程"
+            desc=getString(R.string.course)
         })
 
         mAdapter = TeachCourseAdapter(R.layout.item_teach_course, null).apply {

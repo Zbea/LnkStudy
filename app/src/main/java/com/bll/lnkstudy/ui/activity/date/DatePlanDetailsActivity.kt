@@ -28,6 +28,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     private var oldEvent: DateEventBean?=null
     private var weeks= mutableListOf<DateWeek>()
     private var dateDialog:DateSelectorDialog?=null
+    private var startStr=getString(R.string.start)
+    private var endStr=getString(R.string.end)
 
     override fun layoutId(): Int {
         return R.layout.ac_date_plan_details
@@ -74,8 +76,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
     override fun initView() {
 
-        setPageTitle("学习计划")
-        setPageSetting("保存")
+        setPageTitle(R.string.date_plan)
+        setPageSetting(R.string.save)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = DatePlanEventAddAdapter(R.layout.item_date_plan_add, planList)
@@ -121,8 +123,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     private fun save(){
 
         val titleStr = et_title.text.toString()
-        if (titleStr.isNullOrEmpty()) {
-            showToast("请输入标题")
+        if (titleStr.isEmpty()) {
+            showToast(R.string.toast_input_title)
             return
         }
         dateEventBean?.title=titleStr
@@ -135,12 +137,12 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         }
 
         if (selectWeeks.size==0){
-            showToast("请选择星期")
+            showToast(R.string.toast_select_week)
             return
         }
 
         if (dateEventBean?.endTimeStr!!.isNullOrEmpty()){
-            showToast("请选择日期")
+            showToast(R.string.toast_select_date)
             return
         }
 
@@ -162,10 +164,10 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         if (oldEvent!=null){
             for (item in oldEvent?.plans!!){
                 if (item.isRemindStart){
-                    CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title+"开始："+item.course+item.content)
+                    CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title+"${startStr}："+item.course+item.content)
                 }
                 if (item.isRemindEnd){
-                    CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title+"结束："+item.course+item.content)
+                    CalendarReminderUtils.deleteCalendarEvent(this,oldEvent?.title+"${endStr}："+item.course+item.content)
                 }
             }
         }
@@ -173,7 +175,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         for (item in plans){
             if (item.isRemindStart){
                 CalendarReminderUtils.addCalendarEvent(this,
-                    dateEventBean?.title+"开始："+item.course+item.content,
+                    dateEventBean?.title+"${startStr}："+item.course+item.content,
                     item.startTimeStr,
                     dateEventBean?.startTime!!,
                     dateEventBean?.endTime!!,
@@ -181,7 +183,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             }
             if (item.isRemindEnd){
                 CalendarReminderUtils.addCalendarEvent(this,
-                    dateEventBean?.title+"结束："+item.course+item.content,
+                    dateEventBean?.title+"${endStr}："+item.course+item.content,
                     item.endTimeStr,
                     dateEventBean?.startTime!!,
                     dateEventBean?.endTime!!,

@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:textSize="22sp"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textColor="@color/black" />
 
         <View
@@ -50,7 +50,7 @@
             android:layout_height="match_parent"
             android:textSize="22sp"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="确定"
+            android:text="@string/ok"
             android:textColor="@color/black" />
 
     </LinearLayout>

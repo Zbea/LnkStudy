@@ -70,15 +70,28 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     override fun onCommitSuccess() {
     }
     override fun onDeleteSuccess() {
-        TODO("Not yet implemented")
     }
 
 
     override fun onInsert() {
     }
-    override fun onClassGroupList(classGroups: List<ClassGroup>) {
-        groups = classGroups as MutableList<ClassGroup>
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
+        groups = if(classGroups.isNullOrEmpty()){
+            mutableListOf()
+        } else{
+            classGroups!!
+        }
         classGroupAdapter?.setNewData(groups)
+
+        //设置全部科目
+        val courses = DataBeanManager.courses
+        for (item in groups){
+            if (!courses.contains(item.subject)){
+                courses.add(item.subject)
+            }
+        }
+        DataBeanManager.classGroups=groups
+        EventBus.getDefault().post(COURSE_EVENT)
     }
     override fun onQuit() {
     }
@@ -92,7 +105,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setTitle("首页")
+        setTitle(R.string.main_home_title)
 
         onClickView()
 
@@ -165,8 +178,8 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     private fun initDateView() {
 
         val lists = mutableListOf<PopupBean>()
-        lists.add(PopupBean(0, "学习计划"))
-        lists.add(PopupBean(1, "重要日子"))
+        lists.add(PopupBean(0, getString(R.string.date_plan)))
+        lists.add(PopupBean(1, getString(R.string.date_day)))
 
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
         mPlanAdapter = MainDatePlanAdapter(R.layout.item_main_date_plan, null).apply {
@@ -286,8 +299,9 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     }
 
     private fun findReceivePapers() {
-        val map=HashMap<String,Any>()
+        val map= HashMap<String, Any>()
         map["size"] = 100
+        map["type"] = 2
         mPaperPresenter.getList(map)
     }
 
@@ -342,13 +356,11 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
+    override fun refreshData() {
         findReceivePapers()
         loadPapers()
         classGroupPresenter.getClassGroupList(false)
+
     }
-
-
 
 }

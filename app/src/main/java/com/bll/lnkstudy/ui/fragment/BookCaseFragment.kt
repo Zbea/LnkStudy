@@ -41,7 +41,7 @@ class BookCaseFragment: BaseFragment() {
 
         EventBus.getDefault().register(this)
 
-        setTitle("书架")
+        setTitle(R.string.main_bookcase_title)
 
         initRecyclerView()
         findData()
@@ -129,7 +129,7 @@ class BookCaseFragment: BaseFragment() {
                 books[position].isCollect=true
                 mAdapter?.notifyDataSetChanged()
                 BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                showToast(screenPos,"收藏成功")
+                showToast(screenPos,R.string.book_collect_success)
             }
             override fun onDelete() {
                 delete()
@@ -143,7 +143,7 @@ class BookCaseFragment: BaseFragment() {
 
     //删除书架书籍
     private fun delete(){
-        CommonDialog(requireActivity(),screenPos).setContent("确认删除该书籍？").builder().setDialogClickListener(object :
+        CommonDialog(requireActivity(),screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

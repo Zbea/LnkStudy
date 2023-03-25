@@ -42,7 +42,7 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
             currentDownLoadTask = downLoadStart(app!!)
         } else {
-            showToast("正在下载安装")
+            showToast(R.string.toast_download_install)
         }
     }
 
@@ -56,7 +56,7 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
     }
 
     override fun initView() {
-        setPageTitle("应用")
+        setPageTitle(R.string.download_app)
 
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             type = if (id==R.id.rb_official){
@@ -96,7 +96,7 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
                         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
                             currentDownLoadTask = downLoadStart(app!!)
                         } else {
-                            showToast("正在下载安装")
+                            showToast(R.string.toast_download_install)
                         }
                     }
                 }

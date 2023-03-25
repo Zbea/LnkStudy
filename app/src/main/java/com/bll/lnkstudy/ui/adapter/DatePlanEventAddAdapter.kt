@@ -23,8 +23,8 @@ class DatePlanEventAddAdapter(layoutResId: Int, data: List<DatePlan>?) :
         val et_content=helper.getView<EditText>(R.id.et_content)
         val tv_remind=helper.getView<TextView>(R.id.tv_remind)
 
-        tv_start.text=if (TextUtils.isEmpty(item.startTimeStr)) "开始" else item.startTimeStr
-        tv_end.text=if (TextUtils.isEmpty(item.endTimeStr)) "结束" else item.endTimeStr
+        tv_start.text=if (TextUtils.isEmpty(item.startTimeStr)) mContext.getString(R.string.start) else item.startTimeStr
+        tv_end.text=if (TextUtils.isEmpty(item.endTimeStr)) mContext.getString(R.string.end) else item.endTimeStr
         tv_course.text=item.course
         et_content.setText(item.content)
 

@@ -28,7 +28,7 @@
             android:layout_marginStart="44dp"
             android:gravity="center"
             android:textColor="@color/black_90"
-            android:text="素描画"
+            android:text="@string/painting_smh"
             android:textStyle="bold"
             android:textSize="@dimen/sp_24"
             />
@@ -40,7 +40,7 @@
             android:gravity="center"
             android:textColor="@color/black_90"
             android:textStyle="bold"
-            android:text="硬笔书法"
+            android:text="@string/painting_ybsf"
             android:textSize="@dimen/sp_24"
             />
     </LinearLayout>

@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="名称"
+            android:text="@string/name_1"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="日期"
+            android:text="@string/date"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:textStyle="bold"
@@ -82,7 +82,7 @@
             android:layout_height="match_parent"
             android:textSize="22sp"
             android:background="@drawable/bg_black_stroke_5dp_corner"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textColor="@color/black" />
 
 
@@ -93,7 +93,7 @@
             android:layout_marginStart="@dimen/dp_50"
             android:textSize="22sp"
             android:background="@drawable/bg_black_stroke_5dp_corner"
-            android:text="保存"
+            android:text="@string/save"
             android:textColor="@color/black" />
 
     </LinearLayout>

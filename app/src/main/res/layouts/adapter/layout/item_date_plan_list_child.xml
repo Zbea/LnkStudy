@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:text="提醒"
+        android:text="@string/date_day_remind_str"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22" />
 

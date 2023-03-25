@@ -14,8 +14,8 @@ class MyPaintingAdapter(layoutResId: Int, data: List<PaintingBean>?) : BaseQuick
             setText(R.id.tv_name,item.title)
             setGone(R.id.tv_price,false)
             setGone(R.id.btn_download,false)
-            setText(R.id.tv_author,"作者：${item.author}")
-            setText(R.id.tv_introduce,"简介：${item.info}")
+            setText(R.id.tv_author,mContext.getString(R.string.author)+"：${item.author}")
+            setText(R.id.tv_introduce,mContext.getString(R.string.introduction)+"：${item.info}")
             val image=getView<ImageView>(R.id.iv_image)
             GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,5)
         }

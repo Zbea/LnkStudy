@@ -51,7 +51,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun initView() {
-        setTitle("考卷")
+        setTitle(R.string.main_testpaper_title)
 
         EventBus.getDefault().register(this)
         initRecyclerView()

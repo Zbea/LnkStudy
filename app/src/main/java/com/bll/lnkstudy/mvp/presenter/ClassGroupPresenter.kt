@@ -52,9 +52,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<ClassGroup>>) {
-                if (!tBaseResult?.data.isNullOrEmpty()){
-                    view.onClassGroupList(tBaseResult.data as List<ClassGroup>)
-                }
+                view.onClassGroupList(tBaseResult.data)
             }
         }, boolean)
     }
@@ -67,7 +65,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
-                if (!tBaseResult?.data.isNullOrEmpty()){
+                if (!tBaseResult.data.isNullOrEmpty()){
                     view.onUser(tBaseResult.data)
                 }
             }

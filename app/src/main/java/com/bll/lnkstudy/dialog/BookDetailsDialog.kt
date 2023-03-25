@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.View
@@ -16,6 +17,7 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null
 
+    @SuppressLint("SetTextI18n")
     fun builder(): Dialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_book_detail)
@@ -34,19 +36,19 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
         GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
         tv_book_name?.text = book.bookName+if (book.semester.isNullOrEmpty()) "" else "-"+book.semester
-        tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
-        tv_course?.text = "课目： " + book.subjectName
-        tv_version?.text = "出版社： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
-        tv_info?.text = "简介： " + book.bookDesc
+        tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
+        tv_course?.text = context.getString(R.string.subject)+"： " + book.subjectName
+        tv_version?.text =context.getString(R.string.press)+"： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
+        tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
 
         if (book.subjectName.isNullOrEmpty()){
             tv_course?.visibility=View.GONE
         }
 
         if (book.buyStatus == 1) {
-            btn_ok?.text = "点击下载"
+            btn_ok?.setText(R.string.book_download_str)
         } else {
-            btn_ok?.text = "点击购买"
+            btn_ok?.setText(R.string.book_buy_str)
         }
 
         if (book.loadSate==2)
@@ -61,7 +63,7 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
 
     fun setChangeStatus() {
         book.buyStatus=1
-        btn_ok?.text = "点击下载"
+        btn_ok?.setText(R.string.book_download_str)
     }
 
     fun setUnClickBtn(string: String){

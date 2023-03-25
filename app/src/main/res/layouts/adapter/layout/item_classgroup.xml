@@ -61,7 +61,7 @@
         android:id="@+id/tv_out"
         android:layout_width="@dimen/dp_50"
         android:layout_height="match_parent"
-        android:text="退出"
+        android:text="@string/quit"
         android:gravity="center"
         android:textSize="@dimen/sp_20"
         android:textColor="@color/black"/>

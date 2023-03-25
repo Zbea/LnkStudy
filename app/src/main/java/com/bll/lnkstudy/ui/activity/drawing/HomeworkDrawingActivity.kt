@@ -11,10 +11,10 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -106,11 +106,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
                     total->{
                         newHomeWorkContent()
                         newHomeWorkContent()
-                        page==total
+                        page=total
                     }
                     total-1->{
                         newHomeWorkContent()
-                        page==total
+                        page=total
                     }
                     else->{
                         page+=2
@@ -272,9 +272,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
-        elik?.setPWEnabled(true)
-        elik?.setLoadFilePath(path, true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+        elik.setPWEnabled(true)
+        elik.setLoadFilePath(path, true)
+        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
 
@@ -282,7 +282,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
+                elik.saveBitmap(true) {}
             }
 
         })

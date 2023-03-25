@@ -144,9 +144,13 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         tv_title?.text = pageTitle
     }
 
-    fun setPageSetting(setStr:String){
+    fun setPageTitle(titleId: Int) {
+        tv_title?.setText(titleId)
+    }
+
+    fun setPageSetting(setId:Int){
         showView(tv_setting)
-        tv_setting?.text=setStr
+        tv_setting?.setText(setId)
     }
 
     /**
@@ -264,18 +268,25 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     fun showToast(s:String){
-        SToast.showText(screenPos,s)
+        SToast.showText(getCurrentScreenPos(),s)
+    }
+
+    fun showToast(sId:Int){
+        SToast.showText(getCurrentScreenPos(),sId)
     }
 
     fun showLog(s:String){
         Log.d("debug",s)
+    }
+    fun showLog(sId:Int){
+        Log.d("debug",getString(sId))
     }
 
     /**
      * 跳转活动
      */
     fun customStartActivity(intent: Intent){
-        ActivityManager.getInstance().finishActivity(intent.component.className)
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
     }
 
@@ -368,7 +379,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        showToast("连接超时,请重新登陆")
+        showToast(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
 
@@ -393,10 +404,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
-        showLog("服务器连接失败")
+        showLog(R.string.connect_server_timeout)
     }
     override fun onComplete() {
-        showLog("请求完成")
+        showLog(R.string.request_success)
     }
 
     override fun onPause() {

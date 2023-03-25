@@ -50,7 +50,7 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
 
         ll_collect.setOnClickListener {
             if (book.isCollect){
-                SToast.showText(0,"已收藏")
+                SToast.showText(0,R.string.book_collected)
                 return@setOnClickListener
             }
             if (onClickListener!=null)

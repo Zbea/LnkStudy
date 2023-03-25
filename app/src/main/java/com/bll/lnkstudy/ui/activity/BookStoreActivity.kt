@@ -57,10 +57,10 @@ class BookStoreActivity : BaseAppCompatActivity(),
         mAdapter?.setNewData(books)
     }
 
-    override fun onType(bookStoreType: BookStoreType?) {
+    override fun onType(bookStoreType: BookStoreType) {
         //年级分类
-        if (bookStoreType?.typeGrade.isNullOrEmpty()) return
-        for (i in bookStoreType?.typeGrade?.indices!!) {
+        if (bookStoreType.typeGrade.isNullOrEmpty()) return
+        for (i in bookStoreType.typeGrade.indices) {
             gradeList.add(
                 PopupBean(
                     i,
@@ -185,8 +185,8 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     val downloadTask = downLoadStart(book.downloadUrl,book)
                     mDownMapPool[book.bookId] = downloadTask!!
                 } else {
-                    book?.loadSate=2
-                    showToast("已下载")
+                    book.loadSate =2
+                    showToast(R.string.toast_downloaded)
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.setDissBtn()
                 }
@@ -246,7 +246,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     mDialog?.dismiss()
-                    showToast("${book.bookName}下载失败")
+                    showToast(book.bookName+getString(R.string.book_download_fail))
                     deleteDoneTask(task)
                 }
             })
@@ -261,7 +261,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
             override fun onFinish(success: Boolean) {
                 if (success) {
                     book.apply {
-                        showToast("${bookName}下载完成")
+                        showToast(bookName+getString(R.string.book_download_success))
                         bookType = when (categoryStr) {
                             "思维科学", "自然科学" -> {
                                 "科学技术"
@@ -285,7 +285,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
                 } else {
-                    showToast("${book.bookName}解压失败")
+                    showToast(book.bookName+getString(R.string.book_decompression_fail))
                 }
             }
 
@@ -312,12 +312,12 @@ class BookStoreActivity : BaseAppCompatActivity(),
      */
     private fun deleteDoneTask(task: BaseDownloadTask?) {
 
-        if (mDownMapPool != null && mDownMapPool.isNotEmpty()) {
+        if (mDownMapPool.isNotEmpty()) {
             //拿出map中的键值对
             val entries = mDownMapPool.entries
             val iterator = entries.iterator()
             while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<Long, BaseDownloadTask>
+                val entry = iterator.next() as Map.Entry<*, *>
                 val entity = entry.value
                 if (task == entity) {
                     iterator.remove()

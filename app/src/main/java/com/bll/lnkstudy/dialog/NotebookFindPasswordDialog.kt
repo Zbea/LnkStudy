@@ -44,27 +44,27 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
             val passwordAgainStr=etPasswordAgain?.text.toString()
             val passwordFindStr=etPasswordFind?.text.toString()
 
-            if (passwordFindStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"输入密保答案")
+            if (passwordFindStr.isEmpty()){
+                SToast.showText(screenPos,R.string.toast_password_input_question)
                 return@setOnClickListener
             }
 
             if (passwordFindStr!=notePassword?.answer){
-                SToast.showText(screenPos,"密保输入错误")
+                SToast.showText(screenPos,R.string.toast_password_question_error)
                 return@setOnClickListener
             }
 
-            if (passwordStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"输入密码")
+            if (passwordStr.isEmpty()){
+                SToast.showText(screenPos,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
-            if (passwordAgainStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"再次输入密码")
+            if (passwordAgainStr.isEmpty()){
+                SToast.showText(screenPos,R.string.password_again_error)
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(screenPos,"密码输入不一致")
+                SToast.showText(screenPos,R.string.password_different)
                 return@setOnClickListener
             }
 

@@ -195,9 +195,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
 
         ll_circle?.setOnClickListener {
             val pops= mutableListOf<PopupBean>()
-            pops.add(PopupBean(0,"圆心",R.mipmap.icon_geometry_circle_1))
-            pops.add(PopupBean(1,"两点",R.mipmap.icon_geometry_circle_2))
-            pops.add(PopupBean(2,"三点",R.mipmap.icon_geometry_circle_3))
+            pops.add(PopupBean(0,getString(R.string.circle_1),R.mipmap.icon_geometry_circle_1))
+            pops.add(PopupBean(1,getString(R.string.circle_2),R.mipmap.icon_geometry_circle_2))
+            pops.add(PopupBean(2,getString(R.string.circle_3),R.mipmap.icon_geometry_circle_3))
             PopupClick(this,pops,tv_circle,5).builder().setOnSelectListener{
                 when(it.id){
                     0->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE)
@@ -239,9 +239,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
 
         tv_gray_line?.setOnClickListener {
             val pops= mutableListOf<PopupBean>()
-            pops.add(PopupBean(0,"黑线",false))
-            pops.add(PopupBean(1,"灰线",false))
-            pops.add(PopupBean(2,"虚线",false))
+            pops.add(PopupBean(0,getString(R.string.line_black),false))
+            pops.add(PopupBean(1,getString(R.string.line_gray),false))
+            pops.add(PopupBean(2,getString(R.string.line_dotted),false))
             PopupClick(this,pops,tv_gray_line,5).builder().setOnSelectListener{
                 tv_gray_line.text=it.name
                 when(it.id){
@@ -348,7 +348,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     private fun showDialogAppTool(scree:Int){
         val tools= mutableListOf<AppBean>()
         tools.add(AppBean().apply {
-            appName="几何绘图"
+            appName=getString(R.string.geometry_title_str)
             image=resources.getDrawable(R.mipmap.icon_app_geometry)
 //            packageName="com.android.htfyunnote"
         })
@@ -440,6 +440,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
 
     fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
+    }
+
+    fun setPageTitle(titleId: Int) {
+        tv_title?.setText(titleId)
     }
 
     /**
@@ -544,10 +548,16 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         SToast.showText(getCurrentScreenPos(),s)
     }
 
+    fun showToast(sId:Int){
+        SToast.showText(getCurrentScreenPos(),sId)
+    }
+
     fun showLog(s:String){
         Log.d("debug",s)
     }
-
+    fun showLog(sId:Int){
+        Log.d("debug",getString(sId))
+    }
 
     /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
@@ -622,7 +632,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        showToast("连接超时,请重新登陆")
+        showToast(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
 
@@ -647,10 +657,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     }
 
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
-        showLog("服务器连接失败")
+        showLog(R.string.connect_server_timeout)
     }
     override fun onComplete() {
-        showLog("请求完成")
+        showLog(R.string.request_success)
     }
 
     override fun onPause() {

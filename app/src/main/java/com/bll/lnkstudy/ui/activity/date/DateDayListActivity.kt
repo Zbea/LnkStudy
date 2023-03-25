@@ -37,8 +37,8 @@ class DateDayListActivity:BaseAppCompatActivity() {
     override fun initView() {
         EventBus.getDefault().register(this)
 
-        setPageTitle("重要日子")
-        setPageSetting("添加")
+        setPageTitle(R.string.date_day)
+        setPageSetting(R.string.add)
 
         tv_setting.setOnClickListener {
             customStartActivity(Intent(this,DateDayDetailsActivity::class.java).addFlags(0))
@@ -65,7 +65,7 @@ class DateDayListActivity:BaseAppCompatActivity() {
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.iv_delete){
-                CommonDialog(this).setContent("确定要删除？").builder().setDialogClickListener(object :
+                CommonDialog(this).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }

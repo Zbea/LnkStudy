@@ -68,21 +68,21 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     }
 
     override fun onSms() {
-        showToast("发送验证码成功")
+        showToast(R.string.toast_message_code_success)
         showCountDownView()
     }
 
     override fun onRegister() {
-        showToast("注册成功")
+        showToast(R.string.toast_register_success)
         setIntent()
     }
     override fun onFindPsd() {
-        showToast("设置密码成功")
+        showToast(R.string.toast_set_password_success)
         setIntent()
     }
 
     override fun onEditPsd() {
-        showToast("修改密码成功")
+        showToast(R.string.toast_edit_password_success)
         finish()
     }
 
@@ -118,17 +118,17 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
 
         when (flags) {
             2 -> {
-                setPageTitle("修改密码")
+                setPageTitle(R.string.edit_password)
                 disMissView(ll_name,ll_date,ll_user,ll_school)
-                btn_register.text="提交"
+                btn_register.setText(R.string.commit)
             }
             1 -> {
-                setPageTitle("找回密码")
+                setPageTitle(R.string.find_password)
                 disMissView(ll_name,ll_date,ll_school)
-                btn_register.text="提交"
+                btn_register.setText(R.string.commit)
             }
             else -> {
-                setPageTitle("注册账号")
+                setPageTitle(R.string.register)
             }
         }
         sp_province.apply {
@@ -203,16 +203,16 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             val birthdayStr=tv_date.text.toString().trim()
 
             if (psd.isNullOrEmpty()) {
-                showToast("请输入密码")
+                showToast(R.string.login_input_password_hint)
                 return@setOnClickListener
             }
             if (phone.isNullOrEmpty()) {
-                showToast("请输入电话号码")
+                showToast(R.string.toast_input_phone)
                 return@setOnClickListener
             }
 
             if (code.isNullOrEmpty()) {
-                showToast("请输入验证码")
+                showToast(R.string.toast_input_message_code)
                 return@setOnClickListener
             }
 
@@ -229,48 +229,48 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
 
             when (flags) {
                 0 -> {
-                    if (account.isNullOrEmpty()) {
-                        showToast("请输入用户名")
+                    if (account.isEmpty()) {
+                        showToast(R.string.toast_input_account)
                         return@setOnClickListener
                     }
-                    if (name.isNullOrEmpty()) {
-                        showToast("请输入姓名")
+                    if (name.isEmpty()) {
+                        showToast(R.string.toast_input_name)
                         return@setOnClickListener
                     }
-                    if (birthdayStr.isNullOrEmpty()) {
-                        showToast("请选择出生年月")
+                    if (birthdayStr.isEmpty()) {
+                        showToast(R.string.toast_input_birthday)
                         return@setOnClickListener
                     }
                     if (!ToolUtils.isLetterOrDigit(account, 4, 12)) {
                         showToast(getString(R.string.user_tip))
                         return@setOnClickListener
                     }
-                    if (provinceStr.isNullOrEmpty()||cityStr.isNullOrEmpty()) {
-                        showToast("请选择省市")
+                    if (provinceStr.isEmpty()||cityStr.isEmpty()) {
+                        showToast(R.string.toast_input_city)
                         return@setOnClickListener
                     }
-                    if (area.isNullOrEmpty()) {
-                        showToast("请输入学校地址")
+                    if (area.isEmpty()) {
+                        showToast(R.string.toast_input_school_address)
                         return@setOnClickListener
                     }
-                    if (schoolName.isNullOrEmpty()) {
-                        showToast("请输入学校名称")
+                    if (schoolName.isEmpty()) {
+                        showToast(R.string.toast_input_school_name)
                         return@setOnClickListener
                     }
-                    if (parentName.isNullOrEmpty()) {
-                        showToast("请输入家长名称")
+                    if (parentName.isEmpty()) {
+                        showToast(R.string.toast_input_parent)
                         return@setOnClickListener
                     }
-                    if (parent.isNullOrEmpty()) {
-                        showToast("请输入家长称谓")
+                    if (parent.isEmpty()) {
+                        showToast(R.string.toast_input_parent_name)
                         return@setOnClickListener
                     }
-                    if (parentPhone.isNullOrEmpty()) {
-                        showToast("请输入家长电话")
+                    if (parentPhone.isEmpty()) {
+                        showToast(R.string.toast_input_parent_phone)
                         return@setOnClickListener
                     }
-                    if (address.isNullOrEmpty()) {
-                        showToast("请输入家庭住址")
+                    if (address.isEmpty()) {
+                        showToast(R.string.toast_input_parent_address)
                         return@setOnClickListener
                     }
 
@@ -292,8 +292,8 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                     presenter.register(map)
                 }
                 1 -> {
-                    if (account.isNullOrEmpty()) {
-                        showToast("请输入用户名")
+                    if (account.isEmpty()) {
+                        showToast(R.string.toast_input_account)
                         return@setOnClickListener
                     }
                     presenter.findPsd("2",account,MD5Utils.digest(psd),phone, code)
@@ -316,7 +316,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                 runOnUiThread {
                     btn_code.isEnabled = true
                     btn_code.isClickable = true
-                    btn_code.text = "获取验证码"
+                    btn_code.setText(R.string.get_message_code)
                 }
 
             }

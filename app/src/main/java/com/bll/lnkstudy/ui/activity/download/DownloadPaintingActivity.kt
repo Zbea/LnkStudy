@@ -57,25 +57,13 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         pageSize=6
         val yeas= DataBeanManager.YEARS
         for (i in yeas.indices){
-            popTimes.add(
-                PopupBean(
-                    i + 1,
-                    yeas[i],
-                    i == 0
-                )
-            )
+            popTimes.add(PopupBean(i + 1, getString(yeas[i]), i == 0))
         }
         dynasty=popTimes[0].id
 
         val paintings= DataBeanManager.PAINTING
         for (i in paintings.indices){
-            popPaintings.add(
-                PopupBean(
-                    i + 1,
-                    paintings[i],
-                    i == 0
-                )
-            )
+            popPaintings.add(PopupBean(i + 1, getString(paintings[i]), i == 0))
         }
         paintingType=popPaintings[0].id
 
@@ -83,7 +71,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     }
 
     override fun initView() {
-        setPageTitle("书画")
+        setPageTitle(R.string.download_painting)
         showView(ll_painting)
 
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
@@ -133,7 +121,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
                         onDownload()
                     }
                     else{
-                        showToast("已下载")
+                        showToast(R.string.toast_downloaded)
                     }
                 }
                 else{

@@ -30,7 +30,7 @@ class DateActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle("日历")
+        setPageTitle(R.string.date_title_str)
 
         initRecycler()
 

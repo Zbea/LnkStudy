@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_15"
                 android:gravity="right"
-                android:text="移动"
+                android:text="@string/move"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_15"
                 android:gravity="right"
-                android:text="收藏"
+                android:text="@string/collect"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_15"
                 android:gravity="right"
-                android:text="删除"
+                android:text="@string/delete"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
         </LinearLayout>

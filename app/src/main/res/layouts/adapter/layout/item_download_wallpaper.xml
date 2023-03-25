@@ -11,7 +11,7 @@
         android:layout_height="260dp"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         android:padding="1dp"
-        android:src="@mipmap/icon_bookcase_book" />
+        />
 
     <TextView
         android:id="@+id/tv_name"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_5"
                 android:gravity="center"
-                android:text="学豆" />
+                android:text="@string/xd" />
 
         </LinearLayout>
 
@@ -62,7 +62,7 @@
             android:layout_height="32dp"
             android:background="@drawable/bg_black_arch"
             android:gravity="center"
-            android:text="购买"
+            android:text="@string/buy"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18" />
 

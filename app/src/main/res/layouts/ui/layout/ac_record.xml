@@ -25,7 +25,7 @@
         android:paddingTop="@dimen/dp_15"
         android:paddingBottom="@dimen/dp_15"
         android:textSize="@dimen/sp_30"
-        android:hint="输入标题"
+        android:hint="@string/toast_input_title"
         android:lines="1"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="录音"
+                android:text="@string/record_title_str"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black"
                 />
@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="结束录音"
+                android:text="@string/record_end_str"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black"
                 />
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="播放"
+                android:text="@string/play"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black"
                 />
@@ -155,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="倒退"
+                android:text="@string/backward"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black"
                 />
@@ -182,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="快进"
+                android:text="@string/forward"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black"
                 />

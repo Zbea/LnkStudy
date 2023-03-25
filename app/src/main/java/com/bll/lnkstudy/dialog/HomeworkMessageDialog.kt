@@ -1,8 +1,10 @@
 package com.bll.lnkstudy.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
@@ -14,11 +16,12 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageDialog(val context: Context, val screenPos:Int, val list: List<HomeworkMessage>) {
+class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :String,val list: List<HomeworkMessage>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:MessageAdapter?=null
 
+    @SuppressLint("SetTextI18n")
     fun builder(): HomeworkMessageDialog? {
         dialog = Dialog(context)
         dialog!!.setContentView(R.layout.dialog_homework_message)
@@ -27,29 +30,18 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val list: L
         val layoutParams =window.attributes
         if (screenPos==3){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,600f))/2
         }
         dialog?.show()
 
+        val tv_title = dialog!!.findViewById<TextView>(R.id.tv_title)
+        tv_title.text=title+context.getString(R.string.homework_message)
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
 
         recyclerview.layoutManager = LinearLayoutManager(context)
         mAdapter= MessageAdapter(R.layout.item_homework_message_all, list)
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10))
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.tv_delete){
-                CommonDialog(context).setContent("确定删除此通知？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            if (listener!=null)
-                                listener?.onClick(position,list[position].id.toString())
-                        }
-                    })
-            }
-        }
 
         return this
     }
@@ -83,7 +75,6 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val list: L
         override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
             helper.setText(R.id.tv_title,item.title)
             helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.date))
-            helper.addOnClickListener(R.id.tv_delete)
         }
 
     }

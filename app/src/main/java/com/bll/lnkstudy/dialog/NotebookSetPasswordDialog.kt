@@ -32,28 +32,28 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
         popWindowBeans.add(
             PopupBean(
                 0,
-                "爸爸姓名？",
+                context.getString(R.string.password_father_name),
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 1,
-                "妈妈姓名？",
+                context.getString(R.string.password_mother_name),
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 2,
-                "爷爷姓名？",
+                context.getString(R.string.password_grandfather_name),
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 3,
-                "奶奶姓名？",
+                context.getString(R.string.password_grandmother_name),
                 false
             )
         )
@@ -67,7 +67,7 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
         val tvQuestion=dialog.findViewById<TextView>(R.id.tv_question_password)
         tvQuestion.setOnClickListener {
             PopupList(context, popWindowBeans, tvQuestion, 5).builder()
-            ?.setOnSelectListener { item ->
+            .setOnSelectListener { item ->
                 tvQuestion.text = item.name
             }
         }
@@ -78,26 +78,26 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
             val passwordAgainStr=etPasswordAgain?.text.toString()
             val answerStr=etPasswordQuestion?.text.toString()
             val questionStr=tvQuestion?.text.toString()
-            if (questionStr=="选择问题"){
-                SToast.showText(screenPos,"选择密码")
+            if (questionStr==context.getString(R.string.password_question_select_str)){
+                SToast.showText(screenPos,R.string.password_question_select_str)
                 return@setOnClickListener
             }
-            if (answerStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"输入密保答案")
+            if (answerStr.isEmpty()){
+                SToast.showText(screenPos,R.string.toast_password_input_question)
                 return@setOnClickListener
             }
 
-            if (passwordStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"输入密码")
+            if (passwordStr.isEmpty()){
+                SToast.showText(screenPos,R.string.password_input)
                 return@setOnClickListener
             }
-            if (passwordAgainStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"再次输入密码")
+            if (passwordAgainStr.isEmpty()){
+                SToast.showText(screenPos,R.string.password_again)
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(screenPos,"密码输入不一致")
+                SToast.showText(screenPos,R.string.password_different)
                 return@setOnClickListener
             }
             val notePassword=NotePassword()

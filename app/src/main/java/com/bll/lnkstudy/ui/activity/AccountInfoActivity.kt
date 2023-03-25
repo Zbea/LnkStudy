@@ -27,24 +27,17 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     private var grade=1
 
     override fun onLogout() {
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        Handler().postDelayed(Runnable {
-            val intent=Intent(this, AccountLoginActivity::class.java)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-        }, 500)
+
     }
 
     override fun onEditNameSuccess() {
-        showToast("修改成功")
+        showToast(R.string.toast_edit_success)
         mUser?.nickname=nickname
         tv_name.text = nickname
     }
 
     override fun onEditGradeSuccess() {
-        showToast("修改成功")
+        showToast(R.string.toast_edit_success)
         mUser?.grade=grade
         tv_grade.text = DataBeanManager.grades[grade-1].desc
     }
@@ -61,7 +54,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-        setPageTitle("我的账户")
+        setPageTitle(R.string.my_account)
 
         mUser?.apply {
             tv_user.text = account
@@ -90,12 +83,19 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         }
 
         btn_logout.setOnClickListener {
-            CommonDialog(this).setContent("确认退出登录？").builder().setDialogClickListener(object :
+            CommonDialog(this).setContent(R.string.account_is_logout_tips).builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {
-                    presenter.logout()
+                    SPUtil.putString("token", "")
+                    SPUtil.removeObj("user")
+                    Handler().postDelayed(Runnable {
+                        val intent=Intent(this@AccountInfoActivity, AccountLoginActivity::class.java)
+                        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                        startActivity(intent)
+                        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+                    }, 500)
                 }
             })
         }

@@ -33,7 +33,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
             }
 
-            if (item.state == 2) {
+            if (item.state == 1) {
                 setText(R.id.tv_message, "收到题卷")
             } else {
                 setText(R.id.tv_message, "收到通知")

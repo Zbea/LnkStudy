@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity.date
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
@@ -24,11 +25,13 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
     private var oldEvent: DateEventBean?=null
     private var popRemind: PopupDateDayRemind? = null
     private var dateDialog:DateDialog?=null
+    private var dayStr=getString(R.string.day)
 
     override fun layoutId(): Int {
         return R.layout.ac_date_day_details
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initData() {
         flags=intent.flags
         if (flags == 0) {
@@ -39,10 +42,10 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             oldEvent=dateEventBean?.clone() as DateEventBean
             et_title.setText(dateEventBean?.title)
             tv_date.text = dateEventBean?.dayLongStr
-            tv_countdown.text = "还有" + DateUtils.sublongToDay(dateEventBean?.dayLong!!, nowDate) + "天"
+            tv_countdown.text = getString(R.string.date_day_residual_str) + DateUtils.sublongToDay(dateEventBean?.dayLong!!, nowDate) + dayStr
             sh_countdown.isChecked = dateEventBean?.isCountdown == true
             tv_countdown.visibility=if (dateEventBean?.isCountdown == true) View.VISIBLE else View.GONE
-            tv_remind.text="${dateEventBean?.remindDay}天"
+            tv_remind.text="${dateEventBean?.remindDay}"+dayStr
             sh_remind.isChecked = dateEventBean?.isRemind == true
             ll_remind.visibility=if (dateEventBean?.isRemind == true) View.VISIBLE else View.GONE
             rl_bell.visibility=if (dateEventBean?.isRemind == true) View.VISIBLE else View.INVISIBLE
@@ -50,9 +53,10 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initView() {
-        setPageTitle("重要日子")
-        setPageSetting("保存")
+        setPageTitle(R.string.date_day)
+        setPageSetting(R.string.save)
 
         tv_date.setOnClickListener {
 
@@ -97,13 +101,13 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
 
         tv_setting.setOnClickListener {
             val titleStr = et_title.text.toString()
-            if (titleStr.isNullOrEmpty()) {
-                showToast("请输入标题")
+            if (titleStr.isEmpty()) {
+                showToast(R.string.toast_input_title)
                 return@setOnClickListener
             }
             dateEventBean?.title = titleStr
             if (dateEventBean?.dayLongStr.isNullOrEmpty()) {
-                showToast("请选择日期")
+                showToast(R.string.toast_select_date)
                 return@setOnClickListener
             }
             //删除原来的日历

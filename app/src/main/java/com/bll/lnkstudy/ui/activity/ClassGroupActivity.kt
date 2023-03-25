@@ -2,6 +2,8 @@ package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ClassGroupAddDialog
@@ -13,6 +15,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
 import kotlinx.android.synthetic.main.ac_classgroup.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -23,17 +26,31 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     private var positionGroup = 0
 
     override fun onInsert() {
-        showToast("加入班群成功")
+        showToast(R.string.toast_add_classGroup_success)
         presenter.getClassGroupList(true)
     }
 
-    override fun onClassGroupList(classGroups: List<ClassGroup>) {
-        groups = classGroups as MutableList<ClassGroup>
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
+        groups = if(classGroups.isNullOrEmpty()){
+            mutableListOf()
+        } else{
+            classGroups!!
+        }
         mAdapter?.setNewData(groups)
+
+        //设置全部科目
+        val courses = DataBeanManager.courses
+        for (item in groups){
+            if (!courses.contains(item.subject)){
+                courses.add(item.subject)
+            }
+        }
+        DataBeanManager.classGroups=groups
+        EventBus.getDefault().post(Constants.COURSE_EVENT)
     }
 
     override fun onQuit() {
-        showToast("退出班群成功")
+        showToast(R.string.toast_out_classGroup_success)
         groups.removeAt(positionGroup)
         mAdapter?.setNewData(groups)
     }
@@ -49,7 +66,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun initView() {
-        setPageTitle("班群管理")
+        setPageTitle(R.string.classGroup_manager_str)
 
         showView(iv_manager,iv_save)
         iv_manager.setImageResource(R.mipmap.icon_group_user)
@@ -62,7 +79,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
             bindToRecyclerView(rv_list)
             setOnItemChildClickListener { adapter, view, position ->
                 if (view.id == R.id.tv_out) {
-                    CommonDialog(this@ClassGroupActivity).setContent("确认退出班群？").builder()
+                    CommonDialog(this@ClassGroupActivity).setContent(R.string.classGroup_is_classGroup_tips).builder()
                         .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }

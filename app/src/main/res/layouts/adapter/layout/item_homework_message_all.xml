@@ -12,25 +12,28 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="名称"
-        android:textSize="@dimen/sp_16"
-        android:textColor="@color/black"
-        android:layout_marginEnd="@dimen/dp_10"/>
+        android:lines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:text="8月25日 16:56 星期五"
-        android:textSize="@dimen/sp_16"
+        android:text="8月25日 星期五"
+        android:textSize="@dimen/sp_20"
         android:textColor="@color/black"
-        android:layout_marginEnd="@dimen/dp_20"/>
+        android:gravity="center" />
 
     <TextView
-        android:id="@+id/tv_delete"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_state"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="删除"
-        android:textSize="@dimen/sp_16"
-        android:textColor="@color/black"/>
+        android:text="已提交"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black" />
+
 
 </LinearLayout>

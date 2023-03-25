@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,16 +19,16 @@
             android:layout_height="match_parent"
             android:paddingStart="52dp"
             android:scaleType="center"
-            android:src="@mipmap/icon_back" />
+            android:src="@mipmap/icon_back"
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/iv_back"
-            android:text="标题"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/iv_back"
             android:textColor="@color/black"
             android:textSize="@dimen/navigation_text"
             />
@@ -109,12 +110,12 @@
             android:id="@+id/tv_download"
             android:layout_width="80dp"
             android:layout_height="@dimen/dp_45"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dp_45"
             android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
-            android:text="下载"
+            android:text="@string/download"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20" />
     </RelativeLayout>
@@ -128,7 +129,6 @@
         android:layout_weight="1"/>
 
     <include layout="@layout/common_page_number"
-        android:visibility="invisible"
         />
 
 </LinearLayout>

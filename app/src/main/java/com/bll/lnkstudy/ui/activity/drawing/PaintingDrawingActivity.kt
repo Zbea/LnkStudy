@@ -90,11 +90,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                     total->{
                         newHomeWorkContent()
                         newHomeWorkContent()
-                        page==total
+                        page=total
                     }
                     total-1->{
                         newHomeWorkContent()
-                        page==total
+                        page=total
                     }
                     else->{
                         page+=2
@@ -271,7 +271,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         val date = DateUtils.longToString(System.currentTimeMillis())
 
         paintingDrawingBean = PaintingDrawingBean()
-        paintingDrawingBean?.title=if (type==0)"画本${paintingLists.size+1}" else "书法${paintingLists.size+1}"
+        paintingDrawingBean?.title=if (type==0)
+            getString(R.string.drawing)+paintingLists.size+1 else getString(R.string.calligraphy)+paintingLists.size+1
         paintingDrawingBean?.type = type
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$date.tch"
@@ -287,9 +288,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     //
     private fun showPopWindowBtn() {
         val pops= mutableListOf<PopupBean>()
-        pops.add(PopupBean(0, "删除", false))
+        pops.add(PopupBean(0, getString(R.string.delete), false))
         if (type == 0) {
-            pops.add(PopupBean(1, "规矩图", false))
+            pops.add(PopupBean(1, getString(R.string.gplot), false))
         }
         if (popupDrawingManage == null) {
             popupDrawingManage = PopupDrawingManage(this, iv_btn, pops).builder()
@@ -314,7 +315,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //确认删除
     private fun delete() {
-        CommonDialog(this,getCurrentScreenPos()).setContent("确认删除？").builder().setDialogClickListener(object :
+        CommonDialog(this,getCurrentScreenPos()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

@@ -43,21 +43,21 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
 
 
             if (MD5Utils.digest(passwordOldStr)!=notePassword?.password){
-                SToast.showText(screenPos,"原密码错误")
+                SToast.showText(screenPos,R.string.password_old_error)
                 return@setOnClickListener
             }
 
-            if (passwordStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"输入密码")
+            if (passwordStr.isEmpty()){
+                SToast.showText(screenPos,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
-            if (passwordAgainStr.isNullOrEmpty()){
-                SToast.showText(screenPos,"再次输入密码")
+            if (passwordAgainStr.isEmpty()){
+                SToast.showText(screenPos,R.string.password_again_error)
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(screenPos,"密码输入不一致")
+                SToast.showText(screenPos,R.string.password_different)
                 return@setOnClickListener
             }
 

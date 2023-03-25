@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:layout_marginRight="20dp"
-            android:text="坐标轴"
+            android:text="@string/axis"
             android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>
@@ -44,7 +44,7 @@
             android:layout_marginStart="@dimen/dp_20"
             android:gravity="center_vertical"
             android:button="@drawable/bg_check_selector"
-            android:text="  刻度"
+            android:text="@string/scale"
             android:textSize="20sp" />
 
         <TextView
@@ -89,7 +89,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="一维坐标"
+                android:text="@string/axis_one"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -115,7 +115,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="二维坐标"
+                android:text="@string/axis_two"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -141,7 +141,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="三维坐标"
+                android:text="@string/axis_three"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />

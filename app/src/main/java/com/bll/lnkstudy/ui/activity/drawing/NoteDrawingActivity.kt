@@ -227,9 +227,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
-        elik?.setPWEnabled(true)
-        elik?.setLoadFilePath(path, true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+        elik.setPWEnabled(true)
+        elik.setLoadFilePath(path, true)
+        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
 
@@ -237,7 +237,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
+                elik.saveBitmap(true) {}
             }
 
         })
@@ -256,7 +256,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.notebookId = noteBook?.id
         noteContent?.resId = noteBook?.contentResId
 
-        noteContent?.title="未命名${noteContents.size+1}"
+        noteContent?.title=getString(R.string.unnamed)+noteContents.size+1
         noteContent?.folderPath=path
         noteContent?.filePath = "$path/$pathName.tch"
         noteContent?.pathName=pathName
@@ -275,7 +275,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //删除当前作业内容
     private fun delete() {
-        CommonDialog(this,getCurrentScreenPos()).setContent("确认删除笔记？").builder().setDialogClickListener(object :
+        CommonDialog(this,getCurrentScreenPos()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

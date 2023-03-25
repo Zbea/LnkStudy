@@ -21,7 +21,7 @@ class DatePlanListAdapter(layoutResId: Int, data: List<DateEventBean>?) : BaseQu
                 weekStr += "${week.name}  "
             }
             setText(R.id.tv_week,weekStr)
-            setText(R.id.tv_date, "日期  "+item.startTimeStr+"~"+item.endTimeStr)
+            setText(R.id.tv_date, mContext.getString(R.string.date)+"  "+item.startTimeStr+"~"+item.endTimeStr)
             getView<RecyclerView>(R.id.rv_list).apply {
                 layoutManager = LinearLayoutManager(mContext)//创建布局管理
                 val childAdapter= ChildAdapter(R.layout.item_date_plan_list_child, item.plans)
