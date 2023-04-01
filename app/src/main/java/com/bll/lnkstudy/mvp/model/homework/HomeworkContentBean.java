@@ -18,7 +18,7 @@ public class HomeworkContentBean {
     public String bgResId;//作业背景样式id
     public String course;//科目
     public int homeworkTypeId;//作业本分组id
-
+    public int contentId;//老师下发作业id
     public String title;
     public int state;//0未提交1已提交2已批改
     public long date;
@@ -27,15 +27,18 @@ public class HomeworkContentBean {
     public String filePath;//文件路径
     public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 1263198300)
+
+    @Generated(hash = 98833158)
     public HomeworkContentBean(Long id, long userId, String bgResId, String course,
-            int homeworkTypeId, String title, int state, long date, long commitDate,
-            String folderPath, String filePath, String pathName, int page) {
+            int homeworkTypeId, int contentId, String title, int state, long date,
+            long commitDate, String folderPath, String filePath, String pathName,
+            int page) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
         this.course = course;
         this.homeworkTypeId = homeworkTypeId;
+        this.contentId = contentId;
         this.title = title;
         this.state = state;
         this.date = date;
@@ -77,6 +80,12 @@ public class HomeworkContentBean {
     }
     public void setHomeworkTypeId(int homeworkTypeId) {
         this.homeworkTypeId = homeworkTypeId;
+    }
+    public int getContentId() {
+        return this.contentId;
+    }
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
     }
     public String getTitle() {
         return this.title;
@@ -126,7 +135,6 @@ public class HomeworkContentBean {
     public void setPage(int page) {
         this.page = page;
     }
-
-
+    
 
 }

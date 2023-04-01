@@ -14,7 +14,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val list: List<HomeworkMessage>) {
+class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val list: List<HomeworkMessage.MessageBean>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:CommitAdapter?=null
@@ -54,13 +54,13 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val li
     }
 
 
-    class CommitAdapter(layoutResId: Int, data: List<HomeworkMessage>) : BaseQuickAdapter<HomeworkMessage, BaseViewHolder>(layoutResId, data) {
+    class CommitAdapter(layoutResId: Int, data: List<HomeworkMessage.MessageBean>) : BaseQuickAdapter<HomeworkMessage.MessageBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
+        override fun convert(helper: BaseViewHolder, item: HomeworkMessage.MessageBean) {
             helper.setText(R.id.tv_title,item.title)
-            helper.setText(R.id.tv_date, DateUtils.longToStringNoYear(item.date))
-            helper.setText(R.id.tv_state,if (item.state==0) mContext.getString(R.string.homework_state_no) else mContext.getString(R.string.homework_state_yes))
-            helper.setTextColor(R.id.tv_state,if (item.state==0)
+            helper.setText(R.id.tv_date, DateUtils.longToStringNoYear(item.endTime))
+            helper.setText(R.id.tv_state,if (item.submitState==0) mContext.getString(R.string.homework_state_no) else mContext.getString(R.string.homework_state_yes))
+            helper.setTextColor(R.id.tv_state,if (item.submitState==0)
                 mContext.resources.getColor(R.color.black) else mContext.resources.getColor(R.color.gray))
         }
 

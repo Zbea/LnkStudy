@@ -1,5 +1,6 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.paper;
 
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -17,7 +18,7 @@ public class PaperTypeBean  {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
     public String name;//考卷分类
     public int type;//考卷分类id
     public String course;

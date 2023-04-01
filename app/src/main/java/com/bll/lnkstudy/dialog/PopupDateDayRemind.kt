@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DateRemind
+import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

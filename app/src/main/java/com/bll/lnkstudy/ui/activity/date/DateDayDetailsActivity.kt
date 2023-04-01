@@ -8,7 +8,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.PopupDateDayRemind
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEventBean
+import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_day_details.*
@@ -25,7 +25,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
     private var oldEvent: DateEventBean?=null
     private var popRemind: PopupDateDayRemind? = null
     private var dateDialog:DateDialog?=null
-    private var dayStr=getString(R.string.day)
+    private var dayStr=""
 
     override fun layoutId(): Int {
         return R.layout.ac_date_day_details
@@ -34,6 +34,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun initData() {
         flags=intent.flags
+        dayStr=getString(R.string.day)
         if (flags == 0) {
             dateEventBean = DateEventBean()
             dateEventBean?.type=1

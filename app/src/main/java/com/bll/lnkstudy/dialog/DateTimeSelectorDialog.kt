@@ -8,7 +8,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.TimePicker
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DatePlan
+import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.bll.lnkstudy.utils.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*

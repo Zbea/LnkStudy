@@ -22,9 +22,10 @@ import java.util.Map;
 public class ImageDownLoadUtils {
 
     /**
-     * 图片下载
+     * 图片下载地址
      */
     private String[] urls;//图片地址
+    private List<String> paths;//下载图片地址
     private Context context;
     private String path;//路径
     private File file = null;
@@ -40,10 +41,15 @@ public class ImageDownLoadUtils {
         this.path = path;
     }
 
+    public ImageDownLoadUtils(Context context, String[] urls, List<String> paths) {
+        this.context = context;
+        this.urls = urls;
+        this.paths = paths;
+    }
+
     public void startDownload() {
         if (urls == null || urls.length == 0)
             return;
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -54,11 +60,47 @@ public class ImageDownLoadUtils {
         }).start();
     }
 
+    public void startDownload1() {
+        if (urls == null || urls.length == 0)
+            return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < urls.length; i++) {
+                    download1(i, urls[i]);
+                }
+            }
+        }).start();
+    }
+
     private void download(int index, String url) {
         file = null;
         Bitmap bitmap = GlideUtils.getBitmap(context, url);
         if (bitmap != null) {
             saveBmpGallery(bitmap, index + 1);
+        }
+        if (bitmap != null && file != null) {
+            map.put(index, file.getPath());
+        } else {
+            unLoadList.add(index);
+        }
+        if (index == urls.length - 1) {
+            if (map.size() == urls.length) {
+                if (callBack != null)
+                    callBack.onDownLoadSuccess(map);
+            }
+            if (unLoadList.size() > 0) {
+                if (callBack != null)
+                    callBack.onDownLoadFailed(unLoadList);
+            }
+        }
+    }
+
+    private void download1(int index, String url) {
+        file = null;
+        Bitmap bitmap = GlideUtils.getBitmap(context, url);
+        if (bitmap != null) {
+            saveBmpGallery1(bitmap, paths.get(index));
         }
         if (bitmap != null && file != null) {
             map.put(index, file.getPath());
@@ -115,6 +157,38 @@ public class ImageDownLoadUtils {
 
     }
 
+    private void saveBmpGallery1(Bitmap bmp, String pth) {
+        // 声明输出流
+        FileOutputStream outStream = null;
+        File folderFile = new File(pth);
+        if (!folderFile.exists()) {
+            folderFile.mkdirs();
+        }
+        try {
+            file = new File(pth);
+            // 获得输出流，如果文件中有内容，追加内容
+            outStream = new FileOutputStream(file);
+            if (null != outStream) {
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            }
+        } catch (Exception e) {
+            e.getStackTrace();
+        } finally {
+            try {
+                if (outStream != null) {
+                    outStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+//        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
+//        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        Uri uri = Uri.fromFile(file);
+//        intent.setData(uri);
+//        context.sendBroadcast(intent);
+
+    }
     /**
      * 重新下载
      */

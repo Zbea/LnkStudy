@@ -14,10 +14,10 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.PaperBean
-import com.bll.lnkstudy.mvp.model.PaperContentBean
-import com.bll.lnkstudy.mvp.model.PaperTypeBean
-import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.PaperBean
+import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -75,53 +75,21 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
 
         //保存本次考试的 试卷分类
         if (!boolean){
-            PaperTypeDaoManager.getInstance().insertOrReplace( PaperTypeBean().apply {
+            PaperTypeDaoManager.getInstance().insertOrReplace( PaperTypeBean()
+                .apply {
                 course=this@MainReceivePaperDrawingActivity.course
                 name=receivePaper?.examName
                 type=examId
             })
         }
 
-        //保存本次考试
-        val paper= PaperBean().apply {
-            contentId=receivePaper?.id!!
-            type=this@MainReceivePaperDrawingActivity.type
-            course=this@MainReceivePaperDrawingActivity.course
-            categoryId=this@MainReceivePaperDrawingActivity.examId
-            category=receivePaper?.examName
-            title=receivePaper?.title
-            path=receivePaper?.path
-            page=paperContents.size
-            index=papers.size
-            createDate=receivePaper?.date!!*1000
-            images= receivePaper?.imageUrl?.split(",")?.toTypedArray().toString()
-        }
-        daoManager?.insertOrReplace(paper)
-
-        for (i in paths.indices){
-            //合图完毕之后删除 手写
-            FileUtils.deleteFile(File("$outImageStr/${i+1}/"))
-
-            //保存本次考试的试卷内容
-            val paperContent= PaperContentBean().apply {
-                type=this@MainReceivePaperDrawingActivity.type
-                course=this@MainReceivePaperDrawingActivity.course
-                categoryId=this@MainReceivePaperDrawingActivity.examId
-                contentId=paper.contentId
-                path=paths[i]
-                drawPath=drawPaths[i]
-                date=receivePaper?.date!!*1000
-                page=paperContents.size+i
-            }
-            daoContentManager?.insertOrReplace(paperContent)
-        }
+        savePaper()
 
         EventBus.getDefault().post(Constants.RECEIVE_PAPER_COMMIT_EVENT)
         finish()
     }
 
     override fun onDeleteSuccess() {
-        TODO("Not yet implemented")
     }
 
 
@@ -234,8 +202,49 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
             }
         }
         mUploadPresenter.upload(commitPaths)
-
     }
+
+    /**
+     *  提交完成后，将考卷保存在本地试卷里面
+     */
+    private fun savePaper(){
+        //保存本次考试
+        val paper= PaperBean().apply {
+            contentId=receivePaper?.id!!
+            type=this@MainReceivePaperDrawingActivity.type
+            course=this@MainReceivePaperDrawingActivity.course
+            categoryId=this@MainReceivePaperDrawingActivity.examId
+            category=receivePaper?.examName
+            title=receivePaper?.title
+            path=receivePaper?.path
+            page=paperContents.size
+            index=papers.size-1
+            state=1
+            createDate=receivePaper?.date!!*1000
+            images= receivePaper?.imageUrl?.split(",")?.toTypedArray().toString()
+        }
+        daoManager?.insertOrReplace(paper)
+
+        for (i in paths.indices){
+            //合图完毕之后删除 手写
+            FileUtils.deleteFile(File("$outImageStr/${i+1}/"))
+
+            //保存本次考试的试卷内容
+            val paperContent= PaperContentBean()
+                .apply {
+                    type=this@MainReceivePaperDrawingActivity.type
+                    course=this@MainReceivePaperDrawingActivity.course
+                    categoryId=this@MainReceivePaperDrawingActivity.examId
+                    contentId=paper.contentId
+                    path=paths[i]
+                    drawPath=drawPaths[i]
+                    date=receivePaper?.date!!*1000
+                    page=paperContents.size+i
+                }
+            daoContentManager?.insertOrReplace(paperContent)
+        }
+    }
+
 
     //内容切换
     private fun changeContent(){

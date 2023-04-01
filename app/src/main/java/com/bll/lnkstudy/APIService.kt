@@ -1,7 +1,10 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkReel
 import com.bll.lnkstudy.mvp.model.homework.HomeworkType
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -204,6 +207,21 @@ interface APIService{
      */
     @GET("common/type/list")
     fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
+    /**
+     * 获取作业本所有信息
+     */
+    @GET("student/msg/list")
+    fun getHomeworkMessage(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkMessage>>
 
+    /**
+     * 获取作业卷所有信息
+     */
+    @GET("task/group/studentList")
+    fun getHomeworkReel(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkReel>>
+    /**
+     * 作业卷下载完成后 通知后台
+     */
+    @POST("task/group/studentDownload")
+    fun commitHomeworkLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

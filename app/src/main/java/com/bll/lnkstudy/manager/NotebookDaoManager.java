@@ -58,8 +58,7 @@ public class NotebookDaoManager {
      */
     public List<NotebookBean> queryAll() {
         WhereCondition whereCondition=NotebookBeanDao.Properties.Type.gt(0);
-        List<NotebookBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
     }
 
     /**
@@ -67,8 +66,7 @@ public class NotebookDaoManager {
      */
     public List<NotebookBean> queryAll(int type) {
         WhereCondition whereCondition=NotebookBeanDao.Properties.Type.eq(type);
-        List<NotebookBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
     }
 
     /**
@@ -76,9 +74,8 @@ public class NotebookDaoManager {
      */
     public List<NotebookBean> queryAll(int type, int page, int pageSize) {
         WhereCondition whereCondition=NotebookBeanDao.Properties.Type.eq(type);
-        List<NotebookBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate)
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate)
                 .offset((page-1)*pageSize).limit(pageSize).build().list();
-        return queryList;
     }
 
     public void deleteBean(NotebookBean bean){

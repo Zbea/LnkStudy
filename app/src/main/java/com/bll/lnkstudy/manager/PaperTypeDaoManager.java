@@ -2,10 +2,8 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.PaperBeanDao;
 import com.bll.lnkstudy.greendao.PaperTypeBeanDao;
-import com.bll.lnkstudy.mvp.model.PaperBean;
-import com.bll.lnkstudy.mvp.model.PaperTypeBean;
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 

@@ -20,11 +20,11 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages: List<HomeworkMessage>) {
+class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages: List<HomeworkMessage.MessageBean>) {
 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
-    private var homeworkMessage: HomeworkMessage? = null
+    private var homeworkMessage: HomeworkMessage.MessageBean? = null
 
     fun builder(): DrawingCommitDialog? {
 
@@ -65,10 +65,10 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         list.add(homeworkCommit1)
 
         val rvList = dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        var mAdapter = MyAdapter(R.layout.item_drawing_commit_page, list)
+        val mAdapter = MyAdapter(R.layout.item_drawing_commit_page, list)
         rvList?.layoutManager = GridLayoutManager(context,4)
         rvList?.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
+        mAdapter.bindToRecyclerView(rvList)
         rvList?.addItemDecoration(SpaceGridItemDeco(4,10))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             if (list[position].isAdd){
@@ -89,7 +89,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
             if (homeworkMessage != null) {
                 val page1 = et_page1?.text.toString()
                 val page2 = et_page2?.text.toString()
-                if (!page1.isNullOrEmpty() && !page2.isNullOrEmpty() && page2.toInt() > page1.toInt()) {
+                if (page1.isNotEmpty() && page2.isNotEmpty() && page2.toInt() > page1.toInt()) {
                     for (i in page1.toInt()..page2.toInt()) {
                         if (!pages.contains(i))
                             pages.add(i)
@@ -104,9 +104,13 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
                     }
                 }
                 pages.sort()
+                if (pages.size==0){
+                    SToast.showText(if (screenPos == 3) 2 else screenPos, R.string.toast_homework_page)
+                    return@setOnClickListener
+                }
 
                 val item = HomeworkCommit()
-                item.messageId = homeworkMessage?.id!!
+                item.messageId = homeworkMessage?.studentTaskId!!
                 item.title = et_title?.text.toString()
                 item.contents = pages
                 listener?.onClick(item)

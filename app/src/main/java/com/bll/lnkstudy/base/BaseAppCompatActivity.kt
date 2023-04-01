@@ -25,10 +25,12 @@ import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.BookStoreActivity
+import com.bll.lnkstudy.ui.activity.TextBookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_bookstore_type.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -82,6 +84,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         mDialog = ProgressDialog(this,screenPos)
         initData()
         initView()
+        initBookType()
 
     }
 
@@ -115,6 +118,35 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 pageIndex+=1
                 fetchData()
             }
+        }
+    }
+
+    /**
+     * 书城分类
+     */
+    private fun initBookType(){
+        iv_jc?.setOnClickListener {
+            customStartActivity(Intent(this, TextBookStoreActivity::class.java))
+        }
+
+        iv_gj?.setOnClickListener {
+            gotoBookStore(getString(R.string.book_tab_gj))
+        }
+
+        iv_zrkx?.setOnClickListener {
+            gotoBookStore(getString(R.string.book_tab_zrkx))
+        }
+
+        iv_shkx?.setOnClickListener {
+            gotoBookStore(getString(R.string.book_tab_shkx))
+        }
+
+        iv_swkx?.setOnClickListener {
+            gotoBookStore(getString(R.string.book_tab_sxkx))
+        }
+
+        iv_ydcy?.setOnClickListener {
+            gotoBookStore(getString(R.string.book_tab_ydcy))
         }
     }
 
@@ -291,12 +323,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        var radioButton =
+        val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
         radioButton.id = i
         radioButton.isChecked = i == 0
-        var layoutParams = RadioGroup.LayoutParams(
+        val layoutParams = RadioGroup.LayoutParams(
             RadioGroup.LayoutParams.WRAP_CONTENT,
             DP2PX.dip2px(this, 45f))
 

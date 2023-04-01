@@ -42,7 +42,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
-    private var semesterStr=getString(R.string.semester_last)
+    private var semesterStr="上学期"
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: BookBean? = null
 

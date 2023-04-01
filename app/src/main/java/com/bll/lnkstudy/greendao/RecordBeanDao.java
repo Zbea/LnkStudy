@@ -30,6 +30,7 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         public final static Property Date = new Property(3, long.class, "date", false, "DATE");
         public final static Property Path = new Property(4, String.class, "path", false, "PATH");
         public final static Property Course = new Property(5, String.class, "course", false, "COURSE");
+        public final static Property IsCommit = new Property(6, boolean.class, "isCommit", false, "IS_COMMIT");
     }
 
 
@@ -50,7 +51,8 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
                 "\"TITLE\" TEXT," + // 2: title
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
                 "\"PATH\" TEXT," + // 4: path
-                "\"COURSE\" TEXT);"); // 5: course
+                "\"COURSE\" TEXT," + // 5: course
+                "\"IS_COMMIT\" INTEGER NOT NULL );"); // 6: isCommit
     }
 
     /** Drops the underlying database table. */
@@ -84,6 +86,7 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         if (course != null) {
             stmt.bindString(6, course);
         }
+        stmt.bindLong(7, entity.getIsCommit() ? 1L: 0L);
     }
 
     @Override
@@ -111,6 +114,7 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         if (course != null) {
             stmt.bindString(6, course);
         }
+        stmt.bindLong(7, entity.getIsCommit() ? 1L: 0L);
     }
 
     @Override
@@ -126,7 +130,8 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
             cursor.getLong(offset + 3), // date
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // path
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // course
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // course
+            cursor.getShort(offset + 6) != 0 // isCommit
         );
         return entity;
     }
@@ -139,6 +144,7 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         entity.setDate(cursor.getLong(offset + 3));
         entity.setPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setCourse(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setIsCommit(cursor.getShort(offset + 6) != 0);
      }
     
     @Override

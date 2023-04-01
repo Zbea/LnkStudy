@@ -1,10 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.net.BasePresenter
-import com.bll.lnkstudy.net.BaseResult
-import com.bll.lnkstudy.net.Callback
-import com.bll.lnkstudy.net.RetrofitManager
+import com.bll.lnkstudy.net.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -30,6 +27,19 @@ class FileUploadPresenter(view: IContractView.IFileUploadView):
             }
             override fun success(tBaseResult: BaseResult<List<String>>) {
                 view.onSuccess(tBaseResult.data)
+            }
+        }, true)
+    }
+
+    fun commit(map:HashMap<String,Any>){
+        val body= RequestUtils.getBody(map)
+        val commit = RetrofitManager.service.commitPaper(body)
+        doRequest(commit, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onCommitSuccess()
             }
         }, true)
     }

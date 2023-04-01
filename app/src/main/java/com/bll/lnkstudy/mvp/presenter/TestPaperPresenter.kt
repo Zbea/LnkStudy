@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 

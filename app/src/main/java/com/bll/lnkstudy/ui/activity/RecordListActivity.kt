@@ -11,13 +11,19 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.NotebookAddDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.RecordBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -25,22 +31,49 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class RecordListActivity : BaseAppCompatActivity() {
+class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadView{
 
+    private val mUploadPresenter= FileUploadPresenter(this)
     private var mAdapter: RecordAdapter? = null
     private var course = ""
+    private var homeworkType: HomeworkTypeBean? = null
     private var recordBeans = mutableListOf<RecordBean>()
     private var currentPos = 0//当前点击位置
     private var position = 0//当前点击位置
     private var mediaPlayer: MediaPlayer? = null
     private var pops= mutableListOf<PopupBean>()
+    private var messages= mutableListOf<HomeworkMessage.MessageBean>()
+    private var messageId=0
+
+    override fun onSuccess(urls: MutableList<String>?) {
+        val map= HashMap<String, Any>()
+        map["studentTaskId"]=messageId
+        map["studentUrl"]= ToolUtils.getImagesStr(urls)
+        mUploadPresenter.commit(map)
+    }
+    override fun onCommitSuccess() {
+        showToast(R.string.toast_commit_success)
+        recordBeans[position].isCommit=true
+        mAdapter?.notifyDataSetChanged()
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_list
     }
 
     override fun initData() {
-        course = intent.getStringExtra("course").toString()
+        val bundle = intent.getBundleExtra("homeworkBundle")
+        homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
+        course=homeworkType?.course!!
+        val list=homeworkType?.message?.list
+
+        if (!list.isNullOrEmpty()){
+            for (item in list){
+                if (item.endTime>0&&item.status==3){
+                    messages.add(item)
+                }
+            }
+        }
 
         pops.add(PopupBean(0,getString(R.string.edit),R.mipmap.icon_notebook_edit))
         pops.add(PopupBean(1,getString(R.string.delete),R.mipmap.icon_delete))
@@ -74,6 +107,10 @@ class RecordListActivity : BaseAppCompatActivity() {
             }
             if (view.id == R.id.iv_setting){
                 setSetting(view)
+            }
+            if (view.id==R.id.tv_save){
+                if (messages.size>0)
+                    commit()
             }
 
         }
@@ -182,6 +219,19 @@ class RecordListActivity : BaseAppCompatActivity() {
             })
     }
 
+    /**
+     * 提交录音
+     */
+    private fun commit(){
+        HomeworkMessageSelectorDialog(this, screenPos, messages).builder()
+            ?.setOnDialogClickListener {
+                messageId=it.studentTaskId
+                val paths = mutableListOf(recordBeans[position].path)
+                mUploadPresenter.upload(paths)
+            }
+    }
+
+
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
@@ -199,6 +249,8 @@ class RecordListActivity : BaseAppCompatActivity() {
             mediaPlayer = null
         }
     }
+
+
 
 
 }

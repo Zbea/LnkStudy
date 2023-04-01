@@ -8,8 +8,8 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.PaperTypeBean
-import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
@@ -188,7 +188,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
 
     override fun fetchData() {
         val map= HashMap<String,Any>()
-        map["size"] = 100
         map["sendStatus"]=2
         mPresenter.getList(map)
     }

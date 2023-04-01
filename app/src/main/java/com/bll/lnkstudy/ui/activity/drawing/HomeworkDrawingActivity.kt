@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
@@ -12,16 +13,20 @@ import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import java.io.File
 
-class HomeworkDrawingActivity : BaseDrawingActivity() {
+class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView {
 
+    private val mUploadPresenter= FileUploadPresenter(this)
     private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkTypeBean? = null
@@ -32,18 +37,44 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
     private var homeworks = mutableListOf<HomeworkContentBean>() //所有作业内容
 
     private var page = 0//页码
-    private var messages= mutableListOf<HomeworkMessage>()
+    private var messages= mutableListOf<HomeworkMessage.MessageBean>()
     private var drawingCommitDialog:DrawingCommitDialog?=null
+    private var homeworkCommit:HomeworkCommit?=null
+
+    override fun onSuccess(urls: MutableList<String>?) {
+        val map= HashMap<String, Any>()
+        map["studentTaskId"]=homeworkCommit?.messageId!!
+        map["studentUrl"]=ToolUtils.getImagesStr(urls)
+        mUploadPresenter.commit(map)
+    }
+    override fun onCommitSuccess() {
+        showToast(R.string.toast_commit_success)
+        for (i in homeworkCommit?.contents!!){
+            val homework=homeworks[i-1]
+            homework.state=1
+            homework.contentId=homeworkCommit?.messageId!!
+            HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
+        }
+        finish()
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
     }
 
     override fun initData() {
-        var bundle = intent.getBundleExtra("homeworkBundle")
+        val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         homeworkTypeId = homeworkType?.typeId!!
         course=homeworkType?.course!!
+        val list=homeworkType?.message?.list
+        if (!list.isNullOrEmpty()){
+            for (item in list){
+                if (item.endTime>0&&item.status==3){
+                    messages.add(item)
+                }
+            }
+        }
 
         homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(course, homeworkTypeId)
 
@@ -53,50 +84,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         } else {
             newHomeWorkContent()
         }
-        getMessageDatas()
-    }
-
-    private fun getMessageDatas(){
-        val homeworkMessage=
-            HomeworkMessage()
-        homeworkMessage.id=0
-        homeworkMessage.title="语文家庭作业1、3、5页"
-        homeworkMessage.date=System.currentTimeMillis()
-        homeworkMessage.course="语文"
-        homeworkMessage.state=0
-        homeworkMessage.homeworkTypeId=0
-
-        val homeworkMessage1=
-            HomeworkMessage()
-        homeworkMessage1.id=1
-        homeworkMessage1.title="数学作业"
-        homeworkMessage1.date=System.currentTimeMillis()
-        homeworkMessage1.course="数学"
-        homeworkMessage1.state=1
-        homeworkMessage1.homeworkTypeId=2
-        homeworkMessage1.isPg=true
-
-        val homeworkMessage2=
-            HomeworkMessage()
-        homeworkMessage2.id=2
-        homeworkMessage2.title="数学作业112"
-        homeworkMessage2.date=System.currentTimeMillis()
-        homeworkMessage2.course="数学"
-        homeworkMessage2.state=1
-        homeworkMessage2.homeworkTypeId=3
-        homeworkMessage2.isPg=false
-
-        messages.add(homeworkMessage)
-        messages.add(homeworkMessage1)
-        messages.add(homeworkMessage2)
 
     }
 
     override fun initView() {
-
-        v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
-        v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
-
         changeContent()
 
         btn_page_down.setOnClickListener {
@@ -173,7 +164,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
     }
 
 
-
     /**
      * 切换屏幕
      */
@@ -208,7 +198,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<ItemList>()
+        val list= mutableListOf<ItemList>()
         for (item in homeworks){
             val itemList= ItemList()
             itemList.name=item.title
@@ -256,14 +246,27 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
 
     //更新绘图以及页码
     private fun updateUI() {
-        val pageTotal = homeworks.size
-
-        updateImage(elik_b!!, homeworkContent?.filePath!!)
+        //已提交后不能手写，显示合图后的图片
+        elik_b?.setPWEnabled(homeworkContent?.state==0)
+        if (homeworkContent?.state==0){
+            updateImage(elik_b!!, homeworkContent?.filePath!!)
+            v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
+        }
+        else{
+            GlideUtils.setImageFile(this,File(homeworkContent?.filePath),v_content_b)
+        }
         tv_page_b.text = (page + 1).toString()
 
         if (isExpand) {
             if (homeworkContent_a != null) {
-                updateImage(elik_a!!, homeworkContent_a?.filePath!!)
+                elik_a?.setPWEnabled(homeworkContent_a?.state==0)
+                if (homeworkContent_a?.state==0){
+                    updateImage(elik_a!!, homeworkContent_a?.filePath!!)
+                    v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
+                }
+                else{
+                    GlideUtils.setImageFileNoCache(this,File(homeworkContent_a?.filePath),v_content_a)
+                }
                 tv_page_a.text = "$page"
             }
         }
@@ -272,8 +275,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, path: String) {
-        elik.setPWEnabled(true)
-        elik.setLoadFilePath(path, true)
+        elik.setLoadFilePath(path.replace("png","tch"), true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
@@ -302,9 +304,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         homeworkContent?.homeworkTypeId = homeworkType?.typeId
         homeworkContent?.bgResId = homeworkType?.bgResId
 
-        homeworkContent?.title="未命名${homeworks.size+1}"
+        homeworkContent?.title=getString(R.string.unnamed)+(homeworks.size+1)
         homeworkContent?.folderPath=path
-        homeworkContent?.filePath = "$path/$pathName.tch"
+        homeworkContent?.filePath = "$path/$pathName.png"
         homeworkContent?.pathName=pathName
         homeworkContent?.page = homeworks.size
         homeworkContent?.state=0
@@ -321,28 +323,42 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
 
     //作业提交
     private fun commit() {
+        if (messages.size==0|| homeworkContent?.state!=0)return
         if (drawingCommitDialog==null){
             drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
             drawingCommitDialog?.setOnDialogClickListener {
-                if (it.contents.size>0){
-                    for (i in it.contents)
-                    {
-                        val pos=i-1
-                        if (pos<homeworks.size){
-                            val item=homeworks[pos]
-                            item.title=it.title
-                            item.state=1
-                            HomeworkContentDaoManager.getInstance().insertOrReplace(item)
-                        }
-                    }
-                    changeContent()
-
+                homeworkCommit=it
+                val paths= mutableListOf<String>()
+                for (i in it.contents){
+                    val homework=homeworks[i-1]
+                    paths.add(saveImage(homework))
                 }
+                mUploadPresenter.upload(paths)
             }
         }
         else{
             drawingCommitDialog?.show()
         }
+    }
+
+    /**
+     * 合图
+     */
+    private fun saveImage(homework: HomeworkContentBean):String{
+        val resId=ToolUtils.getImageResId(this,homeworkType?.contentResId)
+        val oldBitmap=BitmapFactory.decodeResource(resources,resId)
+
+        val drawPath = homework.filePath
+        val drawBitmap = BitmapFactory.decodeFile(drawPath)
+        if (drawBitmap != null) {
+            val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+            BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
+        }
+        else{
+            BitmapUtils.saveBmpGallery(this, oldBitmap, drawPath)
+        }
+        FileUtils.deleteFile(File(drawPath.replace("png","tch")))
+        return drawPath
     }
 
    override fun changeScreenPage() {
@@ -362,5 +378,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity() {
         homeworks[page].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
     }
+
+
+
 
 }

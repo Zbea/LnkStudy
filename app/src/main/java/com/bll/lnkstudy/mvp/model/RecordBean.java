@@ -24,17 +24,19 @@ public class RecordBean implements Serializable {
     public long date;
     public String path;
     public String course;
+    public boolean isCommit;
     @Transient
     public int state=0;//播放状态
-    @Generated(hash = 358262682)
+    @Generated(hash = 262905601)
     public RecordBean(Long id, long userId, String title, long date, String path,
-            String course) {
+            String course, boolean isCommit) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.date = date;
         this.path = path;
         this.course = course;
+        this.isCommit = isCommit;
     }
     @Generated(hash = 96196931)
     public RecordBean() {
@@ -75,5 +77,11 @@ public class RecordBean implements Serializable {
     public void setCourse(String course) {
         this.course = course;
     }
-
+    public boolean getIsCommit() {
+        return this.isCommit;
+    }
+    public void setIsCommit(boolean isCommit) {
+        this.isCommit = isCommit;
+    }
+    
 }

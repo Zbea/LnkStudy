@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DatePlan
+import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

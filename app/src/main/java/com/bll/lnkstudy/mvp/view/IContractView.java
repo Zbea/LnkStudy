@@ -9,11 +9,12 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.Grade;
 import com.bll.lnkstudy.mvp.model.PaintingList;
-import com.bll.lnkstudy.mvp.model.ReceivePaper;
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkType;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkReel;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.net.IBaseView;
 
@@ -24,6 +25,7 @@ public interface IContractView {
     //文件上传
     interface IFileUploadView extends IBaseView{
         void onSuccess(List<String> urls);
+        void onCommitSuccess();
     }
 
 
@@ -108,6 +110,12 @@ public interface IContractView {
          * 获取作业分类
          */
         void onTypeList(List<HomeworkTypeBean> list);
-        void onList(ReceivePaper receivePaper);
+        void onList(HomeworkMessage homeworkMessage);
+        void onListReel(HomeworkReel reel);
+        /**
+         * 下发作业下载成功
+         */
+        void onDownloadSuccess();
+        void onCommitSuccess();
     }
 }

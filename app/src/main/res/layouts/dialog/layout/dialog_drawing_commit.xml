@@ -7,67 +7,35 @@
     android:padding="@dimen/dp_40"
     >
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_selector"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:orientation="horizontal"
+        android:layout_height="45dp"
         android:gravity="center_vertical"
-        >
-        <TextView
-            android:id="@+id/tv_selector"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/dp_5"
-            android:paddingEnd="@dimen/dp_5"
-            android:text="@string/homework_selector"
-            android:lines="1"
-            android:ellipsize="end"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/black"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-        <View
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="0dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            />
-
-        <EditText
-            android:id="@+id/et_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:hint="@string/toast_input_title"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/black"
-            android:paddingStart="@dimen/dp_5"
-            android:paddingEnd="@dimen/dp_5"
-            android:lines="1"
-            android:ellipsize="end"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-
-
-    </LinearLayout>
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:drawableEnd="@mipmap/icon_arrow_right"
+        android:text="@string/homework_selector"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal"
         >
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_45"
+            android:layout_height="@dimen/dp_40"
             android:gravity="center"
             android:text="@string/page"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_20"
             android:textColor="@color/black"
             />
 
@@ -86,8 +54,8 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_45"
-                    android:textSize="@dimen/sp_22"
+                    android:layout_height="@dimen/dp_40"
+                    android:textSize="@dimen/sp_20"
                     android:textColor="@color/black"
                     android:gravity="center"
                     android:text="@string/single_page"
@@ -105,12 +73,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_20"
                 >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_20"
                     android:textColor="@color/black"
                     android:gravity="center"
                     android:text="@string/multi_page"
@@ -118,7 +86,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_45"
+                    android:layout_height="@dimen/dp_40"
                     android:orientation="horizontal"
                     android:layout_marginStart="@dimen/dp_10"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"
@@ -126,12 +94,12 @@
 
                     <EditText
                         android:id="@+id/et_page1"
-                        android:layout_width="60dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:hint="1"
                         android:gravity="center"
                         android:inputType="number"
-                        android:textSize="@dimen/sp_22"
+                        android:textSize="@dimen/sp_20"
                         android:textColor="@color/black"
                         android:lines="1"
                         android:background="@color/color_transparent"
@@ -147,11 +115,11 @@
                         />
                     <EditText
                         android:id="@+id/et_page2"
-                        android:layout_width="60dp"
+                        android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:hint="1"
                         android:inputType="number"
-                        android:textSize="@dimen/sp_22"
+                        android:textSize="@dimen/sp_20"
                         android:textColor="@color/black"
                         android:gravity="center"
                         android:lines="1"

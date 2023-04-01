@@ -9,7 +9,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEventBean
+import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DateDayListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.DateUtils

@@ -4,7 +4,7 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DateEventBeanDao;
-import com.bll.lnkstudy.mvp.model.DateEventBean;
+import com.bll.lnkstudy.mvp.model.date.DateEventBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 

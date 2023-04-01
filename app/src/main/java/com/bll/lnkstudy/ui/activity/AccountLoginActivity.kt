@@ -39,7 +39,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView,ICo
     override fun getAccount(user: User?) {
         user?.token=token
         SPUtil.putObj("user",user!!)
-        val intent=Intent(this,LauncherActivity::class.java)
+        val intent=Intent(this,MainActivity::class.java)
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
         startActivity(intent)
         finish()
@@ -92,7 +92,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView,ICo
 
         if (!tokenStr.isNullOrEmpty() && mUser!=null)
         {
-            val intent=Intent(this,LauncherActivity::class.java)
+            val intent=Intent(this,MainActivity::class.java)
             intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
             startActivity(intent)
             finish()

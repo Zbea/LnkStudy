@@ -57,7 +57,7 @@
         android:persistent="true"
         >
 
-        <activity android:name=".ui.activity.LauncherActivity"
+        <activity android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             >
         </activity>
@@ -75,9 +75,13 @@
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
 
-        <activity android:name=".ui.activity.MainActivity"
+        <activity android:name=".ui.activity.HomeLeftActivity"
             android:exported="true">
             </activity>
+
+        <activity android:name=".ui.activity.HomeRightActivity"
+            android:exported="true">
+        </activity>
 
         <activity android:name=".ui.activity.BookStoreActivity"/>
         <activity android:name=".ui.activity.drawing.BookDetailsActivity"

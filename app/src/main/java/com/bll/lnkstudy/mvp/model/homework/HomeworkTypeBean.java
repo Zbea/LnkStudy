@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -22,17 +23,19 @@ public class HomeworkTypeBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long studentId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId;//老师id
     public String name;
-    @SerializedName("taskId")
+    @Unique
     public int typeId;//作业本分类id
     @SerializedName("subType")
     public int state;//2普通作业本 3听读本 1题卷本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
-    public String bgResId= DataBeanManager.INSTANCE.getHomeworkCoverStr();//当前作业本背景样式id
+    public String bgResId;//当前作业本背景样式id
     public String course;
     public boolean isCreate;//自建作业本
+    public int messageTotal;//作业消息数目
     @Transient
     public boolean isPg;//是否收到批改
     @Transient
@@ -40,11 +43,11 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public HomeworkMessage message;
 
-    @Generated(hash = 1997014846)
-    public HomeworkTypeBean(Long id, long userId, String name, int typeId,
-            int state, long date, String contentResId, String bgResId,
-            String course, boolean isCreate) {
+    @Generated(hash = 1573981829)
+    public HomeworkTypeBean(Long id, long studentId, long userId, String name, int typeId, int state, long date,
+            String contentResId, String bgResId, String course, boolean isCreate, int messageTotal) {
         this.id = id;
+        this.studentId = studentId;
         this.userId = userId;
         this.name = name;
         this.typeId = typeId;
@@ -54,6 +57,7 @@ public class HomeworkTypeBean implements Serializable {
         this.bgResId = bgResId;
         this.course = course;
         this.isCreate = isCreate;
+        this.messageTotal = messageTotal;
     }
     @Generated(hash = 1652492346)
     public HomeworkTypeBean() {
@@ -117,6 +121,19 @@ public class HomeworkTypeBean implements Serializable {
     }
     public void setIsCreate(boolean isCreate) {
         this.isCreate = isCreate;
+    }
+    public int getMessageTotal() {
+        return this.messageTotal;
+    }
+    public void setMessageTotal(int messageTotal) {
+        this.messageTotal = messageTotal;
+    }
+
+    public long getStudentId() {
+        return this.studentId;
+    }
+    public void setStudentId(long studentId) {
+        this.studentId = studentId;
     }
 
 }

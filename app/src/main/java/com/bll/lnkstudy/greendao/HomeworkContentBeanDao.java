@@ -29,14 +29,15 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         public final static Property BgResId = new Property(2, String.class, "bgResId", false, "BG_RES_ID");
         public final static Property Course = new Property(3, String.class, "course", false, "COURSE");
         public final static Property HomeworkTypeId = new Property(4, int.class, "homeworkTypeId", false, "HOMEWORK_TYPE_ID");
-        public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
-        public final static Property State = new Property(6, int.class, "state", false, "STATE");
-        public final static Property Date = new Property(7, long.class, "date", false, "DATE");
-        public final static Property CommitDate = new Property(8, long.class, "commitDate", false, "COMMIT_DATE");
-        public final static Property FolderPath = new Property(9, String.class, "folderPath", false, "FOLDER_PATH");
-        public final static Property FilePath = new Property(10, String.class, "filePath", false, "FILE_PATH");
-        public final static Property PathName = new Property(11, String.class, "pathName", false, "PATH_NAME");
-        public final static Property Page = new Property(12, int.class, "page", false, "PAGE");
+        public final static Property ContentId = new Property(5, int.class, "contentId", false, "CONTENT_ID");
+        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
+        public final static Property State = new Property(7, int.class, "state", false, "STATE");
+        public final static Property Date = new Property(8, long.class, "date", false, "DATE");
+        public final static Property CommitDate = new Property(9, long.class, "commitDate", false, "COMMIT_DATE");
+        public final static Property FolderPath = new Property(10, String.class, "folderPath", false, "FOLDER_PATH");
+        public final static Property FilePath = new Property(11, String.class, "filePath", false, "FILE_PATH");
+        public final static Property PathName = new Property(12, String.class, "pathName", false, "PATH_NAME");
+        public final static Property Page = new Property(13, int.class, "page", false, "PAGE");
     }
 
 
@@ -57,14 +58,15 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
                 "\"BG_RES_ID\" TEXT," + // 2: bgResId
                 "\"COURSE\" TEXT," + // 3: course
                 "\"HOMEWORK_TYPE_ID\" INTEGER NOT NULL ," + // 4: homeworkTypeId
-                "\"TITLE\" TEXT," + // 5: title
-                "\"STATE\" INTEGER NOT NULL ," + // 6: state
-                "\"DATE\" INTEGER NOT NULL ," + // 7: date
-                "\"COMMIT_DATE\" INTEGER NOT NULL ," + // 8: commitDate
-                "\"FOLDER_PATH\" TEXT," + // 9: folderPath
-                "\"FILE_PATH\" TEXT," + // 10: filePath
-                "\"PATH_NAME\" TEXT," + // 11: pathName
-                "\"PAGE\" INTEGER NOT NULL );"); // 12: page
+                "\"CONTENT_ID\" INTEGER NOT NULL ," + // 5: contentId
+                "\"TITLE\" TEXT," + // 6: title
+                "\"STATE\" INTEGER NOT NULL ," + // 7: state
+                "\"DATE\" INTEGER NOT NULL ," + // 8: date
+                "\"COMMIT_DATE\" INTEGER NOT NULL ," + // 9: commitDate
+                "\"FOLDER_PATH\" TEXT," + // 10: folderPath
+                "\"FILE_PATH\" TEXT," + // 11: filePath
+                "\"PATH_NAME\" TEXT," + // 12: pathName
+                "\"PAGE\" INTEGER NOT NULL );"); // 13: page
     }
 
     /** Drops the underlying database table. */
@@ -93,30 +95,31 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
             stmt.bindString(4, course);
         }
         stmt.bindLong(5, entity.getHomeworkTypeId());
+        stmt.bindLong(6, entity.getContentId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
-        stmt.bindLong(7, entity.getState());
-        stmt.bindLong(8, entity.getDate());
-        stmt.bindLong(9, entity.getCommitDate());
+        stmt.bindLong(8, entity.getState());
+        stmt.bindLong(9, entity.getDate());
+        stmt.bindLong(10, entity.getCommitDate());
  
         String folderPath = entity.getFolderPath();
         if (folderPath != null) {
-            stmt.bindString(10, folderPath);
+            stmt.bindString(11, folderPath);
         }
  
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(11, filePath);
+            stmt.bindString(12, filePath);
         }
  
         String pathName = entity.getPathName();
         if (pathName != null) {
-            stmt.bindString(12, pathName);
+            stmt.bindString(13, pathName);
         }
-        stmt.bindLong(13, entity.getPage());
+        stmt.bindLong(14, entity.getPage());
     }
 
     @Override
@@ -139,30 +142,31 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
             stmt.bindString(4, course);
         }
         stmt.bindLong(5, entity.getHomeworkTypeId());
+        stmt.bindLong(6, entity.getContentId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
-        stmt.bindLong(7, entity.getState());
-        stmt.bindLong(8, entity.getDate());
-        stmt.bindLong(9, entity.getCommitDate());
+        stmt.bindLong(8, entity.getState());
+        stmt.bindLong(9, entity.getDate());
+        stmt.bindLong(10, entity.getCommitDate());
  
         String folderPath = entity.getFolderPath();
         if (folderPath != null) {
-            stmt.bindString(10, folderPath);
+            stmt.bindString(11, folderPath);
         }
  
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(11, filePath);
+            stmt.bindString(12, filePath);
         }
  
         String pathName = entity.getPathName();
         if (pathName != null) {
-            stmt.bindString(12, pathName);
+            stmt.bindString(13, pathName);
         }
-        stmt.bindLong(13, entity.getPage());
+        stmt.bindLong(14, entity.getPage());
     }
 
     @Override
@@ -178,14 +182,15 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // bgResId
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // course
             cursor.getInt(offset + 4), // homeworkTypeId
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
-            cursor.getInt(offset + 6), // state
-            cursor.getLong(offset + 7), // date
-            cursor.getLong(offset + 8), // commitDate
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // folderPath
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // filePath
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // pathName
-            cursor.getInt(offset + 12) // page
+            cursor.getInt(offset + 5), // contentId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
+            cursor.getInt(offset + 7), // state
+            cursor.getLong(offset + 8), // date
+            cursor.getLong(offset + 9), // commitDate
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // folderPath
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // filePath
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // pathName
+            cursor.getInt(offset + 13) // page
         );
         return entity;
     }
@@ -197,14 +202,15 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         entity.setBgResId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setCourse(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setHomeworkTypeId(cursor.getInt(offset + 4));
-        entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setState(cursor.getInt(offset + 6));
-        entity.setDate(cursor.getLong(offset + 7));
-        entity.setCommitDate(cursor.getLong(offset + 8));
-        entity.setFolderPath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setFilePath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setPathName(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setPage(cursor.getInt(offset + 12));
+        entity.setContentId(cursor.getInt(offset + 5));
+        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setState(cursor.getInt(offset + 7));
+        entity.setDate(cursor.getLong(offset + 8));
+        entity.setCommitDate(cursor.getLong(offset + 9));
+        entity.setFolderPath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setFilePath(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setPathName(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setPage(cursor.getInt(offset + 13));
      }
     
     @Override

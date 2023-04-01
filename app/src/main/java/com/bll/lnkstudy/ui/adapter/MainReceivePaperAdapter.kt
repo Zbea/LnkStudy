@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

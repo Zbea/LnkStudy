@@ -3,6 +3,8 @@ package com.bll.lnkstudy
 import android.annotation.SuppressLint
 import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.date.DateRemind
+import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
@@ -15,7 +17,7 @@ object DataBeanManager {
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
         R.string.main_textbook_title,R.string.main_homework_title,
-        R.string.main_testpaper_title,R.string.main_painting_title,
+        R.string.main_testpaper_title,R.string.main_note_title,
         R.string.main_painting_title,R.string.main_teach_title
     )
     val textbookType = arrayOf(
@@ -150,13 +152,55 @@ object DataBeanManager {
     val weeks: MutableList<DateWeek>
         get() {
             val list= mutableListOf<DateWeek>()
-            list.add(DateWeek(mContext.getString(R.string.week_1), "MO", 2, false))
-            list.add(DateWeek(mContext.getString(R.string.week_2), "TU", 3, false))
-            list.add(DateWeek(mContext.getString(R.string.week_3), "WE", 4, false))
-            list.add(DateWeek(mContext.getString(R.string.week_4), "TH", 5, false))
-            list.add(DateWeek(mContext.getString(R.string.week_5), "FR", 6, false))
-            list.add(DateWeek(mContext.getString(R.string.week_6), "SA", 7, false))
-            list.add(DateWeek(mContext.getString(R.string.week_7), "SU", 8, false))
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_1
+                    ), "MO", 2, false
+                )
+            )
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_2
+                    ), "TU", 3, false
+                )
+            )
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_3
+                    ), "WE", 4, false
+                )
+            )
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_4
+                    ), "TH", 5, false
+                )
+            )
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_5
+                    ), "FR", 6, false
+                )
+            )
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_6
+                    ), "SA", 7, false
+                )
+            )
+            list.add(
+                DateWeek(
+                    mContext.getString(
+                        R.string.week_7
+                    ), "SU", 8, false
+                )
+            )
             return list
         }
 

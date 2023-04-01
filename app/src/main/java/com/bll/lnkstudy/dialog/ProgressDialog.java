@@ -9,7 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.bll.lnkstudy.R;
-import com.bll.lnkstudy.ui.activity.MainActivity;
+import com.bll.lnkstudy.ui.activity.HomeLeftActivity;
 
 
 public class ProgressDialog {
@@ -48,7 +48,7 @@ public class ProgressDialog {
         }
 
         //主页、全屏时 加载在b屏
-        if (screenPos==3&&context instanceof MainActivity){
+        if (screenPos==3&&context instanceof HomeLeftActivity){
             layoutParams.gravity= Gravity.CENTER_VERTICAL|Gravity.RIGHT;
             layoutParams.x=570;
         }

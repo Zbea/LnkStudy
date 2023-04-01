@@ -256,7 +256,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.notebookId = noteBook?.id
         noteContent?.resId = noteBook?.contentResId
 
-        noteContent?.title=getString(R.string.unnamed)+noteContents.size+1
+        noteContent?.title=getString(R.string.unnamed)+(noteContents.size+1)
         noteContent?.folderPath=path
         noteContent?.filePath = "$path/$pathName.tch"
         noteContent?.pathName=pathName

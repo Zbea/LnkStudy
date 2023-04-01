@@ -25,15 +25,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property Name = new Property(2, String.class, "name", false, "NAME");
-        public final static Property TypeId = new Property(3, int.class, "typeId", false, "TYPE_ID");
-        public final static Property State = new Property(4, int.class, "state", false, "STATE");
-        public final static Property Date = new Property(5, long.class, "date", false, "DATE");
-        public final static Property ContentResId = new Property(6, String.class, "contentResId", false, "CONTENT_RES_ID");
-        public final static Property BgResId = new Property(7, String.class, "bgResId", false, "BG_RES_ID");
-        public final static Property Course = new Property(8, String.class, "course", false, "COURSE");
-        public final static Property IsCreate = new Property(9, boolean.class, "isCreate", false, "IS_CREATE");
+        public final static Property StudentId = new Property(1, long.class, "studentId", false, "STUDENT_ID");
+        public final static Property UserId = new Property(2, long.class, "userId", false, "USER_ID");
+        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
+        public final static Property TypeId = new Property(4, int.class, "typeId", false, "TYPE_ID");
+        public final static Property State = new Property(5, int.class, "state", false, "STATE");
+        public final static Property Date = new Property(6, long.class, "date", false, "DATE");
+        public final static Property ContentResId = new Property(7, String.class, "contentResId", false, "CONTENT_RES_ID");
+        public final static Property BgResId = new Property(8, String.class, "bgResId", false, "BG_RES_ID");
+        public final static Property Course = new Property(9, String.class, "course", false, "COURSE");
+        public final static Property IsCreate = new Property(10, boolean.class, "isCreate", false, "IS_CREATE");
+        public final static Property MessageTotal = new Property(11, int.class, "messageTotal", false, "MESSAGE_TOTAL");
     }
 
 
@@ -50,15 +52,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"HOMEWORK_TYPE_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
-                "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"NAME\" TEXT," + // 2: name
-                "\"TYPE_ID\" INTEGER NOT NULL ," + // 3: typeId
-                "\"STATE\" INTEGER NOT NULL ," + // 4: state
-                "\"DATE\" INTEGER NOT NULL ," + // 5: date
-                "\"CONTENT_RES_ID\" TEXT," + // 6: contentResId
-                "\"BG_RES_ID\" TEXT," + // 7: bgResId
-                "\"COURSE\" TEXT," + // 8: course
-                "\"IS_CREATE\" INTEGER NOT NULL );"); // 9: isCreate
+                "\"STUDENT_ID\" INTEGER NOT NULL ," + // 1: studentId
+                "\"USER_ID\" INTEGER NOT NULL ," + // 2: userId
+                "\"NAME\" TEXT," + // 3: name
+                "\"TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 4: typeId
+                "\"STATE\" INTEGER NOT NULL ," + // 5: state
+                "\"DATE\" INTEGER NOT NULL ," + // 6: date
+                "\"CONTENT_RES_ID\" TEXT," + // 7: contentResId
+                "\"BG_RES_ID\" TEXT," + // 8: bgResId
+                "\"COURSE\" TEXT," + // 9: course
+                "\"IS_CREATE\" INTEGER NOT NULL ," + // 10: isCreate
+                "\"MESSAGE_TOTAL\" INTEGER NOT NULL );"); // 11: messageTotal
     }
 
     /** Drops the underlying database table. */
@@ -75,31 +79,33 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(2, entity.getStudentId());
+        stmt.bindLong(3, entity.getUserId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(3, name);
+            stmt.bindString(4, name);
         }
-        stmt.bindLong(4, entity.getTypeId());
-        stmt.bindLong(5, entity.getState());
-        stmt.bindLong(6, entity.getDate());
+        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(6, entity.getState());
+        stmt.bindLong(7, entity.getDate());
  
         String contentResId = entity.getContentResId();
         if (contentResId != null) {
-            stmt.bindString(7, contentResId);
+            stmt.bindString(8, contentResId);
         }
  
         String bgResId = entity.getBgResId();
         if (bgResId != null) {
-            stmt.bindString(8, bgResId);
+            stmt.bindString(9, bgResId);
         }
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(9, course);
+            stmt.bindString(10, course);
         }
-        stmt.bindLong(10, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(11, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(12, entity.getMessageTotal());
     }
 
     @Override
@@ -110,31 +116,33 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getUserId());
+        stmt.bindLong(2, entity.getStudentId());
+        stmt.bindLong(3, entity.getUserId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(3, name);
+            stmt.bindString(4, name);
         }
-        stmt.bindLong(4, entity.getTypeId());
-        stmt.bindLong(5, entity.getState());
-        stmt.bindLong(6, entity.getDate());
+        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(6, entity.getState());
+        stmt.bindLong(7, entity.getDate());
  
         String contentResId = entity.getContentResId();
         if (contentResId != null) {
-            stmt.bindString(7, contentResId);
+            stmt.bindString(8, contentResId);
         }
  
         String bgResId = entity.getBgResId();
         if (bgResId != null) {
-            stmt.bindString(8, bgResId);
+            stmt.bindString(9, bgResId);
         }
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(9, course);
+            stmt.bindString(10, course);
         }
-        stmt.bindLong(10, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(11, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(12, entity.getMessageTotal());
     }
 
     @Override
@@ -146,15 +154,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
     public HomeworkTypeBean readEntity(Cursor cursor, int offset) {
         HomeworkTypeBean entity = new HomeworkTypeBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // userId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
-            cursor.getInt(offset + 3), // typeId
-            cursor.getInt(offset + 4), // state
-            cursor.getLong(offset + 5), // date
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // contentResId
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // bgResId
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // course
-            cursor.getShort(offset + 9) != 0 // isCreate
+            cursor.getLong(offset + 1), // studentId
+            cursor.getLong(offset + 2), // userId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
+            cursor.getInt(offset + 4), // typeId
+            cursor.getInt(offset + 5), // state
+            cursor.getLong(offset + 6), // date
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // contentResId
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // bgResId
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // course
+            cursor.getShort(offset + 10) != 0, // isCreate
+            cursor.getInt(offset + 11) // messageTotal
         );
         return entity;
     }
@@ -162,15 +172,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
     @Override
     public void readEntity(Cursor cursor, HomeworkTypeBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setUserId(cursor.getLong(offset + 1));
-        entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setTypeId(cursor.getInt(offset + 3));
-        entity.setState(cursor.getInt(offset + 4));
-        entity.setDate(cursor.getLong(offset + 5));
-        entity.setContentResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setBgResId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setCourse(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setIsCreate(cursor.getShort(offset + 9) != 0);
+        entity.setStudentId(cursor.getLong(offset + 1));
+        entity.setUserId(cursor.getLong(offset + 2));
+        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setTypeId(cursor.getInt(offset + 4));
+        entity.setState(cursor.getInt(offset + 5));
+        entity.setDate(cursor.getLong(offset + 6));
+        entity.setContentResId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setBgResId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setCourse(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setIsCreate(cursor.getShort(offset + 10) != 0);
+        entity.setMessageTotal(cursor.getInt(offset + 11));
      }
     
     @Override

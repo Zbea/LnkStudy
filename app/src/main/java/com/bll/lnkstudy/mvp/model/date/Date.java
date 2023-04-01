@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.date;
 
 import com.bll.lnkstudy.utils.date.Lunar;
 import com.bll.lnkstudy.utils.date.Solar;

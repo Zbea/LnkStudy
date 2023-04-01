@@ -16,7 +16,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :String,val list: List<HomeworkMessage>) {
+class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :String,val list: List<HomeworkMessage.MessageBean>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:MessageAdapter?=null
@@ -56,25 +56,27 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
             dialog?.show()
     }
 
-    fun setData(datas: List<HomeworkMessage>){
+    fun setData(datas: List<HomeworkMessage.MessageBean>){
         mAdapter?.setNewData(datas)
     }
 
-    private var listener: OnDialogClickListener? = null
+    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage.MessageBean>) : BaseQuickAdapter<HomeworkMessage.MessageBean, BaseViewHolder>(layoutResId, data) {
 
-    fun interface OnDialogClickListener {
-        fun onClick(position: Int,id:String)
-    }
-
-    fun setOnDialogClickListener(listener: OnDialogClickListener) {
-        this.listener = listener
-    }
-
-    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage>) : BaseQuickAdapter<HomeworkMessage, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
+        override fun convert(helper: BaseViewHolder, item: HomeworkMessage.MessageBean) {
             helper.setText(R.id.tv_title,item.title)
-            helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.date))
+            if (item.endTime>0){
+                helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
+                val state=if (item.status==3){
+                    mContext.getString(R.string.homework_state_no)
+                }
+                else if (item.status==1){
+                    mContext.getString(R.string.homework_state_yes)
+                }
+                else{
+                    mContext.getString(R.string.homework_state_complete)
+                }
+                helper.setText(R.id.tv_state,state)
+            }
         }
 
     }

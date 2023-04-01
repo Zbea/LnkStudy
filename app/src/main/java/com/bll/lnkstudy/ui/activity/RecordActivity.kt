@@ -32,7 +32,7 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        path = File(Constants.RECORD_PATH, "${DateUtils.longToString(recordBean?.date!!)}.amr").toString()
+        path = File(Constants.RECORD_PATH, "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
     }
 
     override fun initView() {
@@ -67,9 +67,9 @@ class RecordActivity : BaseAppCompatActivity() {
             mRecorder = MediaRecorder().apply {
                 iv_record.setImageResource(R.mipmap.icon_record_show)
                 setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.AMR_WB)
+                setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
                 setOutputFile(path)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
+                setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
                 try {
                     prepare()//准备
                     start()//开始录音

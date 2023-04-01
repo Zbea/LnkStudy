@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
@@ -12,15 +13,19 @@ import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.PaperBean
-import com.bll.lnkstudy.mvp.model.PaperContentBean
-import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.mvp.model.paper.PaperBean
+import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
+import com.bll.lnkstudy.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import java.io.File
 
 
-class PaperDrawingActivity: BaseDrawingActivity() {
+class PaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
+    private val mUploadPresenter= FileUploadPresenter(this)
     private var flags=0//0作业 1考卷
     private var course=""
     private var mCatalogId=0//分组id
@@ -33,6 +38,29 @@ class PaperDrawingActivity: BaseDrawingActivity() {
     private var currentPosition=0
     private var page = 0//页码
     private var pageCount=0
+
+    override fun onSuccess(urls: MutableList<String>?) {
+        val map= HashMap<String, Any>()
+        map["studentTaskId"]=paper?.contentId!!
+        map["studentUrl"]= ToolUtils.getImagesStr(urls)
+        mUploadPresenter.commit(map)
+    }
+
+    override fun onCommitSuccess() {
+        //修改状态
+        paper?.apply {
+            state=1
+            commitDate=System.currentTimeMillis()
+        }
+        daoManager?.insertOrReplace(paper)
+        //提交成功后循环遍历删除手写
+        for (i in paperContents.indices){
+            val index=i+1
+            val drawPath=paper?.path+"/$index"
+            FileUtils.deleteFile(File(drawPath))
+        }
+    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -57,6 +85,9 @@ class PaperDrawingActivity: BaseDrawingActivity() {
         if(papers.size>0){
             currentPosition=papers.size-1
             changeContent()
+        }
+        else{
+            setPWEnabled(false)
         }
         changeExpandView()
         bindClick()
@@ -119,9 +150,13 @@ class PaperDrawingActivity: BaseDrawingActivity() {
         }
 
         iv_btn.setOnClickListener {
-
+            //作业才可以提交
+            if (flags==0&&paper?.state==3){
+                commit()
+            }
         }
     }
+
 
     /**
      * 切换屏幕
@@ -161,7 +196,7 @@ class PaperDrawingActivity: BaseDrawingActivity() {
      * 弹出目录
      */
     private fun showCatalog(){
-        var list= mutableListOf<ItemList>()
+        val list= mutableListOf<ItemList>()
         for (item in papers){
             val itemList= ItemList()
             itemList.name=item.title
@@ -190,37 +225,45 @@ class PaperDrawingActivity: BaseDrawingActivity() {
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
+        paper?.apply {
 
-        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
+            paperContents= daoContentManager?.queryByID(contentId) as MutableList<PaperContentBean>
 
-        pageCount=paperContents.size
+            pageCount=paperContents.size
 
-        tv_title_a.text=paper?.title
-        tv_title_b.text=paper?.title
-        setPWEnabled(!paper!!.isPg)
+            tv_title_a.text=title
+            tv_title_b.text=title
+            setPWEnabled(!isPg)
 
-        loadImage(page,elik_a!!,v_content_a)
-        tv_page_a.text="${paperContents[page].page+1}"
-        if (isExpand){
-            if (page+1<pageCount){
-                loadImage(page+1,elik_b!!,v_content_b)
-                tv_page_b.text="${paperContents[page+1].page+1}"
+            //作业需要提交 且作业未提交 提示
+            if (flags==0&&state==3){
+                setPWEnabled(true)
+                showToast("需要在"+DateUtils.longToStringWeek(endTime*1000)+"之前提交")
             }
             else{
-                //不显示 ，不能手写
-                v_content_b.setImageResource(0)
-                elik_b?.setPWEnabled(false)
-                tv_page_b.text=""
+                setPWEnabled(false)
+            }
+
+            loadImage(page,elik_a!!,v_content_a)
+            tv_page_a.text="${paperContents[page].page+1}"
+            if (isExpand){
+                if (page+1<pageCount){
+                    loadImage(page+1,elik_b!!,v_content_b)
+                    tv_page_b.text="${paperContents[page+1].page+1}"
+                }
+                else{
+                    //不显示 ，不能手写
+                    v_content_b.setImageResource(0)
+                    elik_b?.setPWEnabled(false)
+                    tv_page_b.text=""
+                }
             }
         }
-
     }
 
 
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
-        elik.setPWEnabled(true)
-
         val testPaperContent=paperContents[index]
         GlideUtils.setImageNoCacheUrl(this,testPaperContent.path,view)
 
@@ -242,6 +285,28 @@ class PaperDrawingActivity: BaseDrawingActivity() {
         if (flags==0&&isExpand){
             changeExpandContent()
         }
+    }
+
+    /**
+     * 提交
+     */
+    private fun commit(){
+        val commitPaths= mutableListOf<String>()
+        for (i in paperContents.indices) {
+            val index = i + 1 //当前名
+            val item=paperContents[i]
+            val path = item.path //当前原图路径
+            val drawPath = item.drawPath.replace("tch","png")//当前绘图路径
+
+            val oldBitmap = BitmapFactory.decodeFile(path)
+            val drawBitmap = BitmapFactory.decodeFile(drawPath)
+            if (drawBitmap != null) {
+                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+                BitmapUtils.saveBmpGallery(this, mergeBitmap, path, index.toString())
+            }
+            commitPaths.add(path)
+        }
+        mUploadPresenter.upload(commitPaths)
     }
 
 

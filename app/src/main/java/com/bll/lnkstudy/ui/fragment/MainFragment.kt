@@ -21,6 +21,8 @@ import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.date.DatePlan
+import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -44,7 +46,6 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Date
 
 
 /**
@@ -79,7 +80,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         groups = if(classGroups.isNullOrEmpty()){
             mutableListOf()
         } else{
-            classGroups!!
+            classGroups
         }
         classGroupAdapter?.setNewData(groups)
 
@@ -142,7 +143,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         }
 
         ll_note.setOnClickListener {
-            (activity as MainActivity).goToNote()
+            (activity as HomeLeftActivity).goToNote()
         }
 
         ll_course.setOnClickListener {

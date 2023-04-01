@@ -13,7 +13,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val messages: List<HomeworkMessage>) {
+class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val messages: List<HomeworkMessage.MessageBean>) {
 
     private var dialog:Dialog?=null
 
@@ -63,16 +63,16 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: HomeworkMessage)
+        fun onClick(item: HomeworkMessage.MessageBean)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener){
         this.listener = listener
     }
 
-    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage>) : BaseQuickAdapter<HomeworkMessage, BaseViewHolder>(layoutResId, data) {
+    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage.MessageBean>) : BaseQuickAdapter<HomeworkMessage.MessageBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage) {
+        override fun convert(helper: BaseViewHolder, item: HomeworkMessage.MessageBean) {
             helper.setText(R.id.tv_title,item.title)
             helper.setChecked(R.id.cb_check,item.isSelector)
         }

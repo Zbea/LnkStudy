@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.widget.CheckBox
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.DateWeek
+import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

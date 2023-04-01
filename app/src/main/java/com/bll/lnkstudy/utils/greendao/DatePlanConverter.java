@@ -1,6 +1,6 @@
 package com.bll.lnkstudy.utils.greendao;
 
-import com.bll.lnkstudy.mvp.model.DatePlan;
+import com.bll.lnkstudy.mvp.model.date.DatePlan;
 import com.google.gson.Gson;
 
 import org.greenrobot.greendao.converter.PropertyConverter;

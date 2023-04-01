@@ -44,6 +44,19 @@ public class GlideUtils {
                 .into(imageView);
     }
 
+    public static final void setImageFileNoCache(Context mContext, File file, ImageView imageView){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+        requestOptions.skipMemoryCache(false);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+
+        Glide.with(mContext)
+                .load(file)
+                .apply(requestOptions)
+                .into(imageView);
+    }
+
     public static final void setImageRoundUrl(Context mContext,String url, ImageView imageView,int round){
 
         RequestOptions requestOptions=new RequestOptions();
@@ -68,6 +81,7 @@ public class GlideUtils {
                 .apply(requestOptions)
                 .into(imageView);
     }
+
 
     public static final Bitmap getBitmap(Context mContext,String url){
         Bitmap bitmap=null;

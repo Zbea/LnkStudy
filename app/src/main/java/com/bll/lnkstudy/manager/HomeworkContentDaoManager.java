@@ -71,6 +71,13 @@ public class HomeworkContentDaoManager {
         return queryList;
     }
 
+    public List<HomeworkContentBean> queryAllById(int contentId) {
+        WhereCondition whereCondition=HomeworkContentBeanDao.Properties.ContentId.eq(contentId);
+        List<HomeworkContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        return queryList;
+    }
+
+
     public void deleteAll(String course, int homeworkTypeId) {
 
         WhereCondition whereCondition= HomeworkContentBeanDao.Properties.Course.eq(course);

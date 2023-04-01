@@ -11,7 +11,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DatePlanCopyDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEventBean
+import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.adapter.DatePlanListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils

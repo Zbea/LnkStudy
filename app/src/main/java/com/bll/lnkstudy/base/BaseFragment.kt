@@ -19,7 +19,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.MainActivity
+import com.bll.lnkstudy.ui.activity.HomeLeftActivity
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity
@@ -79,8 +79,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         initCommonTitle()
         initView()
 
-        if (activity is MainActivity)
-            screenPos=(activity as MainActivity).getCurrentScreenPos()
+        if (activity is HomeLeftActivity)
+            screenPos=(activity as HomeLeftActivity).getCurrentScreenPos()
         mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
     }
@@ -257,9 +257,9 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     fun gotoHomeworkDrawing(item: HomeworkTypeBean){
         ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
-        var bundle= Bundle()
+        val bundle= Bundle()
         bundle.putSerializable("homework",item)
-        var intent=Intent(context, HomeworkDrawingActivity::class.java)
+        val intent=Intent(context, HomeworkDrawingActivity::class.java)
         intent.putExtra("homeworkBundle",bundle)
         startActivity(intent)
 //        if (screenPos!=3)

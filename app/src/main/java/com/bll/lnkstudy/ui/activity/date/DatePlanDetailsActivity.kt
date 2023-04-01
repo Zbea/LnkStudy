@@ -8,9 +8,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateSelectorDialog
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.DateEventBean
-import com.bll.lnkstudy.mvp.model.DatePlan
-import com.bll.lnkstudy.mvp.model.DateWeek
+import com.bll.lnkstudy.mvp.model.date.DateEventBean
+import com.bll.lnkstudy.mvp.model.date.DatePlan
+import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.bll.lnkstudy.ui.adapter.DatePlanEventAddAdapter
 import com.bll.lnkstudy.ui.adapter.DatePlanWeekAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
@@ -28,8 +28,13 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     private var oldEvent: DateEventBean?=null
     private var weeks= mutableListOf<DateWeek>()
     private var dateDialog:DateSelectorDialog?=null
-    private var startStr=getString(R.string.start)
-    private var endStr=getString(R.string.end)
+    private var startStr=""
+    private var endStr=""
+
+    init {
+        startStr=getString(R.string.start)
+        endStr=getString(R.string.end)
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_date_plan_details
@@ -44,7 +49,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             dateEventBean?.type=0
 
             for (i in 0..7) {
-                var date = DatePlan()
+                val date = DatePlan()
                 planList.add(date)
             }
         }
@@ -64,7 +69,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             planList=dateEventBean?.plans!!
             if (dateEventBean?.plans?.size!! <8) {
                 for (i in 0 until  8-dateEventBean?.plans?.size!!){
-                    var date = DatePlan()
+                    val date = DatePlan()
                     planList.add(date)
                 }
             }
@@ -90,7 +95,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         mWeekAdapter?.bindToRecyclerView(rv_week)
 
         iv_add.setOnClickListener {
-            var date = DatePlan()
+            val date = DatePlan()
             planList.add(date)
             mAdapter?.notifyDataSetChanged()
         }

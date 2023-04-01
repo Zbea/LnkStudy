@@ -35,13 +35,24 @@
         android:id="@+id/iv_record"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="40dp"
         android:src="@mipmap/icon_record_play"/>
 
     <ImageView
         android:id="@+id/iv_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
         android:src="@mipmap/icon_more"/>
+
+    <TextView
+        android:id="@+id/tv_save"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="@string/commit"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_24"
+        />
 
 </LinearLayout>

@@ -272,7 +272,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
         paintingDrawingBean = PaintingDrawingBean()
         paintingDrawingBean?.title=if (type==0)
-            getString(R.string.drawing)+paintingLists.size+1 else getString(R.string.calligraphy)+paintingLists.size+1
+            getString(R.string.drawing)+(paintingLists.size+1) else getString(R.string.calligraphy)+(paintingLists.size+1)
         paintingDrawingBean?.type = type
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$date.tch"

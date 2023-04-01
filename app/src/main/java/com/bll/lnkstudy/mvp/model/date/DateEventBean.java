@@ -1,5 +1,6 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.date;
 
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.greendao.DatePlanConverter;
 import com.bll.lnkstudy.utils.greendao.DateWeekConverter;
@@ -23,7 +24,7 @@ public class DateEventBean implements Serializable ,Cloneable{
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
     public int type;//0学习计划 1重要日子
 
     public String title;//标题

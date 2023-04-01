@@ -12,7 +12,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 
-import com.bll.lnkstudy.mvp.model.DateWeek;
+import com.bll.lnkstudy.mvp.model.date.DateWeek;
 
 import java.util.Calendar;
 import java.util.List;
