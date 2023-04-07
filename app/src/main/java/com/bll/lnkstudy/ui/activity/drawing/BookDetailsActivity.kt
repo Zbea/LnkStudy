@@ -205,10 +205,10 @@ class BookDetailsActivity : BaseDrawingActivity() {
             }
             Glide.with(this)
                 .load(showFile)
-                .skipMemoryCache(true)
-                .thumbnail(0.1f).fitCenter().into(simpleTarget)
+                .skipMemoryCache(false)
+                .fitCenter().into(simpleTarget)
 
-            val drawPath = showFile?.path.replace(".jpg", ".tch")
+            val drawPath = showFile.path.replace(".jpg", ".tch")
             elik.setLoadFilePath(drawPath, true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -218,7 +218,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 }
 
                 override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                    elik?.saveBitmap(true) {}
+                    elik.saveBitmap(true) {}
                 }
 
             })

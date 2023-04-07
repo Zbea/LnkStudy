@@ -3,13 +3,14 @@ package com.bll.lnkstudy.mvp.model.homework;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeworkMessage implements Serializable {
 
     public int id;//作业本id
     public int total;
-    public List<MessageBean> list;
+    public List<MessageBean> list=new ArrayList<>();
 
     public static class MessageBean implements Serializable{
         public int id;

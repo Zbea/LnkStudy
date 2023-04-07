@@ -12,6 +12,7 @@ public class BookStoreType {
     public List<String> grade;//全部年级
     public List<String> typeGrade;//书籍部分年级
     public List<String> type;//除开教材分类
+    public List<ItemList> subjectList;//科目
     public Map<String,List<String>> subType ;//书籍分类
     public FontDrawTypeBean fontDrawType;//书画分类
     public List<OfficialBean> appType;//apk官方、第三方

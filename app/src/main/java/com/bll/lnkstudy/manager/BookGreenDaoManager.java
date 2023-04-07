@@ -96,6 +96,28 @@ public class BookGreenDaoManager {
         return queryBookList;
     }
 
+    //根据名称搜索 分页
+    public List<BookBean> queryAllName(String name,String type, int page, int pageSize) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(0);
+        WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like(name);
+        WhereCondition whereCondition3=BookBeanDao.Properties.BookType.eq(type);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
+        return queryBookList;
+    }
+    //根据名称搜素全部
+    public List<BookBean> queryAllName(String name,String type) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(0);
+        WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like(name);
+        WhereCondition whereCondition3=BookBeanDao.Properties.BookType.eq(type);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .build().list();
+        return queryBookList;
+    }
+
     //查找已收藏书籍
     public List<BookBean> queryAllBook(boolean isCollect) {
         WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(0);

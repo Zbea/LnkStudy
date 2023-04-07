@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import com.bll.lnkstudy.FileAddress
@@ -328,12 +329,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
             drawingCommitDialog?.setOnDialogClickListener {
                 homeworkCommit=it
+                showLoading()
                 val paths= mutableListOf<String>()
                 for (i in it.contents){
                     val homework=homeworks[i-1]
                     paths.add(saveImage(homework))
                 }
-                mUploadPresenter.upload(paths)
+                Handler().postDelayed({
+                    mUploadPresenter.upload(paths)
+                },500)
             }
         }
         else{

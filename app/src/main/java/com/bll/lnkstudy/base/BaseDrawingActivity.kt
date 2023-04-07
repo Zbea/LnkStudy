@@ -425,14 +425,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         }
     }
 
-    fun showSearchView(isShow:Boolean) {
-        if (isShow){
-            showView(tv_search)
-        }
-        else{
-            disMissView(tv_search)
-        }
-    }
 
     fun showSaveView() {
         showView(iv_save)

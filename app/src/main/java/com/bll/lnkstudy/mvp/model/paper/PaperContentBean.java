@@ -24,7 +24,9 @@ public class PaperContentBean {
     public int categoryId;//考卷分组id
     public int contentId;//考卷id
     public long date;//学生需要提交时间
+    @Unique
     public String path;//原图路径
+    @Unique
     public String drawPath;//绘图路径
     public int page;//页码
     @Generated(hash = 1939447536)

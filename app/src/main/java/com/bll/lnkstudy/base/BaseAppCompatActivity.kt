@@ -161,10 +161,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     fun showSearchView(isShow:Boolean) {
         if (isShow){
-            showView(tv_search)
+            showView(ll_search)
         }
         else{
-            disMissView(tv_search)
+            disMissView(ll_search)
         }
     }
 

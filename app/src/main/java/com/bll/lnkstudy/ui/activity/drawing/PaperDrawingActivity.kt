@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
@@ -47,16 +48,20 @@ class PaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onCommitSuccess() {
+        showToast(R.string.toast_commit_success)
         //修改状态
         paper?.apply {
             state=1
             commitDate=System.currentTimeMillis()
         }
+        papers[currentPosition]=paper!!
         daoManager?.insertOrReplace(paper)
+        //设置不能手写
+        setPWEnabled(false)
         //提交成功后循环遍历删除手写
         for (i in paperContents.indices){
             val index=i+1
-            val drawPath=paper?.path+"/$index"
+            val drawPath=paper?.path +"/$index/"
             FileUtils.deleteFile(File(drawPath))
         }
     }
@@ -71,7 +76,6 @@ class PaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         isExpand= flags == 1
         course=intent.getStringExtra("course").toString()
         mCatalogId=intent.getIntExtra("categoryId",0)
-        pageCount=paperContents.size
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
@@ -225,38 +229,36 @@ class PaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
-        paper?.apply {
 
-            paperContents= daoContentManager?.queryByID(contentId) as MutableList<PaperContentBean>
+        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
+        pageCount=paperContents.size
 
-            pageCount=paperContents.size
+        tv_title_a.text=paper?.title
+        tv_title_b.text=paper?.title
+        setPWEnabled(!paper?.isPg!!)
 
-            tv_title_a.text=title
-            tv_title_b.text=title
-            setPWEnabled(!isPg)
+        //作业需要提交 且作业未提交 提示
+        if (flags==0&&paper?.state==3){
+            setPWEnabled(true)
+            showToast("需要在"+DateUtils.longToStringWeek(paper?.endTime!!*1000)+"之前提交")
+        }
+        else{
+            setPWEnabled(false)
+        }
 
-            //作业需要提交 且作业未提交 提示
-            if (flags==0&&state==3){
-                setPWEnabled(true)
-                showToast("需要在"+DateUtils.longToStringWeek(endTime*1000)+"之前提交")
+        loadImage(page,elik_a!!,v_content_a)
+        tv_page_a.text="${paperContents[page].page+1}"
+
+        if (isExpand){
+            if (page+1<pageCount){
+                loadImage(page+1,elik_b!!,v_content_b)
+                tv_page_b.text="${paperContents[page+1].page+1}"
             }
             else{
-                setPWEnabled(false)
-            }
-
-            loadImage(page,elik_a!!,v_content_a)
-            tv_page_a.text="${paperContents[page].page+1}"
-            if (isExpand){
-                if (page+1<pageCount){
-                    loadImage(page+1,elik_b!!,v_content_b)
-                    tv_page_b.text="${paperContents[page+1].page+1}"
-                }
-                else{
-                    //不显示 ，不能手写
-                    v_content_b.setImageResource(0)
-                    elik_b?.setPWEnabled(false)
-                    tv_page_b.text=""
-                }
+                //不显示 ，不能手写
+                v_content_b.setImageResource(0)
+                elik_b?.setPWEnabled(false)
+                tv_page_b.text=""
             }
         }
     }
@@ -265,7 +267,7 @@ class PaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
         val testPaperContent=paperContents[index]
-        GlideUtils.setImageNoCacheUrl(this,testPaperContent.path,view)
+        GlideUtils.setImageFileNoCache(this,File(testPaperContent.path),view)
 
         elik.setLoadFilePath(testPaperContent.drawPath,true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
@@ -291,22 +293,24 @@ class PaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 提交
      */
     private fun commit(){
+        showLoading()
         val commitPaths= mutableListOf<String>()
         for (i in paperContents.indices) {
-            val index = i + 1 //当前名
             val item=paperContents[i]
             val path = item.path //当前原图路径
             val drawPath = item.drawPath.replace("tch","png")//当前绘图路径
-
             val oldBitmap = BitmapFactory.decodeFile(path)
             val drawBitmap = BitmapFactory.decodeFile(drawPath)
             if (drawBitmap != null) {
                 val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                BitmapUtils.saveBmpGallery(this, mergeBitmap, path, index.toString())
+                BitmapUtils.saveBmpGallery(this, mergeBitmap, path)
             }
+
             commitPaths.add(path)
         }
-        mUploadPresenter.upload(commitPaths)
+        Handler().postDelayed({
+            mUploadPresenter.upload(commitPaths)
+        },500)
     }
 
 

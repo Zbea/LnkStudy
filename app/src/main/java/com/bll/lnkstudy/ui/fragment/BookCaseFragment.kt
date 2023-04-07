@@ -75,6 +75,7 @@ class BookCaseFragment: BaseFragment() {
                 this@BookCaseFragment.position=position
                 book=books[position]
                 onLongClick()
+                true
             }
         }
     }
@@ -121,7 +122,7 @@ class BookCaseFragment: BaseFragment() {
 
 
     //长按显示课本管理
-    private fun onLongClick(): Boolean {
+    private fun onLongClick(){
         BookManageDialog(requireActivity(),screenPos,0,book!!).builder()
             .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
             override fun onCollect() {
@@ -138,7 +139,6 @@ class BookCaseFragment: BaseFragment() {
             }
         })
 
-        return true
     }
 
     //删除书架书籍

@@ -3,6 +3,7 @@ package com.bll.lnkstudy.mvp.model.homework;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class HomeworkReel implements Serializable {
     public int subType;//作业分类
     public List<HomeworkReelBean> list;
 
-    public class HomeworkReelBean implements Serializable{
+    public static class HomeworkReelBean{
         @SerializedName("studentTaskId")
         public int id;
         public String title;//作业标题

@@ -5,16 +5,21 @@ import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.dialog.BookManageDialog
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_painting.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 /**
  * 课本
@@ -24,6 +29,7 @@ class TextbookFragment : BaseFragment(){
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<BookBean>()
     private var textBook=""//用来区分课本类型
+    private var position=0
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_textbook
@@ -67,7 +73,42 @@ class TextbookFragment : BaseFragment(){
             setOnItemClickListener { adapter, view, position ->
                 gotoBookDetails(books[position].bookId)
             }
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                this@TextbookFragment.position=position
+                onLongClick()
+                true
+            }
         }
+    }
+
+    private fun onLongClick(){
+        BookManageDialog(requireActivity(),screenPos,1,books[position]).builder()
+            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
+                override fun onCollect() {
+                }
+                override fun onDelete() {
+                    delete()
+                }
+                override fun onMove() {
+                }
+            })
+
+    }
+
+    //删除书架书籍
+    private fun delete(){
+        CommonDialog(requireActivity(),screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                val book=books[position]
+                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                books.remove(book)
+                mAdapter?.notifyDataSetChanged()
+            }
+        })
     }
 
     //更新数据

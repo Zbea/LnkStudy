@@ -204,27 +204,6 @@ object DataBeanManager {
             return list
         }
 
-    val message: MutableList<MessageList>
-        get() {
-            val list= mutableListOf<MessageList>()
-            list.add(MessageList().apply {
-                name = "语文周老师"
-                createTime = "2020-6-2"
-                content = "上交语文作业"
-            })
-            list.add(MessageList().apply {
-                name = "数学老师"
-                createTime = "2020-6-2"
-                content ="上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业上交语文作业"
-            })
-            list.add(MessageList().apply {
-                name = "妈妈"
-                createTime = "2020-6-2"
-                content = "回家吃饭"
-            })
-            return list
-        }
-
 
     /**
      * 获取老师下发作业本对应的内容默认背景图

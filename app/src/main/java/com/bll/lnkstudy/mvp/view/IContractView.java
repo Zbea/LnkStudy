@@ -8,6 +8,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.Grade;
+import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.paper.ReceivePaper;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
@@ -118,4 +119,9 @@ public interface IContractView {
         void onDownloadSuccess();
         void onCommitSuccess();
     }
+
+    interface IMessageView extends IBaseView{
+        void onList(Message message);
+    }
+
 }

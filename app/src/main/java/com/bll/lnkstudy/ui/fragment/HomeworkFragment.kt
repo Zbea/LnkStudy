@@ -418,7 +418,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                             title = item.title
                             path = pathStr
                             page = paperContents.size //子内容的第一个页码位置
-                            index = papers.size - 1 //作业位置
+                            index = if (papers.size==0) 0 else  papers.size-1 //作业位置
                             createDate = item.date //下发时间
                             endTime = item.endTime //提交时间
                             this.images = item.imageUrl.split(",").toTypedArray().toString()
@@ -444,7 +444,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 }
 
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
                 }
             })
         }
@@ -494,7 +493,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      */
     private fun fetchMessage() {
         for (item in homeworkTypes) {
-            if (!item.isCreate) {
+            if (!item.isCreate&&item.state!=1) {
                 val map = HashMap<String, Any>()
                 map["size"] = 15
                 map["grade"] = mUser?.grade!!
@@ -507,7 +506,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
 
         for (item in homeworkTypes){
             val map = HashMap<String, Any>()
-            map["id"] = item.typeId
+            map["id"] = item.id
             map["subType"] = item.state
             mPresenter.getReelList(map)
         }

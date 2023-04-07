@@ -7,11 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.MessageList
+import com.bll.lnkstudy.mvp.model.MessageBean
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.DateUtils
 
 
-class MessageDetailsDialog(private val context: Context,val screenPos:Int, private val messageList: MessageList) {
+class MessageDetailsDialog(private val context: Context,val screenPos:Int, private val messageBean: MessageBean) {
 
     private var dialog: Dialog?=null
 
@@ -33,9 +34,9 @@ class MessageDetailsDialog(private val context: Context,val screenPos:Int, priva
         val tvTime = dialog?.findViewById<TextView>(R.id.tv_time)
         val tvContent = dialog?.findViewById<TextView>(R.id.tv_content)
 
-        tvName?.text=messageList.name
-        tvTime?.text=messageList.createTime
-        tvContent?.text=messageList.content
+        tvName?.text=messageBean.teacherName
+        tvTime?.text= DateUtils.longToStringWeek(messageBean.date)
+        tvContent?.text=messageBean.content
 
 
         return dialog

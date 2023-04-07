@@ -224,4 +224,10 @@ interface APIService{
     @POST("task/group/studentDownload")
     fun commitHomeworkLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
+
+    /**
+     * 消息列表
+     */
+    @GET("message/inform/list")
+    fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
 }

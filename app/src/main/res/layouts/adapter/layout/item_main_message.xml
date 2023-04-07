@@ -12,7 +12,6 @@
         android:id="@+id/tv_message_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="名称"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_18" />
 
@@ -22,10 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="@dimen/dp_5"
-        android:text="内容"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textColor="@color/black_20"
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_16" />
 
 </LinearLayout>

@@ -31,11 +31,6 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     private var startStr=""
     private var endStr=""
 
-    init {
-        startStr=getString(R.string.start)
-        endStr=getString(R.string.end)
-    }
-
     override fun layoutId(): Int {
         return R.layout.ac_date_plan_details
     }
@@ -43,6 +38,9 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     override fun initData() {
         flags=intent.flags
         weeks= DataBeanManager.weeks
+
+        startStr=getString(R.string.start)
+        endStr=getString(R.string.end)
 
         if (flags==0){
             dateEventBean= DateEventBean()

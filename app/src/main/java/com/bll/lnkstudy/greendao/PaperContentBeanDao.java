@@ -56,8 +56,8 @@ public class PaperContentBeanDao extends AbstractDao<PaperContentBean, Long> {
                 "\"CATEGORY_ID\" INTEGER NOT NULL ," + // 4: categoryId
                 "\"CONTENT_ID\" INTEGER NOT NULL ," + // 5: contentId
                 "\"DATE\" INTEGER NOT NULL ," + // 6: date
-                "\"PATH\" TEXT," + // 7: path
-                "\"DRAW_PATH\" TEXT," + // 8: drawPath
+                "\"PATH\" TEXT UNIQUE ," + // 7: path
+                "\"DRAW_PATH\" TEXT UNIQUE ," + // 8: drawPath
                 "\"PAGE\" INTEGER NOT NULL );"); // 9: page
     }
 

@@ -174,7 +174,6 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
             else{
                 if (page+1<pageCount){
                     page+=1
-
                 }
             }
             changeContent()
@@ -188,20 +187,21 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
         //提交失败后，已经合图之后避免重复合图
         if (commitPaths.size!=paths.size){
             for (i in 0 until paths.size) {
-                val index = i + 1 //当前名
                 val path = paths[i] //当前原图路径
-                val drawPath = "$outImageStr/$index/draw.png" //当前绘图路径
+                val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
 
                 val oldBitmap = BitmapFactory.decodeFile(path)
                 val drawBitmap = BitmapFactory.decodeFile(drawPath)
                 if (drawBitmap != null) {
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this, mergeBitmap, outImageStr, index.toString())
+                    BitmapUtils.saveBmpGallery(this, mergeBitmap, path)
                 }
                 commitPaths.add(path)
             }
         }
-        mUploadPresenter.upload(commitPaths)
+        Handler().postDelayed({
+            mUploadPresenter.upload(commitPaths)
+        },500)
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.FileAddress
@@ -50,6 +51,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
+    private var bookNameStr=""
 
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
@@ -61,13 +63,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
         //年级分类
         if (bookStoreType.typeGrade.isNullOrEmpty()) return
         for (i in bookStoreType.typeGrade.indices) {
-            gradeList.add(
-                PopupBean(
-                    i,
-                    bookStoreType.typeGrade[i],
-                    i == 0
-                )
-            )
+            gradeList.add(PopupBean(i, bookStoreType.typeGrade[i], i == 0))
         }
         gradeStr = gradeList[0].name
         initSelectorView()
@@ -103,9 +99,18 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
     override fun initView() {
         setPageTitle(categoryStr)
-        disMissView(tv_province,tv_download,tv_semester)
+        showView(tv_grade,ll_search)
+        disMissView(tv_download)
 
         initRecyclerView()
+
+        et_search.addTextChangedListener {
+            bookNameStr =it.toString()
+            if (!bookNameStr.isNullOrEmpty()){
+                pageIndex=1
+                fetchData()
+            }
+        }
     }
 
     //获取数据
@@ -126,18 +131,26 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
         tv_grade.setOnClickListener {
             if (popWindowGrade == null) {
-                popWindowGrade = PopupList(this, gradeList, tv_grade,tv_grade.width, 5).builder()
+                popWindowGrade = PopupList(this, gradeList, tv_grade, 5).builder()
                 popWindowGrade?.setOnSelectListener { item ->
                     gradeStr = item.name
                     tv_grade.text = gradeStr
-                    pageIndex = 1
-                    fetchData()
+                    typeFindData()
                 }
             } else {
                 popWindowGrade?.show()
             }
         }
 
+    }
+
+    /**
+     * 分类查找上
+     */
+    private fun typeFindData(){
+        pageIndex = 1
+        bookNameStr=""//清除搜索标记
+        fetchData()
     }
 
 
@@ -151,8 +164,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             typeStr = typeList[i]
-            pageIndex = 1
-            fetchData()
+            typeFindData()
         }
 
     }
@@ -333,12 +345,22 @@ class BookStoreActivity : BaseAppCompatActivity(),
     }
 
     override fun fetchData() {
+        hideKeyboard()
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["grade"] = gradeStr
-        map["type"] = categoryStr
-        map["subType"] = typeStr
+        if (bookNameStr.isNullOrEmpty()){
+            map["grade"] = gradeStr
+            map["type"] = categoryStr
+            map["subType"] = typeStr
+        }
+        else{
+            map["grade"] = gradeStr
+            map["subType"] = typeStr
+            map["type"] = categoryStr
+            map["bookName"] = bookNameStr
+        }
+
         presenter.getBooks(map)
     }
 

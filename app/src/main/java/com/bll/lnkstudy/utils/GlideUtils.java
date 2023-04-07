@@ -35,7 +35,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(true);
+        requestOptions.skipMemoryCache(false);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(mContext)
@@ -44,11 +44,11 @@ public class GlideUtils {
                 .into(imageView);
     }
 
-    public static final void setImageFileNoCache(Context mContext, File file, ImageView imageView){
+    public static void setImageFileNoCache(Context mContext, File file, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(false);
+        requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
         Glide.with(mContext)
@@ -73,7 +73,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(false);
+        requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
         Glide.with(mContext)

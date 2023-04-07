@@ -1,37 +1,45 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.mvp.model.MessageList
+import com.bll.lnkstudy.mvp.model.Message
+import com.bll.lnkstudy.mvp.model.MessageBean
+import com.bll.lnkstudy.mvp.presenter.MessagePresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_page_number.*
 
-class MessageListActivity:BaseAppCompatActivity() {
+class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
-    private var lists= mutableListOf<MessageList>()
+    private var mMessagePresenter= MessagePresenter(this)
+    private var messages= mutableListOf<MessageBean>()
     private var mAdapter:MessageAdapter?=null
+
+    override fun onList(message: Message) {
+        setPageNumber(message.total)
+        messages=message.list
+        mAdapter?.setNewData(messages)
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_list
     }
 
     override fun initData() {
-        lists= DataBeanManager.message
+        pageSize=10
+        fetchData()
     }
 
     override fun initView() {
         setPageTitle(R.string.message_title_str)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = MessageAdapter(R.layout.item_message, null).apply {
+        mAdapter = MessageAdapter(1,R.layout.item_message, null).apply {
             val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             layoutParams.setMargins(
                 DP2PX.dip2px(this@MessageListActivity,50f),
@@ -43,40 +51,19 @@ class MessageListActivity:BaseAppCompatActivity() {
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                lists[position].isLook=true
-                notifyDataSetChanged()
-                MessageDetailsDialog(this@MessageListActivity,getCurrentScreenPos(), lists[position]).builder()
+                MessageDetailsDialog(this@MessageListActivity,getCurrentScreenPos(), messages[position]).builder()
             }
         }
-
-        pageNumberView()
-
-    }
-
-    //翻页处理
-    private fun pageNumberView(){
-        var pageTotal=lists.size //全部数量
-        var pageNum=12
-        var pageCount=Math.ceil((pageTotal.toDouble()/pageNum)).toInt()//总共页码
-        if (pageTotal==0)
-        {
-            ll_page_number.visibility= View.GONE
-            mAdapter?.notifyDataSetChanged()
-            return
-        }
-
-        tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageCount.toString()
-
-        fetchData()
-
 
     }
 
 
     override fun fetchData() {
-        mAdapter?.setNewData(lists)
-        tv_page_current.text=pageIndex.toString()
+        val map= HashMap<String,Any>()
+        map["page"]=pageIndex
+        map["size"]=pageSize
+        map["type"]=2
+        mMessagePresenter.getList(map,true)
     }
 
 }

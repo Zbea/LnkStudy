@@ -11,8 +11,8 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DatePlanCopyDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DatePlanListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
@@ -28,6 +28,8 @@ class DatePlanListActivity:BaseAppCompatActivity() {
 
     private var mAdapter:DatePlanListAdapter?=null
     private var plans= mutableListOf<DateEventBean>()
+    private var startStr=""
+    private var endStr=""
 
     override fun layoutId(): Int {
         return R.layout.ac_date_plan_list
@@ -35,7 +37,10 @@ class DatePlanListActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         popWindowBeans.add(PopupBean(0, getString(R.string.add), true))
-        popWindowBeans.add(PopupBean(0, getString(R.string.copy), true))
+        popWindowBeans.add(PopupBean(0, getString(R.string.copy), false))
+
+        startStr=getString(R.string.start)
+        endStr=getString(R.string.end)
     }
 
     @SuppressLint("WrongConstant")
@@ -73,11 +78,11 @@ class DatePlanListActivity:BaseAppCompatActivity() {
                         for (item in plans[position]?.plans!!){
                             if (item.isRemindStart){
                                 CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,
-                                    plans[position].title +"开始："+item.course+item.content)
+                                    plans[position].title +startStr+"："+item.course+item.content)
                             }
                             if (item.isRemindEnd){
                                 CalendarReminderUtils.deleteCalendarEvent(this@DatePlanListActivity,
-                                    plans[position].title +"结束："+item.course+item.content)
+                                    plans[position].title +endStr+"："+item.course+item.content)
                             }
                         }
 

@@ -24,6 +24,7 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
+import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.*
@@ -51,10 +52,11 @@ import java.util.*
 /**
  * 首页
  */
-class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView.IPaperView {
+class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView.IPaperView,IContractView.IMessageView {
 
     private var classGroupPresenter = ClassGroupPresenter(this)
     private var mPaperPresenter=TestPaperPresenter(this)
+    private var mMessagePresenter=MessagePresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var classGroupAdapter: MainClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
@@ -62,6 +64,14 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     private var receivePapers = mutableListOf<ReceivePaper.PaperBean>()
     private var receivePaperAdapter: MainReceivePaperAdapter? = null
     private var positionPaper = 0
+
+    private var messages= mutableListOf<MessageBean>()
+    private var mMessageAdapter:MessageAdapter?=null
+
+    override fun onList(message: Message) {
+        messages=message.list
+        mMessageAdapter?.setNewData(messages)
+    }
 
     override fun onList(receivePaper: ReceivePaper?) {
         receivePapers= receivePaper?.list as MutableList<ReceivePaper.PaperBean>
@@ -121,6 +131,8 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
 
     override fun lazyLoad() {
         classGroupPresenter.getClassGroupList(false)
+        findMessages()
+        findReceivePapers()
     }
 
     @SuppressLint("WrongConstant")
@@ -206,15 +218,12 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
 
     //消息相关处理
     private fun initMessageView() {
-        val messageDatas = DataBeanManager.message
-        MessageAdapter(R.layout.item_main_message, messageDatas).apply {
+        mMessageAdapter=MessageAdapter(0,R.layout.item_main_message, null).apply {
             rv_main_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_message.adapter = this
             bindToRecyclerView(rv_main_message)
             setOnItemClickListener { adapter, view, position ->
-                messageDatas[position].isLook = true
-                notifyDataSetChanged()
-                MessageDetailsDialog(requireContext(), screenPos, messageDatas[position]).builder()
+                MessageDetailsDialog(requireContext(), screenPos, messages[position]).builder()
             }
         }
     }
@@ -230,7 +239,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
 
     //作业相关
     private fun initHomeWorkView() {
-        findReceivePapers()
+
         receivePaperAdapter = MainReceivePaperAdapter(R.layout.item_main_receivepaper, receivePapers).apply {
             rv_main_receivePaper.layoutManager = GridLayoutManager(activity, 2)
             rv_main_receivePaper.adapter = this
@@ -306,6 +315,14 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         mPaperPresenter.getList(map)
     }
 
+    private fun findMessages(){
+        val map=HashMap<String,Any>()
+        map["page"]=1
+        map["size"]=4
+        map["type"]=2
+        mMessagePresenter.getList(map,false)
+    }
+
     //下载收到的图片
     private fun loadPapers() {
         for (item in receivePapers) {
@@ -358,10 +375,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     }
 
     override fun refreshData() {
-        findReceivePapers()
-        loadPapers()
-        classGroupPresenter.getClassGroupList(false)
-
+        lazyLoad()
     }
 
 }

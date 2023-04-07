@@ -14,7 +14,7 @@
         android:layout_height="@dimen/dp_60"
         android:layout_marginStart="@dimen/dp_50"
         android:layout_marginEnd="@dimen/dp_50"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         />
 
     <androidx.recyclerview.widget.RecyclerView

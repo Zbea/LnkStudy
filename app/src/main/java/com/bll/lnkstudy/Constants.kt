@@ -86,6 +86,7 @@ class Constants{
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
         const val ACTION_VIDEO = "com.bll.lnkstudy.raw"
+        const val ACTION_TEXTBOOK = "com.bll.lnkstudy.textbook"
     }
 
 }

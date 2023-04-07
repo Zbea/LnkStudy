@@ -42,10 +42,12 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
-    private var semesterStr="上学期"
+    private var semesterStr=""
+    private var courseId=0//科目
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: BookBean? = null
 
+    private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
     private var provinceList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
@@ -59,11 +61,17 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
     override fun onType(bookStoreType: BookStoreType) {
         //年级分类
-        if (bookStoreType.grade.isNullOrEmpty()) return
         for (i in bookStoreType.grade.indices) {
             gradeList.add(PopupBean(i, bookStoreType.grade[i], i == 0))
         }
         gradeStr = gradeList[0].name
+
+        for (i in bookStoreType.subjectList.indices) {
+            val item=bookStoreType.subjectList[i]
+            subjectList.add(PopupBean(item.type, item.desc, i == 0))
+        }
+        courseId = subjectList[0].id
+
         initSelectorView()
         getDataBook()
     }
@@ -92,19 +100,18 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         typeList.removeAt(3)
         typeStr = typeList[0]
         semesterList=DataBeanManager.semesters
+        semesterStr= semesterList[0].name
 
         getData()
     }
 
     override fun initView() {
         setPageTitle(R.string.main_teaching)
-        disMissView(tv_search)
+        disMissView(ll_search,tv_course)
+        showView(tv_province,tv_grade,tv_semester)
 
         initRecyclerView()
-
-        if (typeList.size > 0) {
-            initTab()
-        }
+        initTab()
 
         tv_download?.setOnClickListener {
 
@@ -148,6 +155,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         map["size"] = pageSize
         map["grade"] = gradeStr
         map["semester"]=semesterStr
+        map["subjectName"]=courseId
         presenter.getTextBookCks(map)
     }
 
@@ -156,7 +164,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
      */
     private fun initSelectorView() {
 
-        tv_grade.text = gradeList[0].name
+        tv_grade.text = gradeStr
         tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
@@ -180,10 +188,21 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
         tv_semester.text = semesterStr
         tv_semester.setOnClickListener {
-            PopupList(this, semesterList, tv_semester, 5).builder()
+            PopupList(this, semesterList, tv_semester, tv_semester.width, 5).builder()
                 .setOnSelectListener { item ->
                     semesterStr = item.name
                     tv_semester.text = item.name
+                    pageIndex = 1
+                    fetchData()
+                }
+        }
+
+        tv_course.text = subjectList[0].name
+        tv_course.setOnClickListener {
+            PopupList(this, subjectList, tv_course, tv_course.width, 5).builder()
+                .setOnSelectListener { item ->
+                    courseId = item.id
+                    tv_course.text = item.name
                     pageIndex = 1
                     fetchData()
                 }
@@ -198,13 +217,21 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            when (i) {
+                0 -> {
+                    showView(tv_download)
+                    disMissView(tv_course)
+                }
+                1 -> {
+                    disMissView(tv_download,tv_course)
+                }
+                else -> {
+                    showView(tv_course)
+                    disMissView(tv_download)
+                }
+            }
             typeId = i
             typeStr = typeList[typeId]
-            if (i == 0) {
-                showView(tv_download)
-            } else {
-                disMissView(tv_download)
-            }
             pageIndex = 1
             fetchData()
         }
@@ -313,24 +340,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
             override fun onFinish(success: Boolean) {
                 if (success) {
-//                                //书籍中的参考课辅，保存到作业本
-//                                if (typeId == 3) {
-//                                    val item = HomeworkType()
-//                                    item.typeId = book?.bookId!!
-//                                    item.name = book?.bookName
-//                                    item.state = 3
-//                                    item.bgResId = ToolUtils.getImageResStr(
-//                                        this@TextBookStoreActivity,
-//                                        R.mipmap.icon_homework_cover_1
-//                                    )
-//                                    item.date = System.currentTimeMillis()
-//                                    item.courseId = 0
-//                                    item.course = book?.subjectName
-//                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-//                                    EventBus.getDefault().post(BOOK_HOMEWORK_EVENT)
-//                                }
-
-
                     book.apply {
                         showToast(bookName+getString(R.string.book_download_success))
                         textBookType = typeStr

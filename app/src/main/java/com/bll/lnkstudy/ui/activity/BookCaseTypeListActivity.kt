@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -20,6 +21,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_bookcase_type_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -36,6 +38,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
     private var typeStr=""//当前分类
     private var pos=0 //当前书籍位置
     private var book: BookBean?=null
+    private var bookNameStr=""
 
     override fun layoutId(): Int {
         return R.layout.ac_bookcase_type_list
@@ -50,6 +53,14 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
 
         setPageTitle(R.string.book_type_title)
         showSearchView(true)
+
+        et_search.addTextChangedListener {
+            bookNameStr =it.toString()
+            if (!bookNameStr.isNullOrEmpty()){
+                pageIndex=1
+                fetchData()
+            }
+        }
 
         initTab()
 
@@ -97,6 +108,7 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
             mAdapterType.getItem(typePos)?.isCheck=true
             typeStr=types[typePos].name
             mAdapterType.notifyDataSetChanged()
+            bookNameStr=""//清除搜索标记
             pageIndex=1
             fetchData()
         }
@@ -154,10 +166,21 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
     }
 
     override fun fetchData() {
-        books=BookGreenDaoManager.getInstance().queryAllBook(typeStr,pageIndex,Constants.PAGE_SIZE)
-        val total=BookGreenDaoManager.getInstance().queryAllBook(typeStr)
+        hideKeyboard()
+        var total= mutableListOf<BookBean>()
+        //判断是否是搜索
+        if (bookNameStr.isNullOrEmpty()){
+            books=BookGreenDaoManager.getInstance().queryAllBook(typeStr,pageIndex,Constants.PAGE_SIZE)
+            total=BookGreenDaoManager.getInstance().queryAllBook(typeStr)
+        }
+        else{
+            books=BookGreenDaoManager.getInstance().queryAllName(bookNameStr,typeStr,pageIndex,Constants.PAGE_SIZE)
+            total=BookGreenDaoManager.getInstance().queryAllName(bookNameStr,typeStr)
+        }
+
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }
+
 
 }
