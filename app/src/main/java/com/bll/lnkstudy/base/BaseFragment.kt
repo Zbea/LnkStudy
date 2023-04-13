@@ -20,10 +20,7 @@ import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.HomeLeftActivity
-import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
-import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity
-import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity
-import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -281,17 +278,26 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     /**
      * 跳转考卷
      */
-    fun gotoPaperDrawing(flags: Int,mCourse:String,mTypeId:Int){
-        ActivityManager.getInstance().checkPaperDrawingIsExist(flags,mCourse,mTypeId)
-        var intent=Intent(activity, PaperDrawingActivity::class.java)
+    fun gotoPaperDrawing(mCourse:String,mTypeId:Int){
+        ActivityManager.getInstance().checkPaperDrawingIsExist(mCourse,mTypeId)
+        val intent=Intent(activity, PaperDrawingActivity::class.java)
         intent.putExtra("course",mCourse)
         intent.putExtra("categoryId",mTypeId)
-        intent.flags=flags
-        if (flags==1)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
         startActivity(intent)
 //        if (screenPos!=3)
 //            ActivityManager.getInstance().finishActivity(activity)
+    }
+
+    /**
+     * 跳转考卷
+     */
+    fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int){
+        ActivityManager.getInstance().checkHomeworkReelDrawingIsExist(mCourse,mTypeId)
+        val intent=Intent(activity, HomeworkReelDrawingActivity::class.java)
+        intent.putExtra("course",mCourse)
+        intent.putExtra("categoryId",mTypeId)
+        startActivity(intent)
     }
 
     /**

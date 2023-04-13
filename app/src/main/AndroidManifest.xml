@@ -104,8 +104,11 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.NoteTypeManagerActivity"/>
-        <activity android:name=".ui.activity.drawing.MainReceivePaperDrawingActivity"/>
+        <activity android:name=".ui.activity.drawing.PaperExamDrawingActivity"/>
         <activity android:name=".ui.activity.drawing.HomeworkDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
+        <activity android:name=".ui.activity.drawing.HomeworkReelDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.RecordActivity"/>
@@ -114,7 +117,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.BookCaseTypeListActivity"/>
-        <activity android:name=".ui.activity.BookCollectActivity"/>
+        <activity android:name=".ui.activity.CloudStorageActivity"/>
         <activity android:name=".ui.activity.drawing.PaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 

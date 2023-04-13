@@ -38,13 +38,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         }
         mAdapter?.setNewData(groups)
 
-        //设置全部科目
-        val courses = DataBeanManager.courses
-        for (item in groups){
-            if (!courses.contains(item.subject)){
-                courses.add(item.subject)
-            }
-        }
         DataBeanManager.classGroups=groups
         EventBus.getDefault().post(Constants.COURSE_EVENT)
     }
@@ -53,6 +46,9 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         showToast(R.string.toast_out_classGroup_success)
         groups.removeAt(positionGroup)
         mAdapter?.setNewData(groups)
+        //退出班群，刷新科目
+        DataBeanManager.classGroups=groups
+        EventBus.getDefault().post(Constants.COURSE_EVENT)
     }
     override fun onUser(lists: MutableList<ClassGroupUser>?) {
     }

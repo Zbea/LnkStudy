@@ -10,10 +10,11 @@ class MessageAdapter(private val type:Int,layoutResId: Int, data: MutableList<Me
 
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
         helper.apply {
-            setText(R.id.tv_message_name,item.teacherName)
+            val typeNameStr=if (item.sendType==2) mContext.getString(R.string.message_receiver) else mContext.getString(R.string.message_sender)
+            setText(R.id.tv_message_name, typeNameStr+item.teacherName)
             setText(R.id.tv_message_content,item.content)
             if (type==1){
-                setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date))
+                setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date*1000))
             }
 
         }

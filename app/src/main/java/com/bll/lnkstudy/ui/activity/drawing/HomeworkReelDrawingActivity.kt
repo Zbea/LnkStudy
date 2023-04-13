@@ -1,30 +1,36 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
-import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
+import com.bll.lnkstudy.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
 
 /**
- * 考卷（考完提交后保存的考卷）
+ * 作业卷提交
  */
-class PaperDrawingActivity: BaseDrawingActivity(){
+class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
+    private val mUploadPresenter= FileUploadPresenter(this)
     private var course=""
     private var mCatalogId=0//分组id
     private var daoManager: PaperDaoManager?=null
@@ -37,19 +43,46 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     private var page = 0//页码
     private var pageCount=0
 
+    override fun onSuccess(urls: MutableList<String>?) {
+        val map= HashMap<String, Any>()
+        map["studentTaskId"]=paper?.contentId!!
+        map["studentUrl"]= ToolUtils.getImagesStr(urls)
+        mUploadPresenter.commit(map)
+    }
+
+    override fun onCommitSuccess() {
+        showToast(R.string.toast_commit_success)
+        //修改状态
+        paper?.apply {
+            state=1
+            commitDate=System.currentTimeMillis()
+        }
+        papers[currentPosition]=paper!!
+        daoManager?.insertOrReplace(paper)
+        //设置不能手写
+        setPWEnabled(false)
+        //提交成功后循环遍历删除手写
+        for (i in paperContents.indices){
+            val index=i+1
+            val drawPath=paper?.path +"/$index/"
+            FileUtils.deleteFile(File(drawPath))
+        }
+    }
+
+
     override fun layoutId(): Int {
         return R.layout.ac_drawing
     }
 
     override fun initData() {
-        isExpand= true
+        isExpand= false
         course=intent.getStringExtra("course").toString()
         mCatalogId=intent.getIntExtra("categoryId",0)
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
 
-        papers= daoManager?.queryAll(1,course,mCatalogId) as MutableList<PaperBean>
+        papers= daoManager?.queryAll(0,course,mCatalogId) as MutableList<PaperBean>
 
     }
 
@@ -122,6 +155,19 @@ class PaperDrawingActivity: BaseDrawingActivity(){
 
         }
 
+        iv_btn.setOnClickListener {
+            if (paper?.state==3&&paper?.isCommit == true){
+                CommonDialog(this).setContent(R.string.toast_commit_ok).setDialogClickListener(
+                    object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            showLoading()
+                            commit()
+                        }
+                    })
+            }
+        }
     }
 
 
@@ -200,7 +246,15 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         tv_title_b.text=paper?.title
         setPWEnabled(!paper?.isPg!!)
 
-        setPWEnabled(false)
+        //作业未提交 提示时间 以及关闭手写
+        if (paper?.state==3){
+            setPWEnabled(true)
+            if (paper?.isCommit==true)
+                showToast(DateUtils.longToStringWeek(paper?.endTime!!*1000)+getString(R.string.toast_before_commit))
+        }
+        else{
+            setPWEnabled(false)
+        }
 
         loadImage(page,elik_a!!,v_content_a)
         tv_page_a.text="${paperContents[page].page+1}"
@@ -244,5 +298,28 @@ class PaperDrawingActivity: BaseDrawingActivity(){
             changeExpandContent()
         }
     }
+
+    /**
+     * 提交
+     */
+    private fun commit(){
+        val commitPaths= mutableListOf<String>()
+        for (i in paperContents.indices) {
+            val item=paperContents[i]
+            val path = item.path //当前原图路径
+            val drawPath = item.drawPath.replace("tch","png")//当前绘图路径
+            val oldBitmap = BitmapFactory.decodeFile(path)
+            val drawBitmap = BitmapFactory.decodeFile(drawPath)
+            if (drawBitmap != null) {
+                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+                BitmapUtils.saveBmpGallery(this, mergeBitmap, path)
+            }
+            commitPaths.add(path)
+        }
+        Handler().postDelayed({
+            mUploadPresenter.upload(commitPaths)
+        },500)
+    }
+
 
 }

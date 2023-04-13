@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
+import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
@@ -22,16 +23,17 @@ import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DatePlan
-import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
-import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
+import com.bll.lnkstudy.mvp.model.paper.PaperList
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
+import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
-import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
-import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.FileUtils
@@ -52,16 +54,16 @@ import java.util.*
 /**
  * 首页
  */
-class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView.IPaperView,IContractView.IMessageView {
+class MainFragment : BaseFragment(), IContractView.IMainView,IContractView.IMessageView,ICommonView {
 
-    private var classGroupPresenter = ClassGroupPresenter(this)
-    private var mPaperPresenter=TestPaperPresenter(this)
+    private var mMainPresenter = MainPresenter(this)
     private var mMessagePresenter=MessagePresenter(this)
+    private var mCommonPresenter=CommonPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var classGroupAdapter: MainClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
     private var mainNoteAdapter: MainNoteAdapter? = null
-    private var receivePapers = mutableListOf<ReceivePaper.PaperBean>()
+    private var examPapers = mutableListOf<PaperList.PaperListBean>()
     private var receivePaperAdapter: MainReceivePaperAdapter? = null
     private var positionPaper = 0
 
@@ -72,20 +74,14 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         messages=message.list
         mMessageAdapter?.setNewData(messages)
     }
-
-    override fun onList(receivePaper: ReceivePaper?) {
-        receivePapers= receivePaper?.list as MutableList<ReceivePaper.PaperBean>
-        receivePaperAdapter?.setNewData(receivePapers)
-        loadPapers()
-    }
     override fun onCommitSuccess() {
     }
-    override fun onDeleteSuccess() {
-    }
 
 
-    override fun onInsert() {
+    override fun onList(grades: MutableList<Grade>?) {
+        DataBeanManager.grades=grades!!
     }
+
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
         groups = if(classGroups.isNullOrEmpty()){
             mutableListOf()
@@ -94,19 +90,14 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         }
         classGroupAdapter?.setNewData(groups)
 
-        //设置全部科目
-        val courses = DataBeanManager.courses
-        for (item in groups){
-            if (!courses.contains(item.subject)){
-                courses.add(item.subject)
-            }
-        }
         DataBeanManager.classGroups=groups
         EventBus.getDefault().post(COURSE_EVENT)
     }
-    override fun onQuit() {
-    }
-    override fun onUser(lists: MutableList<ClassGroupUser>?) {
+
+    override fun onExam(exam: PaperList?) {
+        examPapers= exam?.list as MutableList<PaperList.PaperListBean>
+        receivePaperAdapter?.setNewData(examPapers)
+        loadPapers()
     }
 
 
@@ -130,9 +121,10 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     }
 
     override fun lazyLoad() {
-        classGroupPresenter.getClassGroupList(false)
+        mMainPresenter.getClassGroupList(false)
+        mCommonPresenter.getGrades()
         findMessages()
-        findReceivePapers()
+        fetchExam()
     }
 
     @SuppressLint("WrongConstant")
@@ -240,14 +232,14 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     //作业相关
     private fun initHomeWorkView() {
 
-        receivePaperAdapter = MainReceivePaperAdapter(R.layout.item_main_receivepaper, receivePapers).apply {
+        receivePaperAdapter = MainReceivePaperAdapter(R.layout.item_main_receivepaper, examPapers).apply {
             rv_main_receivePaper.layoutManager = GridLayoutManager(activity, 2)
             rv_main_receivePaper.adapter = this
             bindToRecyclerView(rv_main_receivePaper)
             rv_main_receivePaper.addItemDecoration(SpaceGridItemDeco(2, 10))
             setOnItemClickListener { adapter, view, position ->
                 positionPaper = position
-                val paper = receivePapers[positionPaper]
+                val paper = examPapers[positionPaper]
                 val files = FileUtils.getFiles(paper.path)
                 val paths = mutableListOf<String>()
                 for (file in files) {
@@ -256,7 +248,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
                 if (files.size == paper.imageUrl.split(",").toTypedArray().size) {
                     val bundle = Bundle()
                     bundle.putSerializable("receivePaper", paper)
-                    val intent = Intent(activity, MainReceivePaperDrawingActivity::class.java)
+                    val intent = Intent(activity, PaperExamDrawingActivity::class.java)
                     intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
                     intent.putExtra("outImageStr", paper.path)
                     intent.putExtra("bundle", bundle)
@@ -308,11 +300,14 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
         mainNoteAdapter?.setNewData(notes)
     }
 
-    private fun findReceivePapers() {
+    /**
+     * 获取当前考试
+     */
+    private fun fetchExam() {
         val map= HashMap<String, Any>()
         map["size"] = 100
         map["type"] = 2
-        mPaperPresenter.getList(map)
+        mMainPresenter.getExam(map)
     }
 
     private fun findMessages(){
@@ -325,7 +320,7 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
 
     //下载收到的图片
     private fun loadPapers() {
-        for (item in receivePapers) {
+        for (item in examPapers) {
             //设置路径
             val file = File(FileAddress().getPathTestPaper(item.examId, item.id))
             item.path = file.path
@@ -351,20 +346,25 @@ class MainFragment : BaseFragment(), IContractView.IClassGroupView,IContractView
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
-        if (msgFlag == DATE_EVENT) {
-            findDateList()
-        }
-        if (msgFlag == COURSE_EVENT) {
-            initCourse()
-        }
-        if (msgFlag == NOTE_BOOK_MANAGER_EVENT) {
-            findNotes() //用于删除笔记本后 刷新列表
-        }
-        if (msgFlag == NOTE_EVENT) {
-            findNotes()
-        }
-        if (msgFlag == RECEIVE_PAPER_COMMIT_EVENT) {
-            receivePaperAdapter?.remove(positionPaper)
+        when (msgFlag) {
+            DATE_EVENT -> {
+                findDateList()
+            }
+            COURSE_EVENT -> {
+                initCourse()
+            }
+            NOTE_BOOK_MANAGER_EVENT -> {
+                findNotes() //用于删除笔记本后 刷新列表
+            }
+            NOTE_EVENT -> {
+                findNotes()
+            }
+            RECEIVE_PAPER_COMMIT_EVENT -> {
+                receivePaperAdapter?.remove(positionPaper)
+            }
+            MESSAGE_EVENT -> {
+                findMessages()
+            }
         }
     }
 

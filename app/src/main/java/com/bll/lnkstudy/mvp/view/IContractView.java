@@ -10,7 +10,9 @@ import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.Grade;
 import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
-import com.bll.lnkstudy.mvp.model.paper.ReceivePaper;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
+import com.bll.lnkstudy.mvp.model.paper.PaperType;
+import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
@@ -92,14 +94,22 @@ public interface IContractView {
         void onType(TeachingVideoType type);//视频 其他分类
     }
 
-    //公共接口
-    interface ICommonView extends IBaseView {
-        void onList(List<Grade> grades);
+    interface IMainView extends IBaseView {
+        void onClassGroupList(List<ClassGroup> classGroups);
+        /**
+         * 获取考试列表
+         * @param exam
+         */
+        void onExam(PaperList exam);
     }
 
     //公共接口
     interface IPaperView extends IBaseView {
-        void onList(ReceivePaper receivePaper);
+        /**
+         * 获取考卷分类
+         */
+        void onTypeList(List<PaperType.PaperTypeBean> list);
+        void onList(PaperList paper);
         void onCommitSuccess();
         void onDeleteSuccess();
 
@@ -113,6 +123,7 @@ public interface IContractView {
         void onTypeList(List<HomeworkTypeBean> list);
         void onList(HomeworkMessage homeworkMessage);
         void onListReel(HomeworkReel reel);
+        void onDetails(List<HomeworkDetails.HomeworkDetailBean> details);
         /**
          * 下发作业下载成功
          */
@@ -122,6 +133,12 @@ public interface IContractView {
 
     interface IMessageView extends IBaseView{
         void onList(Message message);
+        void onCommitSuccess();
     }
 
+
+    //公共接口
+    interface ICommonView extends IBaseView {
+        void onList(List<Grade> grades);
+    }
 }

@@ -63,7 +63,7 @@ public class HomeworkTypeDaoManager {
      * @param isCreate false 老师创建 true 学生创建
      * @return
      */
-    public List<HomeworkTypeBean> queryAllByCourse(String course, boolean isCreate) {
+    public List<HomeworkTypeBean> queryAllByCourse(String course,boolean isCreate) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCreate.eq(isCreate);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();

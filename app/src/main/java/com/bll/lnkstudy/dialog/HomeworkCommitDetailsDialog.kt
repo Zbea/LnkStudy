@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val list: List<HomeworkMessage.MessageBean>) {
+class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int,val type:Int, val list: List<HomeworkDetails.HomeworkDetailBean>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:CommitAdapter?=null
@@ -36,7 +36,7 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val li
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
 
         recyclerview.layoutManager = LinearLayoutManager(context)
-        mAdapter= CommitAdapter(R.layout.item_homework_commit, list)
+        mAdapter= CommitAdapter(R.layout.item_homework_commit,type, list)
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,20,))
 
@@ -54,14 +54,13 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int, val li
     }
 
 
-    class CommitAdapter(layoutResId: Int, data: List<HomeworkMessage.MessageBean>) : BaseQuickAdapter<HomeworkMessage.MessageBean, BaseViewHolder>(layoutResId, data) {
+    class CommitAdapter(layoutResId: Int,val type: Int, data: List<HomeworkDetails.HomeworkDetailBean>) : BaseQuickAdapter<HomeworkDetails.HomeworkDetailBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage.MessageBean) {
-            helper.setText(R.id.tv_title,item.title)
-            helper.setText(R.id.tv_date, DateUtils.longToStringNoYear(item.endTime))
-            helper.setText(R.id.tv_state,if (item.submitState==0) mContext.getString(R.string.homework_state_no) else mContext.getString(R.string.homework_state_yes))
-            helper.setTextColor(R.id.tv_state,if (item.submitState==0)
-                mContext.resources.getColor(R.color.black) else mContext.resources.getColor(R.color.gray))
+        override fun convert(helper: BaseViewHolder, item: HomeworkDetails.HomeworkDetailBean) {
+            helper.setText(R.id.tv_title,item.jobTitle)
+            helper.setText(R.id.tv_type,item.title)
+            val time=if (type==0) item.time else item.sendTime
+            helper.setText(R.id.tv_date, DateUtils.longToStringWeek(time*1000))
         }
 
     }

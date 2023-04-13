@@ -12,7 +12,7 @@
     <string name="user_tip">请输入4–12位数字、字母的用户名</string>
     <string name="psw_tip">请输入6–20数字、字母的密码</string>
     <string name="phone_tip">请正确输入11位手机号码</string>
-
+    <string name="toast_commit_ok">确定提交?</string>
     <string name="toast_input_title">请输入标题</string>
     <string name="toast_select_date">请选择日期</string>
     <string name="toast_select_week">请选择星期</string>
@@ -39,6 +39,7 @@
     <string name="toast_password_input_question">请输入密保答案</string>
     <string name="toast_password_question_error">密保错误</string>
     <string name="toast_commit_success">提交成功</string>
+    <string name="toast_input_message">请输入消息</string>
 
     <string name="item_is_delete_tips">确定删除？</string>
     <string name="account_is_logout_tips">确定退出登录？</string>
@@ -96,6 +97,7 @@
     <string name="unnamed">未命名</string>
     <string name="drawing">画本</string>
     <string name="calligraphy">书法</string>
+    <string name="send">发送</string>
 
     <string name="scale">刻度</string>
     <string name="axis_one">一维坐标</string>
@@ -237,7 +239,6 @@
     <string name="book_my">我的书籍</string>
     <string name="book_type_title">分类展示</string>
     <string name="book_collect_success">收藏成功</string>
-    <string name="book_collect_str">我的收藏</string>
     <string name="book_collected">已收藏</string>
     <string name="book_is_collect_tips">确定取消收藏？</string>
     <string name="book_download_fail">下载失败</string>
@@ -249,10 +250,8 @@
     <string name="note_manage_str">笔记本管理</string>
     <string name="notebook_create_str">新建笔记本</string>
     <string name="note_create_str">新建笔记</string>
-    <string name="note_create_title">新建笔记</string>
-    <string name="note_create_hint">输入笔记标题</string>
-    <string name="notebook_create_title">新建笔记本分类</string>
-    <string name="notebook_create_hint">输入笔记分类名称</string>
+    <string name="note_create_hint">输入笔记本</string>
+    <string name="notebook_create_hint">输入笔记分类</string>
     <string name="note_module_str">笔记模板</string>
     <string name="note_is_set_diary_password_tips">设置日记密码？</string>
     <string name="note_is_delete_tips">确定删除笔记？</string>
@@ -280,9 +279,10 @@
     <string name="homework_correct_details_str">批改详情</string>
     <string name="homework_cover_module_str">封面模板</string>
     <string name="homework_module_str">作业本模板</string>
-    <string name="homework_assign">作业布置</string>
+    <string name="homework_assign">作业内容</string>
     <string name="homework_state">提交状态</string>
     <string name="homework_time">提交时间</string>
+    <string name="homework_type">作业分类</string>
     <string name="homework_state_no">未提交</string>
     <string name="homework_state_yes">已提交</string>
     <string name="homework_state_complete">已完成</string>
@@ -331,5 +331,12 @@
     <string name="homework_selector">作业选择</string>
     <string name="toast_homework_selector">请选择提交的作业</string>
     <string name="toast_homework_page">请输入页码</string>
+    <string name="toast_before_commit">之前提交</string>
+
+    <string name="message_teacher_selector">选择老师:</string>
+    <string name="message_sender">发送人：</string>
+    <string name="message_receiver">接收人：</string>
+
+    <string name="cloud_storage_str">云存储</string>
 
 </resources>

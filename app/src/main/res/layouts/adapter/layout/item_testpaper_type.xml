@@ -9,7 +9,15 @@
         android:layout_width="366dp"
         android:layout_height="306dp"
         android:background="@mipmap/icon_testpaper_bg">
-
+        <TextView
+            android:id="@+id/tv_grade"
+            android:layout_width="182dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/dp_30"
+            android:textSize="22sp"
+             />
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="182dp"

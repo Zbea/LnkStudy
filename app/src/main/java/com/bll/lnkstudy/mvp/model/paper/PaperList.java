@@ -5,17 +5,18 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class ReceivePaper implements Serializable {
+public class PaperList implements Serializable {
 
     public int total;
-    public List<PaperBean> list;
+    public List<PaperListBean> list;
 
-    public class PaperBean implements Serializable {
+    public static class PaperListBean implements Serializable {
         @SerializedName("studentTaskId")
         public int id;
         public String title;//作业标题
         public String subject;//科目
         public String jobTitle;//作业标题
+        public int commonTypeId;//收到考卷 分类id
         @SerializedName("taskId")
         public int examId;//收到考卷 分类id
         public String examName;//收到考卷 分类名称

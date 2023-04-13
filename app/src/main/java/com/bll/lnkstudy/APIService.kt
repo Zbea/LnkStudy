@@ -1,10 +1,13 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkReel
 import com.bll.lnkstudy.mvp.model.homework.HomeworkType
-import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.PaperList
+import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -180,17 +183,17 @@ interface APIService{
     @GET("talent/video/types")
     fun getTeachType(): Observable<BaseResult<TeachingVideoType>>
 
-    /**
-     * 公共年级接口
-     */
-    @GET("userTypes")
-    fun getCommonGrade(): Observable<BaseResult<CommonBean>>
 
+    /**
+     * 获取考卷分类
+     */
+    @GET("common/type/list")
+    fun getPaperType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperType>>
     /**
      * 学生获取考卷
      */
     @GET("student/task/list")
-    fun getPapersList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ReceivePaper>>
+    fun getPapersList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperList>>
     /**
      * 学生提交考卷
      */
@@ -223,11 +226,31 @@ interface APIService{
      */
     @POST("task/group/studentDownload")
     fun commitHomeworkLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
-
+    /**
+     * 获取作业卷所有信息
+     */
+    @GET("task/group/sendList")
+    fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<HomeworkDetailBean>>>
+    /**
+     * 获取作业卷所有信息
+     */
+    @GET("submit/message/list")
+    fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkDetails>>
     /**
      * 消息列表
      */
     @GET("message/inform/list")
     fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
+    /**
+     * 发送消息
+     */
+    @POST("message/inform/insertStudent")
+    fun commitMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 公共年级接口
+     */
+    @GET("task/typeGrades")
+    fun getCommonGrade(): Observable<BaseResult<MutableList<Grade>>>
+
 }

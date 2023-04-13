@@ -37,8 +37,6 @@ open class HomeLeftActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         mData= DataBeanManager.getIndexData()
-//        val courses= SPUtil.getList("courses")
-//        DataBeanManager.courses=courses
     }
 
     override fun initView() {

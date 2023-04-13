@@ -27,7 +27,6 @@ public class HomeworkReel implements Serializable {
         public String typeName;//收到作业卷分类名称
         public int subType;//2普通作业本 3听读本 1题卷本
         public String submitUrl;
-        public String studentUrl;
         @SerializedName("taskImageId")
         public String imageUrl;
         public String path;//文件夹路径

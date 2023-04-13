@@ -57,14 +57,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var grades= mutableListOf<PopupBean>()
     private var grade=1
 
-    override fun onList(grade: MutableList<Grade>?) {
-        if (grade?.size!! >0){
-            DataBeanManager.grades=grade
-            for (i in grade.indices){
-                grades.add(PopupBean(i + 1, grade[i].desc, i == 0))
-            }
-            tv_grade.text=grades[0].name
-        }
+    override fun onList(grade: MutableList<Grade>) {
+        DataBeanManager.grades=grade
+        grades=DataBeanManager.popupGrades
+        tv_grade.text=grades[0].name
     }
 
     override fun onSms() {

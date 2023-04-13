@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkReel
 import com.bll.lnkstudy.mvp.model.homework.HomeworkType
@@ -11,6 +13,7 @@ import com.bll.lnkstudy.net.*
  * 作业
  */
 class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<IContractView.IHomeworkView>(view) {
+
 
     /**
      * 获取作业本列表
@@ -59,6 +62,33 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
         }, false)
     }
 
+    fun getCorrectDetailList() {
+        val type = RetrofitManager.service.getHomeworkCorrectDetails()
+        doRequest(type, object : Callback<MutableList<HomeworkDetailBean>>(view) {
+            override fun failed(tBaseResult: BaseResult<MutableList<HomeworkDetailBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<HomeworkDetailBean>>) {
+                if (tBaseResult.data!=null)
+                    view.onDetails(tBaseResult.data)
+            }
+        }, true)
+    }
+
+    fun getCommitDetailList() {
+        val map=HashMap<String,Any>()
+        map["size"]=10
+        val type = RetrofitManager.service.getHomeworkCommitDetails(map)
+        doRequest(type, object : Callback<HomeworkDetails>(view) {
+            override fun failed(tBaseResult: BaseResult<HomeworkDetails>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<HomeworkDetails>) {
+                if (tBaseResult.data!=null)
+                    view.onDetails(tBaseResult.data?.list)
+            }
+        }, true)
+    }
 
     /**
      * 老师下发作业卷下载成功

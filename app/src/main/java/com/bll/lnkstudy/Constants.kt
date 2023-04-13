@@ -82,6 +82,7 @@ class Constants{
         const val RECEIVE_PAPER_COMMIT_EVENT = "ReceivePaperCommit"
         const val SCREEN_EVENT = "AutoScreenEvent"
         const val VIDEO_EVENT = "VideoEvent"
+        const val MESSAGE_EVENT = "MessageEvent"
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

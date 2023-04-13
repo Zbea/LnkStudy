@@ -10,7 +10,6 @@ import java.util.*
 
 object DataBeanManager {
 
-    var courses= mutableListOf<String>()
     var classGroups= mutableListOf<ClassGroup>()
     var grades= mutableListOf<Grade>()
 

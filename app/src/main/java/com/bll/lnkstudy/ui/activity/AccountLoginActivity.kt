@@ -4,12 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.mvp.model.Grade
 import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.MD5Utils
@@ -18,17 +15,10 @@ import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 import pub.devrel.easypermissions.EasyPermissions
 
-class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView,IContractView.ICommonView {
+class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
-    private val commonPresenter=CommonPresenter(this)
     private val presenter=LoginPresenter(this)
     private var token=""
-
-    override fun onList(grades: MutableList<Grade>?) {
-        if (grades != null) {
-            DataBeanManager.grades=grades
-        }
-    }
 
     override fun getLogin(user: User?) {
         token= user?.token.toString()
@@ -50,7 +40,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView,ICo
     }
 
     override fun initData() {
-        commonPresenter.getGrades()
     }
 
     @SuppressLint("WrongConstant")

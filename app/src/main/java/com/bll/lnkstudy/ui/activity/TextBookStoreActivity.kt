@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
@@ -64,7 +65,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         for (i in bookStoreType.grade.indices) {
             gradeList.add(PopupBean(i, bookStoreType.grade[i], i == 0))
         }
-        gradeStr = gradeList[0].name
+        gradeStr = gradeList[mUser?.grade!!-1].name
 
         for (i in bookStoreType.subjectList.indices) {
             val item=bookStoreType.subjectList[i]
@@ -166,6 +167,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
         tv_grade.text = gradeStr
         tv_grade.setOnClickListener {
+            //我的课本时候不能筛选其他年级的书籍
+            if (typeId==0)return@setOnClickListener
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
                 gradeStr = item.name
@@ -341,20 +344,23 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
             override fun onFinish(success: Boolean) {
                 if (success) {
                     book.apply {
-                        showToast(bookName+getString(R.string.book_download_success))
                         textBookType = typeStr
                         loadSate = 2
                         category = 0
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = FileAddress().getPathBook(fileName)
                     }
-
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
+
+                    Handler().postDelayed({
+                        showToast(book.bookName+getString(R.string.book_download_success))
+                    },500)
+
                 } else {
                     showToast(book.bookName+getString(R.string.book_decompression_fail))
                 }
@@ -389,7 +395,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
             val iterator = entries.iterator();
             while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<Long, BaseDownloadTask>
+                val entry = iterator.next() as Map.Entry<*, *>
                 val entity = entry.value
                 if (task == entity) {
                     iterator.remove()

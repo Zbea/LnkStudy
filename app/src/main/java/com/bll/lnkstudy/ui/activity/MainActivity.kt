@@ -12,7 +12,7 @@ import com.bll.lnkstudy.ui.AlarmService
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
-class MainActivity : HomeLeftActivity() {
+class MainActivity : HomeLeftActivity(){
 
     private var alarmManager: AlarmManager? = null
     private var pendingIntent: PendingIntent? = null
@@ -90,6 +90,5 @@ class MainActivity : HomeLeftActivity() {
         super.onDestroy()
         stopRemind()
     }
-
 
 }

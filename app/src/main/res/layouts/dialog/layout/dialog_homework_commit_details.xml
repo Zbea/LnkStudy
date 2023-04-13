@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="750dp"
     android:layout_height="580dp"
     android:background="@drawable/dialog_bg"
-    android:padding="@dimen/dp_30">
+    android:paddingStart="@dimen/dp_30"
+    android:paddingEnd="@dimen/dp_30"
+    android:paddingTop="@dimen/dp_40"
+    android:paddingBottom="@dimen/dp_30"
+    >
 
-    <include layout="@layout/item_homework_commit"/>
-
+    <include layout="@layout/item_homework_commit"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_40"/>
+        android:layout_marginTop="@dimen/dp_10"/>
 
 </LinearLayout>

@@ -5,7 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.NotebookAddDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
@@ -96,7 +96,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
 
     //修改笔记本
     private fun editNoteBook(content:String){
-        NotebookAddDialog(this,getCurrentScreenPos(),getString(R.string.rename),content,getString(R.string.notebook_create_hint)).builder()?.setOnDialogClickListener { string ->
+        InputContentDialog(this,getCurrentScreenPos(),content).builder()?.setOnDialogClickListener { string ->
             noteTypes[position].name = string
             BaseTypeBeanDaoManager.getInstance()
                 .insertOrReplace(noteTypes[position])

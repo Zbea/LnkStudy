@@ -21,11 +21,9 @@ public class HomeworkMessage implements Serializable {
         public int submitState;
         public String subject;
         public int grade;
-        public boolean isPg=false;
         public int status;//3未提交 1已提交 2已完成
         public int studentTaskId;
-        public boolean isSelector=false;
-        public boolean isDownLoad=false;
+        public boolean isSelector;
     }
 
 }

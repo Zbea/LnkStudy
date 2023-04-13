@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
+import android.os.Handler
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -273,7 +274,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
             override fun onFinish(success: Boolean) {
                 if (success) {
                     book.apply {
-                        showToast(bookName+getString(R.string.book_download_success))
                         bookType = when (categoryStr) {
                             "思维科学", "自然科学" -> {
                                 "科学技术"
@@ -296,6 +296,10 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
+
+                    Handler().postDelayed({
+                        showToast(book.bookName+getString(R.string.book_download_success))
+                    },500)
                 } else {
                     showToast(book.bookName+getString(R.string.book_decompression_fail))
                 }

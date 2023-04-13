@@ -7,9 +7,8 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
-import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.PaperList
+import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
@@ -30,14 +29,21 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
 
     private val mPresenter = TestPaperPresenter(this)
     private var mAdapter:PaperTypeAdapter?=null
-    private var items= mutableListOf<PaperTypeBean>()
+    private var paperTypes= mutableListOf<PaperType.PaperTypeBean>()
     private var course=""//课程
-    private var receivePapers= mutableListOf<ReceivePaper.PaperBean>()//下载收到的考卷
+    private var paperContents= mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
 
+    override fun onTypeList(list: MutableList<PaperType.PaperTypeBean>) {
+        paperTypes=list
+        mAdapter?.setNewData(paperTypes)
+        if(paperContents.size>0){
+            refreshView()
+        }
+    }
 
-    override fun onList(receivePaper: ReceivePaper?) {
-        receivePapers= receivePaper?.list as MutableList<ReceivePaper.PaperBean>
-        loadPapers(receivePapers)
+    override fun onList(paperList: PaperList?) {
+        paperContents= paperList?.list as MutableList<PaperList.PaperListBean>
+        loadPapers(paperContents)
         refreshView()
     }
     override fun onCommitSuccess() {
@@ -64,49 +70,48 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
 
     @SuppressLint("WrongConstant")
     private fun initRecyclerView(){
-        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,items).apply {
+        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,paperTypes).apply {
             rv_list.layoutManager = GridLayoutManager(activity,2)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
             setOnItemClickListener { adapter, view, position ->
-                gotoPaperDrawing(1,course,items[position].type)
+                gotoPaperDrawing(course,paperTypes[position].id)
             }
         }
     }
 
     //设置头部索引
     private fun initTab(){
+        course=""
         rg_group.removeAllViews()
-        val courses= DataBeanManager.courses
-        if (courses.size>0){
-            course=courses[0]
-            for (i in courses.indices) {
-                rg_group.addView(getRadioButton(i ,courses[i],courses.size-1))
+        val classGroups= DataBeanManager.classGroups
+        if (classGroups.size>0){
+            course=classGroups[0].subject
+            for (i in classGroups.indices) {
+                rg_group.addView(getRadioButton(i ,classGroups[i].subject,classGroups.size-1))
             }
             rg_group.setOnCheckedChangeListener { radioGroup, id ->
-                course=courses[id]
-                findData()
+                course=classGroups[id].subject
+                fetchData()
             }
-            findData()
+            fetchData()
+        }
+        else{
+            paperTypes.clear()
+            mAdapter?.notifyDataSetChanged()
         }
     }
 
-    private fun findData(){
-        items=PaperTypeDaoManager.getInstance().queryAll(course)
-        mAdapter?.setNewData(items)
-        if(receivePapers.size>0){
-            refreshView()
-        }
-    }
+
 
     /**
      * 刷新批改分 循环遍历
      */
     private fun refreshView(){
-        for (item in receivePapers){
-            for (ite in items){
-                if (item.subject==ite.course&&item.examId==ite.type){
+        for (item in paperContents){
+            for (ite in paperTypes){
+                if (item.subject==ite.course&&item.examId==ite.id){
                     ite.score=item.score
                     ite.isPg=true
                 }
@@ -149,14 +154,11 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             //刷新科目
             initTab()
         }
-        if (msgFlag==Constants.RECEIVE_PAPER_COMMIT_EVENT){
-            findData()
-        }
     }
 
 
     //下载收到的图片
-    private fun loadPapers(papers:MutableList<ReceivePaper.PaperBean>) {
+    private fun loadPapers(papers:MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
             //设置路径
             val file = File(FileAddress().getPathTestPaper(item.examId, item.id))
@@ -182,14 +184,30 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun refreshData() {
-        findData()
         fetchData()
     }
 
     override fun fetchData() {
-        val map= HashMap<String,Any>()
-        map["sendStatus"]=2
-        mPresenter.getList(map)
+        val classGroups = DataBeanManager.classGroups
+        if (classGroups.size>0){
+            var teacherId = 0
+            for (classGroup in classGroups) {
+                if (classGroup.subject == course) {
+                    teacherId = classGroup.teacherId
+                }
+            }
+            val map = HashMap<String, Any>()
+            map["size"] = 100
+            map["grade"] = mUser?.grade!!
+            map["type"] = 1
+            map["userId"] = teacherId
+            mPresenter.getTypeList(map)
+
+            val map1= HashMap<String,Any>()
+            map1["sendStatus"]=2
+            mPresenter.getList(map1)
+        }
+
     }
 
 }

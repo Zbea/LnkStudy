@@ -7,6 +7,7 @@ import com.bll.lnkstudy.ui.activity.HomeLeftActivity;
 import com.bll.lnkstudy.ui.activity.HomeRightActivity;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkReelDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
 
@@ -190,7 +191,7 @@ public class ActivityManager {
      * 检查当前画本是否打开
      * @return
      */
-    public void checkPaperDrawingIsExist(int mflags,String mCourse,int mTypeId){
+    public void checkPaperDrawingIsExist(String mCourse,int mTypeId){
 
         Iterator<WeakReference<Activity>> it = stack.iterator();
         while (it.hasNext()) {
@@ -200,7 +201,28 @@ public class ActivityManager {
                 int flags= activity.getIntent().getFlags();
                 String course= activity.getIntent().getStringExtra("course");
                 int categoryId= activity.getIntent().getIntExtra("categoryId",0);
-                if (flags==mflags && course==mCourse && categoryId==mTypeId){
+                if (course==mCourse && categoryId==mTypeId){
+                    activity.finish();
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查当前作业卷是否打开
+     * @return
+     */
+    public void checkHomeworkReelDrawingIsExist(String mCourse,int mTypeId){
+
+        Iterator<WeakReference<Activity>> it = stack.iterator();
+        while (it.hasNext()) {
+            WeakReference<Activity> weak = it.next();
+            Activity activity=weak.get();
+            if (activity.getClass().getName().equals(HomeworkReelDrawingActivity.class.getName())) {
+                String course= activity.getIntent().getStringExtra("course");
+                int categoryId= activity.getIntent().getIntExtra("categoryId",0);
+                if (course==mCourse && categoryId==mTypeId){
                     activity.finish();
                     it.remove();
                 }

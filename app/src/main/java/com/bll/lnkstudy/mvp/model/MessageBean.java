@@ -9,6 +9,6 @@ public class MessageBean {
     @SerializedName("title")
     public String content;
     public long date;
-
+    public int sendType;
 
 }

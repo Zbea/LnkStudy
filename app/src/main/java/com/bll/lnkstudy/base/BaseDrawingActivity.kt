@@ -11,8 +11,6 @@ import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +20,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -31,7 +28,7 @@ import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
-import com.bll.lnkstudy.ui.activity.drawing.MainReceivePaperDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -266,7 +263,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         }
 
         tv_out?.setOnClickListener {
-            if (this.localClassName == MainReceivePaperDrawingActivity::class.java.name) return@setOnClickListener
+            if (this.localClassName == PaperExamDrawingActivity::class.java.name) return@setOnClickListener
             setDrawing()
             disMissView(ll_geometry,iv_geometry)
         }

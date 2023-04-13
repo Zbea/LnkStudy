@@ -25,7 +25,7 @@ class CourseSelectDialog(val context: Context){
             dialog.dismiss()
         }
 
-        val courses= DataBeanManager.courses
+        val courses= DataBeanManager.classGroups
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
         val mAdapter = CourseAdapter(R.layout.item_course, courses)
@@ -34,7 +34,7 @@ class CourseSelectDialog(val context: Context){
         mAdapter.bindToRecyclerView(rvList)
         rvList?.addItemDecoration(SpaceGridItemDeco(2,30))
         mAdapter.setOnItemClickListener { _, view, position ->
-            onClickListener?.onSelect(courses[position])
+            onClickListener?.onSelect(courses[position].subject)
             dialog.dismiss()
         }
 

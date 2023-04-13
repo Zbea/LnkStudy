@@ -9,9 +9,9 @@ public class ClassGroup {
     public String teacher;
     public int teacherId;
     public String subject;
-    public int subjectId;
-    public String studentCount;//人数
-    public int studentId;
     public int classId;
     public long date;
+    public int status;//1可以双通 0不可以
+
+    public boolean isCheck;
 }

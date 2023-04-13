@@ -25,6 +25,9 @@ import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
+/**
+ * 普通作业本
+ */
 class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView {
 
     private val mUploadPresenter= FileUploadPresenter(this)
@@ -53,6 +56,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         for (i in homeworkCommit?.contents!!){
             val homework=homeworks[i-1]
             homework.state=1
+            homework.title=homeworkCommit?.title
             homework.contentId=homeworkCommit?.messageId!!
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
         }
@@ -382,8 +386,5 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworks[page].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
     }
-
-
-
 
 }

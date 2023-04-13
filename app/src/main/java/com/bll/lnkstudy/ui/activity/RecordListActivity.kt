@@ -12,7 +12,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
-import com.bll.lnkstudy.dialog.NotebookAddDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -195,7 +195,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
     //修改笔记
     private fun edit(content:String){
-        NotebookAddDialog(this,getCurrentScreenPos(),getString(R.string.rename),content,getString(R.string.toast_input_title)).builder()?.setOnDialogClickListener { string ->
+        InputContentDialog(this,getCurrentScreenPos(),content).builder()?.setOnDialogClickListener { string ->
             recordBeans[position].title = string
             mAdapter?.notifyDataSetChanged()
             RecordDaoManager.getInstance()

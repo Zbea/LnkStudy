@@ -11,15 +11,13 @@ import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
-import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
-import com.bll.lnkstudy.mvp.model.paper.ReceivePaper
+import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
-import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -30,21 +28,22 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListener
-    ,IContractView.IPaperView,IContractView.IFileUploadView{
+/**
+ * 考卷考试页面
+ */
+class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
+    ,IContractView.IFileUploadView{
 
     private val mUploadPresenter=FileUploadPresenter(this)
-    private val mPaperPresenter=TestPaperPresenter(this)
-
     private var type=1//1考卷0作业
     private var course=""
-    private var examId=0
+    private var commonTypeId=0
     private var daoManager: PaperDaoManager?=null
     private var daoContentManager: PaperContentDaoManager?=null
     private var papers= mutableListOf<PaperBean>()
     private var paperContents= mutableListOf<PaperContentBean>()
 
-    private var receivePaper: ReceivePaper.PaperBean?=null
+    private var exam: PaperList.PaperListBean?=null
     private var outImageStr = ""
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
@@ -55,41 +54,14 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
 
     override fun onSuccess(urls: MutableList<String>?) {
         val map= HashMap<String, Any>()
-        map["studentTaskId"]=receivePaper?.id!!
+        map["studentTaskId"]=exam?.id!!
         map["studentUrl"]=ToolUtils.getImagesStr(urls)
-        mPaperPresenter.commitPaper(map)
-    }
-
-
-    override fun onList(receivePaper: ReceivePaper?) {
+        mUploadPresenter.commit(map)
     }
     override fun onCommitSuccess() {
-        //判断是否已经存在之前的分类
-        var boolean=false
-        val paperTypes=PaperTypeDaoManager.getInstance().queryAll(course)
-        for (paperType in paperTypes){
-            if (paperType.name==receivePaper?.examName){
-                boolean=true
-            }
-        }
-
-        //保存本次考试的 试卷分类
-        if (!boolean){
-            PaperTypeDaoManager.getInstance().insertOrReplace( PaperTypeBean()
-                .apply {
-                course=this@MainReceivePaperDrawingActivity.course
-                name=receivePaper?.examName
-                type=examId
-            })
-        }
-
         savePaper()
-
         EventBus.getDefault().post(Constants.RECEIVE_PAPER_COMMIT_EVENT)
         finish()
-    }
-
-    override fun onDeleteSuccess() {
     }
 
 
@@ -100,20 +72,20 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
     override fun initData() {
         isExpand=true
 
-        receivePaper=intent.getBundleExtra("bundle")?.getSerializable("receivePaper") as ReceivePaper.PaperBean
+        exam=intent.getBundleExtra("bundle")?.getSerializable("receivePaper") as PaperList.PaperListBean
         outImageStr = intent.getStringExtra("outImageStr").toString()
         paths = intent.getStringArrayListExtra("imagePaths")!!
         pageCount = paths.size
 
-        course=receivePaper?.subject!!
-        examId=receivePaper?.examId!!
+        course=exam?.subject!!
+        commonTypeId=exam?.commonTypeId!!
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
-        papers= daoManager?.queryAll(type,course,examId) as MutableList<PaperBean>
-        paperContents= daoContentManager?.queryAll(type,course,examId) as MutableList<PaperContentBean>
+        papers= daoManager?.queryAll(type,course,commonTypeId) as MutableList<PaperBean>
+        paperContents= daoContentManager?.queryAll(type,course,commonTypeId) as MutableList<PaperContentBean>
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -132,7 +104,7 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
 
         changeExpandView()
 
-        tv_title_a.text=receivePaper?.title
+        tv_title_a.text=exam?.title
 
         changeContent()
     }
@@ -144,12 +116,16 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
     }
 
     override fun onClick(view: View?) {
-
         if (view == iv_btn) {
-            showLoading()
-            Handler().postDelayed(Runnable {
-                commit()
-            },500)
+            CommonDialog(this).setContent(R.string.toast_commit_ok).setDialogClickListener(
+                object : CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        showLoading()
+                        commit()
+                    }
+                })
         }
 
         if (view == btn_page_up) {
@@ -210,18 +186,18 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
     private fun savePaper(){
         //保存本次考试
         val paper= PaperBean().apply {
-            contentId=receivePaper?.id!!
-            type=this@MainReceivePaperDrawingActivity.type
-            course=this@MainReceivePaperDrawingActivity.course
-            categoryId=this@MainReceivePaperDrawingActivity.examId
-            category=receivePaper?.examName
-            title=receivePaper?.title
-            path=receivePaper?.path
+            contentId=exam?.id!!
+            type=this@PaperExamDrawingActivity.type
+            course=this@PaperExamDrawingActivity.course
+            categoryId=this@PaperExamDrawingActivity.commonTypeId
+            category=exam?.examName
+            title=exam?.title
+            path=exam?.path
             page=paperContents.size
-            index=papers.size-1
+            index=papers.size
             state=1
-            createDate=receivePaper?.date!!*1000
-            images= receivePaper?.imageUrl?.split(",")?.toTypedArray().toString()
+            createDate=exam?.date!!*1000
+            images= exam?.imageUrl?.split(",")?.toTypedArray().toString()
         }
         daoManager?.insertOrReplace(paper)
 
@@ -232,13 +208,13 @@ class MainReceivePaperDrawingActivity : BaseDrawingActivity(), View.OnClickListe
             //保存本次考试的试卷内容
             val paperContent= PaperContentBean()
                 .apply {
-                    type=this@MainReceivePaperDrawingActivity.type
-                    course=this@MainReceivePaperDrawingActivity.course
-                    categoryId=this@MainReceivePaperDrawingActivity.examId
+                    type=this@PaperExamDrawingActivity.type
+                    course=this@PaperExamDrawingActivity.course
+                    categoryId=this@PaperExamDrawingActivity.commonTypeId
                     contentId=paper.contentId
                     path=paths[i]
                     drawPath=drawPaths[i]
-                    date=receivePaper?.date!!*1000
+                    date=exam?.date!!*1000
                     page=paperContents.size+i
                 }
             daoContentManager?.insertOrReplace(paperContent)

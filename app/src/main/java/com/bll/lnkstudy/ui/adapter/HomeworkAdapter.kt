@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.graphics.Typeface
 import android.widget.TextView
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.ToolUtils
@@ -14,6 +15,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setText(R.id.tv_name, item.name)
+            setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
             setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item?.bgResId))
             setVisible(R.id.ll_info, !item.isCreate)
 

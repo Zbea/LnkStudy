@@ -284,7 +284,7 @@ class NoteFragment : BaseFragment() {
                 NotebookDaoManager.getInstance().insertOrReplace(note)
                 fetchData()
             }
-        else NotebookAddDialog(requireContext(), screenPos,getString(R.string.note_create_str), "", getString(R.string.note_create_hint)).builder()
+        else InputContentDialog(requireContext(), screenPos, getString(R.string.note_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 note.title = string
                 note.createDate = System.currentTimeMillis()
@@ -300,7 +300,7 @@ class NoteFragment : BaseFragment() {
 
     //修改笔记
     private fun editNotebook(content: String) {
-        NotebookAddDialog(requireContext(), screenPos,getString(R.string.rename), content, getString(R.string.note_create_hint)).builder()
+        InputContentDialog(requireContext(), screenPos, content).builder()
             ?.setOnDialogClickListener { string ->
                 noteBooks[position].title = string
                 mAdapter?.notifyDataSetChanged()
@@ -331,7 +331,7 @@ class NoteFragment : BaseFragment() {
 
     //新建笔记分类
     private fun addNoteBookType() {
-        NotebookAddDialog(requireContext(), screenPos,getString(R.string.notebook_create_str), "", getString(R.string.notebook_create_hint)).builder()
+        InputContentDialog(requireContext(), screenPos,getString(R.string.notebook_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 val noteBook = BaseTypeBean().apply {
                     name = string

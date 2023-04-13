@@ -26,6 +26,7 @@ public class HomeworkTypeBean implements Serializable {
     public long studentId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public long userId;//老师id
     public String name;
+    public int grade;//年级
     @Unique
     public int typeId;//作业本分类id
     @SerializedName("subType")
@@ -43,13 +44,14 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public HomeworkMessage message;
 
-    @Generated(hash = 1573981829)
-    public HomeworkTypeBean(Long id, long studentId, long userId, String name, int typeId, int state, long date,
-            String contentResId, String bgResId, String course, boolean isCreate, int messageTotal) {
+    @Generated(hash = 847303206)
+    public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId, int state,
+            long date, String contentResId, String bgResId, String course, boolean isCreate, int messageTotal) {
         this.id = id;
         this.studentId = studentId;
         this.userId = userId;
         this.name = name;
+        this.grade = grade;
         this.typeId = typeId;
         this.state = state;
         this.date = date;
@@ -68,6 +70,12 @@ public class HomeworkTypeBean implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    public long getStudentId() {
+        return this.studentId;
+    }
+    public void setStudentId(long studentId) {
+        this.studentId = studentId;
+    }
     public long getUserId() {
         return this.userId;
     }
@@ -79,6 +87,12 @@ public class HomeworkTypeBean implements Serializable {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public int getGrade() {
+        return this.grade;
+    }
+    public void setGrade(int grade) {
+        this.grade = grade;
     }
     public int getTypeId() {
         return this.typeId;
@@ -129,11 +143,6 @@ public class HomeworkTypeBean implements Serializable {
         this.messageTotal = messageTotal;
     }
 
-    public long getStudentId() {
-        return this.studentId;
-    }
-    public void setStudentId(long studentId) {
-        this.studentId = studentId;
-    }
+ 
 
 }
