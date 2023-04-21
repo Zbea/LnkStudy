@@ -55,9 +55,10 @@ public class PaintingDrawingDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public List<PaintingDrawingBean> queryAllByType(int type) {
+    public List<PaintingDrawingBean> queryAllByType(int type,int grade) {
         WhereCondition whereCondition=PaintingDrawingBeanDao.Properties.Type.eq(type);
-        List<PaintingDrawingBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        WhereCondition whereCondition1=PaintingDrawingBeanDao.Properties.Grade.eq(grade);
+        List<PaintingDrawingBean> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         return queryList;
     }
 

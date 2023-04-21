@@ -10,7 +10,6 @@
         android:id="@+id/iv_image"
         android:layout_width="195dp"
         android:layout_height="260dp"
-        android:src="@mipmap/icon_bookcase_book"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         android:padding="1dp"
         app:radius="@dimen/dp_5"

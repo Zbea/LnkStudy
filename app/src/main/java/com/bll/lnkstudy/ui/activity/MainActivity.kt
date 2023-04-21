@@ -14,9 +14,6 @@ import java.util.*
 
 class MainActivity : HomeLeftActivity(){
 
-    private var alarmManager: AlarmManager? = null
-    private var pendingIntent: PendingIntent? = null
-
     override fun layoutId(): Int {
         return R.layout.ac_launcher
     }
@@ -34,7 +31,7 @@ class MainActivity : HomeLeftActivity(){
         )
 
         startRemind()
-
+        startRemind8Month()
     }
 
     /**
@@ -60,23 +57,47 @@ class MainActivity : HomeLeftActivity(){
 
             val intent = Intent(this@MainActivity, AlarmService::class.java)
             intent.action = Constants.ACTION_UPLOAD
-            pendingIntent = PendingIntent.getService(this@MainActivity, 0, intent, 0)
-            alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager?.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                AlarmManager.INTERVAL_DAY, pendingIntent
-            )
+            val pendingIntent = PendingIntent.getService(this@MainActivity, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+             alarmManager.setRepeating(
+                 AlarmManager.RTC_WAKEUP, selectLong,
+                 AlarmManager.INTERVAL_DAY, pendingIntent
+             )
         }
 
 
     }
 
     /**
-     * 停止每天定时任务
+     * 每年8月20 12点执行
      */
-    private fun stopRemind() {
-        alarmManager?.cancel(pendingIntent)
+    private fun startRemind8Month() {
+        val date=365*24*60*60*1000L
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.MONTH,7)
+            set(Calendar.DAY_OF_MONTH,20)
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            val selectLong = timeInMillis
+
+            val intent = Intent(this@MainActivity, AlarmService::class.java)
+            intent.action = Constants.ACTION_UPLOAD_8MONTH
+            val pendingIntent = PendingIntent.getService(this@MainActivity, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                date, pendingIntent
+            )
+        }
+
     }
+
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         return if (event.keyCode === KeyEvent.KEYCODE_BACK) {
@@ -86,9 +107,5 @@ class MainActivity : HomeLeftActivity(){
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopRemind()
-    }
 
 }

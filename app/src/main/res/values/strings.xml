@@ -5,7 +5,7 @@
     <string name="net_work_error">检查网络是否连接</string>
     <string name="connect_server_timeout">无法连接到服务器</string>
     <string name="parse_data_error">解析数据错误</string>
-    <string name="connect_error">未连接到服务器</string>
+    <string name="connect_error">服务器连接失败</string>
     <string name="on_server_error">服务器开小差，请重试</string>
     <string name="login_timeout">连接超时,请重新登陆</string>
 
@@ -98,6 +98,8 @@
     <string name="drawing">画本</string>
     <string name="calligraphy">书法</string>
     <string name="send">发送</string>
+    <string name="lock">加锁</string>
+    <string name="unlock">解锁</string>
 
     <string name="scale">刻度</string>
     <string name="axis_one">一维坐标</string>
@@ -337,6 +339,8 @@
     <string name="message_sender">发送人：</string>
     <string name="message_receiver">接收人：</string>
 
-    <string name="cloud_storage_str">云存储</string>
+    <string name="cloud_storage_str">云书库</string>
+    <string name="my_drawing_str">我的画本</string>
+    <string name="my_calligraphy_str">我的书法</string>
 
 </resources>

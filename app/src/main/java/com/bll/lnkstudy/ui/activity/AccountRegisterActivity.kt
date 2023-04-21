@@ -18,7 +18,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.Area
-import com.bll.lnkstudy.mvp.model.Grade
+import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
@@ -57,8 +57,8 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var grades= mutableListOf<PopupBean>()
     private var grade=1
 
-    override fun onList(grade: MutableList<Grade>) {
-        DataBeanManager.grades=grade
+    override fun onList(commonData: CommonData) {
+        DataBeanManager.grades=commonData.grade
         grades=DataBeanManager.popupGrades
         tv_grade.text=grades[0].name
     }
@@ -105,7 +105,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             tv_grade.text=grades[0].name
         }
         else{
-            commonPresenter.getGrades()
+            commonPresenter.getCommon()
         }
 
     }

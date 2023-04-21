@@ -37,6 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="27dp"
+            android:visibility="gone"
             android:background="@mipmap/icon_testpaper_rank_bg"
             android:gravity="center"
             android:orientation="vertical">

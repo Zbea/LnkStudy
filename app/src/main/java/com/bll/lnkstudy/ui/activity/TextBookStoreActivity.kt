@@ -321,9 +321,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     lock.lock()
                     unzip(book, targetFileStr, fileName)
                     lock.unlock()
-                    if (mDownMapPool.entries.size == 0) {
-                        mDialog?.dismiss()
-                    }
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -348,7 +345,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                         loadSate = 2
                         category = 0
                         time = System.currentTimeMillis()//下载时间用于排序
-                        bookPath = FileAddress().getPathBook(fileName)
+                        bookPath = FileAddress().getPathTextBook(fileName)
+                        bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
@@ -360,6 +358,10 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     Handler().postDelayed({
                         showToast(book.bookName+getString(R.string.book_download_success))
                     },500)
+
+                    if (mDownMapPool.entries.size == 0) {
+                        mDialog?.dismiss()
+                    }
 
                 } else {
                     showToast(book.bookName+getString(R.string.book_decompression_fail))

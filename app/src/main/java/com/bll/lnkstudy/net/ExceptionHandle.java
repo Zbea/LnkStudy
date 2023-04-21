@@ -118,17 +118,13 @@ public class ExceptionHandle {
          * 证书出错
          */
         public static final int SSL_ERROR = 1005;
-        /**
-         * 无网络
-         */
-        public static final int NO_NETWORK = 1006;
 
-        public static final int UNKONW_HOST_EXCEPTION = 1007;
+        public static final int UNKONW_HOST_EXCEPTION = 1006;
 
         /**
          * Token 过期
          */
-        public static final int TOKEN_EXPIRED_EXCEPTION = 1008;
+        public static final int TOKEN_EXPIRED_EXCEPTION = 1007;
     }
 
     public static class ResponeThrowable extends Exception {

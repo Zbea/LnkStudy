@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
-import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -51,7 +50,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
         book = BookGreenDaoManager.getInstance().queryBookByBookID(id)
         if (book == null) return
         page = book?.pageIndex!!
-        val cataLogFilePath = FileAddress().getPathBookCatalog(book?.bookPath!!)
+        val cataLogFilePath = FileAddress().getPathTextBookCatalog(book?.bookPath!!)
         if (FileUtils.isExist(cataLogFilePath))
         {
             val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
@@ -208,7 +207,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 .skipMemoryCache(false)
                 .fitCenter().into(simpleTarget)
 
-            val drawPath = showFile.path.replace(".jpg", ".tch")
+            val drawPath = book?.bookDrawPath+"/${index}.tch"
             elik.setLoadFilePath(drawPath, true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -227,9 +226,9 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
-        val path = FileAddress().getPathBookPicture(book?.bookPath!!)
-        val listFiles = FileUtils.getFiles(path, ".jpg")
-        return if (listFiles.isNullOrEmpty()) null else listFiles[index]
+        val path = FileAddress().getPathTextBookPicture(book?.bookPath!!)
+        val listFiles = FileUtils.getFiles(path)
+        return listFiles[index]
     }
 
     override fun onDestroy() {
@@ -237,10 +236,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
         book?.time = System.currentTimeMillis()
         book?.pageIndex = page
         BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-        if (book?.category != 0)
-            EventBus.getDefault().post(BOOK_EVENT)
-        else
-            EventBus.getDefault().post(TEXT_BOOK_EVENT)
+        EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 
     override fun changeScreenPage() {

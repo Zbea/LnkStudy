@@ -30,15 +30,15 @@ import java.io.File
 /**
  * 书架分类
  */
-class BookCaseTypeListActivity: BaseAppCompatActivity() {
+class BookCaseTypeListActivity : BaseAppCompatActivity() {
 
-    private var mAdapter:BookAdapter?=null
-    private var books= mutableListOf<BookBean>()
-    private var typePos=0
-    private var typeStr=""//当前分类
-    private var pos=0 //当前书籍位置
-    private var book: BookBean?=null
-    private var bookNameStr=""
+    private var mAdapter: BookAdapter? = null
+    private var books = mutableListOf<BookBean>()
+    private var typePos = 0
+    private var typeStr = ""//当前分类
+    private var pos = 0 //当前书籍位置
+    private var book: BookBean? = null
+    private var bookNameStr = ""
 
     override fun layoutId(): Int {
         return R.layout.ac_bookcase_type_list
@@ -48,36 +48,43 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        pageSize=12
+        pageSize = 12
         EventBus.getDefault().register(this)
 
         setPageTitle(R.string.book_type_title)
         showSearchView(true)
 
         et_search.addTextChangedListener {
-            bookNameStr =it.toString()
-            if (!bookNameStr.isNullOrEmpty()){
-                pageIndex=1
+            bookNameStr = it.toString()
+            if (bookNameStr.isNotEmpty()) {
+                pageIndex = 1
                 fetchData()
             }
         }
 
         initTab()
 
-        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_book_type, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@BookCaseTypeListActivity,22f),DP2PX.dip2px(this@BookCaseTypeListActivity,35f)))
+            rv_list?.addItemDecoration(
+                SpaceGridItemDeco1(
+                    4,
+                    DP2PX.dip2px(this@BookCaseTypeListActivity, 22f),
+                    DP2PX.dip2px(this@BookCaseTypeListActivity, 35f)
+                )
+            )
             setOnItemClickListener { adapter, view, position ->
-                gotoBookDetails(books[position].bookId)
+
             }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                pos=position
-                book=books[position]
-                onLongClick()
-            }
+            onItemLongClickListener =
+                BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                    pos = position
+                    book = books[position]
+                    onLongClick()
+                }
         }
 
         fetchData()
@@ -85,31 +92,37 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
 
     //设置tab
     @SuppressLint("NotifyDataSetChanged")
-    private fun initTab(){
-        val types= mutableListOf<BaseTypeBean>()
-        val strings= DataBeanManager.bookType
-        for (i in strings.indices){
-            val baseTypeBean= BaseTypeBean()
-            baseTypeBean.name=strings[i]
-            baseTypeBean.typeId=i
-            baseTypeBean.isCheck=i==0
+    private fun initTab() {
+        val types = mutableListOf<BaseTypeBean>()
+        val strings = DataBeanManager.bookType
+        for (i in strings.indices) {
+            val baseTypeBean = BaseTypeBean()
+            baseTypeBean.name = strings[i]
+            baseTypeBean.typeId = i
+            baseTypeBean.isCheck = i == 0
             types.add(baseTypeBean)
         }
-        typeStr=types[0].name
+        typeStr = types[0].name
 
-        rv_type.layoutManager = GridLayoutManager(this,7)//创建布局管理
+        rv_type.layoutManager = GridLayoutManager(this, 7)//创建布局管理
         val mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, types)
         rv_type.adapter = mAdapterType
         mAdapterType?.bindToRecyclerView(rv_type)
-        rv_type.addItemDecoration(SpaceGridItemDeco1(7,DP2PX.dip2px(this,14f),DP2PX.dip2px(this,16f)))
+        rv_type.addItemDecoration(
+            SpaceGridItemDeco1(
+                7,
+                DP2PX.dip2px(this, 14f),
+                DP2PX.dip2px(this, 16f)
+            )
+        )
         mAdapterType.setOnItemClickListener { adapter, view, position ->
-            mAdapterType.getItem(typePos)?.isCheck=false
-            typePos=position
-            mAdapterType.getItem(typePos)?.isCheck=true
-            typeStr=types[typePos].name
+            mAdapterType.getItem(typePos)?.isCheck = false
+            typePos = position
+            mAdapterType.getItem(typePos)?.isCheck = true
+            typeStr = types[typePos].name
             mAdapterType.notifyDataSetChanged()
-            bookNameStr=""//清除搜索标记
-            pageIndex=1
+            bookNameStr = ""//清除搜索标记
+            pageIndex = 1
             fetchData()
         }
     }
@@ -117,45 +130,50 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {
-        val dialogManager= BookManageDialog(this,screenPos,0,book!!)
-        dialogManager.builder().setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
-            override fun onCollect() {
-                book?.isCollect=true
-                books[pos].isCollect=true
-                mAdapter?.notifyDataSetChanged()
-                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                showToast(R.string.book_collect_success)
-            }
-            override fun onDelete() {
-                delete()
-            }
-            override fun onMove() {
-            }
-        })
+        BookManageDialog(this, screenPos, 0, book!!).builder()
+            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
+                override fun onCollect() {
+                    book?.isCollect = true
+                    books[pos].isCollect = true
+                    mAdapter?.notifyDataSetChanged()
+                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                    showToast(R.string.book_collect_success)
+                }
+
+                override fun onDelete() {
+                    delete()
+                }
+
+                override fun onLock() {
+
+                }
+            })
 
         return true
     }
 
     //删除书架书籍
-    private fun delete(){
-        CommonDialog(this,screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
-                books.remove(book)
-                mAdapter?.notifyDataSetChanged()
-                EventBus.getDefault().post(BOOK_EVENT)
-            }
-        })
+    private fun delete() {
+        CommonDialog(this, screenPos).setContent(R.string.item_is_delete_tips).builder()
+            .setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+
+                override fun ok() {
+                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                    FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
+                    books.remove(book)
+                    mAdapter?.notifyDataSetChanged()
+                    EventBus.getDefault().post(BOOK_EVENT)
+                }
+            })
     }
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
-        if (msgFlag==BOOK_EVENT){
+        if (msgFlag == BOOK_EVENT) {
             fetchData()
         }
     }
@@ -167,15 +185,16 @@ class BookCaseTypeListActivity: BaseAppCompatActivity() {
 
     override fun fetchData() {
         hideKeyboard()
-        var total= mutableListOf<BookBean>()
+        var total = mutableListOf<BookBean>()
         //判断是否是搜索
-        if (bookNameStr.isNullOrEmpty()){
-            books=BookGreenDaoManager.getInstance().queryAllBook(typeStr,pageIndex,Constants.PAGE_SIZE)
-            total=BookGreenDaoManager.getInstance().queryAllBook(typeStr)
-        }
-        else{
-            books=BookGreenDaoManager.getInstance().queryAllName(bookNameStr,typeStr,pageIndex,Constants.PAGE_SIZE)
-            total=BookGreenDaoManager.getInstance().queryAllName(bookNameStr,typeStr)
+        if (bookNameStr.isEmpty()) {
+            books = BookGreenDaoManager.getInstance()
+                .queryAllBook(typeStr, pageIndex, Constants.PAGE_SIZE)
+            total = BookGreenDaoManager.getInstance().queryAllBook(typeStr)
+        } else {
+            books = BookGreenDaoManager.getInstance()
+                .queryAllName(bookNameStr, typeStr, pageIndex, Constants.PAGE_SIZE)
+            total = BookGreenDaoManager.getInstance().queryAllName(bookNameStr, typeStr)
         }
 
         setPageNumber(total.size)

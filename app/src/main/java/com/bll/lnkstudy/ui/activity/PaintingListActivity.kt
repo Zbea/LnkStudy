@@ -12,7 +12,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_my_painting_list.*
 import java.io.File
 
-class MyPaintingListActivity:BaseAppCompatActivity() {
+class PaintingListActivity:BaseAppCompatActivity() {
 
     private var titleStr=""
     private var type=0 //type=0 type=1书法
@@ -37,13 +37,13 @@ class MyPaintingListActivity:BaseAppCompatActivity() {
     override fun initView() {
         setPageTitle(titleStr)
         mAdapter = MyPaintingAdapter(R.layout.item_download_painting, null).apply {
-            rv_list.layoutManager = GridLayoutManager(this@MyPaintingListActivity,2)//创建布局管理
+            rv_list.layoutManager = GridLayoutManager(this@PaintingListActivity,2)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(2,DP2PX.dip2px(this@MyPaintingListActivity,30f),130))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(2,DP2PX.dip2px(this@PaintingListActivity,30f),130))
             setOnItemClickListener { adapter, view, position ->
-                ImageDialog(this@MyPaintingListActivity,File(lists[position].paths[0])).builder()
+                ImageDialog(this@PaintingListActivity,File(lists[position].paths[0])).builder()
             }
         }
 

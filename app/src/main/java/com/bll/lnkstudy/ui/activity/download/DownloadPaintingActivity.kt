@@ -55,16 +55,10 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
     override fun initData() {
         pageSize=6
-        val yeas= DataBeanManager.YEARS
-        for (i in yeas.indices){
-            popTimes.add(PopupBean(i + 1, getString(yeas[i]), i == 0))
-        }
+        popTimes=DataBeanManager.popupDynasty()
         dynasty=popTimes[0].id
 
-        val paintings= DataBeanManager.PAINTING
-        for (i in paintings.indices){
-            popPaintings.add(PopupBean(i + 1, getString(paintings[i]), i == 0))
-        }
+        popPaintings=DataBeanManager.popupPainting()
         paintingType=popPaintings[0].id
 
         fetchData()
@@ -72,7 +66,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
     override fun initView() {
         setPageTitle(R.string.download_painting)
-        showView(ll_painting)
+        showView(tv_dynasty,tv_painting_type)
 
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             supply = if (id==R.id.rb_official){
@@ -86,8 +80,8 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
         initRecyclerView()
 
-        tv_time.text=popTimes[0].name
-        tv_time.setOnClickListener {
+        tv_dynasty.text=popTimes[0].name
+        tv_dynasty.setOnClickListener {
             selectorTime()
         }
         tv_painting_type.text=popPaintings[0].name
@@ -144,7 +138,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
         val pathStr= FileAddress().getPathImage("painting" ,item.fontDrawId)
         val images= mutableListOf<String>()
         images.add(item.bodyUrl)
-        var imageDownLoad= ImageDownLoadUtils(this,images.toTypedArray(),pathStr)
+        val imageDownLoad= ImageDownLoadUtils(this,images.toTypedArray(),pathStr)
         imageDownLoad.startDownload()
         imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
             override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
@@ -170,6 +164,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
                 bean.imageUrl=item.imageUrl
                 bean.author=item.author
                 bean.supply=item.supply
+                bean.bodyUrl=item.bodyUrl
                 PaintingBeanDaoManager.getInstance().insertOrReplace(bean)
             }
 
@@ -187,9 +182,9 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private fun selectorTime(){
         if (popWindowTime==null)
         {
-            popWindowTime= PopupList(this,popTimes,tv_time,tv_time.width,5).builder()
+            popWindowTime= PopupList(this,popTimes,tv_dynasty,tv_dynasty.width,5).builder()
             popWindowTime?.setOnSelectListener { item ->
-                tv_time.text=item.name
+                tv_dynasty.text=item.name
                 dynasty=item.id
                 pageIndex=1
                 fetchData()

@@ -7,7 +7,7 @@ import android.view.EinkPWInterface
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -27,6 +27,7 @@ import java.io.File
 class PaintingDrawingActivity : BaseDrawingActivity() {
 
     private var type = 0
+    private var grade=0
     private var popupDrawingManage: PopupDrawingManage? = null
 
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
@@ -44,8 +45,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     override fun initData() {
 
         type = intent.flags
+        grade=intent.getIntExtra("grade",1)
 
-        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(type)
+        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(type,grade)
 
         if (paintingLists.size > 0) {
 
@@ -61,10 +63,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
 
-        resId = if (type==1){
-            R.mipmap.icon_painting_bg_sf
-        } else{
-            0
+        if (type==1){
+            resId = R.mipmap.icon_painting_bg_sf
         }
 
         setBg()
@@ -189,7 +189,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
      * 弹出目录
      */
     private fun showCatalog(){
-        var list= mutableListOf<ItemList>()
+        val list= mutableListOf<ItemList>()
         for (item in paintingLists){
             val itemList= ItemList()
             itemList.name=item.title
@@ -267,7 +267,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        val path = Constants.PAINTING_PATH + "/$mUserId/$type"
+        val path = FileAddress().getPathPainting(type,grade)
         val date = DateUtils.longToString(System.currentTimeMillis())
 
         paintingDrawingBean = PaintingDrawingBean()
@@ -326,7 +326,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         })
     }
 
-    //删除作业
+    //删除内容
     private fun deleteContent() {
 
         PaintingDrawingDaoManager.getInstance().deleteBean(paintingDrawingBean)

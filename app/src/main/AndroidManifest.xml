@@ -97,7 +97,7 @@
             />
         <activity android:name=".ui.activity.TextBookStoreActivity"/>
         <activity android:name=".ui.activity.BookStoreTypeActivity"/>
-        <activity android:name=".ui.activity.MyPaintingListActivity"/>
+        <activity android:name=".ui.activity.PaintingListActivity"/>
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.drawing.NoteDrawingActivity"
@@ -117,7 +117,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.BookCaseTypeListActivity"/>
-        <activity android:name=".ui.activity.CloudStorageActivity"/>
+        <activity android:name=".ui.activity.BookCollectActivity"/>
         <activity android:name=".ui.activity.drawing.PaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
@@ -143,6 +143,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
+        <activity android:name=".ui.activity.PaintingTypeListActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

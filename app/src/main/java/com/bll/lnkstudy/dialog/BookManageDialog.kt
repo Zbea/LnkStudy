@@ -15,7 +15,7 @@ import com.bll.lnkstudy.utils.SToast
 
 
 /**
- * book收藏、删除、移动
+ * type=0收藏、删除 1删除 2 加锁 删除
  */
 class BookManageDialog(val context: Context,private val screenPos:Int, val type:Int, val book: BookBean){
 
@@ -33,17 +33,32 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
 
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)
         val iv_close=dialog.findViewById<ImageView>(R.id.iv_close)
-        val ll_textbook=dialog.findViewById<LinearLayout>(R.id.ll_textbook)
-        val ll_book=dialog.findViewById<LinearLayout>(R.id.ll_book)
         val ll_collect=dialog.findViewById<LinearLayout>(R.id.ll_collect)
         val ll_delete=dialog.findViewById<LinearLayout>(R.id.ll_delete)
-        val ll_move=dialog.findViewById<LinearLayout>(R.id.ll_move)
-
-        if (type==1){
-            ll_collect.visibility= View.INVISIBLE
+        val ll_lock=dialog.findViewById<LinearLayout>(R.id.ll_lock)
+        val iv_lock=dialog.findViewById<ImageView>(R.id.iv_lock)
+        val tv_lock=dialog.findViewById<TextView>(R.id.tv_lock)
+        when (type) {
+            0 -> {
+                ll_collect.visibility= View.VISIBLE
+            }
+            1->{
+                ll_collect.visibility=View.INVISIBLE
+            }
+            2->{
+                ll_collect.visibility=View.GONE
+                ll_lock.visibility=View.VISIBLE
+            }
         }
-
         tv_name.text=book.bookName
+        if (book.isLock){
+            tv_lock.setText(R.string.unlock)
+            iv_lock.setImageResource(R.mipmap.icon_setting_unlock)
+        }
+        else{
+            tv_lock.setText(R.string.lock)
+            iv_lock.setImageResource(R.mipmap.icon_setting_lock)
+        }
 
         iv_close.setOnClickListener {
             dialog.dismiss()
@@ -65,9 +80,9 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
             dialog.dismiss()
         }
 
-        ll_move.setOnClickListener {
+        ll_lock.setOnClickListener {
             if (onClickListener!=null)
-                onClickListener?.onMove()
+                onClickListener?.onLock()
             dialog.dismiss()
         }
 
@@ -81,7 +96,7 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
     interface OnDialogClickListener {
         fun onCollect()
         fun onDelete()
-        fun onMove()
+        fun onLock()
     }
 
     fun setOnDialogClickListener(onClickListener: OnDialogClickListener?) {

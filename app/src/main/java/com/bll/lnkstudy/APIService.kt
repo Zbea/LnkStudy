@@ -1,6 +1,9 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.cloud.CloudExamList
+import com.bll.lnkstudy.mvp.model.cloud.CloudHomeworkList
+import com.bll.lnkstudy.mvp.model.cloud.CloudPaintingList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
@@ -250,7 +253,35 @@ interface APIService{
     /**
      * 公共年级接口
      */
-    @GET("task/typeGrades")
-    fun getCommonGrade(): Observable<BaseResult<MutableList<Grade>>>
+    @GET("userTypes")
+    fun getCommonGrade(): Observable<BaseResult<CommonData>>
+
+
+    /**
+     * 获取作业本分类
+     */
+    @GET("common/type/list")
+    fun getCloudHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudHomeworkList>>
+    /**
+     * 获取考卷分类
+     */
+    @GET("common/type/list")
+    fun getCloudExamType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudExamList>>
+    /**
+     * 获取作业本分类
+     */
+    @GET("common/type/list")
+    fun getCloudPaintingList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudPaintingList>>
+
+    /**
+     * 获取老师发送控制指令
+     */
+    @GET("delete/message/list")
+    fun getControlMessage(): Observable<BaseResult<MutableList<ControlMessage>>>
+    /**
+     * 删除老师发送控制指令
+     */
+    @POST("delete/message/delete")
+    fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

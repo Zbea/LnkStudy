@@ -79,7 +79,7 @@ class CampusModeActivity:BaseAppCompatActivity() {
         val pendingIntent = PendingIntent.getService(this, itemList.id, intent, 0)
         pendingIntents.add(pendingIntent)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager?.setRepeating(
+        alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP, selectLong,
             AlarmManager.INTERVAL_DAY, pendingIntent
         )

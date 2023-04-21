@@ -16,6 +16,7 @@ import com.bll.lnkstudy.mvp.model.NoteContentBean;
 import com.bll.lnkstudy.mvp.model.NotebookBean;
 import com.bll.lnkstudy.mvp.model.PaintingBean;
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean;
+import com.bll.lnkstudy.mvp.model.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.RecordBean;
 import com.bll.lnkstudy.mvp.model.date.DateEventBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
@@ -31,6 +32,7 @@ import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.greendao.NotebookBeanDao;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
 import com.bll.lnkstudy.greendao.PaintingDrawingBeanDao;
+import com.bll.lnkstudy.greendao.PaintingTypeBeanDao;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.greendao.DateEventBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
@@ -55,6 +57,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig notebookBeanDaoConfig;
     private final DaoConfig paintingBeanDaoConfig;
     private final DaoConfig paintingDrawingBeanDaoConfig;
+    private final DaoConfig paintingTypeBeanDaoConfig;
     private final DaoConfig recordBeanDaoConfig;
     private final DaoConfig dateEventBeanDaoConfig;
     private final DaoConfig homeworkContentBeanDaoConfig;
@@ -70,6 +73,7 @@ public class DaoSession extends AbstractDaoSession {
     private final NotebookBeanDao notebookBeanDao;
     private final PaintingBeanDao paintingBeanDao;
     private final PaintingDrawingBeanDao paintingDrawingBeanDao;
+    private final PaintingTypeBeanDao paintingTypeBeanDao;
     private final RecordBeanDao recordBeanDao;
     private final DateEventBeanDao dateEventBeanDao;
     private final HomeworkContentBeanDao homeworkContentBeanDao;
@@ -105,6 +109,9 @@ public class DaoSession extends AbstractDaoSession {
         paintingDrawingBeanDaoConfig = daoConfigMap.get(PaintingDrawingBeanDao.class).clone();
         paintingDrawingBeanDaoConfig.initIdentityScope(type);
 
+        paintingTypeBeanDaoConfig = daoConfigMap.get(PaintingTypeBeanDao.class).clone();
+        paintingTypeBeanDaoConfig.initIdentityScope(type);
+
         recordBeanDaoConfig = daoConfigMap.get(RecordBeanDao.class).clone();
         recordBeanDaoConfig.initIdentityScope(type);
 
@@ -131,6 +138,7 @@ public class DaoSession extends AbstractDaoSession {
         notebookBeanDao = new NotebookBeanDao(notebookBeanDaoConfig, this);
         paintingBeanDao = new PaintingBeanDao(paintingBeanDaoConfig, this);
         paintingDrawingBeanDao = new PaintingDrawingBeanDao(paintingDrawingBeanDaoConfig, this);
+        paintingTypeBeanDao = new PaintingTypeBeanDao(paintingTypeBeanDaoConfig, this);
         recordBeanDao = new RecordBeanDao(recordBeanDaoConfig, this);
         dateEventBeanDao = new DateEventBeanDao(dateEventBeanDaoConfig, this);
         homeworkContentBeanDao = new HomeworkContentBeanDao(homeworkContentBeanDaoConfig, this);
@@ -146,6 +154,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(NotebookBean.class, notebookBeanDao);
         registerDao(PaintingBean.class, paintingBeanDao);
         registerDao(PaintingDrawingBean.class, paintingDrawingBeanDao);
+        registerDao(PaintingTypeBean.class, paintingTypeBeanDao);
         registerDao(RecordBean.class, recordBeanDao);
         registerDao(DateEventBean.class, dateEventBeanDao);
         registerDao(HomeworkContentBean.class, homeworkContentBeanDao);
@@ -163,6 +172,7 @@ public class DaoSession extends AbstractDaoSession {
         notebookBeanDaoConfig.clearIdentityScope();
         paintingBeanDaoConfig.clearIdentityScope();
         paintingDrawingBeanDaoConfig.clearIdentityScope();
+        paintingTypeBeanDaoConfig.clearIdentityScope();
         recordBeanDaoConfig.clearIdentityScope();
         dateEventBeanDaoConfig.clearIdentityScope();
         homeworkContentBeanDaoConfig.clearIdentityScope();
@@ -201,6 +211,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public PaintingDrawingBeanDao getPaintingDrawingBeanDao() {
         return paintingDrawingBeanDao;
+    }
+
+    public PaintingTypeBeanDao getPaintingTypeBeanDao() {
+        return paintingTypeBeanDao;
     }
 
     public RecordBeanDao getRecordBeanDao() {

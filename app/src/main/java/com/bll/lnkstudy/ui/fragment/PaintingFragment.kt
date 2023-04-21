@@ -6,7 +6,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.ui.activity.MyPaintingListActivity
+import com.bll.lnkstudy.ui.activity.PaintingListActivity
 import com.bll.lnkstudy.utils.ZipUtils
 import kotlinx.android.synthetic.main.fragment_painting.*
 import org.greenrobot.eventbus.EventBus
@@ -64,7 +64,7 @@ class PaintingFragment : BaseFragment(){
         }
 
         tv_sm.setOnClickListener {
-            var intent= Intent(activity,MyPaintingListActivity::class.java)
+            val intent= Intent(activity,PaintingListActivity::class.java)
             intent.putExtra("title", getString(R.string.painting_smh))
             intent.putExtra("paintingType",4)
             intent.flags= 1
@@ -72,7 +72,7 @@ class PaintingFragment : BaseFragment(){
         }
 
         tv_yb.setOnClickListener {
-            var intent= Intent(activity,MyPaintingListActivity::class.java)
+            val intent= Intent(activity,PaintingListActivity::class.java)
             intent.putExtra("title", getString(R.string.painting_ybsf))
             intent.putExtra("paintingType",5)
             intent.flags=1
@@ -88,7 +88,7 @@ class PaintingFragment : BaseFragment(){
     private fun initTab(){
         val tabStrs= DataBeanManager.PAINTING
         for (i in 0..3) {
-            rg_group.addView(getRadioButton(i ,getString(tabStrs[i]),3))
+            rg_group.addView(getRadioButton(i ,tabStrs[i],3))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             typeId= id
@@ -96,8 +96,8 @@ class PaintingFragment : BaseFragment(){
     }
 
     private fun onClick(time:Int){
-        var intent= Intent(activity,MyPaintingListActivity::class.java)
-        intent.putExtra("title", "${getString(DataBeanManager.YEARS[time])}   ${getString(DataBeanManager.PAINTING[typeId])}" )
+        val intent= Intent(activity,PaintingListActivity::class.java)
+        intent.putExtra("title", "${getString(DataBeanManager.YEARS[time])}   ${DataBeanManager.PAINTING[typeId]}" )
         intent.putExtra("time",time)
         intent.putExtra("paintingType",typeId)
         intent.flags=0

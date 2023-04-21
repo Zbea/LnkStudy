@@ -61,7 +61,10 @@ public class SToast {
         text.setTextSize(20);
         text.setPadding(30, 20, 30, 20);
         toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
-        if (screen==2||screen==3){
+        if (screen==2){
+            toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
+        }
+        else if (screen==3){
             toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
         }
         else {

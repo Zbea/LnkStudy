@@ -48,18 +48,22 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
 
-        val code = ExceptionHandle.handleException(e).code
-        if (code == ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION) {
-            SToast.showText(2,MyApplication.mContext.getString(R.string.net_work_error))
-        } else if (code == ExceptionHandle.ERROR.NETWORD_ERROR || code == ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR) {
-            SToast.showText(2,MyApplication.mContext.getString(R.string.connect_server_timeout))
-        } else if (code == ExceptionHandle.ERROR.PARSE_ERROR) {
-            SToast.showText(2,MyApplication.mContext.getString(R.string.parse_data_error))
-        } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
-            SToast.showText(2,MyApplication.mContext.getString(R.string.connect_error))
-        }
-        else {
-            SToast.showText(2,MyApplication.mContext.getString(R.string.on_server_error))
+        when (ExceptionHandle.handleException(e).code) {
+            ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION -> {
+                SToast.showText(0,MyApplication.mContext.getString(R.string.connect_error))
+            }
+            ExceptionHandle.ERROR.NETWORD_ERROR,ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR -> {
+                SToast.showText(0,MyApplication.mContext.getString(R.string.connect_server_timeout))
+            }
+            ExceptionHandle.ERROR.PARSE_ERROR -> {
+                SToast.showText(0,MyApplication.mContext.getString(R.string.parse_data_error))
+            }
+            ExceptionHandle.ERROR.HTTP_ERROR -> {
+                SToast.showText(0,MyApplication.mContext.getString(R.string.connect_error))
+            }
+            else -> {
+                SToast.showText(0,MyApplication.mContext.getString(R.string.on_server_error))
+            }
         }
         IBaseView.hideLoading()
     }

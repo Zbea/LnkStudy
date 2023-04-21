@@ -142,7 +142,9 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 .setOnSelectListener { item ->
                     when (item.id) {
                         0 -> {
-                            addCover()
+                           if(DataBeanManager.classGroups.size>0){
+                               addCover()
+                           }
                         }
                         1 -> {
                             popupType=0
@@ -470,6 +472,10 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             //刷新科目
             initTab()
         }
+        //老师控制删除指令
+        if (msgFlag== Constants.CONTROL_MESSAGE_EVENT){
+
+        }
     }
 
     override fun onDestroy() {
@@ -509,7 +515,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             if (!item.isCreate&&item.state!=1) {
                 val map = HashMap<String, Any>()
                 map["size"] = 15
-                map["grade"] = mUser?.grade!!
+                map["grade"] = grade
                 map["subject"] = mCourse
                 map["name"] = item.name
                 map["id"] = item.id

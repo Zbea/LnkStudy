@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.CONTROL_MESSAGE_EVENT
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
@@ -25,16 +26,18 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
+import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
+import com.bll.lnkstudy.mvp.view.IContractView.IControlMessageView
 import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
-import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
@@ -54,11 +57,12 @@ import java.util.*
 /**
  * 首页
  */
-class MainFragment : BaseFragment(), IContractView.IMainView,IContractView.IMessageView,ICommonView {
+class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView,ICommonView,IControlMessageView {
 
-    private var mMainPresenter = MainPresenter(this)
-    private var mMessagePresenter=MessagePresenter(this)
-    private var mCommonPresenter=CommonPresenter(this)
+    private val mControlMessagePresenter=ControlMessagePresenter(this)
+    private val mMainPresenter = MainPresenter(this)
+    private val mMessagePresenter=MessagePresenter(this)
+    private val mCommonPresenter=CommonPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var classGroupAdapter: MainClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
@@ -70,6 +74,20 @@ class MainFragment : BaseFragment(), IContractView.IMainView,IContractView.IMess
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
 
+    override fun onControl(controlMessages: MutableList<ControlMessage>) {
+        //发送全局老师控制删除
+        if (controlMessages.size>0){
+            EventBus.getDefault().post(CONTROL_MESSAGE_EVENT)
+            val list= mutableListOf<Int>()
+            for (item in controlMessages){
+                list.add(item.id)
+            }
+            mControlMessagePresenter.deleteControlMessage(list)
+        }
+    }
+    override fun onDelete() {
+    }
+
     override fun onList(message: Message) {
         messages=message.list
         mMessageAdapter?.setNewData(messages)
@@ -78,8 +96,9 @@ class MainFragment : BaseFragment(), IContractView.IMainView,IContractView.IMess
     }
 
 
-    override fun onList(grades: MutableList<Grade>?) {
-        DataBeanManager.grades=grades!!
+    override fun onList(commonData: CommonData) {
+        DataBeanManager.grades=commonData.grade
+        DataBeanManager.courses=commonData.subject
     }
 
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
@@ -122,7 +141,8 @@ class MainFragment : BaseFragment(), IContractView.IMainView,IContractView.IMess
 
     override fun lazyLoad() {
         mMainPresenter.getClassGroupList(false)
-        mCommonPresenter.getGrades()
+        mControlMessagePresenter.getControlMessage()
+        mCommonPresenter.getCommon()
         findMessages()
         fetchExam()
     }
@@ -377,5 +397,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView,IContractView.IMess
     override fun refreshData() {
         lazyLoad()
     }
+
+
 
 }

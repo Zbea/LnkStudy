@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 
+import com.bll.lnkstudy.DataBeanManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -58,6 +59,10 @@ public class BookGreenDaoManager {
     //增加书籍
     public void insertOrReplaceBook(BookBean bean) {
         bookBeanDao.insertOrReplace(bean);
+    }
+
+    public void insertOrReplaceBooks(List<BookBean> beans) {
+        bookBeanDao.insertOrReplaceInTx(beans);
     }
 
 
@@ -141,7 +146,8 @@ public class BookGreenDaoManager {
     public List<BookBean> queryAllTextBook(String textType) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+        WhereCondition whereCondition3=BookBeanDao.Properties.DateState.eq(0);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(BookBeanDao.Properties.Time).build().list();
         return queryBookList;
     }
@@ -149,6 +155,47 @@ public class BookGreenDaoManager {
     public List<BookBean> queryAllTextBook( String textType, int page, int pageSize) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
+        WhereCondition whereCondition3=BookBeanDao.Properties.DateState.eq(0);//没有过期
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
+        return queryBookList;
+    }
+
+    /**
+     * 获取所有教材除开往期教材
+     * @return
+     */
+    public List<BookBean> queryAllTextBookOther() {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
+        WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.notEq(DataBeanManager.INSTANCE.getTextbookType()[3]);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .build().list();
+        return queryBookList;
+    }
+
+    /**
+     * 获取往期教材
+     * @return
+     */
+    public List<BookBean> queryAllTextBookOld() {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
+        WhereCondition whereCondition2=BookBeanDao.Properties.DateState.eq(1);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .build().list();
+        return queryBookList;
+    }
+
+    /**
+     * 获取往期教材
+     * @return
+     */
+    public List<BookBean> queryAllTextBookOld( int page, int pageSize) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
+        WhereCondition whereCondition2=BookBeanDao.Properties.DateState.eq(1);
         List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
@@ -159,6 +206,10 @@ public class BookGreenDaoManager {
     //删除书籍数据d对象
     public void deleteBook(BookBean book){
         bookBeanDao.delete(book);
+    }
+
+    public void deleteBooks(List<BookBean> bookBeans){
+        bookBeanDao.deleteInTx(bookBeans);
     }
 
 }

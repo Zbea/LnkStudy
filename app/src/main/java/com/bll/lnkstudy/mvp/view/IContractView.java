@@ -7,9 +7,13 @@ import com.bll.lnkstudy.mvp.model.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
-import com.bll.lnkstudy.mvp.model.Grade;
+import com.bll.lnkstudy.mvp.model.CommonData;
+import com.bll.lnkstudy.mvp.model.ControlMessage;
 import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
+import com.bll.lnkstudy.mvp.model.cloud.CloudExamList;
+import com.bll.lnkstudy.mvp.model.cloud.CloudHomeworkList;
+import com.bll.lnkstudy.mvp.model.cloud.CloudPaintingList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
 import com.bll.lnkstudy.mvp.model.paper.PaperType;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
@@ -136,9 +140,32 @@ public interface IContractView {
         void onCommitSuccess();
     }
 
+    //云作业
+    interface ICloudHomeworkView extends IBaseView {
+        void onType(CloudHomeworkList item);
+    }
+    //云考卷
+    interface ICloudExamView extends IBaseView {
+        void onType(CloudExamList item);
+    }
+
+    //云书画
+    interface ICloudPaintingView extends IBaseView {
+        void onList(CloudPaintingList item);
+    }
 
     //公共接口
     interface ICommonView extends IBaseView {
-        void onList(List<Grade> grades);
+        void onList(CommonData commonData);
     }
+
+    //公共接口
+    interface IControlMessageView extends IBaseView {
+        /**
+         * 获取老师控制移除指定
+         */
+        void onControl(List<ControlMessage> controlMessages);
+        void onDelete();
+    }
+
 }

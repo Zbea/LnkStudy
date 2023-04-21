@@ -42,7 +42,7 @@ public class ZipUtils {
             return;
         }
 
-        String fileTargetName=new FileAddress().getPathBookUnzip(fileName);
+        String fileTargetName=new FileAddress().getPathTextBook(fileName);
 
         File unZipFile = new File(fileTargetName);
 

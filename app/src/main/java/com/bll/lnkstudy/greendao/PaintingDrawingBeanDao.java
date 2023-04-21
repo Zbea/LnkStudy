@@ -32,6 +32,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
         public final static Property Path = new Property(5, String.class, "path", false, "PATH");
         public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
         public final static Property Page = new Property(7, int.class, "page", false, "PAGE");
+        public final static Property Grade = new Property(8, int.class, "grade", false, "GRADE");
     }
 
 
@@ -54,7 +55,8 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
                 "\"PATH\" TEXT," + // 5: path
                 "\"TITLE\" TEXT," + // 6: title
-                "\"PAGE\" INTEGER NOT NULL );"); // 7: page
+                "\"PAGE\" INTEGER NOT NULL ," + // 7: page
+                "\"GRADE\" INTEGER NOT NULL );"); // 8: grade
     }
 
     /** Drops the underlying database table. */
@@ -86,6 +88,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
             stmt.bindString(7, title);
         }
         stmt.bindLong(8, entity.getPage());
+        stmt.bindLong(9, entity.getGrade());
     }
 
     @Override
@@ -111,6 +114,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
             stmt.bindString(7, title);
         }
         stmt.bindLong(8, entity.getPage());
+        stmt.bindLong(9, entity.getGrade());
     }
 
     @Override
@@ -128,7 +132,8 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
             cursor.getLong(offset + 4), // date
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // path
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
-            cursor.getInt(offset + 7) // page
+            cursor.getInt(offset + 7), // page
+            cursor.getInt(offset + 8) // grade
         );
         return entity;
     }
@@ -143,6 +148,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
         entity.setPath(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setPage(cursor.getInt(offset + 7));
+        entity.setGrade(cursor.getInt(offset + 8));
      }
     
     @Override

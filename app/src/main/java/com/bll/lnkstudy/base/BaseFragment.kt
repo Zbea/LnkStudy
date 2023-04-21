@@ -14,12 +14,15 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.manager.PaintingTypeDaoManager
+import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.HomeLeftActivity
+import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
@@ -49,6 +52,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=0
+    var grade=0
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -73,6 +77,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isViewPrepare = true
+        grade=mUser?.grade!!
         initCommonTitle()
         initView()
 
@@ -195,6 +200,15 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     /**
+     * 更改年级
+     */
+    open fun changeGrade(grade: Int){
+        this.grade=grade
+        pageIndex=1
+        fetchData()
+    }
+
+    /**
      * 消失view
      */
     protected fun disMissView(vararg views: View?) {
@@ -222,12 +236,12 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
-        var radioButton =
+        val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
         radioButton.id = i
         radioButton.isChecked = i == 0
-        var layoutParams = RadioGroup.LayoutParams(
+        val layoutParams = RadioGroup.LayoutParams(
             RadioGroup.LayoutParams.WRAP_CONTENT,
             DP2PX.dip2px(activity, 45f))
 
@@ -267,12 +281,24 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 跳转画本
      */
     fun gotoPaintingDrawing(type: Int){
-        ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
-        var intent=Intent(activity, PaintingDrawingActivity::class.java)
+        val items=PaintingTypeDaoManager.getInstance().queryAllByType(type)
+        if (items.size == 0) {
+            val beanType = PaintingTypeBean()
+            beanType.type = type
+            beanType.grade = grade
+            beanType.date = System.currentTimeMillis()
+            PaintingTypeDaoManager.getInstance().insertOrReplace(beanType)
+        }
+        var intent: Intent? =null
+        intent = if (items.size>1){
+            Intent(activity, PaintingTypeListActivity::class.java)
+        } else{
+            ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
+            Intent(activity, PaintingDrawingActivity::class.java)
+        }
         intent.flags=type
+        intent.putExtra("grade",grade)
         startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     /**

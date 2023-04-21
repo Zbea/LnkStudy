@@ -154,6 +154,10 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             //刷新科目
             initTab()
         }
+        //老师控制删除指令
+        if (msgFlag== Constants.CONTROL_MESSAGE_EVENT){
+
+        }
     }
 
 

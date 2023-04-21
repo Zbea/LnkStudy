@@ -52,7 +52,7 @@ class BookCaseFragment: BaseFragment() {
 
         ll_book_top.setOnClickListener {
             if (books.size>0){
-                gotoBookDetails(books[0].bookId)
+
             }
         }
 
@@ -69,7 +69,7 @@ class BookCaseFragment: BaseFragment() {
             setEmptyView(R.layout.common_book_empty)
             rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
-                gotoBookDetails(books[position].bookId)
+
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookCaseFragment.position=position
@@ -135,9 +135,9 @@ class BookCaseFragment: BaseFragment() {
             override fun onDelete() {
                 delete()
             }
-            override fun onMove() {
-            }
-        })
+                override fun onLock() {
+                }
+            })
 
     }
 

@@ -1,12 +1,14 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
-import com.bll.lnkstudy.Constants.Companion.BOOK_PICTURE_FILES
-import com.bll.lnkstudy.Constants.Companion.CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
 import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
+import com.bll.lnkstudy.Constants.Companion.PAINTING_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
+import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CATALOG_TXT
+import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CONTENTS
+import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.ZIP_PATH
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.SPUtil
@@ -14,27 +16,30 @@ import java.io.File
 
 class FileAddress {
 
-    val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
+    private val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
 
     /**
-     * 书籍地址
+     * 教材地址
      * ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/mUserId/fileName
      */
-    fun getPathBook(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/$fileName"
+    fun getPathTextBook(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+    }
+    fun getPathTextBookDraw(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}draw"
     }
 
     /**
-     * 书籍目录地址
+     * 教材目录地址
      */
-    fun getPathBookCatalog(path:String):String{
-        return path + File.separator + CATALOG_TXT
+    fun getPathTextBookCatalog(path:String):String{
+        return path + File.separator + TEXTBOOK_CATALOG_TXT
     }
     /**
-     * 书籍图片地址
+     * 教材图片地址
      */
-    fun getPathBookPicture(path:String):String{
-        return path + File.separator + BOOK_PICTURE_FILES
+    fun getPathTextBookPicture(path:String):String{
+        return path + File.separator + TEXTBOOK_CONTENTS
     }
     /**
      * zip保存地址
@@ -45,15 +50,11 @@ class FileAddress {
     }
 
     /**
-     * 书籍zip解压地址
-     * ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/mUserId/fileName
+     * 教材地址
+     * /storage/emulated/0/Books
      */
-    fun getPathBookUnzip(fileName:String):String{
-        val unzipTargetFile = File(BOOK_PATH, mUserId)
-        if (!unzipTargetFile.exists()) {
-            unzipTargetFile.mkdir()
-        }
-        return unzipTargetFile.path + File.separator + fileName
+    fun getPathBook(fileName: String):String{
+        return "$BOOK_PATH/$fileName"
     }
 
     /**
@@ -96,6 +97,13 @@ class FileAddress {
      */
     fun getPathImage(type:String, contentId: Int):String{
         return "$IMAGE_PATH/$mUserId/$type/$contentId"
+    }
+
+    /**
+     * 画本、书法
+     */
+    fun getPathPainting(type:Int, grade: Int):String{
+        return "$PAINTING_PATH/$mUserId/$type/$grade"
     }
 
     /**

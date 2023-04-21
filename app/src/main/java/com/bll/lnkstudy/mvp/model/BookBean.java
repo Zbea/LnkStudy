@@ -40,6 +40,7 @@ public class BookBean {
     @SerializedName("bodyUrl")
     public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径
+    public String bookDrawPath;  //book书的手写路径
     public String bookType;//书架所有分类
     public Long time;//观看时间
     public int pageIndex=0;//当前页
@@ -51,14 +52,15 @@ public class BookBean {
     @Transient
     public int buyStatus;//1已购买
     public int dateState=0;//0当前课本1往期课本
-    @Generated(hash = 1013802902)
+    public boolean isLock=false;//未锁
+    @Generated(hash = 1032455037)
     public BookBean(Long id, long userId, int bookId, String imageUrl,
             String subjectName, String createdAt, String bookDesc, String semester,
             String area, String bookName, int price, String grade, String version,
             String bookVersion, String supply, int category, String textBookType,
-            int status, String downloadUrl, String bookPath, String bookType,
-            Long time, int pageIndex, String pageUpUrl, String pageUrl,
-            boolean isCollect, int dateState) {
+            int status, String downloadUrl, String bookPath, String bookDrawPath,
+            String bookType, Long time, int pageIndex, String pageUpUrl,
+            String pageUrl, boolean isCollect, int dateState, boolean isLock) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -79,6 +81,7 @@ public class BookBean {
         this.status = status;
         this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
+        this.bookDrawPath = bookDrawPath;
         this.bookType = bookType;
         this.time = time;
         this.pageIndex = pageIndex;
@@ -86,6 +89,7 @@ public class BookBean {
         this.pageUrl = pageUrl;
         this.isCollect = isCollect;
         this.dateState = dateState;
+        this.isLock = isLock;
     }
     @Generated(hash = 269018259)
     public BookBean() {
@@ -251,6 +255,18 @@ public class BookBean {
     }
     public void setDateState(int dateState) {
         this.dateState = dateState;
+    }
+    public String getBookDrawPath() {
+        return this.bookDrawPath;
+    }
+    public void setBookDrawPath(String bookDrawPath) {
+        this.bookDrawPath = bookDrawPath;
+    }
+    public boolean getIsLock() {
+        return this.isLock;
+    }
+    public void setIsLock(boolean isLock) {
+        this.isLock = isLock;
     }
 
 }

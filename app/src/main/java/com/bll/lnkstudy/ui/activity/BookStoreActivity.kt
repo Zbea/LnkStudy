@@ -20,7 +20,6 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
@@ -107,7 +106,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
         et_search.addTextChangedListener {
             bookNameStr =it.toString()
-            if (!bookNameStr.isNullOrEmpty()){
+            if (bookNameStr.isNotEmpty()){
                 pageIndex=1
                 fetchData()
             }
@@ -217,8 +216,8 @@ class BookStoreActivity : BaseAppCompatActivity(),
     private fun downLoadStart(url: String,book: BookBean): BaseDownloadTask? {
         showLoading()
 
-        val fileName = book?.bookId.toString()//文件名
-        val targetFileStr = FileAddress().getPathZip(fileName)
+        val fileName = File(book.downloadUrl).name//文件名
+        val targetFileStr = FileAddress().getPathBook(fileName)
         val targetFile = File(targetFileStr)
         if (targetFile.exists()) {
             targetFile.delete()
@@ -229,7 +228,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book?.bookId]) {
+                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
                             val s = getFormatNum(
                                 soFarBytes.toDouble() / (1024 * 1024),
@@ -250,29 +249,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 override fun completed(task: BaseDownloadTask?) {
                     //删除缓存 poolmap
                     deleteDoneTask(task)
-                    lock.lock()
-                    unzip(book,targetFileStr,fileName)
-                    lock.unlock()
-                    mDialog?.dismiss()
-                }
-
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
-                    mDialog?.dismiss()
-                    showToast(book.bookName+getString(R.string.book_download_fail))
-                    deleteDoneTask(task)
-                }
-            })
-        return download
-    }
-
-    /**
-     * 解压
-     */
-    private fun unzip(book: BookBean, targetFileStr:String, fileName:String){
-        ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
-            override fun onFinish(success: Boolean) {
-                if (success) {
                     book.apply {
                         bookType = when (categoryStr) {
                             "思维科学", "自然科学" -> {
@@ -288,7 +264,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         loadSate = 2
                         category = 1
                         time = System.currentTimeMillis()//下载时间用于排序
-                        bookPath = FileAddress().getPathBook(fileName)
+                        bookPath = targetFileStr
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
@@ -296,27 +272,22 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
-
+                    mDialog?.dismiss()
                     Handler().postDelayed({
                         showToast(book.bookName+getString(R.string.book_download_success))
                     },500)
-                } else {
-                    showToast(book.bookName+getString(R.string.book_decompression_fail))
                 }
-            }
 
-            override fun onProgress(percentDone: Int) {
-            }
-
-            override fun onError(msg: String?) {
-                showToast(msg!!)
-            }
-
-            override fun onStart() {
-            }
-
-        })
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    //删除缓存 poolmap
+                    mDialog?.dismiss()
+                    showToast(book.bookName+getString(R.string.book_download_fail))
+                    deleteDoneTask(task)
+                }
+            })
+        return download
     }
+
 
     fun getFormatNum(pi: Double, format: String?): String? {
         val df = DecimalFormat(format)

@@ -27,7 +27,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_22" />
 
         <TextView
             android:id="@+id/tv_price"

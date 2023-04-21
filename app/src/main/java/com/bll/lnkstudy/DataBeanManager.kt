@@ -12,6 +12,7 @@ object DataBeanManager {
 
     var classGroups= mutableListOf<ClassGroup>()
     var grades= mutableListOf<Grade>()
+    var courses= mutableListOf<ItemList>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
@@ -44,10 +45,10 @@ object DataBeanManager {
         R.string.age_ming,R.string.age_qing,
         R.string.age_jin,R.string.age_dan
     )
-    val PAINTING = arrayOf(
-        R.string.painting_mbsf,R.string.painting_ssh,
-        R.string.painting_hnh,R.string.painting_rwh,
-        R.string.painting_smh,R.string.painting_ybsf
+    var PAINTING = arrayOf(
+        mContext.getString(R.string.painting_mbsf),mContext.getString(R.string.painting_ssh),
+        mContext.getString(R.string.painting_hnh),mContext.getString(R.string.painting_rwh),
+        mContext.getString(R.string.painting_smh),mContext.getString(R.string.painting_ybsf)
     )
 
     val popupGrades: MutableList<PopupBean>
@@ -58,6 +59,22 @@ object DataBeanManager {
             }
             return list
         }
+
+    fun popupDynasty():MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (i in YEARS.indices){
+            list.add(PopupBean(i + 1, mContext.getString(YEARS[i]), i == 0))
+        }
+        return list
+    }
+
+    fun popupPainting():MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (i in PAINTING.indices){
+            list.add(PopupBean(i + 1, PAINTING[i], i == 0))
+        }
+        return list
+    }
 
     /**
      * 获取index栏目
