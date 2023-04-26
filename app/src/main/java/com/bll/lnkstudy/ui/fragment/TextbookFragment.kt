@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants.Companion.CONTROL_MESSAGE_EVENT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
@@ -156,14 +155,10 @@ class TextbookFragment : BaseFragment(){
     }
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag==TEXT_BOOK_EVENT){
             fetchData()
-        }
-        //老师控制删除指令
-        if (msgFlag== CONTROL_MESSAGE_EVENT){
-            moveTextbook()
         }
     }
 

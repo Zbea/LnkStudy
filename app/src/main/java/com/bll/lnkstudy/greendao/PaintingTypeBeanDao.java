@@ -29,6 +29,8 @@ public class PaintingTypeBeanDao extends AbstractDao<PaintingTypeBean, Long> {
         public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
         public final static Property Grade = new Property(3, int.class, "grade", false, "GRADE");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
+        public final static Property IsCloud = new Property(5, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(6, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -48,7 +50,9 @@ public class PaintingTypeBeanDao extends AbstractDao<PaintingTypeBean, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"TYPE\" INTEGER NOT NULL ," + // 2: type
                 "\"GRADE\" INTEGER NOT NULL ," + // 3: grade
-                "\"DATE\" INTEGER NOT NULL );"); // 4: date
+                "\"DATE\" INTEGER NOT NULL ," + // 4: date
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 5: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 6: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -69,6 +73,8 @@ public class PaintingTypeBeanDao extends AbstractDao<PaintingTypeBean, Long> {
         stmt.bindLong(3, entity.getType());
         stmt.bindLong(4, entity.getGrade());
         stmt.bindLong(5, entity.getDate());
+        stmt.bindLong(6, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(7, entity.getCloudId());
     }
 
     @Override
@@ -83,6 +89,8 @@ public class PaintingTypeBeanDao extends AbstractDao<PaintingTypeBean, Long> {
         stmt.bindLong(3, entity.getType());
         stmt.bindLong(4, entity.getGrade());
         stmt.bindLong(5, entity.getDate());
+        stmt.bindLong(6, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(7, entity.getCloudId());
     }
 
     @Override
@@ -97,7 +105,9 @@ public class PaintingTypeBeanDao extends AbstractDao<PaintingTypeBean, Long> {
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // type
             cursor.getInt(offset + 3), // grade
-            cursor.getLong(offset + 4) // date
+            cursor.getLong(offset + 4), // date
+            cursor.getShort(offset + 5) != 0, // isCloud
+            cursor.getInt(offset + 6) // cloudId
         );
         return entity;
     }
@@ -109,6 +119,8 @@ public class PaintingTypeBeanDao extends AbstractDao<PaintingTypeBean, Long> {
         entity.setType(cursor.getInt(offset + 2));
         entity.setGrade(cursor.getInt(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
+        entity.setIsCloud(cursor.getShort(offset + 5) != 0);
+        entity.setCloudId(cursor.getInt(offset + 6));
      }
     
     @Override

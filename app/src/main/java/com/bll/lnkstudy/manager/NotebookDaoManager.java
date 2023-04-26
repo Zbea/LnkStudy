@@ -1,7 +1,9 @@
 package com.bll.lnkstudy.manager;
 
+import com.bll.lnkstudy.DataBeanManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.NoteTypeBeanDao;
 import com.bll.lnkstudy.greendao.NotebookBeanDao;
 import com.bll.lnkstudy.mvp.model.NotebookBean;
 import com.bll.lnkstudy.mvp.model.User;
@@ -49,31 +51,59 @@ public class NotebookDaoManager {
         return mDbController;
     }
 
+    public void insert(NotebookBean bean) {
+        dao.insert(bean);
+    }
+
     public void insertOrReplace(NotebookBean bean) {
         dao.insertOrReplace(bean);
+    }
+
+    /**
+     * 是否存在笔记
+     * @return
+     */
+    public Boolean isExist(String typeStr,String title){
+        WhereCondition whereCondition1=NotebookBeanDao.Properties.TypeStr.eq(typeStr);
+        WhereCondition whereCondition2= NotebookBeanDao.Properties.Title.eq(title);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).unique()!=null;
     }
 
     /**
      * @return
      */
     public List<NotebookBean> queryAll() {
-        WhereCondition whereCondition=NotebookBeanDao.Properties.Type.gt(0);
+        WhereCondition whereCondition=NotebookBeanDao.Properties.TypeStr.notEq(DataBeanManager.INSTANCE.getNoteBook().get(0).name);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
+    }
+
+    public NotebookBean queryNote(int cloudId) {
+        WhereCondition whereCondition=NotebookBeanDao.Properties.CloudId.eq(cloudId);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+    }
+
+    /**
+     * @return
+     */
+    public int queryAllSize() {
+        WhereCondition whereCondition=NotebookBeanDao.Properties.TypeStr.notEq(DataBeanManager.INSTANCE.getNoteBook().get(0).name);
+        WhereCondition whereCondition1=NotebookBeanDao.Properties.IsCloud.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list().size();
+    }
+
+    /**
+     * @return
+     */
+    public List<NotebookBean> queryAll(String type) {
+        WhereCondition whereCondition=NotebookBeanDao.Properties.TypeStr.eq(type);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
     }
 
     /**
      * @return
      */
-    public List<NotebookBean> queryAll(int type) {
-        WhereCondition whereCondition=NotebookBeanDao.Properties.Type.eq(type);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
-    }
-
-    /**
-     * @return
-     */
-    public List<NotebookBean> queryAll(int type, int page, int pageSize) {
-        WhereCondition whereCondition=NotebookBeanDao.Properties.Type.eq(type);
+    public List<NotebookBean> queryAll(String type, int page, int pageSize) {
+        WhereCondition whereCondition=NotebookBeanDao.Properties.TypeStr.eq(type);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate)
                 .offset((page-1)*pageSize).limit(pageSize).build().list();
     }

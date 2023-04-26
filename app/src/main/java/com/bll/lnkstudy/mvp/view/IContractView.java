@@ -13,7 +13,7 @@ import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.cloud.CloudExamList;
 import com.bll.lnkstudy.mvp.model.cloud.CloudHomeworkList;
-import com.bll.lnkstudy.mvp.model.cloud.CloudPaintingList;
+import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
 import com.bll.lnkstudy.mvp.model.paper.PaperType;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
@@ -34,8 +34,9 @@ public interface IContractView {
         void onSuccess(List<String> urls);
         void onCommitSuccess();
     }
-
-
+    interface ICloudUploadView extends IBaseView{
+        void onSuccess();
+    }
     //登录
     interface ILoginView extends IBaseView {
         void getLogin(User user);
@@ -149,9 +150,11 @@ public interface IContractView {
         void onType(CloudExamList item);
     }
 
-    //云书画
-    interface ICloudPaintingView extends IBaseView {
-        void onList(CloudPaintingList item);
+    //云
+    interface ICloudView extends IBaseView {
+        void onList(CloudList item);
+        void onType(List<String> types);
+        void onDelete();
     }
 
     //公共接口
@@ -166,6 +169,10 @@ public interface IContractView {
          */
         void onControl(List<ControlMessage> controlMessages);
         void onDelete();
+    }
+
+    interface IQiniuView extends IBaseView {
+        void onToken(String token);
     }
 
 }

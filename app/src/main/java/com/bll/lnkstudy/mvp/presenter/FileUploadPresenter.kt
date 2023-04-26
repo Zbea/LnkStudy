@@ -2,7 +2,7 @@ package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -17,7 +17,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView):
         for (url in files){
             val file=File(url)
             parts.add(MultipartBody.Part.createFormData("files", file.name, RequestBody.create(
-                MediaType.parse("multipart/form-data"), file)))
+                "multipart/form-data".toMediaTypeOrNull(), file)))
         }
 
         val type = RetrofitManager.service.upload(parts)

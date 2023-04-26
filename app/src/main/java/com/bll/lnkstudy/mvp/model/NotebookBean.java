@@ -20,25 +20,35 @@ public class NotebookBean implements Serializable {
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String title;
-    public int type;//笔记分类id
+    public String typeStr;//分类
     public long createDate; //创建时间
     public String dateStr;
     public String contentResId; //笔记内容背景id
     public boolean isEncrypt;//是否加密
     public String encrypt;//密码
-    @Generated(hash = 1719151725)
-    public NotebookBean(Long id, long userId, String title, int type,
+    public int grade;//年级
+    public boolean isCloud;
+    public int cloudId;//云id
+    @Transient
+    public String downloadUrl;
+    @Transient
+    public String contentJson;
+    @Generated(hash = 1700255441)
+    public NotebookBean(Long id, long userId, String title, String typeStr,
             long createDate, String dateStr, String contentResId, boolean isEncrypt,
-            String encrypt) {
+            String encrypt, int grade, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
-        this.type = type;
+        this.typeStr = typeStr;
         this.createDate = createDate;
         this.dateStr = dateStr;
         this.contentResId = contentResId;
         this.isEncrypt = isEncrypt;
         this.encrypt = encrypt;
+        this.grade = grade;
+        this.isCloud = isCloud;
+        this.cloudId = cloudId;
     }
     @Generated(hash = 1250124346)
     public NotebookBean() {
@@ -61,11 +71,11 @@ public class NotebookBean implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public int getType() {
-        return this.type;
+    public String getTypeStr() {
+        return this.typeStr;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
     public long getCreateDate() {
         return this.createDate;
@@ -97,5 +107,25 @@ public class NotebookBean implements Serializable {
     public void setEncrypt(String encrypt) {
         this.encrypt = encrypt;
     }
+    public int getGrade() {
+        return this.grade;
+    }
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
+    }
+    public int getCloudId() {
+        return this.cloudId;
+    }
+    public void setCloudId(int cloudId) {
+        this.cloudId = cloudId;
+    }
+
+
 
 }

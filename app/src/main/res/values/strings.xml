@@ -18,6 +18,7 @@
     <string name="toast_select_week">请选择星期</string>
     <string name="toast_download_install">正在下载安装...</string>
     <string name="toast_downloaded">已下载</string>
+    <string name="toast_existed">已存在</string>
     <string name="toast_edit_success">修改成功</string>
     <string name="toast_message_code_success">验证码发送成功</string>
     <string name="toast_register_success">注册成功</string>
@@ -342,5 +343,7 @@
     <string name="cloud_storage_str">云书库</string>
     <string name="my_drawing_str">我的画本</string>
     <string name="my_calligraphy_str">我的书法</string>
+
+    <string name="toast_cloud_upload_painting_str">上传本地书画成功</string>
 
 </resources>

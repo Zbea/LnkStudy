@@ -87,7 +87,9 @@
         <activity android:name=".ui.activity.drawing.BookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
-        <activity android:name=".ui.activity.AppListActivity"/>
+        <activity android:name=".ui.activity.AppListActivity"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".ui.activity.download.DownloadAppActivity"/>
         <activity android:name=".ui.activity.download.DownloadPaintingActivity"/>
         <activity android:name=".ui.activity.download.DownloadWallpaperActivity"/>
@@ -117,7 +119,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.BookCaseTypeListActivity"/>
-        <activity android:name=".ui.activity.BookCollectActivity"/>
+        <activity android:name=".ui.activity.BookCollectActivity"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".ui.activity.drawing.PaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 

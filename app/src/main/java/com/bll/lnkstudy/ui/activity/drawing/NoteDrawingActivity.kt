@@ -8,37 +8,37 @@ import android.view.View
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.NoteContentBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
-    private var type = 0
+    private var type = ""
     private var noteBook: NotebookBean? = null
     private var noteContent: NoteContentBean? = null//当前内容
     private var note_Content_a: NoteContentBean? = null//a屏内容
     private var noteContents = mutableListOf<NoteContentBean>() //所有内容
     private var page = 0//页码
+    private var grade=1
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
     }
 
     override fun initData() {
-        var bundle = intent.getBundleExtra("bundle")
+        val bundle = intent.getBundleExtra("bundle")
         noteBook = bundle?.getSerializable("note") as NotebookBean
-        type = noteBook?.type!!
+        type = noteBook?.typeStr.toString()
+        grade=noteBook?.grade!!
 
-        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.id!!)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
 
         if (noteContents.size > 0) {
             noteContent = noteContents[noteContents.size - 1]
@@ -247,15 +247,15 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newNoteContent() {
 
-        val path=FileAddress().getPathNote(type,noteBook?.id,noteContents.size)
+        val path=FileAddress().getPathNote(type,noteBook?.title,grade)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
         noteContent = NoteContentBean()
         noteContent?.date = System.currentTimeMillis()
-        noteContent?.type=type
-        noteContent?.notebookId = noteBook?.id
+        noteContent?.typeStr=type
+        noteContent?.notebookTitle = noteBook?.title
         noteContent?.resId = noteBook?.contentResId
-
+        noteContent?.grade=grade
         noteContent?.title=getString(R.string.unnamed)+(noteContents.size+1)
         noteContent?.folderPath=path
         noteContent?.filePath = "$path/$pathName.tch"
@@ -270,23 +270,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
         noteContents.add(noteContent!!)
     }
-
-
-
-    //删除当前作业内容
-    private fun delete() {
-        CommonDialog(this,getCurrentScreenPos()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                NoteContentDaoManager.getInstance().deleteNote(noteContent)
-                noteContents.remove(noteContent)
-                FileUtils.deleteFile(noteContent?.folderPath, noteContent?.pathName)//删除文件
-            }
-        })
-    }
-
 
    override fun changeScreenPage() {
         if (isExpand){

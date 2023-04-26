@@ -3,7 +3,7 @@ package com.bll.lnkstudy
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.cloud.CloudExamList
 import com.bll.lnkstudy.mvp.model.cloud.CloudHomeworkList
-import com.bll.lnkstudy.mvp.model.cloud.CloudPaintingList
+import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
@@ -26,7 +26,13 @@ interface APIService{
     @Multipart
     @POST("file/manyUpload")
     fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
-
+    @POST("cloud/data/insert")
+    fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取下载token
+     */
+    @POST("file/token")
+    fun getQiniuToken(): Observable<BaseResult<String>>
     /**
      * 用户登录 "/login"
      */
@@ -258,6 +264,17 @@ interface APIService{
 
 
     /**
+     * 获取老师发送控制指令
+     */
+    @GET("delete/message/list")
+    fun getControlMessage(): Observable<BaseResult<MutableList<ControlMessage>>>
+    /**
+     * 删除老师发送控制指令
+     */
+    @POST("delete/message/delete")
+    fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
      * 获取作业本分类
      */
     @GET("common/type/list")
@@ -268,20 +285,19 @@ interface APIService{
     @GET("common/type/list")
     fun getCloudExamType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudExamList>>
     /**
-     * 获取作业本分类
+     * 获取云列表
      */
-    @GET("common/type/list")
-    fun getCloudPaintingList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudPaintingList>>
-
+    @GET("cloud/data/list")
+    fun getCloudList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudList>>
     /**
-     * 获取老师发送控制指令
+     * 获取云列表
      */
-    @GET("delete/message/list")
-    fun getControlMessage(): Observable<BaseResult<MutableList<ControlMessage>>>
+    @GET("cloud/data/types")
+    fun getCloudType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<String>>>
     /**
-     * 删除老师发送控制指令
+     * 删除云列表
      */
-    @POST("delete/message/delete")
-    fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    @POST("cloud/data/delete")
+    fun deleteCloudList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

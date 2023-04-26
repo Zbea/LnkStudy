@@ -9,13 +9,18 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.MainList
+import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.IQiniuView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
-open class HomeLeftActivity : BaseAppCompatActivity() {
+open class HomeLeftActivity : BaseAppCompatActivity(),IQiniuView {
 
+    private val mQiniuPresenter=QiniuPresenter(this)
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
     private var mData= mutableListOf<MainList>()
@@ -29,7 +34,27 @@ open class HomeLeftActivity : BaseAppCompatActivity() {
     private var noteFragment: NoteFragment? = null
     private var paintingFragment: PaintingFragment? = null
     private var teachFragment: TeachFragment? = null
+    private var eventType=""
 
+    override fun onToken(token: String) {
+        when(eventType){
+            Constants.AUTO_UPLOAD_EVENT->{
+                paintingFragment?.uploadPainting(token)
+            }
+            Constants.ACTION_UPLOAD_1MONTH->{
+                noteFragment?.uploadNote(token,true)
+            }
+            Constants.ACTION_UPLOAD_9MONTH->{
+                noteFragment?.uploadNote(token,false)
+                paintingFragment?.uploadLocalDrawing(token)
+            }
+            Constants.CONTROL_MESSAGE_EVENT->{
+                noteFragment?.uploadNote(token,false)
+                paintingFragment?.uploadLocalDrawing(token)
+            }
+        }
+
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_main
@@ -40,6 +65,7 @@ open class HomeLeftActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
+        EventBus.getDefault().register(this)
         //发送通知，全屏自动收屏到主页的另外一边
         EventBus.getDefault().post(EventBusData().apply {
             event=Constants.SCREEN_EVENT
@@ -112,6 +138,34 @@ open class HomeLeftActivity : BaseAppCompatActivity() {
                 ft.show(to).commit()
             }
         }
+    }
+
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    fun onMessageEvent(msgFlag: String) {
+        when (msgFlag) {
+            Constants.AUTO_UPLOAD_EVENT-> {
+                eventType=Constants.AUTO_UPLOAD_EVENT
+                mQiniuPresenter.getToken()
+            }
+            Constants.AUTO_UPLOAD_1MONTH_EVENT-> {
+                eventType=Constants.AUTO_UPLOAD_1MONTH_EVENT
+                mQiniuPresenter.getToken()
+            }
+            Constants.AUTO_UPLOAD_9MONTH_EVENT-> {
+                eventType=Constants.AUTO_UPLOAD_9MONTH_EVENT
+                mQiniuPresenter.getToken()
+            }
+            Constants.CONTROL_MESSAGE_EVENT -> {
+                eventType=Constants.CONTROL_MESSAGE_EVENT
+                mQiniuPresenter.getToken()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 

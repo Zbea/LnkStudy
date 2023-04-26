@@ -75,5 +75,8 @@ public class PaintingTypeDaoManager {
         dao.delete(bean);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 
 }

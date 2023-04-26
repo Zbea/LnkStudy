@@ -26,8 +26,8 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
-        public final static Property NotebookId = new Property(3, long.class, "notebookId", false, "NOTEBOOK_ID");
+        public final static Property TypeStr = new Property(2, String.class, "typeStr", false, "TYPE_STR");
+        public final static Property NotebookTitle = new Property(3, String.class, "notebookTitle", false, "NOTEBOOK_TITLE");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
         public final static Property ResId = new Property(6, String.class, "resId", false, "RES_ID");
@@ -35,6 +35,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         public final static Property FilePath = new Property(8, String.class, "filePath", false, "FILE_PATH");
         public final static Property PathName = new Property(9, String.class, "pathName", false, "PATH_NAME");
         public final static Property Page = new Property(10, int.class, "page", false, "PAGE");
+        public final static Property Grade = new Property(11, int.class, "grade", false, "GRADE");
     }
 
 
@@ -52,15 +53,16 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"NOTE_CONTENT_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
-                "\"NOTEBOOK_ID\" INTEGER NOT NULL ," + // 3: notebookId
+                "\"TYPE_STR\" TEXT," + // 2: typeStr
+                "\"NOTEBOOK_TITLE\" TEXT," + // 3: notebookTitle
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
                 "\"TITLE\" TEXT," + // 5: title
                 "\"RES_ID\" TEXT," + // 6: resId
                 "\"FOLDER_PATH\" TEXT," + // 7: folderPath
                 "\"FILE_PATH\" TEXT," + // 8: filePath
                 "\"PATH_NAME\" TEXT," + // 9: pathName
-                "\"PAGE\" INTEGER NOT NULL );"); // 10: page
+                "\"PAGE\" INTEGER NOT NULL ," + // 10: page
+                "\"GRADE\" INTEGER NOT NULL );"); // 11: grade
     }
 
     /** Drops the underlying database table. */
@@ -78,8 +80,16 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getType());
-        stmt.bindLong(4, entity.getNotebookId());
+ 
+        String typeStr = entity.getTypeStr();
+        if (typeStr != null) {
+            stmt.bindString(3, typeStr);
+        }
+ 
+        String notebookTitle = entity.getNotebookTitle();
+        if (notebookTitle != null) {
+            stmt.bindString(4, notebookTitle);
+        }
         stmt.bindLong(5, entity.getDate());
  
         String title = entity.getTitle();
@@ -107,6 +117,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             stmt.bindString(10, pathName);
         }
         stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(12, entity.getGrade());
     }
 
     @Override
@@ -118,8 +129,16 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getType());
-        stmt.bindLong(4, entity.getNotebookId());
+ 
+        String typeStr = entity.getTypeStr();
+        if (typeStr != null) {
+            stmt.bindString(3, typeStr);
+        }
+ 
+        String notebookTitle = entity.getNotebookTitle();
+        if (notebookTitle != null) {
+            stmt.bindString(4, notebookTitle);
+        }
         stmt.bindLong(5, entity.getDate());
  
         String title = entity.getTitle();
@@ -147,6 +166,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             stmt.bindString(10, pathName);
         }
         stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(12, entity.getGrade());
     }
 
     @Override
@@ -159,15 +179,16 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         NoteContentBean entity = new NoteContentBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
-            cursor.getInt(offset + 2), // type
-            cursor.getLong(offset + 3), // notebookId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // typeStr
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // notebookTitle
             cursor.getLong(offset + 4), // date
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // resId
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // folderPath
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // filePath
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // pathName
-            cursor.getInt(offset + 10) // page
+            cursor.getInt(offset + 10), // page
+            cursor.getInt(offset + 11) // grade
         );
         return entity;
     }
@@ -176,8 +197,8 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
     public void readEntity(Cursor cursor, NoteContentBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
-        entity.setType(cursor.getInt(offset + 2));
-        entity.setNotebookId(cursor.getLong(offset + 3));
+        entity.setTypeStr(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setNotebookTitle(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
@@ -185,6 +206,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         entity.setFilePath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setPathName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setPage(cursor.getInt(offset + 10));
+        entity.setGrade(cursor.getInt(offset + 11));
      }
     
     @Override

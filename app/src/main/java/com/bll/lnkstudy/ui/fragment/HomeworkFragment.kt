@@ -466,15 +466,11 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     }
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag == Constants.COURSE_EVENT) {
             //刷新科目
             initTab()
-        }
-        //老师控制删除指令
-        if (msgFlag== Constants.CONTROL_MESSAGE_EVENT){
-
         }
     }
 

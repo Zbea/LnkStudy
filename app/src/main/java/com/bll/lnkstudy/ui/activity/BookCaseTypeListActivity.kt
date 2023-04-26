@@ -11,8 +11,8 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.BaseTypeBean
 import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -93,14 +93,13 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
     //设置tab
     @SuppressLint("NotifyDataSetChanged")
     private fun initTab() {
-        val types = mutableListOf<BaseTypeBean>()
+        val types = mutableListOf<ItemList>()
         val strings = DataBeanManager.bookType
         for (i in strings.indices) {
-            val baseTypeBean = BaseTypeBean()
-            baseTypeBean.name = strings[i]
-            baseTypeBean.typeId = i
-            baseTypeBean.isCheck = i == 0
-            types.add(baseTypeBean)
+            val item = ItemList()
+            item.name = strings[i]
+            item.isCheck = i == 0
+            types.add(item)
         }
         typeStr = types[0].name
 

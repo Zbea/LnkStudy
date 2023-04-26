@@ -3,6 +3,7 @@ package com.bll.lnkstudy.utils.zip;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
@@ -91,7 +92,6 @@ public final class ZipManager {
                 parameters.setEncryptionMethod(EncryptionMethod.AES);
                 zipFile.setPassword(password.toCharArray());
             }
-            zipFile.setRunInThread(true);
             File targetFile = new File(targetPath);
             File[] files=targetFile.listFiles();
             for (File file :files){
@@ -163,9 +163,6 @@ public final class ZipManager {
                 mUIHandler.obtainMessage(WHAT_PROGRESS, progressMonitor.getPercentDone(), 0, callback).sendToTarget();
                 if (progressMonitor.getResult() == ProgressMonitor.Result.SUCCESS) {
                     mUIHandler.obtainMessage(WHAT_FINISH, callback).sendToTarget();
-//                    if (index.equals("unzip")){
-//                        zipFile.getFile().delete();
-//                    }
                     this.cancel();
                     timer.purge();
                 }

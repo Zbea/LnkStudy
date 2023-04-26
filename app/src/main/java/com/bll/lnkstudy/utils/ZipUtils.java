@@ -31,10 +31,10 @@ public class ZipUtils {
     /**
      *
      * @param targetZipFilePath  原Zip文件的的绝对文件路径
-    * @param fileName  解压出来的文件夹名字
+    * @param fileTargetPath  解压出来地址
      * @param callback
      */
-    public static void unzip(String targetZipFilePath, String fileName, ZipCallback callback){
+    public static void unzip(String targetZipFilePath, String fileTargetPath, ZipCallback callback){
 
         File targetFile = new File(targetZipFilePath);//验证目标是否存在
         if(!targetFile.exists()){
@@ -42,18 +42,14 @@ public class ZipUtils {
             return;
         }
 
-        String fileTargetName=new FileAddress().getPathTextBook(fileName);
-
-        File unZipFile = new File(fileTargetName);
-
+        File unZipFile = new File(fileTargetPath);
         if(unZipFile.exists()){
             unZipFile.delete();
         }else {
             unZipFile.mkdir();
         }
-
         //开始解压
-        ZipManager.unzip(targetZipFilePath,fileTargetName,callback);
+        ZipManager.unzip(targetZipFilePath,fileTargetPath,callback);
     }
 
     public interface ZipCallback extends IZipCallback {

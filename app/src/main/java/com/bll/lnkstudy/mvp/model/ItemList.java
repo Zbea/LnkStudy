@@ -7,6 +7,7 @@ public class ItemList implements Serializable {
     //教学
     public int type;
     public String desc;
+    public boolean isCheck;
 
     public int id;
     public String name;

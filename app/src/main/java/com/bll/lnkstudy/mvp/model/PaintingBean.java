@@ -40,11 +40,13 @@ public class PaintingBean {
 
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;//图片保存地址
-    public long date;
+    public long date;//下载时间
     @Transient
     public boolean isLeft;
     @Transient
     public boolean isRight;
+    @Transient
+    public int cloudId;//云书库的id
     @Generated(hash = 1515609127)
     public PaintingBean(Long id, long userId, int contentId, int type, int time,
             String timeStr, int paintingType, String paintingTypeStr, String title,

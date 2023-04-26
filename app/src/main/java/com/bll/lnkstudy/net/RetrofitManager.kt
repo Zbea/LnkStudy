@@ -34,7 +34,7 @@ object RetrofitManager{
         return Interceptor { chain ->
             val originalRequest = chain.request()
             val request: Request
-            val modifiedUrl = originalRequest.url().newBuilder()
+            val modifiedUrl = originalRequest.url.newBuilder()
                     // Provide your custom parameter here
 //                    .addQueryParameter("udid", "d2807c895f0348a180148c9dfa6f2feeac0781b5")
 //                    .addQueryParameter("deviceModel", "")
@@ -52,7 +52,7 @@ object RetrofitManager{
             val originalRequest = chain.request()
             val requestBuilder = originalRequest.newBuilder()
                     .header("Authorization", SPUtil.getString("token"))
-                    .method(originalRequest.method(), originalRequest.body())
+                    .method(originalRequest.method, originalRequest.body)
             val request = requestBuilder.build()
             chain.proceed(request)
         }

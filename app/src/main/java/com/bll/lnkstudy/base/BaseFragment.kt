@@ -58,6 +58,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
             container?.removeView(container)
@@ -241,6 +242,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         radioButton.text = str
         radioButton.id = i
         radioButton.isChecked = i == 0
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(activity, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
+    }
+
+    fun getRadioButton(i:Int,check:Int,str:String,max:Int):RadioButton{
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == check
         val layoutParams = RadioGroup.LayoutParams(
             RadioGroup.LayoutParams.WRAP_CONTENT,
             DP2PX.dip2px(activity, 45f))

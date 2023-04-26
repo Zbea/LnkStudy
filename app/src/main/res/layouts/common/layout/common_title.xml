@@ -78,7 +78,20 @@
             android:visibility="gone"
             android:background="@drawable/bg_gary_arch"
             />
-
+        <TextView
+            android:id="@+id/tv_year"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingEnd="@dimen/dp_15"
+            android:paddingStart="@dimen/dp_15"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:visibility="gone"
+            android:background="@drawable/bg_gary_arch"
+            />
         <TextView
             android:id="@+id/tv_dynasty"
             android:layout_width="160dp"

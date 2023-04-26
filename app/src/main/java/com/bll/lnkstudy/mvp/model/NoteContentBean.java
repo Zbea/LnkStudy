@@ -18,8 +18,8 @@ public class NoteContentBean implements Serializable {
     @Id(autoincrement = true)
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
-    public int type;//分类
-    public long notebookId;//笔记本id
+    public String typeStr;//分类
+    public String notebookTitle;//笔记本id
     public long date;//创建时间
     public String title;
     public String resId;//背景id
@@ -27,14 +27,16 @@ public class NoteContentBean implements Serializable {
     public String filePath;//文件路径
     public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 1170672003)
-    public NoteContentBean(Long id, long userId, int type, long notebookId,
-            long date, String title, String resId, String folderPath,
-            String filePath, String pathName, int page) {
+    public int grade;//年级
+    @Generated(hash = 1004683073)
+    public NoteContentBean(Long id, long userId, String typeStr,
+            String notebookTitle, long date, String title, String resId,
+            String folderPath, String filePath, String pathName, int page,
+            int grade) {
         this.id = id;
         this.userId = userId;
-        this.type = type;
-        this.notebookId = notebookId;
+        this.typeStr = typeStr;
+        this.notebookTitle = notebookTitle;
         this.date = date;
         this.title = title;
         this.resId = resId;
@@ -42,6 +44,7 @@ public class NoteContentBean implements Serializable {
         this.filePath = filePath;
         this.pathName = pathName;
         this.page = page;
+        this.grade = grade;
     }
     @Generated(hash = 112846212)
     public NoteContentBean() {
@@ -58,17 +61,17 @@ public class NoteContentBean implements Serializable {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-    public int getType() {
-        return this.type;
+    public String getTypeStr() {
+        return this.typeStr;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
-    public long getNotebookId() {
-        return this.notebookId;
+    public String getNotebookTitle() {
+        return this.notebookTitle;
     }
-    public void setNotebookId(long notebookId) {
-        this.notebookId = notebookId;
+    public void setNotebookTitle(String notebookTitle) {
+        this.notebookTitle = notebookTitle;
     }
     public long getDate() {
         return this.date;
@@ -112,5 +115,11 @@ public class NoteContentBean implements Serializable {
     public void setPage(int page) {
         this.page = page;
     }
-
+    public int getGrade() {
+        return this.grade;
+    }
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+    
 }

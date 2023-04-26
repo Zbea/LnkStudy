@@ -155,9 +155,9 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
                 bean.title=item.drawName
                 bean.date=System.currentTimeMillis()
                 bean.paths=paths
-                bean.time=dynasty-1
+                bean.time=dynasty
                 bean.timeStr=popTimes[dynasty-1].name
-                bean.paintingType=paintingType-1
+                bean.paintingType=paintingType
                 bean.paintingTypeStr=popPaintings[paintingType-1].name
                 bean.info=item.drawDesc
                 bean.price=item.price

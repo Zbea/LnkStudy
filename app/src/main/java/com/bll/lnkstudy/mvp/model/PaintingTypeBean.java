@@ -18,13 +18,19 @@ public class PaintingTypeBean {
     public int type;//类型
     public int grade;
     public long date;
-    @Generated(hash = 875670369)
-    public PaintingTypeBean(Long id, long userId, int type, int grade, long date) {
+    public boolean isCloud;
+    public int cloudId;//云id
+
+    @Generated(hash = 1248290185)
+    public PaintingTypeBean(Long id, long userId, int type, int grade, long date, boolean isCloud,
+            int cloudId) {
         this.id = id;
         this.userId = userId;
         this.type = type;
         this.grade = grade;
         this.date = date;
+        this.isCloud = isCloud;
+        this.cloudId = cloudId;
     }
     @Generated(hash = 1478960882)
     public PaintingTypeBean() {
@@ -58,6 +64,18 @@ public class PaintingTypeBean {
     }
     public void setDate(long date) {
         this.date = date;
+    }
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
+    }
+    public int getCloudId() {
+        return this.cloudId;
+    }
+    public void setCloudId(int cloudId) {
+        this.cloudId = cloudId;
     }
    
 }

@@ -69,10 +69,14 @@ class Constants{
         //壁纸、书画、工具栏应用图标目录
         val IMAGE_PATH: String = MyApplication.mContext.getExternalFilesDir("Image")!!.path
 
+        //断点记录文件保存的文件夹
+        val RECORDER_PATH: String = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+
         const val PATH_SF = "file:///android_asset/sf/"
 
         //eventbus通知标志
-        const val AUTO_UPLOAD_8MONTH_EVENT = "AutoUploadEvent8Month"
+        const val AUTO_UPLOAD_1MONTH_EVENT = "AutoUploadEvent1Month"
+        const val AUTO_UPLOAD_9MONTH_EVENT = "AutoUploadEvent9Month"
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"//书籍下载通知
@@ -90,7 +94,8 @@ class Constants{
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
-        const val ACTION_UPLOAD_8MONTH = "com.bll.lnkstudy.upload.8month"
+        const val ACTION_UPLOAD_1MONTH = "com.bll.lnkstudy.upload.1month"
+        const val ACTION_UPLOAD_9MONTH = "com.bll.lnkstudy.upload.9month"
         const val ACTION_VIDEO = "com.bll.lnkstudy.raw"
     }
 

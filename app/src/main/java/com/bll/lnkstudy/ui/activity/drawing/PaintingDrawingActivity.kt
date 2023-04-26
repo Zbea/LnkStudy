@@ -67,6 +67,10 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             resId = R.mipmap.icon_painting_bg_sf
         }
 
+        if(grade!=mUser?.grade!!){
+            setPWEnabled(false)
+        }
+
         setBg()
 
         val distance=DP2PX.dip2px(this,80f)
@@ -85,7 +89,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         btn_page_down.setOnClickListener {
             val total=paintingLists.size-1
             if(isExpand){
-
                 when(page){
                     total->{
                         newHomeWorkContent()
@@ -205,6 +208,13 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
     }
 
+    /**
+     * 设置是否可以手写
+     */
+    private fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
+    }
 
     //设置背景图
     private fun setBg(){
@@ -266,7 +276,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //创建新的作业内容
     private fun newHomeWorkContent() {
-
+        //如果打开的内容年级不等于账号年级不能创建（从云存储下载的内容不能创建）
+        if(grade!=mUser?.grade)return
         val path = FileAddress().getPathPainting(type,grade)
         val date = DateUtils.longToString(System.currentTimeMillis())
 
@@ -276,6 +287,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.type = type
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$date.tch"
+        paintingDrawingBean?.grade=grade
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)

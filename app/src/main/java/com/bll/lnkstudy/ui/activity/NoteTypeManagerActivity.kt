@@ -2,22 +2,25 @@ package com.bll.lnkstudy.ui.activity
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.manager.BaseTypeBeanDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
+import com.bll.lnkstudy.manager.NoteTypeBeanDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.BaseTypeBean
+import com.bll.lnkstudy.mvp.model.NoteTypeBean
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
+import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 import java.util.*
 
 class NoteTypeManagerActivity : BaseAppCompatActivity() {
 
-    private var noteTypes= mutableListOf<BaseTypeBean>()
+    private var noteTypes= mutableListOf<NoteTypeBean>()
     private var mAdapter: NoteBookManagerAdapter? = null
     private var position=0
 
@@ -26,7 +29,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        noteTypes= BaseTypeBeanDaoManager.getInstance().queryAll()
+        noteTypes= NoteTypeBeanDaoManager.getInstance().queryAll()
     }
 
     override fun initView() {
@@ -53,7 +56,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                 if (view.id==R.id.iv_top){
                     val date=noteTypes[0].date
                     noteTypes[position].date=date-1000
-                    BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
+                    NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
                     Collections.swap(noteTypes,position,0)
                     setNotify()
                 }
@@ -79,15 +82,16 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                 val noteType=noteTypes[position]
                 noteTypes.removeAt(position)
                 //删除笔记本
-                BaseTypeBeanDaoManager.getInstance().deleteBean(noteType)
+                NoteTypeBeanDaoManager.getInstance().deleteBean(noteType)
 
-                val notebooks=NotebookDaoManager.getInstance().queryAll(noteType.typeId)
+                val notebooks=NotebookDaoManager.getInstance().queryAll(noteType.name)
                 //删除该笔记分类中的所有笔记本及其内容
                 for (note in notebooks){
                     NotebookDaoManager.getInstance().deleteBean(note)
-                    NoteContentDaoManager.getInstance().deleteType(note.type,note.id)
+                    NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
+                    val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
+                    FileUtils.deleteFile(File(path))
                 }
-
                 setNotify()
             }
 
@@ -98,7 +102,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
     private fun editNoteBook(content:String){
         InputContentDialog(this,getCurrentScreenPos(),content).builder()?.setOnDialogClickListener { string ->
             noteTypes[position].name = string
-            BaseTypeBeanDaoManager.getInstance()
+            NoteTypeBeanDaoManager.getInstance()
                 .insertOrReplace(noteTypes[position])
             setNotify()
         }

@@ -8,10 +8,12 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.MainList
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.cloud.*
+import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_cloud_storage.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -34,9 +36,12 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
     private var noteFragment: CloudNoteFragment? = null
     private var paintingFragment: CloudPaintingFragment? = null
 
-    private var grade=mUser?.grade!!
+    var year=0
+    var grade=mUser?.grade!!
     private var popWindowDynasty:PopupList?=null
     private var popWindowGrade:PopupList?=null
+    private var popWindowYear:PopupList?=null
+    private var popYears= mutableListOf<PopupBean>()
 
     override fun onList(commonData: CommonData) {
         DataBeanManager.grades=commonData.grade
@@ -64,7 +69,13 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
             mCommonPresenter.getCommon()
         }
 
+        for (year in DataBeanManager.years){
+            popYears.add(PopupBean(year,year.toString(),year==DateUtils.getYear()))
+        }
+
         tv_dynasty.text=DataBeanManager.popupDynasty()[0].name
+        year=DateUtils.getYear()
+        tv_year.text=year.toString()
     }
 
     override fun initView() {
@@ -94,11 +105,17 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
                     1 -> switchFragment(lastFragment, textbookFragment)//课本
                     2 -> switchFragment(lastFragment, homeworkFragment)//作业
                     3 -> switchFragment(lastFragment, paperFragment)//考卷
-                    4 -> switchFragment(lastFragment, noteFragment)//笔记
+                    4 -> {
+                        showYearView()
+                        if (noteFragment?.noteType!=0){
+                            closeYearView()
+                        }
+                        switchFragment(lastFragment, noteFragment)//笔记
+                    }
                     5 -> {
                         showDynastyView()
                         closeGradeView()
-                        if (paintingFragment?.typeId==6||paintingFragment?.typeId==7){
+                        if (paintingFragment?.typeId==7||paintingFragment?.typeId==8){
                             closeDynastyView()
                         }
                         switchFragment(lastFragment, paintingFragment)//书画
@@ -137,17 +154,42 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
             }
         }
 
+        tv_year.setOnClickListener {
+            if (popWindowYear==null)
+            {
+                popWindowYear= PopupList(this,popYears,tv_year,tv_year.width,5).builder()
+                popWindowYear?.setOnSelectListener { item ->
+                    tv_year.text=item.name
+                    year=item.id
+                    noteFragment?.changeYear(year)
+                }
+            }
+            else{
+                popWindowYear?.show()
+            }
+        }
+
+    }
+
+    fun showYearView(){
+        closeGradeView()
+        showView(tv_year)
+    }
+
+    fun closeYearView(){
+        showGradeView()
+        disMissView(tv_year)
     }
 
     fun closeDynastyView(){
         disMissView(tv_dynasty)
     }
 
-    fun closeGradeView(){
+    private fun closeGradeView(){
         disMissView(tv_grade)
     }
 
-    fun showGradeView(){
+    private fun showGradeView(){
         showView(tv_grade)
     }
 
@@ -166,6 +208,7 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
         noteFragment?.changeGrade(grade)
         paintingFragment?.changeGrade(grade)
     }
+
 
     //页码跳转
     private fun switchFragment(from: Fragment?, to: Fragment?) {

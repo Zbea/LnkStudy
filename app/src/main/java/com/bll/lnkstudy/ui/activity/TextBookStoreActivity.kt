@@ -222,7 +222,15 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
-                    showView(tv_download)
+                    //本地我的课本是否有数据，没有显示下载按钮
+                    val textbook=typeList[0]
+                    val localBooks=BookGreenDaoManager.getInstance().queryAllTextBook(textbook)
+                    if (localBooks.size>0){
+                        disMissView(tv_download)
+                    }
+                    else{
+                        showView(tv_download)
+                    }
                     disMissView(tv_course)
                 }
                 1 -> {
@@ -286,13 +294,13 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private fun downLoadStart(url: String, book: BookBean): BaseDownloadTask? {
         showLoading()
         val fileName = book.bookId.toString()//文件名
-        val targetFileStr = FileAddress().getPathZip(fileName)
-        val targetFile = File(targetFileStr)
+        val zipPath = FileAddress().getPathZip(fileName)
+        val targetFile = File(zipPath)
         if (targetFile.exists()) {
             targetFile.delete()
         }
 
-        val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
+        val download = FileDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
 
@@ -319,7 +327,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    unzip(book, targetFileStr, fileName)
+                    val fileTargetPath = FileAddress().getPathTextBook(fileName)
+                    unzip(book, zipPath, fileTargetPath)
                     lock.unlock()
                 }
 
@@ -336,8 +345,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     /**
      * 解压
      */
-    private fun unzip(book: BookBean, targetFileStr: String, fileName: String) {
-        ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
+    private fun unzip(book: BookBean, zipPath: String, fileTargetPath: String) {
+        ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
             override fun onFinish(success: Boolean) {
                 if (success) {
                     book.apply {
@@ -345,8 +354,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                         loadSate = 2
                         category = 0
                         time = System.currentTimeMillis()//下载时间用于排序
-                        bookPath = FileAddress().getPathTextBook(fileName)
-                        bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
+                        bookPath = fileTargetPath
+                        bookDrawPath="${fileTargetPath}draw"
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
@@ -355,6 +364,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
 
+                    //删除教材的zip文件
+                    FileUtils.deleteFile(File(zipPath))
                     Handler().postDelayed({
                         showToast(book.bookName+getString(R.string.book_download_success))
                     },500)

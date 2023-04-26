@@ -25,6 +25,7 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_oldteaching)
     )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
+    val years = arrayOf(2022,2023, 2024, 2025,2026)
     val bookType = arrayOf(
         "诗经楚辞", "唐诗宋词", "古代经典",
         "四大名著", "中国科技", "小说散文",
@@ -39,7 +40,7 @@ object DataBeanManager {
 //        R.string.book_tab_zzjj,R.string.book_tab_jszl,
 //        R.string.book_tab_kxjs,R.string.book_tab_ydcy
 //    ) //书籍分类
-    val YEARS = arrayOf(
+    val dynastys = arrayOf(
         R.string.age_han,R.string.age_tang,
         R.string.age_song,R.string.age_yuan,
         R.string.age_ming,R.string.age_qing,
@@ -62,8 +63,8 @@ object DataBeanManager {
 
     fun popupDynasty():MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()
-        for (i in YEARS.indices){
-            list.add(PopupBean(i + 1, mContext.getString(YEARS[i]), i == 0))
+        for (i in dynastys.indices){
+            list.add(PopupBean(i + 1, mContext.getString(dynastys[i]), i == 0))
         }
         return list
     }
@@ -423,18 +424,18 @@ object DataBeanManager {
         }
 
     //基础笔记分类
-    val noteBook: MutableList<BaseTypeBean>
+    val noteBook: MutableList<NoteTypeBean>
         get() {
-            val list= mutableListOf<BaseTypeBean>()
-            list.add(BaseTypeBean().apply {
+            val list= mutableListOf<NoteTypeBean>()
+            list.add(NoteTypeBean().apply {
                 name = mContext.getString(R.string.note_tab_diary)
                 typeId = 0
             })
-            list.add(BaseTypeBean().apply {
+            list.add(NoteTypeBean().apply {
                 name = mContext.getString(R.string.note_tab_article)
                 typeId = 1
             })
-            list.add(BaseTypeBean().apply {
+            list.add(NoteTypeBean().apply {
                 name = mContext.getString(R.string.note_tab_topic)
                 typeId = 2
             })

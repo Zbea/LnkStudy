@@ -3,6 +3,7 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
+import com.bll.lnkstudy.mvp.model.PaintingDrawingBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.PaintingBean;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -92,6 +93,13 @@ public class PaintingBeanDaoManager {
                 .build().list();
         return list;
     }
+    public List<PaintingBean> queryPaintings() {
+        WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
+        List<PaintingBean> list = dao.queryBuilder().where(whereUser,whereCondition1)
+                .orderDesc(PaintingBeanDao.Properties.Date)
+                .build().list();
+        return list;
+    }
 
     /**
      * 获取 该分类全部书画大小
@@ -157,5 +165,13 @@ public class PaintingBeanDaoManager {
                 .build().list();
         return list;
     }
+
+    /**
+     * 删除所有书画
+     */
+    public void deletePaintings(){
+        dao.deleteInTx(queryPaintings());
+    }
+
 
 }

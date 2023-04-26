@@ -88,10 +88,16 @@ class FileAddress {
     /**
      * 笔记保存地址
      */
-    fun getPathNote(typeId: Int?,noteBookId: Long?,index:Int):String{
-        return "$NOTE_PATH/$mUserId/$typeId/$noteBookId/$index"
+    fun getPathNote(type: String?,noteBookStr: String?,grade:Int):String{
+        return "$NOTE_PATH/$mUserId/$type/$noteBookStr/$grade"
     }
 
+    /**
+     * 壁纸、书画
+     */
+    fun getPathImage(type:String):String{
+        return "$IMAGE_PATH/$mUserId/$type"
+    }
     /**
      * 壁纸、书画
      */

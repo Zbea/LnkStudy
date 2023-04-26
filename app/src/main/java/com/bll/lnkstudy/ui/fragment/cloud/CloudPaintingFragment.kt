@@ -1,47 +1,85 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
+import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.mvp.model.cloud.CloudPaintingList
-import com.bll.lnkstudy.mvp.presenter.cloud.CloudPaintingPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICloudPaintingView
+import com.bll.lnkstudy.manager.PaintingBeanDaoManager
+import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
+import com.bll.lnkstudy.manager.PaintingTypeDaoManager
+import com.bll.lnkstudy.mvp.model.PaintingBean
+import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
+import com.bll.lnkstudy.mvp.model.PaintingTypeBean
+import com.bll.lnkstudy.mvp.model.cloud.CloudList
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.presenter.cloud.CloudPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.ICloudView
 import com.bll.lnkstudy.ui.activity.BookCollectActivity
-import com.bll.lnkstudy.ui.adapter.cloud.CloudPaintingAdapter
+import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.ui.adapter.cloud.CloudPaintingLocalAdapter
-import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_my_painting_list.rv_list
 import kotlinx.android.synthetic.main.fragment_content.*
 import kotlinx.android.synthetic.main.fragment_painting.*
+import java.io.File
 
-class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
+class CloudPaintingFragment : BaseFragment(), ICloudView {
 
-    private val mPresenter=CloudPaintingPresenter(this)
-    private var typeStr = ""
-    var typeId = 0
-    private var dynasty = 0
-
-    private var paintings= mutableListOf<CloudPaintingList.PaintingListBean>()
-    private var mAdapter:CloudPaintingAdapter?=null
+    private val mPresenter=CloudPresenter(this)
+    var typeId = 1
+    private var dynasty = 1
+    private var position=0
+    private var cloudLists= mutableListOf<CloudListBean>()
+    private var mAdapter:MyPaintingAdapter?=null
     private var mLocalAdapter:CloudPaintingLocalAdapter?=null
+    private var paintings= mutableListOf<PaintingBean>()//线上数据
 
 
-    override fun onList(item: CloudPaintingList?) {
+    override fun onList(item: CloudList?) {
         setPageNumber(item?.total!!)
-        paintings=item.list
-        if (typeId==6||typeId==7)
-        {
-            mLocalAdapter?.setNewData(paintings)
-        }
-        else{
-            mAdapter?.setNewData(paintings)
+        cloudLists=item.list
+
+        when(typeId){
+            7,8->{
+                mLocalAdapter?.setNewData(cloudLists)
+            }
+            else->{
+                paintings.clear()
+                for (item in cloudLists){
+                    if (item.listJson.isNotEmpty()){
+                        val paintingBean=Gson().fromJson(item.listJson,PaintingBean::class.java)
+                        paintingBean.cloudId=item.id
+                        paintings.add(paintingBean)
+                    }
+                }
+                mAdapter?.setNewData(paintings)
+            }
         }
 
+    }
+
+    override fun onType(types: MutableList<String>?) {
+    }
+
+    override fun onDelete() {
+        when(typeId){
+            7,8->{
+                mLocalAdapter?.remove(position)
+            }
+            else->{
+                mAdapter?.remove(position)
+            }
+        }
     }
 
 
@@ -65,18 +103,17 @@ class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
         types.addAll(DataBeanManager.PAINTING.toList())
         types.add(getString(R.string.my_drawing_str))
         types.add(getString(R.string.my_calligraphy_str))
-        typeStr = types[0]
         for (i in types.indices) {
             rg_group.addView(getRadioButton(i, types[i], types.size - 1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            when (id) {
-                0, 1, 2, 3, 4, 5 -> {
+            typeId = id+1
+            when (typeId) {
+                1, 2, 3, 4, 5,6 -> {
                     pageSize=6
                     showView(rv_list)
                     disMissView(rv_local)
                     (activity as BookCollectActivity).showDynastyView()
-
                 }
                 else -> {
                     pageSize=9
@@ -85,8 +122,6 @@ class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
                     (activity as BookCollectActivity).closeDynastyView()
                 }
             }
-            typeId = id
-            typeStr = types[id]
             pageIndex = 1
             fetchData()
         }
@@ -104,12 +139,24 @@ class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,2)//创建布局管理
-        mAdapter = CloudPaintingAdapter(R.layout.item_download_painting,null).apply {
+        mAdapter = MyPaintingAdapter(R.layout.item_download_painting,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list?.addItemDecoration(SpaceGridItemDeco1(2, DP2PX.dip2px(activity,20f),100))
             setOnItemClickListener { adapter, view, position ->
-
+                val item=paintings[position]
+                val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)
+                if (paintingBean==null){
+                    downloadPainting(item)
+                }
+                else{
+                    showToast(screenPos,R.string.toast_downloaded)
+                }
+            }
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                this@CloudPaintingFragment.position=position
+                deleteCloud(position)
+                true
             }
         }
     }
@@ -132,9 +179,123 @@ class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
             bindToRecyclerView(rv_local)
             rv_local.addItemDecoration(SpaceGridItemDeco(3, 60))
             setOnItemClickListener { adapter, view, position ->
-
+                val item=cloudLists[position]
+                val paintType=PaintingTypeDaoManager.getInstance().queryAllByGrade(getType(),item.grade)
+                if (paintType==null){
+                    downloadLocal(item)
+                }
+                else{
+                    showToast(screenPos,R.string.toast_downloaded)
+                }
+            }
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+                this@CloudPaintingFragment.position=position
+                deleteCloud(position)
+                true
             }
         }
+    }
+
+    /**
+     * 下载线上书画
+     */
+    private fun downloadPainting(item:PaintingBean){
+        showLoading()
+        val pathStr= FileAddress().getPathImage("painting" ,item.contentId)
+        val images= mutableListOf<String>()
+        images.add(item.bodyUrl)
+        val imageDownLoad= ImageDownLoadUtils(activity,images.toTypedArray(),pathStr)
+        imageDownLoad.startDownload()
+        imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
+            override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
+                hideLoading()
+                PaintingBeanDaoManager.getInstance().insertOrReplace(item)
+            }
+            override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
+                imageDownLoad.reloadImage()
+            }
+        })
+    }
+
+    /**
+     * 下载本地画本、书法
+     */
+    private fun downloadLocal(item:CloudListBean){
+        showLoading()
+        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipFile = File(zipPath)
+        if (zipFile.exists()) {
+            zipFile.delete()
+        }
+        val fileTargetPath=FileAddress().getPathPainting(getType(),item.grade)
+
+        FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object :
+                FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
+                        override fun onFinish(success: Boolean) {
+                            if (success) {
+                                //存储画本分类
+                                val beanType = PaintingTypeBean()
+                                beanType.type = getType()
+                                beanType.grade = item.grade
+                                beanType.date = System.currentTimeMillis()
+                                beanType.isCloud=true
+                                beanType.cloudId=item.id
+                                PaintingTypeDaoManager.getInstance().insertOrReplace(beanType)
+                                //存储画本内容
+                                val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
+                                for (json in jsonArray){
+                                    val item=Gson().fromJson(json,PaintingDrawingBean::class.java)
+                                    PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
+                                }
+                                //删掉本地zip文件
+                                FileUtils.deleteFile(File(zipPath))
+                                Handler().postDelayed({
+                                    showToast(screenPos,R.string.book_download_success)
+                                    hideLoading()
+                                },500)
+                            }
+                        }
+
+                        override fun onProgress(percentDone: Int) {
+                        }
+
+                        override fun onError(msg: String?) {
+                            showToast(screenPos,msg!!)
+                            hideLoading()
+                        }
+
+                        override fun onStart() {
+                        }
+                    })
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    hideLoading()
+                    showToast(screenPos, R.string.book_download_fail)
+                }
+            })
+    }
+
+    /**
+     * 删除云数据
+     */
+    private fun deleteCloud(position:Int){
+        val ids= mutableListOf<Int>()
+        ids.add(paintings[position].cloudId)
+        mPresenter.deleteCloud(ids)
+    }
+
+    /**
+     * 根据typeId 得到画本、书法type类型
+     */
+    private fun getType():Int{
+        return if (typeId==7) 0 else 1
     }
 
     /**
@@ -142,6 +303,7 @@ class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
      */
     fun changeDynasty(dynasty: Int) {
         this.dynasty = dynasty
+        fetchData()
     }
 
     override fun refreshData() {
@@ -152,10 +314,11 @@ class CloudPaintingFragment : BaseFragment(),ICloudPaintingView {
         val map = HashMap<String, Any>()
         map["page"]=pageIndex
         map["size"] = pageSize
-        map["grade"] = grade
-        map["type"] = 2
-        map["userId"] = 37154748
-        mPresenter.getType(map)
+        map["type"] = 5
+        map["subType"] = typeId
+        if (typeId!=7&&typeId!=8)
+            map["dynasty"] = dynasty
+        mPresenter.getList(map)
     }
 
 }
