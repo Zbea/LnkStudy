@@ -5,6 +5,7 @@ import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -15,9 +16,12 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setText(R.id.tv_name, item.name)
-            setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
-            setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item?.bgResId))
+            setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
             setVisible(R.id.ll_info, !item.isCreate)
+            if (item.isCloud){
+                setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
+                setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date/1000))
+            }
 
             if (item.isPg) {
                 setTextColor(R.id.tv_pg, mContext.getColor(R.color.black))

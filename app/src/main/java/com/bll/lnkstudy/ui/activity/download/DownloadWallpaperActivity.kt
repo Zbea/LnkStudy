@@ -137,7 +137,8 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
             }
 
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                imageDownLoad.reloadImage()
+                hideLoading()
+                showToast(R.string.book_download_fail)
             }
 
         })

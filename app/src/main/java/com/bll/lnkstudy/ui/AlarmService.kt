@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_1MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_9MONTH_EVENT
+import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_EVENT
 import com.bll.lnkstudy.mvp.model.EventBusData
 import org.greenrobot.eventbus.EventBus
 
@@ -25,7 +27,12 @@ class AlarmService:Service() {
             Constants.ACTION_UPLOAD->{
                 Log.d("debug","全局自动打包上传")
                 //开启全局自动打包上传
-//                EventBus.getDefault().postSticky(AUTO_UPLOAD_EVENT)
+                EventBus.getDefault().postSticky(AUTO_UPLOAD_EVENT)
+            }
+            Constants.ACTION_UPLOAD_1MONTH->{
+                Log.d("debug","1月1日日记上传")
+                //开启全局自动打包上传
+                EventBus.getDefault().postSticky(AUTO_UPLOAD_1MONTH_EVENT)
             }
             Constants.ACTION_UPLOAD_9MONTH->{
                 Log.d("debug","9月1课本、作业、考卷、书画")

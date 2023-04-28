@@ -15,7 +15,7 @@ public class User {
     public String parentNickname;
     public String parentTel;
     public String parentAddr;
-    public int birthdayTime;
+    public long birthdayTime;
 
 
 }

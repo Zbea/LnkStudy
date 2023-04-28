@@ -18,8 +18,6 @@ import com.bll.lnkstudy.mvp.model.NoteTypeBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
-import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.NoteTypeManagerActivity
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
@@ -36,9 +34,8 @@ import java.io.File
 /**
  * 笔记
  */
-class NoteFragment : BaseFragment(), IContractView.ICloudUploadView {
+class NoteFragment : BaseFragment(){
 
-    private val mCloudUploadPresenter= CloudUploadPresenter(this)
     private var popWindowBeans = mutableListOf<PopupBean>()
     private var popWindowMoreBeans = mutableListOf<PopupBean>()
     private var noteTypes = mutableListOf<NoteTypeBean>()
@@ -50,32 +47,6 @@ class NoteFragment : BaseFragment(), IContractView.ICloudUploadView {
     private var resId = ""
     private var isDiary=false
 
-    override fun onSuccess() {
-        if (isDiary){
-            val notes=NotebookDaoManager.getInstance().queryAll(noteTypes[0].name)
-            //删除该笔记分类中的所有笔记本及其内容
-            for (note in notes){
-                NotebookDaoManager.getInstance().deleteBean(note)
-                NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
-                val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
-                FileUtils.deleteFile(File(path))
-            }
-        }
-        else{
-            for (i in 1 until noteTypes.size){
-                val notes=NotebookDaoManager.getInstance().queryAll(noteTypes[i].name)
-                //删除该笔记分类中的所有笔记本及其内容
-                for (note in notes){
-                    NotebookDaoManager.getInstance().deleteBean(note)
-                    NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
-                    val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
-                    FileUtils.deleteFile(File(path))
-                }
-            }
-            NoteTypeBeanDaoManager.getInstance().clear()
-        }
-        EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -374,13 +345,13 @@ class NoteFragment : BaseFragment(), IContractView.ICloudUploadView {
                 val fileName=item.title
                 item.isEncrypt=false
                 item.encrypt=""
+                //获取笔记所有内容
+                val noteContents = NoteContentDaoManager.getInstance().queryAll(item.typeStr,item.title,item.grade)
                 //如果此笔记还没有开始书写，则不用上传源文件
-                if (File(path).exists()){
+                if (noteContents.size>0){
                     FileUploadManager(token).apply {
                         startUpload(path,fileName)
                         setCallBack{
-                            //获取笔记所有内容
-                            val noteContents = NoteContentDaoManager.getInstance().queryAll(item.typeStr,item.title,item.grade)
                             cloudList.add(CloudListBean().apply {
                                 type=4
                                 subType=-1
@@ -389,7 +360,7 @@ class NoteFragment : BaseFragment(), IContractView.ICloudUploadView {
                                 grade=item.grade
                                 listJson=Gson().toJson(item)
                                 contentJson= Gson().toJson(noteContents)
-                                this.downloadUrl=it
+                                downloadUrl=it
                             })
                             if(isDiary){
                                 if (cloudList.size==notes.size)
@@ -411,7 +382,7 @@ class NoteFragment : BaseFragment(), IContractView.ICloudUploadView {
                         date=System.currentTimeMillis()
                         grade=item.grade
                         listJson=Gson().toJson(item)
-                        this.downloadUrl="null"
+                        downloadUrl="null"
                     })
                     if(isDiary){
                         if (cloudList.size==notes.size)
@@ -438,6 +409,43 @@ class NoteFragment : BaseFragment(), IContractView.ICloudUploadView {
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        //将已经上传过的笔记从云书库删除
+        val ids= mutableListOf<Int>()
+        if (isDiary){
+            val notes=NotebookDaoManager.getInstance().queryAll(noteTypes[0].name)
+            //删除该笔记分类中的所有笔记本及其内容
+            for (note in notes){
+                NotebookDaoManager.getInstance().deleteBean(note)
+                NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
+                val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
+                FileUtils.deleteFile(File(path))
+                if (note.isCloud){
+                    ids.add(note.cloudId)
+                }
+            }
+        }
+        else{
+            for (i in 1 until noteTypes.size){
+                val notes=NotebookDaoManager.getInstance().queryAll(noteTypes[i].name)
+                //删除该笔记分类中的所有笔记本及其内容
+                for (note in notes){
+                    NotebookDaoManager.getInstance().deleteBean(note)
+                    NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
+                    val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
+                    FileUtils.deleteFile(File(path))
+                    if (note.isCloud){
+                        ids.add(note.cloudId)
+                    }
+                }
+            }
+            NoteTypeBeanDaoManager.getInstance().clear()
+        }
+        mCloudUploadPresenter.deleteCloud(ids)
+        EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
     }
 
 }

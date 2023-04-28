@@ -7,8 +7,9 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.paper.PaperList
-import com.bll.lnkstudy.mvp.model.paper.PaperType
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
@@ -29,12 +30,14 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
 
     private val mPresenter = TestPaperPresenter(this)
     private var mAdapter:PaperTypeAdapter?=null
-    private var paperTypes= mutableListOf<PaperType.PaperTypeBean>()
+    private var paperTypes= mutableListOf<PaperTypeBean>()
     private var course=""//课程
     private var paperContents= mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
 
-    override fun onTypeList(list: MutableList<PaperType.PaperTypeBean>) {
+    override fun onTypeList(list: MutableList<PaperTypeBean>) {
         paperTypes=list
+        val localTypes=PaperTypeDaoManager.getInstance().queryAll()
+        paperTypes.addAll(localTypes)
         mAdapter?.setNewData(paperTypes)
         if(paperContents.size>0){
             refreshView()
@@ -76,7 +79,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
             setOnItemClickListener { adapter, view, position ->
-                gotoPaperDrawing(course,paperTypes[position].id)
+                gotoPaperDrawing(course,paperTypes[position].typeId)
             }
         }
     }
@@ -111,7 +114,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     private fun refreshView(){
         for (item in paperContents){
             for (ite in paperTypes){
-                if (item.subject==ite.course&&item.examId==ite.id){
+                if (item.subject==ite.course&&item.examId==ite.typeId){
                     ite.score=item.score
                     ite.isPg=true
                 }

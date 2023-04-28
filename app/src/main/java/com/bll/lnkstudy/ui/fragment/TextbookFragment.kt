@@ -3,17 +3,21 @@ package com.bll.lnkstudy.ui.fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_painting.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
@@ -25,6 +29,7 @@ import java.io.File
  * 课本
  */
 class TextbookFragment : BaseFragment(){
+
 
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<BookBean>()
@@ -95,6 +100,7 @@ class TextbookFragment : BaseFragment(){
                 }
                 override fun onLock() {
                     book.isLock=!book.isLock
+                    mAdapter?.notifyItemChanged(position)
                     bookGreenDaoManager.insertOrReplaceBook(book)
                 }
             })
@@ -111,10 +117,80 @@ class TextbookFragment : BaseFragment(){
                 val book=books[position]
                 bookGreenDaoManager.deleteBook(book) //删除本地数据库
                 FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                books.remove(book)
+                FileUtils.deleteFile(File(book.bookDrawPath))
                 mAdapter?.remove(position)
             }
         })
+    }
+
+
+    /**
+     * 上传本地课本
+     */
+    fun uploadTextBook(token:String){
+        if (grade==0) return
+        val cloudList= mutableListOf<CloudListBean>()
+
+        //获取当前往期教材中未加锁的教材
+        val textBooks=bookGreenDaoManager.queryAllTextBookOldUnlock()
+        if (textBooks.size==0){
+            moveTextbook()
+            return
+        }
+        for (book in textBooks){
+            val fileName=book.bookId.toString()
+            val drawPath=FileAddress().getPathTextBookDraw(fileName)
+            val subTypeId=DataBeanManager.textbookType.indexOf(book.textBookType)
+            //判读是否存在手写内容
+            if (File(drawPath).exists()){
+                FileUploadManager(token).apply {
+                    startUpload(drawPath,fileName)
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=1
+                            subType=subTypeId
+                            subTypeStr=book.textBookType
+                            grade=getGrade(book.grade)
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(book)
+                            downloadUrl=it
+                            zipUrl=book.downloadUrl
+                            bookId=book.bookId
+                        })
+                        if (cloudList.size==textBooks.size)
+                            mCloudUploadPresenter.upload(cloudList)
+                    }
+                }
+            }
+            else{
+                cloudList.add(CloudListBean().apply {
+                    type=1
+                    subType=subTypeId
+                    grade=getGrade(book.grade)
+                    subTypeStr=book.textBookType
+                    date=System.currentTimeMillis()
+                    listJson= Gson().toJson(book)
+                    downloadUrl="null"
+                    zipUrl=book.downloadUrl
+                    bookId=book.bookId
+                })
+                if (cloudList.size==textBooks.size)
+                    mCloudUploadPresenter.upload(cloudList)
+            }
+        }
+    }
+
+    /**
+     * 得到年级
+     */
+    private fun getGrade(gradeStr:String):Int{
+        var grade=0
+        for (item in DataBeanManager.grades){
+            if (item.desc==gradeStr){
+                grade=item.type
+            }
+        }
+        return grade
     }
 
     /**
@@ -122,20 +198,13 @@ class TextbookFragment : BaseFragment(){
      */
     private fun moveTextbook(){
         //获取所有往期教材
-        val oldBooks=bookGreenDaoManager.queryAllTextBookOld()
-        //加锁的往期教材不删除
-        val it=oldBooks.iterator()
-        if (it.hasNext()){
-            val item=it.next()
-            if (item.isLock){
-                it.remove()
-            }
-        }
+        val oldBooks=bookGreenDaoManager.queryAllTextBookOldUnlock()
         //删除现在所有所有往期教材
         bookGreenDaoManager.deleteBooks(oldBooks)
         //删除所有往期教材的图片文件
         for (item in oldBooks){
             FileUtils.deleteFile(File(item.bookPath))
+            FileUtils.deleteFile(File(item.bookDrawPath))
         }
 
         //所有教材更新为往期教材
@@ -155,7 +224,7 @@ class TextbookFragment : BaseFragment(){
     }
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag==TEXT_BOOK_EVENT){
             fetchData()
@@ -180,4 +249,10 @@ class TextbookFragment : BaseFragment(){
         setPageNumber(total)
         mAdapter?.setNewData(books)
     }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        moveTextbook()
+    }
+
 }

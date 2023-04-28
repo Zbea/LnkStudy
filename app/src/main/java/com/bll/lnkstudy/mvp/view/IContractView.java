@@ -11,11 +11,8 @@ import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.ControlMessage;
 import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
-import com.bll.lnkstudy.mvp.model.cloud.CloudExamList;
-import com.bll.lnkstudy.mvp.model.cloud.CloudHomeworkList;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
-import com.bll.lnkstudy.mvp.model.paper.PaperType;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
@@ -23,6 +20,7 @@ import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkReel;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.net.IBaseView;
 
 import java.util.List;
@@ -35,7 +33,8 @@ public interface IContractView {
         void onCommitSuccess();
     }
     interface ICloudUploadView extends IBaseView{
-        void onSuccess();
+        void onSuccess(List<Integer> cloudIds);
+        void onDeleteSuccess();
     }
     //登录
     interface ILoginView extends IBaseView {
@@ -113,7 +112,7 @@ public interface IContractView {
         /**
          * 获取考卷分类
          */
-        void onTypeList(List<PaperType.PaperTypeBean> list);
+        void onTypeList(List<PaperTypeBean> list);
         void onList(PaperList paper);
         void onCommitSuccess();
         void onDeleteSuccess();
@@ -139,15 +138,6 @@ public interface IContractView {
     interface IMessageView extends IBaseView{
         void onList(Message message);
         void onCommitSuccess();
-    }
-
-    //云作业
-    interface ICloudHomeworkView extends IBaseView {
-        void onType(CloudHomeworkList item);
-    }
-    //云考卷
-    interface ICloudExamView extends IBaseView {
-        void onType(CloudExamList item);
     }
 
     //云

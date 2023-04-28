@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.adapter.cloud
+package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R

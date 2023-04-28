@@ -10,7 +10,9 @@ public class CloudListBean {
     public long date;//上传时间
     public int grade;
     public int year;
-    public String downloadUrl;
+    public int bookId;//书籍id
+    public String downloadUrl;//上传的下载链接
+    public String zipUrl;//原来的下载链接
     public String listJson;//封面列表json
     public String contentJson;//内容json
 }

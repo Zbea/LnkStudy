@@ -11,10 +11,8 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
-import com.bll.lnkstudy.mvp.model.UploadItem
+import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICloudUploadView
 import com.bll.lnkstudy.ui.activity.PaintingListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -27,32 +25,11 @@ import java.io.File
 /**
  * 书画
  */
-class PaintingFragment : BaseFragment(),ICloudUploadView {
+class PaintingFragment : BaseFragment(){
 
-    private val mCloudUploadPresenter=CloudUploadPresenter(this)
     private var typeId = 1//类型
     private val halfYear=180*24*60*60*1000
-    private val cloudList= mutableListOf<CloudListBean>()
     private var isLocalDrawing=false
-
-    override fun onSuccess() {
-        if (isLocalDrawing){
-            //删除所有本地画本、书法分类
-            PaintingTypeDaoManager.getInstance().clear()
-            //删除所有本地画本、书法内容
-            PaintingDrawingDaoManager.getInstance().clear()
-            FileUtils.deleteFile(File(Constants.PAINTING_PATH))
-        }
-        else{
-            //删除本地线上书画
-            for (item in cloudList){
-                val path=FileAddress().getPathImage("painting" ,item.id)
-                FileUtils.deleteFile(File(path))
-                val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.id)
-                PaintingBeanDaoManager.getInstance().deleteBean(paintingBean)
-            }
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_painting
@@ -87,12 +64,6 @@ class PaintingFragment : BaseFragment(),ICloudUploadView {
         iv_dd.setOnClickListener {
             onClick(8)
         }
-        iv_hb.setOnClickListener {
-            gotoPaintingDrawing(0)
-        }
-        iv_sf.setOnClickListener {
-            gotoPaintingDrawing(1)
-        }
 
         tv_sm.setOnClickListener {
             val intent = Intent(activity, PaintingListActivity::class.java)
@@ -108,6 +79,13 @@ class PaintingFragment : BaseFragment(),ICloudUploadView {
             intent.putExtra("paintingType", 5)
             intent.flags = 1
             customStartActivity(intent)
+        }
+
+        iv_hb.setOnClickListener {
+            gotoPaintingDrawing(0)
+        }
+        iv_sf.setOnClickListener {
+            gotoPaintingDrawing(1)
         }
 
     }
@@ -140,15 +118,16 @@ class PaintingFragment : BaseFragment(),ICloudUploadView {
      */
     fun uploadPainting(token: String){
         if (grade==0) return
-        cloudList.clear()
+        val cloudList= mutableListOf<CloudListBean>()
         isLocalDrawing=false
         //获取线上书画
         val paintings=PaintingBeanDaoManager.getInstance().queryPaintings()
         for (item in paintings){
-            if (System.currentTimeMillis()<item.date+halfYear){
+            if (item.isCloud) continue //已上传过的不用再上传
+            if (System.currentTimeMillis()>=item.date+halfYear){
                 cloudList.add(CloudListBean().apply {
                     type=5
-                    id=item.contentId
+                    zipUrl=item.bodyUrl
                     downloadUrl=item.bodyUrl
                     subType=item.paintingType
                     subTypeStr=item.paintingTypeStr
@@ -156,6 +135,7 @@ class PaintingFragment : BaseFragment(),ICloudUploadView {
                     dynastyStr=item.timeStr
                     date=System.currentTimeMillis()
                     listJson=Gson().toJson(item)
+                    bookId=item.contentId
                 })
             }
         }
@@ -169,53 +149,72 @@ class PaintingFragment : BaseFragment(),ICloudUploadView {
      */
     fun uploadLocalDrawing(token: String) {
         if (grade==0) return
-        cloudList.clear()
+        val cloudList= mutableListOf<CloudListBean>()
         isLocalDrawing=true
-        //查找我的画本、我的书法
-        val list= mutableListOf<UploadItem>()
-        val hbPath=FileAddress().getPathPainting(0, grade)
-        if (File(hbPath).exists()){
-            list.add(UploadItem().apply {
-                type=0
-                typeStr="我的画本"
-                path=hbPath
-                fileName="我的画本${grade}年级"
-            })
-        }
-        val sfPath=FileAddress().getPathPainting(1, grade)
-        if (File(sfPath).exists()){
-            list.add(UploadItem().apply {
-                type=1
-                typeStr="我的书法"
-                path=sfPath
-                fileName="我的书法${grade}年级"
-            })
-        }
 
-        for (item in list){
-            Handler().postDelayed({
-                FileUploadManager(token).apply {
-                    startUpload(item.path,item.fileName)
-                    setCallBack{
-                        val drawPaintings=PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
-                        cloudList.add(CloudListBean().apply {
-                            type=5
-                            subType=if (item.type==0) 7 else 8
-                            subTypeStr=item.typeStr
-                            date=System.currentTimeMillis()
-                            grade=this@PaintingFragment.grade
-                            contentJson=Gson().toJson(drawPaintings)
-                            this.downloadUrl=it
-                        })
-                        if (cloudList.size==list.size){
-                            mCloudUploadPresenter.upload(cloudList)
+        val uploadList= mutableListOf<PaintingTypeBean>()
+        //查找所有分类
+        val paintingTypes=PaintingTypeDaoManager.getInstance().queryAll()
+        for (item in paintingTypes){
+            val paintingContents=PaintingDrawingDaoManager.getInstance().queryAllByType(item.type,item.grade)
+            val path=FileAddress().getPathPainting(item.type,item.grade)
+            val fileName="${if (item.type==0) "画本" else "书法"}${item.grade}年级"
+            //存在内容则上传
+            if (paintingContents.size>0){
+                uploadList.add(item)
+                Handler().postDelayed({
+                    FileUploadManager(token).apply {
+                        startUpload(path,fileName)
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=5
+                                subType=if (item.type==0) 7 else 8
+                                subTypeStr=if (item.type==0) "我的画本" else "我的书法"
+                                date=System.currentTimeMillis()
+                                grade=this@PaintingFragment.grade
+                                contentJson=Gson().toJson(paintingContents)
+                                downloadUrl=it
+                            })
+                            if (cloudList.size==uploadList.size){
+                                mCloudUploadPresenter.upload(cloudList)
+                            }
                         }
                     }
-                }
-            },500)
+                },500)
+            }
         }
-
     }
 
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        if (isLocalDrawing){
+            //将已经上传过的本地手绘书画从云书库删除
+            val ids= mutableListOf<Int>()
+            //查找所有分类
+            val paintingTypes=PaintingTypeDaoManager.getInstance().queryAll()
+            for (item in paintingTypes){
+                if (item.isCloud){
+                    ids.add(item.cloudId)
+                }
+            }
+            mCloudUploadPresenter.deleteCloud(ids)
+            //删除所有本地画本、书法分类
+            PaintingTypeDaoManager.getInstance().clear()
+            //删除所有本地画本、书法内容
+            PaintingDrawingDaoManager.getInstance().clear()
+            FileUtils.deleteFile(File(Constants.PAINTING_PATH))
+        }
+        else{
+            val paintings=PaintingBeanDaoManager.getInstance().queryPaintings()
+            for (item in paintings){
+                if (System.currentTimeMillis()>=item.date+halfYear){
+                    val path=FileAddress().getPathImage("painting" ,item.contentId)
+                    FileUtils.deleteFile(File(path))
+                    val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)
+                    PaintingBeanDaoManager.getInstance().deleteBean(paintingBean)
+                }
+            }
+        }
+    }
 
 }

@@ -5,28 +5,17 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.mvp.model.cloud.CloudExamList
-import com.bll.lnkstudy.mvp.presenter.cloud.CloudExamPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICloudExamView
-import com.bll.lnkstudy.ui.adapter.cloud.CloudExamTypeAdapter
+import com.bll.lnkstudy.base.BaseCloudFragment
+import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_painting.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 
-class CloudExamFragment:BaseFragment(),ICloudExamView {
+class CloudExamFragment:BaseCloudFragment() {
 
-    private val mPresenter=CloudExamPresenter(this)
-    private var mAdapter:CloudExamTypeAdapter?=null
-    private var types= mutableListOf<CloudExamList.CloudExamTypeBean>()
+    private var mAdapter:PaperTypeAdapter?=null
     private var course=""
-
-    override fun onType(item: CloudExamList) {
-        setPageNumber(item.total)
-        types=item.list
-        mAdapter?.setNewData(types)
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_content
@@ -66,25 +55,15 @@ class CloudExamFragment:BaseFragment(),ICloudExamView {
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity, 2)
-        mAdapter = CloudExamTypeAdapter(R.layout.item_testpaper_type,null).apply {
+        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
         }
     }
 
-    override fun refreshData() {
-        fetchData()
-    }
-
     override fun fetchData() {
-        val map = HashMap<String, Any>()
-        map["page"]=pageIndex
-        map["size"] = pageSize
-        map["grade"] = grade
-        map["type"] = 1
-        map["userId"] = 37154748
-        mPresenter.getType(map)
+
     }
 
 }

@@ -9,6 +9,7 @@ import android.view.KeyEvent
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.ui.AlarmService
+import com.bll.lnkstudy.utils.DateUtils
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
@@ -85,7 +86,11 @@ class MainActivity : HomeLeftActivity(){
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
-            val selectLong = timeInMillis
+            var selectLong = timeInMillis
+            if (System.currentTimeMillis()>selectLong){
+                set(Calendar.YEAR,DateUtils.getYear()+1)
+                selectLong=timeInMillis
+            }
 
             val intent = Intent(this@MainActivity, AlarmService::class.java)
             intent.action = Constants.ACTION_UPLOAD_9MONTH
@@ -115,7 +120,11 @@ class MainActivity : HomeLeftActivity(){
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
-            val selectLong = timeInMillis
+            var selectLong = timeInMillis
+            if (System.currentTimeMillis()>selectLong){
+                set(Calendar.YEAR,DateUtils.getYear()+1)
+                selectLong=timeInMillis
+            }
 
             val intent = Intent(this@MainActivity, AlarmService::class.java)
             intent.action = Constants.ACTION_UPLOAD_1MONTH

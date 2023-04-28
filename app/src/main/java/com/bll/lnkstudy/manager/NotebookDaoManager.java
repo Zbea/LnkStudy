@@ -87,8 +87,7 @@ public class NotebookDaoManager {
      */
     public int queryAllSize() {
         WhereCondition whereCondition=NotebookBeanDao.Properties.TypeStr.notEq(DataBeanManager.INSTANCE.getNoteBook().get(0).name);
-        WhereCondition whereCondition1=NotebookBeanDao.Properties.IsCloud.eq(false);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list().size();
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list().size();
     }
 
     /**

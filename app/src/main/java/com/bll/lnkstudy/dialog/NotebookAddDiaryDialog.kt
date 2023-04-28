@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.dialog
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
@@ -17,7 +16,6 @@ class NotebookAddDiaryDialog(private val context: Context, private val screenPos
 
     private var dateDialog:DateSelectorDialog?=null
 
-    @SuppressLint("SetTextI18n")
     fun builder(): NotebookAddDiaryDialog? {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_notebook_add_diary)
@@ -51,10 +49,10 @@ class NotebookAddDiaryDialog(private val context: Context, private val screenPos
         btn_ok?.setOnClickListener {
             val nameStr=etName?.text.toString()
             val dateStr=tvDate?.text.toString()
-            if (!nameStr.isNullOrEmpty()&&!dateStr?.isNullOrEmpty())
+            if (nameStr.isNotEmpty() && dateStr.isNotEmpty())
             {
                 listener?.onClick(nameStr,dateStr)
-                dialog?.dismiss()
+                dialog.dismiss()
             }
         }
 

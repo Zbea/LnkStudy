@@ -43,10 +43,13 @@ public class HomeworkTypeBean implements Serializable {
     public boolean isMessage;//收到通知
     @Transient
     public HomeworkMessage message;
+    public boolean isCloud;
+    public int cloudId;
 
-    @Generated(hash = 847303206)
+    @Generated(hash = 215127069)
     public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId, int state,
-            long date, String contentResId, String bgResId, String course, boolean isCreate, int messageTotal) {
+            long date, String contentResId, String bgResId, String course, boolean isCreate, int messageTotal,
+            boolean isCloud, int cloudId) {
         this.id = id;
         this.studentId = studentId;
         this.userId = userId;
@@ -60,6 +63,8 @@ public class HomeworkTypeBean implements Serializable {
         this.course = course;
         this.isCreate = isCreate;
         this.messageTotal = messageTotal;
+        this.isCloud = isCloud;
+        this.cloudId = cloudId;
     }
     @Generated(hash = 1652492346)
     public HomeworkTypeBean() {
@@ -141,6 +146,18 @@ public class HomeworkTypeBean implements Serializable {
     }
     public void setMessageTotal(int messageTotal) {
         this.messageTotal = messageTotal;
+    }
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
+    }
+    public int getCloudId() {
+        return this.cloudId;
+    }
+    public void setCloudId(int cloudId) {
+        this.cloudId = cloudId;
     }
 
  

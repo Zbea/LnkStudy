@@ -9,6 +9,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.Objects;
+
 /**
  * 书籍
  */
@@ -18,7 +20,7 @@ public class BookBean {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     @Unique
     public int bookId;
     public String imageUrl;
@@ -53,14 +55,18 @@ public class BookBean {
     public int buyStatus;//1已购买
     public int dateState=0;//0当前课本1往期课本
     public boolean isLock=false;//未锁
-    @Generated(hash = 1032455037)
-    public BookBean(Long id, long userId, int bookId, String imageUrl,
-            String subjectName, String createdAt, String bookDesc, String semester,
-            String area, String bookName, int price, String grade, String version,
-            String bookVersion, String supply, int category, String textBookType,
-            int status, String downloadUrl, String bookPath, String bookDrawPath,
-            String bookType, Long time, int pageIndex, String pageUpUrl,
-            String pageUrl, boolean isCollect, int dateState, boolean isLock) {
+    public boolean isCloud;
+    public int cloudId;
+    @Transient
+    public String zipUrl;
+
+    @Generated(hash = 845441934)
+    public BookBean(Long id, long userId, int bookId, String imageUrl, String subjectName,
+            String createdAt, String bookDesc, String semester, String area, String bookName, int price,
+            String grade, String version, String bookVersion, String supply, int category,
+            String textBookType, int status, String downloadUrl, String bookPath, String bookDrawPath,
+            String bookType, Long time, int pageIndex, String pageUpUrl, String pageUrl,
+            boolean isCollect, int dateState, boolean isLock, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -90,6 +96,8 @@ public class BookBean {
         this.isCollect = isCollect;
         this.dateState = dateState;
         this.isLock = isLock;
+        this.isCloud = isCloud;
+        this.cloudId = cloudId;
     }
     @Generated(hash = 269018259)
     public BookBean() {
@@ -267,6 +275,18 @@ public class BookBean {
     }
     public void setIsLock(boolean isLock) {
         this.isLock = isLock;
+    }
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
+    }
+    public int getCloudId() {
+        return this.cloudId;
+    }
+    public void setCloudId(int cloudId) {
+        this.cloudId = cloudId;
     }
 
 }

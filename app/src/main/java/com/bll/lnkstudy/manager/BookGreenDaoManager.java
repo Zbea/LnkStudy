@@ -169,8 +169,22 @@ public class BookGreenDaoManager {
      */
     public List<BookBean> queryAllTextBookOther() {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
-        WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.notEq(DataBeanManager.INSTANCE.getTextbookType()[3]);
+        WhereCondition whereCondition2=BookBeanDao.Properties.DateState.notEq(1);
         List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .build().list();
+        return queryBookList;
+    }
+
+    /**
+     * 获取往期教材(未加锁的)
+     * @return
+     */
+    public List<BookBean> queryAllTextBookOldUnlock() {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
+        WhereCondition whereCondition2=BookBeanDao.Properties.DateState.eq(1);
+        WhereCondition whereCondition3=BookBeanDao.Properties.IsLock.eq(false);
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .build().list();
         return queryBookList;

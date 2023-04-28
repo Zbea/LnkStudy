@@ -1,8 +1,6 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
-import com.bll.lnkstudy.mvp.model.cloud.CloudExamList
-import com.bll.lnkstudy.mvp.model.cloud.CloudHomeworkList
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
@@ -27,7 +25,7 @@ interface APIService{
     @POST("file/manyUpload")
     fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
     @POST("cloud/data/insert")
-    fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
     /**
      * 获取下载token
      */
@@ -274,16 +272,6 @@ interface APIService{
     @POST("delete/message/delete")
     fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
-    /**
-     * 获取作业本分类
-     */
-    @GET("common/type/list")
-    fun getCloudHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudHomeworkList>>
-    /**
-     * 获取考卷分类
-     */
-    @GET("common/type/list")
-    fun getCloudExamType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudExamList>>
     /**
      * 获取云列表
      */

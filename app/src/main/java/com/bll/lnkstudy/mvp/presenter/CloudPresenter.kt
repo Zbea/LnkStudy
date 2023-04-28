@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.mvp.presenter.cloud
+package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
 import com.bll.lnkstudy.mvp.model.cloud.CloudList

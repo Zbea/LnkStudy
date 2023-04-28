@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
@@ -16,11 +16,9 @@ import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.presenter.cloud.CloudPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICloudView
 import com.bll.lnkstudy.ui.activity.BookCollectActivity
+import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
-import com.bll.lnkstudy.ui.adapter.cloud.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -33,55 +31,15 @@ import kotlinx.android.synthetic.main.fragment_content.*
 import kotlinx.android.synthetic.main.fragment_painting.*
 import java.io.File
 
-class CloudPaintingFragment : BaseFragment(), ICloudView {
+class CloudPaintingFragment : BaseCloudFragment() {
 
-    private val mPresenter=CloudPresenter(this)
     var typeId = 1
     private var dynasty = 1
     private var position=0
     private var cloudLists= mutableListOf<CloudListBean>()
     private var mAdapter:MyPaintingAdapter?=null
-    private var mLocalAdapter:CloudPaintingLocalAdapter?=null
+    private var mLocalAdapter: CloudPaintingLocalAdapter?=null
     private var paintings= mutableListOf<PaintingBean>()//线上数据
-
-
-    override fun onList(item: CloudList?) {
-        setPageNumber(item?.total!!)
-        cloudLists=item.list
-
-        when(typeId){
-            7,8->{
-                mLocalAdapter?.setNewData(cloudLists)
-            }
-            else->{
-                paintings.clear()
-                for (item in cloudLists){
-                    if (item.listJson.isNotEmpty()){
-                        val paintingBean=Gson().fromJson(item.listJson,PaintingBean::class.java)
-                        paintingBean.cloudId=item.id
-                        paintings.add(paintingBean)
-                    }
-                }
-                mAdapter?.setNewData(paintings)
-            }
-        }
-
-    }
-
-    override fun onType(types: MutableList<String>?) {
-    }
-
-    override fun onDelete() {
-        when(typeId){
-            7,8->{
-                mLocalAdapter?.remove(position)
-            }
-            else->{
-                mAdapter?.remove(position)
-            }
-        }
-    }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_content
@@ -251,8 +209,9 @@ class CloudPaintingFragment : BaseFragment(), ICloudView {
                                 //存储画本内容
                                 val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
                                 for (json in jsonArray){
-                                    val item=Gson().fromJson(json,PaintingDrawingBean::class.java)
-                                    PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
+                                    val drawingBean=Gson().fromJson(json,PaintingDrawingBean::class.java)
+                                    drawingBean.id=null
+                                    PaintingDrawingDaoManager.getInstance().insertOrReplace(drawingBean)
                                 }
                                 //删掉本地zip文件
                                 FileUtils.deleteFile(File(zipPath))
@@ -288,7 +247,7 @@ class CloudPaintingFragment : BaseFragment(), ICloudView {
     private fun deleteCloud(position:Int){
         val ids= mutableListOf<Int>()
         ids.add(paintings[position].cloudId)
-        mPresenter.deleteCloud(ids)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -318,7 +277,43 @@ class CloudPaintingFragment : BaseFragment(), ICloudView {
         map["subType"] = typeId
         if (typeId!=7&&typeId!=8)
             map["dynasty"] = dynasty
-        mPresenter.getList(map)
+        mCloudPresenter.getList(map)
+    }
+
+    override fun onCloudList(item: CloudList) {
+        setPageNumber(item?.total!!)
+        cloudLists=item.list
+
+        when(typeId){
+            7,8->{
+                mLocalAdapter?.setNewData(cloudLists)
+            }
+            else->{
+                paintings.clear()
+                for (item in cloudLists){
+                    if (item.listJson.isNotEmpty()){
+                        val paintingBean=Gson().fromJson(item.listJson,PaintingBean::class.java)
+                        paintingBean.id=null //设置数据库id为null用于重新加入
+                        paintingBean.cloudId=item.id
+                        paintingBean.isCloud=true
+                        paintings.add(paintingBean)
+                    }
+                }
+                mAdapter?.setNewData(paintings)
+            }
+        }
+
+    }
+
+    override fun onCloudDelete() {
+        when(typeId){
+            7,8->{
+                mLocalAdapter?.remove(position)
+            }
+            else->{
+                mAdapter?.remove(position)
+            }
+        }
     }
 
 }

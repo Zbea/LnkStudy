@@ -14,6 +14,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.cloud.*
 import com.bll.lnkstudy.utils.DateUtils
+import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_cloud_storage.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -201,10 +202,7 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
      * 刷新各个fragment年级
      */
     private fun changeGrade(grade: Int){
-        bookcaseFragment?.changeGrade(grade)
         textbookFragment?.changeGrade(grade)
-        homeworkFragment?.changeGrade(grade)
-        paperFragment?.changeGrade(grade)
         noteFragment?.changeGrade(grade)
         paintingFragment?.changeGrade(grade)
     }
@@ -231,6 +229,9 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
         }
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        FileDownloader.getImpl().pauseAll()
+    }
 
 }

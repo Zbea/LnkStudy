@@ -49,8 +49,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(),IQiniuView {
                 paintingFragment?.uploadLocalDrawing(token)
             }
             Constants.CONTROL_MESSAGE_EVENT->{
-                noteFragment?.uploadNote(token,false)
-                paintingFragment?.uploadLocalDrawing(token)
+                textbookFragment?.uploadTextBook(token)
             }
         }
 

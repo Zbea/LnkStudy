@@ -45,13 +45,14 @@ public class PaintingBean {
     public boolean isLeft;
     @Transient
     public boolean isRight;
-    @Transient
-    public int cloudId;//云书库的id
-    @Generated(hash = 1515609127)
+    public boolean isCloud;
+    public int cloudId;//云id
+    @Generated(hash = 558616596)
     public PaintingBean(Long id, long userId, int contentId, int type, int time,
             String timeStr, int paintingType, String paintingTypeStr, String title,
             String info, int price, String imageUrl, String bodyUrl, int supply,
-            String author, List<String> paths, long date) {
+            String author, List<String> paths, long date, boolean isCloud,
+            int cloudId) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -69,6 +70,8 @@ public class PaintingBean {
         this.author = author;
         this.paths = paths;
         this.date = date;
+        this.isCloud = isCloud;
+        this.cloudId = cloudId;
     }
     @Generated(hash = 1284832375)
     public PaintingBean() {
@@ -174,6 +177,18 @@ public class PaintingBean {
     }
     public void setAuthor(String author) {
         this.author = author;
+    }
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
+    }
+    public int getCloudId() {
+        return this.cloudId;
+    }
+    public void setCloudId(int cloudId) {
+        this.cloudId = cloudId;
     }
    
 }

@@ -2,7 +2,7 @@ package com.bll.lnkstudy.ui.activity
 
 import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -299,7 +299,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         if (targetFile.exists()) {
             targetFile.delete()
         }
-
         val download = FileDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -334,7 +333,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
-                    mDialog?.dismiss()
+                    hideLoading()
                     showToast(book.bookName+getString(R.string.book_download_fail))
                     deleteDoneTask(task)
                 }
@@ -359,19 +358,17 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
-
                     //删除教材的zip文件
                     FileUtils.deleteFile(File(zipPath))
                     Handler().postDelayed({
+                        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
                         showToast(book.bookName+getString(R.string.book_download_success))
                     },500)
-
                     if (mDownMapPool.entries.size == 0) {
-                        mDialog?.dismiss()
+                        hideLoading()
                     }
 
                 } else {
@@ -383,6 +380,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
             }
 
             override fun onError(msg: String?) {
+                hideLoading()
                 showToast(msg!!)
             }
 

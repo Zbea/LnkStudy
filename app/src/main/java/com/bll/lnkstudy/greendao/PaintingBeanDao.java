@@ -44,6 +44,8 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         public final static Property Author = new Property(14, String.class, "author", false, "AUTHOR");
         public final static Property Paths = new Property(15, String.class, "paths", false, "PATHS");
         public final static Property Date = new Property(16, long.class, "date", false, "DATE");
+        public final static Property IsCloud = new Property(17, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(18, int.class, "cloudId", false, "CLOUD_ID");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -76,7 +78,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
                 "\"SUPPLY\" INTEGER NOT NULL ," + // 13: supply
                 "\"AUTHOR\" TEXT," + // 14: author
                 "\"PATHS\" TEXT," + // 15: paths
-                "\"DATE\" INTEGER NOT NULL );"); // 16: date
+                "\"DATE\" INTEGER NOT NULL ," + // 16: date
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 17: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 18: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -141,6 +145,8 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
             stmt.bindString(16, pathsConverter.convertToDatabaseValue(paths));
         }
         stmt.bindLong(17, entity.getDate());
+        stmt.bindLong(18, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(19, entity.getCloudId());
     }
 
     @Override
@@ -199,6 +205,8 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
             stmt.bindString(16, pathsConverter.convertToDatabaseValue(paths));
         }
         stmt.bindLong(17, entity.getDate());
+        stmt.bindLong(18, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(19, entity.getCloudId());
     }
 
     @Override
@@ -225,7 +233,9 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
             cursor.getInt(offset + 13), // supply
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // author
             cursor.isNull(offset + 15) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 15)), // paths
-            cursor.getLong(offset + 16) // date
+            cursor.getLong(offset + 16), // date
+            cursor.getShort(offset + 17) != 0, // isCloud
+            cursor.getInt(offset + 18) // cloudId
         );
         return entity;
     }
@@ -249,6 +259,8 @@ public class PaintingBeanDao extends AbstractDao<PaintingBean, Long> {
         entity.setAuthor(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setPaths(cursor.isNull(offset + 15) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 15)));
         entity.setDate(cursor.getLong(offset + 16));
+        entity.setIsCloud(cursor.getShort(offset + 17) != 0);
+        entity.setCloudId(cursor.getInt(offset + 18));
      }
     
     @Override

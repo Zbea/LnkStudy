@@ -14,18 +14,14 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.manager.PaintingTypeDaoManager
-import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
+import com.bll.lnkstudy.mvp.model.cloud.CloudList
+import com.bll.lnkstudy.mvp.presenter.CloudPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.HomeLeftActivity
-import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
-import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -36,9 +32,9 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPermissions.PermissionCallbacks, IBaseView {
 
-    var mCloudUploadPresenter= CloudUploadPresenter(this)
+    val mCloudPresenter= CloudPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -61,10 +57,14 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
-    override fun onSuccess(cloudIds: MutableList<Int>?) {
-        uploadSuccess(cloudIds)
+    override fun onList(item: CloudList) {
+        onCloudList(item)
     }
-    override fun onDeleteSuccess() {
+    override fun onType(types: MutableList<String>) {
+        onCloudType(types)
+    }
+    override fun onDelete() {
+        onCloudDelete()
     }
 
 
@@ -210,6 +210,15 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
     }
 
     /**
+     * 更改年级
+     */
+    open fun changeGrade(grade: Int){
+        this.grade=grade
+        pageIndex=1
+        fetchData()
+    }
+
+    /**
      * 消失view
      */
     protected fun disMissView(vararg views: View?) {
@@ -266,86 +275,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
         radioButton.layoutParams = layoutParams
 
         return radioButton
-    }
-
-    /**
-     * 跳转书籍详情
-     */
-    fun gotoBookDetails(id: Int){
-        ActivityManager.getInstance().checkBookIDisExist(id)
-        var intent=Intent(activity, BookDetailsActivity::class.java)
-        intent.putExtra("book_id",id)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
-    }
-
-    /**
-     * 跳转作业本
-     */
-    fun gotoHomeworkDrawing(item: HomeworkTypeBean){
-        ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        val intent=Intent(context, HomeworkDrawingActivity::class.java)
-        intent.putExtra("homeworkBundle",bundle)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
-    }
-
-    /**
-     * 跳转画本
-     */
-    fun gotoPaintingDrawing(type: Int){
-        val items=PaintingTypeDaoManager.getInstance().queryAllByType(type)
-        //当前年级 手写书画分类为null则创建
-        val item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
-        if (item==null) {
-            val beanType = PaintingTypeBean()
-            beanType.type = type
-            beanType.grade = grade
-            beanType.date = System.currentTimeMillis()
-            PaintingTypeDaoManager.getInstance().insertOrReplace(beanType)
-        }
-
-        if (items.size>1){
-            val intent=Intent(activity, PaintingTypeListActivity::class.java)
-            intent.flags=type
-            startActivity(intent)
-        } else{
-            ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
-            val intent=Intent(activity, PaintingDrawingActivity::class.java)
-            intent.flags=type
-            intent.putExtra("grade",grade)
-            startActivity(intent)
-        }
-
-    }
-
-    /**
-     * 跳转考卷
-     */
-    fun gotoPaperDrawing(mCourse:String,mTypeId:Int){
-        ActivityManager.getInstance().checkPaperDrawingIsExist(mCourse,mTypeId)
-        val intent=Intent(activity, PaperDrawingActivity::class.java)
-        intent.putExtra("course",mCourse)
-        intent.putExtra("categoryId",mTypeId)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
-    }
-
-    /**
-     * 跳转考卷
-     */
-    fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int){
-        ActivityManager.getInstance().checkHomeworkReelDrawingIsExist(mCourse,mTypeId)
-        val intent=Intent(activity, HomeworkReelDrawingActivity::class.java)
-        intent.putExtra("course",mCourse)
-        intent.putExtra("categoryId",mTypeId)
-        startActivity(intent)
     }
 
     /**
@@ -450,19 +379,29 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
     open fun refreshData(){
 
     }
-
+    /**
+     * 请求数据
+     */
     open fun fetchData(){
 
     }
-
     /**
-     * 上传成功
+     * 获取云数据
      */
-    open fun uploadSuccess(cloudIds: MutableList<Int>?){
-        if (!cloudIds.isNullOrEmpty())
-        {
-            mCloudUploadPresenter.deleteCloud(cloudIds)
-        }
+    open fun onCloudList(item: CloudList){
+
+    }
+    /**
+     * 获取云分类
+     */
+    open fun onCloudType(types: MutableList<String>){
+
+    }
+    /**
+     * 删除云数据
+     */
+    open fun onCloudDelete(){
+
     }
 
 }

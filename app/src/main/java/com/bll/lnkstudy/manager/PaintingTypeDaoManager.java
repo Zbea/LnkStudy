@@ -58,6 +58,11 @@ public class PaintingTypeDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public List<PaintingTypeBean> queryAll() {
+        List<PaintingTypeBean> queryList = dao.queryBuilder().where(whereUser).build().list();
+        return queryList;
+    }
+
     public List<PaintingTypeBean> queryAllByType(int type) {
         WhereCondition whereCondition=PaintingTypeBeanDao.Properties.Type.eq(type);
         List<PaintingTypeBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();

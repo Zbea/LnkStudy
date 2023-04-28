@@ -204,7 +204,7 @@ public class DateUtils {
      * @param date
      * @return
      */
-    public static String intToStringDataNoHour(int date) {
+    public static String intToStringDataNoHour(long date) {
         if(0 == date){
             return null;
         }

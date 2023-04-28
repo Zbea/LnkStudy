@@ -15,9 +15,18 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:layout_marginTop="@dimen/dp_30"
-            android:textSize="22sp"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textSize="@dimen/sp_18"
              />
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="182dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginTop="50dp"
+            android:textSize="@dimen/sp_18"
+            />
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="182dp"

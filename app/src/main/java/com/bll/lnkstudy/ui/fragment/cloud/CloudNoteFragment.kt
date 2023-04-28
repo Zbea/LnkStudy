@@ -7,14 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.NoteContentBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.presenter.cloud.CloudPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICloudView
 import com.bll.lnkstudy.ui.activity.BookCollectActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.*
@@ -30,45 +28,14 @@ import java.io.File
 /**
  * 我的日记 grade指年份 其他grade指年级
  */
-class CloudNoteFragment:BaseFragment(),ICloudView {
+class CloudNoteFragment: BaseCloudFragment() {
 
-    private var mPresenter= CloudPresenter(this)
     var noteType=0
     private var noteTypeStr=""
     private var types= mutableListOf<String>()
     private var mAdapter:NotebookAdapter?=null
     private var notes= mutableListOf<NotebookBean>()
     private var position=0
-
-    override fun onList(item: CloudList) {
-        setPageNumber(item.total)
-        notes.clear()
-        for (item in item.list){
-            if (item.listJson.isNotEmpty()){
-                val notebookBean= Gson().fromJson(item.listJson, NotebookBean::class.java)
-                notebookBean.cloudId=item.id
-                notebookBean.isCloud=true
-                notebookBean.downloadUrl=item.downloadUrl
-                notebookBean.contentJson=item.contentJson
-                notes.add(notebookBean)
-            }
-        }
-        mAdapter?.setNewData(notes)
-    }
-
-    override fun onType(types: MutableList<String>) {
-        for (str in types){
-            if (!this.types.contains(str))
-            {
-                this.types.add(str)
-            }
-        }
-        initTab()
-    }
-
-    override fun onDelete() {
-        mAdapter?.remove(position)
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_content
@@ -85,7 +52,7 @@ class CloudNoteFragment:BaseFragment(),ICloudView {
     }
 
     override fun lazyLoad() {
-        mPresenter.getType()
+        mCloudPresenter.getType()
         fetchData()
     }
 
@@ -133,7 +100,7 @@ class CloudNoteFragment:BaseFragment(),ICloudView {
                 this@CloudNoteFragment.position=position
                 val ids= mutableListOf<Int>()
                 ids.add(notes[position].cloudId)
-                mPresenter.deleteCloud(ids)
+                mCloudPresenter.deleteCloud(ids)
                 true
             }
         }
@@ -143,10 +110,11 @@ class CloudNoteFragment:BaseFragment(),ICloudView {
      * 下载笔记
      */
     private fun downloadNote(item: NotebookBean){
+        item.id=null//设置数据库id为null用于重新加入
         //没有存储内容的笔记直接添加
         if (item.downloadUrl=="null")
         {
-            NotebookDaoManager.getInstance().insert(item)
+            NotebookDaoManager.getInstance().insertOrReplace(item)
             return
         }
         showLoading()
@@ -169,12 +137,13 @@ class CloudNoteFragment:BaseFragment(),ICloudView {
                         override fun onFinish(success: Boolean) {
                             if (success) {
                                 //添加笔记
-                                NotebookDaoManager.getInstance().insert(item)
+                                NotebookDaoManager.getInstance().insertOrReplace(item)
                                 //添加笔记内容
                                 val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                                 for (json in jsonArray){
                                     val contentBean=Gson().fromJson(json, NoteContentBean::class.java)
-                                    NoteContentDaoManager.getInstance().insertNote(contentBean)
+                                    contentBean.id=null//设置数据库id为null用于重新加入
+                                    NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
                                 }
                                 //删掉本地zip文件
                                 FileUtils.deleteFile(File(zipPath))
@@ -210,6 +179,7 @@ class CloudNoteFragment:BaseFragment(),ICloudView {
         fetchData()
     }
 
+
     override fun fetchData() {
         val map = HashMap<String, Any>()
         map["page"]=pageIndex
@@ -217,7 +187,37 @@ class CloudNoteFragment:BaseFragment(),ICloudView {
         map["type"] = 4
         map["grade"] = grade
         map["subTypeStr"] = noteTypeStr
-        mPresenter.getList(map)
+        mCloudPresenter.getList(map)
+    }
+
+    override fun onCloudType(types: MutableList<String>) {
+        for (str in types){
+            if (!this.types.contains(str))
+            {
+                this.types.add(str)
+            }
+        }
+        initTab()
+    }
+
+    override fun onCloudList(item: CloudList) {
+        setPageNumber(item.total)
+        notes.clear()
+        for (item in item.list){
+            if (item.listJson.isNotEmpty()){
+                val notebookBean= Gson().fromJson(item.listJson, NotebookBean::class.java)
+                notebookBean.cloudId=item.id
+                notebookBean.isCloud=true
+                notebookBean.downloadUrl=item.downloadUrl
+                notebookBean.contentJson=item.contentJson
+                notes.add(notebookBean)
+            }
+        }
+        mAdapter?.setNewData(notes)
+    }
+
+    override fun onCloudDelete() {
+        mAdapter?.remove(position)
     }
 
 }
