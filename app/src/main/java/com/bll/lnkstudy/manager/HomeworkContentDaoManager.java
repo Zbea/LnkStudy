@@ -92,5 +92,7 @@ public class HomeworkContentDaoManager {
         dao.delete(bean);
     }
 
-
+    public void clear(){
+        dao.deleteAll();
+    }
 }

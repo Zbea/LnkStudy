@@ -3,9 +3,11 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
+import com.bll.lnkstudy.greendao.PaperBeanDao;
 import com.bll.lnkstudy.greendao.PaperTypeBeanDao;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
+import com.bll.lnkstudy.mvp.model.paper.PaperBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -57,12 +59,26 @@ public class PaperTypeDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public PaperTypeBean queryById(int id) {
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.TypeId.eq(id);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().unique();
+    }
     public List<PaperTypeBean> queryAll() {
         return dao.queryBuilder().where(whereUser).build().list();
     }
 
+    public List<PaperTypeBean> queryAllByCourse(String course){
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
+        List<PaperTypeBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+        return queryList;
+    }
+
     public void deleteBean(PaperTypeBean bean){
         dao.delete(bean);
+    }
+
+    public void clear(){
+        dao.deleteAll();
     }
 
 

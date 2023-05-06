@@ -119,7 +119,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.BookCaseTypeListActivity"/>
-        <activity android:name=".ui.activity.BookCollectActivity"
+        <activity android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask"
             />
         <activity android:name=".ui.activity.drawing.PaperDrawingActivity"

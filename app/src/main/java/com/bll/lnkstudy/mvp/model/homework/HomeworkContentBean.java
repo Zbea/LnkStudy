@@ -8,13 +8,15 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Objects;
+
 @Entity
 public class HomeworkContentBean {
 
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String bgResId;//作业背景样式id
     public String course;//科目
     public int homeworkTypeId;//作业本分组id

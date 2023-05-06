@@ -10,7 +10,10 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.BookStore
+import com.bll.lnkstudy.mvp.model.BookStoreType
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
@@ -19,7 +22,6 @@ import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
@@ -31,8 +33,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * 教材书城
  */
-class TextBookStoreActivity : BaseAppCompatActivity(),
-    IContractView.IBookStoreView {
+class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView {
 
     private var typeId = 0 //教材分类
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
@@ -40,7 +41,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
-    private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
     private var semesterStr=""
@@ -50,7 +50,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
-    private var provinceList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
@@ -90,13 +89,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
     override fun initData() {
         pageSize=12
-        //获取地区分类
-        val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
-        val area = Gson().fromJson(citysStr, Area::class.java)
-        for (i in area.provinces.indices) {
-            provinceList.add(PopupBean(i, area.provinces[i].provinceName, i == 0))
-        }
-        provinceStr = provinceList[0].name
         typeList = DataBeanManager.textbookType.toMutableList()
         typeList.removeAt(3)
         typeStr = typeList[0]
@@ -108,8 +100,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
     override fun initView() {
         setPageTitle(R.string.main_teaching)
-        disMissView(ll_search,tv_course)
-        showView(tv_province,tv_grade,tv_semester)
+        disMissView(ll_search,tv_course,tv_grade)
+        showView(tv_semester)
 
         initRecyclerView()
         initTab()
@@ -119,8 +111,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
             val tasks = mutableListOf<BaseDownloadTask>()
             if (typeId == 0) {
                 for (item in books) {
-                    val localBook =
-                        BookGreenDaoManager.getInstance().queryBookByBookID(item.bookId)
+                    val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
                     if (localBook == null) {
                         val downloadTask = downLoadStart(item.downloadUrl, item)
                         tasks.add(downloadTask!!)
@@ -132,33 +123,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
     }
 
-    //获取数据
-    private fun getData() {
-        presenter.getBookType()
-    }
-
-    //获取教材
-    private fun getDataBook() {
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = 12
-        map["area"] = provinceStr
-        map["grade"] = gradeStr
-        map["type"] = typeStr
-        map["semester"]=semesterStr
-        presenter.getTextBooks(map)
-    }
-
-    //获取参考
-    private fun getDataBookCk() {
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["grade"] = gradeStr
-        map["semester"]=semesterStr
-        map["subjectName"]=courseId
-        presenter.getTextBookCks(map)
-    }
 
     /**
      * 设置分类选择
@@ -167,23 +131,10 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
 
         tv_grade.text = gradeStr
         tv_grade.setOnClickListener {
-            //我的课本时候不能筛选其他年级的书籍
-            if (typeId==0)return@setOnClickListener
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
                 gradeStr = item.name
                 tv_grade.text = gradeStr
-                pageIndex = 1
-                fetchData()
-            }
-        }
-
-        tv_province.text = provinceStr
-        tv_province.setOnClickListener {
-            PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
-            .setOnSelectListener { item ->
-                provinceStr = item.name
-                tv_province.text = item.name
                 pageIndex = 1
                 fetchData()
             }
@@ -222,22 +173,15 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
-                    //本地我的课本是否有数据，没有显示下载按钮
-                    val textbook=typeList[0]
-                    val localBooks=BookGreenDaoManager.getInstance().queryAllTextBook(textbook)
-                    if (localBooks.size>0){
-                        disMissView(tv_download)
-                    }
-                    else{
-                        showView(tv_download)
-                    }
-                    disMissView(tv_course)
+                    showView(tv_download)
+                    disMissView(tv_course,tv_grade)
                 }
                 1 -> {
-                    disMissView(tv_download,tv_course)
+                    showView(tv_grade,tv_course)
+                    disMissView(tv_download)
                 }
                 else -> {
-                    showView(tv_course)
+                    showView(tv_course,tv_grade)
                     disMissView(tv_download)
                 }
             }
@@ -271,7 +215,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus == 1) {
-                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
+                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                 if (localBook == null) {
                     val downloadTask = downLoadStart(book.downloadUrl, book)
                     mDownMapPool[book.bookId] = downloadTask!!
@@ -424,14 +368,43 @@ class TextBookStoreActivity : BaseAppCompatActivity(),
     override fun fetchData() {
         when (typeId) {
             0, 1 -> {
-                showView(tv_province)
                 getDataBook()
             }
             else -> {
-                disMissView(tv_province)
                 getDataBookCk()
             }
         }
+    }
+
+    //获取数据
+    private fun getData() {
+        presenter.getBookType()
+    }
+
+    //获取教材
+    private fun getDataBook() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = 12
+        map["area"] = mUser?.addr!!.split(",")[0]
+        map["grade"] = gradeStr
+        map["type"] = typeStr
+        if (typeId==1){
+            map["subjectName"]=courseId
+        }
+        map["semester"]=semesterStr
+        presenter.getTextBooks(map)
+    }
+
+    //获取参考
+    private fun getDataBookCk() {
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["grade"] = gradeStr
+        map["semester"]=semesterStr
+        map["subjectName"]=courseId
+        presenter.getTextBookCks(map)
     }
 
 }

@@ -12,13 +12,16 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ControlMessage
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
+import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -31,14 +34,18 @@ import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContractView.IControlMessageView , EasyPermissions.PermissionCallbacks, IBaseView {
 
-    var mCloudUploadPresenter= CloudUploadPresenter(this)
+    val mCloudUploadPresenter= CloudUploadPresenter(this)
+    val mControlMessagePresenter= ControlMessagePresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -61,6 +68,36 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
+    //控制消息回调
+    override fun onControlMessage(controlMessages: MutableList<ControlMessage>) {
+        //发送全局老师控制删除
+        if (controlMessages.size>0){
+            EventBus.getDefault().post(Constants.CONTROL_MESSAGE_EVENT)
+            val list= mutableListOf<Int>()
+            for (item in controlMessages){
+                list.add(item.id)
+            }
+            mControlMessagePresenter.deleteControlMessage(list)
+        }
+    }
+    override fun onDeleteMessage() {
+    }
+    override fun onControlClear(controlMessages: MutableList<ControlMessage>) {
+        if (controlMessages.size>0){
+            EventBus.getDefault().post(Constants.CONTROL_CLEAR_EVENT)
+            val list= mutableListOf<Int>()
+            for (item in controlMessages){
+                list.add(item.id)
+            }
+            mControlMessagePresenter.deleteClearMessage(list)
+        }
+    }
+    override fun onDeleteClear() {
+    }
+    override fun onEditGradeSuccess() {
+    }
+
+    //云端上传回调
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
     }
@@ -86,15 +123,24 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
         isViewPrepare = true
         grade=mUser?.grade!!
         initCommonTitle()
         initView()
-
+        onFetchControl()
         if (activity is HomeLeftActivity)
             screenPos=(activity as HomeLeftActivity).getCurrentScreenPos()
         mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
+    }
+
+    /**
+     * 获取控制信息指令
+     */
+    private fun onFetchControl(){
+        mControlMessagePresenter.getControlMessage()
+        mControlMessagePresenter.getControlClearMessage()
     }
 
     private fun lazyLoadDataIfPrepared() {
@@ -440,15 +486,36 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden){
-            refreshData()
+            onRefreshData()
         }
+    }
+
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(msgFlag: String) {
+        when(msgFlag){
+            Constants.USER_EVENT->{
+                mUser= SPUtil.getObj("user", User::class.java)
+                grade=mUser?.grade!!
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
+    }
+
+    /**
+     * 收到eventbus事件处理
+     */
+    open fun onEventBusMessage(msgFlag: String){
+
     }
 
     /**
      * 页面切换刷新数据
      */
-    open fun refreshData(){
-
+    open fun onRefreshData(){
+        onFetchControl()
     }
 
     open fun fetchData(){
@@ -463,6 +530,11 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView , EasyP
         {
             mCloudUploadPresenter.deleteCloud(cloudIds)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 }

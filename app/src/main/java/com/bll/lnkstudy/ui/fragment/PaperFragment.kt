@@ -7,20 +7,22 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.manager.PaperContentDaoManager
+import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
+import com.bll.lnkstudy.utils.FileUploadManager
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
-import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
@@ -35,9 +37,13 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     private var paperContents= mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
 
     override fun onTypeList(list: MutableList<PaperTypeBean>) {
-        paperTypes=list
-        val localTypes=PaperTypeDaoManager.getInstance().queryAll()
-        paperTypes.addAll(localTypes)
+        for (item in list){
+            if (!isSavePaperType(item)){
+                item.course=course
+                PaperTypeDaoManager.getInstance().insertOrReplace(item)
+            }
+        }
+        paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
         mAdapter?.setNewData(paperTypes)
         if(paperContents.size>0){
             refreshView()
@@ -62,7 +68,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     override fun initView() {
         setTitle(R.string.main_testpaper_title)
 
-        EventBus.getDefault().register(this)
         initRecyclerView()
         initTab()
     }
@@ -106,61 +111,22 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         }
     }
 
-
-
     /**
-     * 刷新批改分 循环遍历
+     * 判断 考卷分类是否已经保存本地
      */
-    private fun refreshView(){
-        for (item in paperContents){
-            for (ite in paperTypes){
-                if (item.subject==ite.course&&item.examId==ite.typeId){
-                    ite.score=item.score
-                    ite.isPg=true
-                }
-                else{
-                    ite.isPg=false
-                }
+    private fun isSavePaperType(item: PaperTypeBean): Boolean {
+        var isSave = false
+        for (list in PaperTypeDaoManager.getInstance().queryAllByCourse(course)) {
+            if (item.name == list.name && item.typeId == list.typeId && item.course == list.course) {
+                isSave = true
             }
         }
-        mAdapter?.notifyDataSetChanged()
+        return isSave
     }
 
     /**
-     * 自动压缩zip
+     * 下载收到的考卷
      */
-    private fun autoZip() {
-
-        ZipUtils.zip(Constants.TESTPAPER_PATH + "/$mUserId", "testPaper", object : ZipUtils.ZipCallback {
-            override fun onStart() {
-                showLog("testPaper开始打包上传")
-            }
-            override fun onProgress(percentDone: Int) {
-            }
-            override fun onFinish(success: Boolean) {
-                showLog(success.toString())
-            }
-            override fun onError(msg: String?) {
-                showLog(msg!!)
-            }
-        })
-    }
-
-
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    fun onMessageEvent(msgFlag: String) {
-        if (msgFlag == Constants.AUTO_UPLOAD_EVENT) {
-            autoZip()
-        }
-        if (msgFlag==Constants.COURSE_EVENT){
-            //刷新科目
-            initTab()
-        }
-    }
-
-
-    //下载收到的图片
     private fun loadPapers(papers:MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
             //设置路径
@@ -181,12 +147,80 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
+    /**
+     * 刷新批改分 循环遍历
+     */
+    private fun refreshView(){
+        for (item in paperContents){
+            for (ite in paperTypes){
+                if (item.subject==ite.course&&item.examId==ite.typeId){
+                    ite.score=item.score
+                    ite.isPg=true
+                }
+                else{
+                    ite.isPg=false
+                }
+            }
+        }
+        mAdapter?.notifyDataSetChanged()
     }
 
-    override fun refreshData() {
+    fun uploadPaper(token:String){
+        if (grade==0) return
+        val cloudList= mutableListOf<CloudListBean>()
+        for(classGroup in DataBeanManager.classGroups){
+            val types=PaperTypeDaoManager.getInstance().queryAllByCourse(classGroup.subject)
+            for (item in types){
+                val papers=PaperDaoManager.getInstance().queryAll(1,item.course,item.typeId)
+                val paperContents=PaperContentDaoManager.getInstance().queryAll(1,item.course,item.typeId)
+                val path=FileAddress().getPathTestPaper(item.typeId)
+                if (papers.size>0){
+                    FileUploadManager(token).apply {
+                        startUpload(path,item.name)
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=3
+                                subType=-1
+                                subTypeStr=item.course
+                                date=System.currentTimeMillis()
+                                grade=item.grade
+                                listJson=Gson().toJson(item)
+                                contentJson= Gson().toJson(papers)
+                                contentSubtypeJson=Gson().toJson(paperContents)
+                                downloadUrl=it
+                            })
+                            if (cloudList.size==PaperTypeDaoManager.getInstance().queryAll().size){
+                                mCloudUploadPresenter.upload(cloudList)
+                            }
+                        }
+                    }
+                }
+                else{
+                    cloudList.add(CloudListBean().apply {
+                        type=3
+                        subType=-1
+                        subTypeStr=item.course
+                        date=System.currentTimeMillis()
+                        grade=item.grade
+                        listJson= Gson().toJson(item)
+                        downloadUrl="null"
+                    })
+                    if (cloudList.size==PaperTypeDaoManager.getInstance().queryAll().size){
+                        mCloudUploadPresenter.upload(cloudList)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.COURSE_EVENT){
+            initTab()
+        }
+    }
+
+    override fun onRefreshData() {
+        super.onRefreshData()
         fetchData()
     }
 
@@ -211,6 +245,28 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             mPresenter.getList(map1)
         }
 
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        val ids= mutableListOf<Int>()
+        //获取所有考试卷分类，查找从云书库下载的，然后删除（避免重复上传）
+        val paperTypes=PaperTypeDaoManager.getInstance().queryAll()
+        for (paperType in paperTypes){
+            if (paperType.isCloud)
+                ids.add(paperType.cloudId)
+        }
+        //删除云书库之前上传的
+        if (ids.size>0)
+            mCloudUploadPresenter.deleteCloud(ids)
+        //删除本地考卷分类
+        PaperTypeDaoManager.getInstance().clear()
+        paperTypes.clear()
+        mAdapter?.notifyDataSetChanged()
+        //删除所有考卷内容
+        PaperDaoManager.getInstance().deleteAllByType(1)
+        PaperContentDaoManager.getInstance().deleteAllByType(1)
+        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
     }
 
 }

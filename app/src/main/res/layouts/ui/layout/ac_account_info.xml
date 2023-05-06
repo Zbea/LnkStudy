@@ -78,7 +78,7 @@
 
             <TextView
                 android:id="@+id/tv_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
@@ -110,8 +110,8 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/tv_grade"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_grade_str"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
@@ -187,7 +187,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
@@ -206,7 +206,110 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_school"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:orientation="vertical"
+            >
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:text="@string/school_message" />
+
+                <TextView
+                    android:id="@+id/tv_province"
+                    android:layout_width="115dp"
+                    android:layout_height="match_parent"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+
+                <TextView
+                    android:id="@+id/tv_city"
+                    android:layout_width="115dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+                <TextView
+                    android:id="@+id/tv_school_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="@dimen/dp_30"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_area"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:layout_weight="1"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+
+                <TextView
+                    android:id="@+id/btn_edit_school"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="@string/edit_school_message"
+                    android:background="@drawable/bg_black_solid_10dp_corner"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

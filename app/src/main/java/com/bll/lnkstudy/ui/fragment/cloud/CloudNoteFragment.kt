@@ -13,7 +13,7 @@ import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.NoteContentBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.ui.activity.BookCollectActivity
+import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.*
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -63,12 +63,12 @@ class CloudNoteFragment: BaseCloudFragment() {
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             noteType=id
             if (noteType==0){
-                grade=(activity as BookCollectActivity).year
-                (activity as BookCollectActivity).showYearView()
+                grade=(activity as CloudStorageActivity).year
+                (activity as CloudStorageActivity).showYearView()
             }
             else{
-                grade=(activity as BookCollectActivity).grade
-                (activity as BookCollectActivity).closeYearView()
+                grade=(activity as CloudStorageActivity).grade
+                (activity as CloudStorageActivity).closeYearView()
             }
             noteTypeStr=types[id]
             pageIndex=1

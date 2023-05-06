@@ -3,7 +3,7 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
-import com.bll.lnkstudy.mvp.model.RecordBean;
+import com.bll.lnkstudy.mvp.model.homework.RecordBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -58,9 +58,10 @@ public class RecordDaoManager {
     }
 
 
-    public List<RecordBean> queryAllByCourse(String course) {
+    public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
-        List<RecordBean> queryList = recordBeanDao.queryBuilder().where(whereUser,whereCondition)
+        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(typeId);
+        List<RecordBean> queryList = recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
         return queryList;
     }
@@ -69,5 +70,8 @@ public class RecordDaoManager {
         recordBeanDao.delete(bean);
     }
 
+    public void clear(){
+        recordBeanDao.deleteAll();
+    }
 
 }

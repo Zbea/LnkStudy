@@ -7,7 +7,7 @@ import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class BookAdapter(layoutResId: Int, data: List<BookBean>?) :
+class TextBookAdapter(layoutResId: Int, data: List<BookBean>?) :
     BaseQuickAdapter<BookBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: BookBean) {
@@ -19,6 +19,7 @@ class BookAdapter(layoutResId: Int, data: List<BookBean>?) :
             } else {
                 GlideUtils.setImageRoundUrl(mContext, item.pageUrl, image, 10)
             }
+            setVisible(R.id.iv_lock, item.category==0&&item.dateState == 1 && item.isLock)
         }
     }
 

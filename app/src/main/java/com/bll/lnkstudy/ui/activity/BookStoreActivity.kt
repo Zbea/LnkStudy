@@ -192,10 +192,10 @@ class BookStoreActivity : BaseAppCompatActivity(),
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus==1){
-                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookPlusId)
                 if (localBook == null) {
                     val downloadTask = downLoadStart(book.downloadUrl,book)
-                    mDownMapPool[book.bookId] = downloadTask!!
+                    mDownMapPool[book.bookPlusId] = downloadTask!!
                 } else {
                     book.loadSate =2
                     showToast(R.string.toast_downloaded)
@@ -206,7 +206,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
             else{
                 val map = HashMap<String, Any>()
                 map["type"] = 3
-                map["bookId"] = book.bookId
+                map["bookId"] = book.bookPlusId
                 presenter.buyBook(map)
             }
         }
@@ -228,7 +228,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
+                    if (task != null && task.isRunning && task == mDownMapPool[book.bookPlusId]) {
                         runOnUiThread {
                             val s = getFormatNum(
                                 soFarBytes.toDouble() / (1024 * 1024),

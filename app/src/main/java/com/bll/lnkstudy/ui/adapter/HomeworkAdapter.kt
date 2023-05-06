@@ -17,7 +17,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
         helper.apply {
             setText(R.id.tv_name, item.name)
             setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
-            setVisible(R.id.ll_info, !item.isCreate)
+            setVisible(R.id.ll_info, !item.isCreate||item.isCloud)
             if (item.isCloud){
                 setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
                 setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date/1000))
@@ -40,9 +40,9 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
             }
 
             if (item.state == 1) {
-                setText(R.id.tv_message, "收到题卷")
+                setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_reel))
             } else {
-                setText(R.id.tv_message, "收到通知")
+                setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
             }
 
             addOnClickListener(R.id.ll_message)

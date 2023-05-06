@@ -27,8 +27,6 @@ import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
@@ -61,8 +59,6 @@ class NoteFragment : BaseFragment(){
 
         popWindowMoreBeans.add(PopupBean(0, getString(R.string.rename), true))
         popWindowMoreBeans.add(PopupBean(1, getString(R.string.delete), false))
-
-        EventBus.getDefault().register(this)
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)
@@ -310,9 +306,7 @@ class NoteFragment : BaseFragment(){
             }
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == NOTE_BOOK_MANAGER_EVENT) {
             findTabs()
         }
@@ -406,11 +400,6 @@ class NoteFragment : BaseFragment(){
         mAdapter?.setNewData(noteBooks)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         //将已经上传过的笔记从云书库删除
@@ -419,13 +408,13 @@ class NoteFragment : BaseFragment(){
             val notes=NotebookDaoManager.getInstance().queryAll(noteTypes[0].name)
             //删除该笔记分类中的所有笔记本及其内容
             for (note in notes){
+                if (note.isCloud){
+                    ids.add(note.cloudId)
+                }
                 NotebookDaoManager.getInstance().deleteBean(note)
                 NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
                 val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
                 FileUtils.deleteFile(File(path))
-                if (note.isCloud){
-                    ids.add(note.cloudId)
-                }
             }
         }
         else{
@@ -433,18 +422,19 @@ class NoteFragment : BaseFragment(){
                 val notes=NotebookDaoManager.getInstance().queryAll(noteTypes[i].name)
                 //删除该笔记分类中的所有笔记本及其内容
                 for (note in notes){
+                    if (note.isCloud){
+                        ids.add(note.cloudId)
+                    }
                     NotebookDaoManager.getInstance().deleteBean(note)
                     NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
                     val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
                     FileUtils.deleteFile(File(path))
-                    if (note.isCloud){
-                        ids.add(note.cloudId)
-                    }
                 }
             }
             NoteTypeBeanDaoManager.getInstance().clear()
         }
-        mCloudUploadPresenter.deleteCloud(ids)
+        if (ids.size>0)
+            mCloudUploadPresenter.deleteCloud(ids)
         EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
     }
 

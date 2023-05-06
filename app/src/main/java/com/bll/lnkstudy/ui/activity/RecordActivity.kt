@@ -3,10 +3,11 @@ package com.bll.lnkstudy.ui.activity
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.RecordDaoManager
-import com.bll.lnkstudy.mvp.model.RecordBean
+import com.bll.lnkstudy.mvp.model.homework.RecordBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_record.*
@@ -32,14 +33,20 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        path = File(Constants.RECORD_PATH, "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
+        path = File(FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!), "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
     }
 
     override fun initView() {
         setPageTitle(R.string.record_title_str)
         showSaveView()
 
+        iv_back?.setOnClickListener {
+            finish()
+            FileUtils.deleteFile(File(path))
+        }
+
         iv_save?.setOnClickListener {
+            hideKeyboard()
             if (!FileUtils.isExist(path)) {
                 showToast(R.string.toast_record)
                 return@setOnClickListener
@@ -56,10 +63,10 @@ class RecordActivity : BaseAppCompatActivity() {
             RecordDaoManager.getInstance().insertOrReplace(recordBean)
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()
-
         }
 
         ll_record.setOnClickListener {
+            hideKeyboard()
             mPlayer?.run {
                 release()
                 null

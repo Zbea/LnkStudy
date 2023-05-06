@@ -73,9 +73,23 @@ class FileAddress {
     }
 
     /**
+     * 考卷分类路径
+     * categoryId分类id
+     */
+    fun getPathTestPaper(categoryId:Int):String{
+        return "$TESTPAPER_PATH/$mUserId/examType$categoryId"
+    }
+
+    /**
      * 作业文件夹路径
      */
     fun getPathHomework(course:String, typeId:Int):String{
+        return "$HOMEWORK_PATH/$mUserId/$course/$typeId"
+    }
+    /**
+     * 朗读作业文件夹路径
+     */
+    fun getPathRecord(course:String, typeId:Int):String{
         return "$HOMEWORK_PATH/$mUserId/$course/$typeId"
     }
     /**
@@ -92,12 +106,6 @@ class FileAddress {
         return "$NOTE_PATH/$mUserId/$type/$noteBookStr/$grade"
     }
 
-    /**
-     * 壁纸、书画
-     */
-    fun getPathImage(type:String):String{
-        return "$IMAGE_PATH/$mUserId/$type"
-    }
     /**
      * 壁纸、书画
      */

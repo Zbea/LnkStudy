@@ -10,12 +10,14 @@ public class User {
     public String nickname;
     public int balance;//学豆
     public int vipExpiredAt;//vip时间
-    public int grade=1;//年级
+    public int grade;//年级
     public String parentName;
     public String parentNickname;
     public String parentTel;
     public String parentAddr;
     public long birthdayTime;
-
+    public String addr;
+    public String addrInfo;
+    public String schoolName;
 
 }

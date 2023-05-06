@@ -21,11 +21,10 @@ public class BookBean {
     @Unique
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    @Unique
     public int bookId;
+    public int bookPlusId;
     public String imageUrl;
     public String subjectName;//课目
-    public String createdAt;
     public String bookDesc;//描述
     public String semester;//学期
     public String area;//地区
@@ -60,19 +59,19 @@ public class BookBean {
     @Transient
     public String zipUrl;
 
-    @Generated(hash = 845441934)
-    public BookBean(Long id, long userId, int bookId, String imageUrl, String subjectName,
-            String createdAt, String bookDesc, String semester, String area, String bookName, int price,
-            String grade, String version, String bookVersion, String supply, int category,
+    @Generated(hash = 873769566)
+    public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl,
+            String subjectName, String bookDesc, String semester, String area, String bookName,
+            int price, String grade, String version, String bookVersion, String supply, int category,
             String textBookType, int status, String downloadUrl, String bookPath, String bookDrawPath,
             String bookType, Long time, int pageIndex, String pageUpUrl, String pageUrl,
             boolean isCollect, int dateState, boolean isLock, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
+        this.bookPlusId = bookPlusId;
         this.imageUrl = imageUrl;
         this.subjectName = subjectName;
-        this.createdAt = createdAt;
         this.bookDesc = bookDesc;
         this.semester = semester;
         this.area = area;
@@ -132,12 +131,7 @@ public class BookBean {
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
-    public String getCreatedAt() {
-        return this.createdAt;
-    }
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+
     public String getBookDesc() {
         return this.bookDesc;
     }
@@ -287,6 +281,12 @@ public class BookBean {
     }
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
+    }
+    public int getBookPlusId() {
+        return this.bookPlusId;
+    }
+    public void setBookPlusId(int bookPlusId) {
+        this.bookPlusId = bookPlusId;
     }
 
 }

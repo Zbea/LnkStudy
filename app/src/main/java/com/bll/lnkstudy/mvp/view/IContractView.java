@@ -55,6 +55,7 @@ public interface IContractView {
         void onLogout();
         void onEditNameSuccess();
         void onEditGradeSuccess();
+        void onEditSchoolSuccess();
     }
 
     //钱包页面回调
@@ -152,14 +153,26 @@ public interface IContractView {
         void onList(CommonData commonData);
     }
 
-    //公共接口
+    /**
+     * 控制指令
+     */
     interface IControlMessageView extends IBaseView {
         /**
-         * 获取老师控制移除指定
+         * 获取老师发送上传、移除课本指令
+         * @param controlMessages
          */
-        void onControl(List<ControlMessage> controlMessages);
-        void onDelete();
+        void onControlMessage(List<ControlMessage> controlMessages);
+        void onDeleteMessage();
+
+        /**
+         * 获取系统发送上传、删除本地作业考卷指令
+         * @param controlMessages
+         */
+        void onControlClear(List<ControlMessage> controlMessages);
+        void onDeleteClear();
+        void onEditGradeSuccess();
     }
+
 
     interface IQiniuView extends IBaseView {
         void onToken(String token);

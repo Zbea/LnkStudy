@@ -12,7 +12,7 @@ import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.ui.adapter.BookAdapter
+import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -28,7 +28,7 @@ import java.io.File
 
 class CloudTextbookFragment:BaseCloudFragment() {
 
-    private var mAdapter:BookAdapter?=null
+    private var mAdapter:TextBookAdapter?=null
     private var books= mutableListOf<BookBean>()
     private var textBook=""//用来区分课本类型
     private var position=0
@@ -67,13 +67,13 @@ class CloudTextbookFragment:BaseCloudFragment() {
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_textbook, null).apply {
+        mAdapter = TextBookAdapter(R.layout.item_textbook, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
                 val book=books[position]
-                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
+                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip

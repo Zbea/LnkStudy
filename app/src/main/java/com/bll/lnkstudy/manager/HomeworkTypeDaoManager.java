@@ -56,7 +56,10 @@ public class HomeworkTypeDaoManager {
     public void insertOrReplace(HomeworkTypeBean bean) {
         dao.insertOrReplace(bean);
     }
-
+    public HomeworkTypeBean queryByTypeId(int typeId) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(typeId);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+    }
     /**
      * 查找作业本
      * @param course
@@ -69,9 +72,20 @@ public class HomeworkTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
+    public List<HomeworkTypeBean> queryAllByCourse(String course) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+    }
+
+    public List<HomeworkTypeBean> queryAll() {
+        return dao.queryBuilder().where(whereUser).build().list();
+    }
+
     public void deleteBean(HomeworkTypeBean bean){
         dao.delete(bean);
     }
 
-
+    public void clear(){
+        dao.deleteAll();
+    }
 }

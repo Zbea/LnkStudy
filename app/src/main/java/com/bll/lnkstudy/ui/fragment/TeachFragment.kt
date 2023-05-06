@@ -119,7 +119,8 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
     }
 
 
-    override fun refreshData() {
+    override fun onRefreshData() {
+        super.onRefreshData()
         if (courseType==null){
             mPresenter.getCourseType()
         }

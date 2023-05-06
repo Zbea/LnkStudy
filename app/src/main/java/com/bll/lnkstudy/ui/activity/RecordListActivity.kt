@@ -16,9 +16,9 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.homework.RecordBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
@@ -120,7 +120,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
 
     private fun findDatas() {
-        recordBeans = RecordDaoManager.getInstance().queryAllByCourse(course)
+        recordBeans = RecordDaoManager.getInstance().queryAllByCourse(course,homeworkType?.typeId!!)
         mAdapter?.setNewData(recordBeans)
     }
 
@@ -128,16 +128,14 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     //添加听读
     private fun addRecord() {
         val time = System.currentTimeMillis()
-        var item = RecordBean()
+        val item = RecordBean()
         item.date = time
         item.course = course
+        item.typeId=homeworkType?.typeId!!
 
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putSerializable("record", item)
-        customStartActivity(
-            Intent(this@RecordListActivity, RecordActivity::class.java)
-                .putExtra("record", bundle)
-        )
+        customStartActivity(Intent(this@RecordListActivity, RecordActivity::class.java).putExtra("record", bundle))
     }
 
     //点击播放
@@ -210,7 +208,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 override fun cancel() {
                 }
                 override fun ok() {
-                    var item=recordBeans[position]
+                    val item=recordBeans[position]
                     recordBeans.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
                     RecordDaoManager.getInstance().deleteBean(item)
@@ -249,8 +247,5 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             mediaPlayer = null
         }
     }
-
-
-
 
 }

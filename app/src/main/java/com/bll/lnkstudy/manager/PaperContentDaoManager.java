@@ -2,7 +2,9 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.PaperBeanDao;
 import com.bll.lnkstudy.greendao.PaperContentBeanDao;
+import com.bll.lnkstudy.mvp.model.paper.PaperBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -82,5 +84,10 @@ public class PaperContentDaoManager {
         dao.delete(bean);
     }
 
+    public void deleteAllByType(int type){
+        WhereCondition whereCondition1= PaperContentBeanDao.Properties.Type.eq(type);
+        List<PaperContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+        dao.deleteInTx(queryList);
+    }
 
 }

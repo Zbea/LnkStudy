@@ -30,7 +30,7 @@ public class HomeworkTypeBean implements Serializable {
     @Unique
     public int typeId;//作业本分类id
     @SerializedName("subType")
-    public int state;//2普通作业本 3听读本 1题卷本
+    public int state;//1题卷本 2普通作业本 3听读本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
@@ -45,6 +45,12 @@ public class HomeworkTypeBean implements Serializable {
     public HomeworkMessage message;
     public boolean isCloud;
     public int cloudId;
+    @Transient
+    public String downloadUrl;
+    @Transient
+    public String contentJson;
+    @Transient
+    public String contentSubtypeJson;
 
     @Generated(hash = 215127069)
     public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId, int state,

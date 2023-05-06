@@ -31,6 +31,12 @@ public class PaperTypeBean {
     public int score;
     public boolean isCloud;
     public int cloudId;
+    @Transient
+    public String downloadUrl;
+    @Transient
+    public String contentJson;
+    @Transient
+    public String contentSubtypeJson;
 
     @Generated(hash = 1307660412)
     public PaperTypeBean(Long id, long studentId, long userId, String name, int typeId, String course, long date,

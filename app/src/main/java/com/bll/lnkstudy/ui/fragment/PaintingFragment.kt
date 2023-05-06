@@ -27,7 +27,7 @@ import java.io.File
  */
 class PaintingFragment : BaseFragment(){
 
-    private var typeId = 1//类型
+    private var typeId = 0//类型
     private val halfYear=180*24*60*60*1000
     private var isLocalDrawing=false
 
@@ -100,15 +100,15 @@ class PaintingFragment : BaseFragment(){
             rg_group.addView(getRadioButton(i, tabStrs[i], 3))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            typeId = id+1
+            typeId = id
         }
     }
 
     private fun onClick(time: Int) {
         val intent = Intent(activity, PaintingListActivity::class.java)
-        intent.putExtra("title", "${getString(DataBeanManager.dynastys[time])}   ${DataBeanManager.PAINTING[typeId]}")
+        intent.putExtra("title", "${getString(DataBeanManager.dynastys[time-1])}   ${DataBeanManager.PAINTING[typeId]}")
         intent.putExtra("time", time)
-        intent.putExtra("paintingType", typeId)
+        intent.putExtra("paintingType", typeId+1)
         intent.flags = 0
         customStartActivity(intent)
     }
@@ -197,7 +197,8 @@ class PaintingFragment : BaseFragment(){
                     ids.add(item.cloudId)
                 }
             }
-            mCloudUploadPresenter.deleteCloud(ids)
+            if (ids.size>0)
+                mCloudUploadPresenter.deleteCloud(ids)
             //删除所有本地画本、书法分类
             PaintingTypeDaoManager.getInstance().clear()
             //删除所有本地画本、书法内容

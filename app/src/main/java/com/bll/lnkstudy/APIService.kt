@@ -74,6 +74,11 @@ interface APIService{
     @POST("accounts/changeGrade")
     fun editGrade(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改学校信息
+     */
+    @POST("accounts/changeAddress")
+    fun editSchool(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 退出登录 "/accounts/logout"
      */
     @POST("accounts/logout")

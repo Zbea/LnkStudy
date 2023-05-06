@@ -47,6 +47,24 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
 
     }
 
+    fun editSchool(map: HashMap<String,Any>) {
+
+        val body = RequestUtils.getBody(map)
+
+        val editName = RetrofitManager.service.editSchool(body)
+
+        doRequest(editName, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditSchoolSuccess()
+            }
+
+        }, true)
+
+    }
+
     fun logout() {
 
         val logout = RetrofitManager.service.logout()

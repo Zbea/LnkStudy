@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.dialog
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.View
@@ -17,7 +16,6 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null
 
-    @SuppressLint("SetTextI18n")
     fun builder(): Dialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_book_detail)
@@ -52,6 +50,9 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
         }
 
         if (book.loadSate==2)
+            btn_ok?.visibility= View.GONE
+
+        if (book.textBookType=="我的课本")
             btn_ok?.visibility= View.GONE
 
         iv_cancel?.setOnClickListener { dialog?.dismiss() }

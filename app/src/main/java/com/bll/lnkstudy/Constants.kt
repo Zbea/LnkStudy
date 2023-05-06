@@ -91,6 +91,8 @@ class Constants{
         const val VIDEO_EVENT = "VideoEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
+        const val USER_EVENT = "UserEvent"
+        const val CONTROL_CLEAR_EVENT = "ControlClearEvent"
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

@@ -35,12 +35,12 @@ class PopupList(var context:Context, var list:MutableList<PopupBean>, var view: 
             }
         }
 
-        var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
+        val rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
+        val mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        mAdapter.bindToRecyclerView(rvList)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             for (item in list)
             {
                 item.isCheck=false

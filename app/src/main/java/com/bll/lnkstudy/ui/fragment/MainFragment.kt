@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.Constants.Companion.CONTROL_MESSAGE_EVENT
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
@@ -26,12 +25,10 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
-import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
-import com.bll.lnkstudy.mvp.view.IContractView.IControlMessageView
 import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
@@ -47,8 +44,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -57,9 +52,8 @@ import java.util.*
 /**
  * 首页
  */
-class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView,ICommonView,IControlMessageView {
+class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView,ICommonView{
 
-    private val mControlMessagePresenter=ControlMessagePresenter(this)
     private val mMainPresenter = MainPresenter(this)
     private val mMessagePresenter=MessagePresenter(this)
     private val mCommonPresenter=CommonPresenter(this)
@@ -74,31 +68,21 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
 
-    override fun onControl(controlMessages: MutableList<ControlMessage>) {
-        //发送全局老师控制删除
-        if (controlMessages.size>0){
-            EventBus.getDefault().post(CONTROL_MESSAGE_EVENT)
-            val list= mutableListOf<Int>()
-            for (item in controlMessages){
-                list.add(item.id)
-            }
-            mControlMessagePresenter.deleteControlMessage(list)
-        }
-    }
-    override fun onDelete() {
-    }
-
     override fun onList(message: Message) {
-        messages=message.list
-        mMessageAdapter?.setNewData(messages)
+        if (message.list.isNotEmpty()){
+            messages=message.list
+            mMessageAdapter?.setNewData(messages)
+        }
     }
     override fun onCommitSuccess() {
     }
 
 
     override fun onList(commonData: CommonData) {
-        DataBeanManager.grades=commonData.grade
-        DataBeanManager.courses=commonData.subject
+        if (commonData.grade.isNotEmpty())
+            DataBeanManager.grades=commonData.grade
+        if (commonData.subject.isNotEmpty())
+            DataBeanManager.courses=commonData.subject
     }
 
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
@@ -125,7 +109,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     }
 
     override fun initView() {
-        EventBus.getDefault().register(this)
         setTitle(R.string.main_home_title)
 
         onClickView()
@@ -141,7 +124,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
     override fun lazyLoad() {
         mMainPresenter.getClassGroupList(false)
-        mControlMessagePresenter.getControlMessage()
         mCommonPresenter.getCommon()
         findMessages()
         fetchExam()
@@ -261,6 +243,11 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
                 positionPaper = position
                 val paper = examPapers[positionPaper]
                 val files = FileUtils.getFiles(paper.path)
+                if (files==null){
+                    showLoading()
+                    loadPapers()
+                    return@setOnItemClickListener
+                }
                 val paths = mutableListOf<String>()
                 for (file in files) {
                     paths.add(file.path)
@@ -363,9 +350,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         }
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             DATE_EVENT -> {
                 findDateList()
@@ -388,16 +373,9 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         }
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
-    override fun refreshData() {
+    override fun onRefreshData() {
+        super.onRefreshData()
         lazyLoad()
     }
-
-
 
 }

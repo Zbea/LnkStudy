@@ -1,5 +1,6 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.homework;
 
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -8,6 +9,8 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
@@ -19,7 +22,8 @@ public class RecordBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public int typeId;
     public String title;
     public long date;
     public String path;
@@ -27,11 +31,13 @@ public class RecordBean implements Serializable {
     public boolean isCommit;
     @Transient
     public int state=0;//播放状态
-    @Generated(hash = 262905601)
-    public RecordBean(Long id, long userId, String title, long date, String path,
+
+    @Generated(hash = 1731123405)
+    public RecordBean(Long id, long userId, int typeId, String title, long date, String path,
             String course, boolean isCommit) {
         this.id = id;
         this.userId = userId;
+        this.typeId = typeId;
         this.title = title;
         this.date = date;
         this.path = path;
@@ -82,6 +88,12 @@ public class RecordBean implements Serializable {
     }
     public void setIsCommit(boolean isCommit) {
         this.isCommit = isCommit;
+    }
+    public int getTypeId() {
+        return this.typeId;
+    }
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
     
 }

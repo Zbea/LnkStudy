@@ -152,6 +152,8 @@
     <string name="scan_code_pay_str">请扫描二维码支付</string>
     <string name="buy_xd_str">购买学豆</string>
     <string name="buy_pay_type">支付方式</string>
+    <string name="school_message">学校信息</string>
+    <string name="edit_school_message">修改学校</string>
 
     <string name="main_bookcase_title">书架</string>
     <string name="main_textbook_title">课本</string>
@@ -249,6 +251,7 @@
     <string name="book_decompression_fail">解压失败</string>
     <string name="book_download_str">点击下载</string>
     <string name="book_buy_str">点击购买</string>
+    <string name="book_is_delete_all_textbook">确定删除全部课本？</string>
 
     <string name="note_manage_str">笔记本管理</string>
     <string name="notebook_create_str">新建笔记本</string>
@@ -276,6 +279,8 @@
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
 
+    <string name="homework_receiver_reel">收到题卷</string>
+    <string name="homework_receiver_message">收到通知</string>
     <string name="homework_create_str">新建作业本</string>
     <string name="homework_create_hint">输入作业本标题</string>
     <string name="homework_commit_details_str">提交详情</string>

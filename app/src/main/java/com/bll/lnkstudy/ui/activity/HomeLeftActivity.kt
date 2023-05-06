@@ -9,10 +9,12 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.MainList
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IQiniuView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
+import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -50,6 +52,10 @@ open class HomeLeftActivity : BaseAppCompatActivity(),IQiniuView {
             }
             Constants.CONTROL_MESSAGE_EVENT->{
                 textbookFragment?.uploadTextBook(token)
+            }
+            Constants.CONTROL_CLEAR_EVENT->{
+                paperFragment?.uploadPaper(token)
+                homeworkFragment?.upload(token)
             }
         }
 
@@ -159,13 +165,17 @@ open class HomeLeftActivity : BaseAppCompatActivity(),IQiniuView {
                 eventType=Constants.CONTROL_MESSAGE_EVENT
                 mQiniuPresenter.getToken()
             }
+            Constants.CONTROL_CLEAR_EVENT -> {
+                eventType=Constants.CONTROL_CLEAR_EVENT
+                mQiniuPresenter.getToken()
+            }
+            Constants.USER_EVENT->{
+                mUser= SPUtil.getObj("user", User::class.java)
+            }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
+
 
 
 }

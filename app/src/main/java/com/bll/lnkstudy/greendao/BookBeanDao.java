@@ -27,9 +27,9 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property BookId = new Property(2, int.class, "bookId", false, "BOOK_ID");
-        public final static Property ImageUrl = new Property(3, String.class, "imageUrl", false, "IMAGE_URL");
-        public final static Property SubjectName = new Property(4, String.class, "subjectName", false, "SUBJECT_NAME");
-        public final static Property CreatedAt = new Property(5, String.class, "createdAt", false, "CREATED_AT");
+        public final static Property BookPlusId = new Property(3, int.class, "bookPlusId", false, "BOOK_PLUS_ID");
+        public final static Property ImageUrl = new Property(4, String.class, "imageUrl", false, "IMAGE_URL");
+        public final static Property SubjectName = new Property(5, String.class, "subjectName", false, "SUBJECT_NAME");
         public final static Property BookDesc = new Property(6, String.class, "bookDesc", false, "BOOK_DESC");
         public final static Property Semester = new Property(7, String.class, "semester", false, "SEMESTER");
         public final static Property Area = new Property(8, String.class, "area", false, "AREA");
@@ -72,10 +72,10 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"BOOK_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"BOOK_ID\" INTEGER NOT NULL UNIQUE ," + // 2: bookId
-                "\"IMAGE_URL\" TEXT," + // 3: imageUrl
-                "\"SUBJECT_NAME\" TEXT," + // 4: subjectName
-                "\"CREATED_AT\" TEXT," + // 5: createdAt
+                "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
+                "\"BOOK_PLUS_ID\" INTEGER NOT NULL ," + // 3: bookPlusId
+                "\"IMAGE_URL\" TEXT," + // 4: imageUrl
+                "\"SUBJECT_NAME\" TEXT," + // 5: subjectName
                 "\"BOOK_DESC\" TEXT," + // 6: bookDesc
                 "\"SEMESTER\" TEXT," + // 7: semester
                 "\"AREA\" TEXT," + // 8: area
@@ -119,20 +119,16 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getBookId());
+        stmt.bindLong(4, entity.getBookPlusId());
  
         String imageUrl = entity.getImageUrl();
         if (imageUrl != null) {
-            stmt.bindString(4, imageUrl);
+            stmt.bindString(5, imageUrl);
         }
  
         String subjectName = entity.getSubjectName();
         if (subjectName != null) {
-            stmt.bindString(5, subjectName);
-        }
- 
-        String createdAt = entity.getCreatedAt();
-        if (createdAt != null) {
-            stmt.bindString(6, createdAt);
+            stmt.bindString(6, subjectName);
         }
  
         String bookDesc = entity.getBookDesc();
@@ -235,20 +231,16 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getBookId());
+        stmt.bindLong(4, entity.getBookPlusId());
  
         String imageUrl = entity.getImageUrl();
         if (imageUrl != null) {
-            stmt.bindString(4, imageUrl);
+            stmt.bindString(5, imageUrl);
         }
  
         String subjectName = entity.getSubjectName();
         if (subjectName != null) {
-            stmt.bindString(5, subjectName);
-        }
- 
-        String createdAt = entity.getCreatedAt();
-        if (createdAt != null) {
-            stmt.bindString(6, createdAt);
+            stmt.bindString(6, subjectName);
         }
  
         String bookDesc = entity.getBookDesc();
@@ -352,9 +344,9 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // bookId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // imageUrl
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // subjectName
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // createdAt
+            cursor.getInt(offset + 3), // bookPlusId
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // imageUrl
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // subjectName
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bookDesc
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // semester
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // area
@@ -389,9 +381,9 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setBookId(cursor.getInt(offset + 2));
-        entity.setImageUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setSubjectName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setCreatedAt(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setBookPlusId(cursor.getInt(offset + 3));
+        entity.setImageUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setSubjectName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setBookDesc(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setSemester(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setArea(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));

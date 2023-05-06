@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.manager;
 
 
-import com.bll.lnkstudy.DataBeanManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -67,8 +66,15 @@ public class BookGreenDaoManager {
 
 
     //根据bookId 查询书籍
-    public BookBean queryBookByBookID(int bookID) {
+    public BookBean queryTextBookByID(int bookID) {
         WhereCondition whereCondition= BookBeanDao.Properties.BookId.eq(bookID);
+        BookBean queryBook = bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
+        return queryBook;
+    }
+
+    //根据bookId 查询书籍
+    public BookBean queryBookByID(int bookID) {
+        WhereCondition whereCondition= BookBeanDao.Properties.BookPlusId.eq(bookID);
         BookBean queryBook = bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
         return queryBook;
     }

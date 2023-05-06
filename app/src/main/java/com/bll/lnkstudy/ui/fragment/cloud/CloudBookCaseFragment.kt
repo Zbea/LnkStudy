@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.ui.adapter.BookAdapter
+import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.fragment_painting.*
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_textbook.*
 
 class CloudBookCaseFragment:BaseFragment() {
 
-    private var mAdapter:BookAdapter?=null
+    private var mAdapter:TextBookAdapter?=null
     private var bookTypeStr=""
 
     override fun getLayoutId(): Int {
@@ -52,7 +52,7 @@ class CloudBookCaseFragment:BaseFragment() {
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_textbook, null).apply {
+        mAdapter = TextBookAdapter(R.layout.item_textbook, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)

@@ -13,15 +13,11 @@ import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.ui.activity.BookCaseTypeListActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import java.io.File
 
 /**
  * 书架
@@ -38,9 +34,6 @@ class BookCaseFragment: BaseFragment() {
     }
 
     override fun initView() {
-
-        EventBus.getDefault().register(this)
-
         setTitle(R.string.main_bookcase_title)
 
         initRecyclerView()
@@ -48,12 +41,6 @@ class BookCaseFragment: BaseFragment() {
 
         tv_type.setOnClickListener {
             customStartActivity(Intent(activity,BookCaseTypeListActivity::class.java))
-        }
-
-        ll_book_top.setOnClickListener {
-            if (books.size>0){
-
-            }
         }
 
     }
@@ -149,28 +136,17 @@ class BookCaseFragment: BaseFragment() {
             }
             override fun ok() {
                 BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
                 books.remove(book)
                 mAdapter?.notifyDataSetChanged()
                 EventBus.getDefault().post(BOOK_EVENT)
-
             }
         })
     }
 
-
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==BOOK_EVENT){
             findData()
         }
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
     }
 
 }

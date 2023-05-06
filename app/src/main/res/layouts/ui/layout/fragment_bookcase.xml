@@ -49,6 +49,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:padding="2dp"
+            android:scaleType="fitXY"
             app:radius="6dp"/>
 
         <RelativeLayout
@@ -62,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="2dp"
+                android:scaleType="fitXY"
                 app:radius="6dp" />
 
             <TextView

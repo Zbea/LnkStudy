@@ -10,11 +10,9 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.manager.PaperContentDaoManager
-import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkReel
@@ -25,17 +23,13 @@ import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ImageDownLoadUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 
@@ -60,7 +54,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!)
                 item.course = mCourse
                 item.bgResId = getHomeworkCoverStr() //当前作业本背景样式id
-                item.date = System.currentTimeMillis()
                 if (!isSaveHomework(item)) {
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                 }
@@ -85,11 +78,11 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         mAdapter?.notifyDataSetChanged()
     }
 
-    override fun onListReel(reel: HomeworkReel) {
-        val reels= reel.list
-        if (reel.list.isNullOrEmpty()) return
+    override fun onListReel(homeworkReel: HomeworkReel) {
+        val reels= homeworkReel.list
+        if (homeworkReel.list.isNullOrEmpty()) return
         for (item in homeworkTypes) {
-            if (item.typeId == reel.typeId) {
+            if (item.typeId == homeworkReel.typeId) {
                 //遍历查询
                 for (reel in reels) {
                     if (reel.sendStatus==2){
@@ -103,7 +96,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         }
         mAdapter?.notifyDataSetChanged()
 
-        if (reel.subType==1){
+        if (homeworkReel.subType==1){
             loadReelImage(reels)
         }
         else{
@@ -129,7 +122,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     }
 
     override fun initView() {
-        EventBus.getDefault().register(this)
         setTitle(R.string.main_homework_title)
         showView(iv_manager)
 
@@ -465,21 +457,140 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         }
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    fun onMessageEvent(msgFlag: String) {
-        if (msgFlag == Constants.COURSE_EVENT) {
-            //刷新科目
+    /**
+     * 上传
+     */
+    fun upload(token:String){
+        if (grade==0) return
+        val cloudList= mutableListOf<CloudListBean>()
+        for(classGroup in DataBeanManager.classGroups){
+            val types=HomeworkTypeDaoManager.getInstance().queryAllByCourse(classGroup.subject)
+            for (type in types){
+                when(type.state){
+                    1->{
+                        val homeworkReels=PaperDaoManager.getInstance().queryAll(0,type.course,type.typeId)
+                        val homeworkContents=PaperContentDaoManager.getInstance().queryAll(0,type.course,type.typeId)
+                        if (homeworkReels.size>0){
+                            val path=FileAddress().getPathHomework(type.course,type.typeId)
+                            FileUploadManager(token).apply {
+                                startUpload(path,type.name)
+                                setCallBack{
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type=2
+                                        subType=1
+                                        subTypeStr=type.course
+                                        date=type.date
+                                        grade=type.grade
+                                        listJson=Gson().toJson(type)
+                                        contentJson= Gson().toJson(homeworkReels)
+                                        contentSubtypeJson=Gson().toJson(homeworkContents)
+                                        downloadUrl=it
+                                    })
+                                    startUpload(cloudList)
+                                }
+                            }
+                        }
+                        else{
+                            cloudList.add(CloudListBean().apply {
+                                this.type=2
+                                subType=1
+                                subTypeStr=type.course
+                                date=type.date
+                                grade=type.grade
+                                listJson= Gson().toJson(type)
+                                downloadUrl="null"
+                            })
+                            startUpload(cloudList)
+                        }
+                    }
+                    2->{
+                        val homeworks=HomeworkContentDaoManager.getInstance().queryAllByType(type.course,type.typeId)
+                        if (homeworks.size>0){
+                            val path=FileAddress().getPathHomework(type.course,type.typeId)
+                            FileUploadManager(token).apply {
+                                startUpload(path,type.name)
+                                setCallBack{
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type=2
+                                        subType=2
+                                        subTypeStr=type.course
+                                        date=type.date
+                                        grade=type.grade
+                                        listJson=Gson().toJson(type)
+                                        contentJson= Gson().toJson(homeworks)
+                                        downloadUrl=it
+                                    })
+                                    startUpload(cloudList)
+                                }
+                            }
+
+                        }else{
+                            cloudList.add(CloudListBean().apply {
+                                this.type=2
+                                subType=2
+                                subTypeStr=type.course
+                                date=type.date
+                                grade=type.grade
+                                listJson= Gson().toJson(type)
+                                downloadUrl="null"
+                            })
+                            startUpload(cloudList)
+                        }
+                    }
+                    3->{
+                        val records=RecordDaoManager.getInstance().queryAllByCourse(type.course,type.typeId)
+                        if (records.size>0){
+                            val path=FileAddress().getPathRecord(type.course,type.typeId)
+                            FileUploadManager(token).apply {
+                                startUpload(path,type.name)
+                                setCallBack{
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type=2
+                                        subType=3
+                                        subTypeStr=type.course
+                                        date=type.date
+                                        grade=type.grade
+                                        listJson=Gson().toJson(type)
+                                        contentJson= Gson().toJson(records)
+                                        downloadUrl=it
+                                    })
+                                    startUpload(cloudList)
+                                }
+                            }
+                        }
+                        else{
+                            cloudList.add(CloudListBean().apply {
+                                this.type=2
+                                subType=3
+                                subTypeStr=type.course
+                                date=type.date
+                                grade=type.grade
+                                listJson= Gson().toJson(type)
+                                downloadUrl="null"
+                            })
+                            startUpload(cloudList)
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun startUpload(list:MutableList<CloudListBean>){
+        if (list.size==HomeworkTypeDaoManager.getInstance().queryAll().size)
+            mCloudUploadPresenter.upload(list)
+    }
+
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.COURSE_EVENT){
             initTab()
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
-    override fun refreshData() {
+    override fun onRefreshData() {
+        super.onRefreshData()
         fetchData()
         fetchMessage()
     }
@@ -525,6 +636,39 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             map["subType"] = item.state
             mPresenter.getReelList(map)
         }
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        val ids= mutableListOf<Int>()
+        val types=HomeworkTypeDaoManager.getInstance().queryAll()
+        for (type in types){
+            if (type.isCloud)
+                ids.add(type.cloudId)
+        }
+        if (ids.size>0)
+            mCloudUploadPresenter.deleteCloud(ids)
+
+        //删除所有作业分类
+        HomeworkTypeDaoManager.getInstance().clear()
+        homeworkTypes.clear()
+        mAdapter?.notifyDataSetChanged()
+        //删除所有作业
+        HomeworkContentDaoManager.getInstance().clear()
+        //删除所有朗读
+        RecordDaoManager.getInstance().clear()
+        //删除所有作业卷内容
+        PaperDaoManager.getInstance().deleteAllByType(0)
+        PaperContentDaoManager.getInstance().deleteAllByType(0)
+
+        FileUtils.deleteFile(File(Constants.RECORD_PATH))
+        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
+
+        //升年级
+        mUser?.grade=grade+1
+        SPUtil.putObj("user", mUser!!)
+        EventBus.getDefault().post(Constants.USER_EVENT)
+        mControlMessagePresenter.editGrade(mUser?.grade!!)
     }
 
 }

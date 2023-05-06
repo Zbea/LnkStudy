@@ -79,7 +79,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
         val tokenStr=SPUtil.getString("token")
 
-        if (!tokenStr.isNullOrEmpty() && mUser!=null)
+        if (tokenStr.isNotEmpty() && mUser!=null)
         {
             val intent=Intent(this,MainActivity::class.java)
             intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)

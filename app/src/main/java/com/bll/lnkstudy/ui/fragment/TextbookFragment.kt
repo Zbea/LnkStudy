@@ -11,7 +11,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.ui.adapter.BookAdapter
+import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -20,18 +20,14 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_painting.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
  * 课本
  */
-class TextbookFragment : BaseFragment(){
+class TextbookFragment : BaseFragment() {
 
-
-    private var mAdapter: BookAdapter?=null
+    private var mAdapter: TextBookAdapter?=null
     private var books= mutableListOf<BookBean>()
     private var typeId=0
     private var textBook=""//用来区分课本类型
@@ -44,7 +40,6 @@ class TextbookFragment : BaseFragment(){
 
     override fun initView() {
         pageSize=9
-        EventBus.getDefault().register(this)
         setTitle(R.string.main_textbook_title)
 
         initTab()
@@ -72,7 +67,7 @@ class TextbookFragment : BaseFragment(){
     }
 
     private fun initRecyclerView(){
-        mAdapter = BookAdapter(R.layout.item_textbook, null).apply {
+        mAdapter = TextBookAdapter(R.layout.item_textbook, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
@@ -82,7 +77,21 @@ class TextbookFragment : BaseFragment(){
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position
-                onLongClick()
+                if (typeId==0){
+                    CommonDialog(requireActivity()).setContent(R.string.book_is_delete_all_textbook).builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                BookGreenDaoManager.getInstance().deleteBooks(books)
+                                books.clear()
+                                mAdapter?.notifyDataSetChanged()
+                            }
+                        })
+                }
+                else{
+                    onLongClick()
+                }
                 true
             }
         }
@@ -223,17 +232,10 @@ class TextbookFragment : BaseFragment(){
         }
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==TEXT_BOOK_EVENT){
             fetchData()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
     }
 
     override fun fetchData() {

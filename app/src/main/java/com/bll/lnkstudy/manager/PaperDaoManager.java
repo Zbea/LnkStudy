@@ -87,4 +87,11 @@ public class PaperDaoManager {
     }
 
 
+    public void deleteAllByType(int type){
+        WhereCondition whereCondition1= PaperBeanDao.Properties.Type.eq(type);
+        List<PaperBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+        dao.deleteInTx(queryList);
+    }
+
+
 }

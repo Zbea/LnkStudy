@@ -47,7 +47,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
     override fun initData() {
         val id = intent.getIntExtra("book_id", 0)
-        book = BookGreenDaoManager.getInstance().queryBookByBookID(id)
+        book = BookGreenDaoManager.getInstance().queryTextBookByID(id)
         if (book == null) return
         page = book?.pageIndex!!
         val cataLogFilePath = FileAddress().getPathTextBookCatalog(book?.bookPath!!)

@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.common_title.*
 /**
  * 云存储
  */
-class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
+class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
 
     private var mCommonPresenter= CommonPresenter(this)
 
@@ -93,7 +93,7 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
         switchFragment(lastFragment, bookcaseFragment)
 
         mHomeAdapter = MainListAdapter(R.layout.item_main_list, mData).apply {
-            rv_list.layoutManager = LinearLayoutManager(this@BookCollectActivity)//创建布局管理
+            rv_list.layoutManager = LinearLayoutManager(this@CloudStorageActivity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
@@ -202,9 +202,11 @@ class BookCollectActivity: BaseAppCompatActivity() ,ICommonView{
      * 刷新各个fragment年级
      */
     private fun changeGrade(grade: Int){
+        paperFragment?.changeGrade(grade)
         textbookFragment?.changeGrade(grade)
         noteFragment?.changeGrade(grade)
         paintingFragment?.changeGrade(grade)
+        homeworkFragment?.changeGrade(grade)
     }
 
 

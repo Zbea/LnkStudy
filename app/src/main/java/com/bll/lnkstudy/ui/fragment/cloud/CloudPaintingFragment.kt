@@ -16,7 +16,7 @@ import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.ui.activity.BookCollectActivity
+import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.utils.*
@@ -71,13 +71,13 @@ class CloudPaintingFragment : BaseCloudFragment() {
                     pageSize=6
                     showView(rv_list)
                     disMissView(rv_local)
-                    (activity as BookCollectActivity).showDynastyView()
+                    (activity as CloudStorageActivity).showDynastyView()
                 }
                 else -> {
                     pageSize=9
                     showView(rv_local)
                     disMissView(rv_list)
-                    (activity as BookCollectActivity).closeDynastyView()
+                    (activity as CloudStorageActivity).closeDynastyView()
                 }
             }
             pageIndex = 1
