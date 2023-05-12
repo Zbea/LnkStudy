@@ -14,7 +14,9 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -23,13 +25,16 @@ import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadView{
 
@@ -180,24 +185,35 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
 
     private fun setSetting(view : View){
+        //修改增量更新
+        val dataUpdateBean=DataUpdateDaoManager.getInstance().queryBean(2,1,recordBeans[position].id.toInt())
         PopupClick(this,pops,view,5).builder().setOnSelectListener{
             if (it.id == 0) {
-                edit(recordBeans[position].title)
+                edit(recordBeans[position],dataUpdateBean)
             }
             if (it.id == 0) {
                 delete()
+                DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean.apply {
+                    isDelete=true
+                    date=System.currentTimeMillis()
+                })
             }
         }
 
     }
 
     //修改笔记
-    private fun edit(content:String){
-        InputContentDialog(this,getCurrentScreenPos(),content).builder()?.setOnDialogClickListener { string ->
+    private fun edit(item:RecordBean,dataUpdateBean:DataUpdateBean){
+        InputContentDialog(this,getCurrentScreenPos(),item.title).builder()?.setOnDialogClickListener { string ->
+            item.title=string
             recordBeans[position].title = string
             mAdapter?.notifyDataSetChanged()
-            RecordDaoManager.getInstance()
-                .insertOrReplace(recordBeans[position])
+            RecordDaoManager.getInstance().insertOrReplace(recordBeans[position])
+            //修改本地增量更新
+            DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean.apply {
+                listJson=Gson().toJson(item)
+                date=System.currentTimeMillis()
+            })
         }
     }
 
@@ -212,6 +228,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                     recordBeans.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
                     RecordDaoManager.getInstance().deleteBean(item)
+                    FileUtils.deleteFile(File(item.path))
                 }
 
             })

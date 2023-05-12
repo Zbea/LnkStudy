@@ -6,14 +6,16 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
-import android.view.View
+import android.view.KeyEvent
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
@@ -23,6 +25,7 @@ import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
@@ -31,11 +34,9 @@ import java.io.File
 /**
  * 考卷考试页面
  */
-class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
-    ,IContractView.IFileUploadView{
+class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView{
 
     private val mUploadPresenter=FileUploadPresenter(this)
-    private var type=1//1考卷0作业
     private var course=""
     private var commonTypeId=0
     private var daoManager: PaperDaoManager?=null
@@ -84,8 +85,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
         daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
-        papers= daoManager?.queryAll(type,course,commonTypeId) as MutableList<PaperBean>
-        paperContents= daoContentManager?.queryAll(type,course,commonTypeId) as MutableList<PaperContentBean>
+        papers= daoManager?.queryAll(course,commonTypeId) as MutableList<PaperBean>
+        paperContents= daoContentManager?.queryAll(course,commonTypeId) as MutableList<PaperContentBean>
 
         for (i in 0 until paths.size){
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
@@ -98,26 +99,14 @@ class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
         showView(iv_geometry)
         setViewElikUnable(iv_geometry)
 
-        iv_btn.setOnClickListener(this)
-        btn_page_up.setOnClickListener(this)
-        btn_page_down.setOnClickListener(this)
-
         changeExpandView()
 
         tv_title_a.text=exam?.title
 
         changeContent()
-    }
 
-    //单屏、全屏内容切换
-    private fun changeExpandView(){
-        showView(v_content_a,ll_page_content_a,v_empty)
-        disMissView(iv_expand,iv_tool_left,iv_tool_right)
-    }
-
-    override fun onClick(view: View?) {
-        if (view == iv_btn) {
-            CommonDialog(this).setContent(R.string.toast_commit_ok).setDialogClickListener(
+        iv_btn.setOnClickListener {
+            CommonDialog(this,getCurrentScreenPos()).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
@@ -127,34 +116,40 @@ class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
                     }
                 })
         }
+    }
 
-        if (view == btn_page_up) {
-            if (isExpand){
-                if (page>1){
-                    page-=2
-                }
-            }
-            else{
-                if (page>0){
-                    page-=1
-                }
-            }
-            changeContent()
-        }
-        if (view == btn_page_down) {
-            if (isExpand){
-                if (page+2<pageCount){
-                    page+=2
-                }
-            }
-            else{
-                if (page+1<pageCount){
-                    page+=1
-                }
-            }
-            changeContent()
-        }
+    //单屏、全屏内容切换
+    private fun changeExpandView(){
+        showView(v_content_a,ll_page_content_a,v_empty)
+        disMissView(iv_expand,iv_tool_left,iv_tool_right)
+    }
 
+    override fun onPageDown() {
+        if (isExpand){
+            if (page+2<pageCount){
+                page+=2
+            }
+        }
+        else{
+            if (page+1<pageCount){
+                page+=1
+            }
+        }
+        changeContent()
+    }
+
+    override fun onPageUp() {
+        if (isExpand){
+            if (page>1){
+                page-=2
+            }
+        }
+        else{
+            if (page>0){
+                page-=1
+            }
+        }
+        changeContent()
     }
 
 
@@ -187,37 +182,48 @@ class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
         //保存本次考试
         val paper= PaperBean().apply {
             contentId=exam?.id!!
-            type=this@PaperExamDrawingActivity.type
             course=this@PaperExamDrawingActivity.course
-            categoryId=this@PaperExamDrawingActivity.commonTypeId
-            category=exam?.examName
+            typeId=this@PaperExamDrawingActivity.commonTypeId
+            type=exam?.examName
             title=exam?.title
             path=exam?.path
             page=paperContents.size
             index=papers.size
-            state=1
-            createDate=exam?.date!!*1000
-            images= exam?.imageUrl?.split(",")?.toTypedArray().toString()
         }
         daoManager?.insertOrReplace(paper)
+        //创建增量数据
+        DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
+            type=3
+            uid=exam?.id!!
+            contentType=2
+            date=System.currentTimeMillis()
+            listJson= Gson().toJson(paper)
+        })
 
         for (i in paths.indices){
             //合图完毕之后删除 手写
             FileUtils.deleteFile(File("$outImageStr/${i+1}/"))
-
             //保存本次考试的试卷内容
             val paperContent= PaperContentBean()
                 .apply {
-                    type=this@PaperExamDrawingActivity.type
                     course=this@PaperExamDrawingActivity.course
-                    categoryId=this@PaperExamDrawingActivity.commonTypeId
+                    typeId=this@PaperExamDrawingActivity.commonTypeId
                     contentId=paper.contentId
                     path=paths[i]
                     drawPath=drawPaths[i]
-                    date=exam?.date!!*1000
                     page=paperContents.size+i
                 }
             daoContentManager?.insertOrReplace(paperContent)
+
+            //创建增量数据
+            DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
+                type=3
+                uid=exam?.id!!
+                contentType=1
+                date=System.currentTimeMillis()
+                listJson= Gson().toJson(paperContent)
+                path=paths[i]
+            })
         }
     }
 
@@ -266,6 +272,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(), View.OnClickListener
     override fun onBackPressed() {
     }
 
-
+    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
+        return false
+    }
 
 }

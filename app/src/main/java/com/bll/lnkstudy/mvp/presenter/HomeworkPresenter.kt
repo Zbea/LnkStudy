@@ -4,7 +4,7 @@ import android.util.Pair
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.homework.HomeworkReel
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkType
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
@@ -51,11 +51,11 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
      */
     fun getReelList(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getHomeworkReel(map)
-        doRequest(type, object : Callback<HomeworkReel>(view) {
-            override fun failed(tBaseResult: BaseResult<HomeworkReel>): Boolean {
+        doRequest(type, object : Callback<HomeworkPaperList>(view) {
+            override fun failed(tBaseResult: BaseResult<HomeworkPaperList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<HomeworkReel>) {
+            override fun success(tBaseResult: BaseResult<HomeworkPaperList>) {
                 if (tBaseResult.data!=null)
                     view.onListReel(tBaseResult.data)
             }

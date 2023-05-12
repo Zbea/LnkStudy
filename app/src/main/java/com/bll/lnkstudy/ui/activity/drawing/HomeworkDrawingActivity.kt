@@ -12,7 +12,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
+import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
@@ -21,6 +23,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
@@ -59,6 +62,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             homework.title=homeworkCommit?.title
             homework.contentId=homeworkCommit?.messageId!!
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
+            //更新增量更新
+            val dataUpdateBean=DataUpdateDaoManager.getInstance().queryBean(2,1,homework.id.toInt())
+            dataUpdateBean.date=System.currentTimeMillis()
+            dataUpdateBean.listJson=Gson().toJson(homework)
+            dataUpdateBean.path=homework.filePath
+            DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean)
         }
         finish()
     }
@@ -95,56 +104,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
     override fun initView() {
         changeContent()
 
-        btn_page_down.setOnClickListener {
-            val total=homeworks.size-1
-            if(isExpand){
-                when(page){
-                    total->{
-                        newHomeWorkContent()
-                        newHomeWorkContent()
-                        page=total
-                    }
-                    total-1->{
-                        newHomeWorkContent()
-                        page=total
-                    }
-                    else->{
-                        page+=2
-                    }
-                }
-            }
-            else{
-                when(page){
-                    total->{
-                        newHomeWorkContent()
-                    }
-                    else->{
-                        page += 1
-                    }
-                }
-            }
-            changeContent()
-        }
-
-        btn_page_up.setOnClickListener {
-            if(isExpand){
-                if (page>2){
-                    page-=2
-                    changeContent()
-                }
-                else if (page==2){//当页面不够翻两页时
-                    page=1
-                    changeContent()
-                }
-            }else{
-                if (page>0){
-                    page-=1
-                    changeContent()
-                }
-            }
-
-        }
-
         iv_catalog.setOnClickListener {
             showCatalog()
         }
@@ -153,13 +112,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             if (homeworks.size==1){
                 newHomeWorkContent()
             }
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_a.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_b.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
 
         iv_btn.setOnClickListener {
@@ -168,11 +127,56 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
     }
 
+    override fun onPageUp() {
+        if(isExpand){
+            if (page>2){
+                page-=2
+                changeContent()
+            }
+            else if (page==2){//当页面不够翻两页时
+                page=1
+                changeContent()
+            }
+        }else{
+            if (page>0){
+                page-=1
+                changeContent()
+            }
+        }
+    }
 
-    /**
-     * 切换屏幕
-     */
-    private fun changeExpandContent(){
+    override fun onPageDown() {
+        val total=homeworks.size-1
+        if(isExpand){
+            when(page){
+                total->{
+                    newHomeWorkContent()
+                    newHomeWorkContent()
+                    page=total
+                }
+                total-1->{
+                    newHomeWorkContent()
+                    page=total
+                }
+                else->{
+                    page+=2
+                }
+            }
+        }
+        else{
+            when(page){
+                total->{
+                    newHomeWorkContent()
+                }
+                else->{
+                    page += 1
+                }
+            }
+        }
+        changeContent()
+    }
+
+    override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
@@ -254,7 +258,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         //已提交后不能手写，显示合图后的图片
         elik_b?.setPWEnabled(homeworkContent?.state==0)
         if (homeworkContent?.state==0){
-            updateImage(elik_b!!, homeworkContent?.filePath!!)
+            updateImage(elik_b!!, homeworkContent!!)
             v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
         }
         else{
@@ -266,7 +270,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             if (homeworkContent_a != null) {
                 elik_a?.setPWEnabled(homeworkContent_a?.state==0)
                 if (homeworkContent_a?.state==0){
-                    updateImage(elik_a!!, homeworkContent_a?.filePath!!)
+                    updateImage(elik_a!!, homeworkContent_a!!)
                     v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
                 }
                 else{
@@ -279,8 +283,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
     }
 
     //保存绘图以及更新手绘
-    private fun updateImage(elik: EinkPWInterface, path: String) {
-        elik.setLoadFilePath(path.replace("png","tch"), true)
+    private fun updateImage(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
+        elik.setLoadFilePath(homeworkContent.filePath.replace("png","tch"), true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
@@ -290,6 +294,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
+                //更新增量更新
+                val dataUpdateBean=DataUpdateDaoManager.getInstance().queryBean(2,1,homeworkContent.id.toInt())
+                dataUpdateBean.date=System.currentTimeMillis()
+                DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean)
             }
 
         })
@@ -318,11 +326,19 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
         page = homeworks.size
 
-        HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-        val id=HomeworkContentDaoManager.getInstance().insertId
+        val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContent)
         homeworkContent?.id=id
-
         homeworks.add(homeworkContent!!)
+
+        //创建增量数据
+        DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
+            type=2
+            uid=id.toInt()
+            contentType=1
+            date=System.currentTimeMillis()
+            listJson= Gson().toJson(homeworkContent)
+            this.path= homeworkContent?.folderPath!!
+        })
     }
 
 
@@ -371,7 +387,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
    override fun changeScreenPage() {
         if (isExpand){
-            changeExpandContent()
+            onChangeExpandContent()
         }
     }
 
@@ -386,5 +402,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworks[page].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
     }
+
 
 }

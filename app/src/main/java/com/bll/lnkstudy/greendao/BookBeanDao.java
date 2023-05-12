@@ -46,15 +46,16 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         public final static Property BookPath = new Property(19, String.class, "bookPath", false, "BOOK_PATH");
         public final static Property BookDrawPath = new Property(20, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
         public final static Property BookType = new Property(21, String.class, "bookType", false, "BOOK_TYPE");
-        public final static Property Time = new Property(22, Long.class, "time", false, "TIME");
-        public final static Property PageIndex = new Property(23, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PageUpUrl = new Property(24, String.class, "pageUpUrl", false, "PAGE_UP_URL");
-        public final static Property PageUrl = new Property(25, String.class, "pageUrl", false, "PAGE_URL");
-        public final static Property IsCollect = new Property(26, boolean.class, "isCollect", false, "IS_COLLECT");
-        public final static Property DateState = new Property(27, int.class, "dateState", false, "DATE_STATE");
-        public final static Property IsLock = new Property(28, boolean.class, "isLock", false, "IS_LOCK");
-        public final static Property IsCloud = new Property(29, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(30, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property DownDate = new Property(22, long.class, "downDate", false, "DOWN_DATE");
+        public final static Property Time = new Property(23, long.class, "time", false, "TIME");
+        public final static Property PageIndex = new Property(24, int.class, "pageIndex", false, "PAGE_INDEX");
+        public final static Property PageUpUrl = new Property(25, String.class, "pageUpUrl", false, "PAGE_UP_URL");
+        public final static Property PageUrl = new Property(26, String.class, "pageUrl", false, "PAGE_URL");
+        public final static Property IsCollect = new Property(27, boolean.class, "isCollect", false, "IS_COLLECT");
+        public final static Property DateState = new Property(28, int.class, "dateState", false, "DATE_STATE");
+        public final static Property IsLock = new Property(29, boolean.class, "isLock", false, "IS_LOCK");
+        public final static Property IsCloud = new Property(30, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(31, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -92,15 +93,16 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
                 "\"BOOK_PATH\" TEXT," + // 19: bookPath
                 "\"BOOK_DRAW_PATH\" TEXT," + // 20: bookDrawPath
                 "\"BOOK_TYPE\" TEXT," + // 21: bookType
-                "\"TIME\" INTEGER," + // 22: time
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 23: pageIndex
-                "\"PAGE_UP_URL\" TEXT," + // 24: pageUpUrl
-                "\"PAGE_URL\" TEXT," + // 25: pageUrl
-                "\"IS_COLLECT\" INTEGER NOT NULL ," + // 26: isCollect
-                "\"DATE_STATE\" INTEGER NOT NULL ," + // 27: dateState
-                "\"IS_LOCK\" INTEGER NOT NULL ," + // 28: isLock
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 29: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 30: cloudId
+                "\"DOWN_DATE\" INTEGER NOT NULL ," + // 22: downDate
+                "\"TIME\" INTEGER NOT NULL ," + // 23: time
+                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 24: pageIndex
+                "\"PAGE_UP_URL\" TEXT," + // 25: pageUpUrl
+                "\"PAGE_URL\" TEXT," + // 26: pageUrl
+                "\"IS_COLLECT\" INTEGER NOT NULL ," + // 27: isCollect
+                "\"DATE_STATE\" INTEGER NOT NULL ," + // 28: dateState
+                "\"IS_LOCK\" INTEGER NOT NULL ," + // 29: isLock
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 30: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 31: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -198,27 +200,24 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         if (bookType != null) {
             stmt.bindString(22, bookType);
         }
- 
-        Long time = entity.getTime();
-        if (time != null) {
-            stmt.bindLong(23, time);
-        }
-        stmt.bindLong(24, entity.getPageIndex());
+        stmt.bindLong(23, entity.getDownDate());
+        stmt.bindLong(24, entity.getTime());
+        stmt.bindLong(25, entity.getPageIndex());
  
         String pageUpUrl = entity.getPageUpUrl();
         if (pageUpUrl != null) {
-            stmt.bindString(25, pageUpUrl);
+            stmt.bindString(26, pageUpUrl);
         }
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(26, pageUrl);
+            stmt.bindString(27, pageUrl);
         }
-        stmt.bindLong(27, entity.getIsCollect() ? 1L: 0L);
-        stmt.bindLong(28, entity.getDateState());
-        stmt.bindLong(29, entity.getIsLock() ? 1L: 0L);
-        stmt.bindLong(30, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(31, entity.getCloudId());
+        stmt.bindLong(28, entity.getIsCollect() ? 1L: 0L);
+        stmt.bindLong(29, entity.getDateState());
+        stmt.bindLong(30, entity.getIsLock() ? 1L: 0L);
+        stmt.bindLong(31, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(32, entity.getCloudId());
     }
 
     @Override
@@ -310,27 +309,24 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         if (bookType != null) {
             stmt.bindString(22, bookType);
         }
- 
-        Long time = entity.getTime();
-        if (time != null) {
-            stmt.bindLong(23, time);
-        }
-        stmt.bindLong(24, entity.getPageIndex());
+        stmt.bindLong(23, entity.getDownDate());
+        stmt.bindLong(24, entity.getTime());
+        stmt.bindLong(25, entity.getPageIndex());
  
         String pageUpUrl = entity.getPageUpUrl();
         if (pageUpUrl != null) {
-            stmt.bindString(25, pageUpUrl);
+            stmt.bindString(26, pageUpUrl);
         }
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(26, pageUrl);
+            stmt.bindString(27, pageUrl);
         }
-        stmt.bindLong(27, entity.getIsCollect() ? 1L: 0L);
-        stmt.bindLong(28, entity.getDateState());
-        stmt.bindLong(29, entity.getIsLock() ? 1L: 0L);
-        stmt.bindLong(30, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(31, entity.getCloudId());
+        stmt.bindLong(28, entity.getIsCollect() ? 1L: 0L);
+        stmt.bindLong(29, entity.getDateState());
+        stmt.bindLong(30, entity.getIsLock() ? 1L: 0L);
+        stmt.bindLong(31, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(32, entity.getCloudId());
     }
 
     @Override
@@ -363,15 +359,16 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
             cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // bookPath
             cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // bookDrawPath
             cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // bookType
-            cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22), // time
-            cursor.getInt(offset + 23), // pageIndex
-            cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24), // pageUpUrl
-            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // pageUrl
-            cursor.getShort(offset + 26) != 0, // isCollect
-            cursor.getInt(offset + 27), // dateState
-            cursor.getShort(offset + 28) != 0, // isLock
-            cursor.getShort(offset + 29) != 0, // isCloud
-            cursor.getInt(offset + 30) // cloudId
+            cursor.getLong(offset + 22), // downDate
+            cursor.getLong(offset + 23), // time
+            cursor.getInt(offset + 24), // pageIndex
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // pageUpUrl
+            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // pageUrl
+            cursor.getShort(offset + 27) != 0, // isCollect
+            cursor.getInt(offset + 28), // dateState
+            cursor.getShort(offset + 29) != 0, // isLock
+            cursor.getShort(offset + 30) != 0, // isCloud
+            cursor.getInt(offset + 31) // cloudId
         );
         return entity;
     }
@@ -400,15 +397,16 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         entity.setBookPath(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
         entity.setBookDrawPath(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
         entity.setBookType(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
-        entity.setTime(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
-        entity.setPageIndex(cursor.getInt(offset + 23));
-        entity.setPageUpUrl(cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24));
-        entity.setPageUrl(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
-        entity.setIsCollect(cursor.getShort(offset + 26) != 0);
-        entity.setDateState(cursor.getInt(offset + 27));
-        entity.setIsLock(cursor.getShort(offset + 28) != 0);
-        entity.setIsCloud(cursor.getShort(offset + 29) != 0);
-        entity.setCloudId(cursor.getInt(offset + 30));
+        entity.setDownDate(cursor.getLong(offset + 22));
+        entity.setTime(cursor.getLong(offset + 23));
+        entity.setPageIndex(cursor.getInt(offset + 24));
+        entity.setPageUpUrl(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setPageUrl(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
+        entity.setIsCollect(cursor.getShort(offset + 27) != 0);
+        entity.setDateState(cursor.getInt(offset + 28));
+        entity.setIsLock(cursor.getShort(offset + 29) != 0);
+        entity.setIsCloud(cursor.getShort(offset + 30) != 0);
+        entity.setCloudId(cursor.getInt(offset + 31));
      }
     
     @Override

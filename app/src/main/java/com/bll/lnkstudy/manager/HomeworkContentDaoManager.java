@@ -55,11 +55,11 @@ public class HomeworkContentDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public long getInsertId(){
+    public long insertOrReplaceGetId(HomeworkContentBean bean) {
+        dao.insertOrReplace(bean);
         List<HomeworkContentBean> queryList = dao.queryBuilder().build().list();
         return queryList.get(queryList.size()-1).id;
     }
-
 
     public List<HomeworkContentBean> queryAllByType(String course, int homeworkTypeId) {
 

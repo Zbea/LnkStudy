@@ -107,15 +107,12 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         initTab()
 
         tv_download?.setOnClickListener {
-
-            val tasks = mutableListOf<BaseDownloadTask>()
             if (typeId == 0) {
                 for (item in books) {
                     val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
                     if (localBook == null) {
                         val downloadTask = downLoadStart(item.downloadUrl, item)
-                        tasks.add(downloadTask!!)
-                        mDownMapPool[item.bookId] = downloadTask
+                        mDownMapPool[item.bookId] = downloadTask!!
                     }
                 }
             }

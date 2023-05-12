@@ -41,6 +41,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private var pageCount = 0
     private var page = 0 //当前页码
 
+
     override fun layoutId(): Int {
         return R.layout.ac_book_details_drawing
     }
@@ -91,13 +92,13 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private fun bindClick() {
 
         iv_expand.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_a.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_b.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
 
         iv_catalog.setOnClickListener {
@@ -108,32 +109,29 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 }
 
         }
-
-        btn_page_up.setOnClickListener {
-            if (isExpand) {
-                if (page > 1) {
-                    page -= 2
-                } else {
-                    page = 0
-                }
-            } else {
-                if (page > 0) {
-                    page -= 1
-                }
-            }
-            changeContent()
-        }
-
-        btn_page_down.setOnClickListener {
-            page += if (isExpand) 2 else 1
-            changeContent()
-        }
     }
 
-    /**
-     * 切换屏幕
-     */
-    private fun changeExpandContent(){
+    override fun onPageUp() {
+        if (isExpand) {
+            if (page > 1) {
+                page -= 2
+            } else {
+                page = 0
+            }
+        } else {
+            if (page > 0) {
+                page -= 1
+            }
+        }
+        changeContent()
+    }
+
+    override fun onPageDown() {
+        page += if (isExpand) 2 else 1
+        changeContent()
+    }
+
+    override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
@@ -241,7 +239,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
     override fun changeScreenPage() {
         if (isExpand) {
-            changeExpandContent()
+            onChangeExpandContent()
         }
     }
 

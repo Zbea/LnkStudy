@@ -1,35 +1,42 @@
-package com.bll.lnkstudy.mvp.model.paper;
+package com.bll.lnkstudy.mvp.model.homework;
 
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
+
+import java.util.Objects;
 
 /**
- * 本次考试
+ * 作业卷
  */
 @Entity
-public class PaperBean {
+public class HomeworkPaperBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     @Unique
-    public int contentId;//这次考卷id
+    public int contentId;//这次作业id
     public String course;//科目
-    public int typeId;//考卷分组id
-    public String type;//考卷分组标题
+    public int typeId;//作业分组id
+    public String type;//作业分组标题
     public int index;//（位置下标）
     public String title;
+    public long endTime;//老师需要学生提交时间
     public String path;//文件路径
     public int page;
+    public boolean isPg=false;
+    public boolean isCommit;//作业是否需要提交
+    public int state;//提交状态3学生未提交1已提交未批改2已批改
 
-    @Generated(hash = 358579836)
-    public PaperBean(Long id, long userId, int contentId, String course, int typeId,
-            String type, int index, String title, String path, int page) {
+    @Generated(hash = 527678266)
+    public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
+            String type, int index, String title, long endTime, String path, int page, boolean isPg,
+            boolean isCommit, int state) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -38,11 +45,15 @@ public class PaperBean {
         this.type = type;
         this.index = index;
         this.title = title;
+        this.endTime = endTime;
         this.path = path;
         this.page = page;
+        this.isPg = isPg;
+        this.isCommit = isCommit;
+        this.state = state;
     }
-    @Generated(hash = 1608836968)
-    public PaperBean() {
+    @Generated(hash = 1573712411)
+    public HomeworkPaperBean() {
     }
     public Long getId() {
         return this.id;
@@ -92,6 +103,12 @@ public class PaperBean {
     public void setTitle(String title) {
         this.title = title;
     }
+    public long getEndTime() {
+        return this.endTime;
+    }
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
     public String getPath() {
         return this.path;
     }
@@ -104,5 +121,23 @@ public class PaperBean {
     public void setPage(int page) {
         this.page = page;
     }
-
+    public boolean getIsPg() {
+        return this.isPg;
+    }
+    public void setIsPg(boolean isPg) {
+        this.isPg = isPg;
+    }
+    public boolean getIsCommit() {
+        return this.isCommit;
+    }
+    public void setIsCommit(boolean isCommit) {
+        this.isCommit = isCommit;
+    }
+    public int getState() {
+        return this.state;
+    }
+    public void setState(int state) {
+        this.state = state;
+    }
+    
 }

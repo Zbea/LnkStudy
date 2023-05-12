@@ -3,20 +3,19 @@ package com.bll.lnkstudy.mvp.model.homework;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 获取作业卷（老师下发作业列表）
  */
-public class HomeworkReel implements Serializable {
+public class HomeworkPaperList implements Serializable {
 
     @SerializedName("id")
     public int typeId;//作业分类ID
     public int subType;//作业分类
-    public List<HomeworkReelBean> list;
+    public List<HomeworkPaperListBean> list;
 
-    public static class HomeworkReelBean{
+    public static class HomeworkPaperListBean {
         @SerializedName("studentTaskId")
         public int id;
         public String title;//作业标题

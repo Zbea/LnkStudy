@@ -64,7 +64,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     private var examPapers = mutableListOf<PaperList.PaperListBean>()
     private var receivePaperAdapter: MainReceivePaperAdapter? = null
     private var positionPaper = 0
-
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
 
@@ -340,7 +339,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
                     override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
                         hideLoading()
                     }
-
                     override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                         hideLoading()
                         imageDownLoad.reloadImage()

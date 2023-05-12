@@ -15,7 +15,6 @@ public class PaperList implements Serializable {
         public int id;
         public String title;//作业标题
         public String subject;//科目
-        public String jobTitle;//作业标题
         public int commonTypeId;//收到考卷 分类id
         @SerializedName("taskId")
         public int examId;//收到考卷 分类id

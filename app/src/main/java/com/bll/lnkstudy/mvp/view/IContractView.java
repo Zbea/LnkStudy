@@ -18,7 +18,7 @@ import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkReel;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.net.IBaseView;
@@ -115,7 +115,6 @@ public interface IContractView {
          */
         void onTypeList(List<PaperTypeBean> list);
         void onList(PaperList paper);
-        void onCommitSuccess();
         void onDeleteSuccess();
 
     }
@@ -127,7 +126,7 @@ public interface IContractView {
          */
         void onTypeList(List<HomeworkTypeBean> list);
         void onList(HomeworkMessage homeworkMessage);
-        void onListReel(HomeworkReel reel);
+        void onListReel(HomeworkPaperList reel);
         void onDetails(List<HomeworkDetails.HomeworkDetailBean> details);
         /**
          * 下发作业下载成功

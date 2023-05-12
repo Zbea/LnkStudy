@@ -57,28 +57,15 @@ public class PaperDaoManager {
 
     }
 
-    public long getInsertId(){
-        List<PaperBean> queryList = dao.queryBuilder().where(whereUser).build().list();
-        return queryList.get(queryList.size()-1).id;
-    }
-
-    public PaperBean queryByContentID(int id) {
-        PaperBean item = dao.queryBuilder().where(whereUser,PaperBeanDao.Properties.ContentId.eq(id)).build().unique();
-        return item;
-    }
-
     /**
-     *
-     * @param type //作业还是考卷
      * @param course //科目id
      * @param categoryId //分组id
      * @return
      */
-    public List<PaperBean> queryAll(int type, String course, int categoryId) {
-        WhereCondition whereCondition1= PaperBeanDao.Properties.Type.eq(type);
-        WhereCondition whereCondition2= PaperBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition3= PaperBeanDao.Properties.CategoryId.eq(categoryId);
-        List<PaperBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().list();
+    public List<PaperBean> queryAll(String course, int categoryId) {
+        WhereCondition whereCondition1= PaperBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition2= PaperBeanDao.Properties.TypeId.eq(categoryId);
+        List<PaperBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
         return queryList;
     }
 
@@ -86,11 +73,8 @@ public class PaperDaoManager {
         dao.delete(bean);
     }
 
-
-    public void deleteAllByType(int type){
-        WhereCondition whereCondition1= PaperBeanDao.Properties.Type.eq(type);
-        List<PaperBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-        dao.deleteInTx(queryList);
+    public void clear(){
+        dao.deleteAll();
     }
 
 

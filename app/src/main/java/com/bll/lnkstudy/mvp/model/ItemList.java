@@ -11,6 +11,7 @@ public class ItemList implements Serializable {
 
     public int id;
     public String name;
+
     public String date;
     public String info;
     public String url;

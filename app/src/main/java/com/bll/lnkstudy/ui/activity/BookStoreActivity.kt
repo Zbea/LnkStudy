@@ -263,6 +263,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         }
                         loadSate = 2
                         category = 1
+                        downDate=System.currentTimeMillis()
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                     }
@@ -324,7 +325,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        if (bookNameStr.isNullOrEmpty()){
+        if (bookNameStr.isEmpty()){
             map["grade"] = gradeStr
             map["type"] = categoryStr
             map["subType"] = typeStr

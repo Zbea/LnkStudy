@@ -42,6 +42,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(),IQiniuView {
         when(eventType){
             Constants.AUTO_UPLOAD_EVENT->{
                 paintingFragment?.uploadPainting(token)
+                bookcaseFragment?.upload(token)
             }
             Constants.ACTION_UPLOAD_1MONTH->{
                 noteFragment?.uploadNote(token,true)

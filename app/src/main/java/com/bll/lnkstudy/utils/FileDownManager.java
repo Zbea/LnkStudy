@@ -11,9 +11,7 @@ import com.liulishuo.filedownloader.FileDownloader;
 
 import java.util.List;
 
-/**
- * Created by ly on 2021/1/20 9:45
- */
+
 public class FileDownManager {
 
     private static FileDownManager incetance;

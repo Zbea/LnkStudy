@@ -5,7 +5,7 @@ import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.homework.HomeworkReel
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkType
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
@@ -232,19 +232,19 @@ interface APIService{
      * 获取作业卷所有信息
      */
     @GET("task/group/studentList")
-    fun getHomeworkReel(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkReel>>
+    fun getHomeworkReel(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkPaperList>>
     /**
      * 作业卷下载完成后 通知后台
      */
     @POST("task/group/studentDownload")
     fun commitHomeworkLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 获取作业卷所有信息
+     * 获取学生批改详情
      */
     @GET("task/group/sendList")
     fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<HomeworkDetailBean>>>
     /**
-     * 获取作业卷所有信息
+     * 获取学生提交详情
      */
     @GET("submit/message/list")
     fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkDetails>>
@@ -276,6 +276,16 @@ interface APIService{
      */
     @POST("delete/message/delete")
     fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取系统发送控制指令
+     */
+    @GET("delete/data/list")
+    fun getSystemControlMessage(): Observable<BaseResult<MutableList<ControlMessage>>>
+    /**
+     * 删除系统发送控制指令
+     */
+    @POST("delete/data/delete")
+    fun deleteSystemControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 获取云列表

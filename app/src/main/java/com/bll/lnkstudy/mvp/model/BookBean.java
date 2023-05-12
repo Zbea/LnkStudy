@@ -43,7 +43,8 @@ public class BookBean {
     public String bookPath;  //book书的路径
     public String bookDrawPath;  //book书的手写路径
     public String bookType;//书架所有分类
-    public Long time;//观看时间
+    public long downDate;//下载时间
+    public long time;//观看时间
     public int pageIndex=0;//当前页
     public String pageUpUrl;//上一页路径
     public String pageUrl;//当前页路径
@@ -59,12 +60,12 @@ public class BookBean {
     @Transient
     public String zipUrl;
 
-    @Generated(hash = 873769566)
+    @Generated(hash = 128532501)
     public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl,
             String subjectName, String bookDesc, String semester, String area, String bookName,
             int price, String grade, String version, String bookVersion, String supply, int category,
             String textBookType, int status, String downloadUrl, String bookPath, String bookDrawPath,
-            String bookType, Long time, int pageIndex, String pageUpUrl, String pageUrl,
+            String bookType, long downDate, long time, int pageIndex, String pageUpUrl, String pageUrl,
             boolean isCollect, int dateState, boolean isLock, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
@@ -88,6 +89,7 @@ public class BookBean {
         this.bookPath = bookPath;
         this.bookDrawPath = bookDrawPath;
         this.bookType = bookType;
+        this.downDate = downDate;
         this.time = time;
         this.pageIndex = pageIndex;
         this.pageUpUrl = pageUpUrl;
@@ -287,6 +289,15 @@ public class BookBean {
     }
     public void setBookPlusId(int bookPlusId) {
         this.bookPlusId = bookPlusId;
+    }
+    public long getDownDate() {
+        return this.downDate;
+    }
+    public void setDownDate(long downDate) {
+        this.downDate = downDate;
+    }
+    public void setTime(long time) {
+        this.time = time;
     }
 
 }

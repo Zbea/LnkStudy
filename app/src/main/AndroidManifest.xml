@@ -110,7 +110,7 @@
         <activity android:name=".ui.activity.drawing.HomeworkDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
-        <activity android:name=".ui.activity.drawing.HomeworkReelDrawingActivity"
+        <activity android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.RecordActivity"/>

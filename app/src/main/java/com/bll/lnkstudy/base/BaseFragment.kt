@@ -60,7 +60,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     var mView:View?=null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
+    var accountId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=0
     var grade=0
 
@@ -89,6 +89,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
             for (item in controlMessages){
                 list.add(item.id)
             }
+//            SPUtil.putInt("$accountId",grade+1)
             mControlMessagePresenter.deleteClearMessage(list)
         }
     }
@@ -144,7 +145,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     }
 
     private fun lazyLoadDataIfPrepared() {
-        if (userVisibleHint && isViewPrepare && !hasLoadData) {
+        if (isViewPrepare && !hasLoadData) {
             lazyLoad()
             hasLoadData = true
         }
@@ -376,8 +377,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         ActivityManager.getInstance().checkPaperDrawingIsExist(mCourse,mTypeId)
         val intent=Intent(activity, PaperDrawingActivity::class.java)
         intent.putExtra("course",mCourse)
-        intent.putExtra("categoryId",mTypeId)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent.putExtra("typeId",mTypeId)
         startActivity(intent)
 //        if (screenPos!=3)
 //            ActivityManager.getInstance().finishActivity(activity)
@@ -387,10 +387,10 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
      * 跳转考卷
      */
     fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int){
-        ActivityManager.getInstance().checkHomeworkReelDrawingIsExist(mCourse,mTypeId)
-        val intent=Intent(activity, HomeworkReelDrawingActivity::class.java)
+        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(mCourse,mTypeId)
+        val intent=Intent(activity, HomeworkPaperDrawingActivity::class.java)
         intent.putExtra("course",mCourse)
-        intent.putExtra("categoryId",mTypeId)
+        intent.putExtra("typeId",mTypeId)
         startActivity(intent)
     }
 

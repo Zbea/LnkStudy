@@ -35,42 +35,42 @@ class Constants{
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
-        val ZIP_PATH: String = MyApplication.mContext.getExternalFilesDir("Zip")!!.path
+        val ZIP_PATH= MyApplication.mContext.getExternalFilesDir("Zip")!!.path
 
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
-        val APK_PATH: String = MyApplication.mContext.getExternalFilesDir("APK")!!.path
+        val APK_PATH= MyApplication.mContext.getExternalFilesDir("APK")!!.path
         val BOOK_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Books"
         //解压的目录
         ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
-        val TEXTBOOK_PATH: String = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
+        val TEXTBOOK_PATH= MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
 
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
 
 
         //截图保存目录
-        val SCREEN_PATH: String = MyApplication.mContext.getExternalFilesDir("Screen")!!.path
+        val SCREEN_PATH= MyApplication.mContext.getExternalFilesDir("Screen")!!.path
 
         //收到题卷地址
-        val TESTPAPER_PATH: String = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
+        val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
 
         //作业保存目录
-        val HOMEWORK_PATH: String = MyApplication.mContext.getExternalFilesDir("HomeWork")!!.path
+        val HOMEWORK_PATH= MyApplication.mContext.getExternalFilesDir("HomeWork")!!.path
 
         //录音保存目录
-        val RECORD_PATH: String = MyApplication.mContext.getExternalFilesDir("Record")!!.path
+        val RECORD_PATH= MyApplication.mContext.getExternalFilesDir("Record")!!.path
 
         //笔记保存目录
-        val NOTE_PATH: String = MyApplication.mContext.getExternalFilesDir("Note")!!.path
+        val NOTE_PATH= MyApplication.mContext.getExternalFilesDir("Note")!!.path
 
         //画本保存目录
-        val PAINTING_PATH: String = MyApplication.mContext.getExternalFilesDir("Painting")!!.path
+        val PAINTING_PATH= MyApplication.mContext.getExternalFilesDir("Painting")!!.path
 
         //壁纸、书画、工具栏应用图标目录
-        val IMAGE_PATH: String = MyApplication.mContext.getExternalFilesDir("Image")!!.path
+        val IMAGE_PATH= MyApplication.mContext.getExternalFilesDir("Image")!!.path
 
         //断点记录文件保存的文件夹
-        val RECORDER_PATH: String = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+        val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
 
         const val PATH_SF = "file:///android_asset/sf/"
 

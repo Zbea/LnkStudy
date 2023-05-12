@@ -12,14 +12,16 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.manager.PaperContentDaoManager
-import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.manager.DataUpdateDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkstudy.utils.*
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
@@ -28,16 +30,16 @@ import java.io.File
 /**
  * 作业卷提交
  */
-class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
+class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     private val mUploadPresenter= FileUploadPresenter(this)
     private var course=""
-    private var mCatalogId=0//分组id
-    private var daoManager: PaperDaoManager?=null
-    private var daoContentManager: PaperContentDaoManager?=null
-    private var papers= mutableListOf<PaperBean>()
-    private var paperContents= mutableListOf<PaperContentBean>()
-    private var paper: PaperBean?=null
+    private var typeId=0//分组id
+    private var daoManager: HomeworkPaperDaoManager?=null
+    private var daoContentManager: HomeworkPaperContentDaoManager?=null
+    private var papers= mutableListOf<HomeworkPaperBean>()
+    private var paperContents= mutableListOf<HomeworkPaperContentBean>()
+    private var paper: HomeworkPaperBean?=null
 
     private var currentPosition=0
     private var page = 0//页码
@@ -52,20 +54,32 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
-        //修改状态
-        paper?.apply {
-            state=1
-            commitDate=System.currentTimeMillis()
-        }
-        papers[currentPosition]=paper!!
-        daoManager?.insertOrReplace(paper)
         //设置不能手写
         setPWEnabled(false)
+        //修改状态
+        paper?.state=1
+        papers[currentPosition]=paper!!
+        daoManager?.insertOrReplace(paper)
+        //更新增量数据
+        DataUpdateDaoManager.getInstance().insertOrReplace(
+            DataUpdateDaoManager.getInstance().queryBean(2,2,paper?.contentId!!)?.apply {
+            date=System.currentTimeMillis()
+            listJson=Gson().toJson(paper)
+        })
+
+        //下载完成后刷新数据增量更新
+        val contentPapers=DataUpdateDaoManager.getInstance().queryList(2,1,paper?.contentId!!)
+
         //提交成功后循环遍历删除手写
         for (i in paperContents.indices){
             val index=i+1
             val drawPath=paper?.path +"/$index/"
             FileUtils.deleteFile(File(drawPath))
+            //更新增量作业卷内容(作业提交后合图后不存在手写内容)
+            val dataBean=contentPapers[i]
+            dataBean.date=System.currentTimeMillis()
+            dataBean.path=paperContents[i].path
+            DataUpdateDaoManager.getInstance().insertOrReplace(dataBean)
         }
     }
 
@@ -75,14 +89,13 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initData() {
-        isExpand= false
         course=intent.getStringExtra("course").toString()
-        mCatalogId=intent.getIntExtra("categoryId",0)
+        typeId=intent.getIntExtra("typeId",0)
 
-        daoManager= PaperDaoManager.getInstance()
-        daoContentManager= PaperContentDaoManager.getInstance()
+        daoManager= HomeworkPaperDaoManager.getInstance()
+        daoContentManager= HomeworkPaperContentDaoManager.getInstance()
 
-        papers= daoManager?.queryAll(0,course,mCatalogId) as MutableList<PaperBean>
+        papers= daoManager?.queryAll(course,typeId) as MutableList<HomeworkPaperBean>
 
     }
 
@@ -102,57 +115,17 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private fun bindClick(){
 
         iv_expand.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_a.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_b.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
 
         iv_catalog.setOnClickListener {
             showCatalog()
-        }
-
-        btn_page_up.setOnClickListener {
-
-            if (isExpand&&page>1){
-                page-=2
-                changeContent()
-            }
-            else if (!isExpand&&page>0){
-                page-=1
-                changeContent()
-            }
-            else{
-                if (currentPosition>0){
-                    currentPosition-=1
-                    page=0
-                    changeContent()
-                }
-            }
-
-        }
-
-        btn_page_down.setOnClickListener {
-
-            if (isExpand&&page+2<pageCount){
-                page+=2
-                changeContent()
-            }
-            else if (!isExpand&&page+1<pageCount){
-                page+=1
-                changeContent()
-            }
-            else{
-                if (currentPosition+1<papers.size){
-                    currentPosition+=1
-                    page=0
-                    changeContent()
-                }
-            }
-
         }
 
         iv_btn.setOnClickListener {
@@ -170,13 +143,51 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
     }
 
+    override fun onPageDown() {
+        if (isExpand&&page+2<pageCount){
+            page+=2
+            changeContent()
+        }
+        else if (!isExpand&&page+1<pageCount){
+            page+=1
+            changeContent()
+        }
+        else{
+            if (currentPosition+1<papers.size){
+                currentPosition+=1
+                page=0
+                changeContent()
+            }
+        }
+    }
 
-    /**
-     * 切换屏幕
-     */
-    private fun changeExpandContent(){
+    override fun onPageUp() {
+        if (isExpand&&page>1){
+            page-=2
+            changeContent()
+        }
+        else if (!isExpand&&page>0){
+            page-=1
+            changeContent()
+        }
+        else{
+            if (currentPosition>0){
+                currentPosition-=1
+                page=0
+                changeContent()
+            }
+        }
+    }
+
+    override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
+        //展屏时，如果当前page内容为最后一张且这次目录内容不止1张，则页码前移一位
+        if (isExpand){
+            if (page==pageCount-1&&pageCount>1){
+                page-=1
+            }
+        }
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
@@ -184,10 +195,9 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
-        showView(ll_page_content_a,v_content_a)
         iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
-        v_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
-        ll_page_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+        v_content_a.visibility=if(isExpand) View.VISIBLE else View.GONE
+        ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         if (isExpand){
             if (screenPos==1){
@@ -198,9 +208,6 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 showView(iv_expand_b)
                 disMissView(iv_expand_a)
             }
-        }
-        else{
-            disMissView(iv_expand_a,iv_expand_b)
         }
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
@@ -239,7 +246,7 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             return
         paper=papers[currentPosition]
 
-        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
+        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<HomeworkPaperContentBean>
         pageCount=paperContents.size
 
         tv_title_a.text=paper?.title
@@ -256,10 +263,10 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             setPWEnabled(false)
         }
 
-        loadImage(page,elik_a!!,v_content_a)
-        tv_page_a.text="${paperContents[page].page+1}"
-
         if (isExpand){
+            loadImage(page,elik_a!!,v_content_a)
+            tv_page_a.text="${paperContents[page].page+1}"
+
             if (page+1<pageCount){
                 loadImage(page+1,elik_b!!,v_content_b)
                 tv_page_b.text="${paperContents[page+1].page+1}"
@@ -270,6 +277,10 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 elik_b?.setPWEnabled(false)
                 tv_page_b.text=""
             }
+        }
+        else{
+            loadImage(page,elik_b!!,v_content_b)
+            tv_page_b.text="${paperContents[page].page+1}"
         }
     }
 
@@ -295,7 +306,7 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     override fun changeScreenPage() {
         if (isExpand){
-            changeExpandContent()
+            onChangeExpandContent()
         }
     }
 
@@ -320,6 +331,5 @@ class HomeworkReelDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             mUploadPresenter.upload(commitPaths)
         },500)
     }
-
 
 }

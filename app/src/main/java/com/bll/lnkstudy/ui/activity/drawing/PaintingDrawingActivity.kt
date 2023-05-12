@@ -82,64 +82,18 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             showCatalog()
         }
 
-        btn_page_down.setOnClickListener {
-            val total=paintingLists.size-1
-            if(isExpand){
-                when(page){
-                    total->{
-                        newHomeWorkContent()
-                        newHomeWorkContent()
-                        page=total
-                    }
-                    total-1->{
-                        newHomeWorkContent()
-                        page=total
-                    }
-                    else->{
-                        page+=2
-                    }
-                }
-            }
-            else{
-                if (page >=total) {
-                    newHomeWorkContent()
-                } else {
-                    page += 1
-                }
-            }
-            changeContent()
-        }
-
-        btn_page_up.setOnClickListener {
-            if(isExpand){
-                if (page>2){
-                    page-=2
-                    changeContent()
-                }
-                else if (page==2){//当页面不够翻两页时
-                    page=1
-                    changeContent()
-                }
-            }else{
-                if (page>0){
-                    page-=1
-                    changeContent()
-                }
-            }
-        }
-
         iv_expand.setOnClickListener {
             if (paintingLists.size==1){
                 newHomeWorkContent()
             }
-            changeExpandContent()
+            onChangeExpandContent()
         }
 
         iv_expand_a.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_b.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
 
 
@@ -150,10 +104,53 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     }
 
-    /**
-     * 切换屏幕
-     */
-    private fun changeExpandContent(){
+    override fun onPageUp() {
+        if(isExpand){
+            if (page>2){
+                page-=2
+                changeContent()
+            }
+            else if (page==2){//当页面不够翻两页时
+                page=1
+                changeContent()
+            }
+        }else{
+            if (page>0){
+                page-=1
+                changeContent()
+            }
+        }
+    }
+
+    override fun onPageDown() {
+        val total=paintingLists.size-1
+        if(isExpand){
+            when(page){
+                total->{
+                    newHomeWorkContent()
+                    newHomeWorkContent()
+                    page=total
+                }
+                total-1->{
+                    newHomeWorkContent()
+                    page=total
+                }
+                else->{
+                    page+=2
+                }
+            }
+        }
+        else{
+            if (page >=total) {
+                newHomeWorkContent()
+            } else {
+                page += 1
+            }
+        }
+        changeContent()
+    }
+
+    override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
@@ -353,7 +350,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     override fun changeScreenPage() {
         super.changeScreenPage()
         if (isExpand){
-            changeExpandContent()
+            onChangeExpandContent()
         }
     }
 

@@ -7,9 +7,11 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
@@ -41,6 +43,14 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             if (!isSavePaperType(item)){
                 item.course=course
                 PaperTypeDaoManager.getInstance().insertOrReplace(item)
+                //创建增量数据
+                DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
+                    type=3
+                    uid=item.typeId
+                    contentType=0
+                    date=System.currentTimeMillis()
+                    listJson=Gson().toJson(item)
+                })
             }
         }
         paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
@@ -54,8 +64,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         paperContents= paperList?.list as MutableList<PaperList.PaperListBean>
         loadPapers(paperContents)
         refreshView()
-    }
-    override fun onCommitSuccess() {
     }
     override fun onDeleteSuccess() {
     }
@@ -111,13 +119,14 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         }
     }
 
+
     /**
      * 判断 考卷分类是否已经保存本地
      */
     private fun isSavePaperType(item: PaperTypeBean): Boolean {
         var isSave = false
         for (list in PaperTypeDaoManager.getInstance().queryAllByCourse(course)) {
-            if (item.name == list.name && item.typeId == list.typeId && item.course == list.course) {
+            if (item.name == list.name && item.typeId == list.typeId) {
                 isSave = true
             }
         }
@@ -138,10 +147,15 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                 override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
                     mPresenter.deletePaper(item.id)
+                    //下载完成后刷新数据增量更新
+                    val contentPapers=DataUpdateDaoManager.getInstance().queryList(3,2,item.id)
+                    for (contentPaper in contentPapers){
+                        contentPaper.date=System.currentTimeMillis()
+                    }
+                    DataUpdateDaoManager.getInstance().insertOrReplaces(contentPapers)
                 }
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                     hideLoading()
-//                        imageDownLoad.reloadImage()
                 }
             })
         }
@@ -171,8 +185,8 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         for(classGroup in DataBeanManager.classGroups){
             val types=PaperTypeDaoManager.getInstance().queryAllByCourse(classGroup.subject)
             for (item in types){
-                val papers=PaperDaoManager.getInstance().queryAll(1,item.course,item.typeId)
-                val paperContents=PaperContentDaoManager.getInstance().queryAll(1,item.course,item.typeId)
+                val papers=PaperDaoManager.getInstance().queryAll(item.course,item.typeId)
+                val paperContents=PaperContentDaoManager.getInstance().queryAll(item.course,item.typeId)
                 val path=FileAddress().getPathTestPaper(item.typeId)
                 if (papers.size>0){
                     FileUploadManager(token).apply {
@@ -264,8 +278,8 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         paperTypes.clear()
         mAdapter?.notifyDataSetChanged()
         //删除所有考卷内容
-        PaperDaoManager.getInstance().deleteAllByType(1)
-        PaperContentDaoManager.getInstance().deleteAllByType(1)
+        PaperDaoManager.getInstance().clear()
+        PaperContentDaoManager.getInstance().clear()
         FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
     }
 

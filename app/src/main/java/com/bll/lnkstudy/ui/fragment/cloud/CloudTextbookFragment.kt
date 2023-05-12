@@ -77,12 +77,10 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
-                    if (book.downloadUrl=="null"){
-                        downloadBook(book)
-                    }
-                    else{
+                    if (book.downloadUrl!="null"){
                         downloadBookDrawing(book)
                     }
+                    downloadBook(book)
                 } else {
                     showToast(screenPos,R.string.toast_downloaded)
                 }
@@ -151,7 +149,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
-                                showLog(fileTargetPath)
                                 BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                                 //删除教材的zip文件
                                 FileUtils.deleteFile(File(zipPath))

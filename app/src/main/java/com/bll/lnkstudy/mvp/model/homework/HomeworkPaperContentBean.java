@@ -1,34 +1,32 @@
-package com.bll.lnkstudy.mvp.model.paper;
+package com.bll.lnkstudy.mvp.model.homework;
 
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
-import java.util.Map;
+import java.util.Objects;
 
-/**
- * 考卷试卷
- */
+
 @Entity
-public class PaperContentBean {
+public class HomeworkPaperContentBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String course;
-    public int typeId;//考卷分组id
-    public int contentId;//考卷id
+    public int typeId;//作业分组id
+    public int contentId;//作业id
     public String path;//原图路径
     public String drawPath;//绘图路径
     public int page;//页码
 
-    @Generated(hash = 879524499)
-    public PaperContentBean(Long id, long userId, String course, int typeId,
-            int contentId, String path, String drawPath, int page) {
+    @Generated(hash = 259299374)
+    public HomeworkPaperContentBean(Long id, long userId, String course, int typeId, int contentId,
+            String path, String drawPath, int page) {
         this.id = id;
         this.userId = userId;
         this.course = course;
@@ -38,8 +36,8 @@ public class PaperContentBean {
         this.drawPath = drawPath;
         this.page = page;
     }
-    @Generated(hash = 708894727)
-    public PaperContentBean() {
+    @Generated(hash = 445540712)
+    public HomeworkPaperContentBean() {
     }
     public Long getId() {
         return this.id;
@@ -89,5 +87,5 @@ public class PaperContentBean {
     public void setPage(int page) {
         this.page = page;
     }
-   
+
 }

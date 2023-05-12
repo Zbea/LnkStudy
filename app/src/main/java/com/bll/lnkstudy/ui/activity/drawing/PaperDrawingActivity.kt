@@ -26,7 +26,7 @@ import java.io.File
 class PaperDrawingActivity: BaseDrawingActivity(){
 
     private var course=""
-    private var mCatalogId=0//分组id
+    private var typeId=0//分组id
     private var daoManager: PaperDaoManager?=null
     private var daoContentManager: PaperContentDaoManager?=null
     private var papers= mutableListOf<PaperBean>()
@@ -35,102 +35,91 @@ class PaperDrawingActivity: BaseDrawingActivity(){
 
     private var currentPosition=0
     private var page = 0//页码
-    private var pageCount=0
+    private var paperContentCount=0//这次考卷所有内容大小
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
     }
 
     override fun initData() {
-        isExpand= true
         course=intent.getStringExtra("course").toString()
-        mCatalogId=intent.getIntExtra("categoryId",0)
+        typeId=intent.getIntExtra("typeId",0)
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
 
-        papers= daoManager?.queryAll(1,course,mCatalogId) as MutableList<PaperBean>
+        papers= daoManager?.queryAll(course,typeId) as MutableList<PaperBean>
 
     }
 
     override fun initView() {
         setDrawingTitleClick(false)
-        if(papers.size>0){
+        setPWEnabled(false)
+        if (papers.size>0){
             currentPosition=papers.size-1
             changeContent()
         }
-        else{
-            setPWEnabled(false)
-        }
         changeExpandView()
-        bindClick()
-    }
-
-    private fun bindClick(){
 
         iv_expand.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_a.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_b.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
 
         iv_catalog.setOnClickListener {
             showCatalog()
         }
-
-        btn_page_up.setOnClickListener {
-
-            if (isExpand&&page>1){
-                page-=2
-                changeContent()
-            }
-            else if (!isExpand&&page>0){
-                page-=1
-                changeContent()
-            }
-            else{
-                if (currentPosition>0){
-                    currentPosition-=1
-                    page=0
-                    changeContent()
-                }
-            }
-
-        }
-
-        btn_page_down.setOnClickListener {
-
-            if (isExpand&&page+2<pageCount){
-                page+=2
-                changeContent()
-            }
-            else if (!isExpand&&page+1<pageCount){
-                page+=1
-                changeContent()
-            }
-            else{
-                if (currentPosition+1<papers.size){
-                    currentPosition+=1
-                    page=0
-                    changeContent()
-                }
-            }
-
-        }
-
     }
 
+    override fun onPageUp() {
+        if (isExpand&&page>1){
+            page-=2
+            changeContent()
+        }
+        else if (!isExpand&&page>0){
+            page-=1
+            changeContent()
+        }
+        else{
+            if (currentPosition>0){
+                currentPosition-=1
+                page=0
+                changeContent()
+            }
+        }
+    }
 
-    /**
-     * 切换屏幕
-     */
-    private fun changeExpandContent(){
+    override fun onPageDown() {
+        if (isExpand&&page+2<paperContentCount){
+            page+=2
+            changeContent()
+        }
+        else if(!isExpand&&page+1<paperContentCount){
+            page+=1
+            changeContent()
+        }
+        else{
+            //切换目录
+            currentPosition+=1
+            page=0
+            changeContent()
+        }
+    }
+
+    override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
+        //展屏时，如果当前考卷内容为最后一张且这次目录内容不止1张，则页码前移一位
+        if (isExpand){
+            if (page==paperContentCount-1&&paperContentCount>1){
+                page-=1
+            }
+        }
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
@@ -138,10 +127,9 @@ class PaperDrawingActivity: BaseDrawingActivity(){
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
-        showView(ll_page_content_a,v_content_a)
         iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
-        v_content_b.visibility=if(isExpand) View.VISIBLE else View.GONE
-        ll_page_content_b.visibility = if(isExpand) View.VISIBLE else View.GONE
+        v_content_a.visibility=if(isExpand) View.VISIBLE else View.GONE
+        ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         if (isExpand){
             if (screenPos==1){
@@ -152,9 +140,6 @@ class PaperDrawingActivity: BaseDrawingActivity(){
                 showView(iv_expand_b)
                 disMissView(iv_expand_a)
             }
-        }
-        else{
-            disMissView(iv_expand_a,iv_expand_b)
         }
         iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
     }
@@ -194,19 +179,16 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         paper=papers[currentPosition]
 
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
-        pageCount=paperContents.size
+        paperContentCount=paperContents.size
 
         tv_title_a.text=paper?.title
         tv_title_b.text=paper?.title
-        setPWEnabled(!paper?.isPg!!)
-
-        setPWEnabled(false)
-
-        loadImage(page,elik_a!!,v_content_a)
-        tv_page_a.text="${paperContents[page].page+1}"
 
         if (isExpand){
-            if (page+1<pageCount){
+            loadImage(page,elik_a!!,v_content_a)
+            tv_page_a.text="${paperContents[page].page+1}"
+
+            if (page+1<paperContentCount){
                 loadImage(page+1,elik_b!!,v_content_b)
                 tv_page_b.text="${paperContents[page+1].page+1}"
             }
@@ -216,6 +198,10 @@ class PaperDrawingActivity: BaseDrawingActivity(){
                 elik_b?.setPWEnabled(false)
                 tv_page_b.text=""
             }
+        }
+        else{
+            loadImage(page,elik_b!!,v_content_b)
+            tv_page_b.text="${paperContents[page].page+1}"
         }
     }
 
@@ -241,7 +227,7 @@ class PaperDrawingActivity: BaseDrawingActivity(){
 
     override fun changeScreenPage() {
         if (isExpand){
-            changeExpandContent()
+            onChangeExpandContent()
         }
     }
 

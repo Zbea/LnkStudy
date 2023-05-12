@@ -57,56 +57,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
         changeContent()
 
-        btn_page_down.setOnClickListener {
-            val total=noteContents.size-1
-            if(isExpand){
-                when(page){
-                    total->{
-                        newNoteContent()
-                        newNoteContent()
-                        page==total
-                    }
-                    total-1->{
-                        newNoteContent()
-                        page==total
-                    }
-                    else->{
-                        page+=2
-                    }
-                }
-            }
-            else{
-                when(page){
-                    total->{
-                        newNoteContent()
-                    }
-                    else->{
-                        page += 1
-                    }
-                }
-            }
-            changeContent()
-        }
-
-        btn_page_up.setOnClickListener {
-            if(isExpand){
-                if (page>2){
-                    page-=2
-                    changeContent()
-                }
-                else if (page==2){//当页面不够翻两页时
-                    page=1
-                    changeContent()
-                }
-            }else{
-                if (page>0){
-                    page-=1
-                    changeContent()
-                }
-            }
-
-        }
-
         iv_catalog.setOnClickListener {
             showCatalog()
         }
@@ -115,25 +65,67 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             if (noteContents.size==1){
                 newNoteContent()
             }
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_a.setOnClickListener {
-            changeExpandContent()
+            onChangeExpandContent()
         }
         iv_expand_b.setOnClickListener {
-            changeExpandContent()
-        }
-
-        iv_btn.setOnClickListener {
-
+            onChangeExpandContent()
         }
 
     }
 
-    /**
-     * 切换屏幕
-     */
-    private fun changeExpandContent(){
+    override fun onPageDown() {
+        val total=noteContents.size-1
+        if(isExpand){
+            when(page){
+                total->{
+                    newNoteContent()
+                    newNoteContent()
+                    page==total
+                }
+                total-1->{
+                    newNoteContent()
+                    page==total
+                }
+                else->{
+                    page+=2
+                }
+            }
+        }
+        else{
+            when(page){
+                total->{
+                    newNoteContent()
+                }
+                else->{
+                    page += 1
+                }
+            }
+        }
+        changeContent()
+    }
+
+    override fun onPageUp() {
+        if(isExpand){
+            if (page>2){
+                page-=2
+                changeContent()
+            }
+            else if (page==2){//当页面不够翻两页时
+                page=1
+                changeContent()
+            }
+        }else{
+            if (page>0){
+                page-=1
+                changeContent()
+            }
+        }
+    }
+
+    override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
@@ -273,7 +265,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
    override fun changeScreenPage() {
         if (isExpand){
-            changeExpandContent()
+            onChangeExpandContent()
         }
     }
 

@@ -3,6 +3,7 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
 import com.bll.lnkstudy.mvp.model.homework.RecordBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -57,6 +58,11 @@ public class RecordDaoManager {
         recordBeanDao.insertOrReplace(bean);
     }
 
+    public long insertOrReplaceGetId(RecordBean bean) {
+        recordBeanDao.insertOrReplace(bean);
+        List<RecordBean> queryList = recordBeanDao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
+    }
 
     public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);

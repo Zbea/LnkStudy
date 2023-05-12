@@ -11,6 +11,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.BookBean;
 import com.bll.lnkstudy.mvp.model.CourseBean;
+import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.NoteContentBean;
 import com.bll.lnkstudy.mvp.model.NoteTypeBean;
 import com.bll.lnkstudy.mvp.model.NotebookBean;
@@ -19,6 +20,8 @@ import com.bll.lnkstudy.mvp.model.PaintingDrawingBean;
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.date.DateEventBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.homework.RecordBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperBean;
@@ -28,6 +31,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.CourseBeanDao;
+import com.bll.lnkstudy.greendao.DataUpdateBeanDao;
 import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.greendao.NoteTypeBeanDao;
 import com.bll.lnkstudy.greendao.NotebookBeanDao;
@@ -36,6 +40,8 @@ import com.bll.lnkstudy.greendao.PaintingDrawingBeanDao;
 import com.bll.lnkstudy.greendao.PaintingTypeBeanDao;
 import com.bll.lnkstudy.greendao.DateEventBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
+import com.bll.lnkstudy.greendao.HomeworkPaperBeanDao;
+import com.bll.lnkstudy.greendao.HomeworkPaperContentBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.greendao.PaperBeanDao;
@@ -54,6 +60,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig appBeanDaoConfig;
     private final DaoConfig bookBeanDaoConfig;
     private final DaoConfig courseBeanDaoConfig;
+    private final DaoConfig dataUpdateBeanDaoConfig;
     private final DaoConfig noteContentBeanDaoConfig;
     private final DaoConfig noteTypeBeanDaoConfig;
     private final DaoConfig notebookBeanDaoConfig;
@@ -62,6 +69,8 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig paintingTypeBeanDaoConfig;
     private final DaoConfig dateEventBeanDaoConfig;
     private final DaoConfig homeworkContentBeanDaoConfig;
+    private final DaoConfig homeworkPaperBeanDaoConfig;
+    private final DaoConfig homeworkPaperContentBeanDaoConfig;
     private final DaoConfig homeworkTypeBeanDaoConfig;
     private final DaoConfig recordBeanDaoConfig;
     private final DaoConfig paperBeanDaoConfig;
@@ -71,6 +80,7 @@ public class DaoSession extends AbstractDaoSession {
     private final AppBeanDao appBeanDao;
     private final BookBeanDao bookBeanDao;
     private final CourseBeanDao courseBeanDao;
+    private final DataUpdateBeanDao dataUpdateBeanDao;
     private final NoteContentBeanDao noteContentBeanDao;
     private final NoteTypeBeanDao noteTypeBeanDao;
     private final NotebookBeanDao notebookBeanDao;
@@ -79,6 +89,8 @@ public class DaoSession extends AbstractDaoSession {
     private final PaintingTypeBeanDao paintingTypeBeanDao;
     private final DateEventBeanDao dateEventBeanDao;
     private final HomeworkContentBeanDao homeworkContentBeanDao;
+    private final HomeworkPaperBeanDao homeworkPaperBeanDao;
+    private final HomeworkPaperContentBeanDao homeworkPaperContentBeanDao;
     private final HomeworkTypeBeanDao homeworkTypeBeanDao;
     private final RecordBeanDao recordBeanDao;
     private final PaperBeanDao paperBeanDao;
@@ -97,6 +109,9 @@ public class DaoSession extends AbstractDaoSession {
 
         courseBeanDaoConfig = daoConfigMap.get(CourseBeanDao.class).clone();
         courseBeanDaoConfig.initIdentityScope(type);
+
+        dataUpdateBeanDaoConfig = daoConfigMap.get(DataUpdateBeanDao.class).clone();
+        dataUpdateBeanDaoConfig.initIdentityScope(type);
 
         noteContentBeanDaoConfig = daoConfigMap.get(NoteContentBeanDao.class).clone();
         noteContentBeanDaoConfig.initIdentityScope(type);
@@ -122,6 +137,12 @@ public class DaoSession extends AbstractDaoSession {
         homeworkContentBeanDaoConfig = daoConfigMap.get(HomeworkContentBeanDao.class).clone();
         homeworkContentBeanDaoConfig.initIdentityScope(type);
 
+        homeworkPaperBeanDaoConfig = daoConfigMap.get(HomeworkPaperBeanDao.class).clone();
+        homeworkPaperBeanDaoConfig.initIdentityScope(type);
+
+        homeworkPaperContentBeanDaoConfig = daoConfigMap.get(HomeworkPaperContentBeanDao.class).clone();
+        homeworkPaperContentBeanDaoConfig.initIdentityScope(type);
+
         homeworkTypeBeanDaoConfig = daoConfigMap.get(HomeworkTypeBeanDao.class).clone();
         homeworkTypeBeanDaoConfig.initIdentityScope(type);
 
@@ -140,6 +161,7 @@ public class DaoSession extends AbstractDaoSession {
         appBeanDao = new AppBeanDao(appBeanDaoConfig, this);
         bookBeanDao = new BookBeanDao(bookBeanDaoConfig, this);
         courseBeanDao = new CourseBeanDao(courseBeanDaoConfig, this);
+        dataUpdateBeanDao = new DataUpdateBeanDao(dataUpdateBeanDaoConfig, this);
         noteContentBeanDao = new NoteContentBeanDao(noteContentBeanDaoConfig, this);
         noteTypeBeanDao = new NoteTypeBeanDao(noteTypeBeanDaoConfig, this);
         notebookBeanDao = new NotebookBeanDao(notebookBeanDaoConfig, this);
@@ -148,6 +170,8 @@ public class DaoSession extends AbstractDaoSession {
         paintingTypeBeanDao = new PaintingTypeBeanDao(paintingTypeBeanDaoConfig, this);
         dateEventBeanDao = new DateEventBeanDao(dateEventBeanDaoConfig, this);
         homeworkContentBeanDao = new HomeworkContentBeanDao(homeworkContentBeanDaoConfig, this);
+        homeworkPaperBeanDao = new HomeworkPaperBeanDao(homeworkPaperBeanDaoConfig, this);
+        homeworkPaperContentBeanDao = new HomeworkPaperContentBeanDao(homeworkPaperContentBeanDaoConfig, this);
         homeworkTypeBeanDao = new HomeworkTypeBeanDao(homeworkTypeBeanDaoConfig, this);
         recordBeanDao = new RecordBeanDao(recordBeanDaoConfig, this);
         paperBeanDao = new PaperBeanDao(paperBeanDaoConfig, this);
@@ -157,6 +181,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(AppBean.class, appBeanDao);
         registerDao(BookBean.class, bookBeanDao);
         registerDao(CourseBean.class, courseBeanDao);
+        registerDao(DataUpdateBean.class, dataUpdateBeanDao);
         registerDao(NoteContentBean.class, noteContentBeanDao);
         registerDao(NoteTypeBean.class, noteTypeBeanDao);
         registerDao(NotebookBean.class, notebookBeanDao);
@@ -165,6 +190,8 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(PaintingTypeBean.class, paintingTypeBeanDao);
         registerDao(DateEventBean.class, dateEventBeanDao);
         registerDao(HomeworkContentBean.class, homeworkContentBeanDao);
+        registerDao(HomeworkPaperBean.class, homeworkPaperBeanDao);
+        registerDao(HomeworkPaperContentBean.class, homeworkPaperContentBeanDao);
         registerDao(HomeworkTypeBean.class, homeworkTypeBeanDao);
         registerDao(RecordBean.class, recordBeanDao);
         registerDao(PaperBean.class, paperBeanDao);
@@ -176,6 +203,7 @@ public class DaoSession extends AbstractDaoSession {
         appBeanDaoConfig.clearIdentityScope();
         bookBeanDaoConfig.clearIdentityScope();
         courseBeanDaoConfig.clearIdentityScope();
+        dataUpdateBeanDaoConfig.clearIdentityScope();
         noteContentBeanDaoConfig.clearIdentityScope();
         noteTypeBeanDaoConfig.clearIdentityScope();
         notebookBeanDaoConfig.clearIdentityScope();
@@ -184,6 +212,8 @@ public class DaoSession extends AbstractDaoSession {
         paintingTypeBeanDaoConfig.clearIdentityScope();
         dateEventBeanDaoConfig.clearIdentityScope();
         homeworkContentBeanDaoConfig.clearIdentityScope();
+        homeworkPaperBeanDaoConfig.clearIdentityScope();
+        homeworkPaperContentBeanDaoConfig.clearIdentityScope();
         homeworkTypeBeanDaoConfig.clearIdentityScope();
         recordBeanDaoConfig.clearIdentityScope();
         paperBeanDaoConfig.clearIdentityScope();
@@ -201,6 +231,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public CourseBeanDao getCourseBeanDao() {
         return courseBeanDao;
+    }
+
+    public DataUpdateBeanDao getDataUpdateBeanDao() {
+        return dataUpdateBeanDao;
     }
 
     public NoteContentBeanDao getNoteContentBeanDao() {
@@ -233,6 +267,14 @@ public class DaoSession extends AbstractDaoSession {
 
     public HomeworkContentBeanDao getHomeworkContentBeanDao() {
         return homeworkContentBeanDao;
+    }
+
+    public HomeworkPaperBeanDao getHomeworkPaperBeanDao() {
+        return homeworkPaperBeanDao;
+    }
+
+    public HomeworkPaperContentBeanDao getHomeworkPaperContentBeanDao() {
+        return homeworkPaperContentBeanDao;
     }
 
     public HomeworkTypeBeanDao getHomeworkTypeBeanDao() {

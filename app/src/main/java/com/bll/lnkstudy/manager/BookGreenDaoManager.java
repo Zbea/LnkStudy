@@ -228,6 +228,7 @@ public class BookGreenDaoManager {
         bookBeanDao.delete(book);
     }
 
+
     public void deleteBooks(List<BookBean> bookBeans){
         bookBeanDao.deleteInTx(bookBeans);
     }

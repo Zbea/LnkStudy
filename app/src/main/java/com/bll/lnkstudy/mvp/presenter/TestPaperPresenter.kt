@@ -37,19 +37,6 @@ class TestPaperPresenter(view: IContractView.IPaperView): BasePresenter<IContrac
     }
 
 
-    fun commitPaper(map:HashMap<String,Any>){
-        val body= RequestUtils.getBody(map)
-        val commit = RetrofitManager.service.commitPaper(body)
-        doRequest(commit, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onCommitSuccess()
-            }
-        }, true)
-    }
-
     fun deletePaper(id:Int){
         val body= RequestUtils.getBody(
             Pair("studentTaskId",id)

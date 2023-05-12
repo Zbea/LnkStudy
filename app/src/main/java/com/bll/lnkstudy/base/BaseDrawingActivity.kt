@@ -56,6 +56,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     var elik_b: EinkPWInterface? = null
     var isErasure=false
     var isTitleClick=true//标题是否可以编辑
+    private var isLongPress=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,6 +168,14 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
                     setDrawingTitle_b(string)
                 }
             }
+        }
+
+        btn_page_up?.setOnClickListener {
+            onPageUp()
+        }
+
+        btn_page_down?.setOnClickListener {
+            onPageDown()
         }
 
     }
@@ -367,6 +376,18 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     }
 
     /**
+     * 下一页
+     */
+    open fun onPageDown(){
+    }
+
+    /**
+     * 上一页
+     */
+    open fun onPageUp(){
+    }
+
+    /**
      * 设置擦除
      */
     private fun onErasure(){
@@ -403,13 +424,18 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
      * 标题a操作
      */
     open fun setDrawingTitle_a(title:String){
-
     }
 
     /**
      * 标题a操作
      */
     open fun setDrawingTitle_b(title:String){
+    }
+
+    /**
+     * 单双屏切换
+     */
+    open fun onChangeExpandContent(){
 
     }
 
@@ -682,6 +708,44 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
      */
     open fun changeScreenPage(){
     }
+
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (!isLongPress){
+            when(keyCode){
+                KeyEvent.KEYCODE_PAGE_DOWN->{
+                    onPageDown()
+                }
+                KeyEvent.KEYCODE_PAGE_UP->{
+                    onPageUp()
+                }
+            }
+        }
+        else{
+            isLongPress=false
+        }
+        return false
+    }
+
+    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
+        isLongPress=true
+        when(keyCode){
+            KeyEvent.KEYCODE_PAGE_DOWN->{
+                //切换成右屏
+                isExpand=true
+                onChangeExpandContent()
+                moveToScreen(2)
+            }
+            KeyEvent.KEYCODE_PAGE_UP->{
+                //切换成左屏
+                isExpand=true
+                onChangeExpandContent()
+                moveToScreen(1)
+            }
+        }
+        return super.onKeyLongPress(keyCode, event)
+    }
+
 
 }
 

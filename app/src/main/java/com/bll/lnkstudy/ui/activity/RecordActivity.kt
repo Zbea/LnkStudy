@@ -6,10 +6,13 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.homework.RecordBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_record.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -60,7 +63,18 @@ class RecordActivity : BaseAppCompatActivity() {
             isSave=true
             recordBean?.title=title
             recordBean?.path = path
-            RecordDaoManager.getInstance().insertOrReplace(recordBean)
+            val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+
+            //创建增量数据
+            DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
+                type=2
+                uid=id.toInt()
+                contentType=1
+                date=System.currentTimeMillis()
+                listJson= Gson().toJson(recordBean)
+                this.path= this@RecordActivity.path
+            })
+
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()
         }

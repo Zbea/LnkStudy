@@ -103,47 +103,35 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
         typeStr = types[0].name
 
         rv_type.layoutManager = GridLayoutManager(this, 7)//创建布局管理
-        val mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, types)
-        rv_type.adapter = mAdapterType
-        mAdapterType?.bindToRecyclerView(rv_type)
-        rv_type.addItemDecoration(
-            SpaceGridItemDeco1(
-                7,
-                DP2PX.dip2px(this, 14f),
-                DP2PX.dip2px(this, 16f)
-            )
-        )
-        mAdapterType.setOnItemClickListener { adapter, view, position ->
-            mAdapterType.getItem(typePos)?.isCheck = false
-            typePos = position
-            mAdapterType.getItem(typePos)?.isCheck = true
-            typeStr = types[typePos].name
-            mAdapterType.notifyDataSetChanged()
-            bookNameStr = ""//清除搜索标记
-            pageIndex = 1
-            fetchData()
+        BookCaseTypeAdapter(R.layout.item_bookcase_type, types).apply {
+            rv_type.adapter = this
+            bindToRecyclerView(rv_type)
+            rv_type.addItemDecoration(SpaceGridItemDeco1(7, DP2PX.dip2px(this@BookCaseTypeListActivity, 14f)
+                , DP2PX.dip2px(this@BookCaseTypeListActivity, 16f)))
+            setOnItemClickListener { adapter, view, position ->
+                getItem(typePos)?.isCheck = false
+                typePos = position
+                getItem(typePos)?.isCheck = true
+                typeStr = types[typePos].name
+                notifyDataSetChanged()
+                bookNameStr = ""//清除搜索标记
+                pageIndex = 1
+                fetchData()
+            }
         }
     }
 
 
     //长按显示课本管理
     private fun onLongClick(): Boolean {
-        BookManageDialog(this, screenPos, 0, book!!).builder()
+        BookManageDialog(this, screenPos, 1, book!!).builder()
             .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
                 override fun onCollect() {
-                    book?.isCollect = true
-                    books[pos].isCollect = true
-                    mAdapter?.notifyDataSetChanged()
-                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                    showToast(R.string.book_collect_success)
                 }
-
                 override fun onDelete() {
                     delete()
                 }
-
                 override fun onLock() {
-
                 }
             })
 

@@ -81,7 +81,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
 
     override fun initView() {
         setPageTitle(R.string.cloud_storage_str)
-        showView(tv_grade)
 
         bookcaseFragment = CloudBookCaseFragment()
         textbookFragment= CloudTextbookFragment()
@@ -102,7 +101,10 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
                 showGradeView()
                 closeDynastyView()
                 when (position) {
-                    0 -> switchFragment(lastFragment, bookcaseFragment)//书架
+                    0 -> {
+                        closeGradeView()
+                        switchFragment(lastFragment, bookcaseFragment)//书架
+                    }
                     1 -> switchFragment(lastFragment, textbookFragment)//课本
                     2 -> switchFragment(lastFragment, homeworkFragment)//作业
                     3 -> switchFragment(lastFragment, paperFragment)//考卷
