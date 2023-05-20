@@ -7,6 +7,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.Objects;
+
 
 @Entity
 public class PaintingDrawingBean {
@@ -14,7 +16,7 @@ public class PaintingDrawingBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int type;//类型
     public int bgResId;
     public long date;//开始时间
@@ -23,8 +25,8 @@ public class PaintingDrawingBean {
     public int page;
     public int grade;
     @Generated(hash = 228816449)
-    public PaintingDrawingBean(Long id, long userId, int type, int bgResId,
-            long date, String path, String title, int page, int grade) {
+    public PaintingDrawingBean(Long id, long userId, int type, int bgResId, long date, String path,
+            String title, int page, int grade) {
         this.id = id;
         this.userId = userId;
         this.type = type;

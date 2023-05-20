@@ -31,6 +31,22 @@ interface APIService{
      */
     @POST("file/token")
     fun getQiniuToken(): Observable<BaseResult<String>>
+
+    /**
+     * 获取增量更新列表
+     */
+    fun onListDataUpdate(): Observable<BaseResult<MutableList<DataUpdateBean>>>
+    /**
+     * 添加增量更新
+     */
+    @POST("student/data/insert")
+    fun onAddDataUpdate(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 添加增量更新
+     */
+    @POST("student/data/delete")
+    fun onDeleteDataUpdate(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
     /**
      * 用户登录 "/login"
      */

@@ -6,6 +6,7 @@ import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.mvp.model.BookBean;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
@@ -59,6 +60,13 @@ public class BookGreenDaoManager {
     public void insertOrReplaceBook(BookBean bean) {
         bookBeanDao.insertOrReplace(bean);
     }
+
+    public long insertOrReplaceGetId(BookBean bean) {
+        bookBeanDao.insertOrReplace(bean);
+        List<BookBean> queryList = bookBeanDao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
+    }
+
 
     public void insertOrReplaceBooks(List<BookBean> beans) {
         bookBeanDao.insertOrReplaceInTx(beans);

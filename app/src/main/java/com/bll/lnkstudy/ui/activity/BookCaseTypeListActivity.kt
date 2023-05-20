@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
@@ -76,13 +76,14 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
                 )
             )
             setOnItemClickListener { adapter, view, position ->
-
+                val bookBean=books[position]
+                gotoBookDetails(bookBean.bookPath)
             }
-            onItemLongClickListener =
-                BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                     pos = position
                     book = books[position]
-                    onLongClick()
+                    delete()
+                    true
                 }
         }
 
@@ -121,23 +122,6 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
         }
     }
 
-
-    //长按显示课本管理
-    private fun onLongClick(): Boolean {
-        BookManageDialog(this, screenPos, 1, book!!).builder()
-            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
-                override fun onCollect() {
-                }
-                override fun onDelete() {
-                    delete()
-                }
-                override fun onLock() {
-                }
-            })
-
-        return true
-    }
-
     //删除书架书籍
     private fun delete() {
         CommonDialog(this, screenPos).setContent(R.string.item_is_delete_tips).builder()
@@ -145,13 +129,14 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
-
                 override fun ok() {
                     BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
                     books.remove(book)
                     mAdapter?.notifyDataSetChanged()
                     EventBus.getDefault().post(BOOK_EVENT)
+                    //删除增量更新
+                    DataUpdateManager.deleteDateUpdate(0,book?.id!!.toInt(),0,book?.bookId!!)
                 }
             })
     }
@@ -171,7 +156,7 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
 
     override fun fetchData() {
         hideKeyboard()
-        var total = mutableListOf<BookBean>()
+        val total: MutableList<BookBean>
         //判断是否是搜索
         if (bookNameStr.isEmpty()) {
             books = BookGreenDaoManager.getInstance()

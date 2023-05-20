@@ -25,16 +25,12 @@ public class HomeworkContentBean {
     public int state;//0未提交1已提交2已批改
     public long date;
     public long commitDate;
-    public String folderPath;//文件夹路径
-    public String filePath;//文件路径
-    public String pathName;//文件名
+    public String path;//文件路径
     public int page;//页码
 
-    @Generated(hash = 98833158)
-    public HomeworkContentBean(Long id, long userId, String bgResId, String course,
-            int homeworkTypeId, int contentId, String title, int state, long date,
-            long commitDate, String folderPath, String filePath, String pathName,
-            int page) {
+    @Generated(hash = 2043677230)
+    public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
+            int contentId, String title, int state, long date, long commitDate, String path, int page) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
@@ -45,9 +41,7 @@ public class HomeworkContentBean {
         this.state = state;
         this.date = date;
         this.commitDate = commitDate;
-        this.folderPath = folderPath;
-        this.filePath = filePath;
-        this.pathName = pathName;
+        this.path = path;
         this.page = page;
     }
     @Generated(hash = 1693358578)
@@ -113,23 +107,11 @@ public class HomeworkContentBean {
     public void setCommitDate(long commitDate) {
         this.commitDate = commitDate;
     }
-    public String getFolderPath() {
-        return this.folderPath;
+    public String getPath() {
+        return this.path;
     }
-    public void setFolderPath(String folderPath) {
-        this.folderPath = folderPath;
-    }
-    public String getFilePath() {
-        return this.filePath;
-    }
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-    public String getPathName() {
-        return this.pathName;
-    }
-    public void setPathName(String pathName) {
-        this.pathName = pathName;
+    public void setPath(String path) {
+        this.path = path;
     }
     public int getPage() {
         return this.page;
@@ -137,6 +119,6 @@ public class HomeworkContentBean {
     public void setPage(int page) {
         this.page = page;
     }
-    
+
 
 }

@@ -2,16 +2,11 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
@@ -44,13 +39,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
                 item.course=course
                 PaperTypeDaoManager.getInstance().insertOrReplace(item)
                 //创建增量数据
-                DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
-                    type=3
-                    uid=item.typeId
-                    contentType=0
-                    date=System.currentTimeMillis()
-                    listJson=Gson().toJson(item)
-                })
+                DataUpdateManager.createDataUpdate(3,item.typeId,0,item.typeId,Gson().toJson(item))
             }
         }
         paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
@@ -138,6 +127,8 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
      */
     private fun loadPapers(papers:MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
+            if (mDownMapPool[item.id]!=null)
+                continue
             //设置路径
             val file = File(FileAddress().getPathTestPaper(item.examId, item.id))
             item.path = file.path
@@ -147,17 +138,18 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                 override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
                     mPresenter.deletePaper(item.id)
-                    //下载完成后刷新数据增量更新
-                    val contentPapers=DataUpdateDaoManager.getInstance().queryList(3,2,item.id)
+                    deleteDoneTask(imageDownLoad)
+                    val contentPapers=PaperContentDaoManager.getInstance().queryByID(item.id)
+                    //更新考卷内容增量数据
                     for (contentPaper in contentPapers){
-                        contentPaper.date=System.currentTimeMillis()
+                        DataUpdateManager.editDataUpdate(3,contentPaper.id.toInt(),2,contentPaper.typeId)
                     }
-                    DataUpdateDaoManager.getInstance().insertOrReplaces(contentPapers)
                 }
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                     hideLoading()
                 }
             })
+            mDownMapPool[item.id]=imageDownLoad
         }
     }
 
@@ -281,6 +273,11 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         PaperDaoManager.getInstance().clear()
         PaperContentDaoManager.getInstance().clear()
         FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
+        //清除本地增量数据
+        DataUpdateManager.clearDataUpdate(3)
+        val map=HashMap<String,Any>()
+        map["type"]=3
+        mDataUploadPresenter.onDeleteData(map)
     }
 
 }

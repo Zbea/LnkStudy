@@ -9,6 +9,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.BookStoreType;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.ControlMessage;
+import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
@@ -32,6 +33,16 @@ public interface IContractView {
         void onSuccess(List<String> urls);
         void onCommitSuccess();
     }
+    /**
+     * 增量更新
+     */
+    interface IDataUpdateView extends IBaseView{
+        void onSuccess();
+        void onList(List<DataUpdateBean> list);
+    }
+    /**
+     * 云书库上传
+     */
     interface ICloudUploadView extends IBaseView{
         void onSuccess(List<Integer> cloudIds);
         void onDeleteSuccess();

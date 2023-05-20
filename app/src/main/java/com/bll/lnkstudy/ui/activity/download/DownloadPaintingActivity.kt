@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -19,6 +20,7 @@ import com.bll.lnkstudy.ui.adapter.DownloadPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_download_app.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -165,14 +167,14 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
                 bean.author=item.author
                 bean.supply=item.supply
                 bean.bodyUrl=item.bodyUrl
-                PaintingBeanDaoManager.getInstance().insertOrReplace(bean)
+                val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
+                //新建增量更新
+                DataUpdateManager.createDataUpdateSource(5,id.toInt(),0,bean.contentId, Gson().toJson(bean),item.bodyUrl)
             }
-
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                 hideLoading()
                 showToast(R.string.book_download_fail)
             }
-
         })
     }
 

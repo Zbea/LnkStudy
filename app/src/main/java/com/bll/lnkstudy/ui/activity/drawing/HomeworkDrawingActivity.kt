@@ -7,14 +7,13 @@ import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
@@ -61,13 +60,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             homework.state=1
             homework.title=homeworkCommit?.title
             homework.contentId=homeworkCommit?.messageId!!
+            homework.commitDate=System.currentTimeMillis()
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-            //更新增量更新
-            val dataUpdateBean=DataUpdateDaoManager.getInstance().queryBean(2,1,homework.id.toInt())
-            dataUpdateBean.date=System.currentTimeMillis()
-            dataUpdateBean.listJson=Gson().toJson(homework)
-            dataUpdateBean.path=homework.filePath
-            DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean)
+            DataUpdateManager.editDataUpdate(2,homework.id.toInt(),1,homeworkTypeId,Gson().toJson(homework))
         }
         finish()
     }
@@ -244,17 +239,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             homeworkContent_a = null
         }
 
-
         tv_title_b.text=homeworkContent?.title
         if (isExpand){
             tv_title_a.text=homeworkContent_a?.title
         }
 
-        updateUI()
-    }
-
-    //更新绘图以及页码
-    private fun updateUI() {
         //已提交后不能手写，显示合图后的图片
         elik_b?.setPWEnabled(homeworkContent?.state==0)
         if (homeworkContent?.state==0){
@@ -262,9 +251,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             v_content_b.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
         }
         else{
-            GlideUtils.setImageFile(this,File(homeworkContent?.filePath),v_content_b)
+            GlideUtils.setImageFile(this,File(homeworkContent?.path),v_content_b)
         }
-        tv_page_b.text = (page + 1).toString()
+        tv_page_b.text = "${page+1}"
 
         if (isExpand) {
             if (homeworkContent_a != null) {
@@ -274,7 +263,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
                     v_content_a.setImageResource(ToolUtils.getImageResId(this,homeworkType?.contentResId))//设置背景
                 }
                 else{
-                    GlideUtils.setImageFileNoCache(this,File(homeworkContent_a?.filePath),v_content_a)
+                    GlideUtils.setImageFileNoCache(this,File(homeworkContent_a?.path),v_content_a)
                 }
                 tv_page_a.text = "$page"
             }
@@ -284,7 +273,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
-        elik.setLoadFilePath(homeworkContent.filePath.replace("png","tch"), true)
+        elik.setLoadFilePath(homeworkContent.path.replace("png","tch"), true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
@@ -294,10 +283,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
-                //更新增量更新
-                val dataUpdateBean=DataUpdateDaoManager.getInstance().queryBean(2,1,homeworkContent.id.toInt())
-                dataUpdateBean.date=System.currentTimeMillis()
-                DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean)
+                DataUpdateManager.editDataUpdate(2,homeworkContent.id.toInt(),1,homeworkTypeId)
             }
 
         })
@@ -307,20 +293,17 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        val path=FileAddress().getPathHomework(course,homeworkType?.typeId,homeworks.size)
+        val path=FileAddress().getPathHomework(course,homeworkTypeId,homeworks.size)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
-        homeworkContent =
-            HomeworkContentBean()
+        homeworkContent = HomeworkContentBean()
         homeworkContent?.course = course
         homeworkContent?.date = System.currentTimeMillis()
-        homeworkContent?.homeworkTypeId = homeworkType?.typeId
+        homeworkContent?.homeworkTypeId = homeworkTypeId
         homeworkContent?.bgResId = homeworkType?.bgResId
 
         homeworkContent?.title=getString(R.string.unnamed)+(homeworks.size+1)
-        homeworkContent?.folderPath=path
-        homeworkContent?.filePath = "$path/$pathName.png"
-        homeworkContent?.pathName=pathName
+        homeworkContent?.path = "$path/$pathName.png"
         homeworkContent?.page = homeworks.size
         homeworkContent?.state=0
 
@@ -330,15 +313,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworkContent?.id=id
         homeworks.add(homeworkContent!!)
 
-        //创建增量数据
-        DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
-            type=2
-            uid=id.toInt()
-            contentType=1
-            date=System.currentTimeMillis()
-            listJson= Gson().toJson(homeworkContent)
-            this.path= homeworkContent?.folderPath!!
-        })
+        DataUpdateManager.createDataUpdate(2,id.toInt(),1,homeworkTypeId,2
+            ,Gson().toJson(homeworkContent),path)
     }
 
 
@@ -372,7 +348,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         val resId=ToolUtils.getImageResId(this,homeworkType?.contentResId)
         val oldBitmap=BitmapFactory.decodeResource(resources,resId)
 
-        val drawPath = homework.filePath
+        val drawPath = homework.path
         val drawBitmap = BitmapFactory.decodeFile(drawPath)
         if (drawBitmap != null) {
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
@@ -395,12 +371,14 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworkContent_a?.title = title
         homeworks[page-1].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
+        DataUpdateManager.editDataUpdate(2,homeworkContent_a?.id!!.toInt(),1,homeworkTypeId,Gson().toJson(homeworkContent_a))
     }
 
     override fun setDrawingTitle_b(title:String) {
         homeworkContent?.title = title
         homeworks[page].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
+        DataUpdateManager.editDataUpdate(2,homeworkContent?.id!!.toInt(),1,homeworkTypeId,Gson().toJson(homeworkContent))
     }
 
 

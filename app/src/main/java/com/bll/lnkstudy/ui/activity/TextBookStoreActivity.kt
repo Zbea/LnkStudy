@@ -2,10 +2,7 @@ package com.bll.lnkstudy.ui.activity
 
 import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
@@ -22,6 +19,7 @@ import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
@@ -298,7 +296,10 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                         bookDrawPath="${fileTargetPath}draw"
                     }
                     //下载解压完成后更新存储的book
-                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                    val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(1,id.toInt(),0,book.bookId
+                        ,Gson().toJson(book),book.downloadUrl)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
@@ -308,6 +309,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                         EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
                         showToast(book.bookName+getString(R.string.book_download_success))
                     },500)
+
                     if (mDownMapPool.entries.size == 0) {
                         hideLoading()
                     }

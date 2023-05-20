@@ -28,13 +28,15 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property Uid = new Property(2, int.class, "uid", false, "UID");
         public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
-        public final static Property ContentType = new Property(4, int.class, "contentType", false, "CONTENT_TYPE");
-        public final static Property ListJson = new Property(5, String.class, "listJson", false, "LIST_JSON");
-        public final static Property Date = new Property(6, long.class, "date", false, "DATE");
-        public final static Property DownloadUrl = new Property(7, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property SourceUrl = new Property(8, String.class, "sourceUrl", false, "SOURCE_URL");
-        public final static Property Path = new Property(9, String.class, "path", false, "PATH");
-        public final static Property IsDelete = new Property(10, boolean.class, "isDelete", false, "IS_DELETE");
+        public final static Property TypeId = new Property(4, int.class, "typeId", false, "TYPE_ID");
+        public final static Property ContentType = new Property(5, int.class, "contentType", false, "CONTENT_TYPE");
+        public final static Property State = new Property(6, int.class, "state", false, "STATE");
+        public final static Property ListJson = new Property(7, String.class, "listJson", false, "LIST_JSON");
+        public final static Property Date = new Property(8, long.class, "date", false, "DATE");
+        public final static Property DownloadUrl = new Property(9, String.class, "downloadUrl", false, "DOWNLOAD_URL");
+        public final static Property SourceUrl = new Property(10, String.class, "sourceUrl", false, "SOURCE_URL");
+        public final static Property Path = new Property(11, String.class, "path", false, "PATH");
+        public final static Property IsDelete = new Property(12, boolean.class, "isDelete", false, "IS_DELETE");
     }
 
 
@@ -54,13 +56,15 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"UID\" INTEGER NOT NULL ," + // 2: uid
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
-                "\"CONTENT_TYPE\" INTEGER NOT NULL ," + // 4: contentType
-                "\"LIST_JSON\" TEXT," + // 5: listJson
-                "\"DATE\" INTEGER NOT NULL ," + // 6: date
-                "\"DOWNLOAD_URL\" TEXT," + // 7: downloadUrl
-                "\"SOURCE_URL\" TEXT," + // 8: sourceUrl
-                "\"PATH\" TEXT," + // 9: path
-                "\"IS_DELETE\" INTEGER NOT NULL );"); // 10: isDelete
+                "\"TYPE_ID\" INTEGER NOT NULL ," + // 4: typeId
+                "\"CONTENT_TYPE\" INTEGER NOT NULL ," + // 5: contentType
+                "\"STATE\" INTEGER NOT NULL ," + // 6: state
+                "\"LIST_JSON\" TEXT," + // 7: listJson
+                "\"DATE\" INTEGER NOT NULL ," + // 8: date
+                "\"DOWNLOAD_URL\" TEXT," + // 9: downloadUrl
+                "\"SOURCE_URL\" TEXT," + // 10: sourceUrl
+                "\"PATH\" TEXT," + // 11: path
+                "\"IS_DELETE\" INTEGER NOT NULL );"); // 12: isDelete
     }
 
     /** Drops the underlying database table. */
@@ -80,29 +84,31 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getUid());
         stmt.bindLong(4, entity.getType());
-        stmt.bindLong(5, entity.getContentType());
+        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(6, entity.getContentType());
+        stmt.bindLong(7, entity.getState());
  
         String listJson = entity.getListJson();
         if (listJson != null) {
-            stmt.bindString(6, listJson);
+            stmt.bindString(8, listJson);
         }
-        stmt.bindLong(7, entity.getDate());
+        stmt.bindLong(9, entity.getDate());
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(8, downloadUrl);
+            stmt.bindString(10, downloadUrl);
         }
  
         String sourceUrl = entity.getSourceUrl();
         if (sourceUrl != null) {
-            stmt.bindString(9, sourceUrl);
+            stmt.bindString(11, sourceUrl);
         }
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(10, path);
+            stmt.bindString(12, path);
         }
-        stmt.bindLong(11, entity.getIsDelete() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsDelete() ? 1L: 0L);
     }
 
     @Override
@@ -116,29 +122,31 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getUid());
         stmt.bindLong(4, entity.getType());
-        stmt.bindLong(5, entity.getContentType());
+        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(6, entity.getContentType());
+        stmt.bindLong(7, entity.getState());
  
         String listJson = entity.getListJson();
         if (listJson != null) {
-            stmt.bindString(6, listJson);
+            stmt.bindString(8, listJson);
         }
-        stmt.bindLong(7, entity.getDate());
+        stmt.bindLong(9, entity.getDate());
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(8, downloadUrl);
+            stmt.bindString(10, downloadUrl);
         }
  
         String sourceUrl = entity.getSourceUrl();
         if (sourceUrl != null) {
-            stmt.bindString(9, sourceUrl);
+            stmt.bindString(11, sourceUrl);
         }
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(10, path);
+            stmt.bindString(12, path);
         }
-        stmt.bindLong(11, entity.getIsDelete() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsDelete() ? 1L: 0L);
     }
 
     @Override
@@ -153,13 +161,15 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // uid
             cursor.getInt(offset + 3), // type
-            cursor.getInt(offset + 4), // contentType
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // listJson
-            cursor.getLong(offset + 6), // date
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // downloadUrl
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // sourceUrl
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // path
-            cursor.getShort(offset + 10) != 0 // isDelete
+            cursor.getInt(offset + 4), // typeId
+            cursor.getInt(offset + 5), // contentType
+            cursor.getInt(offset + 6), // state
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // listJson
+            cursor.getLong(offset + 8), // date
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // downloadUrl
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // sourceUrl
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // path
+            cursor.getShort(offset + 12) != 0 // isDelete
         );
         return entity;
     }
@@ -170,13 +180,15 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setUid(cursor.getInt(offset + 2));
         entity.setType(cursor.getInt(offset + 3));
-        entity.setContentType(cursor.getInt(offset + 4));
-        entity.setListJson(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setDate(cursor.getLong(offset + 6));
-        entity.setDownloadUrl(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setSourceUrl(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setPath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setIsDelete(cursor.getShort(offset + 10) != 0);
+        entity.setTypeId(cursor.getInt(offset + 4));
+        entity.setContentType(cursor.getInt(offset + 5));
+        entity.setState(cursor.getInt(offset + 6));
+        entity.setListJson(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setDate(cursor.getLong(offset + 8));
+        entity.setDownloadUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setSourceUrl(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setPath(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setIsDelete(cursor.getShort(offset + 12) != 0);
      }
     
     @Override

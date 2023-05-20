@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -13,6 +14,7 @@ import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.NoteTypeBean
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
 import com.bll.lnkstudy.utils.FileUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -46,19 +48,21 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemChildClickListener { adapter, view, position ->
+                val noteType=noteTypes[position]
                 this@NoteTypeManagerActivity.position=position
                 if (view.id==R.id.iv_edit){
-                    editNoteBook(noteTypes[position].name)
+                    editNoteBook(noteType)
                 }
                 if (view.id==R.id.iv_delete){
                     setDeleteView()
                 }
                 if (view.id==R.id.iv_top){
                     val date=noteTypes[0].date
-                    noteTypes[position].date=date-1000
-                    NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteTypes[position])
+                    noteType.date=date-1000
+                    NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteType)
                     Collections.swap(noteTypes,position,0)
                     setNotify()
+                    DataUpdateManager.editDataUpdate(4,noteType.id.toInt(),0,1,Gson().toJson(noteType))
                 }
             }
         }
@@ -87,24 +91,36 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                 val notebooks=NotebookDaoManager.getInstance().queryAll(noteType.name)
                 //删除该笔记分类中的所有笔记本及其内容
                 for (note in notebooks){
+                    //删除当前笔记本增量更新
+                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),1,1)
+                    //获取所有内容
+                    val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
+                    //删除当前笔记本内容增量更新
+                    for (item in noteContents){
+                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),2,1)
+                    }
+                    //本地笔记本以及笔记内容数据
                     NotebookDaoManager.getInstance().deleteBean(note)
                     NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
-                    val path= FileAddress().getPathNote(note.typeStr,note.title,note.grade)
+                    val path= FileAddress().getPathNote(note.grade,note.typeStr,note.title)
                     FileUtils.deleteFile(File(path))
                 }
                 setNotify()
+                DataUpdateManager.deleteDateUpdate(4,noteType.id.toInt(),0,1)
             }
 
         })
     }
 
+
     //修改笔记本
-    private fun editNoteBook(content:String){
-        InputContentDialog(this,getCurrentScreenPos(),content).builder()?.setOnDialogClickListener { string ->
+    private fun editNoteBook(noteType:NoteTypeBean){
+        InputContentDialog(this,getCurrentScreenPos(),noteType.name).builder()?.setOnDialogClickListener { string ->
+            noteType.name=string
             noteTypes[position].name = string
-            NoteTypeBeanDaoManager.getInstance()
-                .insertOrReplace(noteTypes[position])
+            NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteType)
             setNotify()
+            DataUpdateManager.editDataUpdate(4,noteType.id.toInt(),0,1,Gson().toJson(noteType))
         }
     }
 

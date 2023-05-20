@@ -100,10 +100,17 @@ class FileAddress {
     }
 
     /**
-     * 笔记保存地址
+     * 笔记文件夹地址
      */
-    fun getPathNote(type: String?,noteBookStr: String?,grade:Int):String{
-        return "$NOTE_PATH/$mUserId/$type/$noteBookStr/$grade"
+    fun getPathNote(grade:Int,type: String?,noteBookStr: String?):String{
+        return "$NOTE_PATH/$mUserId/$grade/$type/$noteBookStr"
+    }
+
+    /**
+     * 笔记保存地址（详情）
+     */
+    fun getPathNote(grade:Int,type: String?,noteBookStr: String?,date:Long):String{
+        return "$NOTE_PATH/$mUserId/$grade/$type/$noteBookStr/$date"
     }
 
     /**
@@ -114,10 +121,17 @@ class FileAddress {
     }
 
     /**
-     * 画本、书法
+     * 画本、书法文件夹地址
      */
     fun getPathPainting(type:Int, grade: Int):String{
         return "$PAINTING_PATH/$mUserId/$type/$grade"
+    }
+
+    /**
+     * 画本、书法内容具体路径
+     */
+    fun getPathPainting(type:Int, grade: Int,date: Long):String{
+        return "$PAINTING_PATH/$mUserId/$type/$grade/$date"
     }
 
     /**

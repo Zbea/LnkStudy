@@ -6,6 +6,7 @@ import com.bll.lnkstudy.greendao.NoteTypeBeanDao;
 import com.bll.lnkstudy.greendao.NotebookBeanDao;
 import com.bll.lnkstudy.mvp.model.NoteTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
@@ -53,6 +54,12 @@ public class NoteTypeBeanDaoManager {
 
     public void insertOrReplace(NoteTypeBean bean) {
         dao.insertOrReplace(bean);
+    }
+
+    public long insertOrReplaceGetId(NoteTypeBean bean) {
+        dao.insertOrReplace(bean);
+        List<NoteTypeBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
     public List<NoteTypeBean> queryAll() {

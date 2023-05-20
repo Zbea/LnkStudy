@@ -5,12 +5,15 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.NoteContentDaoManager
+import com.bll.lnkstudy.manager.NoteTypeBeanDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.NoteContentBean
+import com.bll.lnkstudy.mvp.model.NoteTypeBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
@@ -114,7 +117,7 @@ class CloudNoteFragment: BaseCloudFragment() {
         //没有存储内容的笔记直接添加
         if (item.downloadUrl=="null")
         {
-            NotebookDaoManager.getInstance().insertOrReplace(item)
+            addNote(item)
             return
         }
         showLoading()
@@ -123,8 +126,7 @@ class CloudNoteFragment: BaseCloudFragment() {
         if (zipFile.exists()) {
             zipFile.delete()
         }
-        val fileTargetPath=FileAddress().getPathNote(item.typeStr,item.title,item.grade)
-
+        val fileTargetPath=FileAddress().getPathNote(item.grade,item.typeStr,item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -136,14 +138,17 @@ class CloudNoteFragment: BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
-                                //添加笔记
-                                NotebookDaoManager.getInstance().insertOrReplace(item)
+                                val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 0 else 1
+                                addNote(item)
                                 //添加笔记内容
                                 val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                                 for (json in jsonArray){
                                     val contentBean=Gson().fromJson(json, NoteContentBean::class.java)
                                     contentBean.id=null//设置数据库id为null用于重新加入
-                                    NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
+                                    val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
+                                    //新建笔记内容增量更新
+                                    DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId
+                                        ,Gson().toJson(contentBean),File(contentBean.filePath).parent)
                                 }
                                 //删掉本地zip文件
                                 FileUtils.deleteFile(File(zipPath))
@@ -174,11 +179,29 @@ class CloudNoteFragment: BaseCloudFragment() {
             })
     }
 
+    /**
+     * 添加笔记（如果下载的笔记分类本地不存在则添加）
+     */
+    private fun addNote(item: NotebookBean){
+        val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 0 else 1
+        if (!NoteTypeBeanDaoManager.getInstance().isExist(item.typeStr)){
+            val noteBook = NoteTypeBean().apply {
+                name = item.typeStr
+                this.typeId = System.currentTimeMillis().toInt()
+            }
+            val id= NoteTypeBeanDaoManager.getInstance().insertOrReplaceGetId(noteBook)
+            //创建笔记分类增量更新
+            DataUpdateManager.createDataUpdate(4,id.toInt(),0,1,Gson().toJson(noteBook))
+        }
+        val id=NotebookDaoManager.getInstance().insertOrReplaceGetId(item)
+        //新建笔记本增量更新
+        DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(item))
+    }
+
     fun changeYear(year:Int){
         grade=year
         fetchData()
     }
-
 
     override fun fetchData() {
         val map = HashMap<String, Any>()

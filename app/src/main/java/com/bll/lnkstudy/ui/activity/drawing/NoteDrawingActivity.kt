@@ -5,6 +5,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.View
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -15,12 +16,14 @@ import com.bll.lnkstudy.mvp.model.NoteContentBean
 import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
-    private var type = ""
+    private var type =""
+    private var typeId=0
     private var noteBook: NotebookBean? = null
     private var noteContent: NoteContentBean? = null//当前内容
     private var note_Content_a: NoteContentBean? = null//a屏内容
@@ -37,6 +40,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteBook = bundle?.getSerializable("note") as NotebookBean
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
+        typeId=if (type==getString(R.string.note_tab_diary)) 0 else 1
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
 
@@ -46,7 +50,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         } else {
             newNoteContent()
         }
-
     }
 
 
@@ -193,34 +196,27 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             note_Content_a = null
         }
 
-
         tv_title_b.text=noteContent?.title
         if (isExpand){
             tv_title_a.text=note_Content_a?.title
         }
 
-        updateUI()
-    }
-
-    //更新绘图以及页码
-    private fun updateUI() {
-
-        updateImage(elik_b!!, noteContent?.filePath!!)
+        updateImage(elik_b!!, noteContent!!)
         tv_page_b.text = (page + 1).toString()
 
         if (isExpand) {
             if (note_Content_a != null) {
-                updateImage(elik_a!!, note_Content_a?.filePath!!)
+                updateImage(elik_a!!, note_Content_a!!)
                 tv_page_a.text = "$page"
             }
         }
-
     }
 
+
     //保存绘图以及更新手绘
-    private fun updateImage(elik: EinkPWInterface, path: String) {
+    private fun updateImage(elik: EinkPWInterface, noteContentBean: NoteContentBean) {
         elik.setPWEnabled(true)
-        elik.setLoadFilePath(path, true)
+        elik.setLoadFilePath(noteContentBean.filePath, true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
@@ -230,6 +226,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
+                DataUpdateManager.editDataUpdate(4,noteContentBean.id.toInt(),2,typeId)
             }
 
         })
@@ -239,28 +236,26 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newNoteContent() {
 
-        val path=FileAddress().getPathNote(type,noteBook?.title,grade)
-        val pathName = DateUtils.longToString(System.currentTimeMillis())
+        val date=System.currentTimeMillis()
+        val path=FileAddress().getPathNote(grade,type,noteBook?.title,date)
+        val pathName = DateUtils.longToString(date)
 
         noteContent = NoteContentBean()
-        noteContent?.date = System.currentTimeMillis()
+        noteContent?.date=date
         noteContent?.typeStr=type
         noteContent?.notebookTitle = noteBook?.title
         noteContent?.resId = noteBook?.contentResId
         noteContent?.grade=grade
         noteContent?.title=getString(R.string.unnamed)+(noteContents.size+1)
-        noteContent?.folderPath=path
         noteContent?.filePath = "$path/$pathName.tch"
-        noteContent?.pathName=pathName
         noteContent?.page = noteContents.size
-
         page = noteContents.size
 
-        NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-        val id= NoteContentDaoManager.getInstance().insertId
+        val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(noteContent)
         noteContent?.id=id
-
         noteContents.add(noteContent!!)
+
+        DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(noteContent),path)
     }
 
    override fun changeScreenPage() {
@@ -273,12 +268,14 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_a?.title = title
         noteContents[page-1].title = title
         NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
+        DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),2,typeId,Gson().toJson(note_Content_a))
     }
 
     override fun setDrawingTitle_b(title: String) {
         noteContent?.title = title
         noteContents[page].title = title
         NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+        DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),2,typeId,Gson().toJson(noteContent))
     }
 
 }

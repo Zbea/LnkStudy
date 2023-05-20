@@ -1,26 +1,31 @@
 package com.bll.lnkstudy.mvp.model;
 
 import com.bll.lnkstudy.utils.SPUtil;
+import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class PaintingTypeBean {
+public class PaintingTypeBean implements Serializable {
+    @Transient
+    private static final long serialVersionUID = 1L;
+
     @Unique
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public int type;//类型
+    public int type;//类型0画本1书法
     public int grade;
     public long date;
     public boolean isCloud;
     public int cloudId;//云id
-
     @Generated(hash = 1248290185)
     public PaintingTypeBean(Long id, long userId, int type, int grade, long date, boolean isCloud,
             int cloudId) {
@@ -77,5 +82,4 @@ public class PaintingTypeBean {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-   
 }

@@ -5,6 +5,7 @@ import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.mvp.model.NoteContentBean;
+import com.bll.lnkstudy.mvp.model.NoteTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -52,15 +53,13 @@ public class NoteContentDaoManager {
         return mDbController;
     }
 
-    public void insertNote(NoteContentBean bean) {
-        noteDao.insert(bean);
-    }
 
     public void insertOrReplaceNote(NoteContentBean bean) {
         noteDao.insertOrReplace(bean);
     }
 
-    public long getInsertId(){
+    public long insertOrReplaceGetId(NoteContentBean bean) {
+        noteDao.insertOrReplace(bean);
         List<NoteContentBean> queryList = noteDao.queryBuilder().build().list();
         return queryList.get(queryList.size()-1).id;
     }

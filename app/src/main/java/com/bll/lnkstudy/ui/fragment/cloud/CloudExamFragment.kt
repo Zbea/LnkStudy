@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
@@ -107,6 +108,8 @@ class CloudExamFragment:BaseCloudFragment() {
         if (item.downloadUrl=="null")
         {
             PaperTypeDaoManager.getInstance().insertOrReplace(item)
+            //创建增量数据
+            DataUpdateManager.createDataUpdate(3,item.typeId,0,item.typeId,Gson().toJson(item))
             return
         }
         showLoading()
@@ -128,19 +131,26 @@ class CloudExamFragment:BaseCloudFragment() {
                         override fun onFinish(success: Boolean) {
                             if (success) {
                                 PaperTypeDaoManager.getInstance().insertOrReplace(item)
+                                //创建增量数据
+                                DataUpdateManager.createDataUpdate(3,item.typeId,0,item.typeId,Gson().toJson(item))
 
                                 val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                                 for (json in jsonArray){
                                     val paperBean=Gson().fromJson(json, PaperBean::class.java)
                                     paperBean.id=null//设置数据库id为null用于重新加入
                                     PaperDaoManager.getInstance().insertOrReplace(paperBean)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(3,paperBean.contentId,1,paperBean.typeId,Gson().toJson(item))
                                 }
 
                                 val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
                                 for (json in jsonSubtypeArray){
                                     val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
                                     contentBean.id=null//设置数据库id为null用于重新加入
-                                    PaperContentDaoManager.getInstance().insertOrReplace(contentBean)
+                                    val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(3,id.toInt(),2,contentBean.typeId
+                                        ,Gson().toJson(contentBean),contentBean.path)
                                 }
 
                                 //删掉本地zip文件

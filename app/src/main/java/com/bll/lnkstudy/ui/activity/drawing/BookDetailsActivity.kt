@@ -8,6 +8,7 @@ import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -205,7 +206,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 .skipMemoryCache(false)
                 .fitCenter().into(simpleTarget)
 
-            val drawPath = book?.bookDrawPath+"/${index}.tch"
+            val drawPath = book?.bookDrawPath+"/$index/draw.tch"
             elik.setLoadFilePath(drawPath, true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -216,6 +217,15 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
                 override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                     elik.saveBitmap(true) {}
+                    if (File(drawPath).exists()){
+                        DataUpdateManager.editDataUpdate(1,index,1,book?.bookId!!)
+                    }
+                    else{
+                        //创建增量更新
+                        DataUpdateManager.createDataUpdateSource(1,index,1,book?.bookId!!
+                            ,Gson().toJson(book),File(drawPath).parent)
+                    }
+
                 }
 
             })

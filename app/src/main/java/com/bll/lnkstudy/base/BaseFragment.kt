@@ -13,15 +13,17 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ControlMessage
-import com.bll.lnkstudy.mvp.model.PaintingTypeBean
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
+import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -30,6 +32,7 @@ import com.bll.lnkstudy.ui.activity.HomeLeftActivity
 import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
+import com.google.gson.Gson
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -42,10 +45,13 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContractView.IControlMessageView , EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
+    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, EasyPermissions.PermissionCallbacks, IBaseView {
 
+    val mDownMapPool = HashMap<Int, ImageDownLoadUtils>()//下载管理
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mControlMessagePresenter= ControlMessagePresenter(this)
+    val mDataUploadPresenter=DataUpdatePresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -103,6 +109,12 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         uploadSuccess(cloudIds)
     }
     override fun onDeleteSuccess() {
+    }
+
+    //增量更新回调
+    override fun onSuccess() {
+    }
+    override fun onList(list: MutableList<DataUpdateBean>?) {
     }
 
 
@@ -318,7 +330,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     /**
      * 跳转书籍详情
      */
-    fun gotoBookDetails(id: Int){
+    fun gotoTextBookDetails(id: Int){
         ActivityManager.getInstance().checkBookIDisExist(id)
         var intent=Intent(activity, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
@@ -349,11 +361,13 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         //当前年级 手写书画分类为null则创建
         val item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
         if (item==null) {
-            val beanType = PaintingTypeBean()
-            beanType.type = type
-            beanType.grade = grade
-            beanType.date = System.currentTimeMillis()
-            PaintingTypeDaoManager.getInstance().insertOrReplace(beanType)
+            val date=System.currentTimeMillis()
+            item?.type = type
+            item?.grade = grade
+            item?.date = date
+            val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(item)
+            //创建本地画本增量更新
+            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 0, Gson().toJson(item))
         }
 
         if (items.size>1){
@@ -362,9 +376,10 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
             startActivity(intent)
         } else{
             ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
-            val intent=Intent(activity, PaintingDrawingActivity::class.java)
-            intent.flags=type
-            intent.putExtra("grade",grade)
+            val intent=Intent(context, PaintingDrawingActivity::class.java)
+            val bundle= Bundle()
+            bundle.putSerializable("painting",item)
+            intent.putExtra("paintingBundle",bundle)
             startActivity(intent)
         }
 
@@ -395,6 +410,19 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     }
 
     /**
+     * 跳转阅读器
+     */
+    fun gotoBookDetails(path:String){
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", path)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
+        customStartActivity(intent)
+    }
+
+    /**
      * 跳转活动
      */
     fun customStartActivity(intent: Intent){
@@ -402,6 +430,21 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         startActivity(intent)
 //        if (screenPos!=3)
 //            ActivityManager.getInstance().finishActivity(activity)
+    }
+
+    fun deleteDoneTask(task: ImageDownLoadUtils?) {
+        if (mDownMapPool.isNotEmpty()) {
+            //拿出map中的键值对
+            val entries = mDownMapPool.entries
+            val iterator = entries.iterator();
+            while (iterator.hasNext()) {
+                val entry = iterator.next() as Map.Entry<*, *>
+                val entity = entry.value
+                if (task == entity) {
+                    iterator.remove()
+                }
+            }
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import android.os.Handler
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -20,7 +21,9 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
@@ -215,14 +218,13 @@ class BookStoreActivity : BaseAppCompatActivity(),
     //下载book
     private fun downLoadStart(url: String,book: BookBean): BaseDownloadTask? {
         showLoading()
-
-        val fileName = File(book.downloadUrl).name//文件名
+        val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
+        val fileName = MD5Utils.convertMD5(book.bookId.toString())+formatStr//文件名
         val targetFileStr = FileAddress().getPathBook(fileName)
         val targetFile = File(targetFileStr)
         if (targetFile.exists()) {
             targetFile.delete()
         }
-
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -268,8 +270,11 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         bookPath = targetFileStr
                     }
                     //下载解压完成后更新存储的book
-                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                    val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
                     EventBus.getDefault().post(BOOK_EVENT)
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(0,id.toInt(),0,book.bookId
+                        , Gson().toJson(book),book.downloadUrl)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()

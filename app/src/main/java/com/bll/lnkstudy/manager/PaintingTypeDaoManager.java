@@ -4,6 +4,7 @@ import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaintingDrawingBeanDao;
 import com.bll.lnkstudy.greendao.PaintingTypeBeanDao;
+import com.bll.lnkstudy.mvp.model.NotebookBean;
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean;
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
@@ -56,6 +57,12 @@ public class PaintingTypeDaoManager {
 
     public void insertOrReplace(PaintingTypeBean bean) {
         dao.insertOrReplace(bean);
+    }
+
+    public long insertOrReplaceGetId(PaintingTypeBean bean) {
+        dao.insertOrReplace(bean);
+        List<PaintingTypeBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
     public List<PaintingTypeBean> queryAll() {

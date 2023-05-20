@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -59,10 +60,11 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
             rv_list.addItemDecoration(SpaceGridItemDeco(3, 60))
             setOnItemClickListener { adapter, view, position ->
                 ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
-                val intent= Intent(this@PaintingTypeListActivity, PaintingDrawingActivity::class.java)
-                intent.flags=type
-                intent.putExtra("grade",types[position].grade)
-                customStartActivity(intent)
+                val intent=Intent(this@PaintingTypeListActivity, PaintingDrawingActivity::class.java)
+                val bundle= Bundle()
+                bundle.putSerializable("painting",types[position])
+                intent.putExtra("paintingBundle",bundle)
+                startActivity(intent)
             }
         }
     }

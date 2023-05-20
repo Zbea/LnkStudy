@@ -5,6 +5,7 @@ import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkPaperContentBeanDao;
 import com.bll.lnkstudy.greendao.PaperContentBeanDao;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -56,6 +57,12 @@ public class HomeworkPaperContentDaoManager {
 
     public void insertOrReplace(HomeworkPaperContentBean bean) {
         dao.insertOrReplace(bean);
+    }
+
+    public long insertOrReplaceGetId(HomeworkPaperContentBean bean) {
+        dao.insertOrReplace(bean);
+        List<HomeworkPaperContentBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
     //通过考卷id查询所有试卷

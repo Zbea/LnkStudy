@@ -243,16 +243,29 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 跳转书籍详情
      */
-    fun gotoBookDetails(id: Int){
+    fun gotoTextBookDetails(id: Int){
         ActivityManager.getInstance().checkBookIDisExist(id)
         var intent=Intent(this, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
         startActivity(intent)
     }
 
-   fun gotoBookStore(type: String){
+   private fun gotoBookStore(type: String){
         val intent=Intent(this, BookStoreActivity::class.java)
         intent.putExtra("category",type)
+        customStartActivity(intent)
+    }
+
+    /**
+     * 跳转阅读器
+     */
+    fun gotoBookDetails(path:String){
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", path)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         customStartActivity(intent)
     }
 

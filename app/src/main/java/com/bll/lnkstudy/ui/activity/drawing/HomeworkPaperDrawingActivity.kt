@@ -8,11 +8,11 @@ import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -61,25 +61,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         papers[currentPosition]=paper!!
         daoManager?.insertOrReplace(paper)
         //更新增量数据
-        DataUpdateDaoManager.getInstance().insertOrReplace(
-            DataUpdateDaoManager.getInstance().queryBean(2,2,paper?.contentId!!)?.apply {
-            date=System.currentTimeMillis()
-            listJson=Gson().toJson(paper)
-        })
-
-        //下载完成后刷新数据增量更新
-        val contentPapers=DataUpdateDaoManager.getInstance().queryList(2,1,paper?.contentId!!)
+        DataUpdateManager.editDataUpdate(2,paper?.contentId!!,1,typeId,Gson().toJson(paper))
 
         //提交成功后循环遍历删除手写
-        for (i in paperContents.indices){
-            val index=i+1
-            val drawPath=paper?.path +"/$index/"
-            FileUtils.deleteFile(File(drawPath))
+        for (contentBean in paperContents){
+            FileUtils.deleteFile(File(contentBean.drawPath).parentFile)
             //更新增量作业卷内容(作业提交后合图后不存在手写内容)
-            val dataBean=contentPapers[i]
-            dataBean.date=System.currentTimeMillis()
-            dataBean.path=paperContents[i].path
-            DataUpdateDaoManager.getInstance().insertOrReplace(dataBean)
+            DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),2,typeId)
         }
     }
 
@@ -287,10 +275,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
-        val testPaperContent=paperContents[index]
-        GlideUtils.setImageFileNoCache(this,File(testPaperContent.path),view)
+        val contentBean=paperContents[index]
+        GlideUtils.setImageFileNoCache(this,File(contentBean.path),view)
 
-        elik.setLoadFilePath(testPaperContent.drawPath,true)
+        elik.setLoadFilePath(contentBean.drawPath,true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
@@ -300,6 +288,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
+                //更新增量作业卷内容(未提交原图和手写图)
+                DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),2,typeId)
             }
         })
     }

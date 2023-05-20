@@ -4,10 +4,7 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
@@ -149,7 +146,10 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
-                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                                val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
+                                //创建增量更新
+                                DataUpdateManager.createDataUpdateSource(1,id.toInt(),0,book.bookId
+                                    ,Gson().toJson(book),book.downloadUrl)
                                 //删除教材的zip文件
                                 FileUtils.deleteFile(File(zipPath))
                                 Handler().postDelayed({

@@ -78,18 +78,12 @@ public class HomeworkContentDaoManager {
     }
 
 
-    public void deleteAll(String course, int homeworkTypeId) {
-
-        WhereCondition whereCondition= HomeworkContentBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
-        List<HomeworkContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
-
-        dao.deleteInTx(queryList);
-    }
-
-
     public void deleteBean(HomeworkContentBean bean){
         dao.delete(bean);
+    }
+
+    public void deleteBeans(List<HomeworkContentBean> list){
+        dao.deleteInTx(list);
     }
 
     public void clear(){

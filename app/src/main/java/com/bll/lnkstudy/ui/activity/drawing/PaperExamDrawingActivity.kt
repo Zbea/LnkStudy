@@ -9,13 +9,12 @@ import android.view.EinkPWInterface
 import android.view.KeyEvent
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
@@ -39,8 +38,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     private val mUploadPresenter=FileUploadPresenter(this)
     private var course=""
     private var commonTypeId=0
-    private var daoManager: PaperDaoManager?=null
-    private var daoContentManager: PaperContentDaoManager?=null
+    private var daoManager=PaperDaoManager.getInstance()
+    private var daoContentManager=PaperContentDaoManager.getInstance()
     private var papers= mutableListOf<PaperBean>()
     private var paperContents= mutableListOf<PaperContentBean>()
 
@@ -80,9 +79,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
         course=exam?.subject!!
         commonTypeId=exam?.commonTypeId!!
-
-        daoManager= PaperDaoManager.getInstance()
-        daoContentManager= PaperContentDaoManager.getInstance()
 
         //获取之前所有收到的考卷，用来排序
         papers= daoManager?.queryAll(course,commonTypeId) as MutableList<PaperBean>
@@ -191,39 +187,23 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
             index=papers.size
         }
         daoManager?.insertOrReplace(paper)
-        //创建增量数据
-        DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
-            type=3
-            uid=exam?.id!!
-            contentType=2
-            date=System.currentTimeMillis()
-            listJson= Gson().toJson(paper)
-        })
+        DataUpdateManager.createDataUpdate(3,exam?.id!!,1,commonTypeId,Gson().toJson(paper))
 
         for (i in paths.indices){
             //合图完毕之后删除 手写
-            FileUtils.deleteFile(File("$outImageStr/${i+1}/"))
+            FileUtils.deleteFile(File(drawPaths[i]).parentFile)
             //保存本次考试的试卷内容
             val paperContent= PaperContentBean()
                 .apply {
                     course=this@PaperExamDrawingActivity.course
                     typeId=this@PaperExamDrawingActivity.commonTypeId
-                    contentId=paper.contentId
+                    contentId=exam?.id!!
                     path=paths[i]
                     drawPath=drawPaths[i]
                     page=paperContents.size+i
                 }
-            daoContentManager?.insertOrReplace(paperContent)
-
-            //创建增量数据
-            DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
-                type=3
-                uid=exam?.id!!
-                contentType=1
-                date=System.currentTimeMillis()
-                listJson= Gson().toJson(paperContent)
-                path=paths[i]
-            })
+            val id=daoContentManager.insertOrReplaceGetId(paperContent)
+            DataUpdateManager.createDataUpdate(3,id.toInt(),2,commonTypeId,Gson().toJson(paperContent),paths[i])
         }
     }
 
@@ -251,9 +231,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view: ImageView) {
         elik.setPWEnabled(true)
-
         GlideUtils.setImageUrl(this,paths[index],view)
-
         elik.setLoadFilePath(drawPaths[index],true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {

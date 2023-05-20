@@ -4,6 +4,7 @@ import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaintingDrawingBeanDao;
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean;
+import com.bll.lnkstudy.mvp.model.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -55,11 +56,16 @@ public class PaintingDrawingDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public long insertOrReplaceGetId(PaintingDrawingBean bean) {
+        dao.insertOrReplace(bean);
+        List<PaintingDrawingBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
+    }
+
     public List<PaintingDrawingBean> queryAllByType(int type,int grade) {
         WhereCondition whereCondition=PaintingDrawingBeanDao.Properties.Type.eq(type);
         WhereCondition whereCondition1=PaintingDrawingBeanDao.Properties.Grade.eq(grade);
-        List<PaintingDrawingBean> queryList = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
     public void deleteBean(PaintingDrawingBean bean){

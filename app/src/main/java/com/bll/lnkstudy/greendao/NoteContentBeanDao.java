@@ -31,11 +31,9 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
         public final static Property ResId = new Property(6, String.class, "resId", false, "RES_ID");
-        public final static Property FolderPath = new Property(7, String.class, "folderPath", false, "FOLDER_PATH");
-        public final static Property FilePath = new Property(8, String.class, "filePath", false, "FILE_PATH");
-        public final static Property PathName = new Property(9, String.class, "pathName", false, "PATH_NAME");
-        public final static Property Page = new Property(10, int.class, "page", false, "PAGE");
-        public final static Property Grade = new Property(11, int.class, "grade", false, "GRADE");
+        public final static Property FilePath = new Property(7, String.class, "filePath", false, "FILE_PATH");
+        public final static Property Page = new Property(8, int.class, "page", false, "PAGE");
+        public final static Property Grade = new Property(9, int.class, "grade", false, "GRADE");
     }
 
 
@@ -58,11 +56,9 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
                 "\"TITLE\" TEXT," + // 5: title
                 "\"RES_ID\" TEXT," + // 6: resId
-                "\"FOLDER_PATH\" TEXT," + // 7: folderPath
-                "\"FILE_PATH\" TEXT," + // 8: filePath
-                "\"PATH_NAME\" TEXT," + // 9: pathName
-                "\"PAGE\" INTEGER NOT NULL ," + // 10: page
-                "\"GRADE\" INTEGER NOT NULL );"); // 11: grade
+                "\"FILE_PATH\" TEXT," + // 7: filePath
+                "\"PAGE\" INTEGER NOT NULL ," + // 8: page
+                "\"GRADE\" INTEGER NOT NULL );"); // 9: grade
     }
 
     /** Drops the underlying database table. */
@@ -102,22 +98,12 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             stmt.bindString(7, resId);
         }
  
-        String folderPath = entity.getFolderPath();
-        if (folderPath != null) {
-            stmt.bindString(8, folderPath);
-        }
- 
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(9, filePath);
+            stmt.bindString(8, filePath);
         }
- 
-        String pathName = entity.getPathName();
-        if (pathName != null) {
-            stmt.bindString(10, pathName);
-        }
-        stmt.bindLong(11, entity.getPage());
-        stmt.bindLong(12, entity.getGrade());
+        stmt.bindLong(9, entity.getPage());
+        stmt.bindLong(10, entity.getGrade());
     }
 
     @Override
@@ -151,22 +137,12 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             stmt.bindString(7, resId);
         }
  
-        String folderPath = entity.getFolderPath();
-        if (folderPath != null) {
-            stmt.bindString(8, folderPath);
-        }
- 
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(9, filePath);
+            stmt.bindString(8, filePath);
         }
- 
-        String pathName = entity.getPathName();
-        if (pathName != null) {
-            stmt.bindString(10, pathName);
-        }
-        stmt.bindLong(11, entity.getPage());
-        stmt.bindLong(12, entity.getGrade());
+        stmt.bindLong(9, entity.getPage());
+        stmt.bindLong(10, entity.getGrade());
     }
 
     @Override
@@ -184,11 +160,9 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             cursor.getLong(offset + 4), // date
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // resId
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // folderPath
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // filePath
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // pathName
-            cursor.getInt(offset + 10), // page
-            cursor.getInt(offset + 11) // grade
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // filePath
+            cursor.getInt(offset + 8), // page
+            cursor.getInt(offset + 9) // grade
         );
         return entity;
     }
@@ -202,11 +176,9 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         entity.setDate(cursor.getLong(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setFolderPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setFilePath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setPathName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPage(cursor.getInt(offset + 10));
-        entity.setGrade(cursor.getInt(offset + 11));
+        entity.setFilePath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setPage(cursor.getInt(offset + 8));
+        entity.setGrade(cursor.getInt(offset + 9));
      }
     
     @Override

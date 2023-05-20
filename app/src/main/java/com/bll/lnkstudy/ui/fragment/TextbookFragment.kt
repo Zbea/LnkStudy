@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
@@ -73,7 +74,7 @@ class TextbookFragment : BaseFragment() {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
-                gotoBookDetails(books[position].bookId)
+                gotoTextBookDetails(books[position].bookId)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position
@@ -83,9 +84,17 @@ class TextbookFragment : BaseFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                BookGreenDaoManager.getInstance().deleteBooks(books)
+                                for (book in books){
+                                    bookGreenDaoManager.deleteBook(book) //删除本地数据库
+                                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                                    FileUtils.deleteFile(File(book.bookDrawPath))
+                                    mAdapter?.remove(position)
+                                    //删除增量更新
+                                    DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),0,book.bookId)
+                                }
                                 books.clear()
                                 mAdapter?.notifyDataSetChanged()
+
                             }
                         })
                 }
@@ -111,6 +120,9 @@ class TextbookFragment : BaseFragment() {
                     book.isLock=!book.isLock
                     mAdapter?.notifyItemChanged(position)
                     bookGreenDaoManager.insertOrReplaceBook(book)
+                    //修改增量更新
+                    DataUpdateManager.editDataUpdate(1,book.id.toInt(),0,book.bookId
+                        ,Gson().toJson(book))
                 }
             })
 
@@ -128,6 +140,8 @@ class TextbookFragment : BaseFragment() {
                 FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                 FileUtils.deleteFile(File(book.bookDrawPath))
                 mAdapter?.remove(position)
+                //删除增量更新
+                DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),0,book.bookId)
             }
         })
     }
@@ -214,12 +228,17 @@ class TextbookFragment : BaseFragment() {
         for (item in oldBooks){
             FileUtils.deleteFile(File(item.bookPath))
             FileUtils.deleteFile(File(item.bookDrawPath))
+            //删除增量更新
+            DataUpdateManager.deleteDateUpdate(1,item.id.toInt(),0,item.bookId)
         }
 
         //所有教材更新为往期教材
         val items=bookGreenDaoManager.queryAllTextBookOther()
         for (item in items){
             item.dateState=1
+            //修改增量更新
+            DataUpdateManager.editDataUpdate(1,item.id.toInt(),0,item.bookId
+                ,Gson().toJson(item))
         }
         bookGreenDaoManager.insertOrReplaceBooks(items)
         if (typeId!=3){

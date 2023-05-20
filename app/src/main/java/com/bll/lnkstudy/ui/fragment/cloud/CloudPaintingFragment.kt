@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
@@ -167,7 +168,9 @@ class CloudPaintingFragment : BaseCloudFragment() {
         imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
             override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
                 hideLoading()
-                PaintingBeanDaoManager.getInstance().insertOrReplace(item)
+                val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(item)
+                //新建增量更新
+                DataUpdateManager.createDataUpdateSource(5,id.toInt(),0,item.contentId, Gson().toJson(item),item.bodyUrl)
             }
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                 imageDownLoad.reloadImage()
@@ -181,12 +184,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     private fun downloadLocal(item:CloudListBean){
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val zipFile = File(zipPath)
-        if (zipFile.exists()) {
-            zipFile.delete()
-        }
         val fileTargetPath=FileAddress().getPathPainting(getType(),item.grade)
-
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -199,19 +197,26 @@ class CloudPaintingFragment : BaseCloudFragment() {
                         override fun onFinish(success: Boolean) {
                             if (success) {
                                 //存储画本分类
+                                val date=System.currentTimeMillis()
                                 val beanType = PaintingTypeBean()
                                 beanType.type = getType()
                                 beanType.grade = item.grade
-                                beanType.date = System.currentTimeMillis()
+                                beanType.date = date
                                 beanType.isCloud=true
                                 beanType.cloudId=item.id
-                                PaintingTypeDaoManager.getInstance().insertOrReplace(beanType)
+                                val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(beanType)
+                                //创建本地画本增量更新
+                                DataUpdateManager.createDataUpdate(5,id.toInt(),1, 0, Gson().toJson(beanType))
+
                                 //存储画本内容
                                 val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
                                 for (json in jsonArray){
                                     val drawingBean=Gson().fromJson(json,PaintingDrawingBean::class.java)
                                     drawingBean.id=null
-                                    PaintingDrawingDaoManager.getInstance().insertOrReplace(drawingBean)
+                                    val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
+                                    //创建本地画本增量更新
+                                    DataUpdateManager.createDataUpdate(5,id.toInt(),2,0
+                                        , Gson().toJson(drawingBean),drawingBean.path)
                                 }
                                 //删掉本地zip文件
                                 FileUtils.deleteFile(File(zipPath))
@@ -281,7 +286,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     }
 
     override fun onCloudList(item: CloudList) {
-        setPageNumber(item?.total!!)
+        setPageNumber(item.total)
         cloudLists=item.list
 
         when(typeId){

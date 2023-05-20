@@ -19,7 +19,9 @@ public class DataUpdateBean {
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int uid;
     public int type;//类型0书架1课本2作业3考卷4笔记5画本
-    public int contentType;//0分类1内容2目录
+    public int typeId;//分类id
+    public int contentType;//内容分类
+    public int state;//作业分类
     public String listJson;
     public long date;
     public String downloadUrl;//上传文件地址
@@ -27,14 +29,17 @@ public class DataUpdateBean {
     public String path;//本地上传文件路径
     public boolean isDelete;//是否清除后台数据
 
-    @Generated(hash = 556112973)
-    public DataUpdateBean(Long id, long userId, int uid, int type, int contentType, String listJson,
-            long date, String downloadUrl, String sourceUrl, String path, boolean isDelete) {
+    @Generated(hash = 686104397)
+    public DataUpdateBean(Long id, long userId, int uid, int type, int typeId, int contentType,
+            int state, String listJson, long date, String downloadUrl, String sourceUrl, String path,
+            boolean isDelete) {
         this.id = id;
         this.userId = userId;
         this.uid = uid;
         this.type = type;
+        this.typeId = typeId;
         this.contentType = contentType;
+        this.state = state;
         this.listJson = listJson;
         this.date = date;
         this.downloadUrl = downloadUrl;
@@ -110,6 +115,18 @@ public class DataUpdateBean {
     }
     public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
+    }
+    public int getTypeId() {
+        return this.typeId;
+    }
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+    public int getState() {
+        return this.state;
+    }
+    public void setState(int state) {
+        this.state = state;
     }
 
 

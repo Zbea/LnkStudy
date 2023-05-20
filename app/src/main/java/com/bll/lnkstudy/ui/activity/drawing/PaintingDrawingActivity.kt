@@ -7,6 +7,7 @@ import android.view.EinkPWInterface
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -16,25 +17,25 @@ import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
+import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
 class PaintingDrawingActivity : BaseDrawingActivity() {
 
-    private var type = 0
     private var grade=0
+    private var type=0
+    private var paintingTypeBean:PaintingTypeBean?=null
     private var popupDrawingManage: PopupDrawingManage? = null
-
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
-
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
-
     private var page = 0//页码
     private var resId=0
 
@@ -43,10 +44,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-
-        type = intent.flags
-        grade=intent.getIntExtra("grade",1)
-
+        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("painting") as PaintingTypeBean
+        grade=paintingTypeBean?.grade!!
+        type=paintingTypeBean?.type!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(type,grade)
 
         if (paintingLists.size > 0) {
@@ -96,11 +96,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             onChangeExpandContent()
         }
 
-
         iv_btn.setOnClickListener {
             showPopWindowBtn()
         }
-
 
     }
 
@@ -201,13 +199,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
     }
 
-    /**
-     * 设置是否可以手写
-     */
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
-    }
 
     //设置背景图
     private fun setBg(){
@@ -234,7 +225,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
 
         tv_title_b.text=paintingDrawingBean?.title
-        updateImage(elik_b!!, paintingDrawingBean?.path!!)
+        updateImage(elik_b!!, paintingDrawingBean!!)
         tv_page_b.text = (page + 1).toString()
 
         //切换页面内容的一些变化
@@ -242,16 +233,16 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             if (paintingDrawingBean_a != null) {
                 tv_title_a.text=paintingDrawingBean_a?.title
                 v_content_a.setImageResource(resId)
-                updateImage(elik_a!!, paintingDrawingBean_a?.path!!)
+                updateImage(elik_a!!, paintingDrawingBean_a!!)
                 tv_page_a.text = "$page"
             }
         }
     }
 
     //保存绘图以及更新手绘
-    private fun updateImage(elik: EinkPWInterface, path: String) {
+    private fun updateImage(elik: EinkPWInterface, bean: PaintingDrawingBean) {
         elik.setPWEnabled(true)
-        elik.setLoadFilePath(path, true)
+        elik.setLoadFilePath(bean.path, true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
             }
@@ -261,32 +252,33 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
+                DataUpdateManager.editDataUpdate(5,bean.id.toInt(),2,0)
             }
-
         })
     }
 
 
     //创建新的作业内容
     private fun newHomeWorkContent() {
-        val path = FileAddress().getPathPainting(type,grade)
-        val date = DateUtils.longToString(System.currentTimeMillis())
+        val date=System.currentTimeMillis()
+        val path = FileAddress().getPathPainting(type,grade,date)
+        val fileName = DateUtils.longToString(date)
 
         paintingDrawingBean = PaintingDrawingBean()
         paintingDrawingBean?.title=if (type==0)
             getString(R.string.drawing)+(paintingLists.size+1) else getString(R.string.calligraphy)+(paintingLists.size+1)
         paintingDrawingBean?.type = type
         paintingDrawingBean?.date = System.currentTimeMillis()
-        paintingDrawingBean?.path = "$path/$date.tch"
+        paintingDrawingBean?.path = "$path/$fileName.tch"
         paintingDrawingBean?.grade=grade
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)
 
-        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-
+        val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)
+        //创建本地画本增量更新
+        DataUpdateManager.createDataUpdate(5,id.toInt(),2,0, Gson().toJson(paintingDrawingBean),path)
     }
-
 
     //
     private fun showPopWindowBtn() {
@@ -331,12 +323,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //删除内容
     private fun deleteContent() {
-
         PaintingDrawingDaoManager.getInstance().deleteBean(paintingDrawingBean)
         paintingLists.remove(paintingDrawingBean)
-        val file = File(paintingDrawingBean?.path)
-        val pathName = FileUtils.getFileName(file.name)
-        FileUtils.deleteFile(file.parent, pathName)//删除文件
+        FileUtils.deleteFile(File(paintingDrawingBean?.path).parentFile)//删除文件
+        //删除本地画本增量更新
+        DataUpdateManager.deleteDateUpdate(5,paintingDrawingBean?.id!!.toInt(),2,0)
         if (page>0){
             page -= 1
         }
@@ -358,12 +349,14 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean_a?.title = title
         paintingLists[page-1].title = title
         PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,0, Gson().toJson(paintingDrawingBean_a))
     }
 
     override fun setDrawingTitle_b(title: String) {
         paintingDrawingBean?.title = title
         paintingLists[page].title = title
         PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,0, Gson().toJson(paintingDrawingBean))
     }
 
 }

@@ -23,16 +23,13 @@ public class NoteContentBean implements Serializable {
     public long date;//创建时间
     public String title;
     public String resId;//背景id
-    public String folderPath;//文件夹路径
     public String filePath;//文件路径
-    public String pathName;//文件名
     public int page;//页码
     public int grade;//年级
-    @Generated(hash = 1004683073)
+    @Generated(hash = 58568411)
     public NoteContentBean(Long id, long userId, String typeStr,
             String notebookTitle, long date, String title, String resId,
-            String folderPath, String filePath, String pathName, int page,
-            int grade) {
+            String filePath, int page, int grade) {
         this.id = id;
         this.userId = userId;
         this.typeStr = typeStr;
@@ -40,9 +37,7 @@ public class NoteContentBean implements Serializable {
         this.date = date;
         this.title = title;
         this.resId = resId;
-        this.folderPath = folderPath;
         this.filePath = filePath;
-        this.pathName = pathName;
         this.page = page;
         this.grade = grade;
     }
@@ -91,23 +86,11 @@ public class NoteContentBean implements Serializable {
     public void setResId(String resId) {
         this.resId = resId;
     }
-    public String getFolderPath() {
-        return this.folderPath;
-    }
-    public void setFolderPath(String folderPath) {
-        this.folderPath = folderPath;
-    }
     public String getFilePath() {
         return this.filePath;
     }
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-    public String getPathName() {
-        return this.pathName;
-    }
-    public void setPathName(String pathName) {
-        this.pathName = pathName;
     }
     public int getPage() {
         return this.page;

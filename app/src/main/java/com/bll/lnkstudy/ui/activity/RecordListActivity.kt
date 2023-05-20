@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupClick
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -185,35 +184,26 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
 
     private fun setSetting(view : View){
-        //修改增量更新
-        val dataUpdateBean=DataUpdateDaoManager.getInstance().queryBean(2,1,recordBeans[position].id.toInt())
         PopupClick(this,pops,view,5).builder().setOnSelectListener{
             if (it.id == 0) {
-                edit(recordBeans[position],dataUpdateBean)
+                edit()
             }
             if (it.id == 0) {
                 delete()
-                DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean.apply {
-                    isDelete=true
-                    date=System.currentTimeMillis()
-                })
             }
         }
 
     }
 
     //修改笔记
-    private fun edit(item:RecordBean,dataUpdateBean:DataUpdateBean){
-        InputContentDialog(this,getCurrentScreenPos(),item.title).builder()?.setOnDialogClickListener { string ->
-            item.title=string
-            recordBeans[position].title = string
+    private fun edit(){
+        val recordBean=recordBeans[position]
+        InputContentDialog(this,getCurrentScreenPos(),recordBean.title).builder()?.setOnDialogClickListener { string ->
+            recordBean.title=string
             mAdapter?.notifyDataSetChanged()
-            RecordDaoManager.getInstance().insertOrReplace(recordBeans[position])
+            RecordDaoManager.getInstance().insertOrReplace(recordBean)
             //修改本地增量更新
-            DataUpdateDaoManager.getInstance().insertOrReplace(dataUpdateBean.apply {
-                listJson=Gson().toJson(item)
-                date=System.currentTimeMillis()
-            })
+            DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),1,recordBean.typeId,Gson().toJson(recordBean))
         }
     }
 
@@ -224,13 +214,14 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 override fun cancel() {
                 }
                 override fun ok() {
-                    val item=recordBeans[position]
+                    val recordBean=recordBeans[position]
                     recordBeans.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
-                    RecordDaoManager.getInstance().deleteBean(item)
-                    FileUtils.deleteFile(File(item.path))
+                    RecordDaoManager.getInstance().deleteBean(recordBean)
+                    FileUtils.deleteFile(File(recordBean.path))
+                    //修改本地增量更新
+                    DataUpdateManager.deleteDateUpdate(2,recordBean.id.toInt(),1,recordBean.typeId)
                 }
-
             })
     }
 

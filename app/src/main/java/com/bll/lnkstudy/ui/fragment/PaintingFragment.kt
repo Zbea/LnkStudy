@@ -3,10 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Handler
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
@@ -172,6 +169,7 @@ class PaintingFragment : BaseFragment(){
                                 subTypeStr=if (item.type==0) "我的画本" else "我的书法"
                                 date=System.currentTimeMillis()
                                 grade=this@PaintingFragment.grade
+                                listJson=Gson().toJson(item)
                                 contentJson=Gson().toJson(paintingContents)
                                 downloadUrl=it
                             })
@@ -204,6 +202,12 @@ class PaintingFragment : BaseFragment(){
             //删除所有本地画本、书法内容
             PaintingDrawingDaoManager.getInstance().clear()
             FileUtils.deleteFile(File(Constants.PAINTING_PATH))
+            //清除增量数据
+            DataUpdateManager.clearDataUpdate(5,0)
+            val map=HashMap<String,Any>()
+            map["type"]=5
+            map["typeId"]=0
+            mDataUploadPresenter.onDeleteData(map)
         }
         else{
             val paintings=PaintingBeanDaoManager.getInstance().queryPaintings()
@@ -213,6 +217,8 @@ class PaintingFragment : BaseFragment(){
                     FileUtils.deleteFile(File(path))
                     val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)
                     PaintingBeanDaoManager.getInstance().deleteBean(paintingBean)
+                    //删除增量更新
+                    DataUpdateManager.deleteDateUpdate(5,item.id.toInt(),0,item.contentId)
                 }
             }
         }

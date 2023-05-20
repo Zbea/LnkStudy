@@ -5,9 +5,9 @@ import android.os.Handler
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
@@ -63,12 +63,13 @@ class BookCaseFragment: BaseFragment() {
             setEmptyView(R.layout.common_book_empty)
             rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
-
+                val bookBean=books[position]
+                gotoBookDetails(bookBean.bookPath)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookCaseFragment.position=position
                 book=books[position]
-                onLongClick()
+                delete()
                 true
             }
         }
@@ -114,20 +115,6 @@ class BookCaseFragment: BaseFragment() {
     }
 
 
-    //长按显示课本管理
-    private fun onLongClick(){
-        BookManageDialog(requireActivity(),screenPos,1,book!!).builder()
-            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
-            override fun onCollect() {
-            }
-            override fun onDelete() {
-                delete()
-            }
-            override fun onLock() {
-            }
-          })
-    }
-
     //删除书架书籍
     private fun delete(){
         CommonDialog(requireActivity(),screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
@@ -137,8 +124,11 @@ class BookCaseFragment: BaseFragment() {
             override fun ok() {
                 BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                 books.remove(book)
+                FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
                 mAdapter?.notifyDataSetChanged()
                 EventBus.getDefault().post(BOOK_EVENT)
+                //删除增量更新
+                DataUpdateManager.deleteDateUpdate(0,book?.id!!.toInt(),0,book?.bookId!!)
             }
         })
     }
@@ -177,8 +167,11 @@ class BookCaseFragment: BaseFragment() {
         super.uploadSuccess(cloudIds)
         for (item in cloudList){
             val bookBean=BookGreenDaoManager.getInstance().queryBookByID(item.bookId)
+            //删除书籍
             FileUtils.deleteFile(File(bookBean.bookPath))
             BookGreenDaoManager.getInstance().deleteBook(bookBean)
+            //删除增量数据
+            DataUpdateManager.deleteDateUpdate(0,bookBean.id.toInt(),0,bookBean.bookId)
         }
         findData()
     }

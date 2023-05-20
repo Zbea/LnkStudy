@@ -93,6 +93,7 @@ class Constants{
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
         const val USER_EVENT = "UserEvent"
         const val CONTROL_CLEAR_EVENT = "ControlClearEvent"
+        const val DATA_UPLOAD_EVENT = "DataUpload"
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

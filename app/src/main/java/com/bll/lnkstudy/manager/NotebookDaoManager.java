@@ -5,6 +5,7 @@ import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteTypeBeanDao;
 import com.bll.lnkstudy.greendao.NotebookBeanDao;
+import com.bll.lnkstudy.mvp.model.NoteTypeBean;
 import com.bll.lnkstudy.mvp.model.NotebookBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -51,12 +52,14 @@ public class NotebookDaoManager {
         return mDbController;
     }
 
-    public void insert(NotebookBean bean) {
-        dao.insert(bean);
-    }
-
     public void insertOrReplace(NotebookBean bean) {
         dao.insertOrReplace(bean);
+    }
+
+    public long insertOrReplaceGetId(NotebookBean bean) {
+        dao.insertOrReplace(bean);
+        List<NotebookBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
     /**

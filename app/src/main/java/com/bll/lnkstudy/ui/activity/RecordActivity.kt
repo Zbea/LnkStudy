@@ -3,12 +3,11 @@ package com.bll.lnkstudy.ui.activity
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.homework.RecordBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -22,8 +21,7 @@ import java.io.IOException
 class RecordActivity : BaseAppCompatActivity() {
 
     //语音文件保存路径
-    private var path: String? = null
-
+    private var pathFile: String? = null
     //语音操作对象
     private var mPlayer: MediaPlayer? = null
     private var mRecorder: MediaRecorder? = null
@@ -36,7 +34,7 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        path = File(FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!), "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
+        pathFile = File(FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!), "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
     }
 
     override fun initView() {
@@ -45,12 +43,12 @@ class RecordActivity : BaseAppCompatActivity() {
 
         iv_back?.setOnClickListener {
             finish()
-            FileUtils.deleteFile(File(path))
+            FileUtils.deleteFile(File(pathFile))
         }
 
         iv_save?.setOnClickListener {
             hideKeyboard()
-            if (!FileUtils.isExist(path)) {
+            if (!FileUtils.isExist(pathFile)) {
                 showToast(R.string.toast_record)
                 return@setOnClickListener
             }
@@ -62,18 +60,11 @@ class RecordActivity : BaseAppCompatActivity() {
 
             isSave=true
             recordBean?.title=title
-            recordBean?.path = path
+            recordBean?.path = pathFile
             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
-
             //创建增量数据
-            DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
-                type=2
-                uid=id.toInt()
-                contentType=1
-                date=System.currentTimeMillis()
-                listJson= Gson().toJson(recordBean)
-                this.path= this@RecordActivity.path
-            })
+            DataUpdateManager.createDataUpdate(2,id.toInt(),1,recordBean?.typeId!!,3
+                ,Gson().toJson(recordBean),pathFile!!)
 
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()
@@ -89,7 +80,7 @@ class RecordActivity : BaseAppCompatActivity() {
                 iv_record.setImageResource(R.mipmap.icon_record_show)
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-                setOutputFile(path)
+                setOutputFile(pathFile)
                 setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
                 try {
                     prepare()//准备
@@ -146,7 +137,7 @@ class RecordActivity : BaseAppCompatActivity() {
     //播放更新准备
     private fun startPrepare(){
         mPlayer = MediaPlayer().apply {
-            setDataSource(path)
+            setDataSource(pathFile)
             setOnCompletionListener {
                 iv_play.setImageResource(R.mipmap.icon_record_play)
                 tv_play.setText(R.string.play)
@@ -182,7 +173,7 @@ class RecordActivity : BaseAppCompatActivity() {
         super.onDestroy()
         //未保存清理掉录音原件
         if (!isSave){
-            FileUtils.deleteFile(File(path))
+            FileUtils.deleteFile(File(pathFile))
         }
         mRecorder?.run {
             stop()
