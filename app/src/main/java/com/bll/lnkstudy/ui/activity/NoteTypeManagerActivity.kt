@@ -62,7 +62,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                     NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteType)
                     Collections.swap(noteTypes,position,0)
                     setNotify()
-                    DataUpdateManager.editDataUpdate(4,noteType.id.toInt(),0,1,Gson().toJson(noteType))
+                    DataUpdateManager.editDataUpdate(4,noteType.id.toInt(),1,2,Gson().toJson(noteType))
                 }
             }
         }
@@ -87,17 +87,17 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                 noteTypes.removeAt(position)
                 //删除笔记本
                 NoteTypeBeanDaoManager.getInstance().deleteBean(noteType)
-
+                DataUpdateManager.deleteDateUpdate(4,noteType.id.toInt(),1,2)
                 val notebooks=NotebookDaoManager.getInstance().queryAll(noteType.name)
                 //删除该笔记分类中的所有笔记本及其内容
                 for (note in notebooks){
                     //删除当前笔记本增量更新
-                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),1,1)
+                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2,2)
                     //获取所有内容
                     val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
                     //删除当前笔记本内容增量更新
                     for (item in noteContents){
-                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),2,1)
+                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3,2)
                     }
                     //本地笔记本以及笔记内容数据
                     NotebookDaoManager.getInstance().deleteBean(note)
@@ -106,7 +106,6 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
                     FileUtils.deleteFile(File(path))
                 }
                 setNotify()
-                DataUpdateManager.deleteDateUpdate(4,noteType.id.toInt(),0,1)
             }
 
         })
@@ -120,7 +119,7 @@ class NoteTypeManagerActivity : BaseAppCompatActivity() {
             noteTypes[position].name = string
             NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteType)
             setNotify()
-            DataUpdateManager.editDataUpdate(4,noteType.id.toInt(),0,1,Gson().toJson(noteType))
+            DataUpdateManager.editDataUpdate(4,noteType.id.toInt(),1,2,Gson().toJson(noteType))
         }
     }
 

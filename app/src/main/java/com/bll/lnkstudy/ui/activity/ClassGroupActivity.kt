@@ -30,16 +30,12 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         presenter.getClassGroupList(true)
     }
 
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
-        groups = if(classGroups.isNullOrEmpty()){
-            mutableListOf()
-        } else{
-            classGroups!!
-        }
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
+        groups = classGroups
         mAdapter?.setNewData(groups)
 
         DataBeanManager.classGroups=groups
-        EventBus.getDefault().post(Constants.COURSE_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
     override fun onQuit() {
@@ -48,7 +44,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         mAdapter?.setNewData(groups)
         //退出班群，刷新科目
         DataBeanManager.classGroups=groups
-        EventBus.getDefault().post(Constants.COURSE_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
     override fun onUser(lists: MutableList<ClassGroupUser>?) {
     }

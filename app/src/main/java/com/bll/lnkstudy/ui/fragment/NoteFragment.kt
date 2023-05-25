@@ -45,7 +45,7 @@ class NoteFragment : BaseFragment(){
     private var position = 0 //当前笔记标记
     private var resId = ""
     private var isDiary=false
-    private var typeId=0
+    private var typeId=1
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -145,7 +145,7 @@ class NoteFragment : BaseFragment(){
             rg_group.addView(getRadioButton(i,positionType, noteTypes[i].name, noteTypes.size - 1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            typeId=if (positionType==0)0 else 1
+            typeId=if (positionType==0)1 else 2
             positionType=id
             typeStr=noteTypes[positionType].name
             pageIndex=1
@@ -240,7 +240,7 @@ class NoteFragment : BaseFragment(){
                 val id=NotebookDaoManager.getInstance().insertOrReplaceGetId(note)
                 fetchData()
                 //新建笔记本增量更新
-                DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(note))
+                DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(note))
             }
         else InputContentDialog(requireContext(), screenPos, getString(R.string.note_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
@@ -256,7 +256,7 @@ class NoteFragment : BaseFragment(){
                 val id=NotebookDaoManager.getInstance().insertOrReplaceGetId(note)
                 EventBus.getDefault().post(NOTE_EVENT)
                 //新建笔记本增量更新
-                DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(note))
+                DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(note))
             }
     }
 
@@ -293,10 +293,10 @@ class NoteFragment : BaseFragment(){
                     FileUtils.deleteFile(File(path))
                     EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                     //删除当前笔记本增量更新
-                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),1,typeId)
+                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2,typeId)
                     //删除当前笔记本内容增量更新
                     for (item in noteContents){
-                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),2,typeId)
+                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3,typeId)
                     }
                 }
             })
@@ -317,7 +317,7 @@ class NoteFragment : BaseFragment(){
                     noteTypes.add(noteBook)
                     val id=NoteTypeBeanDaoManager.getInstance().insertOrReplaceGetId(noteBook)
                     //创建笔记分类增量更新
-                    DataUpdateManager.createDataUpdate(4,id.toInt(),0,1,Gson().toJson(noteBook))
+                    DataUpdateManager.createDataUpdate(4,id.toInt(),1,2,Gson().toJson(noteBook))
                     initTab()
                 }
             }
@@ -327,7 +327,7 @@ class NoteFragment : BaseFragment(){
      * 修改增量更新数据
      */
     private fun editDataUpdate(id:Int,item:NotebookBean){
-        DataUpdateManager.editDataUpdate(4,id,1,typeId,Gson().toJson(item))
+        DataUpdateManager.editDataUpdate(4,id,2,typeId,Gson().toJson(item))
     }
 
     override fun onEventBusMessage(msgFlag: String) {
@@ -441,10 +441,10 @@ class NoteFragment : BaseFragment(){
                 FileUtils.deleteFile(File(path))
             }
             //清除本地增量数据
-            DataUpdateManager.clearDataUpdate(4,0)
+            DataUpdateManager.clearDataUpdate(4,1)
             val map=HashMap<String,Any>()
             map["type"]=4
-            map["typeId"]=0
+            map["typeId"]=1
             mDataUploadPresenter.onDeleteData(map)
         }
         else{
@@ -463,10 +463,10 @@ class NoteFragment : BaseFragment(){
             }
             NoteTypeBeanDaoManager.getInstance().clear()
             //清除本地增量数据
-            DataUpdateManager.clearDataUpdate(4,1)
+            DataUpdateManager.clearDataUpdate(4,2)
             val map=HashMap<String,Any>()
             map["type"]=4
-            map["typeId"]=1
+            map["typeId"]=2
             mDataUploadPresenter.onDeleteData(map)
         }
         if (ids.size>0)

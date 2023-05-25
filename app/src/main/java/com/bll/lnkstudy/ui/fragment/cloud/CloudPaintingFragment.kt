@@ -170,7 +170,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 hideLoading()
                 val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(item)
                 //新建增量更新
-                DataUpdateManager.createDataUpdateSource(5,id.toInt(),0,item.contentId, Gson().toJson(item),item.bodyUrl)
+                DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,item.contentId, Gson().toJson(item),item.bodyUrl)
             }
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                 imageDownLoad.reloadImage()
@@ -206,7 +206,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                                 beanType.cloudId=item.id
                                 val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(beanType)
                                 //创建本地画本增量更新
-                                DataUpdateManager.createDataUpdate(5,id.toInt(),1, 0, Gson().toJson(beanType))
+                                DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(beanType))
 
                                 //存储画本内容
                                 val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
@@ -215,7 +215,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                                     drawingBean.id=null
                                     val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                     //创建本地画本增量更新
-                                    DataUpdateManager.createDataUpdate(5,id.toInt(),2,0
+                                    DataUpdateManager.createDataUpdate(5,id.toInt(),2,1
                                         , Gson().toJson(drawingBean),drawingBean.path)
                                 }
                                 //删掉本地zip文件

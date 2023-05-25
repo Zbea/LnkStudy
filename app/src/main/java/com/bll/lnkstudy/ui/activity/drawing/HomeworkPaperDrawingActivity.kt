@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
@@ -61,13 +60,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         papers[currentPosition]=paper!!
         daoManager?.insertOrReplace(paper)
         //更新增量数据
-        DataUpdateManager.editDataUpdate(2,paper?.contentId!!,1,typeId,Gson().toJson(paper))
+        DataUpdateManager.editDataUpdate(2,paper?.contentId!!,2,typeId,Gson().toJson(paper))
 
         //提交成功后循环遍历删除手写
         for (contentBean in paperContents){
-            FileUtils.deleteFile(File(contentBean.drawPath).parentFile)
             //更新增量作业卷内容(作业提交后合图后不存在手写内容)
-            DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),2,typeId)
+            DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
         }
     }
 
@@ -289,7 +287,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
                 //更新增量作业卷内容(未提交原图和手写图)
-                DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),2,typeId)
+                DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
             }
         })
     }
@@ -305,21 +303,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      */
     private fun commit(){
         val commitPaths= mutableListOf<String>()
-        for (i in paperContents.indices) {
-            val item=paperContents[i]
-            val path = item.path //当前原图路径
-            val drawPath = item.drawPath.replace("tch","png")//当前绘图路径
-            val oldBitmap = BitmapFactory.decodeFile(path)
-            val drawBitmap = BitmapFactory.decodeFile(drawPath)
-            if (drawBitmap != null) {
-                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                BitmapUtils.saveBmpGallery(this, mergeBitmap, path)
-            }
-            commitPaths.add(path)
+        for (item in paperContents) {
+            Thread(Runnable {
+                val drawPath = item.drawPath.replace("tch","png")//当前绘图路径
+                BitmapUtils.mergeBitmap(item.path,drawPath)
+                commitPaths.add(item.path)
+                FileUtils.deleteFile(File(item.drawPath).parentFile)
+            }).start()
         }
         Handler().postDelayed({
             mUploadPresenter.upload(commitPaths)
-        },500)
+        },1000)
     }
 
 }

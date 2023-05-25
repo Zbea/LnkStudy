@@ -138,7 +138,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
-                                val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 0 else 1
+                                val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
                                 addNote(item)
                                 //添加笔记内容
                                 val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
@@ -147,7 +147,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                                     contentBean.id=null//设置数据库id为null用于重新加入
                                     val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                     //新建笔记内容增量更新
-                                    DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId
+                                    DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId
                                         ,Gson().toJson(contentBean),File(contentBean.filePath).parent)
                                 }
                                 //删掉本地zip文件
@@ -183,7 +183,7 @@ class CloudNoteFragment: BaseCloudFragment() {
      * 添加笔记（如果下载的笔记分类本地不存在则添加）
      */
     private fun addNote(item: NotebookBean){
-        val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 0 else 1
+        val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
         if (!NoteTypeBeanDaoManager.getInstance().isExist(item.typeStr)){
             val noteBook = NoteTypeBean().apply {
                 name = item.typeStr
@@ -191,11 +191,11 @@ class CloudNoteFragment: BaseCloudFragment() {
             }
             val id= NoteTypeBeanDaoManager.getInstance().insertOrReplaceGetId(noteBook)
             //创建笔记分类增量更新
-            DataUpdateManager.createDataUpdate(4,id.toInt(),0,1,Gson().toJson(noteBook))
+            DataUpdateManager.createDataUpdate(4,id.toInt(),1,noteBook.typeId,Gson().toJson(noteBook))
         }
         val id=NotebookDaoManager.getInstance().insertOrReplaceGetId(item)
         //新建笔记本增量更新
-        DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(item))
+        DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(item))
     }
 
     fun changeYear(year:Int){

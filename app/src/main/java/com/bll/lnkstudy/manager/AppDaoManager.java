@@ -76,4 +76,8 @@ public class AppDaoManager {
         dao.delete(bean);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
+
 }

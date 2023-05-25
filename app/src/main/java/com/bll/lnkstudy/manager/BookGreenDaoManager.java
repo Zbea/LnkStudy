@@ -241,4 +241,8 @@ public class BookGreenDaoManager {
         bookBeanDao.deleteInTx(bookBeans);
     }
 
+    public void clear(){
+        bookBeanDao.deleteAll();
+    }
+
 }

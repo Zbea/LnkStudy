@@ -162,6 +162,27 @@ public class FileUtils {
         return files;
     }
 
+    /**
+     * 获取目录下文件夹
+     * @param path
+     * @return
+     */
+    public static List<File> getDirectorys(String path){
+        List<File> files = new ArrayList<>();
+        if(path==null||path.isEmpty()){
+            return null;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return null;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isDirectory()) {
+                files.add(tempList[i]);
+            }
+        }
+        return files;
+    }
+
 
     /**
      * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录

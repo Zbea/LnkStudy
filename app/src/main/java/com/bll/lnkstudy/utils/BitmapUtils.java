@@ -3,11 +3,15 @@ package com.bll.lnkstudy.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.media.SRTRenderer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import com.bll.lnkstudy.MyApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +20,24 @@ import java.io.IOException;
 public class BitmapUtils {
 
     private static String TAG="debug";
+
+
+    /**
+     * 合图后返回合图路径
+     * @param oldPath
+     * @param drawPath
+     * @return
+     */
+    public static String mergeBitmap(String oldPath,String drawPath){
+        Bitmap oldBitmap = BitmapFactory.decodeFile(oldPath);
+        Bitmap drawBitmap = BitmapFactory.decodeFile(drawPath);
+        if (drawBitmap != null) {
+            Bitmap mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap);
+            BitmapUtils.saveBmpGallery(MyApplication.Companion.getMContext(), mergeBitmap, oldPath);
+        }
+        return oldPath;
+    }
+
 
     /**
      * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准

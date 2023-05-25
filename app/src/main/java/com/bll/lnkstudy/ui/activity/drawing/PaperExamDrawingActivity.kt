@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
@@ -153,22 +152,20 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     private fun commit(){
         //提交失败后，已经合图之后避免重复合图
         if (commitPaths.size!=paths.size){
-            for (i in 0 until paths.size) {
-                val path = paths[i] //当前原图路径
-                val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
-
-                val oldBitmap = BitmapFactory.decodeFile(path)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap != null) {
-                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this, mergeBitmap, path)
-                }
-                commitPaths.add(path)
+            for (i in paths.indices) {
+                Thread(Runnable {
+                    val path = paths[i] //当前原图路径
+                    val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
+                    BitmapUtils.mergeBitmap(path,drawPath)
+                    //删除手写
+                    FileUtils.deleteFile(File(drawPath).parentFile)
+                    commitPaths.add(path)
+                }).start()
             }
         }
         Handler().postDelayed({
             mUploadPresenter.upload(commitPaths)
-        },500)
+        },1000)
     }
 
     /**
@@ -187,11 +184,9 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
             index=papers.size
         }
         daoManager?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,exam?.id!!,1,commonTypeId,Gson().toJson(paper))
+        DataUpdateManager.createDataUpdate(3,exam?.id!!,2,commonTypeId,Gson().toJson(paper))
 
         for (i in paths.indices){
-            //合图完毕之后删除 手写
-            FileUtils.deleteFile(File(drawPaths[i]).parentFile)
             //保存本次考试的试卷内容
             val paperContent= PaperContentBean()
                 .apply {
@@ -203,7 +198,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                     page=paperContents.size+i
                 }
             val id=daoContentManager.insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),2,commonTypeId,Gson().toJson(paperContent),paths[i])
+            DataUpdateManager.createDataUpdate(3,id.toInt(),3,commonTypeId,Gson().toJson(paperContent),paths[i])
         }
     }
 

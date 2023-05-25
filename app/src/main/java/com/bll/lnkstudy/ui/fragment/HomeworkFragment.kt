@@ -48,7 +48,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 if (!isSaveHomework(item)) {
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     //创建增量数据
-                    DataUpdateManager.createDataUpdate(2,item.typeId,0,item.typeId,item.state,Gson().toJson(item))
+                    DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,item.state,Gson().toJson(item))
                 }
             }
         }
@@ -282,11 +282,11 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     mAdapter?.notifyDataSetChanged()
 
                     //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(2,item.typeId,0,item.typeId)
-                    //删除增量内容
-                    for (homeContents in items){
+                    DataUpdateManager.deleteDateUpdate(2,item.typeId,1,item.typeId)
+                    //删除增量内容（普通作业本）
+                    for (homeContent in items){
                         //删除增量更新
-                        DataUpdateManager.deleteDateUpdate(2,item.id.toInt(),1,item.typeId)
+                        DataUpdateManager.deleteDateUpdate(2,homeContent.id.toInt(),2,item.typeId)
                     }
                 }
 
@@ -355,7 +355,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 homeworkTypes.add(item)
                 mAdapter?.notifyDataSetChanged()
                 //创建增量数据
-                DataUpdateManager.createDataUpdate(2,item.typeId,0,item.typeId,item.state,Gson().toJson(item))
+                DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,item.state,Gson().toJson(item))
             }
     }
 
@@ -381,7 +381,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     deleteDoneTask(imageDownLoad)
                     //更新增量数据
                     for (homework in homeworkContents) {
-                        DataUpdateManager.editDataUpdate(2,homework.id.toInt(),1,homework.homeworkTypeId)
+                        DataUpdateManager.editDataUpdate(2,homework.id.toInt(),2,homework.homeworkTypeId)
                     }
                 }
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
@@ -423,10 +423,10 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                             //获取本次作业的所有作业卷内容
                             val contentPapers=paperContentDaoManager.queryByID(item.id)
                             //更新目录增量数据
-                            DataUpdateManager.editDataUpdate(2,item.id,1,item.typeId,Gson().toJson(paper))
+                            DataUpdateManager.editDataUpdate(2,item.id,2,item.typeId,Gson().toJson(paper))
                             //更新作业卷内容增量数据
                             for (contentPaper in contentPapers){
-                                DataUpdateManager.editDataUpdate(2,contentPaper.id.toInt(),2,contentPaper.typeId)
+                                DataUpdateManager.editDataUpdate(2,contentPaper.id.toInt(),3,contentPaper.typeId)
                             }
                         }
                     } else {
@@ -452,7 +452,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                         }
                         paperDaoManager.insertOrReplace(paper)
                         //创建增量数据
-                        DataUpdateManager.createDataUpdate(2,item.id,1,item.typeId,1,Gson().toJson(item))
+                        DataUpdateManager.createDataUpdate(2,item.id,2,item.typeId,1,Gson().toJson(item))
 
                         for (i in 0 until map?.size!!) {
                             //创建作业卷内容
@@ -466,7 +466,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                             }
                             val id=paperContentDaoManager.insertOrReplaceGetId(paperContent)
                             //创建增量数据
-                            DataUpdateManager.createDataUpdate(2,id.toInt(),2,item.typeId,1
+                            DataUpdateManager.createDataUpdate(2,id.toInt(),3,item.typeId,1
                                 ,Gson().toJson(paperContent),pathStr)
                         }
                     }
@@ -605,7 +605,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.COURSE_EVENT){
+        if (msgFlag==Constants.CLASSGROUP_EVENT){
             initTab()
         }
     }
@@ -691,11 +691,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         map["type"]=2
         mDataUploadPresenter.onDeleteData(map)
 
-        //升年级
-        mUser?.grade=grade+1
-        SPUtil.putObj("user", mUser!!)
-        EventBus.getDefault().post(Constants.USER_EVENT)
-        mControlMessagePresenter.editGrade(mUser?.grade!!)
+        //作业上传完之后上传考卷
+        EventBus.getDefault().post(Constants.CONTROL_CLEAR_PAPER_EVENT)
     }
 
 }

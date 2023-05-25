@@ -102,4 +102,8 @@ public class DateEventGreenDaoManager {
         dateEventDao.delete(dateEventBean);
     }
 
+    public void clear(){
+        dateEventDao.deleteAll();
+    }
+
 }

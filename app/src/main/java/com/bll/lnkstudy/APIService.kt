@@ -35,6 +35,7 @@ interface APIService{
     /**
      * 获取增量更新列表
      */
+    @GET("student/data/list")
     fun onListDataUpdate(): Observable<BaseResult<MutableList<DataUpdateBean>>>
     /**
      * 添加增量更新

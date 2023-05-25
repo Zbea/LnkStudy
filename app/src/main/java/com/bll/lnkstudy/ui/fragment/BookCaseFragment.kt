@@ -128,7 +128,7 @@ class BookCaseFragment: BaseFragment() {
                 mAdapter?.notifyDataSetChanged()
                 EventBus.getDefault().post(BOOK_EVENT)
                 //删除增量更新
-                DataUpdateManager.deleteDateUpdate(0,book?.id!!.toInt(),0,book?.bookId!!)
+                DataUpdateManager.deleteDateUpdate(6,book?.bookId!!,1,book?.bookId!!)
             }
         })
     }
@@ -137,6 +137,11 @@ class BookCaseFragment: BaseFragment() {
         if (msgFlag==BOOK_EVENT){
             findData()
         }
+    }
+
+    override fun onRefreshData() {
+        super.onRefreshData()
+        findData()
     }
 
     fun upload(token:String){
@@ -171,7 +176,7 @@ class BookCaseFragment: BaseFragment() {
             FileUtils.deleteFile(File(bookBean.bookPath))
             BookGreenDaoManager.getInstance().deleteBook(bookBean)
             //删除增量数据
-            DataUpdateManager.deleteDateUpdate(0,bookBean.id.toInt(),0,bookBean.bookId)
+            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1,bookBean.bookId)
         }
         findData()
     }

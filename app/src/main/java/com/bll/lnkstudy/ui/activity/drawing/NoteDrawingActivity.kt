@@ -40,7 +40,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteBook = bundle?.getSerializable("note") as NotebookBean
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
-        typeId=if (type==getString(R.string.note_tab_diary)) 0 else 1
+        typeId=if (type==getString(R.string.note_tab_diary)) 1 else 2
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
 
@@ -226,7 +226,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
-                DataUpdateManager.editDataUpdate(4,noteContentBean.id.toInt(),2,typeId)
+                DataUpdateManager.editDataUpdate(4,noteContentBean.id.toInt(),3,typeId)
             }
 
         })
@@ -255,7 +255,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.id=id
         noteContents.add(noteContent!!)
 
-        DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(noteContent),path)
+        DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId,Gson().toJson(noteContent),path)
     }
 
    override fun changeScreenPage() {
@@ -268,14 +268,14 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_a?.title = title
         noteContents[page-1].title = title
         NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-        DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),2,typeId,Gson().toJson(note_Content_a))
+        DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,typeId,Gson().toJson(note_Content_a))
     }
 
     override fun setDrawingTitle_b(title: String) {
         noteContent?.title = title
         noteContents[page].title = title
         NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-        DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),2,typeId,Gson().toJson(noteContent))
+        DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
     }
 
 }

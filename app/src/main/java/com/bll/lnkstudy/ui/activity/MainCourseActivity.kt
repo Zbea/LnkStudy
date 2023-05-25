@@ -131,8 +131,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 heightTime1=weekHeight + dividerHeight + 4 * height
                 heightTime2=dividerHeight * 2 + 2 * height
 
-                var view = getDateView(R.mipmap.icon_course_time_1, 200)
-                var params = GridLayout.LayoutParams()
+                val view = getDateView(R.mipmap.icon_course_time_1, 200)
+                val params = GridLayout.LayoutParams()
                 view.setBackgroundResource(R.drawable.bg_course_3)
                 params.rowSpec = GridLayout.spec(0, 6)
                 params.width = timeWidth
@@ -140,8 +140,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 params.columnSpec = GridLayout.spec(0, 1)
                 grid.addView(view, params)
 
-                var view1 = getDateView(R.mipmap.icon_course_time_2, 60)
-                var params1 = GridLayout.LayoutParams()
+                val view1 = getDateView(R.mipmap.icon_course_time_2, 60)
+                val params1 = GridLayout.LayoutParams()
                 view1.setBackgroundResource(R.drawable.bg_course_3)
                 params1.rowSpec = GridLayout.spec(if (type==4||type==5) 6 else 7, row - 7)
                 params1.width = timeWidth
@@ -153,8 +153,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 heightTime1 =weekHeight + dividerHeight + 4 * height
                 heightTime2=dividerHeight + 3 * height
 
-                var view = getDateView(R.mipmap.icon_course_time_1, 200)
-                var params = GridLayout.LayoutParams()
+                val view = getDateView(R.mipmap.icon_course_time_1, 200)
+                val params = GridLayout.LayoutParams()
                 view.setBackgroundResource(R.drawable.bg_course_3)
                 params.rowSpec = GridLayout.spec(0, 6)
                 params.width = timeWidth
@@ -162,8 +162,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 params.columnSpec = GridLayout.spec(0, 1)
                 grid.addView(view, params)
 
-                var view1 = getDateView(R.mipmap.icon_course_time_2, 80)
-                var params1 = GridLayout.LayoutParams()
+                val view1 = getDateView(R.mipmap.icon_course_time_2, 80)
+                val params1 = GridLayout.LayoutParams()
                 view1.setBackgroundResource(R.drawable.bg_course_3)
                 params1.rowSpec = GridLayout.spec(if (type==4||type==5) 6 else 7, row - 7)
                 params1.width = timeWidth
@@ -175,8 +175,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 heightTime1 =weekHeight + 4 * height
                 heightTime2=4 * height
 
-                var view = getDateView(R.mipmap.icon_course_time_1, 200)
-                var params = GridLayout.LayoutParams()
+                val view = getDateView(R.mipmap.icon_course_time_1, 200)
+                val params = GridLayout.LayoutParams()
                 view.setBackgroundResource(R.drawable.bg_course_3)
                 params.rowSpec = GridLayout.spec(0, 5)
                 params.width = timeWidth
@@ -184,8 +184,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 params.columnSpec = GridLayout.spec(0, 1)
                 grid.addView(view, params)
 
-                var view1 = getDateView(R.mipmap.icon_course_time_2, 100)
-                var params1 = GridLayout.LayoutParams()
+                val view1 = getDateView(R.mipmap.icon_course_time_2, 100)
+                val params1 = GridLayout.LayoutParams()
                 view1.setBackgroundResource(R.drawable.bg_course_3)
                 params1.rowSpec = GridLayout.spec( 6 , row - 6)
                 params1.width = timeWidth
@@ -202,7 +202,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
 
     //添加第一行星期几的布局
     private fun addWeekLayout() {
-        var weeks = arrayOf(
+        val weeks = arrayOf(
             R.mipmap.icon_course_week_0,
             R.mipmap.icon_course_week_1,
             R.mipmap.icon_course_week_2,
@@ -213,17 +213,17 @@ class MainCourseActivity : BaseAppCompatActivity() {
         )
 
         for (i in 1 until column) {
-            var index = i - 1
-            var view = getWeekView(weeks[index])
+            val index = i - 1
+            val view = getWeekView(weeks[index])
             view.setBackgroundResource(R.drawable.bg_course_1)
 
-            var widths = if (i == 1) {//如果是第一个，则是课节的宽度
+            val widths = if (i == 1) {//如果是第一个，则是课节的宽度
                 lessonsWidth
             } else {
                 width
             }
 
-            var params = GridLayout.LayoutParams()
+            val params = GridLayout.LayoutParams()
             params.rowSpec = GridLayout.spec(0, 1)
             params.width = widths
             params.height = weekHeight
@@ -236,7 +236,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
     //添加第二列课节布局
     private fun addLessonsLayout() {
 
-        var lessons = when (type) {
+        val lessons = when (type) {
             0, 1 -> {
                 arrayOf(
                     R.mipmap.icon_course_lessons_1,
@@ -281,16 +281,16 @@ class MainCourseActivity : BaseAppCompatActivity() {
         }
 
         for (i in 1 until row) {
-            var id = "1$i".toInt()
+            val id = "1$i".toInt()
             //根据id 查询是否已经存储了对应的时间
-            var course = CourseGreenDaoManager.getInstance().queryID(id)
-            var index = i - 1
+            val course = CourseGreenDaoManager.getInstance().queryID(id)
+            val index = i - 1
 
-            var view = getLessonsView(lessons[index])
+            val view = getLessonsView(lessons[index])
 
             view.id = id
-            var tvTime = view.findViewById<TextView>(R.id.tv_time)
-            var tvTimeEnd = view.findViewById<TextView>(R.id.tv_time_end)
+            val tvTime = view.findViewById<TextView>(R.id.tv_time)
+            val tvTimeEnd = view.findViewById<TextView>(R.id.tv_time_end)
             view.setOnClickListener {
                 selectTime(tvTime,tvTimeEnd, id)
             }
@@ -298,7 +298,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
             //不重置
             if (!isAdd) {
                 if (course != null) {
-                    var string=course.name.split("~")
+                    val string=course.name.split("~")
                     tvTime.text = string[0]
                     tvTimeEnd.text=string[1]
 //                    tvTime.text = course.name.toString()
@@ -306,75 +306,73 @@ class MainCourseActivity : BaseAppCompatActivity() {
                 }
             }
 
-            var params = GridLayout.LayoutParams()
+            val params = GridLayout.LayoutParams()
             params.width = lessonsWidth
 
-            if (type == 0 || type == 1) {
+            when (type) {
+                0, 1 -> {
+                    when (i) {
+                        3, 8, 10 -> {
+                            view.setBackgroundResource(R.drawable.bg_course_3)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = dividerHeight
+                            params.columnSpec = GridLayout.spec(1, column - 1)
+                        }
+                        6 -> {
+                            view.setBackgroundResource(R.drawable.bg_course_3)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = dividerHeight1
+                            params.columnSpec = GridLayout.spec(0, column)
+                        }
+                        else -> {
+                            view.setBackgroundResource(R.drawable.bg_course_2)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = height
+                            params.columnSpec = GridLayout.spec(1, 1)
+                        }
+                    }
 
-                when (i) {
-                    3, 8, 10 -> {
-                        view.setBackgroundResource(R.drawable.bg_course_3)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = dividerHeight
-                        params.columnSpec = GridLayout.spec(1, column - 1)
+                }
+                2, 3 -> {
+                    when (i) {
+                        3, 10 -> {
+                            view.setBackgroundResource(R.drawable.bg_course_3)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = dividerHeight
+                            params.columnSpec = GridLayout.spec(1, column - 1)
+                        }
+                        6 -> {
+                            view.setBackgroundResource(R.drawable.bg_course_3)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = dividerHeight1
+                            params.columnSpec = GridLayout.spec(0, column)
+                        }
+                        else -> {
+                            view.setBackgroundResource(R.drawable.bg_course_2)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = height
+                            params.columnSpec = GridLayout.spec(1, 1)
+                        }
                     }
-                    6 -> {
-                        view.setBackgroundResource(R.drawable.bg_course_3)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = dividerHeight1
-                        params.columnSpec = GridLayout.spec(0, column)
-                    }
-                    else -> {
-                        view.setBackgroundResource(R.drawable.bg_course_2)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = height
-                        params.columnSpec = GridLayout.spec(1, 1)
+
+                }
+                else -> {
+                    when (i) {
+                        5 -> {
+                            view.setBackgroundResource(R.drawable.bg_course_3)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = dividerHeight1
+                            params.columnSpec = GridLayout.spec(0, column)
+                        }
+                        else -> {
+                            view.setBackgroundResource(R.drawable.bg_course_2)
+                            params.rowSpec = GridLayout.spec(i, 1)
+                            params.height = height
+                            params.columnSpec = GridLayout.spec(1, 1)
+                        }
                     }
                 }
-
-            } else if (type == 2 || type == 3) {
-
-                when (i) {
-                    3, 10 -> {
-                        view.setBackgroundResource(R.drawable.bg_course_3)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = dividerHeight
-                        params.columnSpec = GridLayout.spec(1, column - 1)
-                    }
-                    6 -> {
-                        view.setBackgroundResource(R.drawable.bg_course_3)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = dividerHeight1
-                        params.columnSpec = GridLayout.spec(0, column)
-                    }
-                    else -> {
-                        view.setBackgroundResource(R.drawable.bg_course_2)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = height
-                        params.columnSpec = GridLayout.spec(1, 1)
-                    }
-                }
-
-            } else {
-
-                when (i) {
-                    5 -> {
-                        view.setBackgroundResource(R.drawable.bg_course_3)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = dividerHeight1
-                        params.columnSpec = GridLayout.spec(0, column)
-                    }
-                    else -> {
-                        view.setBackgroundResource(R.drawable.bg_course_2)
-                        params.rowSpec = GridLayout.spec(i, 1)
-                        params.height = height
-                        params.columnSpec = GridLayout.spec(1, 1)
-                    }
-                }
-
             }
-
-
             grid.addView(view, params)
         }
 
@@ -386,9 +384,9 @@ class MainCourseActivity : BaseAppCompatActivity() {
         for (i in 2 until column) {
             for (j in 1 until row) {
                 var view: TextView? = null
-                var id = (i.toString() + j.toString()).toInt()
+                val id = (i.toString() + j.toString()).toInt()
                 //根据textview id 查询是否已经存储了对应的课程
-                var course = CourseGreenDaoManager.getInstance().queryID(id)
+                val course = CourseGreenDaoManager.getInstance().queryID(id)
 
                 if (type == 0 || type == 1) {
 
@@ -404,7 +402,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
                         }
                     }
 
-                    var params = GridLayout.LayoutParams()
+                    val params = GridLayout.LayoutParams()
                     when (j) {
                         3, 8, 10 -> {
                             view.setBackgroundResource(R.drawable.bg_course_3)
@@ -445,7 +443,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
                         }
                     }
 
-                    var params = GridLayout.LayoutParams()
+                    val params = GridLayout.LayoutParams()
                     when (j) {
                         3, 10 -> {
                             view.setBackgroundResource(R.drawable.bg_course_3)

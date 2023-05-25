@@ -270,10 +270,10 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         bookPath = targetFileStr
                     }
                     //下载解压完成后更新存储的book
-                    val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
+                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     EventBus.getDefault().post(BOOK_EVENT)
                     //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(0,id.toInt(),0,book.bookId
+                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
                         , Gson().toJson(book),book.downloadUrl)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()

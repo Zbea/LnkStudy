@@ -8,7 +8,7 @@ import android.content.Intent
 import android.view.KeyEvent
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.ui.AlarmService
+import com.bll.lnkstudy.AlarmService
 import com.bll.lnkstudy.utils.DateUtils
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*

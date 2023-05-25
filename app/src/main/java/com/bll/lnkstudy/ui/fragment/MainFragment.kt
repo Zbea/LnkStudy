@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_EVENT
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
@@ -42,6 +43,7 @@ import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_title.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -59,7 +61,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     private val mCommonPresenter=CommonPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var classGroupAdapter: MainClassGroupAdapter? = null
-    private var groups = mutableListOf<ClassGroup>()
     private var mainNoteAdapter: MainNoteAdapter? = null
     private var examPapers = mutableListOf<PaperList.PaperListBean>()
     private var receivePaperAdapter: MainReceivePaperAdapter? = null
@@ -84,18 +85,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
             DataBeanManager.courses=commonData.subject
     }
 
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
-        groups = if(classGroups.isNullOrEmpty()){
-            mutableListOf()
-        } else{
-            classGroups
-        }
-        classGroupAdapter?.setNewData(groups)
-
-        DataBeanManager.classGroups=groups
-        EventBus.getDefault().post(COURSE_EVENT)
-    }
-
     override fun onExam(exam: PaperList?) {
         examPapers= exam?.list as MutableList<PaperList.PaperListBean>
         receivePaperAdapter?.setNewData(examPapers)
@@ -109,7 +98,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
     override fun initView() {
         setTitle(R.string.main_home_title)
-
+        showView(tv_search)
         onClickView()
 
         initDateView()
@@ -122,7 +111,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     }
 
     override fun lazyLoad() {
-        mMainPresenter.getClassGroupList(false)
         mCommonPresenter.getCommon()
         findMessages()
         fetchExam()
@@ -132,7 +120,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     private fun onClickView() {
         tv_search.setOnClickListener {
 //            AppUtils.clearAppData(requireContext())
-            customStartActivity(Intent(activity, CampusModeActivity::class.java))
+            EventBus.getDefault().post(Constants.DATA_DOWNLOAD_EVENT)
         }
 
         ll_date.setOnClickListener {
@@ -367,6 +355,9 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
             }
             MESSAGE_EVENT -> {
                 findMessages()
+            }
+            CLASSGROUP_EVENT->{
+                classGroupAdapter?.setNewData(DataBeanManager.classGroups)
             }
         }
     }

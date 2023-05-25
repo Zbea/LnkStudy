@@ -203,10 +203,10 @@ class PaintingFragment : BaseFragment(){
             PaintingDrawingDaoManager.getInstance().clear()
             FileUtils.deleteFile(File(Constants.PAINTING_PATH))
             //清除增量数据
-            DataUpdateManager.clearDataUpdate(5,0)
+            DataUpdateManager.clearDataUpdate(5,1)
             val map=HashMap<String,Any>()
             map["type"]=5
-            map["typeId"]=0
+            map["typeId"]=1
             mDataUploadPresenter.onDeleteData(map)
         }
         else{
@@ -218,7 +218,7 @@ class PaintingFragment : BaseFragment(){
                     val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)
                     PaintingBeanDaoManager.getInstance().deleteBean(paintingBean)
                     //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(5,item.id.toInt(),0,item.contentId)
+                    DataUpdateManager.deleteDateUpdate(7,item.id.toInt(),1,item.contentId)
                 }
             }
         }

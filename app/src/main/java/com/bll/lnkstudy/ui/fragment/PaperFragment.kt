@@ -16,10 +16,12 @@ import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 /**
@@ -32,6 +34,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     private var paperTypes= mutableListOf<PaperTypeBean>()
     private var course=""//课程
     private var paperContents= mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
+    private var token=""
 
     override fun onTypeList(list: MutableList<PaperTypeBean>) {
         for (item in list){
@@ -39,7 +42,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
                 item.course=course
                 PaperTypeDaoManager.getInstance().insertOrReplace(item)
                 //创建增量数据
-                DataUpdateManager.createDataUpdate(3,item.typeId,0,item.typeId,Gson().toJson(item))
+                DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
             }
         }
         paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
@@ -142,7 +145,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
                     val contentPapers=PaperContentDaoManager.getInstance().queryByID(item.id)
                     //更新考卷内容增量数据
                     for (contentPaper in contentPapers){
-                        DataUpdateManager.editDataUpdate(3,contentPaper.id.toInt(),2,contentPaper.typeId)
+                        DataUpdateManager.editDataUpdate(3,contentPaper.id.toInt(),3,contentPaper.typeId)
                     }
                 }
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
@@ -171,8 +174,15 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         mAdapter?.notifyDataSetChanged()
     }
 
-    fun uploadPaper(token:String){
-        if (grade==0) return
+
+    fun getUploadPaper(token: String){
+        this.token=token
+    }
+
+    /**
+     * 控制上传
+     */
+    private fun uploadPaper(){
         val cloudList= mutableListOf<CloudListBean>()
         for(classGroup in DataBeanManager.classGroups){
             val types=PaperTypeDaoManager.getInstance().queryAllByCourse(classGroup.subject)
@@ -220,8 +230,11 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.COURSE_EVENT){
+        if (msgFlag==Constants.CLASSGROUP_EVENT){
             initTab()
+        }
+        if (msgFlag==Constants.CONTROL_CLEAR_PAPER_EVENT){
+            uploadPaper()
         }
     }
 
@@ -278,6 +291,14 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         val map=HashMap<String,Any>()
         map["type"]=3
         mDataUploadPresenter.onDeleteData(map)
+        //考卷上传完之后升年级
+        mUser?.grade=grade+1
+        SPUtil.putObj("user", mUser!!)
+        EventBus.getDefault().post(Constants.USER_EVENT)
+        mControlMessagePresenter.editGrade(mUser?.grade!!)
+        //上传完之后 删除控制删除消息
+        val contorlClearIds=SPUtil.getListInt("ContorlClear")
+        mControlMessagePresenter.deleteClearMessage(contorlClearIds)
     }
 
 }

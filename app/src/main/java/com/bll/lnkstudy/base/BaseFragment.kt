@@ -13,14 +13,14 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
-import com.bll.lnkstudy.mvp.model.ControlMessage
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
-import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
@@ -46,12 +46,13 @@ import kotlin.math.ceil
 
 
 abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
-    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, EasyPermissions.PermissionCallbacks, IBaseView {
+    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, IContractView.IClassGroupView, EasyPermissions.PermissionCallbacks, IBaseView {
 
     val mDownMapPool = HashMap<Int, ImageDownLoadUtils>()//下载管理
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mControlMessagePresenter= ControlMessagePresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
+    val mClassGroupPresenter = ClassGroupPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -95,8 +96,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             for (item in controlMessages){
                 list.add(item.id)
             }
-//            SPUtil.putInt("$accountId",grade+1)
-            mControlMessagePresenter.deleteClearMessage(list)
+            SPUtil.putListInt("ContorlClear",list)
         }
     }
     override fun onDeleteClear() {
@@ -115,6 +115,20 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     override fun onSuccess() {
     }
     override fun onList(list: MutableList<DataUpdateBean>?) {
+    }
+
+    //班级回调
+    override fun onInsert() {
+    }
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
+        if (DataBeanManager.classGroups!=classGroups){
+            DataBeanManager.classGroups=classGroups
+            EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        }
+    }
+    override fun onQuit() {
+    }
+    override fun onUser(lists: MutableList<ClassGroupUser>?) {
     }
 
 
@@ -154,6 +168,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     private fun onFetchControl(){
         mControlMessagePresenter.getControlMessage()
         mControlMessagePresenter.getControlClearMessage()
+        mClassGroupPresenter.getClassGroupList(false)
     }
 
     private fun lazyLoadDataIfPrepared() {
@@ -367,7 +382,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             item?.date = date
             val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(item)
             //创建本地画本增量更新
-            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 0, Gson().toJson(item))
+            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(item))
         }
 
         if (items.size>1){

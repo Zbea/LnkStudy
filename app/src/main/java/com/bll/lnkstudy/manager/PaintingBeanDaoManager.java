@@ -180,5 +180,8 @@ public class PaintingBeanDaoManager {
         dao.deleteInTx(queryPaintings());
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 
 }

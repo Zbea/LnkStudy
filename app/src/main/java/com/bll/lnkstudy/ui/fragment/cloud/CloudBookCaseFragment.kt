@@ -77,8 +77,9 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
                     if (book.downloadUrl!="null"){
                         downloadBookDrawing(book)
+                    }else{
+                        downloadBook(book)
                     }
-                    downloadBook(book)
                 } else {
                     showToast(screenPos,R.string.toast_downloaded)
                 }
@@ -150,7 +151,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                                 //删除教材的zip文件
                                 FileUtils.deleteFile(File(zipPath))
                                 //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(0,id.toInt(),0,book.bookId
+                                DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
                                     , Gson().toJson(book),book.downloadUrl)
 
                                 Handler().postDelayed({

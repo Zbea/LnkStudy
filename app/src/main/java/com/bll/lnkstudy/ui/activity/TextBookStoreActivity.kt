@@ -296,9 +296,9 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                         bookDrawPath="${fileTargetPath}draw"
                     }
                     //下载解压完成后更新存储的book
-                    val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
+                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(1,id.toInt(),0,book.bookId
+                    DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
                         ,Gson().toJson(book),book.downloadUrl)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()

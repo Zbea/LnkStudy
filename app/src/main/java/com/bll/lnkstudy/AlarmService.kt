@@ -1,10 +1,9 @@
-package com.bll.lnkstudy.ui
+package com.bll.lnkstudy
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_1MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_9MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_EVENT

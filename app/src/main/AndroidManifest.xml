@@ -1,151 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.bll.lnkstudy"
-    >
+    package="com.bll.lnkstudy">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
-        tools:ignore="ProtectedPermissions"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-
-    <!--位置信息-->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--如果是安卓10.0，需要后台获取连接的wifi名称则添加进程获取位置信息权限 -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <!--android 10.0使用wifi api新添加的权限-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.BLUETOOTH" /> <!-- 位置信息 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 如果是安卓10.0，需要后台获取连接的wifi名称则添加进程获取位置信息权限 -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- android 10.0使用wifi api新添加的权限 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
-    <permission  android:name="android.permission.INSTALL_PACKAGES"
+    <permission
+        android:name="android.permission.INSTALL_PACKAGES"
         tools:ignore="ReservedSystemPermission" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <permission  android:name="android.permission.WRITE_SECURE_SETTINGS"
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.permission.WRITE_SETTINGS"
+    <permission
+        android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ReservedSystemPermission" />
+
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
-    <uses-permission android:name = "android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
+        android:exported="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
-        android:exported="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@style/AppTheme.NoActionBar"
         android:persistent="true"
-        >
-
-        <activity android:name=".ui.activity.MainActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true">
+        <receiver
+            android:name=".DataUpdateReceiver"
+            android:enabled="true"
+            android:exported="true"
             >
-        </activity>
-
-        <activity android:name=".ui.activity.AccountLoginActivity"
+            <intent-filter>
+                <action android:name="com.android.settings.downloaddata"/>
+                <action android:name="com.android.settings.cleardata"/>
+            </intent-filter>
+        </receiver>
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+        <activity
+            android:name=".ui.activity.AccountLoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.activity.AccountRegisterActivity"/>
-        <activity android:name=".ui.activity.AccountInfoActivity"/>
-
-        <activity android:name=".ui.activity.HomeLeftActivity"
-            android:exported="true">
-            </activity>
-
-        <activity android:name=".ui.activity.HomeRightActivity"
-            android:exported="true">
-        </activity>
-
-        <activity android:name=".ui.activity.BookStoreActivity"/>
-        <activity android:name=".ui.activity.drawing.BookDetailsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
-
-        <activity android:name=".ui.activity.AppListActivity"
-            android:launchMode="singleTask"
-            />
-        <activity android:name=".ui.activity.download.DownloadAppActivity"/>
-        <activity android:name=".ui.activity.download.DownloadPaintingActivity"/>
-        <activity android:name=".ui.activity.download.DownloadWallpaperActivity"/>
+        <activity android:name=".ui.activity.AccountRegisterActivity" />
+        <activity android:name=".ui.activity.AccountInfoActivity" />
+        <activity
+            android:name=".ui.activity.HomeLeftActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.HomeRightActivity"
+            android:exported="true" />
+        <activity android:name=".ui.activity.BookStoreActivity" />
+        <activity
+            android:name=".ui.activity.drawing.BookDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".ui.activity.AppListActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".ui.activity.download.DownloadAppActivity" />
+        <activity android:name=".ui.activity.download.DownloadPaintingActivity" />
+        <activity android:name=".ui.activity.download.DownloadWallpaperActivity" />
         <activity android:name=".ui.activity.TeachListActivity" />
-        <activity android:name=".ui.activity.TeachActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
-        <activity android:name=".ui.activity.TextBookStoreActivity"/>
-        <activity android:name=".ui.activity.BookStoreTypeActivity"/>
-        <activity android:name=".ui.activity.PaintingListActivity"/>
-        <activity android:name=".ui.activity.MessageListActivity"/>
-        <activity android:name=".ui.activity.MainCourseActivity"/>
-        <activity android:name=".ui.activity.drawing.NoteDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
-        <activity android:name=".ui.activity.NoteTypeManagerActivity"/>
-        <activity android:name=".ui.activity.drawing.PaperExamDrawingActivity"/>
-        <activity android:name=".ui.activity.drawing.HomeworkDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
-        <activity android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
-        <activity android:name=".ui.activity.RecordActivity"/>
-        <activity android:name=".ui.activity.RecordListActivity"/>
-        <activity android:name=".ui.activity.drawing.PaintingDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
-        <activity android:name=".ui.activity.BookCaseTypeListActivity"/>
-        <activity android:name=".ui.activity.CloudStorageActivity"
-            android:launchMode="singleTask"
-            />
-        <activity android:name=".ui.activity.drawing.PaperDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
-
-        <activity android:name=".ui.activity.WalletActivity"
-            android:theme="@style/activityCustom"
-            />
-        <activity android:name=".ui.activity.MyWallpaperActivity"/>
-        <activity android:name=".ui.activity.drawing.DraftDrawingActivity"
-            android:theme="@style/activityCustom"
-            />
+        <activity
+            android:name=".ui.activity.TeachActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity android:name=".ui.activity.TextBookStoreActivity" />
+        <activity android:name=".ui.activity.BookStoreTypeActivity" />
+        <activity android:name=".ui.activity.PaintingListActivity" />
+        <activity android:name=".ui.activity.MessageListActivity" />
+        <activity android:name=".ui.activity.MainCourseActivity" />
+        <activity
+            android:name=".ui.activity.drawing.NoteDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity android:name=".ui.activity.NoteTypeManagerActivity" />
+        <activity android:name=".ui.activity.drawing.PaperExamDrawingActivity" />
+        <activity
+            android:name=".ui.activity.drawing.HomeworkDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity android:name=".ui.activity.RecordActivity" />
+        <activity android:name=".ui.activity.RecordListActivity" />
+        <activity
+            android:name=".ui.activity.drawing.PaintingDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity android:name=".ui.activity.BookCaseTypeListActivity" />
+        <activity
+            android:name=".ui.activity.CloudStorageActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.activity.drawing.PaperDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".ui.activity.WalletActivity"
+            android:theme="@style/activityCustom" />
+        <activity android:name=".ui.activity.MyWallpaperActivity" />
+        <activity
+            android:name=".ui.activity.drawing.DraftDrawingActivity"
+            android:theme="@style/activityCustom" />
         <activity android:name=".ui.activity.date.DateActivity" />
         <activity android:name=".ui.activity.date.DatePlanListActivity" />
         <activity android:name=".ui.activity.date.DateDayListActivity" />
         <activity android:name=".ui.activity.date.DateDayDetailsActivity" />
-        <activity android:name=".ui.activity.date.DatePlanDetailsActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
-        <activity android:name=".ui.activity.CampusModeActivity"
+        <activity
+            android:name=".ui.activity.date.DatePlanDetailsActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.CampusModeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ui.activity.ClassGroupActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ClassGroupActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
 
@@ -159,9 +164,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service android:name=".ui.AlarmService"></service>
-
+        <service android:name=".AlarmService" />
     </application>
-
 
 </manifest>

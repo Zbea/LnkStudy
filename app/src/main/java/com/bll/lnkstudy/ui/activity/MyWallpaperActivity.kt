@@ -92,11 +92,11 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
 
         var toIndex=Constants.PAGE_SIZE
         for(i in 0 until pageCount){
-            var index=i*Constants.PAGE_SIZE
+            val index=i*Constants.PAGE_SIZE
             if(index+Constants.PAGE_SIZE>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
                 toIndex=pageTotal-index
             }
-            var newList = lists.subList(index,index+toIndex)
+            val newList = lists.subList(index,index+toIndex)
             listMap[i+1]=newList
         }
 

@@ -114,4 +114,8 @@ public class NotebookDaoManager {
         dao.delete(bean);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
+
 }

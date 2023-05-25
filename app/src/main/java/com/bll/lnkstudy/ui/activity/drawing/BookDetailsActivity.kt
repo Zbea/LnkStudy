@@ -82,6 +82,8 @@ class BookDetailsActivity : BaseDrawingActivity() {
     override fun initView() {
         setDrawingTitleClick(false)
         pageCount = catalogMsg?.totalCount!!
+        tv_title_a.text=book?.bookName
+        tv_title_b.text=book?.bookName
 
         changeExpandView()
 
@@ -206,7 +208,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 .skipMemoryCache(false)
                 .fitCenter().into(simpleTarget)
 
-            val drawPath = book?.bookDrawPath+"/$index/draw.tch"
+            val drawPath = book?.bookDrawPath+"/${index+1}/draw.tch"
             elik.setLoadFilePath(drawPath, true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -218,12 +220,12 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                     elik.saveBitmap(true) {}
                     if (File(drawPath).exists()){
-                        DataUpdateManager.editDataUpdate(1,index,1,book?.bookId!!)
+                        DataUpdateManager.editDataUpdate(1,index+1,2,book?.bookId!!)
                     }
                     else{
                         //创建增量更新
-                        DataUpdateManager.createDataUpdateSource(1,index,1,book?.bookId!!
-                            ,Gson().toJson(book),File(drawPath).parent)
+                        DataUpdateManager.createDataUpdate(1,index+1,2,book?.bookId!!
+                            ,"",File(drawPath).parent)
                     }
 
                 }

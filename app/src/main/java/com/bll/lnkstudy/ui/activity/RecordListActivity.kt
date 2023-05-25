@@ -203,7 +203,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             mAdapter?.notifyDataSetChanged()
             RecordDaoManager.getInstance().insertOrReplace(recordBean)
             //修改本地增量更新
-            DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),1,recordBean.typeId,Gson().toJson(recordBean))
+            DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,recordBean.typeId,Gson().toJson(recordBean))
         }
     }
 
@@ -220,7 +220,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                     RecordDaoManager.getInstance().deleteBean(recordBean)
                     FileUtils.deleteFile(File(recordBean.path))
                     //修改本地增量更新
-                    DataUpdateManager.deleteDateUpdate(2,recordBean.id.toInt(),1,recordBean.typeId)
+                    DataUpdateManager.deleteDateUpdate(2,recordBean.id.toInt(),2,recordBean.typeId)
                 }
             })
     }

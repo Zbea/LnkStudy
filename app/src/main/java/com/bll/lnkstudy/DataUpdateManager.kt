@@ -14,6 +14,7 @@ object DataUpdateManager {
      * 创建增量更新
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,json:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -22,6 +23,8 @@ object DataUpdateManager {
             this.typeId=typeId
             date=System.currentTimeMillis()
             listJson= json
+            downloadUrl=""
+            sourceUrl=""
         })
     }
 
@@ -29,6 +32,7 @@ object DataUpdateManager {
      * 创建增量更新
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,state:Int,json:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -38,6 +42,8 @@ object DataUpdateManager {
             this.state=state
             date=System.currentTimeMillis()
             listJson= json
+            downloadUrl=""
+            sourceUrl=""
         })
     }
 
@@ -45,6 +51,7 @@ object DataUpdateManager {
      * 创建增量更新(带有源文件地址)
      */
     fun createDataUpdateSource(type:Int,id:Int,contentType:Int,typeId:Int,json:String,sourceUrl:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -54,6 +61,7 @@ object DataUpdateManager {
             date=System.currentTimeMillis()
             listJson= json
             this.sourceUrl=sourceUrl
+            downloadUrl=""
         })
     }
 
@@ -61,6 +69,7 @@ object DataUpdateManager {
      * 创建增量更新（有内容）
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,json:String,path:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -69,6 +78,8 @@ object DataUpdateManager {
             date=System.currentTimeMillis()
             listJson= json
             this.path=path
+            downloadUrl=""
+            sourceUrl=""
         })
     }
 
@@ -76,6 +87,7 @@ object DataUpdateManager {
      * 创建增量更新（有内容）
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,state: Int,json:String,path:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -85,6 +97,8 @@ object DataUpdateManager {
             date=System.currentTimeMillis()
             listJson= json
             this.path=path
+            downloadUrl=""
+            sourceUrl=""
         })
     }
 

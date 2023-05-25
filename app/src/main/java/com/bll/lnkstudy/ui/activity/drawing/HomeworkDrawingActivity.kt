@@ -62,7 +62,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             homework.contentId=homeworkCommit?.messageId!!
             homework.commitDate=System.currentTimeMillis()
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-            DataUpdateManager.editDataUpdate(2,homework.id.toInt(),1,homeworkTypeId,Gson().toJson(homework))
+            DataUpdateManager.editDataUpdate(2,homework.id.toInt(),2,homeworkTypeId,Gson().toJson(homework))
         }
         finish()
     }
@@ -117,7 +117,18 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         }
 
         iv_btn.setOnClickListener {
-            commit()
+            if (messages.size==0|| homeworkContent?.state!=0)
+                return@setOnClickListener
+            if (drawingCommitDialog==null){
+                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
+                drawingCommitDialog?.setOnDialogClickListener {
+                    homeworkCommit=it
+                    commit()
+                }
+            }
+            else{
+                drawingCommitDialog?.show()
+            }
         }
 
     }
@@ -283,7 +294,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
-                DataUpdateManager.editDataUpdate(2,homeworkContent.id.toInt(),1,homeworkTypeId)
+                DataUpdateManager.editDataUpdate(2,homeworkContent.id.toInt(),2,homeworkTypeId)
             }
 
         })
@@ -313,32 +324,24 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworkContent?.id=id
         homeworks.add(homeworkContent!!)
 
-        DataUpdateManager.createDataUpdate(2,id.toInt(),1,homeworkTypeId,2
+        DataUpdateManager.createDataUpdate(2,id.toInt(),2,homeworkTypeId,2
             ,Gson().toJson(homeworkContent),path)
     }
 
 
     //作业提交
     private fun commit() {
-        if (messages.size==0|| homeworkContent?.state!=0)return
-        if (drawingCommitDialog==null){
-            drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
-            drawingCommitDialog?.setOnDialogClickListener {
-                homeworkCommit=it
-                showLoading()
-                val paths= mutableListOf<String>()
-                for (i in it.contents){
-                    val homework=homeworks[i-1]
-                    paths.add(saveImage(homework))
-                }
-                Handler().postDelayed({
-                    mUploadPresenter.upload(paths)
-                },500)
-            }
+        showLoading()
+        val paths= mutableListOf<String>()
+        for (i in homeworkCommit?.contents!!){
+            val homework=homeworks[i-1]
+            Thread(Runnable {
+                paths.add(saveImage(homework))
+            }).start()
         }
-        else{
-            drawingCommitDialog?.show()
-        }
+        Handler().postDelayed({
+            mUploadPresenter.upload(paths)
+        },1000)
     }
 
     /**
@@ -354,9 +357,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
         }
-        else{
-            BitmapUtils.saveBmpGallery(this, oldBitmap, drawPath)
-        }
         FileUtils.deleteFile(File(drawPath.replace("png","tch")))
         return drawPath
     }
@@ -371,14 +371,14 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworkContent_a?.title = title
         homeworks[page-1].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
-        DataUpdateManager.editDataUpdate(2,homeworkContent_a?.id!!.toInt(),1,homeworkTypeId,Gson().toJson(homeworkContent_a))
+        DataUpdateManager.editDataUpdate(2,homeworkContent_a?.id!!.toInt(),2,homeworkTypeId,Gson().toJson(homeworkContent_a))
     }
 
     override fun setDrawingTitle_b(title:String) {
         homeworkContent?.title = title
         homeworks[page].title = title
         HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-        DataUpdateManager.editDataUpdate(2,homeworkContent?.id!!.toInt(),1,homeworkTypeId,Gson().toJson(homeworkContent))
+        DataUpdateManager.editDataUpdate(2,homeworkContent?.id!!.toInt(),2,homeworkTypeId,Gson().toJson(homeworkContent))
     }
 
 

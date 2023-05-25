@@ -7,9 +7,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.NotePassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.*
@@ -109,13 +108,7 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
             notePassword.password=MD5Utils.digest(passwordStr)
             SPUtil.putObj("notePassword",notePassword)
             //创建增量数据(日记密码)
-            DataUpdateDaoManager.getInstance().insertOrReplace(DataUpdateBean().apply {
-                type=4
-                uid=0
-                contentType=3
-                date=System.currentTimeMillis()
-                listJson= Gson().toJson(notePassword)
-            })
+            DataUpdateManager.createDataUpdate(4,1,4,3,Gson().toJson(notePassword))
             dialog.dismiss()
             listener?.onClick()
 

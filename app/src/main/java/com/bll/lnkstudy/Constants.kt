@@ -83,6 +83,7 @@ class Constants{
         const val TEXT_BOOK_EVENT = "TextBookEvent"//课本下载通知
         const val APP_EVENT = "APPEvent"//应用下载安装通知
         const val COURSE_EVENT = "CourseEvent"
+        const val CLASSGROUP_EVENT = "ClassGroupEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val RECORD_EVENT = "RecordEvent"
@@ -93,7 +94,9 @@ class Constants{
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
         const val USER_EVENT = "UserEvent"
         const val CONTROL_CLEAR_EVENT = "ControlClearEvent"
-        const val DATA_UPLOAD_EVENT = "DataUpload"
+        const val CONTROL_CLEAR_PAPER_EVENT = "ControlClearPaperEvent"//用来在作业删除完之后控制考卷删除
+        const val DATA_DOWNLOAD_EVENT = "DataDownload"
+        const val DATA_CLEAT_EVENT="DataClear"
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

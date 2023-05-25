@@ -97,7 +97,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     }
 
     /**
-     * 下载考试卷
+     * 下载
      */
     private fun download(item: HomeworkTypeBean){
         item.id=null//设置数据库id为null用于重新加入
@@ -106,7 +106,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         {
             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
             //创建增量数据
-            DataUpdateManager.createDataUpdate(2,item.typeId,0,item.typeId,Gson().toJson(item))
+            DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
             return
         }
         showLoading()
@@ -132,7 +132,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             if (success) {
                                 HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(2,item.typeId,0,item.typeId,Gson().toJson(item))
+                                DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
                                 when(item.state){
                                     1->{
                                         val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
@@ -141,7 +141,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                             paperBean.id=null//设置数据库id为null用于重新加入
                                             PaperDaoManager.getInstance().insertOrReplace(paperBean)
                                             //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,paperBean.contentId,1,paperBean.typeId,Gson().toJson(paperBean))
+                                            DataUpdateManager.createDataUpdate(2,paperBean.contentId,2,paperBean.typeId,Gson().toJson(paperBean))
                                         }
                                         val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
                                         for (json in jsonSubtypeArray){
@@ -149,7 +149,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                             contentBean.id=null//设置数据库id为null用于重新加入
                                             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                             //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2,contentBean.typeId
+                                            DataUpdateManager.createDataUpdate(2,id.toInt(),3,contentBean.typeId
                                                 ,Gson().toJson(contentBean),contentBean.path)
                                         }
                                     }
@@ -159,9 +159,9 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                             val homeworkContentBean=Gson().fromJson(json, HomeworkContentBean::class.java)
                                             homeworkContentBean.id=null//设置数据库id为null用于重新加入
                                             val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
-                                            val path=if (homeworkContentBean.state==1) homeworkContentBean.path else File(homeworkContentBean.path).parent
+                                            val path=if (homeworkContentBean.state==0) File(homeworkContentBean.path).parent else homeworkContentBean.path
                                             //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,id.toInt(),1
+                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2
                                                 ,homeworkContentBean.homeworkTypeId,Gson().toJson(homeworkContentBean),path)
                                         }
                                     }
@@ -172,7 +172,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                             recordBean.id=null//设置数据库id为null用于重新加入
                                             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
                                             //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,id.toInt(),1,recordBean?.typeId!!
+                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2,recordBean?.typeId!!
                                                 ,Gson().toJson(recordBean),recordBean.path)
                                         }
                                     }

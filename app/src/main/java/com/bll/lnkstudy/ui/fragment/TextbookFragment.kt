@@ -79,7 +79,7 @@ class TextbookFragment : BaseFragment() {
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position
                 if (typeId==0){
-                    CommonDialog(requireActivity()).setContent(R.string.book_is_delete_all_textbook).builder()
+                    CommonDialog(requireActivity(),screenPos).setContent(R.string.book_is_delete_all_textbook).builder()
                         .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
@@ -90,7 +90,7 @@ class TextbookFragment : BaseFragment() {
                                     FileUtils.deleteFile(File(book.bookDrawPath))
                                     mAdapter?.remove(position)
                                     //删除增量更新
-                                    DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),0,book.bookId)
+                                    DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),1,book.bookId)
                                 }
                                 books.clear()
                                 mAdapter?.notifyDataSetChanged()
@@ -121,7 +121,7 @@ class TextbookFragment : BaseFragment() {
                     mAdapter?.notifyItemChanged(position)
                     bookGreenDaoManager.insertOrReplaceBook(book)
                     //修改增量更新
-                    DataUpdateManager.editDataUpdate(1,book.id.toInt(),0,book.bookId
+                    DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId
                         ,Gson().toJson(book))
                 }
             })
@@ -141,7 +141,7 @@ class TextbookFragment : BaseFragment() {
                 FileUtils.deleteFile(File(book.bookDrawPath))
                 mAdapter?.remove(position)
                 //删除增量更新
-                DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),0,book.bookId)
+                DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
             }
         })
     }
@@ -229,7 +229,7 @@ class TextbookFragment : BaseFragment() {
             FileUtils.deleteFile(File(item.bookPath))
             FileUtils.deleteFile(File(item.bookDrawPath))
             //删除增量更新
-            DataUpdateManager.deleteDateUpdate(1,item.id.toInt(),0,item.bookId)
+            DataUpdateManager.deleteDateUpdate(1,item.bookId,1,item.bookId)
         }
 
         //所有教材更新为往期教材
@@ -237,7 +237,7 @@ class TextbookFragment : BaseFragment() {
         for (item in items){
             item.dateState=1
             //修改增量更新
-            DataUpdateManager.editDataUpdate(1,item.id.toInt(),0,item.bookId
+            DataUpdateManager.editDataUpdate(1,item.bookId,1,item.bookId
                 ,Gson().toJson(item))
         }
         bookGreenDaoManager.insertOrReplaceBooks(items)
@@ -255,6 +255,11 @@ class TextbookFragment : BaseFragment() {
         if (msgFlag==TEXT_BOOK_EVENT){
             fetchData()
         }
+    }
+
+    override fun onRefreshData() {
+        super.onRefreshData()
+        fetchData()
     }
 
     override fun fetchData() {

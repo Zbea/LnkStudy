@@ -111,7 +111,6 @@ public interface IContractView {
     }
 
     interface IMainView extends IBaseView {
-        void onClassGroupList(List<ClassGroup> classGroups);
         /**
          * 获取考试列表
          * @param exam

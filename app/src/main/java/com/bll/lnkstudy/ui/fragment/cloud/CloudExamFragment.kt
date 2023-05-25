@@ -109,7 +109,7 @@ class CloudExamFragment:BaseCloudFragment() {
         {
             PaperTypeDaoManager.getInstance().insertOrReplace(item)
             //创建增量数据
-            DataUpdateManager.createDataUpdate(3,item.typeId,0,item.typeId,Gson().toJson(item))
+            DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
             return
         }
         showLoading()
@@ -132,7 +132,7 @@ class CloudExamFragment:BaseCloudFragment() {
                             if (success) {
                                 PaperTypeDaoManager.getInstance().insertOrReplace(item)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(3,item.typeId,0,item.typeId,Gson().toJson(item))
+                                DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
 
                                 val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                                 for (json in jsonArray){
@@ -140,7 +140,7 @@ class CloudExamFragment:BaseCloudFragment() {
                                     paperBean.id=null//设置数据库id为null用于重新加入
                                     PaperDaoManager.getInstance().insertOrReplace(paperBean)
                                     //创建增量数据
-                                    DataUpdateManager.createDataUpdate(3,paperBean.contentId,1,paperBean.typeId,Gson().toJson(item))
+                                    DataUpdateManager.createDataUpdate(3,paperBean.contentId,2,paperBean.typeId,Gson().toJson(item))
                                 }
 
                                 val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
@@ -149,7 +149,7 @@ class CloudExamFragment:BaseCloudFragment() {
                                     contentBean.id=null//设置数据库id为null用于重新加入
                                     val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                     //创建增量数据
-                                    DataUpdateManager.createDataUpdate(3,id.toInt(),2,contentBean.typeId
+                                    DataUpdateManager.createDataUpdate(3,id.toInt(),3,contentBean.typeId
                                         ,Gson().toJson(contentBean),contentBean.path)
                                 }
 

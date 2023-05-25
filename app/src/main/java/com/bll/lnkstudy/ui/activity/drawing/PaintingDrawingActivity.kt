@@ -252,7 +252,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik.saveBitmap(true) {}
-                DataUpdateManager.editDataUpdate(5,bean.id.toInt(),2,0)
+                DataUpdateManager.editDataUpdate(5,bean.id.toInt(),2,1)
             }
         })
     }
@@ -277,7 +277,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
         val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)
         //创建本地画本增量更新
-        DataUpdateManager.createDataUpdate(5,id.toInt(),2,0, Gson().toJson(paintingDrawingBean),path)
+        DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(paintingDrawingBean),path)
     }
 
     //
@@ -327,7 +327,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingLists.remove(paintingDrawingBean)
         FileUtils.deleteFile(File(paintingDrawingBean?.path).parentFile)//删除文件
         //删除本地画本增量更新
-        DataUpdateManager.deleteDateUpdate(5,paintingDrawingBean?.id!!.toInt(),2,0)
+        DataUpdateManager.deleteDateUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1)
         if (page>0){
             page -= 1
         }
@@ -349,14 +349,14 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean_a?.title = title
         paintingLists[page-1].title = title
         PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,0, Gson().toJson(paintingDrawingBean_a))
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
     }
 
     override fun setDrawingTitle_b(title: String) {
         paintingDrawingBean?.title = title
         paintingLists[page].title = title
         PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-        DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,0, Gson().toJson(paintingDrawingBean))
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
     }
 
 }

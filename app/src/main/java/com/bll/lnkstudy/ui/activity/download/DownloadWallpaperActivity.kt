@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity.download
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -16,6 +17,7 @@ import com.bll.lnkstudy.ui.adapter.DownloadWallpaperAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_download_app.*
 
 class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingView{
@@ -112,7 +114,7 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
         val pathStr= FileAddress().getPathImage("wallpaper",item.fontDrawId)
         val images= mutableListOf<String>()
         images.add(item.bodyUrl)
-        var imageDownLoad= ImageDownLoadUtils(this,images.toTypedArray(),pathStr)
+        val imageDownLoad= ImageDownLoadUtils(this,images.toTypedArray(),pathStr)
         imageDownLoad.startDownload()
         imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
             override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
@@ -133,7 +135,9 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
                 bean.price=item.price
                 bean.imageUrl=item.imageUrl
                 bean.supply=item.supply
-                PaintingBeanDaoManager.getInstance().insertOrReplace(bean)
+                val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
+                //新建增量更新
+                DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
             }
 
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {

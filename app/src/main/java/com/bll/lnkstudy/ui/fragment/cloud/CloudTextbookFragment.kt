@@ -77,7 +77,9 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     if (book.downloadUrl!="null"){
                         downloadBookDrawing(book)
                     }
-                    downloadBook(book)
+                    else{
+                        downloadBook(book)
+                    }
                 } else {
                     showToast(screenPos,R.string.toast_downloaded)
                 }
@@ -110,9 +112,16 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
+                                val files=FileUtils.getDirectorys(fileTargetPath)
+                                if (!files.isNullOrEmpty()){
+                                    for (file in files){
+                                        //创建增量更新
+                                        DataUpdateManager.createDataUpdate(1,file.name.toInt(),2,book.bookId
+                                            ,"",book.bookDrawPath+"/${file.name}")
+                                    }
+                                }
                                 //删除教材的zip文件
                                 FileUtils.deleteFile(File(zipPath))
-                                showLog(fileTargetPath)
                                 downloadBook(book)
                             }
                         }
@@ -146,9 +155,9 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
-                                val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
+                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                                 //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(1,id.toInt(),0,book.bookId
+                                DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
                                     ,Gson().toJson(book),book.downloadUrl)
                                 //删除教材的zip文件
                                 FileUtils.deleteFile(File(zipPath))
