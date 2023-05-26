@@ -74,7 +74,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
-                    if (book.downloadUrl!="null"){
+                    if (book.drawUrl!="null"){
                         downloadBookDrawing(book)
                     }
                     else{
@@ -100,7 +100,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
     private fun downloadBookDrawing(book: BookBean){
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        FileDownManager.with(activity).create(book.zipUrl).setPath(zipPath)
+        FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
@@ -108,7 +108,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     val fileTargetPath =book.bookDrawPath
-                    FileUtils.deleteFile(File(fileTargetPath))
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
@@ -211,7 +210,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 bookBean.id=null
                 bookBean.cloudId=item.id
                 bookBean.isCloud=true
-                bookBean.zipUrl=item.downloadUrl
+                bookBean.drawUrl=item.downloadUrl
                 books.add(bookBean)
             }
         }

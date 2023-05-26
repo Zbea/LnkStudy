@@ -58,7 +58,7 @@ public class BookBean {
     public boolean isCloud;
     public int cloudId;
     @Transient
-    public String zipUrl;
+    public String drawUrl;
 
     @Generated(hash = 128532501)
     public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl,

@@ -98,8 +98,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
     override fun initView() {
         setTitle(R.string.main_home_title)
-        showView(tv_search)
-        onClickView()
 
         initDateView()
         initMessageView()
@@ -108,16 +106,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         initCourse()
         initNote()
 
-    }
-
-    override fun lazyLoad() {
-        mCommonPresenter.getCommon()
-        findMessages()
-        fetchExam()
-    }
-
-    @SuppressLint("WrongConstant")
-    private fun onClickView() {
         tv_search.setOnClickListener {
 //            AppUtils.clearAppData(requireContext())
             EventBus.getDefault().post(Constants.DATA_DOWNLOAD_EVENT)
@@ -147,6 +135,12 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
             )
         }
 
+    }
+
+    override fun lazyLoad() {
+        mCommonPresenter.getCommon()
+        findMessages()
+        fetchExam()
     }
 
     //课程表相关处理

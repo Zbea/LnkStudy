@@ -674,22 +674,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         HomeworkTypeDaoManager.getInstance().clear()
         homeworkTypes.clear()
         mAdapter?.notifyDataSetChanged()
-        //删除所有作业
-        HomeworkContentDaoManager.getInstance().clear()
-        //删除所有朗读
-        RecordDaoManager.getInstance().clear()
-        //删除所有作业卷内容
-        HomeworkPaperDaoManager.getInstance().clear()
-        HomeworkPaperContentDaoManager.getInstance().clear()
 
-        FileUtils.deleteFile(File(Constants.RECORD_PATH))
-        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
-
-        //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(2)
-        val map=HashMap<String,Any>()
-        map["type"]=2
-        mDataUploadPresenter.onDeleteData(map)
+        clearHomework()
 
         //作业上传完之后上传考卷
         EventBus.getDefault().post(Constants.CONTROL_CLEAR_PAPER_EVENT)

@@ -293,7 +293,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                         category = 0
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = fileTargetPath
-                        bookDrawPath="${fileTargetPath}draw"
+                        bookDrawPath=FileAddress().getPathTextBookDraw(File(fileTargetPath).name)
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)

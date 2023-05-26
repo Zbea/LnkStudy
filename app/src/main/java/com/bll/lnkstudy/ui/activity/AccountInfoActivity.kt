@@ -46,6 +46,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         showToast(R.string.toast_edit_success)
         mUser?.grade = grade
         tv_grade_str.text = DataBeanManager.grades[grade - 1].desc
+        EventBus.getDefault().post(Constants.USER_EVENT)
     }
 
     override fun onEditSchoolSuccess() {
@@ -178,6 +179,5 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun onDestroy() {
         super.onDestroy()
         SPUtil.putObj("user", mUser!!)
-        EventBus.getDefault().post(Constants.USER_EVENT)
     }
 }

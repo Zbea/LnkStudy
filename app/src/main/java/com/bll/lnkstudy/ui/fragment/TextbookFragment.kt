@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
@@ -161,13 +160,11 @@ class TextbookFragment : BaseFragment() {
             return
         }
         for (book in textBooks){
-            val fileName=book.bookId.toString()
-            val drawPath=FileAddress().getPathTextBookDraw(fileName)
             val subTypeId=DataBeanManager.textbookType.indexOf(book.textBookType)
             //判读是否存在手写内容
-            if (File(drawPath).exists()){
+            if (File(book.bookDrawPath).exists()){
                 FileUploadManager(token).apply {
-                    startUpload(drawPath,fileName)
+                    startUpload(book.bookDrawPath,File(book.bookDrawPath).name)
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=1

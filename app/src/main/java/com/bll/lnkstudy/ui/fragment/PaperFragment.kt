@@ -14,7 +14,6 @@ import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
 import com.bll.lnkstudy.utils.FileUploadManager
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -270,27 +269,19 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         super.uploadSuccess(cloudIds)
         val ids= mutableListOf<Int>()
         //获取所有考试卷分类，查找从云书库下载的，然后删除（避免重复上传）
-        val paperTypes=PaperTypeDaoManager.getInstance().queryAll()
-        for (paperType in paperTypes){
+        val allTypes=PaperTypeDaoManager.getInstance().queryAll()
+        for (paperType in allTypes){
             if (paperType.isCloud)
                 ids.add(paperType.cloudId)
         }
         //删除云书库之前上传的
         if (ids.size>0)
             mCloudUploadPresenter.deleteCloud(ids)
-        //删除本地考卷分类
-        PaperTypeDaoManager.getInstance().clear()
         paperTypes.clear()
         mAdapter?.notifyDataSetChanged()
-        //删除所有考卷内容
-        PaperDaoManager.getInstance().clear()
-        PaperContentDaoManager.getInstance().clear()
-        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
-        //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(3)
-        val map=HashMap<String,Any>()
-        map["type"]=3
-        mDataUploadPresenter.onDeleteData(map)
+
+        clearPaper()
+
         //考卷上传完之后升年级
         mUser?.grade=grade+1
         SPUtil.putObj("user", mUser!!)

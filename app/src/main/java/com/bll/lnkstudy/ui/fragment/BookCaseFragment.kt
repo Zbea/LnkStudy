@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.os.Handler
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -15,6 +14,7 @@ import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.BookCaseTypeListActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -150,22 +150,42 @@ class BookCaseFragment: BaseFragment() {
         val books= BookGreenDaoManager.getInstance().queryAllBook()
         for (item in books){
             if (System.currentTimeMillis()>=item.downDate+halfYear){
-                cloudList.add(CloudListBean().apply {
-                    type=0
-                    zipUrl=item.downloadUrl
-                    downloadUrl="null"
-                    subType=-1
-                    subTypeStr=item.bookType
-                    date=System.currentTimeMillis()
-                    listJson= Gson().toJson(item)
-                    bookId=item.bookId
-                })
+                //判读是否存在手写内容
+                if (File(item.bookDrawPath).exists()){
+                    FileUploadManager(token).apply {
+                        startUpload(item.bookDrawPath,item.bookId.toString())
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=0
+                                zipUrl=item.downloadUrl
+                                downloadUrl=it
+                                subType=-1
+                                subTypeStr=item.bookType
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(item)
+                                bookId=item.bookId
+                            })
+                            if (cloudList.size==books.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+                else{
+                    cloudList.add(CloudListBean().apply {
+                        type=0
+                        zipUrl=item.downloadUrl
+                        downloadUrl="null"
+                        subType=-1
+                        subTypeStr=item.bookType
+                        date=System.currentTimeMillis()
+                        listJson= Gson().toJson(item)
+                        bookId=item.bookId
+                    })
+                    if (cloudList.size==books.size)
+                        mCloudUploadPresenter.upload(cloudList)
+                }
             }
         }
-        Handler().postDelayed({
-            mCloudUploadPresenter.upload(cloudList)
-        },500)
-
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {

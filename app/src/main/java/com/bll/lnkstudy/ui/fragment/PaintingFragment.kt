@@ -113,7 +113,7 @@ class PaintingFragment : BaseFragment(){
     /**
      * 线上书画（半年上传）
      */
-    fun uploadPainting(token: String){
+    fun uploadPainting(){
         if (grade==0) return
         val cloudList= mutableListOf<CloudListBean>()
         isLocalDrawing=false

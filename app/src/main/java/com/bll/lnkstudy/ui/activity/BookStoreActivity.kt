@@ -268,6 +268,8 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         downDate=System.currentTimeMillis()
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
+                        val drawName=MD5Utils.convertMD5(MD5Utils.convertMD5(book.bookId.toString()))
+                        bookDrawPath="/storage/emulated/0/Android/data/com.geniatech.knote.reader/files/note/$drawName"
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)

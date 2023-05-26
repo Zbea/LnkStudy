@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
@@ -122,6 +123,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
     }
 
     //添加时间布局在第一列
+    @SuppressLint("SuspiciousIndentation")
     private fun addTimeLayout() {
 
         var heightTime1 = 0

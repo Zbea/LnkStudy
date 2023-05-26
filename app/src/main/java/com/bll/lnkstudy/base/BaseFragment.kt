@@ -17,7 +17,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.manager.PaintingTypeDaoManager
+import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
 import kotlin.math.ceil
 
 
@@ -347,7 +348,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      */
     fun gotoTextBookDetails(id: Int){
         ActivityManager.getInstance().checkBookIDisExist(id)
-        var intent=Intent(activity, BookDetailsActivity::class.java)
+        val intent=Intent(activity, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
         startActivity(intent)
 //        if (screenPos!=3)
@@ -463,6 +464,44 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
     /**
+     * 清空作业本
+     */
+    fun clearHomework(){
+        //删除所有作业
+        HomeworkContentDaoManager.getInstance().clear()
+        //删除所有朗读
+        RecordDaoManager.getInstance().clear()
+        //删除所有作业卷内容
+        HomeworkPaperDaoManager.getInstance().clear()
+        HomeworkPaperContentDaoManager.getInstance().clear()
+        //删除本地文件
+        FileUtils.deleteFile(File(Constants.RECORD_PATH))
+        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
+        //清除本地增量数据
+        DataUpdateManager.clearDataUpdate(2)
+        val map=HashMap<String,Any>()
+        map["type"]=2
+        mDataUploadPresenter.onDeleteData(map)
+    }
+
+    /**
+     * 清空考卷
+     */
+    fun clearPaper(){
+        //删除本地考卷分类
+        PaperTypeDaoManager.getInstance().clear()
+        //删除所有考卷内容
+        PaperDaoManager.getInstance().clear()
+        PaperContentDaoManager.getInstance().clear()
+        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
+        //清除本地增量数据
+        DataUpdateManager.clearDataUpdate(3)
+        val map=HashMap<String,Any>()
+        map["type"]=3
+        mDataUploadPresenter.onDeleteData(map)
+    }
+
+    /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
      * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
      *
@@ -555,6 +594,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             Constants.USER_EVENT->{
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
+                clearHomework()
+                clearPaper()
             }
             else->{
                 onEventBusMessage(msgFlag)
