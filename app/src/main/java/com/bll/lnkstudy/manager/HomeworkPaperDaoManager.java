@@ -60,8 +60,7 @@ public class HomeworkPaperDaoManager {
     }
 
     public HomeworkPaperBean queryByContentID(int id) {
-        HomeworkPaperBean item = dao.queryBuilder().where(whereUser,HomeworkPaperBeanDao.Properties.ContentId.eq(id)).build().unique();
-        return item;
+        return dao.queryBuilder().where(whereUser,HomeworkPaperBeanDao.Properties.ContentId.eq(id)).build().unique();
     }
 
     /**
@@ -73,8 +72,12 @@ public class HomeworkPaperDaoManager {
     public List<HomeworkPaperBean> queryAll(String course, int categoryId) {
         WhereCondition whereCondition1= HomeworkPaperBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition2= HomeworkPaperBeanDao.Properties.TypeId.eq(categoryId);
-        List<HomeworkPaperBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
+    }
+
+    public List<HomeworkPaperBean> search(String title) {
+        WhereCondition whereCondition1= HomeworkPaperBeanDao.Properties.Title.like("%"+title+"%");
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
     public void deleteBean(HomeworkPaperBean bean){

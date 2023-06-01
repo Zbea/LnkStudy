@@ -4,14 +4,14 @@
     android:layout_width="500dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
-    android:padding="@dimen/dp_40"
+    android:padding="@dimen/dp_50"
     >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="我的钱包"
-        android:textSize="32sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:gravity="center"
@@ -20,7 +20,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_50"
         android:layout_marginBottom="@dimen/dp_10"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="学豆"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textColor="@color/black"
             />
 

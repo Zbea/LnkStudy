@@ -38,15 +38,18 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     override fun initData() {
         val bundle = intent.getBundleExtra("bundle")
         noteBook = bundle?.getSerializable("note") as NotebookBean
+        page=intent.getIntExtra("page",DEFAULT_PAGE)
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
         typeId=if (type==getString(R.string.note_tab_diary)) 1 else 2
 
+
         noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
 
         if (noteContents.size > 0) {
-            noteContent = noteContents[noteContents.size - 1]
-            page = noteContents.size - 1
+            if (page==DEFAULT_PAGE)
+                page = noteContents.size - 1
+            noteContent = noteContents[page]
         } else {
             newNoteContent()
         }

@@ -136,10 +136,11 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         item.date = time
         item.course = course
         item.typeId=homeworkType?.typeId!!
+        item.typeStr=homeworkType?.name
 
         val bundle = Bundle()
         bundle.putSerializable("record", item)
-        customStartActivity(Intent(this@RecordListActivity, RecordActivity::class.java).putExtra("record", bundle))
+        customStartActivity(Intent(this@RecordListActivity, RecordActivity::class.java).putExtra("recordBundle", bundle))
     }
 
     //点击播放

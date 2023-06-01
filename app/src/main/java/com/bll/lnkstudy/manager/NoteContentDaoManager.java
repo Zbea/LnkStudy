@@ -69,8 +69,12 @@ public class NoteContentDaoManager {
         WhereCondition whereCondition=NoteContentBeanDao.Properties.TypeStr.eq(type);
         WhereCondition whereCondition1=NoteContentBeanDao.Properties.NotebookTitle.eq(notebookStr);
         WhereCondition whereCondition2=NoteContentBeanDao.Properties.Grade.eq(grade);
-        List<NoteContentBean> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
-        return list;
+        return noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
+    }
+
+    public List<NoteContentBean> search(String title) {
+        WhereCondition whereCondition=NoteContentBeanDao.Properties.Title.like("%"+title+"%");
+        return noteDao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     public void deleteNote(NoteContentBean noteContent){

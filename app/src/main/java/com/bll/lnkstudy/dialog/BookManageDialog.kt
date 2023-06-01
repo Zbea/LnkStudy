@@ -11,11 +11,10 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.SToast
 
 
 /**
- * type=0收藏、删除 1删除 2 加锁 删除
+ *  1删除 2 加锁 删除
  */
 class BookManageDialog(val context: Context,private val screenPos:Int, val type:Int, val book: BookBean){
 
@@ -33,20 +32,15 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
 
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)
         val iv_close=dialog.findViewById<ImageView>(R.id.iv_close)
-        val ll_collect=dialog.findViewById<LinearLayout>(R.id.ll_collect)
         val ll_delete=dialog.findViewById<LinearLayout>(R.id.ll_delete)
         val ll_lock=dialog.findViewById<LinearLayout>(R.id.ll_lock)
         val iv_lock=dialog.findViewById<ImageView>(R.id.iv_lock)
         val tv_lock=dialog.findViewById<TextView>(R.id.tv_lock)
         when (type) {
-            0 -> {
-                ll_collect.visibility= View.VISIBLE
-            }
             1->{
-                ll_collect.visibility=View.INVISIBLE
+                ll_lock.visibility=View.INVISIBLE
             }
             2->{
-                ll_collect.visibility=View.GONE
                 ll_lock.visibility=View.VISIBLE
             }
         }
@@ -61,16 +55,6 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
         }
 
         iv_close.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        ll_collect.setOnClickListener {
-            if (book.isCollect){
-                SToast.showText(0,R.string.book_collected)
-                return@setOnClickListener
-            }
-            if (onClickListener!=null)
-                onClickListener?.onCollect()
             dialog.dismiss()
         }
 
@@ -94,7 +78,6 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
     private var onClickListener: OnDialogClickListener? = null
 
     interface OnDialogClickListener {
-        fun onCollect()
         fun onDelete()
         fun onLock()
     }

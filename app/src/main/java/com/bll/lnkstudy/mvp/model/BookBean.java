@@ -45,28 +45,27 @@ public class BookBean {
     public String bookType;//书架所有分类
     public long downDate;//下载时间
     public long time;//观看时间
-    public int pageIndex=0;//当前页
+    public int pageIndex;//当前页
     public String pageUpUrl;//上一页路径
     public String pageUrl;//当前页路径
-    public boolean isCollect=false;//是否收藏
     @Transient
-    public int loadSate=0;//0未下载 1正下载 2已下载
+    public int loadSate;//0未下载 1正下载 2已下载
     @Transient
     public int buyStatus;//1已购买
-    public int dateState=0;//0当前课本1往期课本
+    public int dateState;//0当前课本1往期课本
     public boolean isLock=false;//未锁
     public boolean isCloud;
     public int cloudId;
     @Transient
     public String drawUrl;
 
-    @Generated(hash = 128532501)
+    @Generated(hash = 1779336811)
     public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl,
             String subjectName, String bookDesc, String semester, String area, String bookName,
             int price, String grade, String version, String bookVersion, String supply, int category,
             String textBookType, int status, String downloadUrl, String bookPath, String bookDrawPath,
             String bookType, long downDate, long time, int pageIndex, String pageUpUrl, String pageUrl,
-            boolean isCollect, int dateState, boolean isLock, boolean isCloud, int cloudId) {
+            int dateState, boolean isLock, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -94,7 +93,6 @@ public class BookBean {
         this.pageIndex = pageIndex;
         this.pageUpUrl = pageUpUrl;
         this.pageUrl = pageUrl;
-        this.isCollect = isCollect;
         this.dateState = dateState;
         this.isLock = isLock;
         this.isCloud = isCloud;
@@ -247,12 +245,6 @@ public class BookBean {
     }
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
-    }
-    public boolean getIsCollect() {
-        return this.isCollect;
-    }
-    public void setIsCollect(boolean isCollect) {
-        this.isCollect = isCollect;
     }
     public int getDateState() {
         return this.dateState;

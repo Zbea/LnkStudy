@@ -90,7 +90,8 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             }
             tv_school_name.text = schoolName
             tv_area.text = addrInfo
-            tv_grade_str.text = grades[grade - 1].name
+            if (grade!=0)
+                tv_grade_str.text = grades[grade - 1].name
         }
 
         btn_edit_psd.setOnClickListener {

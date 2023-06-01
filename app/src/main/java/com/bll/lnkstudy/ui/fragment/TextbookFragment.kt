@@ -87,7 +87,6 @@ class TextbookFragment : BaseFragment() {
                                     bookGreenDaoManager.deleteBook(book) //删除本地数据库
                                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                                     FileUtils.deleteFile(File(book.bookDrawPath))
-                                    mAdapter?.remove(position)
                                     //删除增量更新
                                     DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),1,book.bookId)
                                 }
@@ -110,8 +109,6 @@ class TextbookFragment : BaseFragment() {
         val type=if (typeId==3) 2 else 1
         BookManageDialog(requireActivity(),screenPos,type,book).builder()
             .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
-                override fun onCollect() {
-                }
                 override fun onDelete() {
                     delete()
                 }

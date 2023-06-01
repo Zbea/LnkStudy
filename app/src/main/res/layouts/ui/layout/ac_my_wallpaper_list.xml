@@ -25,25 +25,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/iv_back"
-            android:text="标题"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/iv_back"
             android:textColor="@color/black"
             android:textSize="@dimen/navigation_text" />
 
         <TextView
             android:id="@+id/tv_ok"
-            android:layout_width="118dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="100dp"
+            android:layout_height="@dimen/dp_45"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="52dp"
-            android:layout_marginBottom="1dp"
+            android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             android:gravity="center"
             android:text="@string/ok"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
 
     </RelativeLayout>
 
@@ -57,7 +55,8 @@
         android:layout_marginEnd="@dimen/dp_20"
         />
 
-    <include layout="@layout/common_page_number" />
+    <include layout="@layout/common_page_number"
+        />
 
 
 </LinearLayout>

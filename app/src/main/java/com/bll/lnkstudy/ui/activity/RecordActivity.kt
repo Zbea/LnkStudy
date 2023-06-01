@@ -33,8 +33,11 @@ class RecordActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        recordBean = intent.getBundleExtra("record")?.getSerializable("record") as RecordBean
-        pathFile = File(FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!), "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
+        recordBean = intent.getBundleExtra("recordBundle")?.getSerializable("record") as RecordBean
+        val path=FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!)
+        if (!File(path).exists())
+            File(path).mkdir()
+        pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
     }
 
     override fun initView() {

@@ -87,12 +87,12 @@ class DateActivity:BaseAppCompatActivity() {
 
 
     //根据月份获取当月日期
-    fun getDates(){
+    private fun getDates(){
         dates.clear()
-        var lastYear: Int
-        var lastMonth: Int
-        var nextYear: Int
-        var nextMonth: Int
+        val lastYear: Int
+        val lastMonth: Int
+        val nextYear: Int
+        val nextMonth: Int
 
         when (monthNow) {
             //当月为一月份时候

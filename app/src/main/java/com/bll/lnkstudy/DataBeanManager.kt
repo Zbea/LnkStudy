@@ -24,6 +24,10 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_oldteaching)
     )
+    val searchType = arrayOf(
+        mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),
+        mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str)
+    )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
     val years = arrayOf(2022,2023, 2024, 2025,2026)
     val bookType = arrayOf(

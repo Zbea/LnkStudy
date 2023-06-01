@@ -156,7 +156,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         grade=mUser?.grade!!
         initCommonTitle()
         initView()
-        onFetchControl()
         if (activity is HomeLeftActivity)
             screenPos=(activity as HomeLeftActivity).getCurrentScreenPos()
         mDialog = ProgressDialog(activity,screenPos)
@@ -174,6 +173,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
 
     private fun lazyLoadDataIfPrepared() {
         if (isViewPrepare && !hasLoadData) {
+            onFetchControl()
             lazyLoad()
             hasLoadData = true
         }
@@ -435,7 +435,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         intent.putExtra("path", path)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
-        customStartActivity(intent)
+        startActivity(intent)
     }
 
     /**
@@ -444,8 +444,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
     }
 
     fun deleteDoneTask(task: ImageDownLoadUtils?) {
@@ -474,8 +472,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         //删除所有作业卷内容
         HomeworkPaperDaoManager.getInstance().clear()
         HomeworkPaperContentDaoManager.getInstance().clear()
-        //删除本地文件
-        FileUtils.deleteFile(File(Constants.RECORD_PATH))
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
         //清除本地增量数据
         DataUpdateManager.clearDataUpdate(2)

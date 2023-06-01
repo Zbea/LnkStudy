@@ -101,6 +101,12 @@ public class NotebookDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookBeanDao.Properties.CreateDate).build().list();
     }
 
+    public NotebookBean queryBean(String type,String name) {
+        WhereCondition whereCondition=NotebookBeanDao.Properties.TypeStr.eq(type);
+        WhereCondition whereCondition1=NotebookBeanDao.Properties.Title.eq(name);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
+    }
+
     /**
      * @return
      */

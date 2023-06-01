@@ -45,7 +45,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_title.*
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -108,7 +107,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
         tv_search.setOnClickListener {
 //            AppUtils.clearAppData(requireContext())
-            EventBus.getDefault().post(Constants.DATA_DOWNLOAD_EVENT)
         }
 
         ll_date.setOnClickListener {
@@ -130,7 +128,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         ll_course.setOnClickListener {
             val courseType = SPUtil.getInt("courseType")
             customStartActivity(
-                Intent(activity, MainCourseActivity::class.java).setFlags(1)
+                Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     .putExtra("courseType", courseType)
             )
         }

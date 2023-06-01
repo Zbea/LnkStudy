@@ -24,6 +24,7 @@ public class RecordBean implements Serializable {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int typeId;
+    public String typeStr;
     public String title;
     public long date;
     public String path;
@@ -32,12 +33,13 @@ public class RecordBean implements Serializable {
     @Transient
     public int state=0;//播放状态
 
-    @Generated(hash = 1731123405)
-    public RecordBean(Long id, long userId, int typeId, String title, long date, String path,
-            String course, boolean isCommit) {
+    @Generated(hash = 22307786)
+    public RecordBean(Long id, long userId, int typeId, String typeStr, String title, long date,
+            String path, String course, boolean isCommit) {
         this.id = id;
         this.userId = userId;
         this.typeId = typeId;
+        this.typeStr = typeStr;
         this.title = title;
         this.date = date;
         this.path = path;
@@ -94,6 +96,12 @@ public class RecordBean implements Serializable {
     }
     public void setTypeId(int typeId) {
         this.typeId = typeId;
+    }
+    public String getTypeStr() {
+        return this.typeStr;
+    }
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
     
 }

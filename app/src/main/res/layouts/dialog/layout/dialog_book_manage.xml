@@ -67,32 +67,6 @@
                 android:textSize="20sp"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_collect"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-            android:background="@mipmap/icon_setting_btn_bg"
-            >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"
-                android:src="@mipmap/icon_setting_collect"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_15"
-                android:gravity="right"
-                android:text="@string/collect"
-                android:textColor="@color/black"
-                android:textSize="20sp"/>
-        </LinearLayout>
 
         <View
             android:layout_width="30dp"

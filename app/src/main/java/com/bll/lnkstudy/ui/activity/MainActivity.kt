@@ -31,7 +31,6 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
     private val mQiniuPresenter = QiniuPresenter(this)
     private val mDataUpdatePresenter = DataUpdatePresenter(this)
     private var eventType = ""
-
     override fun onToken(token: String) {
         when (eventType) {
             Constants.AUTO_UPLOAD_EVENT -> {
@@ -787,6 +786,7 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
         }
         SPUtil.putInt("DataUpdateTime", endTime.toInt())
     }
+
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

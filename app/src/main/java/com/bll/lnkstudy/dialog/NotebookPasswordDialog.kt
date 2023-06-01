@@ -17,7 +17,7 @@ class NotebookPasswordDialog(private val context: Context, private val screenPos
     fun builder(): NotebookPasswordDialog? {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_notebook_password)
-        val window = dialog?.window!!
+        val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         if (screenPos==3){

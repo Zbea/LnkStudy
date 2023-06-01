@@ -64,6 +64,7 @@
             <intent-filter>
                 <action android:name="com.android.settings.downloaddata"/>
                 <action android:name="com.android.settings.cleardata"/>
+                <action android:name="ACTION_GLOBAL_SEARCH"/>
             </intent-filter>
         </receiver>
         <activity
@@ -133,6 +134,9 @@
         <activity
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
+        <activity
+            android:name=".ui.activity.SearchActivity"
+            android:theme="@style/activityCustom" />
         <activity android:name=".ui.activity.MyWallpaperActivity" />
         <activity
             android:name=".ui.activity.drawing.DraftDrawingActivity"
@@ -147,7 +151,7 @@
         <activity
             android:name=".ui.activity.CampusModeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".ui.activity.ClassGroupActivity"
             android:windowSoftInputMode="adjustPan" />

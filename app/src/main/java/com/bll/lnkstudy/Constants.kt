@@ -57,9 +57,6 @@ class Constants{
         //作业保存目录
         val HOMEWORK_PATH= MyApplication.mContext.getExternalFilesDir("HomeWork")!!.path
 
-        //录音保存目录
-        val RECORD_PATH= MyApplication.mContext.getExternalFilesDir("Record")!!.path
-
         //笔记保存目录
         val NOTE_PATH= MyApplication.mContext.getExternalFilesDir("Note")!!.path
 

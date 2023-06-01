@@ -20,6 +20,7 @@ public class HomeworkContentBean {
     public String bgResId;//作业背景样式id
     public String course;//科目
     public int homeworkTypeId;//作业本分组id
+    public String typeStr;//作业本分类
     public int contentId;//老师下发作业id
     public String title;
     public int state;//0未提交1已提交2已批改
@@ -28,14 +29,16 @@ public class HomeworkContentBean {
     public String path;//文件路径
     public int page;//页码
 
-    @Generated(hash = 2043677230)
+    @Generated(hash = 4859767)
     public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
-            int contentId, String title, int state, long date, long commitDate, String path, int page) {
+            String typeStr, int contentId, String title, int state, long date, long commitDate,
+            String path, int page) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
         this.course = course;
         this.homeworkTypeId = homeworkTypeId;
+        this.typeStr = typeStr;
         this.contentId = contentId;
         this.title = title;
         this.state = state;
@@ -118,6 +121,12 @@ public class HomeworkContentBean {
     }
     public void setPage(int page) {
         this.page = page;
+    }
+    public String getTypeStr() {
+        return this.typeStr;
+    }
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
 
 

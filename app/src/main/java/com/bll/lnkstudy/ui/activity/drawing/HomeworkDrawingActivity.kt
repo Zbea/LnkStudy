@@ -74,8 +74,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
     override fun initData() {
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
+        page=intent.getIntExtra("page",DEFAULT_PAGE)
         homeworkTypeId = homeworkType?.typeId!!
         course=homeworkType?.course!!
+
         val list=homeworkType?.message?.list
         if (!list.isNullOrEmpty()){
             for (item in list){
@@ -88,8 +90,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(course, homeworkTypeId)
 
         if (homeworks.size > 0) {
-            homeworkContent = homeworks[homeworks.size - 1]
-            page = homeworks.size - 1
+            if (page==DEFAULT_PAGE)
+                page = homeworks.size - 1
+            homeworkContent = homeworks[page]
         } else {
             newHomeWorkContent()
         }
@@ -312,7 +315,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         homeworkContent?.date = System.currentTimeMillis()
         homeworkContent?.homeworkTypeId = homeworkTypeId
         homeworkContent?.bgResId = homeworkType?.bgResId
-
+        homeworkContent?.typeStr=homeworkType?.name
         homeworkContent?.title=getString(R.string.unnamed)+(homeworks.size+1)
         homeworkContent?.path = "$path/$pathName.png"
         homeworkContent?.page = homeworks.size

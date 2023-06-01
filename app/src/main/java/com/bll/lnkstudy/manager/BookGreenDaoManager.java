@@ -6,7 +6,6 @@ import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.mvp.model.BookBean;
 import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
@@ -137,24 +136,15 @@ public class BookGreenDaoManager {
         return queryBookList;
     }
 
-    //查找已收藏书籍
-    public List<BookBean> queryAllBook(boolean isCollect) {
-        WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(0);
-        WhereCondition whereCondition1=BookBeanDao.Properties.IsCollect.eq(isCollect);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
-                .orderDesc(BookBeanDao.Properties.Time).build().list();
+    public List<BookBean> search(String name, int category) {
+        WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(category);
+        WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like("%"+name+"%");
+        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+                .orderDesc(BookBeanDao.Properties.Time)
+                .build().list();
         return queryBookList;
     }
 
-    //查找已收藏书籍
-    public List<BookBean> queryAllBook(boolean isCollect, int page, int pageSize) {
-        WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(0);
-        WhereCondition whereCondition1=BookBeanDao.Properties.IsCollect.eq(isCollect);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
-                .orderDesc(BookBeanDao.Properties.Time)
-                .offset((page-1)*pageSize).limit(pageSize).build().list();
-        return queryBookList;
-    }
 
     //查找课本 细分子类
     public List<BookBean> queryAllTextBook(String textType) {

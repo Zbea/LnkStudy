@@ -14,10 +14,7 @@ import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -39,7 +36,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
-    private var gradeStr = ""
+    private var gradeStr = "一年级"
     private var typeStr = ""
     private var semesterStr=""
     private var courseId=0//科目
@@ -62,7 +59,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         for (i in bookStoreType.grade.indices) {
             gradeList.add(PopupBean(i, bookStoreType.grade[i], i == 0))
         }
-        gradeStr = gradeList[mUser?.grade!!-1].name
+        getAccountGrade()
 
         for (i in bookStoreType.subjectList.indices) {
             val item=bookStoreType.subjectList[i]
@@ -98,8 +95,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
 
     override fun initView() {
         setPageTitle(R.string.main_teaching)
-        disMissView(ll_search,tv_course,tv_grade)
-        showView(tv_semester)
+        disMissView(ll_search,tv_course,tv_grade,tv_semester)
 
         initRecyclerView()
         initTab()
@@ -118,6 +114,48 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
 
     }
 
+    //设置tab分类
+    private fun initTab() {
+        for (i in typeList.indices) {
+            rg_group.addView(getRadioButton(i, typeList[i], typeList.size - 1))
+        }
+
+        rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            when (i) {
+                0 -> {
+                    showView(tv_download)
+                    disMissView(tv_course,tv_grade,tv_semester)
+                    getAccountGrade()
+                }
+                1 -> {
+                    showView(tv_grade,tv_course,tv_semester)
+                    disMissView(tv_download)
+                }
+                else -> {
+                    showView(tv_course,tv_grade,tv_semester)
+                    disMissView(tv_download)
+                }
+            }
+            typeId = i
+            typeStr = typeList[typeId]
+            pageIndex = 1
+            fetchData()
+        }
+
+    }
+
+    private fun initRecyclerView() {
+        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        mAdapter = BookStoreAdapter(R.layout.item_bookstore, books)
+        rv_list.adapter = mAdapter
+        mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setEmptyView(R.layout.common_book_empty)
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            mBook = books[position]
+            showBookDetails(mBook!!)
+        }
+    }
 
     /**
      * 设置分类选择
@@ -158,49 +196,20 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         }
     }
 
-
-    //设置tab分类
-    private fun initTab() {
-        for (i in typeList.indices) {
-            rg_group.addView(getRadioButton(i, typeList[i], typeList.size - 1))
-        }
-
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when (i) {
-                0 -> {
-                    showView(tv_download)
-                    disMissView(tv_course,tv_grade)
-                }
-                1 -> {
-                    showView(tv_grade,tv_course)
-                    disMissView(tv_download)
-                }
-                else -> {
-                    showView(tv_course,tv_grade)
-                    disMissView(tv_download)
-                }
-            }
-            typeId = i
-            typeStr = typeList[typeId]
-            pageIndex = 1
-            fetchData()
-        }
-
+    /**
+     * 获取当前账户的年级
+     */
+    private fun getAccountGrade(){
+        if (mUser?.grade!=0)
+            gradeStr = gradeList[mUser?.grade!!-1].name
     }
 
-    private fun initRecyclerView() {
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = BookStoreAdapter(R.layout.item_bookstore, books)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            mBook = books[position]
-            showBookDetails(mBook!!)
-        }
+    /**
+     * 设置课本学期（月份为9月份之前为下学期）
+     */
+    private fun getSemesterStr():String{
+        return if (DateUtils.getMonth()<9) getString(R.string.semester_next) else getString(R.string.semester_last)
     }
-
 
     /**
      * 展示书籍详情
@@ -391,7 +400,12 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         if (typeId==1){
             map["subjectName"]=courseId
         }
-        map["semester"]=semesterStr
+        if (typeId==0){
+            map["semester"]=getSemesterStr()
+        }
+        else{
+            map["semester"]=semesterStr
+        }
         presenter.getTextBooks(map)
     }
 

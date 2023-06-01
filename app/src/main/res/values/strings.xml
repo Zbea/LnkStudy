@@ -41,6 +41,7 @@
     <string name="toast_password_question_error">密保错误</string>
     <string name="toast_commit_success">提交成功</string>
     <string name="toast_input_message">请输入消息</string>
+    <string name="edit_input_keyword">请输入关键字</string>
 
     <string name="item_is_delete_tips">确定删除？</string>
     <string name="account_is_logout_tips">确定退出登录？</string>
@@ -101,6 +102,7 @@
     <string name="send">发送</string>
     <string name="lock">加锁</string>
     <string name="unlock">解锁</string>
+    <string name="search">搜索</string>
 
     <string name="scale">刻度</string>
     <string name="axis_one">一维坐标</string>
@@ -350,5 +352,11 @@
     <string name="my_calligraphy_str">我的书法</string>
 
     <string name="toast_cloud_upload_painting_str">上传本地书画成功</string>
+
+    <string name="search_bookcase_str">书籍</string>
+    <string name="search_textbook_str">课本</string>
+    <string name="search_homework_str">作业</string>
+    <string name="search_exam_str">考卷</string>
+    <string name="search_note_str">笔记</string>
 
 </resources>

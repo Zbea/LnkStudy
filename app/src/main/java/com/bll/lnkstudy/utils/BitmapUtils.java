@@ -175,9 +175,7 @@ public class BitmapUtils {
             file = new File(path,pcName+".png");
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
-            if (null != outStream) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            }
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
         } catch (Exception e) {
             e.getStackTrace();
         } finally {
@@ -205,19 +203,13 @@ public class BitmapUtils {
      */
     public static void saveBmpGallery(Context context,Bitmap bmp, String path) {
         File file = null;
-        File parentFile=new File(path);
-        if (!parentFile.exists()){
-            parentFile.mkdirs();
-        }
         // 声明输出流
         FileOutputStream outStream = null;
         try {
             file = new File(path);
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
-            if (null != outStream) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            }
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
         } catch (Exception e) {
             e.getStackTrace();
         } finally {

@@ -44,6 +44,7 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     override fun initData() {
         course=intent.getStringExtra("course").toString()
         typeId=intent.getIntExtra("typeId",0)
+        currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
 
         daoManager= PaperDaoManager.getInstance()
         daoContentManager= PaperContentDaoManager.getInstance()
@@ -56,7 +57,8 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         setDrawingTitleClick(false)
         setPWEnabled(false)
         if (papers.size>0){
-            currentPosition=papers.size-1
+            if (currentPosition==DEFAULT_PAGE)
+                currentPosition=papers.size-1
             changeContent()
         }
         changeExpandView()

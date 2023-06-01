@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.graphics.BitmapFactory
+import android.os.Environment
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
@@ -9,6 +11,7 @@ import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.PaintingBean
 import com.bll.lnkstudy.ui.adapter.MyWallpaperAdapter
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_my_wallpaper_list.*
@@ -21,6 +24,10 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyWallpaperAdapter?=null
     private var listMap=HashMap<Int,MutableList<PaintingBean>>()
+    private var leftPath=""
+    private var rightPath=""
+    private var leftSavePath=Environment.getExternalStorageDirectory().path+"/standby.png"
+    private var rightSavePath=Environment.getExternalStorageDirectory().path+"/standby1.png"
 
     override fun layoutId(): Int {
         return R.layout.ac_my_wallpaper_list
@@ -45,18 +52,34 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
             }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            //用来确定翻页后选中的位置
             val index=(pageIndex-1)* Constants.PAGE_SIZE+position
+            val wallpaperItem=lists[index]
             if (view.id==R.id.cb_left){
-                for (item in lists){
-                    item.isLeft=false
+                if(wallpaperItem.isLeft){
+                    wallpaperItem.isLeft=false
+                    leftPath=""
                 }
-                lists[index].isLeft=true
+                else{
+                    for (item in lists){
+                        item.isLeft=false
+                    }
+                    wallpaperItem.isLeft=true
+                    leftPath=wallpaperItem.paths[0]
+                }
             }
             if (view.id==R.id.cb_right){
-                for (item in lists){
-                    item.isRight=false
+                if (wallpaperItem.isRight){
+                    wallpaperItem.isRight=false
+                    rightPath=""
                 }
-                lists[index].isRight=true
+                else{
+                    for (item in lists){
+                        item.isRight=false
+                    }
+                    wallpaperItem.isRight=true
+                    rightPath=wallpaperItem.paths[0]
+                }
             }
             mAdapter?.notifyDataSetChanged()
         }
@@ -64,18 +87,15 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         pageNumberView()
 
         tv_ok.setOnClickListener {
-            var leftPath=""
-            var rightPath=""
-            for (item in lists){
-                if (item.isLeft){
-                    leftPath=item.paths[0]
-                }
-                if (item.isRight){
-                    rightPath=item.paths[0]
-                }
+            if (leftPath.isEmpty()&&rightPath.isEmpty())
+                return@setOnClickListener
+            if(File(leftPath).exists()){
+                BitmapUtils.saveBmpGallery(this,BitmapFactory.decodeFile(leftPath),leftSavePath)
+            }
+            if(File(rightPath).exists()){
+                BitmapUtils.saveBmpGallery(this,BitmapFactory.decodeFile(rightPath),rightSavePath)
             }
         }
-
 
     }
 
@@ -108,6 +128,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         mAdapter?.setNewData(listMap[pageIndex]!!)
         tv_page_current.text=pageIndex.toString()
         tv_page_total.text=pageCount.toString()
+        ll_page_number.visibility=View.VISIBLE
     }
 
 }

@@ -72,6 +72,11 @@ public class HomeworkTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
+    public HomeworkTypeBean queryAllById(int id) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(id);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+    }
+
     public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();

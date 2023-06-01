@@ -67,9 +67,14 @@ public class RecordDaoManager {
     public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(typeId);
-        List<RecordBean> queryList = recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
-        return queryList;
+    }
+
+    public List<RecordBean> search(String title) {
+        WhereCondition whereCondition=RecordBeanDao.Properties.Title.like("%"+title+"%");
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition)
+                .orderDesc(RecordBeanDao.Properties.Date).build().list();
     }
 
     public void deleteBean(RecordBean bean){
