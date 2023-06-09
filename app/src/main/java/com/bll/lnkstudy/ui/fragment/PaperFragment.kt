@@ -288,8 +288,8 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         EventBus.getDefault().post(Constants.USER_EVENT)
         mControlMessagePresenter.editGrade(mUser?.grade!!)
         //上传完之后 删除控制删除消息
-        val contorlClearIds=SPUtil.getListInt("ContorlClear")
-        mControlMessagePresenter.deleteClearMessage(contorlClearIds)
+        val controlClearIds=SPUtil.getListInt("ContorlClear")
+        mControlMessagePresenter.deleteClearMessage(controlClearIds)
     }
 
 }

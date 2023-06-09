@@ -201,10 +201,10 @@ class CloudTextbookFragment:BaseCloudFragment() {
         mCloudPresenter.getList(map)
     }
 
-    override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
+    override fun onCloudList(list: CloudList) {
+        setPageNumber(list.total)
         books.clear()
-        for (item in item.list){
+        for (item in list.list){
             if (item.listJson.isNotEmpty()){
                 val bookBean= Gson().fromJson(item.listJson, BookBean::class.java)
                 bookBean.id=null

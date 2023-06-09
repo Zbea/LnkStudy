@@ -141,11 +141,4 @@ class FileAddress {
         return "$IMAGE_PATH/$mUserId/draft"
     }
 
-    /**
-     * 校园模式草稿区
-     */
-    fun getPathCampusDraft():String{
-        return "$IMAGE_PATH/$mUserId/campus"
-    }
-
 }

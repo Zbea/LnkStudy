@@ -52,7 +52,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
         }
     }
 
-
     override fun layoutId(): Int {
         return R.layout.ac_cloud_storage
     }
@@ -67,7 +66,7 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
             tv_grade.text=DataBeanManager.grades[grade-1].desc
         }
         else{
-            mCommonPresenter.getCommon()
+            mCommonPresenter.getCommonGrade()
         }
 
         for (year in DataBeanManager.years){

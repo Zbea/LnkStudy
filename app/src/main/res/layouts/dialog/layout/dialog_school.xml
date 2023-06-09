@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="500dp"
-    android:layout_height="wrap_content"
+    android:layout_height="500dp"
     android:background="@drawable/dialog_bg"
     android:padding="@dimen/dp_40"
     >
@@ -10,98 +10,87 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal"
         >
 
         <TextView
             android:id="@+id/tv_province"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:lines="1"
-            android:ellipsize="end"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_20"
             android:drawableRight="@mipmap/icon_arrow_down"
-            android:paddingEnd="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_5"
             android:paddingStart="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_20"
+            android:textColorHint="@color/color_text_hint"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
+
         <TextView
             android:id="@+id/tv_city"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:lines="1"
-            android:ellipsize="end"
+            android:layout_marginEnd="@dimen/dp_20"
             android:drawableRight="@mipmap/icon_arrow_down"
-            android:paddingEnd="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_5"
             android:paddingStart="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_20"
+            android:textColorHint="@color/color_text_hint"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/et_area"
+    <TextView
+        android:id="@+id/tv_school"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
-        android:hint="详细信息"
-        android:textColorHint="@color/color_text_hint"
-        android:textColor="@color/black"
         android:gravity="center_vertical"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:drawableRight="@mipmap/icon_arrow_down"
+        android:layout_marginTop="75dp"
+        android:paddingEnd="@dimen/dp_5"
         android:paddingStart="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_10"
-        android:textSize="@dimen/sp_20"
-        android:lines="1"
-        android:background="@drawable/bg_gray_stroke_5dp_corner"/>
-
-    <EditText
-        android:id="@+id/et_school_name"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
-        android:hint="学校名称"
-        android:textColorHint="@color/color_text_hint"
         android:textColor="@color/black"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_10"
         android:textSize="@dimen/sp_20"
-        android:lines="1"
-        android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+        android:hint="学校"
+        android:textColorHint="@color/color_text_hint"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_cancel"
+        <TextView
+            android:id="@+id/tv_cancel"
             android:layout_width="120dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:gravity="center"
             android:text="@string/cancel"
             android:textColor="@color/black"
             android:textSize="22sp" />
 
-        <Button
-            android:id="@+id/btn_ok"
+
+        <TextView
+            android:id="@+id/tv_ok"
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_50"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:gravity="center"
             android:text="@string/ok"
             android:textColor="@color/black"
             android:textSize="22sp" />
-
     </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

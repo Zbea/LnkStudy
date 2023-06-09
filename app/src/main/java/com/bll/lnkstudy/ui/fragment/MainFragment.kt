@@ -136,7 +136,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     }
 
     override fun lazyLoad() {
-        mCommonPresenter.getCommon()
+        mCommonPresenter.getCommonGrade()
         findMessages()
         fetchExam()
     }

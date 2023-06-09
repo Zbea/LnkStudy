@@ -24,19 +24,6 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePrese
         }, true)
     }
 
-    fun getCourseType() {
-        val list = RetrofitManager.service.getTeachCourseType()
-        doRequest(list, object : Callback<TeachingVideoType>(view) {
-            override fun failed(tBaseResult: BaseResult<TeachingVideoType>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<TeachingVideoType>) {
-                if (tBaseResult.data!=null)
-                    view.onCourse(tBaseResult.data)
-            }
-        }, false)
-    }
-
     fun getList(map: HashMap<String,Any>) {
         val list = RetrofitManager.service.getTeachList(map)
         doRequest(list, object : Callback<TeachingVideoList>(view) {

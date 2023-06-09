@@ -36,6 +36,7 @@
     <string name="toast_input_parent_name">请输入家长称谓</string>
     <string name="toast_input_parent_phone">请输入家长电话</string>
     <string name="toast_input_parent_address">请输入家庭住址</string>
+    <string name="toast_select_school">请选择学校</string>
     <string name="toast_password_error">密码错误</string>
     <string name="toast_password_input_question">请输入密保答案</string>
     <string name="toast_password_question_error">密保错误</string>
@@ -103,6 +104,7 @@
     <string name="lock">加锁</string>
     <string name="unlock">解锁</string>
     <string name="search">搜索</string>
+    <string name="school">学校</string>
 
     <string name="scale">刻度</string>
     <string name="axis_one">一维坐标</string>

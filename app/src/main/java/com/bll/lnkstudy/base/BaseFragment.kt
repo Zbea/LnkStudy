@@ -375,12 +375,13 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     fun gotoPaintingDrawing(type: Int){
         val items=PaintingTypeDaoManager.getInstance().queryAllByType(type)
         //当前年级 手写书画分类为null则创建
-        val item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
+        var item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
         if (item==null) {
             val date=System.currentTimeMillis()
-            item?.type = type
-            item?.grade = grade
-            item?.date = date
+            item=PaintingTypeBean()
+            item.type = type
+            item.grade = grade
+            item.date = date
             val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(item)
             //创建本地画本增量更新
             DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(item))

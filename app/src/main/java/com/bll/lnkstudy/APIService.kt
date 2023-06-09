@@ -95,6 +95,7 @@ interface APIService{
      */
     @POST("accounts/changeAddress")
     fun editSchool(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
     /**
      * 退出登录 "/accounts/logout"
      */
@@ -281,7 +282,16 @@ interface APIService{
      */
     @GET("userTypes")
     fun getCommonGrade(): Observable<BaseResult<CommonData>>
-
+    /**
+     * 获取学校接口
+     */
+    @GET("userTypes")
+    fun getCommonSchool(): Observable<BaseResult<MutableList<SchoolBean>>>
+    /**
+     * 获取学校信息
+     */
+    @GET("accounts/changeAddress")
+    fun getSchoolDetails(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<SchoolBean>>
 
     /**
      * 获取老师发送控制指令

@@ -3,13 +3,17 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.activity.TeachListActivity
 import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -17,33 +21,33 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_teach.*
-import java.lang.Math.ceil
 
 /**
  * 教学
  */
-class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
+class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonView {
 
+    private val mCommonPresenter=CommonPresenter(this)
     private val mPresenter=TeachingVideoPresenter(this)
     private var mAdapter: TeachCourseAdapter? = null
-    private var courseType:TeachingVideoType?=null
     private var videoType:TeachingVideoType?=null
     private var lists = mutableListOf<ItemList>()//列表数据
     private var tabs= mutableListOf<ItemList>()//tab分类
     private var flags=0//0课程 1其他
     private val map= mutableMapOf<Int,List<ItemList>>()
 
+    override fun onList(commonData: CommonData) {
+        if (commonData.grade.isNotEmpty())
+            DataBeanManager.grades=commonData.grade
+        if (commonData.subject.isNotEmpty())
+            DataBeanManager.courses=commonData.subject
+    }
+
     override fun onList(list: TeachingVideoList?) {
-
     }
-    override fun onCourse(type: TeachingVideoType) {
-        courseType=type
-        lists=type.types
-        pageNumberView()
-    }
-
     override fun onType(type: TeachingVideoType?) {
         videoType=type
+        DataBeanManager.gradeOthers= type?.grades as MutableList<ItemList>
         tabs.addAll(type?.types!!)
         initTab()
     }
@@ -70,7 +74,6 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
                 val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
                 val bundle= Bundle()
                 bundle.putSerializable("item", data[position])
-                bundle.putSerializable("type",if (flags==0) courseType else videoType)
                 intent.putExtra("bundle", bundle)
                 customStartActivity(intent)
             }
@@ -79,8 +82,10 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun lazyLoad() {
-        mPresenter.getCourseType()
-        mPresenter.getType()
+        if (DataBeanManager.courses.isEmpty())
+            mCommonPresenter.getCommonGrade()
+        if (videoType==null)
+            mPresenter.getType()
     }
 
     //设置头部索引
@@ -92,24 +97,27 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             pageIndex=1
             lists = if (i==0){
                 flags=0
-                courseType?.types as MutableList<ItemList>
+                DataBeanManager.courses
             } else{
                 flags=1
                 videoType?.subType?.get(i.toString()) as MutableList<ItemList>
             }
             pageNumberView()
         }
+
+        lists= DataBeanManager.courses
+        pageNumberView()
     }
 
     //翻页处理
     private fun pageNumberView(){
         val pageTotal= lists.size
         setPageNumber(pageTotal)
-        pageCount= ceil(pageTotal.toDouble() / pageSize).toInt()
+        pageCount= kotlin.math.ceil(pageTotal.toDouble() / pageSize).toInt()
         var toIndex=pageSize
         for(i in 0 until pageCount){
-            var index=i*pageSize
-            if(index+pageSize>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
+            val index=i*pageSize
+            if(index+pageSize>pageTotal){
                 toIndex=pageTotal-index
             }
             val newList = lists.subList(index,index+toIndex)
@@ -121,12 +129,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
 
     override fun onRefreshData() {
         super.onRefreshData()
-        if (courseType==null){
-            mPresenter.getCourseType()
-        }
-        if (videoType==null){
-            mPresenter.getType()
-        }
+        lazyLoad()
     }
 
     override fun fetchData() {

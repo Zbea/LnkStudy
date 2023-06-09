@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
@@ -13,7 +14,7 @@
         android:layout_marginStart="150dp"
         android:layout_marginEnd="150dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="80dp"
         android:orientation="vertical">
@@ -244,90 +245,27 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_22"
                     android:textStyle="bold"
-                    android:text="学校信息" />
+                    android:text="@string/school_message" />
 
-                <RelativeLayout
-                    android:layout_width="115dp"
-                    android:layout_height="@dimen/dp_45"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner">
-
-                    <Spinner
-                        android:id="@+id/sp_province"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:gravity="center_vertical"
-                        android:paddingEnd="@dimen/dp_30"
-                        android:spinnerMode="dropdown" />
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/icon_arrow_down" />
-
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="115dp"
-                    android:layout_height="@dimen/dp_45"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner">
-
-                    <Spinner
-                        android:id="@+id/sp_city"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:spinnerMode="dropdown"
-                        android:gravity="center_vertical"
-                        android:paddingEnd="@dimen/dp_30" />
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/icon_arrow_down" />
-
-                </RelativeLayout>
-                <EditText
-                    android:id="@+id/et_area"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_45"
-                    android:hint="详细信息"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:textColorHint="@color/color_text_hint"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/dp_10"
-                    android:paddingEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_20"
-                    android:lines="1"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_30"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_school"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_45"
+                    android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:paddingEnd="@dimen/dp_5"
+                    android:paddingStart="@dimen/dp_10"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/sp_20"
+                    android:hint="@string/school"
+                    android:textColorHint="@color/color_text_hint"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"
+                    app:drawableRightCompat="@mipmap/icon_arrow_down" />
 
                 <TextView
                     android:id="@+id/tv_grade"
-                    android:layout_width="115dp"
+                    android:layout_width="140dp"
                     android:layout_height="@dimen/dp_45"
                     android:gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_20"
@@ -336,24 +274,10 @@
                     android:paddingStart="@dimen/dp_10"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_20"
-                    android:hint="年级"
+                    android:hint="@string/grade"
                     android:textColorHint="@color/color_text_hint"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"
                     />
-
-                <EditText
-                    android:id="@+id/et_school_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_45"
-                    android:hint="学校名称"
-                    android:textColorHint="@color/color_text_hint"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/dp_10"
-                    android:paddingEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_20"
-                    android:lines="1"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
             </LinearLayout>
 
@@ -370,7 +294,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_22"
                     android:textStyle="bold"
-                    android:text="家庭信息" />
+                    android:text="@string/family" />
 
                 <EditText
                     android:id="@+id/et_parent_name"

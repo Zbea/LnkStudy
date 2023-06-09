@@ -66,21 +66,18 @@ public class PaintingTypeDaoManager {
     }
 
     public List<PaintingTypeBean> queryAll() {
-        List<PaintingTypeBean> queryList = dao.queryBuilder().where(whereUser).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser).build().list();
     }
 
     public List<PaintingTypeBean> queryAllByType(int type) {
         WhereCondition whereCondition=PaintingTypeBeanDao.Properties.Type.eq(type);
-        List<PaintingTypeBean> queryList = dao.queryBuilder().where(whereUser,whereCondition).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     public PaintingTypeBean queryAllByGrade(int type,int grade) {
         WhereCondition whereCondition=PaintingTypeBeanDao.Properties.Type.eq(type);
         WhereCondition whereCondition1=PaintingTypeBeanDao.Properties.Grade.eq(grade);
-        PaintingTypeBean bean = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
-        return bean;
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
     }
 
     public void deleteBean(PaintingTypeBean bean){

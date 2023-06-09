@@ -2,32 +2,24 @@ package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
-import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
-import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.mvp.model.Area
+import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
+import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.ToolUtils
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_register.*
 
 
@@ -39,28 +31,31 @@ import kotlinx.android.synthetic.main.ac_account_register.*
 //6. 验证码规则数字即可
  */
 class AccountRegisterActivity : BaseAppCompatActivity(),
-    IContractView.IRegisterOrFindPsdView,IContractView.ICommonView {
+    IContractView.IRegisterOrFindPsdView,IContractView.ICommonView,ISchoolView {
 
+    private val mSchoolPresenter=SchoolPresenter(this)
     private val commonPresenter=CommonPresenter(this)
     private val presenter= RegisterOrFindPsdPresenter(this)
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
-    private var area: Area?=null
-    private var provinces= mutableListOf<String>()
-    private var citys= mutableListOf<String>()
-    private var cityAdapter:SpinnerAdapter?=null
-    private var provinceStr=""
-    private var cityStr=""
     private var brithday=0L
 
     private var popupGradeWindow:PopupList?=null
     private var grades= mutableListOf<PopupBean>()
     private var grade=1
+    private var school=0
+    private var schools= mutableListOf<SchoolBean>()
 
     override fun onList(commonData: CommonData) {
         DataBeanManager.grades=commonData.grade
         grades=DataBeanManager.popupGrades
         tv_grade.text=grades[0].name
+    }
+
+    override fun onSchoolDetails(schoolBean: SchoolBean?) {
+    }
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        schools=list
     }
 
     override fun onSms() {
@@ -88,26 +83,8 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
 
     override fun initData() {
         flags=intent.flags
-
-        val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
-        area = Gson().fromJson(citysStr, Area::class.java)
-
-        for (item in area?.provinces!!){
-            provinces.add(item.provinceName)
-        }
-
-        for (item in area?.provinces!![0].citys){
-            citys.add(item.citysName)
-        }
-
-        grades=DataBeanManager.popupGrades
-        if (grades.size>0){
-            tv_grade.text=grades[0].name
-        }
-        else{
-            commonPresenter.getCommon()
-        }
-
+        commonPresenter.getCommonGrade()
+        mSchoolPresenter.getCommonSchool()
     }
 
     override fun initView() {
@@ -126,41 +103,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             else -> {
                 setPageTitle(R.string.register)
             }
-        }
-        sp_province.apply {
-            dropDownWidth=DP2PX.dip2px(this@AccountRegisterActivity,115f)
-            setPopupBackgroundResource(R.drawable.bg_gray_stroke_5dp_corner)
-            val mAdapter=SpinnerAdapter(this@AccountRegisterActivity,provinces)
-            adapter=mAdapter
-            setSelection(0)
-            onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    provinceStr=provinces[p2]
-                    citys.clear()
-                    for (item in area?.provinces!![p2].citys){
-                        citys.add(item.citysName)
-                    }
-                    cityAdapter?.notifyDataSetChanged()
-                }
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
-            }
-        }
-
-        sp_city.apply {
-            dropDownWidth=DP2PX.dip2px(this@AccountRegisterActivity,115f)
-            setPopupBackgroundResource(R.drawable.bg_gray_stroke_5dp_corner)
-            cityAdapter=SpinnerAdapter(this@AccountRegisterActivity,citys)
-            setSelection(0)
-            adapter=cityAdapter
-            onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    cityStr=citys[p2]
-                }
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
-            }
-
         }
 
         ll_date.setOnClickListener {
@@ -183,6 +125,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             selectorGrade()
         }
 
+        tv_school.setOnClickListener {
+            selectorSchool()
+        }
+
         btn_register.setOnClickListener {
 
             val account=ed_user.text.toString().trim()
@@ -190,24 +136,22 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             val name=ed_name.text.toString().trim()
             val phone=ed_phone.text.toString().trim()
             val code=ed_code.text.toString().trim()
-            val area=et_area.text.toString().trim()
-            val schoolName=et_school_name.text.toString().trim()
             val parentName=et_parent_name.text.toString().trim()
             val parent=et_parent.text.toString().trim()
             val parentPhone=et_parent_phone.text.toString().trim()
             val address=et_address.text.toString().trim()
             val birthdayStr=tv_date.text.toString().trim()
 
-            if (psd.isNullOrEmpty()) {
+            if (psd.isEmpty()) {
                 showToast(R.string.login_input_password_hint)
                 return@setOnClickListener
             }
-            if (phone.isNullOrEmpty()) {
+            if (phone.isEmpty()) {
                 showToast(R.string.toast_input_phone)
                 return@setOnClickListener
             }
 
-            if (code.isNullOrEmpty()) {
+            if (code.isEmpty()) {
                 showToast(R.string.toast_input_message_code)
                 return@setOnClickListener
             }
@@ -221,7 +165,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
-
 
             when (flags) {
                 0 -> {
@@ -241,18 +184,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                         showToast(getString(R.string.user_tip))
                         return@setOnClickListener
                     }
-                    if (provinceStr.isEmpty()||cityStr.isEmpty()) {
-                        showToast(R.string.toast_input_city)
-                        return@setOnClickListener
-                    }
-                    if (area.isEmpty()) {
-                        showToast(R.string.toast_input_school_address)
-                        return@setOnClickListener
-                    }
-                    if (schoolName.isEmpty()) {
-                        showToast(R.string.toast_input_school_name)
-                        return@setOnClickListener
-                    }
                     if (parentName.isEmpty()) {
                         showToast(R.string.toast_input_parent)
                         return@setOnClickListener
@@ -269,6 +200,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                         showToast(R.string.toast_input_parent_address)
                         return@setOnClickListener
                     }
+                    if (school==0){
+                        showToast(R.string.toast_select_school)
+                        return@setOnClickListener
+                    }
 
                     val map=HashMap<String,Any>()
                     map["account"]=account
@@ -276,15 +211,13 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                     map["nickname"]=name
                     map["code"]=code
                     map["telNumber"]=phone
-                    map["addr"]= "$provinceStr,$cityStr"
-                    map["addrInfo"]=area
-                    map["schoolName"]=schoolName
                     map["parentName"]=parentName
                     map["parentNickname"]=parent
                     map["parentTel"]=parentPhone
                     map["parentAddr"]=address
                     map["birthdayTime"]=brithday/1000
                     map["grade"]=grade
+                    map["school"]=school
                     presenter.register(map)
                 }
                 1 -> {
@@ -343,6 +276,15 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         }
     }
 
+    /**
+     * 选择学校
+     */
+    private fun selectorSchool(){
+        SchoolSelectDialog(this,getCurrentScreenPos(),schools).builder().setOnDialogClickListener{
+            school=it
+        }
+    }
+
     private fun setIntent(){
         val intent = Intent()
         intent.putExtra("user", ed_user.text.toString())
@@ -350,31 +292,4 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
-
-
-    class SpinnerAdapter(val context: Context, val list: List<String>) : BaseAdapter() {
-
-        override fun getCount(): Int {
-            return list.size
-        }
-        override fun getItem(position: Int): Any {
-            return list[position]
-        }
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-        override fun getView(position: Int, p1: View?, p2: ViewGroup?): View {
-            val view= LayoutInflater.from(context).inflate(R.layout.item_dropdown,null)
-            val tvName=view.findViewById<TextView>(R.id.tv_name)
-            tvName.text=list[position]
-            tvName.setSingleLine()
-            tvName.ellipsize= TextUtils.TruncateAt.END
-            tvName.height= DP2PX.dip2px(context,40f)
-            return view
-        }
-    }
-
-
-
-
 }

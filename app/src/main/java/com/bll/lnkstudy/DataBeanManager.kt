@@ -13,6 +13,7 @@ object DataBeanManager {
     var classGroups= mutableListOf<ClassGroup>()
     var grades= mutableListOf<Grade>()
     var courses= mutableListOf<ItemList>()
+    var gradeOthers= mutableListOf<ItemList>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
@@ -505,8 +506,8 @@ object DataBeanManager {
     val semesters: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
-            list.add(PopupBean(0, mContext.getString(R.string.semester_last),true))
-            list.add(PopupBean(1,mContext.getString(R.string.semester_next),false))
+            list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))
+            list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
             return list
         }
 

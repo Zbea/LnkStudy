@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
@@ -20,7 +21,6 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     private val mPresenter=TeachingVideoPresenter(this)
     private var flags=0
     private var item:ItemList?=null
-    private var type:TeachingVideoType?=null
     private var grade=0//年级
     private var semester=0//学期
     private var grades= mutableListOf<PopupBean>()
@@ -37,8 +37,6 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         mAdapter?.setNewData(datas)
 
     }
-    override fun onCourse(type: TeachingVideoType?) {
-    }
 
     override fun onType(type: TeachingVideoType?) {
 
@@ -52,26 +50,22 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         pageSize=20
         flags=intent.flags
         item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
-        type=intent.getBundleExtra("bundle")?.getSerializable("type") as TeachingVideoType
-
-        val gradeItems=type?.grades!!
-        if (gradeItems.size>0){
-            for (i in gradeItems.indices){
-                grades.add(PopupBean(gradeItems[i].type,gradeItems[i].desc,i==0))
-            }
-            grade=grades[0].id
-            tv_grade.text = grades[0].name
-        }
 
         if (flags==0){
-            val semesterItems=type?.semesters!!
-            if (semesterItems.size>0){
-                for (i in semesterItems.indices){
-                    semesters.add(PopupBean(semesterItems[i].type,semesterItems[i].desc,i==0))
-                }
-                semester=semesters[0].id
-                tv_semester.text = semesters[0].name
+            grades=DataBeanManager.popupGrades
+        }
+        else{
+            for (i in DataBeanManager.gradeOthers.indices){
+                grades.add(PopupBean(DataBeanManager.gradeOthers[i].type,DataBeanManager.gradeOthers[i].desc,i==0))
             }
+        }
+        grade=grades[0].id
+        tv_grade.text = grades[0].name
+
+        if (flags==0){
+            semesters=DataBeanManager.semesters
+            semester=semesters[0].id
+            tv_semester.text = semesters[0].name
         }
 
         fetchData()

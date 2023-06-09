@@ -146,7 +146,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
                         override fun onFinish(success: Boolean) {
                             if (success) {
-                                val id=BookGreenDaoManager.getInstance().insertOrReplaceGetId(book)
+                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                                 //删除教材的zip文件
                                 FileUtils.deleteFile(File(zipPath))
                                 //创建增量更新

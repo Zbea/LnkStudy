@@ -7,33 +7,36 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.AccountEditSchoolDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupList
+import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
+import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
+import kotlinx.android.synthetic.main.ac_account_register.*
 import org.greenrobot.eventbus.EventBus
 
-class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView {
+class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
 
+    private val mSchoolPresenter=SchoolPresenter(this)
     private val presenter = AccountInfoPresenter(this)
     private var nickname = ""
 
     private var popupGradeWindow: PopupList? = null
     private var grades = mutableListOf<PopupBean>()
-    private var grade = 0
-    private var schoolName = ""
-    private var provinceStr = ""
-    private var areaStr = ""
+    private var grade = 1
+    private var schools= mutableListOf<SchoolBean>()
+    private var school=0
 
     override fun onLogout() {
-
     }
 
     override fun onEditNameSuccess() {
@@ -49,17 +52,23 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         EventBus.getDefault().post(Constants.USER_EVENT)
     }
 
-    override fun onEditSchoolSuccess() {
-        showToast(R.string.toast_edit_success)
-        mUser?.addr = provinceStr
-        mUser?.addrInfo = areaStr
-        mUser?.schoolName = schoolName
-        tv_province.text = provinceStr.split(",")[0]
-        tv_city.text = provinceStr.split(",")[1]
-        tv_school_name.text = schoolName
-        tv_area.text = areaStr
+    override fun onEditSchool() {
+        mSchoolPresenter.getSchoolDetails(school)
     }
 
+    override fun onSchoolDetails(schoolBean: SchoolBean) {
+        mUser?.schoolId = schoolBean.id
+        mUser?.schoolProvince=schoolBean.province
+        mUser?.schoolName=schoolBean.name
+        tv_province.text = schoolBean.province
+        tv_city.text = schoolBean.city
+        tv_school_name.text = schoolBean.name
+        tv_area.text = schoolBean.area
+    }
+
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        schools=list
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_account_info
@@ -67,6 +76,9 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     override fun initData() {
         grades = DataBeanManager.popupGrades
+        school=mUser?.schoolId!!
+        mSchoolPresenter.getSchoolDetails(school)
+        mSchoolPresenter.getCommonSchool()
     }
 
     @SuppressLint("WrongConstant")
@@ -84,13 +96,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_parent_name.text = parentNickname
             tv_parent_phone.text = parentTel
             tv_address.text = parentAddr
-            if (addr.isNotEmpty()) {
-                tv_province.text = addr.split(",")[0]
-                tv_city.text = addr.split(",")[1]
-            }
-            tv_school_name.text = schoolName
-            tv_area.text = addrInfo
-            if (grade!=0)
+            if (grade != 0 && grades.size > 0)
                 tv_grade_str.text = grades[grade - 1].name
         }
 
@@ -153,17 +159,10 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      * 修改学校
      */
     private fun editSchool() {
-        AccountEditSchoolDialog(this, getCurrentScreenPos(), mUser!!).builder()
-            ?.setOnDialogClickListener { provinceStr: String, areaStr: String, schoolName: String ->
-                this.provinceStr = provinceStr
-                this.areaStr = areaStr
-                this.schoolName = schoolName
-                val map = HashMap<String, Any>()
-                map["addr"] = provinceStr
-                map["addrInfo"] = areaStr
-                map["schoolName"] = schoolName
-                presenter.editSchool(map)
-            }
+        SchoolSelectDialog(this, getCurrentScreenPos(),schools).builder().setOnDialogClickListener {
+            school=it
+            presenter.editSchool(it)
+        }
     }
 
     /**

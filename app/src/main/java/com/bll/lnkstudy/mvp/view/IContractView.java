@@ -12,6 +12,7 @@ import com.bll.lnkstudy.mvp.model.ControlMessage;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.Message;
 import com.bll.lnkstudy.mvp.model.PaintingList;
+import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
@@ -66,7 +67,7 @@ public interface IContractView {
         void onLogout();
         void onEditNameSuccess();
         void onEditGradeSuccess();
-        void onEditSchoolSuccess();
+        void onEditSchool();
     }
 
     //钱包页面回调
@@ -106,7 +107,6 @@ public interface IContractView {
     //教学视频
     interface ITeachingVideoView extends IBaseView {
         void onList(TeachingVideoList list);
-        void onCourse(TeachingVideoType type);//视频 课程分类
         void onType(TeachingVideoType type);//视频 其他分类
     }
 
@@ -160,6 +160,11 @@ public interface IContractView {
     //公共接口
     interface ICommonView extends IBaseView {
         void onList(CommonData commonData);
+    }
+
+    interface ISchoolView extends IBaseView {
+        void onSchoolDetails(SchoolBean schoolBean);
+        void onListSchools(List<SchoolBean> list);
     }
 
     /**

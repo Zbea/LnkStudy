@@ -5,8 +5,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.View
-import android.view.ViewGroup.LayoutParams
-import android.widget.LinearLayout
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -19,7 +17,6 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -68,13 +65,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
 
         setBg()
-
-        val distance=DP2PX.dip2px(this,80f)
-        val layoutParams=LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(distance,0,distance,0)
-        layoutParams.weight=1f
-        v_content_a.layoutParams=layoutParams
-        v_content_b.layoutParams=layoutParams
 
         changeContent()
 
