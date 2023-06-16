@@ -10,18 +10,23 @@ import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.SToast
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 /**
  * 学校选择
  */
 class SchoolSelectDialog(val context: Context,val screenPos:Int,private val beans:MutableList<SchoolBean>){
 
-    private var provinces= mutableListOf<PopupBean>()
-    private var citys= mutableListOf<PopupBean>()
+    private var provincePops= mutableListOf<PopupBean>()
+    private var cityPops= mutableListOf<PopupBean>()
+    private var areaPops= mutableListOf<PopupBean>()
     private var schools= mutableListOf<PopupBean>()
     private var provinceStr=""
     private var cityStr=""
-    private var area:Area?=null
+    private var areaStr=""
+    private var provinces= mutableListOf<Area>()
+    private var citys= mutableListOf<Area>()
+    private var areas= mutableListOf<Area>()
     private var school=0
 
     fun builder(): SchoolSelectDialog {
@@ -30,16 +35,23 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val areaStr = FileUtils.readFileContent(context.resources.assets.open("city.json"))
-        area = Gson().fromJson(areaStr, Area::class.java)
-        for (i in area?.provinces!!.indices){
-            provinces.add(PopupBean(i,area?.provinces!![i].provinceName,i==0))
+        var areaStr = FileUtils.readFileContent(context.resources.assets.open("city.json"))
+        val type= object : TypeToken<List<Area>>() {}.type
+        provinces = Gson().fromJson(areaStr, type)
+        for (i in provinces.indices){
+            provincePops.add(PopupBean(i,provinces[i].value,i==0))
         }
-        for (i in area?.provinces!![0].citys.indices){
-            citys.add(PopupBean(i,area?.provinces!![0].citys[i].citysName,i==0))
+        citys=provinces[0].children
+        for (i in citys.indices){
+            cityPops.add(PopupBean(i,citys[i].value,i==0))
         }
-        provinceStr=provinces[0].name
-        cityStr=citys[0].name
+        areas=citys[0].children
+        for (i in areas.indices){
+            areaPops.add(PopupBean(i,areas[i].value,i==0))
+        }
+        provinceStr=provincePops[0].name
+        cityStr=cityPops[0].name
+        areaStr=areaPops[0].name
         getSchool()
 
         val tvCancel=dialog.findViewById<TextView>(R.id.tv_cancel)
@@ -48,27 +60,54 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
         tvProvince.text=provinceStr
         val tvCity=dialog.findViewById<TextView>(R.id.tv_city)
         tvCity.text=cityStr
+        val tvArea=dialog.findViewById<TextView>(R.id.tv_area)
+        tvArea.text=areaStr
         val tvSchool=dialog.findViewById<TextView>(R.id.tv_school)
         tvProvince.setOnClickListener {
-            PopupList(context,provinces,tvProvince,tvProvince.width,5).builder().setOnSelectListener{
+            PopupList(context,provincePops,tvProvince,tvProvince.width,5).builder().setOnSelectListener{
                 provinceStr=it.name
-                citys.clear()
-                for (i in area?.provinces!![it.id].citys.indices){
-                    citys.add(PopupBean(i,area?.provinces!![it.id].citys[i].citysName,i==0))
-                }
-                cityStr=citys[0].name
                 tvProvince.text=provinceStr
+                cityPops.clear()
+                areaPops.clear()
+
+                citys=provinces[it.id].children
+                for (i in citys.indices){
+                    cityPops.add(PopupBean(i,citys[i].value,i==0))
+                }
+                cityStr=cityPops[0].name
                 tvCity.text=cityStr
+
+                areas=citys[0].children
+                for (i in areas.indices){
+                    areaPops.add(PopupBean(i,areas[i].value,i==0))
+                }
+                areaStr=areaPops[0].name
+                tvArea.text=areaStr
                 getSchool()
             }
         }
         tvCity.setOnClickListener {
-            PopupList(context,citys,tvCity,tvCity.width,5).builder().setOnSelectListener{
+            PopupList(context,cityPops,tvCity,tvCity.width,5).builder().setOnSelectListener{
                 cityStr=it.name
                 tvCity.text=cityStr
+                areaPops.clear()
+                areas=citys[it.id].children
+                for (i in areas.indices){
+                    areaPops.add(PopupBean(i,areas[i].value,i==0))
+                }
+                areaStr=areaPops[0].name
+                tvArea.text=areaStr
                 getSchool()
             }
         }
+        tvArea.setOnClickListener {
+            PopupList(context,areaPops,tvArea,tvArea.width,5).builder().setOnSelectListener{
+                areaStr=it.name
+                tvArea.text=areaStr
+                getSchool()
+            }
+        }
+
         tvSchool.setOnClickListener {
             PopupList(context,schools,tvSchool,tvSchool.width,5).builder().setOnSelectListener{
                 school=it.id
@@ -92,10 +131,11 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
         return this
     }
 
+
     private fun getSchool(){
         schools.clear()
         for (item in beans){
-            if (item.province==provinceStr&&item.city==cityStr){
+            if (item.province==provinceStr&&item.city==cityStr&&item.area==areaStr){
                 schools.add(PopupBean(item.id,item.name))
             }
         }

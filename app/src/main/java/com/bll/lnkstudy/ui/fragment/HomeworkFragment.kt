@@ -1,7 +1,5 @@
 package com.bll.lnkstudy.ui.fragment
 
-import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.DataBeanManager.getHomeworkCoverStr
@@ -13,7 +11,6 @@ import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -164,11 +161,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 notifyDataSetChanged()
                 when (item.state) {
                     3 -> {
-                        val bundle= Bundle()
-                        bundle.putSerializable("homework",item)
-                        val intent=Intent(context, RecordListActivity::class.java)
-                        intent.putExtra("homeworkBundle",bundle)
-                        customStartActivity(intent)
+                        gotoHomeworkRecord(item)
                     }
                     1 -> {
                         item.isMessage = false

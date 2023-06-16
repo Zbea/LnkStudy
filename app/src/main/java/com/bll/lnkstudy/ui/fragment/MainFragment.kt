@@ -34,7 +34,6 @@ import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
-import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.FileUtils
@@ -167,7 +166,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         lists.add(PopupBean(0, getString(R.string.date_plan)))
         lists.add(PopupBean(1, getString(R.string.date_day)))
 
-        tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
+        setDateView()
         mPlanAdapter = MainDatePlanAdapter(R.layout.item_main_date_plan, null).apply {
             rv_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_plan.adapter = this
@@ -187,6 +186,10 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
         findDateList()
 
+    }
+
+    private fun setDateView(){
+        tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
     }
 
     //消息相关处理
@@ -255,12 +258,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
             setOnItemClickListener { adapter, view, position ->
-                //跳转手绘
-                val intent = Intent(activity, NoteDrawingActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("note", mainNoteAdapter?.data?.get(position))
-                intent.putExtra("bundle", bundle)
-                customStartActivity(intent)
+                gotoIntent(mainNoteAdapter?.data?.get(position)!!)
             }
         }
         findNotes()
@@ -356,6 +354,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
     override fun onRefreshData() {
         super.onRefreshData()
+        setDateView()
         lazyLoad()
     }
 

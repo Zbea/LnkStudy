@@ -207,9 +207,7 @@
     <string name="painting_smh">素描画</string>
     <string name="painting_ybsf">硬笔书法</string>
 
-    <string name="note_tab_diary">我的日记</string>
-    <string name="note_tab_article">金句彩段</string>
-    <string name="note_tab_topic">典型题型</string>
+    <string name="note_tab_diary">我的密本</string>
     <string name="note_type_hgb">横格本</string>
     <string name="note_type_fgb">方格本</string>
     <string name="note_type_kbb">空白本</string>
@@ -245,7 +243,7 @@
     <string name="date_plan">学习计划</string>
     <string name="date_day">重要日子</string>
 
-    <string name="book_my">我的书籍</string>
+    <string name="book_my">我的阅读</string>
     <string name="book_type_title">分类展示</string>
     <string name="book_collect_success">收藏成功</string>
     <string name="book_collected">已收藏</string>

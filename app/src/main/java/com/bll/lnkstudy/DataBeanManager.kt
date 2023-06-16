@@ -436,14 +436,6 @@ object DataBeanManager {
                 name = mContext.getString(R.string.note_tab_diary)
                 typeId = 0
             })
-            list.add(NoteTypeBean().apply {
-                name = mContext.getString(R.string.note_tab_article)
-                typeId = 1
-            })
-            list.add(NoteTypeBean().apply {
-                name = mContext.getString(R.string.note_tab_topic)
-                typeId = 2
-            })
             return list
         }
 

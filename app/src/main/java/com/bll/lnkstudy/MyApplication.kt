@@ -69,7 +69,6 @@ class MyApplication : Application(){
         }
 
         override fun onActivityPaused(activity: Activity) {
-
         }
 
         override fun onActivityStopped(activity: Activity) {

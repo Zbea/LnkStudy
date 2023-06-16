@@ -11,6 +11,9 @@ class MaxRecyclerView : RecyclerView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
-        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(700, MeasureSpec.AT_MOST))
+        super.onMeasure(widthSpec, heightSpec)
+        if (measuredHeight>700){
+            setMeasuredDimension(widthSpec, 700)
+        }
     }
 }

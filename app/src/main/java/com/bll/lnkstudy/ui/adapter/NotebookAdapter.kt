@@ -35,8 +35,7 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Notebook
                 addOnClickListener(R.id.iv_more)
             }
             setText(R.id.tv_title,title)
-            setText(R.id.tv_date, if (item.typeStr==DataBeanManager.noteBook[0].name)item.dateStr
-            else DateUtils.longToStringDataNoYear(item.createDate))
+            setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.createDate) )
         }
     }
 

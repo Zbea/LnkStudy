@@ -4,15 +4,7 @@ import java.util.List;
 
 public class Area {
 
-    public List<ProvincesDTO> provinces;
-
-    public static class ProvincesDTO {
-
-        public List<CitysDTO> citys;
-        public String provinceName;
-
-        public static class CitysDTO {
-            public String citysName;
-        }
-    }
+    public String code;
+    public String value;
+    public List<Area> children;
 }

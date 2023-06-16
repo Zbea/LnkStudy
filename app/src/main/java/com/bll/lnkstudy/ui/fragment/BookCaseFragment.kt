@@ -21,7 +21,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_bookcase.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 /**
@@ -32,8 +31,8 @@ class BookCaseFragment: BaseFragment() {
     private val halfYear=180*24*60*60*1000
     private var mAdapter: BookAdapter?=null
     private var position=0
-    private var book: BookBean?=null
     private var books= mutableListOf<BookBean>()//所有数据
+    private var bookTopBean:BookBean?=null
     private val cloudList= mutableListOf<CloudListBean>()
 
     override fun getLayoutId(): Int {
@@ -44,10 +43,14 @@ class BookCaseFragment: BaseFragment() {
         setTitle(R.string.main_bookcase_title)
 
         initRecyclerView()
-        findData()
+        findBook()
 
         tv_type.setOnClickListener {
             customStartActivity(Intent(activity,BookCaseTypeListActivity::class.java))
+        }
+        
+        ll_book_top.setOnClickListener {
+            bookTopBean?.let { gotoBookDetails(it) }
         }
 
     }
@@ -60,15 +63,13 @@ class BookCaseFragment: BaseFragment() {
             rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
-            setEmptyView(R.layout.common_book_empty)
             rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean.bookPath)
+                gotoBookDetails(bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookCaseFragment.position=position
-                book=books[position]
                 delete()
                 true
             }
@@ -79,8 +80,15 @@ class BookCaseFragment: BaseFragment() {
     /**
      * 查找本地书籍
      */
-    private fun findData(){
-        books=BookGreenDaoManager.getInstance().queryAllBook()
+    private fun findBook(){
+        books=BookGreenDaoManager.getInstance().queryAllBook(true)
+        if (books.size==0){
+            bookTopBean=null
+        }
+        else{
+            bookTopBean=books[0]
+            books.removeFirst()
+        }
         mAdapter?.setNewData(books)
         onChangeTopView()
     }
@@ -88,24 +96,13 @@ class BookCaseFragment: BaseFragment() {
 
     //设置头部view显示 (当前页的第一个)
     private fun onChangeTopView(){
-        if (books.size>0){
-            val book=books[0]
-            tv_top_page.text="${book.pageIndex+1}页"
-
-            if (book.pageUpUrl==null){
-                setImageUrl(book.imageUrl,iv_content_up)
-            }
-            else{
-                setImageUrl(book.pageUpUrl,iv_content_up)
-            }
-
-            if (book.pageUrl==null){
-                setImageUrl(book.imageUrl,iv_content_down)
-            }
-            else{
-                setImageUrl(book.pageUrl,iv_content_down)
-            }
-
+        if (bookTopBean!=null){
+            setImageUrl(bookTopBean?.imageUrl!!,iv_content_up)
+            setImageUrl(bookTopBean?.imageUrl!!,iv_content_down)
+        }
+        else{
+            iv_content_up.setImageBitmap(null)
+            iv_content_down.setImageBitmap(null)
         }
     }
 
@@ -122,26 +119,32 @@ class BookCaseFragment: BaseFragment() {
             override fun cancel() {
             }
             override fun ok() {
+                val book=books[position]
                 BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                 books.remove(book)
-                FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
+                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                if (File(book.bookDrawPath).exists())
+                    FileUtils.deleteFile(File(book.bookDrawPath))
                 mAdapter?.notifyDataSetChanged()
-                EventBus.getDefault().post(BOOK_EVENT)
                 //删除增量更新
-                DataUpdateManager.deleteDateUpdate(6,book?.bookId!!,1,book?.bookId!!)
+                DataUpdateManager.deleteDateUpdate(6,book.bookId,1,book.bookId)
+                if (books.size==11)
+                {
+                    findBook()
+                }
             }
         })
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==BOOK_EVENT){
-            findData()
+            findBook()
         }
     }
 
     override fun onRefreshData() {
         super.onRefreshData()
-        findData()
+        findBook()
     }
 
     fun upload(token:String){
@@ -198,7 +201,7 @@ class BookCaseFragment: BaseFragment() {
             //删除增量数据
             DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1,bookBean.bookId)
         }
-        findData()
+        findBook()
     }
 
 

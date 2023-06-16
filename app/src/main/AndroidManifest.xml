@@ -69,7 +69,8 @@
         </receiver>
         <activity
             android:name=".ui.activity.MainActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity
             android:name=".ui.activity.AccountLoginActivity"
             android:exported="true">
@@ -150,7 +151,6 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.CampusModeActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
              />
         <activity
             android:name=".ui.activity.ClassGroupActivity"

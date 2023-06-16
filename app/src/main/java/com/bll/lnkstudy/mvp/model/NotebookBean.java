@@ -22,7 +22,6 @@ public class NotebookBean implements Serializable {
     public String title;
     public String typeStr;//分类
     public long createDate; //创建时间
-    public String dateStr;
     public String contentResId; //笔记内容背景id
     public boolean isEncrypt;//是否加密
     public String encrypt;//密码
@@ -33,16 +32,15 @@ public class NotebookBean implements Serializable {
     public String downloadUrl;
     @Transient
     public String contentJson;
-    @Generated(hash = 1700255441)
+    @Generated(hash = 470754712)
     public NotebookBean(Long id, long userId, String title, String typeStr,
-            long createDate, String dateStr, String contentResId, boolean isEncrypt,
-            String encrypt, int grade, boolean isCloud, int cloudId) {
+            long createDate, String contentResId, boolean isEncrypt, String encrypt,
+            int grade, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.typeStr = typeStr;
         this.createDate = createDate;
-        this.dateStr = dateStr;
         this.contentResId = contentResId;
         this.isEncrypt = isEncrypt;
         this.encrypt = encrypt;
@@ -83,12 +81,6 @@ public class NotebookBean implements Serializable {
     public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
-    public String getDateStr() {
-        return this.dateStr;
-    }
-    public void setDateStr(String dateStr) {
-        this.dateStr = dateStr;
-    }
     public String getContentResId() {
         return this.contentResId;
     }
@@ -125,7 +117,6 @@ public class NotebookBean implements Serializable {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-
-
+    
 
 }

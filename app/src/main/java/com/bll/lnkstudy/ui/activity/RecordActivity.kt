@@ -37,7 +37,7 @@ class RecordActivity : BaseAppCompatActivity() {
         val path=FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!)
         if (!File(path).exists())
             File(path).mkdir()
-        pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").toString()
+        pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
     }
 
     override fun initView() {

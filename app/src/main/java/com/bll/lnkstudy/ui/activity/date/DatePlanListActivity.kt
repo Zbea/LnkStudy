@@ -61,7 +61,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val intent=Intent(this,DatePlanDetailsActivity::class.java)
             intent.addFlags(1)
-            var bundle = Bundle()
+            val bundle = Bundle()
             bundle.putSerializable("dateEvent", plans[position])
             intent.putExtra("bundle", bundle)
             customStartActivity(intent)

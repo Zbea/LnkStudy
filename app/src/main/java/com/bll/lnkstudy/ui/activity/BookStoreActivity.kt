@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Handler
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -28,10 +27,8 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 书城
@@ -41,7 +38,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
     private var categoryStr = ""//类别
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
-    private val lock = ReentrantLock()
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
@@ -273,7 +269,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                    EventBus.getDefault().post(BOOK_EVENT)
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
                         , Gson().toJson(book),book.downloadUrl)
@@ -329,6 +324,8 @@ class BookStoreActivity : BaseAppCompatActivity(),
 
     override fun fetchData() {
         hideKeyboard()
+        books.clear()
+        mAdapter?.notifyDataSetChanged()
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
@@ -343,7 +340,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
             map["type"] = categoryStr
             map["bookName"] = bookNameStr
         }
-
         presenter.getBooks(map)
     }
 

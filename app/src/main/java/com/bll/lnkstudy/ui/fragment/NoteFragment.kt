@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
@@ -20,7 +19,6 @@ import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.NoteTypeManagerActivity
-import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
@@ -167,16 +165,7 @@ class NoteFragment : BaseFragment(){
         fetchData()
     }
 
-    /**
-     * 跳转笔记写作
-     */
-    private fun gotoIntent(note: NotebookBean){
-        val intent = Intent(activity, NoteDrawingActivity::class.java)
-        val bundle = Bundle()
-        bundle.putSerializable("note", note)
-        intent.putExtra("bundle", bundle)
-        customStartActivity(intent)
-    }
+
 
     /**
      * 日记设置密码
@@ -225,24 +214,7 @@ class NoteFragment : BaseFragment(){
         val note = NotebookBean()
         val typeStr=noteTypes[positionType].name
         note.grade=if (positionType==0) DateUtils.getYear() else grade
-        if (positionType==0) NotebookAddDiaryDialog(requireContext(), screenPos).builder()
-            ?.setOnDialogClickListener{ name,dateStr->
-                if (NotebookDaoManager.getInstance().isExist(typeStr,name)){
-                    showToast(screenPos,R.string.toast_existed)
-                    return@setOnDialogClickListener
-                }
-                note.title = name
-                note.createDate = System.currentTimeMillis()
-                note.typeStr = typeStr
-                note.dateStr=dateStr
-                note.contentResId=resId
-                pageIndex=1
-                val id=NotebookDaoManager.getInstance().insertOrReplaceGetId(note)
-                fetchData()
-                //新建笔记本增量更新
-                DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(note))
-            }
-        else InputContentDialog(requireContext(), screenPos, getString(R.string.note_create_hint)).builder()
+        InputContentDialog(requireContext(), screenPos, getString(R.string.note_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 if (NotebookDaoManager.getInstance().isExist(typeStr,string)){
                     showToast(screenPos,R.string.toast_existed)

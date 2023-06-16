@@ -243,7 +243,8 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        book?.time = System.currentTimeMillis()
+        book?.time==System.currentTimeMillis()
+        book?.isLook=true
         book?.pageIndex = page
         BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)

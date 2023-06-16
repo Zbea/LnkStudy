@@ -9,14 +9,13 @@
     <RelativeLayout
         android:layout_width="195dp"
         android:layout_height="260dp"
-        android:padding="1dp"
-        android:background="@drawable/bg_black_stroke_5dp_corner"
         >
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
+            android:src="@mipmap/icon_search_homework_bg"
             />
 
         <TextView

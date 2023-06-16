@@ -37,7 +37,6 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
     private var typePos = 0
     private var typeStr = ""//当前分类
     private var pos = 0 //当前书籍位置
-    private var book: BookBean? = null
     private var bookNameStr = ""
 
     override fun layoutId(): Int {
@@ -77,11 +76,10 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean.bookPath)
+                gotoBookDetails(bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                     pos = position
-                    book = books[position]
                     delete()
                     true
                 }
@@ -130,13 +128,16 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
                 override fun cancel() {
                 }
                 override fun ok() {
+                    val book = books[pos]
                     BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                    FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
+                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                    if (File(book.bookDrawPath).exists())
+                        FileUtils.deleteFile(File(book.bookDrawPath))
                     books.remove(book)
                     mAdapter?.notifyDataSetChanged()
                     EventBus.getDefault().post(BOOK_EVENT)
                     //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(6,book?.bookId!!,1,book?.bookId!!)
+                    DataUpdateManager.deleteDateUpdate(6,book.bookId,1,book.bookId)
                 }
             })
     }

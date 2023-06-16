@@ -30,6 +30,7 @@ import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.HomeLeftActivity
 import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
+import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
@@ -350,9 +351,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         ActivityManager.getInstance().checkBookIDisExist(id)
         val intent=Intent(activity, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
+        customStartActivity1(intent)
     }
 
     /**
@@ -364,9 +363,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         bundle.putSerializable("homework",item)
         val intent=Intent(context, HomeworkDrawingActivity::class.java)
         intent.putExtra("homeworkBundle",bundle)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
+        customStartActivity1(intent)
     }
 
     /**
@@ -390,14 +387,14 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         if (items.size>1){
             val intent=Intent(activity, PaintingTypeListActivity::class.java)
             intent.flags=type
-            startActivity(intent)
+            customStartActivity(intent)
         } else{
             ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
             val intent=Intent(context, PaintingDrawingActivity::class.java)
             val bundle= Bundle()
             bundle.putSerializable("painting",item)
             intent.putExtra("paintingBundle",bundle)
-            startActivity(intent)
+            customStartActivity1(intent)
         }
 
     }
@@ -410,40 +407,71 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         val intent=Intent(activity, PaperDrawingActivity::class.java)
         intent.putExtra("course",mCourse)
         intent.putExtra("typeId",mTypeId)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
+        customStartActivity1(intent)
     }
 
     /**
-     * 跳转考卷
+     * 跳转作业卷
      */
     fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int){
         ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(mCourse,mTypeId)
         val intent=Intent(activity, HomeworkPaperDrawingActivity::class.java)
         intent.putExtra("course",mCourse)
         intent.putExtra("typeId",mTypeId)
-        startActivity(intent)
+        customStartActivity1(intent)
+    }
+
+    /**
+     * 跳转录音
+     */
+    fun gotoHomeworkRecord(item:HomeworkTypeBean){
+        val bundle= Bundle()
+        bundle.putSerializable("homework",item)
+        val intent=Intent(activity, RecordListActivity::class.java)
+        intent.putExtra("homeworkBundle",bundle)
+        customStartActivity(intent)
     }
 
     /**
      * 跳转阅读器
      */
-    fun gotoBookDetails(path:String){
+    fun gotoBookDetails(bookBean: BookBean){
+        bookBean.isLook=true
+        bookBean.time=System.currentTimeMillis()
+        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", path)
+        intent.putExtra("path", bookBean.bookPath)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)
     }
 
     /**
-     * 跳转活动
+     * 跳转笔记写作
+     */
+    fun gotoIntent(note: NotebookBean){
+        val intent = Intent(activity, NoteDrawingActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("note", note)
+        intent.putExtra("bundle", bundle)
+        customStartActivity(intent)
+    }
+
+    /**
+     * 跳转活动(关闭已经打开的)
      */
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
+        startActivity(intent)
+    }
+
+    /**
+     * 跳转活动
+     */
+    private fun customStartActivity1(intent: Intent){
         startActivity(intent)
     }
 

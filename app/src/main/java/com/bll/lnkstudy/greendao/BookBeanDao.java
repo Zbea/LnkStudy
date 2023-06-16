@@ -51,10 +51,11 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         public final static Property PageIndex = new Property(24, int.class, "pageIndex", false, "PAGE_INDEX");
         public final static Property PageUpUrl = new Property(25, String.class, "pageUpUrl", false, "PAGE_UP_URL");
         public final static Property PageUrl = new Property(26, String.class, "pageUrl", false, "PAGE_URL");
-        public final static Property DateState = new Property(27, int.class, "dateState", false, "DATE_STATE");
-        public final static Property IsLock = new Property(28, boolean.class, "isLock", false, "IS_LOCK");
-        public final static Property IsCloud = new Property(29, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(30, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property IsLook = new Property(27, boolean.class, "isLook", false, "IS_LOOK");
+        public final static Property DateState = new Property(28, int.class, "dateState", false, "DATE_STATE");
+        public final static Property IsLock = new Property(29, boolean.class, "isLock", false, "IS_LOCK");
+        public final static Property IsCloud = new Property(30, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(31, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -97,10 +98,11 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
                 "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 24: pageIndex
                 "\"PAGE_UP_URL\" TEXT," + // 25: pageUpUrl
                 "\"PAGE_URL\" TEXT," + // 26: pageUrl
-                "\"DATE_STATE\" INTEGER NOT NULL ," + // 27: dateState
-                "\"IS_LOCK\" INTEGER NOT NULL ," + // 28: isLock
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 29: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 30: cloudId
+                "\"IS_LOOK\" INTEGER NOT NULL ," + // 27: isLook
+                "\"DATE_STATE\" INTEGER NOT NULL ," + // 28: dateState
+                "\"IS_LOCK\" INTEGER NOT NULL ," + // 29: isLock
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 30: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 31: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -211,10 +213,11 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         if (pageUrl != null) {
             stmt.bindString(27, pageUrl);
         }
-        stmt.bindLong(28, entity.getDateState());
-        stmt.bindLong(29, entity.getIsLock() ? 1L: 0L);
-        stmt.bindLong(30, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(31, entity.getCloudId());
+        stmt.bindLong(28, entity.getIsLook() ? 1L: 0L);
+        stmt.bindLong(29, entity.getDateState());
+        stmt.bindLong(30, entity.getIsLock() ? 1L: 0L);
+        stmt.bindLong(31, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(32, entity.getCloudId());
     }
 
     @Override
@@ -319,10 +322,11 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         if (pageUrl != null) {
             stmt.bindString(27, pageUrl);
         }
-        stmt.bindLong(28, entity.getDateState());
-        stmt.bindLong(29, entity.getIsLock() ? 1L: 0L);
-        stmt.bindLong(30, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(31, entity.getCloudId());
+        stmt.bindLong(28, entity.getIsLook() ? 1L: 0L);
+        stmt.bindLong(29, entity.getDateState());
+        stmt.bindLong(30, entity.getIsLock() ? 1L: 0L);
+        stmt.bindLong(31, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(32, entity.getCloudId());
     }
 
     @Override
@@ -360,10 +364,11 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
             cursor.getInt(offset + 24), // pageIndex
             cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // pageUpUrl
             cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // pageUrl
-            cursor.getInt(offset + 27), // dateState
-            cursor.getShort(offset + 28) != 0, // isLock
-            cursor.getShort(offset + 29) != 0, // isCloud
-            cursor.getInt(offset + 30) // cloudId
+            cursor.getShort(offset + 27) != 0, // isLook
+            cursor.getInt(offset + 28), // dateState
+            cursor.getShort(offset + 29) != 0, // isLock
+            cursor.getShort(offset + 30) != 0, // isCloud
+            cursor.getInt(offset + 31) // cloudId
         );
         return entity;
     }
@@ -397,10 +402,11 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         entity.setPageIndex(cursor.getInt(offset + 24));
         entity.setPageUpUrl(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
         entity.setPageUrl(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
-        entity.setDateState(cursor.getInt(offset + 27));
-        entity.setIsLock(cursor.getShort(offset + 28) != 0);
-        entity.setIsCloud(cursor.getShort(offset + 29) != 0);
-        entity.setCloudId(cursor.getInt(offset + 30));
+        entity.setIsLook(cursor.getShort(offset + 27) != 0);
+        entity.setDateState(cursor.getInt(offset + 28));
+        entity.setIsLock(cursor.getShort(offset + 29) != 0);
+        entity.setIsCloud(cursor.getShort(offset + 30) != 0);
+        entity.setCloudId(cursor.getInt(offset + 31));
      }
     
     @Override

@@ -12,18 +12,22 @@ class DataUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action){
-            "com.android.settings.downloaddata"->{
-                Log.d("debug","开始一键下载")
+            "com.android.settings.importdata"->{
+                Log.d("debug","一键下载")
                 EventBus.getDefault().postSticky(Constants.DATA_DOWNLOAD_EVENT)
             }
+            "com.android.settings.importrentdata"->{
+                Log.d("debug","租用下载")
+                EventBus.getDefault().postSticky(Constants.DATA_RENT_EVENT)
+            }
             "com.android.settings.cleardata"->{
-                Log.d("debug","开始一键清除")
+                Log.d("debug","一键清除")
                 EventBus.getDefault().postSticky(Constants.DATA_CLEAT_EVENT)
             }
             "ACTION_GLOBAL_SEARCH"->{
-                Log.d("debug","收到搜索事件")
                 ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
                 val intent = Intent(context,SearchActivity::class.java)
+                intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
                 intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2)
                 context.startActivity(intent)
             }

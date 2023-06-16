@@ -75,43 +75,49 @@ public class BookGreenDaoManager {
     //根据bookId 查询书籍
     public BookBean queryTextBookByID(int bookID) {
         WhereCondition whereCondition= BookBeanDao.Properties.BookId.eq(bookID);
-        BookBean queryBook = bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
-        return queryBook;
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
     //根据bookId 查询书籍
     public BookBean queryBookByID(int bookID) {
         WhereCondition whereCondition= BookBeanDao.Properties.BookPlusId.eq(bookID);
-        BookBean queryBook = bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
-        return queryBook;
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
 
     //查询所有书籍
     public List<BookBean> queryAllBook() {
         WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(0);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookBeanDao.Properties.Time).build().list();
-        return queryBookList;
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookBeanDao.Properties.Time).build().list();
+    }
+
+    /**
+     * 获取打开过的书籍
+     * @param isLook
+     * @return
+     */
+    public List<BookBean> queryAllBook(boolean isLook) {
+        WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(0);
+        WhereCondition whereCondition1=BookBeanDao.Properties.IsLook.eq(isLook);
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(BookBeanDao.Properties.Time).limit(13).build().list();
     }
 
     //根据类别 细分子类
     public List<BookBean> queryAllBook(String type) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.BookType.eq(type);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookBeanDao.Properties.Time).build().list();
-        return queryBookList;
     }
 
     //根据类别 细分子类 分页处理
     public List<BookBean> queryAllBook(String type, int page, int pageSize) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.BookType.eq(type);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
-        return queryBookList;
     }
 
     //根据名称搜索 分页
@@ -119,30 +125,27 @@ public class BookGreenDaoManager {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like(name);
         WhereCondition whereCondition3=BookBeanDao.Properties.BookType.eq(type);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
-        return queryBookList;
     }
     //根据名称搜素全部
     public List<BookBean> queryAllName(String name,String type) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.notEq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like(name);
         WhereCondition whereCondition3=BookBeanDao.Properties.BookType.eq(type);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .build().list();
-        return queryBookList;
     }
 
     public List<BookBean> search(String name, int category) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(category);
         WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like("%"+name+"%");
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .build().list();
-        return queryBookList;
     }
 
 
@@ -151,20 +154,18 @@ public class BookGreenDaoManager {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
         WhereCondition whereCondition3=BookBeanDao.Properties.DateState.eq(0);
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(BookBeanDao.Properties.Time).build().list();
-        return queryBookList;
     }
 
     public List<BookBean> queryAllTextBook( String textType, int page, int pageSize) {
         WhereCondition whereCondition1=BookBeanDao.Properties.Category.eq(0);
         WhereCondition whereCondition2=BookBeanDao.Properties.TextBookType.eq(textType);
         WhereCondition whereCondition3=BookBeanDao.Properties.DateState.eq(0);//没有过期
-        List<BookBean> queryBookList = bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(BookBeanDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
-        return queryBookList;
     }
 
     /**

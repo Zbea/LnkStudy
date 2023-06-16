@@ -4,7 +4,10 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
@@ -20,7 +23,6 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_painting.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class CloudBookCaseFragment:BaseCloudFragment() {
@@ -155,7 +157,6 @@ class CloudBookCaseFragment:BaseCloudFragment() {
 
                                 Handler().postDelayed({
                                     hideLoading()
-                                    EventBus.getDefault().post(Constants.BOOK_EVENT)
                                     showToast(screenPos,book.bookName+getString(R.string.book_download_success))
                                 },500)
                             } else {

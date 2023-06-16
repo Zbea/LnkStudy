@@ -66,14 +66,6 @@
                 android:scaleType="fitXY"
                 app:radius="6dp" />
 
-            <TextView
-                android:id="@+id/tv_top_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-
         </RelativeLayout>
 
     </LinearLayout>

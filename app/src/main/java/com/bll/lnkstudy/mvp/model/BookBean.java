@@ -48,6 +48,7 @@ public class BookBean {
     public int pageIndex;//当前页
     public String pageUpUrl;//上一页路径
     public String pageUrl;//当前页路径
+    public boolean isLook;//是否已经打开
     @Transient
     public int loadSate;//0未下载 1正下载 2已下载
     @Transient
@@ -59,13 +60,13 @@ public class BookBean {
     @Transient
     public String drawUrl;
 
-    @Generated(hash = 1779336811)
+    @Generated(hash = 887244758)
     public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl,
             String subjectName, String bookDesc, String semester, String area, String bookName,
             int price, String grade, String version, String bookVersion, String supply, int category,
             String textBookType, int status, String downloadUrl, String bookPath, String bookDrawPath,
             String bookType, long downDate, long time, int pageIndex, String pageUpUrl, String pageUrl,
-            int dateState, boolean isLock, boolean isCloud, int cloudId) {
+            boolean isLook, int dateState, boolean isLock, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -93,6 +94,7 @@ public class BookBean {
         this.pageIndex = pageIndex;
         this.pageUpUrl = pageUpUrl;
         this.pageUrl = pageUrl;
+        this.isLook = isLook;
         this.dateState = dateState;
         this.isLock = isLock;
         this.isCloud = isCloud;
@@ -119,6 +121,12 @@ public class BookBean {
     public void setBookId(int bookId) {
         this.bookId = bookId;
     }
+    public int getBookPlusId() {
+        return this.bookPlusId;
+    }
+    public void setBookPlusId(int bookPlusId) {
+        this.bookPlusId = bookPlusId;
+    }
     public String getImageUrl() {
         return this.imageUrl;
     }
@@ -131,7 +139,6 @@ public class BookBean {
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
-
     public String getBookDesc() {
         return this.bookDesc;
     }
@@ -216,17 +223,23 @@ public class BookBean {
     public void setBookPath(String bookPath) {
         this.bookPath = bookPath;
     }
+    public String getBookDrawPath() {
+        return this.bookDrawPath;
+    }
+    public void setBookDrawPath(String bookDrawPath) {
+        this.bookDrawPath = bookDrawPath;
+    }
     public String getBookType() {
         return this.bookType;
     }
     public void setBookType(String bookType) {
         this.bookType = bookType;
     }
-    public Long getTime() {
-        return this.time;
+    public long getDownDate() {
+        return this.downDate;
     }
-    public void setTime(Long time) {
-        this.time = time;
+    public void setDownDate(long downDate) {
+        this.downDate = downDate;
     }
     public int getPageIndex() {
         return this.pageIndex;
@@ -246,17 +259,17 @@ public class BookBean {
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
     }
+    public boolean getIsLook() {
+        return this.isLook;
+    }
+    public void setIsLook(boolean isLook) {
+        this.isLook = isLook;
+    }
     public int getDateState() {
         return this.dateState;
     }
     public void setDateState(int dateState) {
         this.dateState = dateState;
-    }
-    public String getBookDrawPath() {
-        return this.bookDrawPath;
-    }
-    public void setBookDrawPath(String bookDrawPath) {
-        this.bookDrawPath = bookDrawPath;
     }
     public boolean getIsLock() {
         return this.isLock;
@@ -276,17 +289,8 @@ public class BookBean {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-    public int getBookPlusId() {
-        return this.bookPlusId;
-    }
-    public void setBookPlusId(int bookPlusId) {
-        this.bookPlusId = bookPlusId;
-    }
-    public long getDownDate() {
-        return this.downDate;
-    }
-    public void setDownDate(long downDate) {
-        this.downDate = downDate;
+    public long getTime() {
+        return this.time;
     }
     public void setTime(long time) {
         this.time = time;

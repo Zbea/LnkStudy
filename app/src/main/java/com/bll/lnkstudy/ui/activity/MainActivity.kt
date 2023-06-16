@@ -554,9 +554,8 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
                             if (success) {
                                 RecordDaoManager.getInstance().insertOrReplace(bean)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(2,bean.id.toInt(),2,bean?.typeId!!,3
-                                    ,
-                                    Gson().toJson(bean),item.path)
+                                DataUpdateManager.createDataUpdate(2,bean.id.toInt(),2,bean?.typeId!!
+                                    ,3, Gson().toJson(bean),item.path)
                                 //删掉本地zip文件
                                 FileUtils.deleteFile(File(zipPath))
                             }
@@ -816,6 +815,9 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
                 mUser = SPUtil.getObj("user", User::class.java)
             }
             Constants.DATA_DOWNLOAD_EVENT -> {
+                mDataUpdatePresenter.onList()
+            }
+            Constants.DATA_RENT_EVENT -> {
                 mDataUpdatePresenter.onList()
             }
             Constants.DATA_CLEAT_EVENT -> {

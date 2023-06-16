@@ -22,7 +22,7 @@ public class AppBean {
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public int appId;
     public String appName;
-    public String packageName="";
+    public String packageName;
     @Transient
     public Drawable image;
     @Transient

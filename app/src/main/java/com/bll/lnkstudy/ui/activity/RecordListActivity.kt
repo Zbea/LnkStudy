@@ -42,7 +42,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     private var course = ""
     private var homeworkType: HomeworkTypeBean? = null
     private var recordBeans = mutableListOf<RecordBean>()
-    private var currentPos = 0//当前点击位置
+    private var currentPos = -1//当前点击位置
     private var position = 0//当前点击位置
     private var mediaPlayer: MediaPlayer? = null
     private var pops= mutableListOf<PopupBean>()
@@ -145,47 +145,56 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
     //点击播放
     private fun setPlay(){
+        val path=recordBeans[position].path
+        if (!File(path).exists())return
         if (currentPos == position) {
-            if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer()
-                mediaPlayer?.setDataSource(recordBeans[position].path)
-                mediaPlayer?.setOnCompletionListener {
-                    recordBeans[position].state=0
-                    mAdapter?.notifyDataSetChanged()//刷新为结束状态
-                }
-                mediaPlayer?.prepare()
+            if (mediaPlayer?.isPlaying == true) {
+                pause(position)
+            } else {
                 mediaPlayer?.start()
                 recordBeans[position].state=1
                 mAdapter?.notifyDataSetChanged()//刷新为播放状态
-            } else {
-                if (mediaPlayer?.isPlaying == true) {
-                    mediaPlayer?.pause()
-                    recordBeans[position].state=0
-                    mAdapter?.notifyDataSetChanged()//刷新为结束状态
-                } else {
-                    mediaPlayer?.start()
-                    recordBeans[position].state=1
-                    mAdapter?.notifyDataSetChanged()//刷新为播放状态
-                }
             }
         } else {
-            mediaPlayer = MediaPlayer()
-            mediaPlayer?.setDataSource(recordBeans[position].path)
-            mediaPlayer?.setOnCompletionListener {
-                recordBeans[position].state=0
-                mAdapter?.notifyDataSetChanged()//刷新为结束状态
+            if (mediaPlayer?.isPlaying == true) {
+                pause(currentPos)
             }
-            mediaPlayer?.prepare()
-            mediaPlayer?.start()
-            recordBeans[position].state=1
-            mAdapter?.notifyDataSetChanged()//刷新为播放状态
+            release()
+            play(path)
         }
         currentPos = position
     }
 
+    private fun release(){
+        if (mediaPlayer!=null){
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }
+
+    private fun play(path:String){
+        mediaPlayer = MediaPlayer()
+        mediaPlayer?.setDataSource(path)
+        mediaPlayer?.setOnCompletionListener {
+            recordBeans[position].state=0
+            mAdapter?.notifyDataSetChanged()//刷新为结束状态
+        }
+        mediaPlayer?.prepare()
+        mediaPlayer?.start()
+        recordBeans[position].state=1
+        mAdapter?.notifyDataSetChanged()//刷新为播放状态
+    }
+
+    private fun pause(pos:Int){
+        mediaPlayer?.pause()
+        recordBeans[pos].state=0
+        mAdapter?.notifyDataSetChanged()//刷新为结束状态
+    }
+
 
     private fun setSetting(view : View){
-        PopupClick(this,pops,view,5).builder().setOnSelectListener{
+        PopupClick(this,pops,view,0).builder().setOnSelectListener{
             if (it.id == 0) {
                 edit()
             }
@@ -250,11 +259,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
-        if (mediaPlayer != null) {
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            mediaPlayer = null
-        }
+        release()
     }
 
 }

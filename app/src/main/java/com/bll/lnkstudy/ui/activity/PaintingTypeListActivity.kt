@@ -64,7 +64,7 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
                 val bundle= Bundle()
                 bundle.putSerializable("painting",types[position])
                 intent.putExtra("paintingBundle",bundle)
-                startActivity(intent)
+                customStartActivity1(intent)
             }
         }
     }

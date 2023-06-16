@@ -46,7 +46,7 @@ import pub.devrel.easypermissions.EasyPermissions
 
 abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
-    val DEFAULT_PAGE=11111//默认页码（打开最后一页）
+    val DEFAULT_PAGE=-1//默认页码（打开最后一页）
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null

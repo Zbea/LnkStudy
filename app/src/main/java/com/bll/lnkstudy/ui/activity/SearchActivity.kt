@@ -1,7 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,12 +9,10 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.NotebookPasswordDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.NotebookBean
+import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
-import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
-import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_search.*
@@ -74,54 +70,31 @@ class SearchActivity : BaseAppCompatActivity() {
     private fun onItemClick(item:SearchBean){
         when(item.category){
             0->{
-                gotoBookDetails(item.path)
+                val bookBean=Gson().fromJson(item.listJson,BookBean::class.java)
+                gotoBookDetails(bookBean)
                 finish()
             }
             1->{
-                ActivityManager.getInstance().checkBookIDisExist(item.id)
-                val intent= Intent(this, BookDetailsActivity::class.java)
-                intent.putExtra("book_id",item.id)
-                startActivity(intent)
+                gotoTextBookDetails(item.id)
                 finish()
             }
             2->{
+                val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
                 when(item.state){
                     1->{
-                        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item.course,item.type)
-                        val intent= Intent(this, HomeworkPaperDrawingActivity::class.java)
-                        intent.putExtra("course",item.course)
-                        intent.putExtra("typeId",item.type)
-                        intent.putExtra("page",item.page)
-                        startActivity(intent)
+                        gotoHomeworkReelDrawing(item.course,item.type,item.page)
                     }
                     2->{
-                        val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
-                        ActivityManager.getInstance().checkHomeworkDrawingisExist(typeItem)
-                        val bundle= Bundle()
-                        bundle.putSerializable("homework",typeItem)
-                        val intent= Intent(this, HomeworkDrawingActivity::class.java)
-                        intent.putExtra("homeworkBundle",bundle)
-                        intent.putExtra("page",item.page)
-                       startActivity(intent)
+                        gotoHomeworkDrawing(typeItem,item.page)
                     }
                     3->{
-                        val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
-                        val bundle= Bundle()
-                        bundle.putSerializable("homework",typeItem)
-                        val intent=Intent(this, RecordListActivity::class.java)
-                        intent.putExtra("homeworkBundle",bundle)
-                        customStartActivity(intent)
+                        gotoHomeworkRecord(typeItem)
                     }
                 }
                 finish()
             }
             3->{
-                ActivityManager.getInstance().checkPaperDrawingIsExist(item.course,item.type)
-                val intent= Intent(this, PaperDrawingActivity::class.java)
-                intent.putExtra("course",item.course)
-                intent.putExtra("typeId",item.type)
-                intent.putExtra("page",item.page)
-                startActivity(intent)
+                gotoPaperDrawing(item.course,item.type,item.page)
                 finish()
             }
             4->{
@@ -129,28 +102,19 @@ class SearchActivity : BaseAppCompatActivity() {
                 if (item.typeStr==getString(R.string.note_tab_diary)&&noteBook.isEncrypt)
                 {
                     NotebookPasswordDialog(this,3).builder()?.setOnDialogClickListener{
-                        gotoIntent(noteBook,item.page)
+                        gotoNote(noteBook,item.page)
+                        finish()
                     }
                 }
                 else{
-                    gotoIntent(noteBook,item.page)
+                    gotoNote(noteBook,item.page)
+                    finish()
                 }
             }
         }
     }
 
-    /**
-     * 跳转日记
-     */
-    private fun gotoIntent(noteBook: NotebookBean, page:Int){
-        val intent = Intent(this, NoteDrawingActivity::class.java)
-        val bundle = Bundle()
-        bundle.putSerializable("note", noteBook)
-        intent.putExtra("bundle", bundle)
-        intent.putExtra("page",page)
-        customStartActivity(intent)
-        finish()
-    }
+
 
     /**
      * 分类选择
@@ -185,7 +149,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         title=book.bookName
                         imageUrl=book.imageUrl
                         path=book.bookPath
-
+                        listJson= Gson().toJson(book)
                     })
                 }
             }

@@ -278,16 +278,6 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
     }
 
     /**
-     * 跳转活动
-     */
-    fun customStartActivity(intent: Intent){
-        ActivityManager.getInstance().finishActivity(intent.component?.className)
-        startActivity(intent)
-//        if (screenPos!=3)
-//            ActivityManager.getInstance().finishActivity(activity)
-    }
-
-    /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
      * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
      *

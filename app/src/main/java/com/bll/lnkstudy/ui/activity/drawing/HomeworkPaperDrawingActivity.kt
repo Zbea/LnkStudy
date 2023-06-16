@@ -77,7 +77,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun initData() {
         course=intent.getStringExtra("course").toString()
         typeId=intent.getIntExtra("typeId",0)
-        currentPosition=intent.getIntExtra("page",0)
+        currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
 
         daoManager= HomeworkPaperDaoManager.getInstance()
         daoContentManager= HomeworkPaperContentDaoManager.getInstance()

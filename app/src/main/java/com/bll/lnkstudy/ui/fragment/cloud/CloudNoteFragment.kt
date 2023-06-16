@@ -48,8 +48,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         pageSize=10
         grade=DateUtils.getYear()
         types.add(getString(R.string.note_tab_diary))
-        types.add(getString(R.string.note_tab_article))
-        types.add(getString(R.string.note_tab_topic))
         noteTypeStr=types[0]
         initRecyclerView()
     }

@@ -18,21 +18,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.BookStoreActivity
+import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.activity.TextBookStoreActivity
-import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity
+import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
@@ -245,9 +252,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      */
     fun gotoTextBookDetails(id: Int){
         ActivityManager.getInstance().checkBookIDisExist(id)
-        var intent=Intent(this, BookDetailsActivity::class.java)
+        val intent=Intent(this, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
-        startActivity(intent)
+        customStartActivity1(intent)
     }
 
    private fun gotoBookStore(type: String){
@@ -259,13 +266,77 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 跳转阅读器
      */
-    fun gotoBookDetails(path:String){
+    fun gotoBookDetails(bookBean: BookBean){
+        bookBean.isLook=true
+        bookBean.time=System.currentTimeMillis()
+        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", path)
+        intent.putExtra("path", bookBean.bookPath)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
+        startActivity(intent)
+    }
+
+    /**
+     * 跳转作业本
+     */
+    fun gotoHomeworkDrawing(item: HomeworkTypeBean,page: Int){
+        ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
+        val bundle= Bundle()
+        bundle.putSerializable("homework",item)
+        val intent=Intent(this, HomeworkDrawingActivity::class.java)
+        intent.putExtra("homeworkBundle",bundle)
+        intent.putExtra("page",page)
+        customStartActivity1(intent)
+    }
+
+    /**
+     * 跳转考卷
+     */
+    fun gotoPaperDrawing(mCourse:String,mTypeId:Int,page: Int){
+        ActivityManager.getInstance().checkPaperDrawingIsExist(mCourse,mTypeId)
+        val intent= Intent(this, PaperDrawingActivity::class.java)
+        intent.putExtra("course",mCourse)
+        intent.putExtra("typeId",mTypeId)
+        intent.putExtra("page",mTypeId)
+        customStartActivity1(intent)
+    }
+
+    /**
+     * 跳转日记
+     */
+    fun gotoNote(noteBook: NotebookBean, page:Int){
+        val intent = Intent(this, NoteDrawingActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("note", noteBook)
+        intent.putExtra("bundle", bundle)
+        intent.putExtra("page",page)
+        customStartActivity(intent)
+    }
+
+    /**
+     * 跳转作业卷
+     */
+    fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int,page: Int){
+        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(mCourse,mTypeId)
+        val intent=Intent(this, HomeworkPaperDrawingActivity::class.java)
+        intent.putExtra("course",mCourse)
+        intent.putExtra("typeId",mTypeId)
+        intent.putExtra("page",page)
+        customStartActivity1(intent)
+    }
+
+    /**
+     * 跳转录音
+     */
+    fun gotoHomeworkRecord(item:HomeworkTypeBean){
+        val bundle= Bundle()
+        bundle.putSerializable("homework",item)
+        val intent=Intent(this, RecordListActivity::class.java)
+        intent.putExtra("homeworkBundle",bundle)
         customStartActivity(intent)
     }
 
@@ -328,10 +399,17 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     /**
-     * 跳转活动
+     * 跳转活动(关闭已经打开的)
      */
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
+        startActivity(intent)
+    }
+
+    /**
+     * 跳转活动
+     */
+    fun customStartActivity1(intent: Intent){
         startActivity(intent)
     }
 

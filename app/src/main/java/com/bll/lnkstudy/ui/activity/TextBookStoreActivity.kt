@@ -102,9 +102,10 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
 
         tv_download?.setOnClickListener {
             if (typeId == 0) {
-                for (item in books) {
-                    val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
-                    if (localBook == null) {
+                //获取本地课本是否有数据
+                val localBooks = BookGreenDaoManager.getInstance().queryAllTextBook(typeList[0])
+                if (localBooks.isNullOrEmpty()){
+                    for (item in books) {
                         val downloadTask = downLoadStart(item.downloadUrl, item)
                         mDownMapPool[item.bookId] = downloadTask!!
                     }
@@ -374,6 +375,8 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     }
 
     override fun fetchData() {
+        books.clear()
+        mAdapter?.notifyDataSetChanged()
         when (typeId) {
             0, 1 -> {
                 getDataBook()

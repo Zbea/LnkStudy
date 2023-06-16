@@ -29,13 +29,12 @@ public class NotebookBeanDao extends AbstractDao<NotebookBean, Long> {
         public final static Property Title = new Property(2, String.class, "title", false, "TITLE");
         public final static Property TypeStr = new Property(3, String.class, "typeStr", false, "TYPE_STR");
         public final static Property CreateDate = new Property(4, long.class, "createDate", false, "CREATE_DATE");
-        public final static Property DateStr = new Property(5, String.class, "dateStr", false, "DATE_STR");
-        public final static Property ContentResId = new Property(6, String.class, "contentResId", false, "CONTENT_RES_ID");
-        public final static Property IsEncrypt = new Property(7, boolean.class, "isEncrypt", false, "IS_ENCRYPT");
-        public final static Property Encrypt = new Property(8, String.class, "encrypt", false, "ENCRYPT");
-        public final static Property Grade = new Property(9, int.class, "grade", false, "GRADE");
-        public final static Property IsCloud = new Property(10, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(11, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property ContentResId = new Property(5, String.class, "contentResId", false, "CONTENT_RES_ID");
+        public final static Property IsEncrypt = new Property(6, boolean.class, "isEncrypt", false, "IS_ENCRYPT");
+        public final static Property Encrypt = new Property(7, String.class, "encrypt", false, "ENCRYPT");
+        public final static Property Grade = new Property(8, int.class, "grade", false, "GRADE");
+        public final static Property IsCloud = new Property(9, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(10, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -56,13 +55,12 @@ public class NotebookBeanDao extends AbstractDao<NotebookBean, Long> {
                 "\"TITLE\" TEXT," + // 2: title
                 "\"TYPE_STR\" TEXT," + // 3: typeStr
                 "\"CREATE_DATE\" INTEGER NOT NULL ," + // 4: createDate
-                "\"DATE_STR\" TEXT," + // 5: dateStr
-                "\"CONTENT_RES_ID\" TEXT," + // 6: contentResId
-                "\"IS_ENCRYPT\" INTEGER NOT NULL ," + // 7: isEncrypt
-                "\"ENCRYPT\" TEXT," + // 8: encrypt
-                "\"GRADE\" INTEGER NOT NULL ," + // 9: grade
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 10: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 11: cloudId
+                "\"CONTENT_RES_ID\" TEXT," + // 5: contentResId
+                "\"IS_ENCRYPT\" INTEGER NOT NULL ," + // 6: isEncrypt
+                "\"ENCRYPT\" TEXT," + // 7: encrypt
+                "\"GRADE\" INTEGER NOT NULL ," + // 8: grade
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 9: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 10: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -92,24 +90,19 @@ public class NotebookBeanDao extends AbstractDao<NotebookBean, Long> {
         }
         stmt.bindLong(5, entity.getCreateDate());
  
-        String dateStr = entity.getDateStr();
-        if (dateStr != null) {
-            stmt.bindString(6, dateStr);
-        }
- 
         String contentResId = entity.getContentResId();
         if (contentResId != null) {
-            stmt.bindString(7, contentResId);
+            stmt.bindString(6, contentResId);
         }
-        stmt.bindLong(8, entity.getIsEncrypt() ? 1L: 0L);
+        stmt.bindLong(7, entity.getIsEncrypt() ? 1L: 0L);
  
         String encrypt = entity.getEncrypt();
         if (encrypt != null) {
-            stmt.bindString(9, encrypt);
+            stmt.bindString(8, encrypt);
         }
-        stmt.bindLong(10, entity.getGrade());
-        stmt.bindLong(11, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(12, entity.getCloudId());
+        stmt.bindLong(9, entity.getGrade());
+        stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(11, entity.getCloudId());
     }
 
     @Override
@@ -133,24 +126,19 @@ public class NotebookBeanDao extends AbstractDao<NotebookBean, Long> {
         }
         stmt.bindLong(5, entity.getCreateDate());
  
-        String dateStr = entity.getDateStr();
-        if (dateStr != null) {
-            stmt.bindString(6, dateStr);
-        }
- 
         String contentResId = entity.getContentResId();
         if (contentResId != null) {
-            stmt.bindString(7, contentResId);
+            stmt.bindString(6, contentResId);
         }
-        stmt.bindLong(8, entity.getIsEncrypt() ? 1L: 0L);
+        stmt.bindLong(7, entity.getIsEncrypt() ? 1L: 0L);
  
         String encrypt = entity.getEncrypt();
         if (encrypt != null) {
-            stmt.bindString(9, encrypt);
+            stmt.bindString(8, encrypt);
         }
-        stmt.bindLong(10, entity.getGrade());
-        stmt.bindLong(11, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(12, entity.getCloudId());
+        stmt.bindLong(9, entity.getGrade());
+        stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(11, entity.getCloudId());
     }
 
     @Override
@@ -166,13 +154,12 @@ public class NotebookBeanDao extends AbstractDao<NotebookBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // typeStr
             cursor.getLong(offset + 4), // createDate
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // dateStr
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // contentResId
-            cursor.getShort(offset + 7) != 0, // isEncrypt
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // encrypt
-            cursor.getInt(offset + 9), // grade
-            cursor.getShort(offset + 10) != 0, // isCloud
-            cursor.getInt(offset + 11) // cloudId
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // contentResId
+            cursor.getShort(offset + 6) != 0, // isEncrypt
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // encrypt
+            cursor.getInt(offset + 8), // grade
+            cursor.getShort(offset + 9) != 0, // isCloud
+            cursor.getInt(offset + 10) // cloudId
         );
         return entity;
     }
@@ -184,13 +171,12 @@ public class NotebookBeanDao extends AbstractDao<NotebookBean, Long> {
         entity.setTitle(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setTypeStr(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCreateDate(cursor.getLong(offset + 4));
-        entity.setDateStr(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setContentResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setIsEncrypt(cursor.getShort(offset + 7) != 0);
-        entity.setEncrypt(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setGrade(cursor.getInt(offset + 9));
-        entity.setIsCloud(cursor.getShort(offset + 10) != 0);
-        entity.setCloudId(cursor.getInt(offset + 11));
+        entity.setContentResId(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setIsEncrypt(cursor.getShort(offset + 6) != 0);
+        entity.setEncrypt(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setGrade(cursor.getInt(offset + 8));
+        entity.setIsCloud(cursor.getShort(offset + 9) != 0);
+        entity.setCloudId(cursor.getInt(offset + 10));
      }
     
     @Override
