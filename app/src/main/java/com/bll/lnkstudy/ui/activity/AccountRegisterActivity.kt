@@ -52,8 +52,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         tv_grade.text=grades[0].name
     }
 
-    override fun onSchoolDetails(schoolBean: SchoolBean?) {
-    }
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
     }
@@ -83,8 +81,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
 
     override fun initData() {
         flags=intent.flags
-        commonPresenter.getCommonGrade()
-        mSchoolPresenter.getCommonSchool()
+        if (flags==0){
+            commonPresenter.getCommonGrade()
+            mSchoolPresenter.getCommonSchool()
+        }
     }
 
     override fun initView() {
@@ -215,9 +215,9 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                     map["parentNickname"]=parent
                     map["parentTel"]=parentPhone
                     map["parentAddr"]=address
-                    map["birthdayTime"]=brithday/1000
+                    map["birthdayTime"]=brithday
                     map["grade"]=grade
-                    map["school"]=school
+                    map["schoolId"]=school
                     presenter.register(map)
                 }
                 1 -> {

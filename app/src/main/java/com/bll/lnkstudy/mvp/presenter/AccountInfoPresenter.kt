@@ -45,7 +45,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
 
     fun editSchool(id: Int) {
         val map=HashMap<String,Any>()
-        map["id"]=id
+        map["schoolId"]=id
         val body = RequestUtils.getBody(map)
         val editName = RetrofitManager.service.editSchool(body)
 

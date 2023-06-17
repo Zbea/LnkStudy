@@ -7,10 +7,14 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.mvp.model.Area
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.MainList
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
+import com.bll.lnkstudy.utils.FileUtils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
 
@@ -36,6 +40,9 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
     }
 
     override fun initData() {
+        val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
+        val type= object : TypeToken<List<Area>>() {}.type
+        DataBeanManager.provinces = Gson().fromJson(areaJson, type)
         mData = DataBeanManager.getIndexData()
     }
 

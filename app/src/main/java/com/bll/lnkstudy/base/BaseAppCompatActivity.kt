@@ -29,9 +29,9 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.BookStoreActivity
+import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
-import com.bll.lnkstudy.ui.activity.TextBookStoreActivity
+import com.bll.lnkstudy.ui.activity.book.TextBookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull

@@ -11,7 +11,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.ui.activity.BookCaseTypeListActivity
+import com.bll.lnkstudy.ui.activity.book.BookTypeListActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUploadManager
@@ -46,7 +46,7 @@ class BookCaseFragment: BaseFragment() {
         findBook()
 
         tv_type.setOnClickListener {
-            customStartActivity(Intent(activity,BookCaseTypeListActivity::class.java))
+            customStartActivity(Intent(activity, BookTypeListActivity::class.java))
         }
         
         ll_book_top.setOnClickListener {

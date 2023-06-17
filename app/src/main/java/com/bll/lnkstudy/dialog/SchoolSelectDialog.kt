@@ -35,9 +35,9 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        var areaStr = FileUtils.readFileContent(context.resources.assets.open("city.json"))
+        val areaJson = FileUtils.readFileContent(context.resources.assets.open("city.json"))
         val type= object : TypeToken<List<Area>>() {}.type
-        provinces = Gson().fromJson(areaStr, type)
+        provinces= Gson().fromJson(areaJson, type)
         for (i in provinces.indices){
             provincePops.add(PopupBean(i,provinces[i].value,i==0))
         }
@@ -136,7 +136,7 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
         schools.clear()
         for (item in beans){
             if (item.province==provinceStr&&item.city==cityStr&&item.area==areaStr){
-                schools.add(PopupBean(item.id,item.name))
+                schools.add(PopupBean(item.id,item.schoolName))
             }
         }
     }

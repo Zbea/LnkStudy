@@ -179,14 +179,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
         }
 
         //设置当前展示页以及前一页
-        if (page == 0) {
-            book?.pageUpUrl = getIndexFile(page)?.path
-            book?.pageUrl = getIndexFile(page)?.path
-        } else {
-            book?.pageUpUrl = getIndexFile(page - 1)?.path
-            book?.pageUrl = getIndexFile(page)?.path
-        }
-
+        book?.pageUrl = getIndexFile(page)?.path
     }
 
     //加载图片

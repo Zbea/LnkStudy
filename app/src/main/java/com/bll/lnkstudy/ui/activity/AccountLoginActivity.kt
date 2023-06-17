@@ -31,7 +31,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         SPUtil.putObj("user",user!!)
         val intent=Intent(this,MainActivity::class.java)
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
+//        intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent)
         finish()
     }

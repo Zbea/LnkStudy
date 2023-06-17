@@ -170,8 +170,8 @@
 
     <string name="textbook_tab_text">我的课本</string>
     <string name="textbook_tab_course">我的课辅</string>
-    <string name="textbook_tab_teaching">参考教材</string>
-    <string name="textbook_tab_oldteaching">往期教材</string>
+    <string name="textbook_tab_teaching">参考课本</string>
+    <string name="textbook_tab_oldteaching">上期课本</string>
 
     <string name="book_tab_gj">古籍</string>
     <string name="book_tab_zrkx">自然科学</string>

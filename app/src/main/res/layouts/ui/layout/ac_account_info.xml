@@ -228,7 +228,7 @@
                     android:text="@string/school_message" />
 
                 <TextView
-                    android:id="@+id/tv_province"
+                    android:id="@+id/tv_provinces"
                     android:layout_width="115dp"
                     android:layout_height="match_parent"
                     android:lines="1"
@@ -254,7 +254,7 @@
                     android:textSize="@dimen/sp_20"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
                 <TextView
-                    android:id="@+id/tv_school_name"
+                    android:id="@+id/tv_area"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_20"
@@ -283,7 +283,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_area"
+                    android:id="@+id/tv_school_name"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dp_20"

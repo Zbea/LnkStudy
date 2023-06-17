@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.book
 
 import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +20,7 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
@@ -30,15 +31,16 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView {
 
-    private var typeId = 0 //教材分类
+    private var typeId = 0 //课本分类
+    private var typeStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
-    private var gradeStr = "一年级"
-    private var typeStr = ""
-    private var semesterStr=""
+    private var gradeId =0
+    private var semester=1
+    private var provinceStr=""
     private var courseId=0//科目
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: BookBean? = null
@@ -46,6 +48,7 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
+    private var provinceList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
     override fun onBook(bookStore: BookStore) {
@@ -55,20 +58,6 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     }
 
     override fun onType(bookStoreType: BookStoreType) {
-        //年级分类
-        for (i in bookStoreType.grade.indices) {
-            gradeList.add(PopupBean(i, bookStoreType.grade[i], i == 0))
-        }
-        getAccountGrade()
-
-        for (i in bookStoreType.subjectList.indices) {
-            val item=bookStoreType.subjectList[i]
-            subjectList.add(PopupBean(item.type, item.desc, i == 0))
-        }
-        courseId = subjectList[0].id
-
-        initSelectorView()
-        getDataBook()
     }
 
     override fun buyBookSuccess() {
@@ -87,15 +76,29 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         typeList = DataBeanManager.textbookType.toMutableList()
         typeList.removeAt(3)
         typeStr = typeList[0]
-        semesterList=DataBeanManager.semesters
-        semesterStr= semesterList[0].name
 
-        getData()
+        semesterList=DataBeanManager.semesters
+        getSemester()
+
+        provinceStr= mUser?.schoolProvince.toString()
+        for (i in DataBeanManager.provinces.indices){
+            provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
+        }
+        gradeId = mUser?.grade!!
+        subjectList=DataBeanManager.popupCourses
+        gradeList=DataBeanManager.popupGrades
+
+        if (subjectList.size>0){
+            courseId=subjectList[0].id
+            initSelectorView()
+            fetchData()
+        }
+
     }
 
     override fun initView() {
         setPageTitle(R.string.main_teaching)
-        disMissView(ll_search,tv_course,tv_grade,tv_semester)
+        disMissView(ll_search,tv_course,tv_grade,tv_semester,tv_province)
 
         initRecyclerView()
         initTab()
@@ -124,21 +127,24 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
+                    typeId = 1
                     showView(tv_download)
-                    disMissView(tv_course,tv_grade,tv_semester)
-                    getAccountGrade()
+                    disMissView(tv_course,tv_grade,tv_semester,tv_province)
+                    gradeId = mUser?.grade!!
+                    getSemester()
                 }
                 1 -> {
-                    showView(tv_grade,tv_course,tv_semester)
+                    typeId=2
+                    showView(tv_grade,tv_course,tv_semester,tv_province)
                     disMissView(tv_download)
                 }
                 else -> {
-                    showView(tv_course,tv_grade,tv_semester)
+                    typeId=1
+                    showView(tv_course,tv_grade,tv_semester,tv_province)
                     disMissView(tv_download)
                 }
             }
-            typeId = i
-            typeStr = typeList[typeId]
+            typeStr=typeList[i]
             pageIndex = 1
             fetchData()
         }
@@ -163,22 +169,33 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
      */
     private fun initSelectorView() {
 
-        tv_grade.text = gradeStr
-        tv_grade.setOnClickListener {
+        tv_province.text = provinceStr
+        tv_province.setOnClickListener {
+            PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
+                .setOnSelectListener { item ->
+                    provinceStr = item.name
+                    tv_province.text = provinceStr
+                    pageIndex = 1
+                    fetchData()
+                }
+        }
+
+        tv_grade.text =gradeList[gradeId-1].name
+            tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
-                gradeStr = item.name
-                tv_grade.text = gradeStr
+                gradeId = item.id
+                tv_grade.text = item.name
                 pageIndex = 1
                 fetchData()
             }
         }
 
-        tv_semester.text = semesterStr
+        tv_semester.text = semesterList[semester-1].name
         tv_semester.setOnClickListener {
             PopupList(this, semesterList, tv_semester, tv_semester.width, 5).builder()
                 .setOnSelectListener { item ->
-                    semesterStr = item.name
+                    semester = item.id
                     tv_semester.text = item.name
                     pageIndex = 1
                     fetchData()
@@ -198,18 +215,10 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     }
 
     /**
-     * 获取当前账户的年级
-     */
-    private fun getAccountGrade(){
-        if (mUser?.grade!=0)
-            gradeStr = gradeList[mUser?.grade!!-1].name
-    }
-
-    /**
      * 设置课本学期（月份为9月份之前为下学期）
      */
-    private fun getSemesterStr():String{
-        return if (DateUtils.getMonth()<9) getString(R.string.semester_next) else getString(R.string.semester_last)
+    private fun getSemester(){
+        semester=if (DateUtils.getMonth()<9) 2 else 1
     }
 
     /**
@@ -377,50 +386,17 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     override fun fetchData() {
         books.clear()
         mAdapter?.notifyDataSetChanged()
-        when (typeId) {
-            0, 1 -> {
-                getDataBook()
-            }
-            else -> {
-                getDataBookCk()
-            }
-        }
-    }
-
-    //获取数据
-    private fun getData() {
-        presenter.getBookType()
-    }
-
-    //获取教材
-    private fun getDataBook() {
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = 12
-        map["area"] = mUser?.addr!!.split(",")[0]
-        map["grade"] = gradeStr
-        map["type"] = typeStr
-        if (typeId==1){
-            map["subjectName"]=courseId
-        }
-        if (typeId==0){
-            map["semester"]=getSemesterStr()
-        }
-        else{
-            map["semester"]=semesterStr
-        }
-        presenter.getTextBooks(map)
-    }
-
-    //获取参考
-    private fun getDataBookCk() {
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["grade"] = gradeStr
-        map["semester"]=semesterStr
-        map["subjectName"]=courseId
-        presenter.getTextBookCks(map)
+        map["area"] = provinceStr
+        map["grade"] = gradeId
+        map["type"] = typeId
+        map["semester"]=semester
+        if (typeId!=0){
+            map["subjectName"]=courseId
+        }
+        presenter.getTextBooks(map)
     }
 
 }

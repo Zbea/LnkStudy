@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -50,7 +51,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -67,7 +68,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -79,7 +80,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.CHINA);
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -96,7 +97,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -113,7 +114,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("H:m", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -125,7 +126,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -137,7 +138,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -149,7 +150,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -161,7 +162,7 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
@@ -210,12 +211,25 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date*1000L));
+            return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
         }
     }
 
+    /**
+     * 将10位转成13位
+     * @param date
+     * @return
+     */
+    public static long date10ToDate13(long date){
+        String dateStr=""+date;
+        if (dateStr.length()==10)
+        {
+            date=date*1000;
+        }
+        return date;
+    }
 
     /**
      * 获取每月第一天为星期几 1周日 7周六

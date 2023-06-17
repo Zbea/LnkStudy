@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.book
 
 import android.annotation.SuppressLint
 import androidx.core.widget.addTextChangedListener
@@ -19,7 +19,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_bookcase_type_list.*
+import kotlinx.android.synthetic.main.ac_book_type_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -30,7 +30,7 @@ import java.io.File
 /**
  * 书架分类
  */
-class BookCaseTypeListActivity : BaseAppCompatActivity() {
+class BookTypeListActivity : BaseAppCompatActivity() {
 
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<BookBean>()
@@ -40,7 +40,7 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
     private var bookNameStr = ""
 
     override fun layoutId(): Int {
-        return R.layout.ac_bookcase_type_list
+        return R.layout.ac_book_type_list
     }
 
     override fun initData() {
@@ -70,8 +70,8 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
             setEmptyView(R.layout.common_book_empty)
             rv_list?.addItemDecoration(SpaceGridItemDeco1(
                     4,
-                    DP2PX.dip2px(this@BookCaseTypeListActivity, 22f),
-                    DP2PX.dip2px(this@BookCaseTypeListActivity, 35f)
+                    DP2PX.dip2px(this@BookTypeListActivity, 22f),
+                    DP2PX.dip2px(this@BookTypeListActivity, 35f)
                 )
             )
             setOnItemClickListener { adapter, view, position ->
@@ -105,8 +105,8 @@ class BookCaseTypeListActivity : BaseAppCompatActivity() {
         BookCaseTypeAdapter(R.layout.item_bookcase_type, types).apply {
             rv_type.adapter = this
             bindToRecyclerView(rv_type)
-            rv_type.addItemDecoration(SpaceGridItemDeco1(7, DP2PX.dip2px(this@BookCaseTypeListActivity, 14f)
-                , DP2PX.dip2px(this@BookCaseTypeListActivity, 16f)))
+            rv_type.addItemDecoration(SpaceGridItemDeco1(7, DP2PX.dip2px(this@BookTypeListActivity, 14f)
+                , DP2PX.dip2px(this@BookTypeListActivity, 16f)))
             setOnItemClickListener { adapter, view, position ->
                 getItem(typePos)?.isCheck = false
                 typePos = position

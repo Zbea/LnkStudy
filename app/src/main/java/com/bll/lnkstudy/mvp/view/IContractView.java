@@ -163,7 +163,6 @@ public interface IContractView {
     }
 
     interface ISchoolView extends IBaseView {
-        void onSchoolDetails(SchoolBean schoolBean);
         void onListSchools(List<SchoolBean> list);
     }
 

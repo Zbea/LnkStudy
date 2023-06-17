@@ -24,19 +24,4 @@ class SchoolPresenter(view: IContractView.ISchoolView) : BasePresenter<IContract
 
     }
 
-    fun getSchoolDetails(id:Int) {
-        val map=HashMap<String,Any>()
-        map["id"]=id
-        val editName = RetrofitManager.service.getSchoolDetails(map)
-        doRequest(editName, object : Callback<SchoolBean>(view) {
-            override fun failed(tBaseResult: BaseResult<SchoolBean>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<SchoolBean>) {
-                if (tBaseResult.data!=null)
-                    view.onSchoolDetails(tBaseResult.data)
-            }
-        }, true)
-    }
-
 }

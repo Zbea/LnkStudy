@@ -68,7 +68,7 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
     override fun initView() {
         setPageTitle(R.string.download_painting)
-        showView(tv_dynasty,tv_painting_type)
+        showView(tv_province,tv_course)
 
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             supply = if (id==R.id.rb_official){
@@ -82,12 +82,12 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
 
         initRecyclerView()
 
-        tv_dynasty.text=popTimes[0].name
-        tv_dynasty.setOnClickListener {
+        tv_province.text=popTimes[0].name
+        tv_province.setOnClickListener {
             selectorTime()
         }
-        tv_painting_type.text=popPaintings[0].name
-        tv_painting_type.setOnClickListener {
+        tv_course.text=popPaintings[0].name
+        tv_course.setOnClickListener {
             selectorPainting()
         }
     }
@@ -185,9 +185,9 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private fun selectorTime(){
         if (popWindowTime==null)
         {
-            popWindowTime= PopupList(this,popTimes,tv_dynasty,tv_dynasty.width,5).builder()
+            popWindowTime= PopupList(this,popTimes,tv_province,tv_province.width,5).builder()
             popWindowTime?.setOnSelectListener { item ->
-                tv_dynasty.text=item.name
+                tv_province.text=item.name
                 dynasty=item.id
                 pageIndex=1
                 fetchData()
@@ -204,9 +204,9 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
     private fun selectorPainting(){
         if (popWindowPainting==null)
         {
-            popWindowPainting= PopupList(this,popPaintings,tv_painting_type,tv_painting_type.width,5).builder()
+            popWindowPainting= PopupList(this,popPaintings,tv_course,tv_course.width,5).builder()
             popWindowPainting?.setOnSelectListener { item ->
-                tv_painting_type.text=item.name
+                tv_course.text=item.name
                 paintingType=item.id
                 pageIndex=1
                 fetchData()

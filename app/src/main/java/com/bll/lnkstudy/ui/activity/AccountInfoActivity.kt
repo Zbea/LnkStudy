@@ -21,7 +21,6 @@ import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
-import kotlinx.android.synthetic.main.ac_account_register.*
 import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
@@ -35,6 +34,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var grade = 1
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
+    private var schoolBean:SchoolBean?=null
 
     override fun onLogout() {
     }
@@ -53,17 +53,15 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
 
     override fun onEditSchool() {
-        mSchoolPresenter.getSchoolDetails(school)
-    }
-
-    override fun onSchoolDetails(schoolBean: SchoolBean) {
-        mUser?.schoolId = schoolBean.id
-        mUser?.schoolProvince=schoolBean.province
-        mUser?.schoolName=schoolBean.name
-        tv_province.text = schoolBean.province
-        tv_city.text = schoolBean.city
-        tv_school_name.text = schoolBean.name
-        tv_area.text = schoolBean.area
+        mUser?.schoolId = schoolBean?.id
+        mUser?.schoolProvince=schoolBean?.province
+        mUser?.schoolCity=schoolBean?.city
+        mUser?.schoolArea=schoolBean?.area
+        mUser?.schoolName=schoolBean?.schoolName
+        tv_provinces.text = schoolBean?.province
+        tv_city.text = schoolBean?.city
+        tv_school_name.text = schoolBean?.schoolName
+        tv_area.text = schoolBean?.area
     }
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
@@ -77,7 +75,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initData() {
         grades = DataBeanManager.popupGrades
         school=mUser?.schoolId!!
-        mSchoolPresenter.getSchoolDetails(school)
         mSchoolPresenter.getCommonSchool()
     }
 
@@ -96,8 +93,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_parent_name.text = parentNickname
             tv_parent_phone.text = parentTel
             tv_address.text = parentAddr
-            if (grade != 0 && grades.size > 0)
+            if (grade != 0 && grades.size > 0){
                 tv_grade_str.text = grades[grade - 1].name
+            }
+            tv_provinces.text = schoolProvince
+            tv_city.text = schoolCity
+            tv_school_name.text = schoolName
+            tv_area.text = schoolArea
         }
 
         btn_edit_psd.setOnClickListener {
@@ -161,7 +163,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private fun editSchool() {
         SchoolSelectDialog(this, getCurrentScreenPos(),schools).builder().setOnDialogClickListener {
             school=it
+            if (school==mUser?.schoolId)
+                return@setOnDialogClickListener
             presenter.editSchool(it)
+            for (item in schools){
+                if (item.id==school)
+                    schoolBean=item
+            }
         }
     }
 

@@ -167,7 +167,7 @@ class TextbookFragment : BaseFragment() {
                             type=1
                             subType=subTypeId
                             subTypeStr=book.textBookType
-                            grade=getGrade(book.grade)
+                            grade=book.grade
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(book)
                             downloadUrl=it
@@ -183,7 +183,7 @@ class TextbookFragment : BaseFragment() {
                 cloudList.add(CloudListBean().apply {
                     type=1
                     subType=subTypeId
-                    grade=getGrade(book.grade)
+                    grade=book.grade
                     subTypeStr=book.textBookType
                     date=System.currentTimeMillis()
                     listJson= Gson().toJson(book)
@@ -195,19 +195,6 @@ class TextbookFragment : BaseFragment() {
                     mCloudUploadPresenter.upload(cloudList)
             }
         }
-    }
-
-    /**
-     * 得到年级
-     */
-    private fun getGrade(gradeStr:String):Int{
-        var grade=0
-        for (item in DataBeanManager.grades){
-            if (item.desc==gradeStr){
-                grade=item.type
-            }
-        }
-        return grade
     }
 
     /**

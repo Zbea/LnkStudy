@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
 
     public String token;
@@ -14,9 +16,11 @@ public class User {
     public String parentTel;
     public String parentAddr;
     public long birthdayTime;
+
     public String schoolProvince;
+    public String schoolCity;
+    public String schoolArea;
     public String schoolName;
     public int schoolId;
-    public String addr;
 
 }

@@ -24,18 +24,18 @@ public class BookBean {
     public int bookId;
     public int bookPlusId;
     public String imageUrl;
-    public String subjectName;//课目
+    public int subjectName;//课目
     public String bookDesc;//描述
-    public String semester;//学期
+    public int semester;//学期
     public String area;//地区
     public String bookName;//书名
     public int price;//书的价格
-    public String grade; //年级
+    public int grade; //年级
     public String version;  //版本
     public String bookVersion;  //版本
     public String supply ;  //官方
     public int category;//0教材1古籍2自然科学3社会科学4思维科学5运动才艺
-    @SerializedName("type")
+    public int type;
     public String textBookType;  //教材类别
     public int status;  // 1 可购买; 2 已购买; 3 已下载
     @SerializedName("bodyUrl")
@@ -46,7 +46,6 @@ public class BookBean {
     public long downDate;//下载时间
     public long time;//观看时间
     public int pageIndex;//当前页
-    public String pageUpUrl;//上一页路径
     public String pageUrl;//当前页路径
     public boolean isLook;//是否已经打开
     @Transient
@@ -59,14 +58,13 @@ public class BookBean {
     public int cloudId;
     @Transient
     public String drawUrl;
-
-    @Generated(hash = 887244758)
-    public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl,
-            String subjectName, String bookDesc, String semester, String area, String bookName,
-            int price, String grade, String version, String bookVersion, String supply, int category,
+    @Generated(hash = 1888439005)
+    public BookBean(Long id, long userId, int bookId, int bookPlusId, String imageUrl, int subjectName,
+            String bookDesc, int semester, String area, String bookName, int price, int grade,
+            String version, String bookVersion, String supply, int category, int type,
             String textBookType, int status, String downloadUrl, String bookPath, String bookDrawPath,
-            String bookType, long downDate, long time, int pageIndex, String pageUpUrl, String pageUrl,
-            boolean isLook, int dateState, boolean isLock, boolean isCloud, int cloudId) {
+            String bookType, long downDate, long time, int pageIndex, String pageUrl, boolean isLook,
+            int dateState, boolean isLock, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -83,6 +81,7 @@ public class BookBean {
         this.bookVersion = bookVersion;
         this.supply = supply;
         this.category = category;
+        this.type = type;
         this.textBookType = textBookType;
         this.status = status;
         this.downloadUrl = downloadUrl;
@@ -92,7 +91,6 @@ public class BookBean {
         this.downDate = downDate;
         this.time = time;
         this.pageIndex = pageIndex;
-        this.pageUpUrl = pageUpUrl;
         this.pageUrl = pageUrl;
         this.isLook = isLook;
         this.dateState = dateState;
@@ -133,10 +131,10 @@ public class BookBean {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-    public String getSubjectName() {
+    public int getSubjectName() {
         return this.subjectName;
     }
-    public void setSubjectName(String subjectName) {
+    public void setSubjectName(int subjectName) {
         this.subjectName = subjectName;
     }
     public String getBookDesc() {
@@ -145,10 +143,10 @@ public class BookBean {
     public void setBookDesc(String bookDesc) {
         this.bookDesc = bookDesc;
     }
-    public String getSemester() {
+    public int getSemester() {
         return this.semester;
     }
-    public void setSemester(String semester) {
+    public void setSemester(int semester) {
         this.semester = semester;
     }
     public String getArea() {
@@ -169,10 +167,10 @@ public class BookBean {
     public void setPrice(int price) {
         this.price = price;
     }
-    public String getGrade() {
+    public int getGrade() {
         return this.grade;
     }
-    public void setGrade(String grade) {
+    public void setGrade(int grade) {
         this.grade = grade;
     }
     public String getVersion() {
@@ -198,6 +196,12 @@ public class BookBean {
     }
     public void setCategory(int category) {
         this.category = category;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
     }
     public String getTextBookType() {
         return this.textBookType;
@@ -241,17 +245,17 @@ public class BookBean {
     public void setDownDate(long downDate) {
         this.downDate = downDate;
     }
+    public long getTime() {
+        return this.time;
+    }
+    public void setTime(long time) {
+        this.time = time;
+    }
     public int getPageIndex() {
         return this.pageIndex;
     }
     public void setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
-    }
-    public String getPageUpUrl() {
-        return this.pageUpUrl;
-    }
-    public void setPageUpUrl(String pageUpUrl) {
-        this.pageUpUrl = pageUpUrl;
     }
     public String getPageUrl() {
         return this.pageUrl;
@@ -289,11 +293,6 @@ public class BookBean {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-    public long getTime() {
-        return this.time;
-    }
-    public void setTime(long time) {
-        this.time = time;
-    }
+   
 
 }

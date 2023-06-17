@@ -14,6 +14,7 @@ object DataBeanManager {
     var grades= mutableListOf<Grade>()
     var courses= mutableListOf<ItemList>()
     var gradeOthers= mutableListOf<ItemList>()
+    var provinces= mutableListOf<Area>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
@@ -65,6 +66,16 @@ object DataBeanManager {
             }
             return list
         }
+
+    val popupCourses: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in courses.indices){
+                list.add(PopupBean(courses[i].type, courses[i].desc, i == 0))
+            }
+            return list
+        }
+
 
     fun popupDynasty():MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()

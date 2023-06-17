@@ -150,11 +150,6 @@ interface APIService{
     @GET("textbook/list")
     fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
     /**
-     * 教材参考列表
-     */
-    @GET("book/list")
-    fun getTextBookCKs(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
-    /**
      * 书城列表
      */
     @GET("book/plus/list")
@@ -285,13 +280,8 @@ interface APIService{
     /**
      * 获取学校接口
      */
-    @GET("userTypes")
+    @GET("school/list")
     fun getCommonSchool(): Observable<BaseResult<MutableList<SchoolBean>>>
-    /**
-     * 获取学校信息
-     */
-    @GET("accounts/changeAddress")
-    fun getSchoolDetails(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<SchoolBean>>
 
     /**
      * 获取老师发送控制指令

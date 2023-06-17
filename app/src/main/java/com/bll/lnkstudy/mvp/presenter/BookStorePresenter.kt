@@ -46,27 +46,6 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
             }
 
         }, true)
-
-    }
-
-    /**
-     * 参考教材
-     */
-    fun getTextBookCks(map: HashMap<String,Any>) {
-
-        val books = RetrofitManager.service.getTextBookCKs(map)
-
-        doRequest(books, object : Callback<BookStore>(view) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<BookStore>) {
-                view.onBook(tBaseResult.data)
-            }
-
-        }, true)
-
     }
 
     /**

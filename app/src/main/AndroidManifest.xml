@@ -90,7 +90,7 @@
         <activity
             android:name=".ui.activity.HomeRightActivity"
             android:exported="true" />
-        <activity android:name=".ui.activity.BookStoreActivity" />
+        <activity android:name=".ui.activity.book.BookStoreActivity" />
         <activity
             android:name=".ui.activity.drawing.BookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
@@ -104,8 +104,8 @@
         <activity
             android:name=".ui.activity.TeachActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".ui.activity.TextBookStoreActivity" />
-        <activity android:name=".ui.activity.BookStoreTypeActivity" />
+        <activity android:name=".ui.activity.book.TextBookStoreActivity" />
+        <activity android:name=".ui.activity.book.BookStoreTypeActivity" />
         <activity android:name=".ui.activity.PaintingListActivity" />
         <activity android:name=".ui.activity.MessageListActivity" />
         <activity android:name=".ui.activity.MainCourseActivity" />
@@ -125,7 +125,7 @@
         <activity
             android:name=".ui.activity.drawing.PaintingDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".ui.activity.BookCaseTypeListActivity" />
+        <activity android:name=".ui.activity.book.BookTypeListActivity" />
         <activity
             android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask" />

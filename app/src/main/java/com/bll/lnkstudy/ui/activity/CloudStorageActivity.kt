@@ -73,9 +73,9 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
             popYears.add(PopupBean(year,year.toString(),year==DateUtils.getYear()))
         }
 
-        tv_dynasty.text=DataBeanManager.popupDynasty()[0].name
+        tv_course.text=DataBeanManager.popupDynasty()[0].name
         year=DateUtils.getYear()
-        tv_year.text=year.toString()
+        tv_province.text=year.toString()
     }
 
     override fun initView() {
@@ -142,12 +142,12 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
             }
         }
 
-        tv_dynasty.setOnClickListener {
+        tv_course.setOnClickListener {
             if (popWindowDynasty==null)
             {
-                popWindowDynasty= PopupList(this,DataBeanManager.popupDynasty(),tv_dynasty,tv_dynasty.width,5).builder()
+                popWindowDynasty= PopupList(this,DataBeanManager.popupDynasty(),tv_course,tv_course.width,5).builder()
                 popWindowDynasty?.setOnSelectListener { item ->
-                    tv_dynasty.text=item.name
+                    tv_course.text=item.name
                     paintingFragment?.changeDynasty(item.id)
                 }
             }
@@ -156,12 +156,12 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
             }
         }
 
-        tv_year.setOnClickListener {
+        tv_province.setOnClickListener {
             if (popWindowYear==null)
             {
-                popWindowYear= PopupList(this,popYears,tv_year,tv_year.width,5).builder()
+                popWindowYear= PopupList(this,popYears,tv_province,tv_province.width,5).builder()
                 popWindowYear?.setOnSelectListener { item ->
-                    tv_year.text=item.name
+                    tv_province.text=item.name
                     year=item.id
                     noteFragment?.changeYear(year)
                 }
@@ -175,16 +175,16 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
 
     fun showYearView(){
         closeGradeView()
-        showView(tv_year)
+        showView(tv_province)
     }
 
     fun closeYearView(){
         showGradeView()
-        disMissView(tv_year)
+        disMissView(tv_province)
     }
 
     fun closeDynastyView(){
-        disMissView(tv_dynasty)
+        disMissView(tv_course)
     }
 
     private fun closeGradeView(){
@@ -196,7 +196,7 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     }
 
     fun showDynastyView(){
-        showView(tv_dynasty)
+        showView(tv_course)
     }
 
     /**

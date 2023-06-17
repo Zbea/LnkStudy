@@ -13,7 +13,7 @@ class CloudHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setText(R.id.tv_name, item.name)
-            setText(R.id.tv_date,DateUtils.intToStringDataNoHour(item.date/1000))
+            setText(R.id.tv_date,DateUtils.intToStringDataNoHour(item.date))
             setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
             setGone(R.id.ll_info, false)
         }

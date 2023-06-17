@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.utils.GlideUtils
@@ -33,14 +34,16 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
 
         GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-        tv_book_name?.text = book.bookName+if (book.semester.isNullOrEmpty()) "" else "-"+book.semester
+        tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.semesters[book.semester-1].name
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
-        tv_course?.text = context.getString(R.string.subject)+"： " + book.subjectName
         tv_version?.text =context.getString(R.string.press)+"： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
         tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
 
-        if (book.subjectName.isNullOrEmpty()){
+        if (book.subjectName==0){
             tv_course?.visibility=View.GONE
+        }
+        else{
+            tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.courses[book.subjectName-1]
         }
 
         if (book.buyStatus == 1) {

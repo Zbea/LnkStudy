@@ -20,7 +20,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
             setVisible(R.id.ll_info, !item.isCreate||item.isCloud)
             if (item.isCloud){
                 setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
-                setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date/1000))
+                setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date))
             }
 
             if (item.isPg) {
