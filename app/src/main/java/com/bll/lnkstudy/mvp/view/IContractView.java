@@ -181,8 +181,8 @@ public interface IContractView {
          * 获取系统发送上传、删除本地作业考卷指令
          * @param controlMessages
          */
-        void onControlClear(List<ControlMessage> controlMessages);
-        void onDeleteClear();
+        void onSystemControlClear(List<ControlMessage> controlMessages);
+        void onDeleteSystemClear();
         void onEditGradeSuccess();
     }
 

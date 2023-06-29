@@ -8,8 +8,6 @@ import java.util.Map;
 
 public class TeachingVideoType implements Serializable {
 
-    @SerializedName("grade")
-    public List<ItemList> grades;
     @SerializedName("type")
     public List<ItemList> types;
     public Map<String,List<ItemList>> subType;//子类

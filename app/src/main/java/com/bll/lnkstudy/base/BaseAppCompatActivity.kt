@@ -23,7 +23,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
-import com.bll.lnkstudy.mvp.model.NotebookBean
+import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
@@ -31,7 +31,7 @@ import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
-import com.bll.lnkstudy.ui.activity.book.TextBookStoreActivity
+import com.bll.lnkstudy.ui.activity.book.TextbookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
@@ -89,9 +89,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
 
         mDialog = ProgressDialog(this,screenPos)
+        initBookType()
         initData()
         initView()
-        initBookType()
 
     }
 
@@ -133,27 +133,27 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      */
     private fun initBookType(){
         iv_jc?.setOnClickListener {
-            customStartActivity(Intent(this, TextBookStoreActivity::class.java))
+            customStartActivity(Intent(this, TextbookStoreActivity::class.java))
         }
 
         iv_gj?.setOnClickListener {
-            gotoBookStore(getString(R.string.book_tab_gj))
+            gotoBookStore(1)
         }
 
         iv_zrkx?.setOnClickListener {
-            gotoBookStore(getString(R.string.book_tab_zrkx))
+            gotoBookStore(2)
         }
 
         iv_shkx?.setOnClickListener {
-            gotoBookStore(getString(R.string.book_tab_shkx))
+            gotoBookStore(3)
         }
 
         iv_swkx?.setOnClickListener {
-            gotoBookStore(getString(R.string.book_tab_sxkx))
+            gotoBookStore(4)
         }
 
         iv_ydcy?.setOnClickListener {
-            gotoBookStore(getString(R.string.book_tab_ydcy))
+            gotoBookStore(5)
         }
     }
 
@@ -257,9 +257,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         customStartActivity1(intent)
     }
 
-   private fun gotoBookStore(type: String){
+   private fun gotoBookStore(type: Int){
         val intent=Intent(this, BookStoreActivity::class.java)
-        intent.putExtra("category",type)
+        intent.flags=type
         customStartActivity(intent)
     }
 
@@ -308,7 +308,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 跳转日记
      */
-    fun gotoNote(noteBook: NotebookBean, page:Int){
+    fun gotoNote(noteBook: Note, page:Int){
         val intent = Intent(this, NoteDrawingActivity::class.java)
         val bundle = Bundle()
         bundle.putSerializable("note", noteBook)

@@ -78,6 +78,7 @@ class Constants{
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"//书籍下载通知
         const val TEXT_BOOK_EVENT = "TextBookEvent"//课本下载通知
+        const val HOMEWORK_BOOK_EVENT = "HomeworkBookEvent"//课本下载通知
         const val APP_EVENT = "APPEvent"//应用下载安装通知
         const val COURSE_EVENT = "CourseEvent"
         const val CLASSGROUP_EVENT = "ClassGroupEvent"

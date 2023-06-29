@@ -46,8 +46,10 @@ class ControlMessagePresenter(view: IContractView.IControlMessageView) : BasePre
 
     }
 
-
-    fun getControlClearMessage() {
+    /**
+     * 获取系统发送删除指令
+     */
+    fun getSystemControlClear() {
 
         val get = RetrofitManager.service.getSystemControlMessage()
 
@@ -57,15 +59,17 @@ class ControlMessagePresenter(view: IContractView.IControlMessageView) : BasePre
             }
             override fun success(tBaseResult: BaseResult<MutableList<ControlMessage>>) {
                 if (tBaseResult.data!=null)
-                    view.onControlClear(tBaseResult.data)
+                    view.onSystemControlClear(tBaseResult.data)
             }
 
         }, false)
 
     }
 
-
-    fun deleteClearMessage(ids:List<Int>) {
+    /**
+     * 删除系统指令
+     */
+    fun deleteSystemClearMessage(ids:List<Int>) {
         val body = RequestUtils.getBody(
             Pair.create("ids", ids.toIntArray())
         )
@@ -76,7 +80,7 @@ class ControlMessagePresenter(view: IContractView.IControlMessageView) : BasePre
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onDeleteClear()
+                view.onDeleteSystemClear()
             }
 
         }, false)

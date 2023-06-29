@@ -155,6 +155,11 @@ interface APIService{
     @GET("book/plus/list")
     fun getBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
     /**
+     * 题卷列表
+     */
+    @GET("book/list")
+    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    /**
      * 购买书籍
      */
     @POST("buy/book/createOrder")
@@ -207,7 +212,6 @@ interface APIService{
      */
     @GET("talent/video/types")
     fun getTeachType(): Observable<BaseResult<TeachingVideoType>>
-
 
     /**
      * 获取考卷分类

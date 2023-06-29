@@ -77,6 +77,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
+    var isRequestClassGroup=false//页面是否请求
+
     //控制消息回调
     override fun onControlMessage(controlMessages: MutableList<ControlMessage>) {
         //发送全局老师控制删除
@@ -91,18 +93,20 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
     override fun onDeleteMessage() {
     }
-    override fun onControlClear(controlMessages: MutableList<ControlMessage>) {
+
+    override fun onSystemControlClear(controlMessages: MutableList<ControlMessage>) {
         if (controlMessages.size>0){
             EventBus.getDefault().post(Constants.CONTROL_CLEAR_EVENT)
             val list= mutableListOf<Int>()
             for (item in controlMessages){
                 list.add(item.id)
             }
-            SPUtil.putListInt("ContorlClear",list)
+            SPUtil.putListInt("ControlClear",list)
         }
     }
-    override fun onDeleteClear() {
+    override fun onDeleteSystemClear() {
     }
+
     override fun onEditGradeSuccess() {
     }
 
@@ -123,7 +127,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     override fun onInsert() {
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        if (DataBeanManager.classGroups!=classGroups){
+        if (DataBeanManager.classGroups != classGroups){
             DataBeanManager.classGroups=classGroups
             EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
         }
@@ -164,12 +168,20 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
     /**
+     * 设置页面是否请求班群信息
+     */
+    fun setClassGroupRequest(isBoolean: Boolean){
+        this.isRequestClassGroup=isBoolean
+    }
+
+    /**
      * 获取控制信息指令
      */
     private fun onFetchControl(){
         mControlMessagePresenter.getControlMessage()
-        mControlMessagePresenter.getControlClearMessage()
-        mClassGroupPresenter.getClassGroupList(false)
+        mControlMessagePresenter.getSystemControlClear()
+        if (isRequestClassGroup)
+            mClassGroupPresenter.getClassGroupList(false)
     }
 
     private fun lazyLoadDataIfPrepared() {
@@ -452,7 +464,11 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     /**
      * 跳转笔记写作
      */
-    fun gotoIntent(note: NotebookBean){
+    fun gotoIntent(note: Note){
+        note.date=System.currentTimeMillis()
+        NoteDaoManager.getInstance().insertOrReplace(note)
+        EventBus.getDefault().post(Constants.NOTE_EVENT)
+
         val intent = Intent(activity, NoteDrawingActivity::class.java)
         val bundle = Bundle()
         bundle.putSerializable("note", note)
@@ -493,7 +509,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     /**
      * 清空作业本
      */
-    fun clearHomework(){
+    fun setClearHomework(){
         //删除所有作业
         HomeworkContentDaoManager.getInstance().clear()
         //删除所有朗读
@@ -501,6 +517,9 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         //删除所有作业卷内容
         HomeworkPaperDaoManager.getInstance().clear()
         HomeworkPaperContentDaoManager.getInstance().clear()
+        //题卷本
+        HomeworkBookDaoManager.getInstance().clear()
+
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
         //清除本地增量数据
         DataUpdateManager.clearDataUpdate(2)
@@ -512,7 +531,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     /**
      * 清空考卷
      */
-    fun clearPaper(){
+    fun setClearPaper(){
         //删除本地考卷分类
         PaperTypeDaoManager.getInstance().clear()
         //删除所有考卷内容
@@ -524,6 +543,24 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         val map=HashMap<String,Any>()
         map["type"]=3
         mDataUploadPresenter.onDeleteData(map)
+    }
+
+    /**
+     * 系统控制（在上传完成后删除作业、考卷，升年级）
+     */
+    fun setSystemControlClear(){
+        val homeworkTypes=HomeworkTypeDaoManager.getInstance().queryAll()
+        val paperTypes=PaperTypeDaoManager.getInstance().queryAll()
+        if (homeworkTypes.isNullOrEmpty()&&paperTypes.isNullOrEmpty()){
+            //考卷上传完之后升年级
+            mUser?.grade=grade+1
+            SPUtil.putObj("user", mUser!!)
+            EventBus.getDefault().post(Constants.USER_EVENT)
+            mControlMessagePresenter.editGrade(mUser?.grade!!)
+            //上传完之后 删除控制删除消息
+            val controlClearIds=SPUtil.getListInt("ControlClear")
+            mControlMessagePresenter.deleteSystemClearMessage(controlClearIds)
+        }
     }
 
     /**
@@ -619,8 +656,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             Constants.USER_EVENT->{
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
-                clearHomework()
-                clearPaper()
+                setClearHomework()
+                setClearPaper()
             }
             else->{
                 onEventBusMessage(msgFlag)

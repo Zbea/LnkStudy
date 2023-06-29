@@ -1,17 +1,17 @@
 package com.bll.lnkstudy.manager;
 
-import com.bll.lnkstudy.DataBeanManager;
+
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.mvp.model.NoteContentBean;
-import com.bll.lnkstudy.mvp.model.NoteTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class NoteContentDaoManager {
 
@@ -28,7 +28,7 @@ public class NoteContentDaoManager {
 
     private NoteContentBeanDao noteDao;  //note表
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     private WhereCondition whereUser= NoteContentBeanDao.Properties.UserId.eq(userId);
 
     /**
@@ -67,7 +67,7 @@ public class NoteContentDaoManager {
 
     public List<NoteContentBean> queryAll(String type, String notebookStr,int grade) {
         WhereCondition whereCondition=NoteContentBeanDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NotebookTitle.eq(notebookStr);
+        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NoteTitle.eq(notebookStr);
         WhereCondition whereCondition2=NoteContentBeanDao.Properties.Grade.eq(grade);
         return noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
     }
@@ -83,7 +83,7 @@ public class NoteContentDaoManager {
 
     public void deleteType(String type,String notebookStr,int grade){
         WhereCondition whereCondition=NoteContentBeanDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NotebookTitle.eq(notebookStr);
+        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NoteTitle.eq(notebookStr);
         WhereCondition whereCondition2=NoteContentBeanDao.Properties.Grade.eq(grade);
         List<NoteContentBean> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
         noteDao.deleteInTx(list);

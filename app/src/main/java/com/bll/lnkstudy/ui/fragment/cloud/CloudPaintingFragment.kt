@@ -20,7 +20,12 @@ import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.ImageDownLoadUtils
+import com.bll.lnkstudy.utils.zip.IZipCallback
+import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -193,38 +198,36 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                //存储画本分类
-                                val date=System.currentTimeMillis()
-                                val beanType = PaintingTypeBean()
-                                beanType.type = getType()
-                                beanType.grade = item.grade
-                                beanType.date = date
-                                beanType.isCloud=true
-                                beanType.cloudId=item.id
-                                val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(beanType)
-                                //创建本地画本增量更新
-                                DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(beanType))
+                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                        override fun onFinish() {
+                            //存储画本分类
+                            val date=System.currentTimeMillis()
+                            val beanType = PaintingTypeBean()
+                            beanType.type = getType()
+                            beanType.grade = item.grade
+                            beanType.date = date
+                            beanType.isCloud=true
+                            beanType.cloudId=item.id
+                            val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(beanType)
+                            //创建本地画本增量更新
+                            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(beanType))
 
-                                //存储画本内容
-                                val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
-                                for (json in jsonArray){
-                                    val drawingBean=Gson().fromJson(json,PaintingDrawingBean::class.java)
-                                    drawingBean.id=null
-                                    val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
-                                    //创建本地画本增量更新
-                                    DataUpdateManager.createDataUpdate(5,id.toInt(),2,1
-                                        , Gson().toJson(drawingBean),drawingBean.path)
-                                }
-                                //删掉本地zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                Handler().postDelayed({
-                                    showToast(screenPos,R.string.book_download_success)
-                                    hideLoading()
-                                },500)
+                            //存储画本内容
+                            val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
+                            for (json in jsonArray){
+                                val drawingBean=Gson().fromJson(json,PaintingDrawingBean::class.java)
+                                drawingBean.id=null
+                                val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
+                                //创建本地画本增量更新
+                                DataUpdateManager.createDataUpdate(5,id.toInt(),2,1
+                                    , Gson().toJson(drawingBean),drawingBean.path)
                             }
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            Handler().postDelayed({
+                                showToast(screenPos,R.string.book_download_success)
+                                hideLoading()
+                            },500)
                         }
 
                         override fun onProgress(percentDone: Int) {

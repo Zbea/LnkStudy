@@ -66,7 +66,7 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
 
         val titleTv = dialog!!.findViewById<TextView>(R.id.tv_dialog_title)
         val contentTv = dialog!!.findViewById<TextView>(R.id.tv_dialog_content)
-        val cancelTv = dialog!!.findViewById<TextView>(R.id.tv_cancle)
+        val cancelTv = dialog!!.findViewById<TextView>(R.id.tv_cancel)
         val tvOk = dialog!!.findViewById<TextView>(R.id.tv_ok)
 
         if (titleStr.isNotEmpty()) titleTv.text = titleStr

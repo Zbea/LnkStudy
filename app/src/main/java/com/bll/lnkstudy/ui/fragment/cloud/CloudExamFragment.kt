@@ -20,7 +20,8 @@ import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.zip.IZipCallback
+import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
@@ -127,39 +128,37 @@ class CloudExamFragment:BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                PaperTypeDaoManager.getInstance().insertOrReplace(item)
+                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                        override fun onFinish() {
+                            PaperTypeDaoManager.getInstance().insertOrReplace(item)
+                            //创建增量数据
+                            DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
+
+                            val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                            for (json in jsonArray){
+                                val paperBean=Gson().fromJson(json, PaperBean::class.java)
+                                paperBean.id=null//设置数据库id为null用于重新加入
+                                PaperDaoManager.getInstance().insertOrReplace(paperBean)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
-
-                                val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                for (json in jsonArray){
-                                    val paperBean=Gson().fromJson(json, PaperBean::class.java)
-                                    paperBean.id=null//设置数据库id为null用于重新加入
-                                    PaperDaoManager.getInstance().insertOrReplace(paperBean)
-                                    //创建增量数据
-                                    DataUpdateManager.createDataUpdate(3,paperBean.contentId,2,paperBean.typeId,Gson().toJson(item))
-                                }
-
-                                val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
-                                for (json in jsonSubtypeArray){
-                                    val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
-                                    contentBean.id=null//设置数据库id为null用于重新加入
-                                    val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
-                                    //创建增量数据
-                                    DataUpdateManager.createDataUpdate(3,id.toInt(),3,contentBean.typeId
-                                        ,Gson().toJson(contentBean),contentBean.path)
-                                }
-
-                                //删掉本地zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                Handler().postDelayed({
-                                    showToast(screenPos,R.string.book_download_success)
-                                    hideLoading()
-                                },500)
+                                DataUpdateManager.createDataUpdate(3,paperBean.contentId,2,paperBean.typeId,Gson().toJson(item))
                             }
+
+                            val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
+                            for (json in jsonSubtypeArray){
+                                val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
+                                contentBean.id=null//设置数据库id为null用于重新加入
+                                val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
+                                //创建增量数据
+                                DataUpdateManager.createDataUpdate(3,id.toInt(),3,contentBean.typeId
+                                    ,Gson().toJson(contentBean),contentBean.path)
+                            }
+
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            Handler().postDelayed({
+                                showToast(screenPos,R.string.book_download_success)
+                                hideLoading()
+                            },500)
                         }
 
                         override fun onProgress(percentDone: Int) {

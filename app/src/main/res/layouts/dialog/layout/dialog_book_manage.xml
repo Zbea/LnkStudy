@@ -20,7 +20,6 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:layout_marginRight="20dp"
-
             android:textSize="26sp"
             android:textColor="@color/black"/>
 
@@ -46,6 +45,7 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:visibility="invisible"
             android:background="@mipmap/icon_setting_btn_bg"
             >
 

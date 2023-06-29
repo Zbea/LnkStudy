@@ -1,6 +1,9 @@
 package com.bll.lnkstudy.mvp.model.homework;
 
+import androidx.annotation.Nullable;
+
 import com.bll.lnkstudy.DataBeanManager;
+import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
@@ -30,19 +33,14 @@ public class HomeworkTypeBean implements Serializable {
     @Unique
     public int typeId;//作业本分类id
     @SerializedName("subType")
-    public int state;//1题卷本 2普通作业本 3听读本
+    public int state;//1作业卷 2普通作业本 3听读本4题卷本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
     public String course;
+    public int bookId;
     public boolean isCreate;//自建作业本
     public int messageTotal;//作业消息数目
-    @Transient
-    public boolean isPg;//是否收到批改
-    @Transient
-    public boolean isMessage;//收到通知
-    @Transient
-    public HomeworkMessage message;
     public boolean isCloud;
     public int cloudId;
     @Transient
@@ -51,11 +49,17 @@ public class HomeworkTypeBean implements Serializable {
     public String contentJson;
     @Transient
     public String contentSubtypeJson;
+    @Transient
+    public boolean isPg;//是否收到批改
+    @Transient
+    public boolean isMessage;//收到通知
+    @Transient
+    public HomeworkMessage message;
 
-    @Generated(hash = 215127069)
+    @Generated(hash = 1491616699)
     public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId, int state,
-            long date, String contentResId, String bgResId, String course, boolean isCreate, int messageTotal,
-            boolean isCloud, int cloudId) {
+            long date, String contentResId, String bgResId, String course, int bookId, boolean isCreate,
+            int messageTotal, boolean isCloud, int cloudId) {
         this.id = id;
         this.studentId = studentId;
         this.userId = userId;
@@ -67,6 +71,7 @@ public class HomeworkTypeBean implements Serializable {
         this.contentResId = contentResId;
         this.bgResId = bgResId;
         this.course = course;
+        this.bookId = bookId;
         this.isCreate = isCreate;
         this.messageTotal = messageTotal;
         this.isCloud = isCloud;
@@ -165,7 +170,24 @@ public class HomeworkTypeBean implements Serializable {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
+    public int getBookId() {
+        return this.bookId;
+    }
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
 
- 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj==null)
+            return false;
+        if (!(obj instanceof HomeworkTypeBean))
+            return false;
+        if (this==obj)
+            return true;
+        HomeworkTypeBean item=(HomeworkTypeBean) obj;
+        return Objects.equals(this.id, item.id)&&this.typeId==item.typeId && Objects.equals(this.name, item.name) &&this.userId==item.userId
+                &&this.grade==item.grade&&this.date==item.date&&this.state==item.state;
+    }
 
 }

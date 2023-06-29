@@ -23,8 +23,6 @@ object DataUpdateManager {
             this.typeId=typeId
             date=System.currentTimeMillis()
             listJson= json
-            downloadUrl=""
-            sourceUrl=""
         })
     }
 
@@ -42,8 +40,6 @@ object DataUpdateManager {
             this.state=state
             date=System.currentTimeMillis()
             listJson= json
-            downloadUrl=""
-            sourceUrl=""
         })
     }
 
@@ -60,8 +56,7 @@ object DataUpdateManager {
             this.typeId=typeId
             date=System.currentTimeMillis()
             listJson= json
-            this.sourceUrl=sourceUrl
-            downloadUrl=""
+            downloadUrl=sourceUrl
         })
     }
 
@@ -78,8 +73,6 @@ object DataUpdateManager {
             date=System.currentTimeMillis()
             listJson= json
             this.path=path
-            downloadUrl=""
-            sourceUrl=""
         })
     }
 
@@ -98,7 +91,6 @@ object DataUpdateManager {
             listJson= json
             this.path=path
             downloadUrl=""
-            sourceUrl=""
         })
     }
 
@@ -106,7 +98,7 @@ object DataUpdateManager {
      * 删除增量更新
      */
     fun deleteDateUpdate(type:Int,id:Int,contentType:Int,typeId: Int){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId).apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
             date=System.currentTimeMillis()
             isDelete=true
         })
@@ -117,7 +109,7 @@ object DataUpdateManager {
      * 修改增量更新（图片内容变化，地址不变）
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,typeId: Int){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId).apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
             date=System.currentTimeMillis()
         })
     }
@@ -126,7 +118,7 @@ object DataUpdateManager {
      * 修改增量更新
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,typeId: Int,json: String){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId).apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
             date=System.currentTimeMillis()
             listJson=json
         })
@@ -136,7 +128,7 @@ object DataUpdateManager {
      * 修改增量更新(有手写内容,保存路径)
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,typeId: Int,json: String,path: String){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId).apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
             date=System.currentTimeMillis()
             listJson=json
             this.path=path

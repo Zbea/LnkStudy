@@ -4,13 +4,11 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.RecordBean
@@ -20,7 +18,9 @@ import com.bll.lnkstudy.ui.adapter.CloudHomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.zip.IZipCallback
+import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
@@ -28,6 +28,7 @@ import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_homework.*
 import kotlinx.android.synthetic.main.fragment_painting.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class CloudHomeworkFragment:BaseCloudFragment(){
@@ -85,19 +86,30 @@ class CloudHomeworkFragment:BaseCloudFragment(){
             }
             setOnItemClickListener { adapter, view, position ->
                 val homeworkTypeBean=types[position]
-                val item= HomeworkTypeDaoManager.getInstance().queryByTypeId(homeworkTypeBean.typeId)
-                if (item==null){
-                    download(homeworkTypeBean)
+                //如果是题卷本
+                if (homeworkTypeBean.state==4){
+                    if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
+                        startDownload(homeworkTypeBean)
+                    }
+                    else{
+                        showToast(screenPos,R.string.toast_downloaded)
+                    }
                 }
                 else{
-                    showToast(screenPos,R.string.toast_downloaded)
+                    val item= HomeworkTypeDaoManager.getInstance().queryByTypeId(homeworkTypeBean.typeId)
+                    if (item==null){
+                        download(homeworkTypeBean)
+                    }
+                    else{
+                        showToast(screenPos,R.string.toast_downloaded)
+                    }
                 }
             }
         }
     }
 
     /**
-     * 下载
+     * 下载普通作业本、作业卷
      */
     private fun download(item: HomeworkTypeBean){
         item.id=null//设置数据库id为null用于重新加入
@@ -127,63 +139,61 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                                //创建增量数据
-                                DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
-                                when(item.state){
-                                    1->{
-                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                        for (json in jsonArray){
-                                            val paperBean=Gson().fromJson(json, PaperBean::class.java)
-                                            paperBean.id=null//设置数据库id为null用于重新加入
-                                            PaperDaoManager.getInstance().insertOrReplace(paperBean)
-                                            //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,paperBean.contentId,2,paperBean.typeId,Gson().toJson(paperBean))
-                                        }
-                                        val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
-                                        for (json in jsonSubtypeArray){
-                                            val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
-                                            contentBean.id=null//设置数据库id为null用于重新加入
-                                            val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
-                                            //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,id.toInt(),3,contentBean.typeId
-                                                ,Gson().toJson(contentBean),contentBean.path)
-                                        }
+                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                        override fun onFinish() {
+                            HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
+                            //创建增量数据
+                            DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
+                            when(item.state){
+                                1->{
+                                    val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                                    for (json in jsonArray){
+                                        val paperBean=Gson().fromJson(json, PaperBean::class.java)
+                                        paperBean.id=null//设置数据库id为null用于重新加入
+                                        PaperDaoManager.getInstance().insertOrReplace(paperBean)
+                                        //创建增量数据
+                                        DataUpdateManager.createDataUpdate(2,paperBean.contentId,2,paperBean.typeId,Gson().toJson(paperBean))
                                     }
-                                    2->{
-                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                        for (json in jsonArray){
-                                            val homeworkContentBean=Gson().fromJson(json, HomeworkContentBean::class.java)
-                                            homeworkContentBean.id=null//设置数据库id为null用于重新加入
-                                            val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
-                                            val path=if (homeworkContentBean.state==0) File(homeworkContentBean.path).parent else homeworkContentBean.path
-                                            //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2
-                                                ,homeworkContentBean.homeworkTypeId,Gson().toJson(homeworkContentBean),path)
-                                        }
-                                    }
-                                    3->{
-                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                        for (json in jsonArray){
-                                            val recordBean=Gson().fromJson(json, RecordBean::class.java)
-                                            recordBean.id=null//设置数据库id为null用于重新加入
-                                            val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
-                                            //创建增量数据
-                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2,recordBean?.typeId!!
-                                                ,Gson().toJson(recordBean),recordBean.path)
-                                        }
+                                    val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
+                                    for (json in jsonSubtypeArray){
+                                        val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
+                                        contentBean.id=null//设置数据库id为null用于重新加入
+                                        val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
+                                        //创建增量数据
+                                        DataUpdateManager.createDataUpdate(2,id.toInt(),3,contentBean.typeId
+                                            ,Gson().toJson(contentBean),contentBean.path)
                                     }
                                 }
-                                //删掉本地zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                Handler().postDelayed({
-                                    showToast(screenPos,R.string.book_download_success)
-                                    hideLoading()
-                                },500)
+                                2->{
+                                    val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                                    for (json in jsonArray){
+                                        val homeworkContentBean=Gson().fromJson(json, HomeworkContentBean::class.java)
+                                        homeworkContentBean.id=null//设置数据库id为null用于重新加入
+                                        val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
+                                        val path=if (homeworkContentBean.state==0) File(homeworkContentBean.path).parent else homeworkContentBean.path
+                                        //创建增量数据
+                                        DataUpdateManager.createDataUpdate(2,id.toInt(),2
+                                            ,homeworkContentBean.homeworkTypeId,Gson().toJson(homeworkContentBean),path)
+                                    }
+                                }
+                                3->{
+                                    val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                                    for (json in jsonArray){
+                                        val recordBean=Gson().fromJson(json, RecordBean::class.java)
+                                        recordBean.id=null//设置数据库id为null用于重新加入
+                                        val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+                                        //创建增量数据
+                                        DataUpdateManager.createDataUpdate(2,id.toInt(),2,recordBean?.typeId!!
+                                            ,Gson().toJson(recordBean),recordBean.path)
+                                    }
+                                }
                             }
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            Handler().postDelayed({
+                                showToast(screenPos,R.string.book_download_success)
+                                hideLoading()
+                            },500)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -204,6 +214,120 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 }
             })
 
+    }
+
+    /**
+     * 下载
+     */
+    private fun startDownload(homeworkTypeBean: HomeworkTypeBean){
+        val bookBean= Gson().fromJson(homeworkTypeBean.contentJson, HomeworkBookBean::class.java)
+        bookBean.drawUrl=homeworkTypeBean.downloadUrl
+        //判断没有手写直接下书
+        if (homeworkTypeBean.downloadUrl.equals("null")){
+            downloadBook(bookBean)
+        }
+        else{
+            downloadBookDrawing(bookBean)
+        }
+    }
+
+    /**
+     * 下载题卷本手写内容
+     */
+    private fun downloadBookDrawing(book: HomeworkBookBean){
+        val fileName = book.bookId.toString()//文件名
+        val zipPath = FileAddress().getPathZip(fileName)
+        FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
+                        override fun onFinish() {
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdate(8,book.bookId,2,book.bookId
+                                ,"",book.bookDrawPath)
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            downloadBook(book)
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                        }
+                        override fun onStart() {
+                        }
+                    })
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                }
+            })
+    }
+
+    /**
+     * 下载题卷本
+     */
+    private fun downloadBook(book: HomeworkBookBean) {
+        val fileName = book.bookId.toString()//文件名
+        val zipPath = FileAddress().getPathZip(fileName)
+        FileDownManager.with(activity).create(book.bodyUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
+                        override fun onFinish() {
+                            //创建题卷本
+                            val homeworkTypeBean=HomeworkTypeBean().apply {
+                                name=book.bookName
+                                grade=book.grade
+                                typeId= ToolUtils.getDateId()
+                                state=4
+                                date=System.currentTimeMillis()
+                                course=DataBeanManager.getCourseStr(book.subject)
+                                bookId=book.bookId
+                                bgResId=DataBeanManager.getHomeworkCoverStr()
+                                isCreate=true
+                            }
+                            HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+
+                            HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId
+                                ,Gson().toJson(book),book.bodyUrl)
+
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            Handler().postDelayed({
+                                hideLoading()
+                                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
+                                showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                            },500)
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                            hideLoading()
+                            //下载失败删掉已下载手写内容
+                            FileUtils.deleteFile(File(book.bookDrawPath))
+                            showToast(screenPos,msg!!)
+                        }
+                        override fun onStart() {
+                        }
+                    })
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    //删除缓存 poolmap
+                    hideLoading()
+                    //下载失败删掉已下载手写内容
+                    FileUtils.deleteFile(File(book.bookDrawPath))
+                    showToast(screenPos,book.bookName+getString(R.string.book_download_fail))
+                }
+            })
     }
 
     override fun fetchData() {

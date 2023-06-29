@@ -98,7 +98,7 @@ class SearchActivity : BaseAppCompatActivity() {
                 finish()
             }
             4->{
-                val noteBook= NotebookDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
+                val noteBook= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
                 if (item.typeStr==getString(R.string.note_tab_diary)&&noteBook.isEncrypt)
                 {
                     NotebookPasswordDialog(this,3).builder()?.setOnDialogClickListener{
@@ -224,7 +224,7 @@ class SearchActivity : BaseAppCompatActivity() {
                     searchBeans.add(SearchBean().apply {
                         category=4
                         title=item.title
-                        noteStr=item.notebookTitle
+                        noteStr=item.noteTitle
                         typeStr=item.typeStr
                         page=item.page
                         grade=item.grade

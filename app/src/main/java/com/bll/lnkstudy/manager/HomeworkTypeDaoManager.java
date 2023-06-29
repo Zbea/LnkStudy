@@ -72,6 +72,15 @@ public class HomeworkTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
+    /**
+     * 查找作业本
+     */
+    public List<HomeworkTypeBean> queryAllByState(String course,int state) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.State.eq(state);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+    }
+
     public HomeworkTypeBean queryAllById(int id) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(id);
         return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
@@ -79,6 +88,11 @@ public class HomeworkTypeDaoManager {
 
     public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+    }
+
+    public List<HomeworkTypeBean> queryAllByBook() {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.BookId.notEq(0);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 

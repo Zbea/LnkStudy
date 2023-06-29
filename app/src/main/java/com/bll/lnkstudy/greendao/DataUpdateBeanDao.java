@@ -34,9 +34,8 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         public final static Property ListJson = new Property(7, String.class, "listJson", false, "LIST_JSON");
         public final static Property Date = new Property(8, long.class, "date", false, "DATE");
         public final static Property DownloadUrl = new Property(9, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property SourceUrl = new Property(10, String.class, "sourceUrl", false, "SOURCE_URL");
-        public final static Property Path = new Property(11, String.class, "path", false, "PATH");
-        public final static Property IsDelete = new Property(12, boolean.class, "isDelete", false, "IS_DELETE");
+        public final static Property Path = new Property(10, String.class, "path", false, "PATH");
+        public final static Property IsDelete = new Property(11, boolean.class, "isDelete", false, "IS_DELETE");
     }
 
 
@@ -62,9 +61,8 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
                 "\"LIST_JSON\" TEXT," + // 7: listJson
                 "\"DATE\" INTEGER NOT NULL ," + // 8: date
                 "\"DOWNLOAD_URL\" TEXT," + // 9: downloadUrl
-                "\"SOURCE_URL\" TEXT," + // 10: sourceUrl
-                "\"PATH\" TEXT," + // 11: path
-                "\"IS_DELETE\" INTEGER NOT NULL );"); // 12: isDelete
+                "\"PATH\" TEXT," + // 10: path
+                "\"IS_DELETE\" INTEGER NOT NULL );"); // 11: isDelete
     }
 
     /** Drops the underlying database table. */
@@ -99,16 +97,11 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             stmt.bindString(10, downloadUrl);
         }
  
-        String sourceUrl = entity.getSourceUrl();
-        if (sourceUrl != null) {
-            stmt.bindString(11, sourceUrl);
-        }
- 
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(12, path);
+            stmt.bindString(11, path);
         }
-        stmt.bindLong(13, entity.getIsDelete() ? 1L: 0L);
+        stmt.bindLong(12, entity.getIsDelete() ? 1L: 0L);
     }
 
     @Override
@@ -137,16 +130,11 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             stmt.bindString(10, downloadUrl);
         }
  
-        String sourceUrl = entity.getSourceUrl();
-        if (sourceUrl != null) {
-            stmt.bindString(11, sourceUrl);
-        }
- 
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(12, path);
+            stmt.bindString(11, path);
         }
-        stmt.bindLong(13, entity.getIsDelete() ? 1L: 0L);
+        stmt.bindLong(12, entity.getIsDelete() ? 1L: 0L);
     }
 
     @Override
@@ -167,9 +155,8 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // listJson
             cursor.getLong(offset + 8), // date
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // downloadUrl
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // sourceUrl
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // path
-            cursor.getShort(offset + 12) != 0 // isDelete
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // path
+            cursor.getShort(offset + 11) != 0 // isDelete
         );
         return entity;
     }
@@ -186,9 +173,8 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         entity.setListJson(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setDate(cursor.getLong(offset + 8));
         entity.setDownloadUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setSourceUrl(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setPath(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setIsDelete(cursor.getShort(offset + 12) != 0);
+        entity.setPath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setIsDelete(cursor.getShort(offset + 11) != 0);
      }
     
     @Override

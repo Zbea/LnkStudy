@@ -3,6 +3,8 @@ package com.bll.lnkstudy.utils
 import android.util.Log
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.utils.zip.IZipCallback
+import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.qiniu.android.storage.Configuration
 import com.qiniu.android.storage.FileRecorder
 import com.qiniu.android.storage.KeyGenerator
@@ -16,16 +18,14 @@ class FileUploadManager(private val uploadToken:String) {
     }
 
     private fun autoZip(targetStr: String, fileName: String) {
-        ZipUtils.zip(targetStr, fileName, object : ZipUtils.ZipCallback {
+        ZipUtils.zip(targetStr, fileName, object : IZipCallback {
             override fun onStart() {
             }
             override fun onProgress(percentDone: Int) {
             }
-            override fun onFinish(success: Boolean) {
-                if (success){
-                    val path = FileAddress().getPathZip(fileName)
-                    upload(path)
-                }
+            override fun onFinish() {
+                val path = FileAddress().getPathZip(fileName)
+                upload(path)
             }
             override fun onError(msg: String?) {
                 Log.d("debug","onError ${fileName}:$msg")

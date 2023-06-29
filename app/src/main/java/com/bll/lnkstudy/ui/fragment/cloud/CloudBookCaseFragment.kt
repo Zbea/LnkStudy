@@ -16,7 +16,8 @@ import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.zip.IZipCallback
+import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
@@ -73,7 +74,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
                 val book=books[position]
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookPlusId)
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
@@ -109,14 +110,11 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    val fileTargetPath =book.bookDrawPath
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                //删除教材的zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                downloadBook(book)
-                            }
+                    ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
+                        override fun onFinish() {
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            downloadBook(book)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
@@ -145,23 +143,19 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     val fileTargetPath = book.bookPath
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                                //删除教材的zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
-                                    , Gson().toJson(book),book.downloadUrl)
+                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                        override fun onFinish() {
+                            BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
+                                , Gson().toJson(book),book.downloadUrl)
 
-                                Handler().postDelayed({
-                                    hideLoading()
-                                    showToast(screenPos,book.bookName+getString(R.string.book_download_success))
-                                },500)
-                            } else {
-                                showToast(screenPos,book.bookName+getString(R.string.book_decompression_fail))
-                            }
+                            Handler().postDelayed({
+                                hideLoading()
+                                showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                            },500)
                         }
                         override fun onProgress(percentDone: Int) {
                         }

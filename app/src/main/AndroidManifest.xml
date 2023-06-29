@@ -104,7 +104,7 @@
         <activity
             android:name=".ui.activity.TeachActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".ui.activity.book.TextBookStoreActivity" />
+        <activity android:name=".ui.activity.book.TextbookStoreActivity" />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity" />
         <activity android:name=".ui.activity.PaintingListActivity" />
         <activity android:name=".ui.activity.MessageListActivity" />
@@ -112,7 +112,7 @@
         <activity
             android:name=".ui.activity.drawing.NoteDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".ui.activity.NoteTypeManagerActivity" />
+        <activity android:name=".ui.activity.NotebookManagerActivity" />
         <activity android:name=".ui.activity.drawing.PaperExamDrawingActivity" />
         <activity
             android:name=".ui.activity.drawing.HomeworkDrawingActivity"
@@ -157,6 +157,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
+        <activity android:name=".ui.activity.book.HomeworkBookStoreActivity" />
+        <activity android:name=".ui.activity.drawing.HomeworkBookDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import kotlinx.android.synthetic.main.ac_teach_list.*
+import kotlinx.android.synthetic.main.common_title.*
 
 class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView {
 
@@ -37,9 +38,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         mAdapter?.setNewData(datas)
 
     }
-
     override fun onType(type: TeachingVideoType?) {
-
     }
 
     override fun layoutId(): Int {
@@ -52,15 +51,15 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
 
         if (flags==0){
-            grades=DataBeanManager.popupGrades
+            grade=mUser?.grade!!
+            grades=DataBeanManager.popupGrades(grade)
         }
         else{
-            for (i in DataBeanManager.gradeOthers.indices){
-                grades.add(PopupBean(DataBeanManager.gradeOthers[i].type,DataBeanManager.gradeOthers[i].desc,i==0))
-            }
+            grades=DataBeanManager.popupTypeGrades
+            grade=grades[0].id
         }
-        grade=grades[0].id
-        tv_grade.text = grades[0].name
+
+        tv_grade.text = grades[grade-1].name
 
         if (flags==0){
             semesters=DataBeanManager.semesters

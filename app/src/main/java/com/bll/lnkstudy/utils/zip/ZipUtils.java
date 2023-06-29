@@ -1,14 +1,14 @@
-package com.bll.lnkstudy.utils;
+package com.bll.lnkstudy.utils.zip;
 
 import com.bll.lnkstudy.FileAddress;
 import com.bll.lnkstudy.utils.zip.IZipCallback;
 import com.bll.lnkstudy.utils.zip.ZipManager;
 
+import net.lingala.zip4j.util.Zip4jUtil;
+
 import java.io.File;
 
-/**
- * Created by ly on 2021/1/20 16:20
- */
+
 public class ZipUtils {
 
     /**
@@ -17,7 +17,7 @@ public class ZipUtils {
      * @param fileName 压缩文件名称
      * @param callback
      */
-    public static void zip(String targetStr, String fileName, ZipCallback callback){
+    public static void zip(String targetStr, String fileName, IZipCallback callback){
 
         if(!new File(targetStr).exists()){
             callback.onError("目标文件不存在");
@@ -34,11 +34,15 @@ public class ZipUtils {
     * @param fileTargetPath  解压出来地址
      * @param callback
      */
-    public static void unzip(String targetZipFilePath, String fileTargetPath, ZipCallback callback){
+    public static void unzip(String targetZipFilePath, String fileTargetPath, IZipCallback callback){
 
-        File targetFile = new File(targetZipFilePath);//验证目标是否存在
-        if(!targetFile.exists()){
-            callback.onError("目标Zip不存在");
+        if (!Zip4jUtil.isStringNotNullAndNotEmpty(targetZipFilePath) || !Zip4jUtil.isStringNotNullAndNotEmpty(fileTargetPath)) {
+            if (callback != null) callback.onError("路径不能为空");
+            return;
+        }
+
+        if(!new File(targetZipFilePath).exists()){
+            if (callback != null) callback.onError("目标Zip不存在");
             return;
         }
 
@@ -52,13 +56,5 @@ public class ZipUtils {
         ZipManager.unzip(targetZipFilePath,fileTargetPath,callback);
     }
 
-    public interface ZipCallback extends IZipCallback {
 
-        /**
-         * 错误
-         *
-         * @param msg
-         */
-        void onError(String msg);
-    }
 }

@@ -13,11 +13,11 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.mvp.model.CatalogChild
 import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParent
+import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.utils.FileUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -30,10 +30,10 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity : BaseDrawingActivity() {
+class HomeworkBookDetailsActivity : BaseDrawingActivity() {
 
     //屏幕当前位置
-    private var book: BookBean? = null
+    private var book: HomeworkBookBean? = null
     private var catalogMsg: CatalogMsg? = null
     private var catalogs = mutableListOf<MultiItemEntity>()
     private var parentItems = mutableListOf<CatalogParent>()
@@ -49,14 +49,14 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
     override fun initData() {
         val id = intent.getIntExtra("book_id", 0)
-        book = BookGreenDaoManager.getInstance().queryTextBookByID(id)
+        book = HomeworkBookDaoManager.getInstance().queryBookByID(id)
         if (book == null) return
         page = book?.pageIndex!!
-        val cataLogFilePath = FileAddress().getPathTextbookCatalog(book?.bookPath!!)
-        if (FileUtils.isExist(cataLogFilePath))
+        val catalogFilePath = FileAddress().getPathTextbookCatalog(book?.bookPath!!)
+        if (FileUtils.isExist(catalogFilePath))
         {
-            val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
-            catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
+            val catalogMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(catalogFilePath)))
+            catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
 
             for (item in catalogMsg?.contents!!) {
                 val catalogParent = CatalogParent()
@@ -213,11 +213,11 @@ class BookDetailsActivity : BaseDrawingActivity() {
                 override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                     elik.saveBitmap(true) {}
                     if (File(drawPath).exists()){
-                        DataUpdateManager.editDataUpdate(1,book?.bookId!!,2,book?.bookId!!)
+                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
                     }
                     else{
                         //创建增量更新
-                        DataUpdateManager.createDataUpdate(1,book?.bookId!!,2,book?.bookId!!
+                        DataUpdateManager.createDataUpdate(8,book?.bookId!!,2,book?.bookId!!
                             ,"",book?.bookDrawPath!!)
                     }
 
@@ -237,7 +237,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     override fun onDestroy() {
         super.onDestroy()
         book?.pageIndex = page
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+        HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 

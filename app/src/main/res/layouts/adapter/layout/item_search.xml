@@ -23,23 +23,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginTop="120dp"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
             android:layout_below="@+id/tv_course"
             android:layout_marginTop="@dimen/dp_5"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
 
     </RelativeLayout>
 

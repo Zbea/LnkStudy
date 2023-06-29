@@ -45,8 +45,12 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     private var popYears= mutableListOf<PopupBean>()
 
     override fun onList(commonData: CommonData) {
-        DataBeanManager.grades=commonData.grade
-        DataBeanManager.courses=commonData.subject
+        if (!commonData.grade.isNullOrEmpty())
+            DataBeanManager.grades=commonData.grade
+        if (!commonData.subject.isNullOrEmpty())
+            DataBeanManager.courses=commonData.subject
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
         if (DataBeanManager.grades.size>0){
             tv_grade.text=DataBeanManager.grades[grade-1].desc
         }
@@ -130,7 +134,7 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
         tv_grade.setOnClickListener {
             if (popWindowGrade==null)
             {
-                popWindowGrade= PopupList(this,DataBeanManager.popupGrades,tv_grade,tv_grade.width,5).builder()
+                popWindowGrade= PopupList(this,DataBeanManager.popupGrades(grade),tv_grade,tv_grade.width,5).builder()
                 popWindowGrade?.setOnSelectListener { item ->
                     tv_grade.text=item.name
                     grade=item.id

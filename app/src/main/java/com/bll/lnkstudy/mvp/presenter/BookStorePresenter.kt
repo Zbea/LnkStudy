@@ -30,6 +30,27 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
     }
 
     /**
+     * 题卷本
+     */
+    fun getHomeworkBooks(map: HashMap<String,Any>) {
+
+        val books = RetrofitManager.service.getHomeworkBooks(map)
+
+        doRequest(books, object : Callback<BookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<BookStore>) {
+                if (tBaseResult.data!=null)
+                    view.onBook(tBaseResult.data)
+            }
+
+        }, true)
+
+    }
+
+    /**
      * 教材
      */
     fun getTextBooks(map: HashMap<String,Any>) {

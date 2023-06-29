@@ -37,17 +37,18 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
     private val map= mutableMapOf<Int,List<ItemList>>()
 
     override fun onList(commonData: CommonData) {
-        if (commonData.grade.isNotEmpty())
+        if (!commonData.grade.isNullOrEmpty())
             DataBeanManager.grades=commonData.grade
-        if (commonData.subject.isNotEmpty())
+        if (!commonData.subject.isNullOrEmpty())
             DataBeanManager.courses=commonData.subject
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
     }
 
     override fun onList(list: TeachingVideoList?) {
     }
     override fun onType(type: TeachingVideoType?) {
         videoType=type
-        DataBeanManager.gradeOthers= type?.grades as MutableList<ItemList>
         tabs.addAll(type?.types!!)
         initTab()
     }
@@ -60,10 +61,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
         setTitle(R.string.main_teach_title)
         pageSize=8
 
-        tabs.add(ItemList().apply {
-            type=0
-            desc=getString(R.string.course)
-        })
+        tabs.add(ItemList(0,getString(R.string.course)))
 
         mAdapter = TeachCourseAdapter(R.layout.item_teach_course, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理

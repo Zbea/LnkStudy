@@ -24,15 +24,12 @@ public class DataUpdateBean {
     public int state;//作业分类
     public String listJson;
     public long date;
-    public String downloadUrl;//上传文件地址
-    public String sourceUrl;//源文件地址
+    public String downloadUrl;//上传文件下载地址
     public String path;//本地上传文件路径
     public boolean isDelete;//是否清除后台数据
-
-    @Generated(hash = 686104397)
+    @Generated(hash = 667802191)
     public DataUpdateBean(Long id, long userId, int uid, int type, int typeId, int contentType,
-            int state, String listJson, long date, String downloadUrl, String sourceUrl, String path,
-            boolean isDelete) {
+            int state, String listJson, long date, String downloadUrl, String path, boolean isDelete) {
         this.id = id;
         this.userId = userId;
         this.uid = uid;
@@ -43,7 +40,6 @@ public class DataUpdateBean {
         this.listJson = listJson;
         this.date = date;
         this.downloadUrl = downloadUrl;
-        this.sourceUrl = sourceUrl;
         this.path = path;
         this.isDelete = isDelete;
     }
@@ -62,17 +58,35 @@ public class DataUpdateBean {
     public void setUserId(long userId) {
         this.userId = userId;
     }
+    public int getUid() {
+        return this.uid;
+    }
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
     public int getType() {
         return this.type;
     }
     public void setType(int type) {
         this.type = type;
     }
+    public int getTypeId() {
+        return this.typeId;
+    }
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
     public int getContentType() {
         return this.contentType;
     }
     public void setContentType(int contentType) {
         this.contentType = contentType;
+    }
+    public int getState() {
+        return this.state;
+    }
+    public void setState(int state) {
+        this.state = state;
     }
     public String getListJson() {
         return this.listJson;
@@ -86,23 +100,11 @@ public class DataUpdateBean {
     public void setDate(long date) {
         this.date = date;
     }
-    public int getUid() {
-        return this.uid;
-    }
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
     public String getDownloadUrl() {
         return this.downloadUrl;
     }
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
-    }
-    public String getSourceUrl() {
-        return this.sourceUrl;
-    }
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
     }
     public String getPath() {
         return this.path;
@@ -116,18 +118,7 @@ public class DataUpdateBean {
     public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
-    public int getTypeId() {
-        return this.typeId;
-    }
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-    public int getState() {
-        return this.state;
-    }
-    public void setState(int state) {
-        this.state = state;
-    }
+
 
 
 }

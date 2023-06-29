@@ -3,12 +3,22 @@ package com.bll.lnkstudy.utils;
 import android.content.Context;
 import android.widget.RadioButton;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ToolUtils {
+
+    /**
+     * 得到唯一id
+     * @return
+     */
+    public static int getDateId(){
+        long date=System.currentTimeMillis()/1000;
+        return Long.valueOf(date).intValue();
+    }
 
     public static String getImagesStr(List<String> images){
         String url="";

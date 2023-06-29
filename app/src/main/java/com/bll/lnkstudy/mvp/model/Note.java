@@ -3,15 +3,15 @@ package com.bll.lnkstudy.mvp.model;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class NotebookBean implements Serializable {
+public class Note implements Serializable {
     @Transient
     private static final long serialVersionUID = 1L;
 
@@ -21,7 +21,7 @@ public class NotebookBean implements Serializable {
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String title;
     public String typeStr;//分类
-    public long createDate; //创建时间
+    public long date; //创建时间
     public String contentResId; //笔记内容背景id
     public boolean isEncrypt;//是否加密
     public String encrypt;//密码
@@ -32,15 +32,15 @@ public class NotebookBean implements Serializable {
     public String downloadUrl;
     @Transient
     public String contentJson;
-    @Generated(hash = 470754712)
-    public NotebookBean(Long id, long userId, String title, String typeStr,
-            long createDate, String contentResId, boolean isEncrypt, String encrypt,
-            int grade, boolean isCloud, int cloudId) {
+    @Generated(hash = 1653318477)
+    public Note(Long id, long userId, String title, String typeStr, long date,
+            String contentResId, boolean isEncrypt, String encrypt, int grade,
+            boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.typeStr = typeStr;
-        this.createDate = createDate;
+        this.date = date;
         this.contentResId = contentResId;
         this.isEncrypt = isEncrypt;
         this.encrypt = encrypt;
@@ -48,8 +48,8 @@ public class NotebookBean implements Serializable {
         this.isCloud = isCloud;
         this.cloudId = cloudId;
     }
-    @Generated(hash = 1250124346)
-    public NotebookBean() {
+    @Generated(hash = 1272611929)
+    public Note() {
     }
     public Long getId() {
         return this.id;
@@ -75,11 +75,11 @@ public class NotebookBean implements Serializable {
     public void setTypeStr(String typeStr) {
         this.typeStr = typeStr;
     }
-    public long getCreateDate() {
-        return this.createDate;
+    public long getDate() {
+        return this.date;
     }
-    public void setCreateDate(long createDate) {
-        this.createDate = createDate;
+    public void setDate(long date) {
+        this.date = date;
     }
     public String getContentResId() {
         return this.contentResId;
@@ -117,6 +117,5 @@ public class NotebookBean implements Serializable {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-    
 
 }

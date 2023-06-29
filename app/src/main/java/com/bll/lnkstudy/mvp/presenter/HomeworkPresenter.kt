@@ -25,7 +25,12 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
                 return false
             }
             override fun success(tBaseResult: BaseResult<HomeworkType>) {
-                view.onTypeList(tBaseResult.data?.list)
+                if (tBaseResult.data!=null)
+                {
+                    if (!tBaseResult.data?.list.isNullOrEmpty()){
+                        view.onTypeList(tBaseResult.data?.list)
+                    }
+                }
             }
         }, false)
     }

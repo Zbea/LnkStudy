@@ -35,10 +35,11 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         public final static Property ContentResId = new Property(8, String.class, "contentResId", false, "CONTENT_RES_ID");
         public final static Property BgResId = new Property(9, String.class, "bgResId", false, "BG_RES_ID");
         public final static Property Course = new Property(10, String.class, "course", false, "COURSE");
-        public final static Property IsCreate = new Property(11, boolean.class, "isCreate", false, "IS_CREATE");
-        public final static Property MessageTotal = new Property(12, int.class, "messageTotal", false, "MESSAGE_TOTAL");
-        public final static Property IsCloud = new Property(13, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(14, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property BookId = new Property(11, int.class, "bookId", false, "BOOK_ID");
+        public final static Property IsCreate = new Property(12, boolean.class, "isCreate", false, "IS_CREATE");
+        public final static Property MessageTotal = new Property(13, int.class, "messageTotal", false, "MESSAGE_TOTAL");
+        public final static Property IsCloud = new Property(14, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(15, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -65,10 +66,11 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
                 "\"CONTENT_RES_ID\" TEXT," + // 8: contentResId
                 "\"BG_RES_ID\" TEXT," + // 9: bgResId
                 "\"COURSE\" TEXT," + // 10: course
-                "\"IS_CREATE\" INTEGER NOT NULL ," + // 11: isCreate
-                "\"MESSAGE_TOTAL\" INTEGER NOT NULL ," + // 12: messageTotal
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 13: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 14: cloudId
+                "\"BOOK_ID\" INTEGER NOT NULL ," + // 11: bookId
+                "\"IS_CREATE\" INTEGER NOT NULL ," + // 12: isCreate
+                "\"MESSAGE_TOTAL\" INTEGER NOT NULL ," + // 13: messageTotal
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 14: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 15: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -111,10 +113,11 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         if (course != null) {
             stmt.bindString(11, course);
         }
-        stmt.bindLong(12, entity.getIsCreate() ? 1L: 0L);
-        stmt.bindLong(13, entity.getMessageTotal());
-        stmt.bindLong(14, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(15, entity.getCloudId());
+        stmt.bindLong(12, entity.getBookId());
+        stmt.bindLong(13, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(14, entity.getMessageTotal());
+        stmt.bindLong(15, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(16, entity.getCloudId());
     }
 
     @Override
@@ -151,10 +154,11 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         if (course != null) {
             stmt.bindString(11, course);
         }
-        stmt.bindLong(12, entity.getIsCreate() ? 1L: 0L);
-        stmt.bindLong(13, entity.getMessageTotal());
-        stmt.bindLong(14, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(15, entity.getCloudId());
+        stmt.bindLong(12, entity.getBookId());
+        stmt.bindLong(13, entity.getIsCreate() ? 1L: 0L);
+        stmt.bindLong(14, entity.getMessageTotal());
+        stmt.bindLong(15, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(16, entity.getCloudId());
     }
 
     @Override
@@ -176,10 +180,11 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // contentResId
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // bgResId
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // course
-            cursor.getShort(offset + 11) != 0, // isCreate
-            cursor.getInt(offset + 12), // messageTotal
-            cursor.getShort(offset + 13) != 0, // isCloud
-            cursor.getInt(offset + 14) // cloudId
+            cursor.getInt(offset + 11), // bookId
+            cursor.getShort(offset + 12) != 0, // isCreate
+            cursor.getInt(offset + 13), // messageTotal
+            cursor.getShort(offset + 14) != 0, // isCloud
+            cursor.getInt(offset + 15) // cloudId
         );
         return entity;
     }
@@ -197,10 +202,11 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         entity.setContentResId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setBgResId(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setCourse(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setIsCreate(cursor.getShort(offset + 11) != 0);
-        entity.setMessageTotal(cursor.getInt(offset + 12));
-        entity.setIsCloud(cursor.getShort(offset + 13) != 0);
-        entity.setCloudId(cursor.getInt(offset + 14));
+        entity.setBookId(cursor.getInt(offset + 11));
+        entity.setIsCreate(cursor.getShort(offset + 12) != 0);
+        entity.setMessageTotal(cursor.getInt(offset + 13));
+        entity.setIsCloud(cursor.getShort(offset + 14) != 0);
+        entity.setCloudId(cursor.getInt(offset + 15));
      }
     
     @Override

@@ -21,7 +21,7 @@ import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.bll.lnkstudy.mvp.model.paper.PaperList
@@ -77,10 +77,12 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
 
 
     override fun onList(commonData: CommonData) {
-        if (commonData.grade.isNotEmpty())
+        if (!commonData.grade.isNullOrEmpty())
             DataBeanManager.grades=commonData.grade
-        if (commonData.subject.isNotEmpty())
+        if (!commonData.subject.isNullOrEmpty())
             DataBeanManager.courses=commonData.subject
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
     }
 
     override fun onExam(exam: PaperList?) {
@@ -89,13 +91,13 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         loadPapers()
     }
 
-
     override fun getLayoutId(): Int {
         return R.layout.fragment_main
     }
 
     override fun initView() {
         setTitle(R.string.main_home_title)
+        setClassGroupRequest(true)
 
         initDateView()
         initMessageView()
@@ -277,9 +279,9 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     }
 
     private fun findNotes() {
-        var notes = NotebookDaoManager.getInstance().queryAll()
-        if (notes.size > 6) {
-            notes = notes.subList(0, 6)
+        var notes = NoteDaoManager.getInstance().queryNotesExceptDiary()
+        if (notes.size > 15) {
+            notes = notes.subList(0, 15)
         }
         mainNoteAdapter?.setNewData(notes)
     }

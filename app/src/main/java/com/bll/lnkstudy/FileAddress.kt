@@ -26,21 +26,29 @@ class FileAddress {
         return "$TEXTBOOK_PATH/$mUserId/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/${fileName}draw"
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
+    }
+
+    fun getPathHomeworkBook(fileName: String):String{
+        return "$HOMEWORK_PATH/$mUserId/homeworkBook/$fileName"
+    }
+    fun getPathHomeworkBookDraw(fileName: String):String{
+        return "$HOMEWORK_PATH/$mUserId/homeworkBook/${fileName}/draw"
     }
 
     /**
      * 教材目录地址
      */
-    fun getPathTextBookCatalog(path:String):String{
+    fun getPathTextbookCatalog(path:String):String{
         return path + File.separator + TEXTBOOK_CATALOG_TXT
     }
     /**
      * 教材图片地址
      */
-    fun getPathTextBookPicture(path:String):String{
+    fun getPathTextbookPicture(path:String):String{
         return path + File.separator + TEXTBOOK_CONTENTS
     }
+
     /**
      * zip保存地址
      * ///storage/emulated/0/Android/data/yourPackageName/files/Zip/fileName.zip

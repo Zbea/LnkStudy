@@ -18,7 +18,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
             setText(R.id.tv_name, item.name)
             setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
             setVisible(R.id.ll_info, !item.isCreate||item.isCloud)
-            if (item.isCloud){
+            if (item.isCloud||item.state==4){
                 setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
                 setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date))
             }

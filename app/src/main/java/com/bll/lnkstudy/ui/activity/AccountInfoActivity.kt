@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Handler
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
@@ -124,17 +123,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                     CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
-
                     override fun ok() {
                         SPUtil.putString("token", "")
                         SPUtil.removeObj("user")
-                        Handler().postDelayed(Runnable {
-                            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-                            val intent = Intent(this@AccountInfoActivity, AccountLoginActivity::class.java)
-                            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-                            startActivity(intent)
-                            finish()
-                        }, 500)
+                        val intent = Intent(this@AccountInfoActivity, AccountLoginActivity::class.java)
+                        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                        startActivity(intent)
+                        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
                     }
                 })
         }

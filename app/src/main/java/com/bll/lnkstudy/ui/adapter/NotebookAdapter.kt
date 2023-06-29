@@ -2,14 +2,14 @@ package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.NotebookBean
+import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<NotebookBean>?) : BaseQuickAdapter<NotebookBean, BaseViewHolder>(layoutResId, data) {
+class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Note>?) : BaseQuickAdapter<Note, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: NotebookBean) {
+    override fun convert(helper: BaseViewHolder, item: Note) {
 
         helper.apply {
             var title=""
@@ -35,7 +35,7 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Notebook
                 addOnClickListener(R.id.iv_more)
             }
             setText(R.id.tv_title,title)
-            setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.createDate) )
+            setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date) )
         }
     }
 

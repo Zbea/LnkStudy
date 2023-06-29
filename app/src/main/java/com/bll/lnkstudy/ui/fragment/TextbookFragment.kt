@@ -41,6 +41,7 @@ class TextbookFragment : BaseFragment() {
     override fun initView() {
         pageSize=9
         setTitle(R.string.main_textbook_title)
+        setClassGroupRequest(true)
 
         initTab()
         initRecyclerView()
@@ -88,7 +89,8 @@ class TextbookFragment : BaseFragment() {
                                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                                     FileUtils.deleteFile(File(book.bookDrawPath))
                                     //删除增量更新
-                                    DataUpdateManager.deleteDateUpdate(1,book.id.toInt(),1,book.bookId)
+                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
+                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2,book.bookId)
                                 }
                                 books.clear()
                                 mAdapter?.notifyDataSetChanged()
@@ -110,7 +112,13 @@ class TextbookFragment : BaseFragment() {
         BookManageDialog(requireActivity(),screenPos,type,book).builder()
             .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
                 override fun onDelete() {
-                    delete()
+                    bookGreenDaoManager.deleteBook(book) //删除本地数据库
+                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                    FileUtils.deleteFile(File(book.bookDrawPath))
+                    mAdapter?.remove(position)
+                    //删除增量更新
+                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
+                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2,book.bookId)
                 }
                 override fun onLock() {
                     book.isLock=!book.isLock
@@ -123,25 +131,6 @@ class TextbookFragment : BaseFragment() {
             })
 
     }
-
-    //删除书架书籍
-    private fun delete(){
-        CommonDialog(requireActivity(),screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                val book=books[position]
-                bookGreenDaoManager.deleteBook(book) //删除本地数据库
-                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                FileUtils.deleteFile(File(book.bookDrawPath))
-                mAdapter?.remove(position)
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
-            }
-        })
-    }
-
 
     /**
      * 上传本地课本
@@ -157,7 +146,7 @@ class TextbookFragment : BaseFragment() {
             return
         }
         for (book in textBooks){
-            val subTypeId=DataBeanManager.textbookType.indexOf(book.textBookType)
+            val subTypeId=DataBeanManager.textbookType.indexOf(book.subtypeStr)
             //判读是否存在手写内容
             if (File(book.bookDrawPath).exists()){
                 FileUploadManager(token).apply {
@@ -166,7 +155,7 @@ class TextbookFragment : BaseFragment() {
                         cloudList.add(CloudListBean().apply {
                             type=1
                             subType=subTypeId
-                            subTypeStr=book.textBookType
+                            subTypeStr=book.subtypeStr
                             grade=book.grade
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(book)
@@ -184,7 +173,7 @@ class TextbookFragment : BaseFragment() {
                     type=1
                     subType=subTypeId
                     grade=book.grade
-                    subTypeStr=book.textBookType
+                    subTypeStr=book.subtypeStr
                     date=System.currentTimeMillis()
                     listJson= Gson().toJson(book)
                     downloadUrl="null"

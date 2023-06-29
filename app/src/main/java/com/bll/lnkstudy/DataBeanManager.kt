@@ -12,8 +12,8 @@ object DataBeanManager {
 
     var classGroups= mutableListOf<ClassGroup>()
     var grades= mutableListOf<Grade>()
+    var typeGrades= mutableListOf<Grade>()
     var courses= mutableListOf<ItemList>()
-    var gradeOthers= mutableListOf<ItemList>()
     var provinces= mutableListOf<Area>()
 
     private val listTitle = arrayOf(
@@ -25,6 +25,9 @@ object DataBeanManager {
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_oldteaching)
+    )
+    val homeworkBookType = arrayOf(
+        mContext.getString(R.string.homework_my_book),mContext.getString(R.string.homework_other_book)
     )
     val searchType = arrayOf(
         mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),
@@ -67,6 +70,23 @@ object DataBeanManager {
             return list
         }
 
+    fun popupGrades(grade:Int):MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (i in grades.indices){
+            list.add(PopupBean(grades[i].type, grades[i].desc, grades[i].type == grade))
+        }
+        return list
+    }
+
+    val popupTypeGrades: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in typeGrades.indices){
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
+            }
+            return list
+        }
+
     val popupCourses: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()
@@ -76,6 +96,15 @@ object DataBeanManager {
             return list
         }
 
+    fun getCourseStr(course:Int):String{
+        var courseStr=""
+        for (item in courses){
+            if (course==item.type){
+                courseStr=item.desc
+            }
+        }
+        return courseStr
+    }
 
     fun popupDynasty():MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()
@@ -440,10 +469,10 @@ object DataBeanManager {
         }
 
     //基础笔记分类
-    val noteBook: MutableList<NoteTypeBean>
+    val noteBook: MutableList<Notebook>
         get() {
-            val list= mutableListOf<NoteTypeBean>()
-            list.add(NoteTypeBean().apply {
+            val list= mutableListOf<Notebook>()
+            list.add(Notebook().apply {
                 name = mContext.getString(R.string.note_tab_diary)
                 typeId = 0
             })
@@ -513,5 +542,33 @@ object DataBeanManager {
             list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
             return list
         }
+
+    /**
+     * 书籍书库分类
+     */
+    fun bookStoreTypes(): MutableList<ItemList>{
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            type=1
+            desc=mContext.getString(R.string.book_tab_gj)
+        })
+        list.add(ItemList().apply {
+            type=2
+            desc=mContext.getString(R.string.book_tab_zrkx)
+        })
+        list.add(ItemList().apply {
+            type=3
+            desc=mContext.getString(R.string.book_tab_shkx)
+        })
+        list.add(ItemList().apply {
+            type=4
+            desc=mContext.getString(R.string.book_tab_sxkx)
+        })
+        list.add(ItemList().apply {
+            type=5
+            desc=mContext.getString(R.string.book_tab_ydcy)
+        })
+        return list
+    }
 
 }

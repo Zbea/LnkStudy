@@ -13,7 +13,8 @@ import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ZipUtils
+import com.bll.lnkstudy.utils.zip.IZipCallback
+import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
@@ -107,22 +108,14 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    val fileTargetPath =book.bookDrawPath
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                val files=FileUtils.getDirectorys(fileTargetPath)
-                                if (!files.isNullOrEmpty()){
-                                    for (file in files){
-                                        //创建增量更新
-                                        DataUpdateManager.createDataUpdate(1,file.name.toInt(),2,book.bookId
-                                            ,"",book.bookDrawPath+"/${file.name}")
-                                    }
-                                }
-                                //删除教材的zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                downloadBook(book)
-                            }
+                    ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
+                        override fun onFinish() {
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdate(1,book.bookId,2,book.bookId
+                                ,"",book.bookDrawPath)
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            downloadBook(book)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
@@ -150,24 +143,19 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    val fileTargetPath = book.bookPath
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                                //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
-                                    ,Gson().toJson(book),book.downloadUrl)
-                                //删除教材的zip文件
-                                FileUtils.deleteFile(File(zipPath))
-                                Handler().postDelayed({
-                                    hideLoading()
-                                    EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-                                    showToast(screenPos,book.bookName+getString(R.string.book_download_success))
-                                },500)
-                            } else {
-                                showToast(screenPos,book.bookName+getString(R.string.book_decompression_fail))
-                            }
+                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
+                        override fun onFinish() {
+                            BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
+                                ,Gson().toJson(book),book.downloadUrl)
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            Handler().postDelayed({
+                                hideLoading()
+                                EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
+                                showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                            },500)
                         }
                         override fun onProgress(percentDone: Int) {
                         }

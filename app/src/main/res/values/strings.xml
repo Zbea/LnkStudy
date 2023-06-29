@@ -16,7 +16,7 @@
     <string name="toast_input_title">请输入标题</string>
     <string name="toast_select_date">请选择日期</string>
     <string name="toast_select_week">请选择星期</string>
-    <string name="toast_download_install">正在下载安装...</string>
+    <string name="toast_download_install">正在下载安装</string>
     <string name="toast_downloaded">已下载</string>
     <string name="toast_existed">已存在</string>
     <string name="toast_edit_success">修改成功</string>
@@ -169,7 +169,7 @@
     <string name="main_teaching">教材</string>
 
     <string name="textbook_tab_text">我的课本</string>
-    <string name="textbook_tab_course">我的课辅</string>
+    <string name="textbook_tab_course">解析课本</string>
     <string name="textbook_tab_teaching">参考课本</string>
     <string name="textbook_tab_oldteaching">上期课本</string>
 
@@ -258,12 +258,12 @@
     <string name="note_manage_str">笔记本管理</string>
     <string name="notebook_create_str">新建笔记本</string>
     <string name="note_create_str">新建笔记</string>
-    <string name="note_create_hint">输入笔记本</string>
-    <string name="notebook_create_hint">输入笔记分类</string>
+    <string name="note_create_hint">输入笔记</string>
+    <string name="notebook_create_hint">输入笔记本</string>
     <string name="note_module_str">笔记模板</string>
     <string name="note_is_set_diary_password_tips">设置日记密码？</string>
-    <string name="note_is_delete_tips">确定删除笔记？</string>
-    <string name="notebook_is_delete_tips">确定删除笔记本？</string>
+    <string name="note_is_delete_tips">删除笔记？</string>
+    <string name="notebook_is_delete_tips">删除笔记本？</string>
     <string name="note_delete_diary_password">删除日记密码</string>
     <string name="password_input">输入密码</string>
     <string name="password_old">原先密码</string>
@@ -281,12 +281,16 @@
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
 
+    <string name="homework_book">题卷本</string>
+    <string name="homework_my_book">我的题卷本</string>
+    <string name="homework_other_book">参考题卷本</string>
     <string name="homework_receiver_reel">收到题卷</string>
     <string name="homework_receiver_message">收到通知</string>
     <string name="homework_create_str">新建作业本</string>
     <string name="homework_create_hint">输入作业本标题</string>
     <string name="homework_commit_details_str">提交详情</string>
     <string name="homework_correct_details_str">批改详情</string>
+    <string name="homework_book_str">新建题卷本</string>
     <string name="homework_cover_module_str">封面模板</string>
     <string name="homework_module_str">作业本模板</string>
     <string name="homework_assign">作业内容</string>
@@ -297,6 +301,7 @@
     <string name="homework_state_yes">已提交</string>
     <string name="homework_state_complete">已完成</string>
     <string name="homework_message">作业通知</string>
+    <string name="toast_homework_unDownload">题卷本未下载</string>
 
     <string name="testpaper_score_str">批改分</string>
 

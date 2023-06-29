@@ -34,8 +34,10 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         groups = classGroups
         mAdapter?.setNewData(groups)
 
-        DataBeanManager.classGroups=groups
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        if (DataBeanManager.classGroups != classGroups){
+            DataBeanManager.classGroups=classGroups
+            EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        }
     }
 
     override fun onQuit() {
@@ -64,7 +66,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         iv_manager.setImageResource(R.mipmap.icon_group_user)
         iv_save.setImageResource(R.mipmap.icon_group_add)
 
-        showLog(System.currentTimeMillis().toString())
         mAdapter = ClassGroupAdapter(R.layout.item_classgroup, groups).apply {
             rv_list.layoutManager = LinearLayoutManager(this@ClassGroupActivity)//创建布局管理
             rv_list.adapter = this

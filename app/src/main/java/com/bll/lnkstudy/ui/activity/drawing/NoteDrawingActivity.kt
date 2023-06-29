@@ -12,8 +12,8 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.NoteContentBean
-import com.bll.lnkstudy.mvp.model.NotebookBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
@@ -24,7 +24,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     private var type =""
     private var typeId=0
-    private var noteBook: NotebookBean? = null
+    private var noteBook: Note? = null
     private var noteContent: NoteContentBean? = null//当前内容
     private var note_Content_a: NoteContentBean? = null//a屏内容
     private var noteContents = mutableListOf<NoteContentBean>() //所有内容
@@ -37,7 +37,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initData() {
         val bundle = intent.getBundleExtra("bundle")
-        noteBook = bundle?.getSerializable("note") as NotebookBean
+        noteBook = bundle?.getSerializable("note") as Note
         page=intent.getIntExtra("page",DEFAULT_PAGE)
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
@@ -246,7 +246,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent = NoteContentBean()
         noteContent?.date=date
         noteContent?.typeStr=type
-        noteContent?.notebookTitle = noteBook?.title
+        noteContent?.noteTitle = noteBook?.title
         noteContent?.resId = noteBook?.contentResId
         noteContent?.grade=grade
         noteContent?.title=getString(R.string.unnamed)+(noteContents.size+1)

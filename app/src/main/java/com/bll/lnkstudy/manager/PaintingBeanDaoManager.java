@@ -3,8 +3,6 @@ package com.bll.lnkstudy.manager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
-import com.bll.lnkstudy.mvp.model.NotebookBean;
-import com.bll.lnkstudy.mvp.model.PaintingDrawingBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.PaintingBean;
 import com.bll.lnkstudy.utils.SPUtil;

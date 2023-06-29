@@ -1,6 +1,9 @@
 package com.bll.lnkstudy.mvp.model.paper;
 
+import androidx.annotation.Nullable;
+
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -114,6 +117,20 @@ public class PaperTypeBean {
     }
     public void setDate(long date) {
         this.date = date;
+    }
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj==null)
+            return false;
+        if (!(obj instanceof PaperTypeBean))
+            return false;
+        if (this==obj)
+            return true;
+        PaperTypeBean item=(PaperTypeBean) obj;
+        return Objects.equals(this.id, item.id)&&this.typeId==item.typeId && Objects.equals(this.name, item.name) &&this.userId==item.userId
+                &&this.grade==item.grade&&this.date==item.date;
     }
     
 }

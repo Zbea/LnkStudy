@@ -36,14 +36,14 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
 
         tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.semesters[book.semester-1].name
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
-        tv_version?.text =context.getString(R.string.press)+"： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
+        tv_version?.text =context.getString(R.string.press)+"： " + book.version
         tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
 
         if (book.subjectName==0){
             tv_course?.visibility=View.GONE
         }
         else{
-            tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.courses[book.subjectName-1]
+            tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.getCourseStr(book.subjectName)
         }
 
         if (book.buyStatus == 1) {
@@ -55,7 +55,7 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
         if (book.loadSate==2)
             btn_ok?.visibility= View.GONE
 
-        if (book.textBookType=="我的课本")
+        if (book.subtypeStr==DataBeanManager.textbookType[0])
             btn_ok?.visibility= View.GONE
 
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
