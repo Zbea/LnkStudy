@@ -452,10 +452,13 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         bookBean.time=System.currentTimeMillis()
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(Constants.BOOK_EVENT)
+
+        val toolApps= AppDaoManager.getInstance().queryAll()
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
         intent.putExtra("path", bookBean.bookPath)
+        intent.putExtra("tool",Gson().toJson(toolApps))
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)

@@ -86,6 +86,16 @@ public class HomeworkTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
+    /**
+     * 是否存在题卷本
+     * @param bookId
+     * @return
+     */
+    public boolean isExistHomeworkType(int bookId) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.BookId.eq(bookId);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique()!=null;
+    }
+
     public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();

@@ -243,7 +243,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                         downDate=System.currentTimeMillis()
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
-                        bookDrawPath="/storage/emulated/0/Android/data/com.geniatech.knote.reader/files/note/$fileName"
+                        bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)

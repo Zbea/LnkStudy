@@ -1,5 +1,6 @@
 package com.bll.lnkstudy
 
+import com.bll.lnkstudy.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
@@ -26,14 +27,14 @@ class FileAddress {
         return "$TEXTBOOK_PATH/$mUserId/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}/drawContent"
     }
 
     fun getPathHomeworkBook(fileName: String):String{
         return "$HOMEWORK_PATH/$mUserId/homeworkBook/$fileName"
     }
     fun getPathHomeworkBookDraw(fileName: String):String{
-        return "$HOMEWORK_PATH/$mUserId/homeworkBook/${fileName}/draw"
+        return "$HOMEWORK_PATH/$mUserId/homeworkBook/${fileName}/drawContent"
     }
 
     /**
@@ -58,11 +59,18 @@ class FileAddress {
     }
 
     /**
-     * 教材地址
+     * 书籍地址
      * /storage/emulated/0/Books
      */
     fun getPathBook(fileName: String):String{
         return "$BOOK_PATH/$fileName"
+    }
+    /**
+     * 书籍手写地址
+     * /storage/emulated/0/Notes
+     */
+    fun getPathBookDraw(fileName: String):String{
+        return "$BOOK_DRAW_PATH/$fileName"
     }
 
     /**

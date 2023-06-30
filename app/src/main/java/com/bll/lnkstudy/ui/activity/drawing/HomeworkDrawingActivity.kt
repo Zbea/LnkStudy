@@ -338,9 +338,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadV
         val paths= mutableListOf<String>()
         for (i in homeworkCommit?.contents!!){
             val homework=homeworks[i-1]
-            Thread(Runnable {
+            Thread {
                 paths.add(saveImage(homework))
-            }).start()
+            }.start()
         }
         Handler().postDelayed({
             mUploadPresenter.upload(paths)

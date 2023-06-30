@@ -105,6 +105,8 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
             }
         }
 
+        presenter.getBookType()
+
         if (subjectList.size>0){
             courseId=subjectList[0].id
             course=subjectList[0].name
@@ -299,19 +301,21 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
     private fun unzip(book: BookBean, zipPath: String, fileTargetPath: String) {
         ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
-                //创建题卷本
-                val homeworkTypeBean=HomeworkTypeBean().apply {
-                    name=book.bookName
-                    grade=book.grade
-                    typeId=ToolUtils.getDateId()
-                    state=4
-                    date=System.currentTimeMillis()
-                    course=this@HomeworkBookStoreActivity.course
-                    bookId=book.bookId
-                    bgResId=DataBeanManager.getHomeworkCoverStr()
-                    isCreate=true
+                //题卷本不存在，创建题卷本
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(book.bookId)){
+                    val homeworkTypeBean=HomeworkTypeBean().apply {
+                        name=book.bookName
+                        grade=book.grade
+                        typeId=ToolUtils.getDateId()
+                        state=4
+                        date=System.currentTimeMillis()
+                        course=this@HomeworkBookStoreActivity.course
+                        bookId=book.bookId
+                        bgResId=DataBeanManager.getHomeworkCoverStr()
+                        isCreate=true
+                    }
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                 }
-                HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
 
                 val homeworkBookBean=HomeworkBookBean().apply {
                     bookId=book.bookId

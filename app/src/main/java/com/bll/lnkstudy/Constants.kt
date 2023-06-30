@@ -40,6 +40,7 @@ class Constants{
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH= MyApplication.mContext.getExternalFilesDir("APK")!!.path
         val BOOK_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Books"
+        val BOOK_DRAW_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Notes"
         //解压的目录
         ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
         val TEXTBOOK_PATH= MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
@@ -92,7 +93,6 @@ class Constants{
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
         const val USER_EVENT = "UserEvent"
         const val CONTROL_CLEAR_EVENT = "ControlClearEvent"
-        const val CONTROL_CLEAR_PAPER_EVENT = "ControlClearPaperEvent"//用来在作业删除完之后控制考卷删除
         const val DATA_DOWNLOAD_EVENT = "DataDownload"
         const val DATA_RENT_EVENT = "DataRent"
         const val DATA_CLEAT_EVENT="DataClear"

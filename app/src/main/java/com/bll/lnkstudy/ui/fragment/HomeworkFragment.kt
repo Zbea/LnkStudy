@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.DataBeanManager.getHomeworkCoverStr
@@ -56,6 +57,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 }
                 else{
                     if (!isSaveHomework(item)) {
+                        item.course = mCourse
+                        item.bgResId = getHomeworkCoverStr() //当前作业本背景样式id
                         HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     }
                 }
@@ -72,6 +75,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             }
         }
         getLocalHomeTypes()
+        fetchMessage()
     }
 
     override fun onList(homeworkMessage: HomeworkMessage) {
@@ -187,7 +191,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 when (item.state) {
                     1 -> {
                         item.isMessage = false
-                        notifyDataSetChanged()
+                        notifyItemChanged(position)
                         gotoHomeworkReelDrawing(mCourse, item.typeId)
                     }
                     2 -> {
@@ -198,8 +202,10 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     }
                     4->{
                         if (HomeworkBookDaoManager.getInstance().isExist(item.bookId)){
-                            val intent=Intent(activity, HomeworkBookDetailsActivity::class.java)
-                            intent.putExtra("book_id",item.bookId)
+                            val intent=Intent(context, HomeworkBookDetailsActivity::class.java)
+                            val bundle= Bundle()
+                            bundle.putSerializable("homework",item)
+                            intent.putExtra("homeworkBundle",bundle)
                             customStartActivity(intent)
                         }
                         else{
@@ -297,11 +303,11 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
 
 
     /**
-     * 长按展示作业换肤、删除
+     * 长按展示作业换肤、删除(自建作业、题卷本可以删除)
      */
     private fun showHomeworkManage(pos: Int) {
         val item = homeworkTypes[pos]
-        HomeworkManageDialog(requireContext(), screenPos, item.isCreate).builder()
+        HomeworkManageDialog(requireContext(), screenPos, item.isCreate||item.state==4).builder()
             .setOnDialogClickListener(object :
                 HomeworkManageDialog.OnDialogClickListener {
                 override fun onSkin() {
@@ -309,7 +315,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     ModuleAddDialog(requireContext(), screenPos, getString(R.string.homework_cover_module_str), list).builder()
                         ?.setOnDialogClickListener { moduleBean ->
                             item.bgResId = ToolUtils.getImageResStr(activity, moduleBean.resId)
-                            mAdapter?.notifyDataSetChanged()
+                            mAdapter?.notifyItemChanged(pos)
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                         }
                 }
@@ -722,6 +728,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     override fun onRefreshData() {
         super.onRefreshData()
         fetchData()
+        fetchMessage()
     }
 
     override fun fetchData() {
@@ -739,8 +746,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             map["type"] = 2
             map["userId"] = teacherId
             mPresenter.getTypeList(map)
-
-            fetchMessage()
         }
     }
 
@@ -760,12 +765,13 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 mPresenter.getList(map)
             }
         }
-
         for (item in homeworkTypes){
-            val map = HashMap<String, Any>()
-            map["id"] = item.id
-            map["subType"] = item.state
-            mPresenter.getReelList(map)
+            if (!item.isCreate){
+                val map = HashMap<String, Any>()
+                map["id"] = item.id
+                map["subType"] = item.state
+                mPresenter.getReelList(map)
+            }
         }
     }
 

@@ -6,7 +6,7 @@ public class HomeworkCommit {
 
     public int messageId;
     public String title;
-    public List<Integer> contents;
+    public List<Integer> contents;//选中页码
 
     public int page;
     public boolean isAdd;

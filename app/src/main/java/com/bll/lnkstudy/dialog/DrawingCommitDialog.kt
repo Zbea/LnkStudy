@@ -96,7 +96,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
                     }
                 }
 
-                val datas=mAdapter?.data
+                val datas=mAdapter.data
                 for (item in datas){
                     if (item.page>0){
                         if (!pages.contains(item.page))

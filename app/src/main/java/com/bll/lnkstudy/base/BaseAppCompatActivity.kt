@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.Note
@@ -34,6 +35,7 @@ import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.activity.book.TextbookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
+import com.google.gson.Gson
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
@@ -271,10 +273,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         bookBean.time=System.currentTimeMillis()
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(Constants.BOOK_EVENT)
+        val toolApps= AppDaoManager.getInstance().queryAll()
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
         intent.putExtra("path", bookBean.bookPath)
+        intent.putExtra("tool", Gson().toJson(toolApps))
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)

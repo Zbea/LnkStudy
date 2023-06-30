@@ -281,19 +281,21 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
-                            //创建题卷本
-                            val homeworkTypeBean=HomeworkTypeBean().apply {
-                                name=book.bookName
-                                grade=book.grade
-                                typeId= ToolUtils.getDateId()
-                                state=4
-                                date=System.currentTimeMillis()
-                                course=DataBeanManager.getCourseStr(book.subject)
-                                bookId=book.bookId
-                                bgResId=DataBeanManager.getHomeworkCoverStr()
-                                isCreate=true
+                            //题卷本不存在，创建题卷本
+                            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(book.bookId)){
+                                val homeworkTypeBean=HomeworkTypeBean().apply {
+                                    name=book.bookName
+                                    grade=book.grade
+                                    typeId=ToolUtils.getDateId()
+                                    state=4
+                                    date=System.currentTimeMillis()
+                                    course=DataBeanManager.getCourseStr(book.subject)
+                                    bookId=book.bookId
+                                    bgResId=DataBeanManager.getHomeworkCoverStr()
+                                    isCreate=true
+                                }
+                                HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                             }
-                            HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
 
                             HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量更新

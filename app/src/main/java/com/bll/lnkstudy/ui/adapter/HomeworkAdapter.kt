@@ -18,9 +18,14 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
             setText(R.id.tv_name, item.name)
             setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
             setVisible(R.id.ll_info, !item.isCreate||item.isCloud)
-            if (item.isCloud||item.state==4){
+            //题卷本显示年级或者云作业显示年级
+            if (item.state==4||item.isCloud){
                 setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
                 setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date))
+            }
+            else{
+                setGone(R.id.tv_grade,false)
+                setGone(R.id.tv_date,false)
             }
 
             if (item.isPg) {

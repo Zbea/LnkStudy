@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
@@ -13,12 +14,20 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.mvp.model.CatalogChild
 import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParent
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -30,8 +39,10 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class HomeworkBookDetailsActivity : BaseDrawingActivity() {
+class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
 
+    private val mUploadPresenter= FileUploadPresenter(this)
+    private var homeworkType: HomeworkTypeBean? = null
     //屏幕当前位置
     private var book: HomeworkBookBean? = null
     private var catalogMsg: CatalogMsg? = null
@@ -41,15 +52,39 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity() {
 
     private var pageCount = 0
     private var page = 0 //当前页码
+    private var messages= mutableListOf<HomeworkMessage.MessageBean>()
+    private var drawingCommitDialog:DrawingCommitDialog?=null
+    private var homeworkCommit: HomeworkCommit?=null
 
+    override fun onSuccess(urls: MutableList<String>?) {
+        val map= HashMap<String, Any>()
+        map["studentTaskId"]=homeworkCommit?.messageId!!
+        map["page"]=homeworkCommit?.contents!!.toIntArray()
+        map["studentUrl"]= ToolUtils.getImagesStr(urls)
+        mUploadPresenter.commit(map)
+    }
+    override fun onCommitSuccess() {
+
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_book_details_drawing
     }
 
     override fun initData() {
-        val id = intent.getIntExtra("book_id", 0)
-        book = HomeworkBookDaoManager.getInstance().queryBookByID(id)
+        val bundle = intent.getBundleExtra("homeworkBundle")
+        homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
+
+        val list=homeworkType?.message?.list
+        if (!list.isNullOrEmpty()){
+            for (item in list){
+                if (item.endTime>0&&item.status==3){
+                    messages.add(item)
+                }
+            }
+        }
+
+        book = HomeworkBookDaoManager.getInstance().queryBookByID(homeworkType?.bookId!!)
         if (book == null) return
         page = book?.pageIndex!!
         val catalogFilePath = FileAddress().getPathTextbookCatalog(book?.bookPath!!)
@@ -110,8 +145,44 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity() {
                     page = position - 1
                     changeContent()
                 }
-
         }
+
+        iv_btn.setOnClickListener {
+            if (messages.size==0)
+                return@setOnClickListener
+            if (drawingCommitDialog==null){
+                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
+                drawingCommitDialog?.setOnDialogClickListener {
+                    homeworkCommit=it
+                    commit()
+                }
+            }
+            else{
+                drawingCommitDialog?.show()
+            }
+        }
+    }
+
+    //作业提交
+    private fun commit() {
+        showLoading()
+        val paths= mutableListOf<String>()
+        for (i in homeworkCommit?.contents!!){
+            Thread{
+                val imageFile=getIndexFile(i-1)
+                val path=imageFile?.path.toString()
+                val drawPath = book?.bookDrawPath+"/$i/draw.png"
+                BitmapUtils.mergeBitmap(path,drawPath)
+                FileUtils.deleteFile(File(drawPath).parentFile)
+                paths.add(path)
+            }.start()
+        }
+        //修手写合图后修改增量更新
+        DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
+        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
+        Handler().postDelayed({
+            mUploadPresenter.upload(paths)
+        },1000)
     }
 
     override fun onPageUp() {
@@ -170,7 +241,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity() {
         if (page >= pageCount - 1) {
             page = if (isExpand) pageCount - 2 else pageCount - 1
         }
-
         tv_page_a.text = "${page + 1}/$pageCount"
         loadPicture(page, elik_a!!, v_content_a)
         if (isExpand) {
@@ -201,7 +271,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity() {
                 .skipMemoryCache(false)
                 .fitCenter().into(simpleTarget)
 
-            val drawPath = book?.bookDrawPath+"/${index+1}.tch"
+            val drawPath = book?.bookDrawPath+"/${index+1}/draw.tch"
             elik.setLoadFilePath(drawPath, true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -231,7 +301,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity() {
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return listFiles[index]
+        return if (listFiles!=null) listFiles[index] else null
     }
 
     override fun onDestroy() {

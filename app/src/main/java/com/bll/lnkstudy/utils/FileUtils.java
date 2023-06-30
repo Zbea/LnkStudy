@@ -146,7 +146,7 @@ public class FileUtils {
      */
     public static List<File> getFiles(String path){
         List<File> files = new ArrayList<>();
-        if(path==null||path.isEmpty()){
+        if(path.isEmpty()){
             return null;
         }
         File file = new File(path);

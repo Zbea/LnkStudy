@@ -31,6 +31,10 @@ class DataUpdateReceiver : BroadcastReceiver() {
                 intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2)
                 context.startActivity(intent)
             }
+            //阅读器回传
+            "com.geniatech.knote.reader.save.note.broadcast"->{
+
+            }
         }
     }
 }
