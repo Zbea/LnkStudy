@@ -6,7 +6,6 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.mvp.model.*
@@ -70,6 +69,12 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
 
     override fun onType(bookStoreType: BookStoreType) {
         bookVersion=bookStoreType.bookVersion
+        if (subjectList.size>0){
+            courseId=subjectList[0].id
+            course=subjectList[0].name
+            initSelectorView()
+            fetchData()
+        }
     }
 
     override fun buyBookSuccess() {
@@ -106,14 +111,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         }
 
         presenter.getBookType()
-
-        if (subjectList.size>0){
-            courseId=subjectList[0].id
-            course=subjectList[0].name
-            initSelectorView()
-            fetchData()
-        }
-
     }
 
     override fun initView() {
@@ -224,8 +221,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus == 1) {
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
-                if (localBook == null) {
+                if (!HomeworkBookDaoManager.getInstance().isExist(book.bookId)) {
                     val downloadTask = downLoadStart(book.downloadUrl, book)
                     mDownMapPool[book.bookId] = downloadTask!!
                 } else {

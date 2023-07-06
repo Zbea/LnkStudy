@@ -39,9 +39,9 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     private var popupType=0
 
     override fun onTypeList(list: MutableList<HomeworkTypeBean>) {
-        //判断线上作业本是否发生变化
-        if (onlineTypes==list)
-            return
+//        //判断线上作业本是否发生变化
+//        if (onlineTypes==list)
+//            return
         homeworkTypes.clear()
         onlineTypes=list
         //遍历查询作业本是否保存
@@ -49,18 +49,16 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             if (item.state==4){//如果是题卷本，遍历查询本地是否已经下载，关联
                 val homeworkTypeBean=getLocalHomeworkBookType(item)
                 if (homeworkTypeBean!=null){
-                    if (!isSaveHomework(item)){
+                    if (homeworkTypeBean.isCreate){
                         homeworkTypeBean.typeId=item.typeId
                         homeworkTypeBean.isCreate=false
                         HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     }
                 }
                 else{
-                    if (!isSaveHomework(item)) {
-                        item.course = mCourse
-                        item.bgResId = getHomeworkCoverStr() //当前作业本背景样式id
-                        HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                    }
+                    item.course = mCourse
+                    item.bgResId = getHomeworkCoverStr() //当前作业本背景样式id
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                 }
             }
             else{
@@ -74,7 +72,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 }
             }
         }
-        getLocalHomeTypes()
+        setRefreshHomeTypes()
         fetchMessage()
     }
 
@@ -111,11 +109,17 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         }
         mAdapter?.notifyDataSetChanged()
 
-        if (homeworkPaperList.subType==1){
-            loadHomeworkPaperImage(reels)
-        }
-        else{
-            loadImage(reels)
+        //下载老师传过来的作业
+        when(homeworkPaperList.subType){
+            1->{
+                loadHomeworkPaperImage(reels)
+            }
+            4->{
+                loadHomeworkBook(reels)
+            }
+            else->{
+                loadHomeworkImage(reels)
+            }
         }
 
     }
@@ -258,14 +262,31 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     }
 
     /**
-     * 获取本地数据
+     * 刷新列表
      */
-    private fun getLocalHomeTypes() {
+    private fun setRefreshHomeTypes() {
         homeworkTypes.clear()
-        homeworkTypes.addAll(getLocalHomeworkTypeData(false))
-        homeworkTypes.addAll(getLocalHomeworkTypeData(true))
+        homeworkTypes.addAll(getLocalTypeBeans())
         mAdapter?.setNewData(homeworkTypes)
     }
+
+    /**
+     * 获取本地科目全部分类
+     */
+    private fun getLocalTypeBeans():MutableList<HomeworkTypeBean>{
+        val items= mutableListOf<HomeworkTypeBean>()
+        items.addAll(getLocalHomeworkTypeData(false))
+        items.addAll(getLocalHomeworkTypeData(true))
+        return items
+    }
+
+    /**
+     * 获取本地作业本 true自己创建作业 false 老师下发作业本
+     */
+    private fun getLocalHomeworkTypeData(isCreate: Boolean): MutableList<HomeworkTypeBean> {
+        return HomeworkTypeDaoManager.getInstance().queryAllByCourse(mCourse,isCreate)
+    }
+
 
     /**
      * 查询本地是否存在题卷本
@@ -282,25 +303,17 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     }
 
     /**
-     * 获取本地作业本 true自己创建作业 false 老师下发作业本
-     */
-    private fun getLocalHomeworkTypeData(isCreate: Boolean): MutableList<HomeworkTypeBean> {
-        return HomeworkTypeDaoManager.getInstance().queryAllByCourse(mCourse,isCreate)
-    }
-
-    /**
      * 判断 老师下发作业本是否已经保存本地
      */
     private fun isSaveHomework(item: HomeworkTypeBean): Boolean {
         var isSave = false
-        for (list in getLocalHomeworkTypeData(false)) {
+        for (list in getLocalTypeBeans()) {
             if (item.name == list.name && item.typeId == list.typeId) {
                 isSave = true
             }
         }
         return isSave
     }
-
 
     /**
      * 长按展示作业换肤、删除(自建作业、题卷本可以删除)
@@ -419,10 +432,51 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             }
     }
 
+
+    /**
+     * 题卷本 下载图片
+     */
+    private fun loadHomeworkBook(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
+        for (item in papers) {
+            val typeBean= HomeworkTypeDaoManager.getInstance().queryByTypeId(item.typeId)
+            val homeworkBookBean=HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId)
+            //拿到对应作业的所有本地图片地址
+            val paths = mutableListOf<String>()
+            for (i in item.page.split(",")){
+                paths.add(getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!)
+            }
+            //获得下载地址
+            val images = item.submitUrl.split(",").toTypedArray()
+            val imageDownLoad = ImageDownLoadUtils(activity, images, paths)
+            imageDownLoad.startDownload1()
+            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
+                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
+                    //下载完成后 请求
+                    mPresenter.commitDownload(item.id)
+                    deleteDoneTask(imageDownLoad)
+                    //更新增量数据
+                    DataUpdateManager.editDataUpdate(8,homeworkBookBean.bookId,2,homeworkBookBean.bookId)
+                }
+                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
+                    imageDownLoad.reloadImage()
+                }
+            })
+        }
+    }
+
+    /**
+     * 获得题卷本图片地址
+     */
+    private fun getIndexFile(bookBean: HomeworkBookBean,index: Int): File? {
+        val path = FileAddress().getPathTextbookPicture(bookBean.bookPath)
+        val listFiles = FileUtils.getFiles(path)
+        return if (listFiles!=null) listFiles[index] else null
+    }
+
     /**
      * 作业本 下载图片
      */
-    private fun loadImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
+    private fun loadHomeworkImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
             //拿到对应作业的所有本地图片地址
             val paths = mutableListOf<String>()
@@ -720,7 +774,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 initTab()
             }
             Constants.HOMEWORK_BOOK_EVENT->{
-                getLocalHomeTypes()
+                setRefreshHomeTypes()
             }
         }
     }
@@ -759,16 +813,15 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 val map = HashMap<String, Any>()
                 map["size"] = 15
                 map["grade"] = grade
-                map["subject"] = mCourse
-                map["name"] = item.name
-                map["id"] = item.id
+                map["commonTypeId"] = item.typeId
+                map["id"] = item.typeId
                 mPresenter.getList(map)
             }
         }
         for (item in homeworkTypes){
             if (!item.isCreate){
                 val map = HashMap<String, Any>()
-                map["id"] = item.id
+                map["id"] = item.typeId
                 map["subType"] = item.state
                 mPresenter.getReelList(map)
             }

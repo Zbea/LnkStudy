@@ -31,6 +31,7 @@ public interface IContractView {
 
     //文件上传
     interface IFileUploadView extends IBaseView{
+        void onToken(String token);
         void onSuccess(List<String> urls);
         void onCommitSuccess();
     }

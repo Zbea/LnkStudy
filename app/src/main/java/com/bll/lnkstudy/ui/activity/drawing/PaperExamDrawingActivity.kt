@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.KeyEvent
 import android.widget.ImageView
@@ -14,15 +13,13 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.BitmapUtils
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -46,16 +43,34 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     private var outImageStr = ""
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
-    private var commitPaths = mutableListOf<String>()
+    private val commitItems = mutableListOf<ItemList>()
 
     private var pageCount = 0
     private var page = 0 //当前页码
 
+    override fun onToken(token: String) {
+        showLoading()
+        val commitPaths = mutableListOf<String>()
+        for (item in commitItems) {
+            commitPaths.add(item.url)
+        }
+        FileImageUploadManager(token, commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    val map= HashMap<String, Any>()
+                    map["studentTaskId"]=exam?.id!!
+                    map["studentUrl"]=ToolUtils.getImagesStr(urls)
+                    mUploadPresenter.commit(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast(R.string.upload_fail)
+                }
+            })
+        }
+    }
     override fun onSuccess(urls: MutableList<String>?) {
-        val map= HashMap<String, Any>()
-        map["studentTaskId"]=exam?.id!!
-        map["studentUrl"]=ToolUtils.getImagesStr(urls)
-        mUploadPresenter.commit(map)
     }
     override fun onCommitSuccess() {
         savePaper()
@@ -150,22 +165,23 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     //提交
     private fun commit(){
-        //提交失败后，已经合图之后避免重复合图
-        if (commitPaths.size!=paths.size){
-            for (i in paths.indices) {
-                Thread(Runnable {
-                    val path = paths[i] //当前原图路径
-                    val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
-                    BitmapUtils.mergeBitmap(path,drawPath)
-                    //删除手写
-                    FileUtils.deleteFile(File(drawPath).parentFile)
-                    commitPaths.add(path)
-                }).start()
-            }
+        for (i in paths.indices) {
+            Thread{
+                val path = paths[i] //当前原图路径
+                val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
+                BitmapUtils.mergeBitmap(path,drawPath)
+                //删除手写
+                FileUtils.deleteFile(File(drawPath).parentFile)
+                commitItems.add(ItemList().apply {
+                    id = i
+                    url = path
+                })
+                if (commitItems.size==paths.size){
+                    commitItems.sort()
+                    mUploadPresenter.getToken()
+                }
+            }.start()
         }
-        Handler().postDelayed({
-            mUploadPresenter.upload(commitPaths)
-        },1000)
     }
 
     /**

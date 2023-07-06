@@ -14,7 +14,7 @@ public class HomeworkDetails {
         public String jobTitle;
         public String title;
         public long time;
-        public long sendTime;
+        public long submitTime;
     }
 
 }

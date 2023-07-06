@@ -360,4 +360,6 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         lazyLoad()
     }
 
+
+
 }

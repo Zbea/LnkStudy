@@ -59,7 +59,7 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int,val typ
         override fun convert(helper: BaseViewHolder, item: HomeworkDetails.HomeworkDetailBean) {
             helper.setText(R.id.tv_title,item.jobTitle)
             helper.setText(R.id.tv_type,item.title)
-            val time=if (type==0) item.time else item.sendTime
+            val time=if (type==0) item.time else item.submitTime
             helper.setText(R.id.tv_date, DateUtils.longToStringWeek(time*1000))
         }
 

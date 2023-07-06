@@ -28,7 +28,7 @@ public class HomeworkPaperList implements Serializable {
         public String submitUrl;
         @SerializedName("taskImageId")
         public String imageUrl;
-        public int[] pages;
+        public String page;
         public String path;//文件夹路径
         public String[] paths;//图片路径
         public long date;

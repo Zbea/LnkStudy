@@ -57,7 +57,7 @@ public class GlideUtils {
                 .into(imageView);
     }
 
-    public static final void setImageRoundUrl(Context mContext,String url, ImageView imageView,int round){
+    public static void setImageRoundUrl(Context mContext, String url, ImageView imageView, int round){
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();

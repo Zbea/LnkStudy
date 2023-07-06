@@ -24,6 +24,7 @@ import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
@@ -48,12 +49,27 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     private var pops= mutableListOf<PopupBean>()
     private var messages= mutableListOf<HomeworkMessage.MessageBean>()
     private var messageId=0
+    private var commitPaths= mutableListOf<String>()
 
+    override fun onToken(token: String) {
+        showLoading()
+        FileImageUploadManager(token,commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    val map= HashMap<String, Any>()
+                    map["studentTaskId"]=messageId
+                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    mUploadPresenter.commit(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast(R.string.upload_fail)
+                }
+            })
+        }
+    }
     override fun onSuccess(urls: MutableList<String>?) {
-        val map= HashMap<String, Any>()
-        map["studentTaskId"]=messageId
-        map["studentUrl"]= ToolUtils.getImagesStr(urls)
-        mUploadPresenter.commit(map)
     }
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
@@ -239,14 +255,14 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
      * 提交录音
      */
     private fun commit(){
+        commitPaths.clear()
         HomeworkMessageSelectorDialog(this, screenPos, messages).builder()
             ?.setOnDialogClickListener {
                 messageId=it.studentTaskId
-                val paths = mutableListOf(recordBeans[position].path)
-                mUploadPresenter.upload(paths)
+                commitPaths.add(recordBeans[position].path)
+                mUploadPresenter.getToken()
             }
     }
-
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)

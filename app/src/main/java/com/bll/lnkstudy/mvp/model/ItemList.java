@@ -2,7 +2,7 @@ package com.bll.lnkstudy.mvp.model;
 
 import java.io.Serializable;
 
-public class ItemList implements Serializable {
+public class ItemList implements Serializable,Comparable<ItemList> {
 
     public int type;
     public String desc;
@@ -23,5 +23,10 @@ public class ItemList implements Serializable {
     public ItemList(int type, String desc) {
         this.type = type;
         this.desc = desc;
+    }
+
+    @Override
+    public int compareTo(ItemList itemList) {
+        return this.id-itemList.id;
     }
 }

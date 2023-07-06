@@ -3,8 +3,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
@@ -19,6 +17,7 @@ import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.mvp.model.CatalogChild
 import com.bll.lnkstudy.mvp.model.CatalogMsg
 import com.bll.lnkstudy.mvp.model.CatalogParent
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
@@ -26,11 +25,11 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.BitmapUtils
+import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
@@ -55,16 +54,36 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var messages= mutableListOf<HomeworkMessage.MessageBean>()
     private var drawingCommitDialog:DrawingCommitDialog?=null
     private var homeworkCommit: HomeworkCommit?=null
+    private val commitItems = mutableListOf<ItemList>()
+
+    override fun onToken(token: String) {
+        showLoading()
+        val commitPaths = mutableListOf<String>()
+        for (item in commitItems) {
+            commitPaths.add(item.url)
+        }
+        FileImageUploadManager(token, commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    val map= HashMap<String, Any>()
+                    map["studentTaskId"]=homeworkCommit?.messageId!!
+                    map["page"]=ToolUtils.getImagesStr(homeworkCommit?.contents!!)
+                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    mUploadPresenter.commit(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast(R.string.upload_fail)
+                }
+            })
+        }
+    }
 
     override fun onSuccess(urls: MutableList<String>?) {
-        val map= HashMap<String, Any>()
-        map["studentTaskId"]=homeworkCommit?.messageId!!
-        map["page"]=homeworkCommit?.contents!!.toIntArray()
-        map["studentUrl"]= ToolUtils.getImagesStr(urls)
-        mUploadPresenter.commit(map)
     }
     override fun onCommitSuccess() {
-
+        showToast(R.string.toast_commit_success)
     }
 
     override fun layoutId(): Int {
@@ -166,23 +185,33 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     //作业提交
     private fun commit() {
         showLoading()
-        val paths= mutableListOf<String>()
+        commitItems.clear()
+        showLog(homeworkCommit?.contents.toString())
         for (i in homeworkCommit?.contents!!){
+            if (i>pageCount)
+            {
+                showToast(R.string.toast_page_inexistence)
+                return
+            }
+            val imageFile=getIndexFile(i-1)
+            val path=imageFile?.path.toString()
+            val drawPath = book?.bookDrawPath+"/$i/draw.png"
             Thread{
-                val imageFile=getIndexFile(i-1)
-                val path=imageFile?.path.toString()
-                val drawPath = book?.bookDrawPath+"/$i/draw.png"
                 BitmapUtils.mergeBitmap(path,drawPath)
                 FileUtils.deleteFile(File(drawPath).parentFile)
-                paths.add(path)
+                commitItems.add(ItemList().apply {
+                    id = i
+                    url = path
+                })
+                if (commitItems.size==homeworkCommit?.contents!!.size){
+                    commitItems.sort()
+                    //修手写合图后修改增量更新
+                    DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
+                    DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
+                    mUploadPresenter.getToken()
+                }
             }.start()
         }
-        //修手写合图后修改增量更新
-        DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
-        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
-        Handler().postDelayed({
-            mUploadPresenter.upload(paths)
-        },1000)
     }
 
     override fun onPageUp() {
@@ -247,29 +276,27 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             tv_page_b.text = "${page + 1 + 1}/$pageCount"
             loadPicture(page + 1, elik_b!!, v_content_b)
         }
-
-        //设置当前展示页
-        book?.pageUrl = getIndexFile(page)?.path
     }
 
     //加载图片
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
         val showFile = getIndexFile(index)
         if (showFile != null) {
-            val simpleTarget = object : CustomTarget<Drawable>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    view.background = resource
-                }
-            }
+//            val simpleTarget = object : CustomTarget<Drawable>() {
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//                }
+//                override fun onResourceReady(
+//                    resource: Drawable,
+//                    transition: Transition<in Drawable>?
+//                ) {
+//                    view.background = resource
+//                }
+//            }
             Glide.with(this)
                 .load(showFile)
-                .skipMemoryCache(false)
-                .fitCenter().into(simpleTarget)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .fitCenter().into(view)
 
             val drawPath = book?.bookDrawPath+"/${index+1}/draw.tch"
             elik.setLoadFilePath(drawPath, true)

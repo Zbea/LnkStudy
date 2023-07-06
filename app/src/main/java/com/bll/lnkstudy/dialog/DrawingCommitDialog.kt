@@ -51,7 +51,6 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
                     tv_selector.text=homeworkMessage?.title
                 }
         }
-        val et_title = dialog?.findViewById<EditText>(R.id.et_title)
         val et_page1 = dialog?.findViewById<EditText>(R.id.et_page1)
         val et_page2 = dialog?.findViewById<EditText>(R.id.et_page2)
 
@@ -87,6 +86,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
         val tv_ok = dialog?.findViewById<TextView>(R.id.tv_ok)
         tv_ok?.setOnClickListener {
             if (homeworkMessage != null) {
+                pages.clear()
                 val page1 = et_page1?.text.toString()
                 val page2 = et_page2?.text.toString()
                 if (page1.isNotEmpty() && page2.isNotEmpty() && page2.toInt() > page1.toInt()) {
@@ -111,7 +111,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
 
                 val item = HomeworkCommit()
                 item.messageId = homeworkMessage?.studentTaskId!!
-                item.title = et_title?.text.toString()
+                item.title = homeworkMessage?.title
                 item.contents = pages
                 listener?.onClick(item)
                 dismiss()

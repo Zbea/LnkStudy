@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.View
 import android.widget.ImageView
@@ -43,12 +42,32 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var currentPosition=0
     private var page = 0//页码
     private var pageCount=0
+    private val commitItems = mutableListOf<ItemList>()
+
+    override fun onToken(token: String) {
+        showLoading()
+        val commitPaths = mutableListOf<String>()
+        for (item in commitItems) {
+            commitPaths.add(item.url)
+        }
+        FileImageUploadManager(token, commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    val map= HashMap<String, Any>()
+                    map["studentTaskId"]=paper?.contentId!!
+                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    mUploadPresenter.commit(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast(R.string.upload_fail)
+                }
+            })
+        }
+    }
 
     override fun onSuccess(urls: MutableList<String>?) {
-        val map= HashMap<String, Any>()
-        map["studentTaskId"]=paper?.contentId!!
-        map["studentUrl"]= ToolUtils.getImagesStr(urls)
-        mUploadPresenter.commit(map)
     }
 
     override fun onCommitSuccess() {
@@ -118,7 +137,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         iv_btn.setOnClickListener {
             if (paper?.state==3&&paper?.isCommit == true){
-                CommonDialog(this).setContent(R.string.toast_commit_ok).setDialogClickListener(
+                CommonDialog(this).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                     object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
@@ -304,18 +323,22 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 提交
      */
     private fun commit(){
-        val commitPaths= mutableListOf<String>()
-        for (item in paperContents) {
-            Thread(Runnable {
-                val drawPath = item.drawPath.replace("tch","png")//当前绘图路径
-                BitmapUtils.mergeBitmap(item.path,drawPath)
-                commitPaths.add(item.path)
+        commitItems.clear()
+        for (i in paperContents.indices) {
+            val item=paperContents[i]
+            Thread {
+                val drawPath = item.drawPath.replace("tch", "png")//当前绘图路径
+                BitmapUtils.mergeBitmap(item.path, drawPath)
+                commitItems.add(ItemList().apply {
+                    id = i
+                    url = item.path
+                })
                 FileUtils.deleteFile(File(item.drawPath).parentFile)
-            }).start()
+                if (commitItems.size == paperContents.size) {
+                    commitItems.sort()
+                    mUploadPresenter.getToken()
+                }
+            }.start()
         }
-        Handler().postDelayed({
-            mUploadPresenter.upload(commitPaths)
-        },1000)
     }
-
 }

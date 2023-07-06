@@ -8,6 +8,7 @@
     <string name="connect_error">服务器连接失败</string>
     <string name="on_server_error">服务器开小差，请重试</string>
     <string name="login_timeout">连接超时,请重新登陆</string>
+    <string name="upload_fail">上传失败</string>
 
     <string name="user_tip">请输入4–12位数字、字母的用户名</string>
     <string name="psw_tip">请输入6–20数字、字母的密码</string>
@@ -302,6 +303,7 @@
     <string name="homework_state_complete">已完成</string>
     <string name="homework_message">作业通知</string>
     <string name="toast_homework_unDownload">题卷本未下载</string>
+    <string name="toast_page_inexistence">页码不存在</string>
 
     <string name="testpaper_score_str">批改分</string>
 
@@ -351,6 +353,7 @@
     <string name="message_teacher_selector">选择老师:</string>
     <string name="message_sender">发送人：</string>
     <string name="message_receiver">接收人：</string>
+    <string name="notice">通知</string>
 
     <string name="cloud_storage_str">云书库</string>
     <string name="my_drawing_str">我的画本</string>

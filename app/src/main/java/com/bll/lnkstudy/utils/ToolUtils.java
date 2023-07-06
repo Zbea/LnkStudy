@@ -20,7 +20,7 @@ public class ToolUtils {
         return Long.valueOf(date).intValue();
     }
 
-    public static String getImagesStr(List<String> images){
+    public static String getImagesStr(List<?> images){
         String url="";
         for (int i = 0; i < images.size(); i++) {
             if (i== images.size()-1){

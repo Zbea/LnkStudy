@@ -10,6 +10,19 @@ import java.io.File
 class FileUploadPresenter(view: IContractView.IFileUploadView):
     BasePresenter<IContractView.IFileUploadView>(view) {
 
+    fun getToken(){
+        val token = RetrofitManager.service.getQiniuToken()
+        doRequest(token, object : Callback<String>(view) {
+            override fun failed(tBaseResult: BaseResult<String>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<String>) {
+                if (tBaseResult.data!=null)
+                    view.onToken(tBaseResult.data)
+            }
+        }, true)
+    }
+
     fun upload(files:List<String>) {
 
         val parts=ArrayList<MultipartBody.Part>()

@@ -808,7 +808,8 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
             map["contentType"] = item.contentType
             map["typeId"] = item.typeId
             map["listJson"] = item.listJson
-            map["downloadUrl"] = item.downloadUrl
+            if (!item.downloadUrl.isNullOrEmpty())
+                map["downloadUrl"] = item.downloadUrl
             map["state"]=item.state
             if (item.path.isNullOrEmpty()||!File(item.path).exists()) {
                 mDataUpdatePresenter.onAddData(map)
