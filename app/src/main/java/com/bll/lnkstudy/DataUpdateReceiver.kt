@@ -33,7 +33,9 @@ class DataUpdateReceiver : BroadcastReceiver() {
             }
             //阅读器回传
             "com.geniatech.knote.reader.save.note.broadcast"->{
-
+                Log.d("debug","dddddddddddd")
+                Log.d("debug",intent.getStringExtra("key_book_id")!!)
+                Log.d("debug",intent.getStringExtra("note_path")!!)
             }
         }
     }

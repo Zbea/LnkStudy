@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.base
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
@@ -30,8 +31,8 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
 import com.bll.lnkstudy.ui.activity.RecordListActivity
+import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
 import com.bll.lnkstudy.ui.activity.book.TextbookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
@@ -42,6 +43,9 @@ import kotlinx.android.synthetic.main.ac_bookstore_type.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
@@ -82,6 +86,20 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         mSaveState=savedInstanceState
         setContentView(layoutId())
         initCommonTitle()
+
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_CALENDAR,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.RECORD_AUDIO)){
+            EasyPermissions.requestPermissions(this,"请求权限",1,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_CALENDAR,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.RECORD_AUDIO
+            )
+        }
 
         screenPos=getCurrentScreenPos()
         showLog(localClassName+"当前屏幕：$screenPos")
@@ -274,11 +292,23 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(Constants.BOOK_EVENT)
         val toolApps= AppDaoManager.getInstance().queryAll()
+
+        val result = JSONArray()
+        for (item in toolApps){
+            val jsonObject = JSONObject()
+            try {
+                jsonObject.put("appName", item.appName)
+                jsonObject.put("packageName", item.packageName)
+            } catch (_: JSONException) {
+            }
+            result.put(jsonObject)
+        }
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
         intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("tool", Gson().toJson(toolApps))
+        intent.putExtra("tool", result.toString())
+        intent.putExtra("key_book_id",bookBean.bookId.toString())
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)

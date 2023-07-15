@@ -41,6 +41,8 @@
                 android:layout_height="396dp"
                 android:layout_marginStart="54dp"
                 android:paddingTop="@dimen/dp_20"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
                 android:background="@drawable/bg_gray_stroke_10dp_corner"
                 />
 

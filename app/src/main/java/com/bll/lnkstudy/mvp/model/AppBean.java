@@ -20,24 +20,22 @@ public class AppBean {
     @Id(autoincrement = true)
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
-    public int appId;
     public String appName;
+    @Unique
     public String packageName;
-    @Transient
-    public Drawable image;
+    public byte[] imageByte;
     @Transient
     public boolean isCheck;
     @Transient
     public boolean isBase;//基本数据
-
-    @Generated(hash = 2019224481)
-    public AppBean(Long id, long userId, int appId, String appName,
-            String packageName) {
+    @Generated(hash = 1499838802)
+    public AppBean(Long id, long userId, String appName, String packageName,
+            byte[] imageByte) {
         this.id = id;
         this.userId = userId;
-        this.appId = appId;
         this.appName = appName;
         this.packageName = packageName;
+        this.imageByte = imageByte;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -54,12 +52,6 @@ public class AppBean {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-    public int getAppId() {
-        return this.appId;
-    }
-    public void setAppId(int appId) {
-        this.appId = appId;
-    }
     public String getAppName() {
         return this.appName;
     }
@@ -72,7 +64,11 @@ public class AppBean {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    
-
+    public byte[] getImageByte() {
+        return this.imageByte;
+    }
+    public void setImageByte(byte[] imageByte) {
+        this.imageByte = imageByte;
+    }
 
 }

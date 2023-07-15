@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -11,7 +12,7 @@ class AppListAdapter(private val type:Int, layoutResId: Int, data: List<AppBean>
         helper.run {
             item.run{
                 setText(R.id.tv_name,appName)
-                setImageDrawable(R.id.iv_image,image)
+                setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(imageByte))
                 if (type==0){
                     setGone(R.id.cb_check,!isBase)
                 }

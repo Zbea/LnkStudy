@@ -145,7 +145,9 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     //课程表相关处理
     @SuppressLint("WrongConstant")
     private fun initCourse() {
-        GlideUtils.setImageNoCacheUrl(activity, Constants.SCREEN_PATH + "/course.png", iv_course)
+        val path=Constants.SCREEN_PATH + "/course.png"
+        if (File(path).exists())
+            GlideUtils.setImageNoCacheUrl(activity,path , iv_course)
 
         iv_course_more.setOnClickListener {
             CourseModuleDialog(requireActivity(), screenPos).builder()

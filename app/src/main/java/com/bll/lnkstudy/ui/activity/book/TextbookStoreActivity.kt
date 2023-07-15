@@ -393,7 +393,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         map["grade"] = gradeId
         map["type"] = if (tabId==1) 2 else 1
         map["semester"]=semester
-        if (tabId!=1)
+        if (tabId!=0)
             map["subjectName"]=courseId
         presenter.getTextBooks(map)
     }

@@ -5,6 +5,7 @@ import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
@@ -448,21 +449,18 @@ object DataBeanManager {
         get() {
             val apps= mutableListOf<AppBean>()
             apps.add(AppBean().apply {
-                appId = 0
                 appName = mContext.getString(R.string.download_app)
-                image = mContext.getDrawable(R.mipmap.icon_app_center)
+                imageByte = BitmapUtils.drawableToByte(mContext.getDrawable(R.mipmap.icon_app_center))
                 isBase = true
             })
             apps.add(AppBean().apply {
-                appId = 1
                 appName = mContext.getString(R.string.download_wallpaper)
-                image = mContext.getDrawable(R.mipmap.icon_app_wallpaper)
+                imageByte =  BitmapUtils.drawableToByte(mContext.getDrawable(R.mipmap.icon_app_wallpaper))
                 isBase = true
             })
             apps.add(AppBean().apply {
-                appId = 2
                 appName = mContext.getString(R.string.download_painting)
-                image = mContext.getDrawable(R.mipmap.icon_app_painting)
+                imageByte =  BitmapUtils.drawableToByte(mContext.getDrawable(R.mipmap.icon_app_painting))
                 isBase = true
             })
             return apps

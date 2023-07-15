@@ -305,10 +305,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         val it=toolApps.iterator()
         while (it.hasNext()){
             val item=it.next()
-            if (isAppContains(item,getLocalApp())){
-                item.image=getAppDrawable(item)
-            }
-            else{
+            if (!isAppContains(item,getLocalApp())){
                 it.remove()
                 AppDaoManager.getInstance().deleteBean(item)
             }
@@ -330,20 +327,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     }
 
     /**
-     * 拿到app对应的应用图标
-     */
-    private fun getAppDrawable(item:AppBean): Drawable? {
-        var drawable: Drawable?=null
-        for (ite in getLocalApp()){
-            if (ite.packageName.equals(item.packageName))
-            {
-                drawable=ite.image
-            }
-        }
-        return drawable
-    }
-
-    /**
      * 拿到本地全部应用
      */
     fun getLocalApp():List<AppBean>{
@@ -357,7 +340,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         val tools= mutableListOf<AppBean>()
         tools.add(AppBean().apply {
             appName=getString(R.string.geometry_title_str)
-            image=resources.getDrawable(R.mipmap.icon_app_geometry)
+            imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
 //            packageName="com.android.htfyunnote"
         })
         tools.addAll(toolApps)

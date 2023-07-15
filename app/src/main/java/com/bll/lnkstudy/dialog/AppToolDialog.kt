@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -62,7 +63,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
     class MyAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<AppBean, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: AppBean) {
             helper.setText(R.id.tv_name,item.appName)
-            helper.setImageDrawable(R.id.iv_image,item.image)
+            helper.setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(item.imageByte))
         }
     }
 

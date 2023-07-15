@@ -366,7 +366,7 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
     private fun downloadBook(item: DataUpdateBean){
         val bean = Gson().fromJson(item.listJson, BookBean::class.java)
         val formatStr=item.downloadUrl.substring(item.downloadUrl.lastIndexOf("."))
-        val fileName = MD5Utils.convertMD5(item.uid.toString())+formatStr//文件名
+        val fileName = MD5Utils.digest(item.uid.toString())+formatStr//文件名
         val targetFileStr = FileAddress().getPathBook(fileName)
 
         FileDownManager.with(this).create(item.downloadUrl).setPath(targetFileStr)

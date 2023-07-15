@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">墨之屏学习系统</string>
+    <string name="app_name">墨之屏学习本</string>
     <string name="authority">com.bll.lnkstudy</string>
     <string name="request_success">请求成功</string>
     <string name="net_work_error">检查网络是否连接</string>

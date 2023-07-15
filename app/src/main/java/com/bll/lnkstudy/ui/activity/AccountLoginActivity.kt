@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -9,11 +8,11 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
-import pub.devrel.easypermissions.EasyPermissions
 
 class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
@@ -33,7 +32,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
         intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent)
-        finish()
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
     }
 
     override fun layoutId(): Int {
@@ -45,14 +44,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-
-        EasyPermissions.requestPermissions(this,"请求权限",1,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_CALENDAR,
-            Manifest.permission.READ_CALENDAR,
-            Manifest.permission.RECORD_AUDIO
-        )
 
         ed_user.setText("zhufeng")
         ed_psw.setText("123456")
@@ -85,7 +76,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             val intent=Intent(this,MainActivity::class.java)
             intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
             startActivity(intent)
-            finish()
+            ActivityManager.getInstance().finishOthers(MainActivity::class.java)
         }
 
     }

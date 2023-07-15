@@ -266,14 +266,13 @@ public class AppUtils {
                 if (!packageInfo.packageName.equals(context.getPackageName()))
                 {
                     AppBean myAppInfo = new AppBean();
-                    myAppInfo.appId=3+i;
                     String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     myAppInfo.appName=appName;
                     myAppInfo.packageName=packageInfo.packageName;
                     if (packageInfo.applicationInfo.loadIcon(packageManager) == null) {
                         continue;
                     }
-                    myAppInfo.image=packageInfo.applicationInfo.loadIcon(packageManager);
+                    myAppInfo.imageByte=BitmapUtils.drawableToByte(packageInfo.applicationInfo.loadIcon(packageManager));
                     myAppInfos.add(myAppInfo);
                 }
             }
