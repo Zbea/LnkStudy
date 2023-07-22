@@ -242,8 +242,8 @@ interface APIService{
     /**
      * 获取作业本所有信息
      */
-    @GET("student/msg/list")
-    fun getHomeworkMessage(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkMessage>>
+    @POST("student/msg/list")
+    fun getHomeworkMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkMessage>>>
 
     /**
      * 获取作业卷所有信息
@@ -255,6 +255,12 @@ interface APIService{
      */
     @POST("task/group/studentDownload")
     fun commitHomeworkLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取作业卷所有信息
+     */
+    @POST("task/group/studentListPlus")
+    fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
+
     /**
      * 获取学生批改详情
      */

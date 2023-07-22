@@ -60,6 +60,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=exam?.id!!
+                    map["commonTypeId"]=exam?.commonTypeId!!
                     map["studentUrl"]=ToolUtils.getImagesStr(urls)
                     mUploadPresenter.commit(map)
                 }

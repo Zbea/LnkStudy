@@ -379,9 +379,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private fun saveImage(homework: HomeworkContentBean): String {
         val resId = ToolUtils.getImageResId(this, homeworkType?.contentResId)
         val oldBitmap = BitmapFactory.decodeResource(resources, resId)
-
         val drawPath = homework.path
-        val drawBitmap = BitmapFactory.decodeFile(drawPath)
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds=false
+        val drawBitmap = BitmapFactory.decodeFile(drawPath,options)
         if (drawBitmap != null) {
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)

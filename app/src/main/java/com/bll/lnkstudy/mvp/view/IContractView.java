@@ -26,6 +26,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.net.IBaseView;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IContractView {
 
@@ -136,8 +137,8 @@ public interface IContractView {
          * 获取作业分类
          */
         void onTypeList(List<HomeworkTypeBean> list);
-        void onList(HomeworkMessage homeworkMessage);
-        void onListReel(HomeworkPaperList reel);
+        void onList(Map<String, HomeworkMessage> map);
+        void onListReel(Map<String, HomeworkPaperList> map);
         void onDetails(List<HomeworkDetails.HomeworkDetailBean> details);
         /**
          * 下发作业下载成功

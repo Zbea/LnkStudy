@@ -115,6 +115,7 @@ public class HomeworkTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
+
     public List<HomeworkTypeBean> queryAll() {
         return dao.queryBuilder().where(whereUser).build().list();
     }

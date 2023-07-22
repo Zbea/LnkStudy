@@ -16,6 +16,7 @@ import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -101,7 +102,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: BookBean){
-        val fileName = book.bookId.toString()//文件名
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
@@ -114,6 +115,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                         override fun onFinish() {
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
+                            DataUpdateManager.createDataUpdate(6,book.bookId,2,book.bookId,"",FileAddress().getPathBookDraw(fileName))
                             downloadBook(book)
                         }
                         override fun onProgress(percentDone: Int) {
@@ -133,41 +135,24 @@ class CloudBookCaseFragment:BaseCloudFragment() {
      * 下载书籍
      */
     private fun downloadBook(book: BookBean) {
-        val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        FileDownManager.with(activity).create(book.downloadUrl).setPath(zipPath)
+        val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
+        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
+        FileDownManager.with(activity).create(book.downloadUrl).setPath(targetFileStr)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    val fileTargetPath = book.bookPath
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
-                        override fun onFinish() {
-                            BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                            //删除教材的zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            //创建增量更新
-                            DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
-                                , Gson().toJson(book),book.downloadUrl)
-
-                            Handler().postDelayed({
-                                hideLoading()
-                                showToast(screenPos,book.bookName+getString(R.string.book_download_success))
-                            },500)
-                        }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                            hideLoading()
-                            //下载失败删掉已下载手写内容
-                            FileUtils.deleteFile(File(book.bookDrawPath))
-                            showToast(screenPos,msg!!)
-                        }
-                        override fun onStart() {
-                        }
-                    })
+                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId
+                        , Gson().toJson(book),book.downloadUrl)
+                    Handler().postDelayed({
+                        hideLoading()
+                        showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                    },500)
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap

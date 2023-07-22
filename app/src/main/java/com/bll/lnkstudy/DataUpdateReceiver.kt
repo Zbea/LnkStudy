@@ -33,9 +33,15 @@ class DataUpdateReceiver : BroadcastReceiver() {
             }
             //阅读器回传
             "com.geniatech.knote.reader.save.note.broadcast"->{
-                Log.d("debug","dddddddddddd")
                 Log.d("debug",intent.getStringExtra("key_book_id")!!)
                 Log.d("debug",intent.getStringExtra("note_path")!!)
+                val bookId=intent.getStringExtra("key_book_id")
+                val path=intent.getStringExtra("note_path")
+                if (!bookId.isNullOrEmpty()){
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdate(6,bookId.toInt(),2,bookId.toInt()
+                        ,"",path!!)
+                }
             }
         }
     }

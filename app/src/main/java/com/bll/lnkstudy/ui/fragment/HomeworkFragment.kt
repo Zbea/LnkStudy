@@ -57,7 +57,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 }
                 else{
                     item.course = mCourse
-                    item.bgResId = getHomeworkCoverStr() //当前作业本背景样式id
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                 }
             }
@@ -76,26 +75,24 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         fetchMessage()
     }
 
-    override fun onList(homeworkMessage: HomeworkMessage) {
-        if (!homeworkMessage.list.isNullOrEmpty()) {
-            for (item in homeworkTypes) {
-                //遍历查询所有作业本是否收到新的消息
-                if (item.typeId == homeworkMessage.id) {
-                    item.message = homeworkMessage
-                    item.isMessage = homeworkMessage.total > item.messageTotal
-                    item.messageTotal = homeworkMessage.total
-                    HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                }
+    override fun onList(map: Map<String, HomeworkMessage>) {
+        for (item in homeworkTypes) {
+            val bean=map[item.typeId.toString()]
+            if (bean!=null){
+                item.message = bean
+                item.isMessage = bean.total > item.messageTotal
+                item.messageTotal = bean.total
+                HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
             }
-            mAdapter?.notifyDataSetChanged()
         }
+        mAdapter?.notifyDataSetChanged()
     }
 
-    override fun onListReel(homeworkPaperList: HomeworkPaperList) {
-        val reels= homeworkPaperList.list
-        if (homeworkPaperList.list.isNullOrEmpty()) return
+    override fun onListReel(map: Map<String, HomeworkPaperList>) {
         for (item in homeworkTypes) {
-            if (item.typeId == homeworkPaperList.typeId) {
+            val bean=map[item.typeId.toString()]
+            if (bean!=null){
+                val reels=bean.list!!
                 //遍历查询
                 for (reel in reels) {
                     if (reel.sendStatus==2){
@@ -105,23 +102,21 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                         item.isMessage = true
                     }
                 }
+                //下载老师传过来的作业
+                when(bean.subType){
+                    1->{
+                        loadHomeworkPaperImage(reels)
+                    }
+                    4->{
+                        loadHomeworkBook(reels)
+                    }
+                    else->{
+                        loadHomeworkImage(reels)
+                    }
+                }
             }
         }
         mAdapter?.notifyDataSetChanged()
-
-        //下载老师传过来的作业
-        when(homeworkPaperList.subType){
-            1->{
-                loadHomeworkPaperImage(reels)
-            }
-            4->{
-                loadHomeworkBook(reels)
-            }
-            else->{
-                loadHomeworkImage(reels)
-            }
-        }
-
     }
 
     override fun onDetails(details: MutableList<HomeworkDetails.HomeworkDetailBean>) {
@@ -808,24 +803,34 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      * 获取作业卷最新的老师下发
      */
     private fun fetchMessage() {
+        val map=HashMap<String,Any>()
+        val list= arrayListOf<HomeworkRequestArguments>()
         for (item in homeworkTypes) {
             if (!item.isCreate&&item.state!=1) {
-                val map = HashMap<String, Any>()
-                map["size"] = 15
-                map["grade"] = grade
-                map["commonTypeId"] = item.typeId
-                map["id"] = item.typeId
-                mPresenter.getList(map)
+                list.add(HomeworkRequestArguments().apply {
+                    size=10
+                    grade=this@HomeworkFragment.grade
+                    commonTypeId=item.typeId
+                    id=item.typeId
+                })
             }
         }
+        map["studentDto"]=list
+        mPresenter.getList(map)
+
+        list.clear()
         for (item in homeworkTypes){
             if (!item.isCreate){
-                val map = HashMap<String, Any>()
-                map["id"] = item.typeId
-                map["subType"] = item.state
-                mPresenter.getReelList(map)
+                list.add(HomeworkRequestArguments().apply {
+                    id=item.typeId
+                    subType=item.state
+                })
             }
         }
+
+        val mapPaper = HashMap<String, Any>()
+        mapPaper["commonDto"] = list
+        mPresenter.getReelList(mapPaper)
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {

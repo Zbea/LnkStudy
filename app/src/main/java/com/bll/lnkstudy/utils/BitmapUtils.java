@@ -33,7 +33,9 @@ public class BitmapUtils {
      */
     public static String mergeBitmap(String oldPath,String drawPath){
         Bitmap oldBitmap = BitmapFactory.decodeFile(oldPath);
-        Bitmap drawBitmap = BitmapFactory.decodeFile(drawPath);
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inJustDecodeBounds=false;
+        Bitmap drawBitmap = BitmapFactory.decodeFile(drawPath,options);
         if (drawBitmap != null) {
             Bitmap mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap);
             BitmapUtils.saveBmpGallery(MyApplication.Companion.getMContext(), mergeBitmap, oldPath);

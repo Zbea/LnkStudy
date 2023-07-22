@@ -307,9 +307,14 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
                         date=System.currentTimeMillis()
                         course=this@HomeworkBookStoreActivity.course
                         bookId=book.bookId
-                        bgResId=DataBeanManager.getHomeworkCoverStr()
+                        bgResId=book.imageUrl
                         isCreate=true
                     }
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                }
+                else{
+                    val homeworkTypeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(book.bookId)
+                    homeworkTypeBean.bgResId=book.imageUrl
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                 }
 

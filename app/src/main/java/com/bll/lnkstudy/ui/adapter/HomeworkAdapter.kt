@@ -6,6 +6,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -16,10 +17,19 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setText(R.id.tv_name, item.name)
-            setImageResource(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
             setVisible(R.id.ll_info, !item.isCreate||item.isCloud)
-            //题卷本显示年级或者云作业显示年级
-            if (item.state==4||item.isCloud){
+
+            if (item.state==4){
+                setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)
+                GlideUtils.setImageRoundUrl(mContext, item.bgResId, getView(R.id.iv_image), 10)
+            }
+            else{
+                setBackgroundRes(R.id.iv_image, ToolUtils.getImageResId(mContext, item.bgResId))
+                setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext, item.bgResId))
+            }
+
+            //云作业显示年级
+            if (item.isCloud){
                 setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
                 setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date))
             }

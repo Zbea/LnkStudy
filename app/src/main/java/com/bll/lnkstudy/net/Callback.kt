@@ -18,12 +18,12 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
 
 
     override fun onSubscribe(@NonNull d: Disposable) {
-        IBaseView?.addSubscription(d)
+        IBaseView.addSubscription(d)
     }
 
     override fun onNext(@NonNull tBaseResult: BaseResult<T>) {
         if (!tBaseResult.error.isNullOrEmpty()) {
-            IBaseView?.fail(tBaseResult.error)
+            IBaseView.fail(tBaseResult.error)
             return
         }
         if (tBaseResult.code == 0) {
@@ -31,10 +31,10 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
         } else {
             when (tBaseResult.code) {
                 -10 -> {
-                    IBaseView?.login()
+                    IBaseView.login()
                 }
                 else -> {
-                    IBaseView?.fail(tBaseResult.msg)
+                    IBaseView.fail(tBaseResult.msg)
                     failed(tBaseResult)
                 }
             }
@@ -42,7 +42,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     }
 
     override fun onComplete() {
-        IBaseView?.hideLoading()
+        IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {

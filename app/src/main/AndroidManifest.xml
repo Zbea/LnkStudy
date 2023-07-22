@@ -63,9 +63,11 @@
             android:exported="true"
             >
             <intent-filter>
-                <action android:name="com.android.settings.downloaddata"/>
+                <action android:name="com.android.settings.importdata"/>
+                <action android:name="com.android.settings.importrentdata"/>
                 <action android:name="com.android.settings.cleardata"/>
                 <action android:name="ACTION_GLOBAL_SEARCH"/>
+                <action android:name="com.geniatech.knote.reader.save.note.broadcast"/>
             </intent-filter>
         </receiver>
         <activity

@@ -41,7 +41,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
         recyclerview.layoutManager = LinearLayoutManager(context)
         mAdapter= MessageAdapter(R.layout.item_homework_message_all, list)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10))
+        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,15))
 
         return this
     }

@@ -41,6 +41,9 @@ import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -452,13 +455,24 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         bookBean.time=System.currentTimeMillis()
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(Constants.BOOK_EVENT)
-
         val toolApps= AppDaoManager.getInstance().queryAll()
+
+        val result = JSONArray()
+        for (item in toolApps){
+            val jsonObject = JSONObject()
+            try {
+                jsonObject.put("appName", item.appName)
+                jsonObject.put("packageName", item.packageName)
+            } catch (_: JSONException) {
+            }
+            result.put(jsonObject)
+        }
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
         intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("tool",Gson().toJson(toolApps))
+        intent.putExtra("tool", result.toString())
+        intent.putExtra("key_book_id",bookBean.bookId.toString())
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)

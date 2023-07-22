@@ -39,12 +39,13 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
      * 获取老师下发作业
      */
     fun getList(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getHomeworkMessage(map)
-        doRequest(type, object : Callback<HomeworkMessage>(view) {
-            override fun failed(tBaseResult: BaseResult<HomeworkMessage>): Boolean {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.getHomeworkMessage(body)
+        doRequest(type, object : Callback<Map<String, HomeworkMessage>>(view) {
+            override fun failed(tBaseResult: BaseResult<Map<String,HomeworkMessage>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<HomeworkMessage>) {
+            override fun success(tBaseResult: BaseResult<Map<String, HomeworkMessage>>) {
                 if (tBaseResult.data!=null)
                     view.onList(tBaseResult.data)
             }
@@ -55,12 +56,13 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
      * 获取老师下发作业卷
      */
     fun getReelList(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getHomeworkReel(map)
-        doRequest(type, object : Callback<HomeworkPaperList>(view) {
-            override fun failed(tBaseResult: BaseResult<HomeworkPaperList>): Boolean {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.getHomeworkReel(body)
+        doRequest(type, object : Callback<Map<String, HomeworkPaperList>>(view) {
+            override fun failed(tBaseResult: BaseResult<Map<String, HomeworkPaperList>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<HomeworkPaperList>) {
+            override fun success(tBaseResult: BaseResult<Map<String, HomeworkPaperList>>) {
                 if (tBaseResult.data!=null)
                     view.onListReel(tBaseResult.data)
             }

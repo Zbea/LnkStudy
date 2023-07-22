@@ -347,7 +347,12 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
                     }
                 }
                 6->{
-                    downloadBook(item)
+                    if (item.contentType==1){
+                        downloadBook(item)
+                    }
+                    else{
+                        downloadBookDraw(item)
+                    }
                 }
                 7->{
                     val paintingBean = Gson().fromJson(item.listJson, PaintingBean::class.java)
@@ -381,6 +386,42 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,bean.bookId,1,bean.bookId
                         , Gson().toJson(bean), bean.downloadUrl)
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                }
+            })
+    }
+
+    /**
+     * 书籍手写
+     */
+    private fun downloadBookDraw(item: DataUpdateBean){
+        val fileName=item.uid.toString()
+        val zipPath = FileAddress().getPathZip(fileName)
+        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object :
+                FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    val path=item.path
+                    ZipUtils.unzip(zipPath, path, object : IZipCallback {
+                        override fun onFinish() {
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdate(6,item.uid,2,item.uid
+                                ,"",item.path)
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                        }
+                        override fun onStart() {
+                        }
+                    })
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
