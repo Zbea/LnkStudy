@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :String,val list: List<HomeworkMessage.MessageBean>) {
+class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :String,
+                            private val createStatus :Int, val list: List<Any>) {
 
     private var dialog:Dialog?=null
     private var mAdapter:MessageAdapter?=null
@@ -39,7 +41,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
 
         recyclerview.layoutManager = LinearLayoutManager(context)
-        mAdapter= MessageAdapter(R.layout.item_homework_message_all, list)
+        mAdapter= MessageAdapter(R.layout.item_homework_message_all, list,createStatus)
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,15))
 
@@ -56,29 +58,52 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
             dialog?.show()
     }
 
-    fun setData(datas: List<HomeworkMessage.MessageBean>){
-        mAdapter?.setNewData(datas)
-    }
+    class MessageAdapter(layoutResId: Int, data: List<Any>, private val createStatus: Int) : BaseQuickAdapter<Any, BaseViewHolder>(layoutResId, data) {
 
-    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage.MessageBean>) : BaseQuickAdapter<HomeworkMessage.MessageBean, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage.MessageBean) {
-            helper.setText(R.id.tv_title,item.title)
-            if (item.endTime>0){
-                helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
-                val state=if (item.status==3){
-                    mContext.getString(R.string.homework_state_no)
-                }
-                else if (item.status==1){
-                    mContext.getString(R.string.homework_state_yes)
+        override fun convert(helper: BaseViewHolder, ite: Any) {
+            if (createStatus==1){
+                val item=ite as HomeworkMessage.MessageBean
+                helper.setText(R.id.tv_title,item.title)
+                if (item.endTime>0){
+                    helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
+                    val state= when (item.status) {
+                        3 -> {
+                            mContext.getString(R.string.homework_state_no)
+                        }
+                        1 -> {
+                            mContext.getString(R.string.homework_state_yes)
+                        }
+                        else -> {
+                            mContext.getString(R.string.homework_state_complete)
+                        }
+                    }
+                    helper.setText(R.id.tv_state,state)
                 }
                 else{
-                    mContext.getString(R.string.homework_state_complete)
+                    helper.setText(R.id.tv_state,"不提交")
                 }
-                helper.setText(R.id.tv_state,state)
             }
             else{
-                helper.setText(R.id.tv_state,"不提交")
+                val item=ite as ParentHomeworkBean
+                helper.setText(R.id.tv_title,item.content)
+                if (item.endTime>0){
+                    helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
+                    val state= when (item.status) {
+                        1 -> {
+                            mContext.getString(R.string.homework_state_no)
+                        }
+                        2 -> {
+                            mContext.getString(R.string.homework_state_yes)
+                        }
+                        else -> {
+                            mContext.getString(R.string.homework_state_complete)
+                        }
+                    }
+                    helper.setText(R.id.tv_state,state)
+                }
+                else{
+                    helper.setText(R.id.tv_state,"不提交")
+                }
             }
         }
 

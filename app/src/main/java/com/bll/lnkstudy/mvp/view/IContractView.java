@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
+import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
@@ -137,7 +138,8 @@ public interface IContractView {
          * 获取作业分类
          */
         void onTypeList(List<HomeworkTypeBean> list);
-        void onList(Map<String, HomeworkMessage> map);
+        void onTypeParentList(List<ParentTypeBean> list);
+        void onMessageList(Map<String, HomeworkMessage> map);
         void onListReel(Map<String, HomeworkPaperList> map);
         void onDetails(List<HomeworkDetails.HomeworkDetailBean> details);
         /**

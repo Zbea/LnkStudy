@@ -107,6 +107,16 @@ object DataBeanManager {
         return courseStr
     }
 
+    fun getCourseId(course:String):Int{
+        var courseId=0
+        for (item in courses){
+            if (course==item.desc){
+                courseId=item.type
+            }
+        }
+        return courseId
+    }
+
     fun popupDynasty():MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()
         for (i in dynastys.indices){

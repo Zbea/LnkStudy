@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SToast
@@ -20,11 +20,12 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages: List<HomeworkMessage.MessageBean>) {
+class DrawingCommitDialog(val context: Context, val screenPos: Int, val items:MutableList<ItemList>) {
 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
-    private var homeworkMessage: HomeworkMessage.MessageBean? = null
+    private var messageId=0
+    private var messageTitle=""
 
     fun builder(): DrawingCommitDialog? {
 
@@ -45,10 +46,11 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
 
         val tv_selector = dialog?.findViewById<TextView>(R.id.tv_selector)
         tv_selector?.setOnClickListener {
-            HomeworkMessageSelectorDialog(context, screenPos, messages).builder()
+            HomeworkMessageSelectorDialog(context, screenPos,items).builder()
                 ?.setOnDialogClickListener {
-                    homeworkMessage = it
-                    tv_selector.text=homeworkMessage?.title
+                    messageId = it.id
+                    messageTitle=it.name
+                    tv_selector.text=messageTitle
                 }
         }
         val et_page1 = dialog?.findViewById<EditText>(R.id.et_page1)
@@ -85,7 +87,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
 
         val tv_ok = dialog?.findViewById<TextView>(R.id.tv_ok)
         tv_ok?.setOnClickListener {
-            if (homeworkMessage != null) {
+            if (messageId >0) {
                 pages.clear()
                 val page1 = et_page1?.text.toString()
                 val page2 = et_page2?.text.toString()
@@ -110,8 +112,8 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, val messages
                 }
 
                 val item = HomeworkCommit()
-                item.messageId = homeworkMessage?.studentTaskId!!
-                item.title = homeworkMessage?.title
+                item.messageId = messageId
+                item.title = messageTitle
                 item.contents = pages
                 listener?.onClick(item)
                 dismiss()

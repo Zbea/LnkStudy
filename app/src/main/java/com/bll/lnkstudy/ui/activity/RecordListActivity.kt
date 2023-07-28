@@ -16,6 +16,7 @@ import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.RecordDaoManager
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -85,7 +86,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         course=homeworkType?.course!!
-        val list=homeworkType?.message?.list
+        val list=homeworkType?.messages
 
         if (!list.isNullOrEmpty()){
             for (item in list){
@@ -258,9 +259,16 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
      */
     private fun commit(){
         commitPaths.clear()
-        HomeworkMessageSelectorDialog(this, screenPos, messages).builder()
+        val items= mutableListOf<ItemList>()
+        for (item in messages){
+            items.add(ItemList().apply {
+                id=item.studentTaskId
+                name=item.title
+            })
+        }
+        HomeworkMessageSelectorDialog(this, screenPos, items).builder()
             ?.setOnDialogClickListener {
-                messageId=it.studentTaskId
+                messageId=it.id
                 commitPaths.add(recordBeans[position].path)
                 mUploadPresenter.getToken()
             }

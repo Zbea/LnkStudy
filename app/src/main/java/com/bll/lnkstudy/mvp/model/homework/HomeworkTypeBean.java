@@ -14,6 +14,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import org.greenrobot.greendao.annotation.Generated;
@@ -38,7 +39,6 @@ public class HomeworkTypeBean implements Serializable {
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
     public String course;
-    @Unique
     public int bookId;
     public int createStatus;//自建作业本0老师创建1家长创建2
     public int messageTotal;//作业消息数目
@@ -55,7 +55,9 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public boolean isMessage;//收到通知
     @Transient
-    public HomeworkMessage message;
+    public List<HomeworkMessage.MessageBean> messages;
+    @Transient
+    public List<ParentHomeworkBean> parents;
 
 
     @Generated(hash = 1181261964)

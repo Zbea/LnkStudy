@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val messages: List<HomeworkMessage.MessageBean>) {
+class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, private val messages: List<ItemList>) {
 
     private var dialog:Dialog?=null
 
@@ -37,14 +37,15 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10))
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            for (item in messages)
+            val item=messages[position]
+            for (ite in messages)
             {
-                item.isSelector=false
+                ite.isCheck=false
             }
-            messages[position].isSelector=true
+            item.isCheck=true
             mAdapter.notifyItemChanged(position)
             dismiss()
-            listener?.onClick(messages[position])
+            listener?.onClick(item)
         }
 
         return this
@@ -63,18 +64,18 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, val
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: HomeworkMessage.MessageBean)
+        fun onClick(item: ItemList)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener){
         this.listener = listener
     }
 
-    class MessageAdapter(layoutResId: Int, data: List<HomeworkMessage.MessageBean>) : BaseQuickAdapter<HomeworkMessage.MessageBean, BaseViewHolder>(layoutResId, data) {
+    class MessageAdapter(layoutResId: Int, data: List<ItemList>) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkMessage.MessageBean) {
-            helper.setText(R.id.tv_title,item.title)
-            helper.setChecked(R.id.cb_check,item.isSelector)
+        override fun convert(helper: BaseViewHolder, item: ItemList) {
+            helper.setText(R.id.tv_title,item.name)
+            helper.setChecked(R.id.cb_check,item.isCheck)
         }
 
     }

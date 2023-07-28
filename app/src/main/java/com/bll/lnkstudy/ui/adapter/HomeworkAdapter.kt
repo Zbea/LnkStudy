@@ -16,7 +16,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setText(R.id.tv_name, item.name)
-            setVisible(R.id.ll_info, item.createStatus==0||item.isCloud)
+            setVisible(R.id.ll_info, item.createStatus!=0||item.isCloud)
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){
                 setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)

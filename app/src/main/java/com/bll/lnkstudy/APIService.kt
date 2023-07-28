@@ -2,11 +2,8 @@ package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
+import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkType
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.net.BaseResult
@@ -281,7 +278,16 @@ interface APIService{
      */
     @POST("message/inform/insertStudent")
     fun commitMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 获取家长作业本
+     */
+    @GET("parent/homework/all")
+    fun getParentsHomeworkType(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<MutableList<ParentTypeBean>>>
+    /**
+     * 消息列表
+     */
+    @GET("student/job/list")
+    fun getParentMessage(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
     /**
      * 公共年级接口
      */

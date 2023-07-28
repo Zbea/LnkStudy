@@ -94,7 +94,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
 
-        val list=homeworkType?.message?.list
+        val list=homeworkType?.messages
         if (!list.isNullOrEmpty()){
             for (item in list){
                 if (item.endTime>0&&item.status==3){
@@ -170,7 +170,14 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             if (messages.size==0)
                 return@setOnClickListener
             if (drawingCommitDialog==null){
-                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
+                val items= mutableListOf<ItemList>()
+                for (item in messages){
+                    items.add(ItemList().apply {
+                        id=item.studentTaskId
+                        name=item.title
+                    })
+                }
+                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),items).builder()
                 drawingCommitDialog?.setOnDialogClickListener {
                     homeworkCommit=it
                     commit()

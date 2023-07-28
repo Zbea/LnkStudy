@@ -1,11 +1,8 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
+import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkType
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
@@ -13,7 +10,6 @@ import com.bll.lnkstudy.net.*
  * 作业
  */
 class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<IContractView.IHomeworkView>(view) {
-
 
     /**
      * 获取作业本列表
@@ -36,6 +32,22 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     }
 
     /**
+     * 获取家长作业本列表
+     */
+    fun getTypeParentList(map :HashMap<String,Any>) {
+        val type = RetrofitManager.service.getParentsHomeworkType(map)
+        doRequest(type, object : Callback<MutableList<ParentTypeBean>>(view) {
+            override fun failed(tBaseResult: BaseResult<MutableList<ParentTypeBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<ParentTypeBean>>) {
+                if (tBaseResult.data!=null)
+                    view.onTypeParentList(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    /**
      * 获取老师下发作业消息
      */
     fun getList(map: HashMap<String, Any>) {
@@ -47,7 +59,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
             }
             override fun success(tBaseResult: BaseResult<Map<String, HomeworkMessage>>) {
                 if (tBaseResult.data!=null)
-                    view.onList(tBaseResult.data)
+                    view.onMessageList(tBaseResult.data)
             }
         }, false)
     }

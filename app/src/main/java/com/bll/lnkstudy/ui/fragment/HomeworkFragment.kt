@@ -71,11 +71,34 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         fetchData()
     }
 
-    override fun onList(map: Map<String, HomeworkMessage>) {
+    override fun onTypeParentList(list: MutableList<ParentTypeBean>) {
+        for (item in list){
+            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(item.id)) {
+                val homeworkTypeBean=HomeworkTypeBean().apply {
+                    userId=item.parentId
+                    name=item.name
+                    grade=mUser?.grade!!
+                    typeId=item.id
+                    state=if (item.type==1) 2 else 4
+                    date=item.time
+                    contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!)
+                    course = mCourse
+                    bgResId = if (item.type==2) item.imageUrl else getHomeworkCoverStr()
+                    bookId=item.bookId
+                    createStatus=2
+                }
+                HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                //创建增量数据
+                DataUpdateManager.createDataUpdate(2,homeworkTypeBean.typeId,1,homeworkTypeBean.typeId,homeworkTypeBean.state,Gson().toJson(homeworkTypeBean))
+            }
+        }
+    }
+
+    override fun onMessageList(map: Map<String, HomeworkMessage>) {
         for (item in homeworkTypes) {
             val bean=map[item.typeId.toString()]
             if (bean!=null){
-                item.message = bean
+                item.messages = bean.list
                 item.isMessage = bean.total > item.messageTotal
                 item.messageTotal = bean.total
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
@@ -218,10 +241,19 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             setOnItemChildClickListener { adapter, view, position ->
                 val item = homeworkTypes[position]
                 if (view.id == R.id.ll_message) {
-                    if (item.message != null) {
-                        HomeworkMessageDialog(requireActivity(), screenPos, item.name, item.message.list).builder()
-                        item.isMessage = false
-                        notifyItemChanged(position)
+                    if (item.createStatus==1){
+                        if (!item.messages.isNullOrEmpty()) {
+                            HomeworkMessageDialog(requireActivity(), screenPos, item.name,item.createStatus, item.messages).builder()
+                            item.isMessage = false
+                            notifyItemChanged(position)
+                        }
+                    }
+                    else{
+                        if (!item.parents.isNullOrEmpty()){
+                            HomeworkMessageDialog(requireActivity(), screenPos, item.name,item.createStatus, item.parents).builder()
+                            item.isMessage = false
+                            notifyItemChanged(position)
+                        }
                     }
                 }
             }
@@ -787,6 +819,13 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     teacherId = classGroup.teacherId
                 }
             }
+
+            val parentMap=HashMap<String,Any>()
+            parentMap["subject"] = DataBeanManager.getCourseId(mCourse)
+            parentMap["childId"] = mUser?.accountId!!
+            mPresenter.getTypeParentList(parentMap)
+
+
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!
@@ -825,7 +864,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 })
             }
         }
-
         val mapPaper = HashMap<String, Any>()
         mapPaper["commonDto"] = list
         mPresenter.getReelList(mapPaper)
