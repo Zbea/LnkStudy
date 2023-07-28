@@ -179,46 +179,50 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
      * 控制上传
      */
     fun uploadPaper(token: String){
+        if (grade==0) return
         val cloudList= mutableListOf<CloudListBean>()
         for(classGroup in DataBeanManager.classGroups){
             val types=PaperTypeDaoManager.getInstance().queryAllByCourse(classGroup.subject)
             for (item in types){
-                val papers=PaperDaoManager.getInstance().queryAll(item.course,item.typeId)
-                val paperContents=PaperContentDaoManager.getInstance().queryAll(item.course,item.typeId)
-                val path=FileAddress().getPathTestPaper(item.typeId)
-                if (papers.size>0){
-                    FileUploadManager(token).apply {
-                        startUpload(path,item.name)
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=3
-                                subType=-1
-                                subTypeStr=item.course
-                                date=System.currentTimeMillis()
-                                grade=item.grade
-                                listJson=Gson().toJson(item)
-                                contentJson= Gson().toJson(papers)
-                                contentSubtypeJson=Gson().toJson(paperContents)
-                                downloadUrl=it
-                            })
-                            if (cloudList.size==PaperTypeDaoManager.getInstance().queryAll().size){
-                                mCloudUploadPresenter.upload(cloudList)
+                //云考卷不重新上传
+                if (!item.isCloud){
+                    val papers=PaperDaoManager.getInstance().queryAll(item.course,item.typeId)
+                    val paperContents=PaperContentDaoManager.getInstance().queryAll(item.course,item.typeId)
+                    val path=FileAddress().getPathTestPaper(item.typeId)
+                    if (File(path).exists()){
+                        FileUploadManager(token).apply {
+                            startUpload(path,item.name)
+                            setCallBack{
+                                cloudList.add(CloudListBean().apply {
+                                    type=3
+                                    subType=-1
+                                    subTypeStr=item.course
+                                    date=System.currentTimeMillis()
+                                    grade=item.grade
+                                    listJson=Gson().toJson(item)
+                                    contentJson= Gson().toJson(papers)
+                                    contentSubtypeJson=Gson().toJson(paperContents)
+                                    downloadUrl=it
+                                })
+                                if (cloudList.size==PaperTypeDaoManager.getInstance().queryAllExcludeCloud().size){
+                                    mCloudUploadPresenter.upload(cloudList)
+                                }
                             }
                         }
                     }
-                }
-                else{
-                    cloudList.add(CloudListBean().apply {
-                        type=3
-                        subType=-1
-                        subTypeStr=item.course
-                        date=System.currentTimeMillis()
-                        grade=item.grade
-                        listJson= Gson().toJson(item)
-                        downloadUrl="null"
-                    })
-                    if (cloudList.size==PaperTypeDaoManager.getInstance().queryAll().size){
-                        mCloudUploadPresenter.upload(cloudList)
+                    else{
+                        cloudList.add(CloudListBean().apply {
+                            type=3
+                            subType=-1
+                            subTypeStr=item.course
+                            date=System.currentTimeMillis()
+                            grade=item.grade
+                            listJson= Gson().toJson(item)
+                            downloadUrl="null"
+                        })
+                        if (cloudList.size==PaperTypeDaoManager.getInstance().queryAllExcludeCloud().size){
+                            mCloudUploadPresenter.upload(cloudList)
+                        }
                     }
                 }
             }
@@ -262,21 +266,9 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
-        val ids= mutableListOf<Int>()
-        //获取所有考试卷分类，查找从云书库下载的，然后删除（避免重复上传）
-        val allTypes=PaperTypeDaoManager.getInstance().queryAll()
-        for (paperType in allTypes){
-            if (paperType.isCloud)
-                ids.add(paperType.cloudId)
-        }
-        //删除云书库之前上传的
-        if (ids.size>0)
-            mCloudUploadPresenter.deleteCloud(ids)
         paperTypes.clear()
         mAdapter?.notifyDataSetChanged()
-
         setClearPaper()
-
         setSystemControlClear()
     }
 

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.graphics.BitmapFactory
 import android.os.Environment
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,7 +10,6 @@ import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.PaintingBean
 import com.bll.lnkstudy.ui.adapter.MyWallpaperAdapter
-import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_my_wallpaper_list.*
@@ -90,10 +88,10 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
             if (leftPath.isEmpty()&&rightPath.isEmpty())
                 return@setOnClickListener
             if(File(leftPath).exists()){
-                BitmapUtils.saveBmpGallery(this,BitmapFactory.decodeFile(leftPath),leftSavePath)
+                android.os.SystemProperties.set("xsys.eink.standby",leftPath)
             }
             if(File(rightPath).exists()){
-                BitmapUtils.saveBmpGallery(this,BitmapFactory.decodeFile(rightPath),rightSavePath)
+                android.os.SystemProperties.set("xsys.eink.standby1",rightPath)
             }
         }
 
@@ -102,24 +100,18 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     //翻页处理
     private fun pageNumberView(){
         val pageTotal=lists.size //全部数量
-        pageCount = ceil(pageTotal.toDouble()/Constants.PAGE_SIZE).toInt()//总共页码
-        if (pageTotal==0)
-        {
-            ll_page_number.visibility= View.GONE
-            mAdapter?.notifyDataSetChanged()
-            return
-        }
-
-        var toIndex=Constants.PAGE_SIZE
-        for(i in 0 until pageCount){
-            val index=i*Constants.PAGE_SIZE
-            if(index+Constants.PAGE_SIZE>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
+        val count = ceil(pageTotal.toDouble()/pageSize).toInt()//总共页码
+        var toIndex=pageSize
+        for(i in 0 until count){
+            val index=i*pageSize
+            if(index+pageSize>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
                 toIndex=pageTotal-index
             }
             val newList = lists.subList(index,index+toIndex)
             listMap[i+1]=newList
         }
 
+        setPageNumber(lists.size)
         fetchData()
 
     }

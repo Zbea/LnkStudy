@@ -214,6 +214,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             paintingDrawingBean_a = null
         }
 
+        if (paintingTypeBean?.isCloud==true){
+            elik_a?.setPWEnabled(false)
+            elik_b?.setPWEnabled(false)
+        }
+
         tv_title_b.text=paintingDrawingBean?.title
         updateImage(elik_b!!, paintingDrawingBean!!)
         tv_page_b.text = (page + 1).toString()

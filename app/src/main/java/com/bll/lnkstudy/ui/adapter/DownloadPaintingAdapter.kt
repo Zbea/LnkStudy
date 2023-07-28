@@ -18,7 +18,7 @@ class DownloadPaintingAdapter(layoutResId: Int, data: List<PaintingList.ListBean
             setText(R.id.tv_introduce,getString(R.string.introduction)+"：${item.drawDesc}")
 
             val image=getView<ImageView>(R.id.iv_image)
-            GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,5)
+            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl,image,5)
 
             addOnClickListener(R.id.btn_download)
         }

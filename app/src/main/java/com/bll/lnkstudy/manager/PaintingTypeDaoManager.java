@@ -66,6 +66,15 @@ public class PaintingTypeDaoManager {
         return dao.queryBuilder().where(whereUser).build().list();
     }
 
+    /**
+     * 所有字画、书法（不包括云书库）
+     * @return
+     */
+    public List<PaintingTypeBean> queryAllExcludeCloud() {
+        WhereCondition whereCondition=PaintingTypeBeanDao.Properties.IsCloud.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+    }
+
     public List<PaintingTypeBean> queryAllByType(int type) {
         WhereCondition whereCondition=PaintingTypeBeanDao.Properties.Type.eq(type);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();

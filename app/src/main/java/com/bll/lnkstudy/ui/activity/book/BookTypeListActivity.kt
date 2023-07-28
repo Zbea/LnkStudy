@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity.book
 import android.annotation.SuppressLint
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
@@ -160,15 +159,12 @@ class BookTypeListActivity : BaseAppCompatActivity() {
         val total: MutableList<BookBean>
         //判断是否是搜索
         if (bookNameStr.isEmpty()) {
-            books = BookGreenDaoManager.getInstance()
-                .queryAllBook(typeStr, pageIndex, Constants.PAGE_SIZE)
+            books = BookGreenDaoManager.getInstance().queryAllBook(typeStr, pageIndex, pageSize)
             total = BookGreenDaoManager.getInstance().queryAllBook(typeStr)
         } else {
-            books = BookGreenDaoManager.getInstance()
-                .queryAllName(bookNameStr, typeStr, pageIndex, Constants.PAGE_SIZE)
+            books = BookGreenDaoManager.getInstance().queryAllName(bookNameStr, typeStr, pageIndex, pageSize)
             total = BookGreenDaoManager.getInstance().queryAllName(bookNameStr, typeStr)
         }
-
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }

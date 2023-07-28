@@ -428,11 +428,12 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     /**
      * 跳转作业卷
      */
-    fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int){
-        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(mCourse,mTypeId)
+    fun gotoHomeworkReelDrawing(item: HomeworkTypeBean){
+        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item.course,item.typeId)
         val intent=Intent(activity, HomeworkPaperDrawingActivity::class.java)
-        intent.putExtra("course",mCourse)
-        intent.putExtra("typeId",mTypeId)
+        val bundle= Bundle()
+        bundle.putSerializable("homework",item)
+        intent.putExtra("bundle",bundle)
         customStartActivity1(intent)
     }
 
@@ -473,6 +474,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         intent.putExtra("path", bookBean.bookPath)
         intent.putExtra("tool", result.toString())
         intent.putExtra("key_book_id",bookBean.bookId.toString())
+        intent.putExtra("bookName", bookBean.bookName)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)
@@ -527,6 +529,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      * 清空作业本
      */
     fun setClearHomework(){
+        //删除所有作业分类
+        HomeworkTypeDaoManager.getInstance().clear()
         //删除所有作业
         HomeworkContentDaoManager.getInstance().clear()
         //删除所有朗读
@@ -701,7 +705,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
     /**
-     * 上传成功
+     * 上传成功(书籍云id)
      */
     open fun uploadSuccess(cloudIds: MutableList<Int>?){
         if (!cloudIds.isNullOrEmpty())

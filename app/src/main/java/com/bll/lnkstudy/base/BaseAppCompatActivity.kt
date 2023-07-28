@@ -354,11 +354,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 跳转作业卷
      */
-    fun gotoHomeworkReelDrawing(mCourse:String,mTypeId:Int,page: Int){
-        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(mCourse,mTypeId)
+    fun gotoHomeworkReelDrawing(item: HomeworkTypeBean,page: Int){
+        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item.course,item.typeId)
         val intent=Intent(this, HomeworkPaperDrawingActivity::class.java)
-        intent.putExtra("course",mCourse)
-        intent.putExtra("typeId",mTypeId)
+        val bundle= Bundle()
+        bundle.putSerializable("homework",item)
+        intent.putExtra("bundle",bundle)
         intent.putExtra("page",page)
         customStartActivity1(intent)
     }

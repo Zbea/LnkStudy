@@ -163,13 +163,14 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
                 bean.paintingTypeStr=popPaintings[paintingType-1].name
                 bean.info=item.drawDesc
                 bean.price=item.price
-                bean.imageUrl=item.imageUrl
+                bean.imageUrl=item.bodyUrl
                 bean.author=item.author
                 bean.supply=item.supply
                 bean.bodyUrl=item.bodyUrl
                 val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
                 //新建增量更新
                 DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
+                showToast(R.string.book_download_success)
             }
             override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                 hideLoading()

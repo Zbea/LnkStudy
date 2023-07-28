@@ -298,7 +298,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
                 //题卷本不存在，创建题卷本
-                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(book.bookId)){
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkTypeBook(book.bookId)){
                     val homeworkTypeBean=HomeworkTypeBean().apply {
                         name=book.bookName
                         grade=book.grade
@@ -308,7 +308,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
                         course=this@HomeworkBookStoreActivity.course
                         bookId=book.bookId
                         bgResId=book.imageUrl
-                        isCreate=true
+                        createStatus=0
                     }
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                 }

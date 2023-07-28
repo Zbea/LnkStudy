@@ -68,6 +68,18 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             presenter.login(map)
 
         }
+//
+//        SPUtil.putString("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2ODU5MTMsImlhdCI6MTY5MDQyNjcxMywianRpIjoiOTMwMjM3NjkifQ.zkiht3GPzRP-6aPo1majLlgiW6kprtRLtEg-SkWfZIM")
+//
+//        mUser=User()
+//        mUser?.accountId=93023769
+//        mUser?.telNumber="13048803395"
+//        mUser?.account="zhufeng"
+//        mUser?.nickname="朱"
+//        mUser?.grade=3
+//        mUser?.schoolProvince="广东省"
+//
+//        SPUtil.putObj("user",mUser!!)
 
         val tokenStr=SPUtil.getString("token")
 

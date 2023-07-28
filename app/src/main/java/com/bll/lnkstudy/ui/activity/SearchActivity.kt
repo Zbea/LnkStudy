@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +14,7 @@ import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
@@ -82,13 +85,21 @@ class SearchActivity : BaseAppCompatActivity() {
                 val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
                 when(item.state){
                     1->{
-                        gotoHomeworkReelDrawing(item.course,item.type,item.page)
+                        gotoHomeworkReelDrawing(typeItem,item.page)
                     }
                     2->{
                         gotoHomeworkDrawing(typeItem,item.page)
                     }
                     3->{
                         gotoHomeworkRecord(typeItem)
+                    }
+                    4->{
+                        val typeBook=HomeworkTypeDaoManager.getInstance().queryByBookId(item.type)
+                        val intent= Intent(this, HomeworkBookDetailsActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("homework",typeBook)
+                        intent.putExtra("homeworkBundle",bundle)
+                        customStartActivity(intent)
                     }
                 }
                 finish()
@@ -202,6 +213,19 @@ class SearchActivity : BaseAppCompatActivity() {
                         typeStr=item.typeStr
                         course=item.course
                         listJson= Gson().toJson(item)
+                    })
+                }
+
+                val homeBooks= HomeworkBookDaoManager.getInstance().search(titleStr)
+                for (item in homeBooks){
+                    searchBeans.add(SearchBean().apply {
+                        category=2
+                        title=item.bookName
+                        state=4
+                        type=item.bookId
+                        typeStr=item.bookName
+                        course=DataBeanManager.getCourseStr(item.subject)
+                        page=item.pageIndex
                     })
                 }
             }

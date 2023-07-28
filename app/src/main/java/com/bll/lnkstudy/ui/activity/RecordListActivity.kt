@@ -103,9 +103,11 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         setPageTitle(course+getString(R.string.record_read))
         EventBus.getDefault().register(this)
 
-        showView(iv_manager)
-        iv_manager.setImageResource(R.mipmap.icon_group_add)
         disMissView(ll_page_number)
+        if (homeworkType?.isCloud == false){
+            showView(iv_manager)
+            iv_manager.setImageResource(R.mipmap.icon_group_add)
+        }
 
         iv_manager.setOnClickListener {
             addRecord()

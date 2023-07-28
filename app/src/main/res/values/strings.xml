@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">墨之屏学习本</string>
+    <string name="app_name">青蓝学生本</string>
     <string name="authority">com.bll.lnkstudy</string>
     <string name="request_success">请求成功</string>
     <string name="net_work_error">检查网络是否连接</string>
@@ -122,6 +122,8 @@
     <string name="axis">坐标</string>
     <string name="lengthen">延长</string>
     <string name="excision">切除</string>
+    <string name="revocation">撤销</string>
+    <string name="parallel">平行</string>
     <string name="grayLine">灰线</string>
     <string name="reduce">托盘</string>
     <string name="circle_1">圆心</string>
@@ -292,6 +294,7 @@
     <string name="homework_commit_details_str">提交详情</string>
     <string name="homework_correct_details_str">批改详情</string>
     <string name="homework_book_str">新建题卷本</string>
+    <string name="homework_old_homework_str">往年作业本</string>
     <string name="homework_cover_module_str">封面模板</string>
     <string name="homework_module_str">作业本模板</string>
     <string name="homework_assign">作业内容</string>

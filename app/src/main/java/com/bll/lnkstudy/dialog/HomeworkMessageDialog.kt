@@ -77,6 +77,9 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
                 }
                 helper.setText(R.id.tv_state,state)
             }
+            else{
+                helper.setText(R.id.tv_state,"不提交")
+            }
         }
 
     }

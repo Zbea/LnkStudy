@@ -10,6 +10,8 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
+import java.util.Objects;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -21,7 +23,7 @@ public class PaintingBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int contentId;//内容id
     public int type;//1壁纸2书画
 

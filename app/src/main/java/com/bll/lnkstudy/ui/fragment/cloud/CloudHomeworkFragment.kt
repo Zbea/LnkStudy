@@ -88,16 +88,29 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 val homeworkTypeBean=types[position]
                 //如果是题卷本
                 if (homeworkTypeBean.state==4){
-                    if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
-                        startDownload(homeworkTypeBean)
+                    //判断题卷本是否已下载题卷书籍
+                    if (homeworkTypeBean.contentJson.isNotEmpty()){
+                        if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
+                            startDownload(homeworkTypeBean)
+                        }
+                        else{
+                            showToast(screenPos,R.string.toast_downloaded)
+                        }
                     }
                     else{
-                        showToast(screenPos,R.string.toast_downloaded)
+                        //未下载书籍的题卷本直接存储
+                        if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
+                            homeworkTypeBean.id=null
+                            HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                            showToast(screenPos,R.string.book_download_success)
+                        }
+                        else{
+                            showToast(screenPos,R.string.toast_downloaded)
+                        }
                     }
                 }
                 else{
-                    val item= HomeworkTypeDaoManager.getInstance().queryByTypeId(homeworkTypeBean.typeId)
-                    if (item==null){
+                    if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
                         download(homeworkTypeBean)
                     }
                     else{
@@ -281,21 +294,19 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
-                            //题卷本不存在，创建题卷本
-                            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(book.bookId)){
-                                val homeworkTypeBean=HomeworkTypeBean().apply {
-                                    name=book.bookName
-                                    grade=book.grade
-                                    typeId=ToolUtils.getDateId()
-                                    state=4
-                                    date=System.currentTimeMillis()
-                                    course=DataBeanManager.getCourseStr(book.subject)
-                                    bookId=book.bookId
-                                    bgResId=DataBeanManager.getHomeworkCoverStr()
-                                    isCreate=true
-                                }
-                                HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+
+                            val homeworkTypeBean=HomeworkTypeBean().apply {
+                                name=book.bookName
+                                grade=book.grade
+                                typeId=ToolUtils.getDateId()
+                                state=4
+                                date=System.currentTimeMillis()
+                                course=DataBeanManager.getCourseStr(book.subject)
+                                bookId=book.bookId
+                                bgResId=book.imageUrl
+                                createStatus=0
                             }
+                            HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
 
                             HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量更新

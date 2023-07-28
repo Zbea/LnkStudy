@@ -36,7 +36,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     }
 
     /**
-     * 获取老师下发作业
+     * 获取老师下发作业消息
      */
     fun getList(map: HashMap<String, Any>) {
         val body=RequestUtils.getBody(map)

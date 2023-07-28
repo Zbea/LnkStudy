@@ -276,9 +276,14 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (isExpand) {
             tv_title_a.text = homeworkContent_a?.title
         }
+        if (homeworkType?.isCloud==true){
+            elik_b?.setPWEnabled(false)
+        }
+        else{
+            //已提交后不能手写，显示合图后的图片
+            elik_b?.setPWEnabled(homeworkContent?.state == 0)
+        }
 
-        //已提交后不能手写，显示合图后的图片
-        elik_b?.setPWEnabled(homeworkContent?.state == 0)
         if (homeworkContent?.state == 0) {
             updateImage(elik_b!!, homeworkContent!!)
             v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
@@ -289,7 +294,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
         if (isExpand) {
             if (homeworkContent_a != null) {
-                elik_a?.setPWEnabled(homeworkContent_a?.state == 0)
+                if (homeworkType?.isCloud==true){
+                    elik_a?.setPWEnabled(false)
+                }
+                else{
+                    //已提交后不能手写，显示合图后的图片
+                    elik_a?.setPWEnabled(homeworkContent?.state == 0)
+                }
                 if (homeworkContent_a?.state == 0) {
                     updateImage(elik_a!!, homeworkContent_a!!)
                     v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景

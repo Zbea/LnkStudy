@@ -1,7 +1,5 @@
 package com.bll.lnkstudy.manager;
 
-import android.util.Log;
-
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
@@ -60,16 +58,41 @@ public class HomeworkTypeDaoManager {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(typeId);
         return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
+
     /**
-     * 查找作业本
-     * @param course
-     * @param isCreate false 老师创建 true 学生创建
+     * 查找往期作业本
+     * @param isCloud
      * @return
      */
-    public List<HomeworkTypeBean> queryAllByCourse(String course,boolean isCreate) {
+    public List<HomeworkTypeBean> queryAllByCloud(boolean isCloud) {
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(isCloud);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+    }
+
+    /**
+     * 查找往期作业本
+     * @param isCloud
+     * @return
+     */
+    public List<HomeworkTypeBean> queryAllByCloud(boolean isCloud,int page, int pageSize) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.IsCloud.eq(isCloud);
+        return  dao.queryBuilder().where(whereUser,whereCondition)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
+    }
+
+    public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCreate.eq(isCreate);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+    }
+
+    public List<HomeworkTypeBean> queryAllByCourse(String course,int page, int pageSize) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
     }
 
     /**
@@ -101,13 +124,17 @@ public class HomeworkTypeDaoManager {
      * @param bookId
      * @return
      */
-    public boolean isExistHomeworkType(int bookId) {
+    public boolean isExistHomeworkTypeBook(int bookId) {
         return queryByBookId(bookId)!=null;
     }
 
-    public List<HomeworkTypeBean> queryAllByCourse(String course) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+    /**
+     * 是否存在本子
+     * @param typeId
+     * @return
+     */
+    public boolean isExistHomeworkType(int typeId) {
+        return queryAllById(typeId)!=null;
     }
 
     public List<HomeworkTypeBean> queryAllByBook() {
@@ -115,6 +142,14 @@ public class HomeworkTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
+    /**
+     * 获取所有作业（不包括从云书库下载的）
+     * @return
+     */
+    public List<HomeworkTypeBean> queryAllExcludeCloud() {
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+    }
 
     public List<HomeworkTypeBean> queryAll() {
         return dao.queryBuilder().where(whereUser).build().list();

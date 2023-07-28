@@ -151,34 +151,31 @@ class PaintingFragment : BaseFragment(){
 
         val uploadList= mutableListOf<PaintingTypeBean>()
         //查找所有分类
-        val paintingTypes=PaintingTypeDaoManager.getInstance().queryAll()
+        val paintingTypes=PaintingTypeDaoManager.getInstance().queryAllExcludeCloud()
         for (item in paintingTypes){
             val paintingContents=PaintingDrawingDaoManager.getInstance().queryAllByType(item.type,item.grade)
             val path=FileAddress().getPathPainting(item.type,item.grade)
             val fileName="${if (item.type==0) "画本" else "书法"}${item.grade}年级"
-            //存在内容则上传
             if (paintingContents.size>0){
                 uploadList.add(item)
-                Handler().postDelayed({
-                    FileUploadManager(token).apply {
-                        startUpload(path,fileName)
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=5
-                                subType=if (item.type==0) 7 else 8
-                                subTypeStr=if (item.type==0) "我的画本" else "我的书法"
-                                date=System.currentTimeMillis()
-                                grade=this@PaintingFragment.grade
-                                listJson=Gson().toJson(item)
-                                contentJson=Gson().toJson(paintingContents)
-                                downloadUrl=it
-                            })
-                            if (cloudList.size==uploadList.size){
-                                mCloudUploadPresenter.upload(cloudList)
-                            }
+                FileUploadManager(token).apply {
+                    startUpload(path,fileName)
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=5
+                            subType=if (item.type==0) 7 else 8
+                            subTypeStr=if (item.type==0) "我的画本" else "我的书法"
+                            date=System.currentTimeMillis()
+                            grade=this@PaintingFragment.grade
+                            listJson=Gson().toJson(item)
+                            contentJson=Gson().toJson(paintingContents)
+                            downloadUrl=it
+                        })
+                        if (cloudList.size==uploadList.size){
+                            mCloudUploadPresenter.upload(cloudList)
                         }
                     }
-                },500)
+                }
             }
         }
     }
@@ -186,17 +183,6 @@ class PaintingFragment : BaseFragment(){
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         if (isLocalDrawing){
-            //将已经上传过的本地手绘书画从云书库删除
-            val ids= mutableListOf<Int>()
-            //查找所有分类
-            val paintingTypes=PaintingTypeDaoManager.getInstance().queryAll()
-            for (item in paintingTypes){
-                if (item.isCloud){
-                    ids.add(item.cloudId)
-                }
-            }
-            if (ids.size>0)
-                mCloudUploadPresenter.deleteCloud(ids)
             //删除所有本地画本、书法分类
             PaintingTypeDaoManager.getInstance().clear()
             //删除所有本地画本、书法内容

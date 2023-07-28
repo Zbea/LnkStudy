@@ -16,6 +16,7 @@ import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkstudy.utils.*
@@ -31,6 +32,7 @@ import java.io.File
 class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     private val mUploadPresenter= FileUploadPresenter(this)
+    private var homeworkType:HomeworkTypeBean?=null
     private var course=""
     private var typeId=0//分组id
     private var daoManager: HomeworkPaperDaoManager?=null
@@ -94,9 +96,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initData() {
-        course=intent.getStringExtra("course").toString()
-        typeId=intent.getIntExtra("typeId",0)
+        homeworkType = intent.getBundleExtra("bundle")?.getSerializable("homework") as HomeworkTypeBean
         currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
+        course=homeworkType?.course!!
+        typeId=homeworkType?.typeId!!
 
         daoManager= HomeworkPaperDaoManager.getInstance()
         daoContentManager= HomeworkPaperContentDaoManager.getInstance()
@@ -267,6 +270,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 showToast(DateUtils.longToStringWeek(paper?.endTime!!*1000)+getString(R.string.toast_before_commit))
         }
         else{
+            setPWEnabled(false)
+        }
+
+        if (homeworkType?.isCloud==true)
+        {
             setPWEnabled(false)
         }
 

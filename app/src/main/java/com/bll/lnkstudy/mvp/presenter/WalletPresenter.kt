@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.AccountXDList
 import com.bll.lnkstudy.mvp.model.AccountOrder
+import com.bll.lnkstudy.mvp.model.AccountXDList
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult
@@ -14,9 +14,9 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
     //获取学豆列表
     fun getXdList(boolean: Boolean) {
 
-        var map=HashMap<String,String>()
-        map.put("pageIndex", "1")
-        map.put("pageSize", "10")
+        val map=HashMap<String,String>()
+        map["pageIndex"] = "1"
+        map["pageSize"] = "10"
 
         val list = RetrofitManager.service.getSMoneyList(map)
         doRequest(list, object : Callback<AccountXDList>(view) {

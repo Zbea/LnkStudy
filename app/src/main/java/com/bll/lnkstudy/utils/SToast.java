@@ -70,13 +70,6 @@ public class SToast {
         else {
             toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                cancel();
-            }
-        },2000);
-
         toast.show();
     }
 

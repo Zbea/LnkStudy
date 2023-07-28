@@ -197,7 +197,6 @@ class PaperDrawingActivity: BaseDrawingActivity(){
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
-                elik_b?.setPWEnabled(false)
                 tv_page_b.text=""
             }
         }
