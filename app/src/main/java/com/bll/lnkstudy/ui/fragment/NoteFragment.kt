@@ -382,7 +382,6 @@ class NoteFragment : BaseFragment(){
                         date=System.currentTimeMillis()
                         grade=item.grade
                         listJson=Gson().toJson(item)
-                        downloadUrl="null"
                     })
                     if(isDiary){
                         if (cloudList.size==notes.size)

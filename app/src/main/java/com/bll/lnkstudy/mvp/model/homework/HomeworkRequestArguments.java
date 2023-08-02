@@ -7,5 +7,6 @@ public class HomeworkRequestArguments {
     public int commonTypeId;
     public int grade;
     public int subType;
+    public int parentHomeworkId;
 
 }

@@ -118,7 +118,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     private fun downloadNote(item: Note){
         item.id=null//设置数据库id为null用于重新加入
         //没有存储内容的笔记直接添加
-        if (item.downloadUrl=="null")
+        if (item.downloadUrl.isNullOrEmpty())
         {
             addNote(item)
             return
@@ -224,10 +224,10 @@ class CloudNoteFragment: BaseCloudFragment() {
         initTab()
     }
 
-    override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
+    override fun onCloudList(cloudList: CloudList) {
+        setPageNumber(cloudList.total)
         notes.clear()
-        for (item in item.list){
+        for (item in cloudList.list){
             if (item.listJson.isNotEmpty()){
                 val note= Gson().fromJson(item.listJson, Note::class.java)
                 note.cloudId=item.id

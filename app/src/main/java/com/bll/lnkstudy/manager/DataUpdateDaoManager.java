@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DataUpdateBeanDao;
 import com.bll.lnkstudy.greendao.PaperTypeBeanDao;
@@ -29,10 +30,9 @@ public class DataUpdateDaoManager {
     private static DataUpdateDaoManager mDbController;
 
 
-    private DataUpdateBeanDao dao;
+    private final DataUpdateBeanDao dao;
 
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= DataUpdateBeanDao.Properties.UserId.eq(userId);
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -53,6 +53,8 @@ public class DataUpdateDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= DataUpdateBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

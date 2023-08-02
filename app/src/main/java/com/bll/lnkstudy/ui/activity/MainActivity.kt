@@ -508,11 +508,7 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
                                     }
                                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                                 }
-                                else{
-                                    val homeworkTypeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(bean.bookId)
-                                    homeworkTypeBean.bgResId=bean.imageUrl
-                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-                                }
+
                                 //创建增量更新
                                 DataUpdateManager.createDataUpdateSource(8,bean.bookId,1,bean.bookId
                                     , Gson().toJson(bean),bean.bodyUrl)

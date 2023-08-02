@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
@@ -10,6 +11,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class HomeworkTypeDaoManager {
 
@@ -17,16 +19,9 @@ public class HomeworkTypeDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static HomeworkTypeDaoManager mDbController;
-
-
-    private HomeworkTypeBeanDao dao;  //note表
-
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= HomeworkTypeBeanDao.Properties.StudentId.eq(userId);
+    private final HomeworkTypeBeanDao dao;  //note表
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -48,16 +43,20 @@ public class HomeworkTypeDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= HomeworkTypeBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 
     public void insertOrReplace(HomeworkTypeBean bean) {
         dao.insertOrReplace(bean);
     }
-    public HomeworkTypeBean queryByTypeId(int typeId) {
+    public HomeworkTypeBean queryByTypeId(int typeId,int createStatus) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(typeId);
-        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.CreateStatus.eq(createStatus);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
     }
+
 
     /**
      * 查找往期作业本
@@ -135,6 +134,17 @@ public class HomeworkTypeDaoManager {
      */
     public boolean isExistHomeworkType(int typeId) {
         return queryAllById(typeId)!=null;
+    }
+
+    /**
+     * 是否存在家长本子
+     * @param parentId
+     * @return
+     */
+    public boolean isExistParentType(int parentId) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.ParentTypeId.eq(parentId);
+        HomeworkTypeBean bean= dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+        return bean!=null;
     }
 
     public List<HomeworkTypeBean> queryAllByBook() {

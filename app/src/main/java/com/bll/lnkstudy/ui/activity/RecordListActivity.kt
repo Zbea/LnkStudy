@@ -172,7 +172,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             } else {
                 mediaPlayer?.start()
                 recordBeans[position].state=1
-                mAdapter?.notifyDataSetChanged()//刷新为播放状态
+                mAdapter?.notifyItemChanged(position)//刷新为播放状态
             }
         } else {
             if (mediaPlayer?.isPlaying == true) {
@@ -197,18 +197,18 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         mediaPlayer?.setDataSource(path)
         mediaPlayer?.setOnCompletionListener {
             recordBeans[position].state=0
-            mAdapter?.notifyDataSetChanged()//刷新为结束状态
+            mAdapter?.notifyItemChanged(position)//刷新为结束状态
         }
         mediaPlayer?.prepare()
         mediaPlayer?.start()
         recordBeans[position].state=1
-        mAdapter?.notifyDataSetChanged()//刷新为播放状态
+        mAdapter?.notifyItemChanged(position)//刷新为播放状态
     }
 
     private fun pause(pos:Int){
         mediaPlayer?.pause()
         recordBeans[pos].state=0
-        mAdapter?.notifyDataSetChanged()//刷新为结束状态
+        mAdapter?.notifyItemChanged(position)//刷新为结束状态
     }
 
 
@@ -244,8 +244,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 }
                 override fun ok() {
                     val recordBean=recordBeans[position]
-                    recordBeans.removeAt(position)
-                    mAdapter?.notifyDataSetChanged()
+                    mAdapter?.remove(position)
                     RecordDaoManager.getInstance().deleteBean(recordBean)
                     FileUtils.deleteFile(File(recordBean.path))
                     //修改本地增量更新

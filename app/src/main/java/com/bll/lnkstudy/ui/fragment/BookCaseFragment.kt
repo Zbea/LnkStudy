@@ -177,7 +177,6 @@ class BookCaseFragment: BaseFragment() {
                     cloudList.add(CloudListBean().apply {
                         type=0
                         zipUrl=item.downloadUrl
-                        downloadUrl="null"
                         subType=-1
                         subTypeStr=item.subtypeStr
                         date=System.currentTimeMillis()

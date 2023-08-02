@@ -30,16 +30,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         public final static Property Name = new Property(3, String.class, "name", false, "NAME");
         public final static Property Grade = new Property(4, int.class, "grade", false, "GRADE");
         public final static Property TypeId = new Property(5, int.class, "typeId", false, "TYPE_ID");
-        public final static Property State = new Property(6, int.class, "state", false, "STATE");
-        public final static Property Date = new Property(7, long.class, "date", false, "DATE");
-        public final static Property ContentResId = new Property(8, String.class, "contentResId", false, "CONTENT_RES_ID");
-        public final static Property BgResId = new Property(9, String.class, "bgResId", false, "BG_RES_ID");
-        public final static Property Course = new Property(10, String.class, "course", false, "COURSE");
-        public final static Property BookId = new Property(11, int.class, "bookId", false, "BOOK_ID");
-        public final static Property CreateStatus = new Property(12, int.class, "createStatus", false, "CREATE_STATUS");
-        public final static Property MessageTotal = new Property(13, int.class, "messageTotal", false, "MESSAGE_TOTAL");
-        public final static Property IsCloud = new Property(14, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(15, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property ParentTypeId = new Property(6, int.class, "parentTypeId", false, "PARENT_TYPE_ID");
+        public final static Property State = new Property(7, int.class, "state", false, "STATE");
+        public final static Property Date = new Property(8, long.class, "date", false, "DATE");
+        public final static Property ContentResId = new Property(9, String.class, "contentResId", false, "CONTENT_RES_ID");
+        public final static Property BgResId = new Property(10, String.class, "bgResId", false, "BG_RES_ID");
+        public final static Property Course = new Property(11, String.class, "course", false, "COURSE");
+        public final static Property BookId = new Property(12, int.class, "bookId", false, "BOOK_ID");
+        public final static Property CreateStatus = new Property(13, int.class, "createStatus", false, "CREATE_STATUS");
+        public final static Property MessageTotal = new Property(14, int.class, "messageTotal", false, "MESSAGE_TOTAL");
+        public final static Property IsCloud = new Property(15, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(16, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -61,16 +62,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
                 "\"NAME\" TEXT," + // 3: name
                 "\"GRADE\" INTEGER NOT NULL ," + // 4: grade
                 "\"TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 5: typeId
-                "\"STATE\" INTEGER NOT NULL ," + // 6: state
-                "\"DATE\" INTEGER NOT NULL ," + // 7: date
-                "\"CONTENT_RES_ID\" TEXT," + // 8: contentResId
-                "\"BG_RES_ID\" TEXT," + // 9: bgResId
-                "\"COURSE\" TEXT," + // 10: course
-                "\"BOOK_ID\" INTEGER NOT NULL ," + // 11: bookId
-                "\"CREATE_STATUS\" INTEGER NOT NULL ," + // 12: createStatus
-                "\"MESSAGE_TOTAL\" INTEGER NOT NULL ," + // 13: messageTotal
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 14: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 15: cloudId
+                "\"PARENT_TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 6: parentTypeId
+                "\"STATE\" INTEGER NOT NULL ," + // 7: state
+                "\"DATE\" INTEGER NOT NULL ," + // 8: date
+                "\"CONTENT_RES_ID\" TEXT," + // 9: contentResId
+                "\"BG_RES_ID\" TEXT," + // 10: bgResId
+                "\"COURSE\" TEXT," + // 11: course
+                "\"BOOK_ID\" INTEGER NOT NULL ," + // 12: bookId
+                "\"CREATE_STATUS\" INTEGER NOT NULL ," + // 13: createStatus
+                "\"MESSAGE_TOTAL\" INTEGER NOT NULL ," + // 14: messageTotal
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 15: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 16: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -96,28 +98,29 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         }
         stmt.bindLong(5, entity.getGrade());
         stmt.bindLong(6, entity.getTypeId());
-        stmt.bindLong(7, entity.getState());
-        stmt.bindLong(8, entity.getDate());
+        stmt.bindLong(7, entity.getParentTypeId());
+        stmt.bindLong(8, entity.getState());
+        stmt.bindLong(9, entity.getDate());
  
         String contentResId = entity.getContentResId();
         if (contentResId != null) {
-            stmt.bindString(9, contentResId);
+            stmt.bindString(10, contentResId);
         }
  
         String bgResId = entity.getBgResId();
         if (bgResId != null) {
-            stmt.bindString(10, bgResId);
+            stmt.bindString(11, bgResId);
         }
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(11, course);
+            stmt.bindString(12, course);
         }
-        stmt.bindLong(12, entity.getBookId());
-        stmt.bindLong(13, entity.getCreateStatus());
-        stmt.bindLong(14, entity.getMessageTotal());
-        stmt.bindLong(15, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(16, entity.getCloudId());
+        stmt.bindLong(13, entity.getBookId());
+        stmt.bindLong(14, entity.getCreateStatus());
+        stmt.bindLong(15, entity.getMessageTotal());
+        stmt.bindLong(16, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(17, entity.getCloudId());
     }
 
     @Override
@@ -137,28 +140,29 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         }
         stmt.bindLong(5, entity.getGrade());
         stmt.bindLong(6, entity.getTypeId());
-        stmt.bindLong(7, entity.getState());
-        stmt.bindLong(8, entity.getDate());
+        stmt.bindLong(7, entity.getParentTypeId());
+        stmt.bindLong(8, entity.getState());
+        stmt.bindLong(9, entity.getDate());
  
         String contentResId = entity.getContentResId();
         if (contentResId != null) {
-            stmt.bindString(9, contentResId);
+            stmt.bindString(10, contentResId);
         }
  
         String bgResId = entity.getBgResId();
         if (bgResId != null) {
-            stmt.bindString(10, bgResId);
+            stmt.bindString(11, bgResId);
         }
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(11, course);
+            stmt.bindString(12, course);
         }
-        stmt.bindLong(12, entity.getBookId());
-        stmt.bindLong(13, entity.getCreateStatus());
-        stmt.bindLong(14, entity.getMessageTotal());
-        stmt.bindLong(15, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(16, entity.getCloudId());
+        stmt.bindLong(13, entity.getBookId());
+        stmt.bindLong(14, entity.getCreateStatus());
+        stmt.bindLong(15, entity.getMessageTotal());
+        stmt.bindLong(16, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(17, entity.getCloudId());
     }
 
     @Override
@@ -175,16 +179,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
             cursor.getInt(offset + 4), // grade
             cursor.getInt(offset + 5), // typeId
-            cursor.getInt(offset + 6), // state
-            cursor.getLong(offset + 7), // date
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // contentResId
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // bgResId
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // course
-            cursor.getInt(offset + 11), // bookId
-            cursor.getInt(offset + 12), // createStatus
-            cursor.getInt(offset + 13), // messageTotal
-            cursor.getShort(offset + 14) != 0, // isCloud
-            cursor.getInt(offset + 15) // cloudId
+            cursor.getInt(offset + 6), // parentTypeId
+            cursor.getInt(offset + 7), // state
+            cursor.getLong(offset + 8), // date
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // contentResId
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // bgResId
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // course
+            cursor.getInt(offset + 12), // bookId
+            cursor.getInt(offset + 13), // createStatus
+            cursor.getInt(offset + 14), // messageTotal
+            cursor.getShort(offset + 15) != 0, // isCloud
+            cursor.getInt(offset + 16) // cloudId
         );
         return entity;
     }
@@ -197,16 +202,17 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setGrade(cursor.getInt(offset + 4));
         entity.setTypeId(cursor.getInt(offset + 5));
-        entity.setState(cursor.getInt(offset + 6));
-        entity.setDate(cursor.getLong(offset + 7));
-        entity.setContentResId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setBgResId(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setCourse(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setBookId(cursor.getInt(offset + 11));
-        entity.setCreateStatus(cursor.getInt(offset + 12));
-        entity.setMessageTotal(cursor.getInt(offset + 13));
-        entity.setIsCloud(cursor.getShort(offset + 14) != 0);
-        entity.setCloudId(cursor.getInt(offset + 15));
+        entity.setParentTypeId(cursor.getInt(offset + 6));
+        entity.setState(cursor.getInt(offset + 7));
+        entity.setDate(cursor.getLong(offset + 8));
+        entity.setContentResId(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setBgResId(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setCourse(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setBookId(cursor.getInt(offset + 12));
+        entity.setCreateStatus(cursor.getInt(offset + 13));
+        entity.setMessageTotal(cursor.getInt(offset + 14));
+        entity.setIsCloud(cursor.getShort(offset + 15) != 0);
+        entity.setCloudId(cursor.getInt(offset + 16));
      }
     
     @Override

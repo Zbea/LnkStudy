@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
 import com.bll.lnkstudy.greendao.PaperBeanDao;
@@ -14,6 +15,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PaperTypeDaoManager {
 
@@ -21,16 +23,9 @@ public class PaperTypeDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static PaperTypeDaoManager mDbController;
-
-
-    private PaperTypeBeanDao dao;  //note表
-
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= PaperTypeBeanDao.Properties.StudentId.eq(userId);
+    private final PaperTypeBeanDao dao;  //note表
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -52,6 +47,8 @@ public class PaperTypeDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= PaperTypeBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

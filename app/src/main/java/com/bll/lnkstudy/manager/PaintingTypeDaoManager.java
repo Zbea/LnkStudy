@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaintingTypeBeanDao;
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean;
@@ -18,17 +19,9 @@ public class PaintingTypeDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static PaintingTypeDaoManager mDbController;
-
-
-    private PaintingTypeBeanDao dao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= PaintingTypeBeanDao.Properties.UserId.eq(userId);
+    private final PaintingTypeBeanDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -49,6 +42,8 @@ public class PaintingTypeDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= PaintingTypeBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

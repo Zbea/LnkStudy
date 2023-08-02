@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkPaperBeanDao;
 import com.bll.lnkstudy.greendao.PaperBeanDao;
@@ -20,17 +21,9 @@ public class HomeworkPaperDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static HomeworkPaperDaoManager mDbController;
-
-
-    private HomeworkPaperBeanDao dao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= HomeworkPaperBeanDao.Properties.UserId.eq(userId);
+    private final HomeworkPaperBeanDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -52,6 +45,8 @@ public class HomeworkPaperDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= HomeworkPaperBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

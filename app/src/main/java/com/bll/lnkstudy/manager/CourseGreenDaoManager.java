@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.CourseBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.mvp.model.CourseBean;
@@ -10,6 +11,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class CourseGreenDaoManager {
@@ -25,16 +27,15 @@ public class CourseGreenDaoManager {
     private static CourseGreenDaoManager mDbController;
 
 
-    private CourseBeanDao courseDao;
+    private final CourseBeanDao courseDao;
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
      */
     public CourseGreenDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-
         courseDao = mDaoSession.getCourseBeanDao();
     }
 
@@ -50,6 +51,8 @@ public class CourseGreenDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= CourseBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 
@@ -65,9 +68,8 @@ public class CourseGreenDaoManager {
 
     //根据Id 查询
     public CourseBean queryID(int id) {
-        WhereCondition whereCondition= CourseBeanDao.Properties.UserId.eq(userId);
         WhereCondition whereCondition1= CourseBeanDao.Properties.ViewId.eq(id);
-        return  courseDao.queryBuilder().where(whereCondition,whereCondition1).build().unique();
+        return  courseDao.queryBuilder().where(whereUser,whereCondition1).build().unique();
     }
 
     //删除

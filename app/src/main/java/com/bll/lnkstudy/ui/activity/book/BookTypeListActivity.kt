@@ -67,8 +67,7 @@ class BookTypeListActivity : BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_book_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(
-                    4,
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,
                     DP2PX.dip2px(this@BookTypeListActivity, 22f),
                     DP2PX.dip2px(this@BookTypeListActivity, 35f)
                 )

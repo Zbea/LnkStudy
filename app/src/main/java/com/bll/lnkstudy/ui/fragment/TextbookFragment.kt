@@ -176,7 +176,6 @@ class TextbookFragment : BaseFragment() {
                     subTypeStr=book.subtypeStr
                     date=System.currentTimeMillis()
                     listJson= Gson().toJson(book)
-                    downloadUrl="null"
                     zipUrl=book.downloadUrl
                     bookId=book.bookId
                 })

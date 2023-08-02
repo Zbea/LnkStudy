@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.manager;
 
 
+import android.util.Log;
+
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -11,6 +13,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by ly on 2021/1/19 17:52
@@ -26,10 +29,9 @@ public class BookGreenDaoManager {
      */
     private static BookGreenDaoManager mDbController;
 
-    private BookBeanDao bookBeanDao;  //book表
+    private final BookBeanDao bookBeanDao;  //book表
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    WhereCondition whereUser= BookBeanDao.Properties.UserId.eq(userId);
+    private static WhereCondition whereUser;
 
 
     /**
@@ -51,6 +53,8 @@ public class BookGreenDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= BookBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

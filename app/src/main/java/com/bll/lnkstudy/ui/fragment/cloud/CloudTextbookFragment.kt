@@ -75,7 +75,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
-                    if (book.drawUrl!="null"){
+                    if (!book.drawUrl.isNullOrEmpty()){
                         downloadBookDrawing(book)
                     }
                     else{
@@ -189,10 +189,10 @@ class CloudTextbookFragment:BaseCloudFragment() {
         mCloudPresenter.getList(map)
     }
 
-    override fun onCloudList(list: CloudList) {
-        setPageNumber(list.total)
+    override fun onCloudList(cloudList: CloudList) {
+        setPageNumber(cloudList.total)
         books.clear()
-        for (item in list.list){
+        for (item in cloudList.list){
             if (item.listJson.isNotEmpty()){
                 val bookBean= Gson().fromJson(item.listJson, BookBean::class.java)
                 bookBean.id=null

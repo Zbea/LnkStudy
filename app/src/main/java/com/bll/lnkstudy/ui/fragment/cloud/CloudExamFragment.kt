@@ -106,7 +106,7 @@ class CloudExamFragment:BaseCloudFragment() {
     private fun download(item:PaperTypeBean){
         item.id=null//设置数据库id为null用于重新加入
         //没有内容直接添加
-        if (item.downloadUrl=="null")
+        if (item.downloadUrl.isNullOrEmpty())
         {
             PaperTypeDaoManager.getInstance().insertOrReplace(item)
             //创建增量数据
@@ -191,10 +191,10 @@ class CloudExamFragment:BaseCloudFragment() {
         mCloudPresenter.getList(map)
     }
 
-    override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
+    override fun onCloudList(cloudList: CloudList) {
+        setPageNumber(cloudList.total)
         types.clear()
-        for (type in item.list){
+        for (type in cloudList.list){
             if (type.listJson.isNotEmpty()){
                 val paperTypeBean= Gson().fromJson(type.listJson, PaperTypeBean::class.java)
                 paperTypeBean.cloudId=type.id

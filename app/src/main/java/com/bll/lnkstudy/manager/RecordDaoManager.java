@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
@@ -11,6 +12,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RecordDaoManager {
 
@@ -18,24 +20,15 @@ public class RecordDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static RecordDaoManager mDbController;
-
-
-    private RecordBeanDao recordBeanDao;
-
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= RecordBeanDao.Properties.UserId.eq(userId);
+    private final RecordBeanDao recordBeanDao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
      */
     public RecordDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-
         recordBeanDao = mDaoSession.getRecordBeanDao();
     }
 
@@ -51,6 +44,8 @@ public class RecordDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= RecordBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

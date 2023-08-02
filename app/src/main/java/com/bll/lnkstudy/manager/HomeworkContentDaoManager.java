@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
@@ -10,6 +11,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class HomeworkContentDaoManager {
 
@@ -26,8 +28,7 @@ public class HomeworkContentDaoManager {
 
     private HomeworkContentBeanDao dao;
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= HomeworkContentBeanDao.Properties.UserId.eq(userId);
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -48,6 +49,8 @@ public class HomeworkContentDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= HomeworkContentBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

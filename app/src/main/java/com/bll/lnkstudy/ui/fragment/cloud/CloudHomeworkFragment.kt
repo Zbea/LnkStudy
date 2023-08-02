@@ -127,7 +127,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private fun download(item: HomeworkTypeBean){
         item.id=null//设置数据库id为null用于重新加入
         //没有内容直接添加
-        if (item.downloadUrl=="null")
+        if (item.downloadUrl.isNullOrEmpty())
         {
             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
             //创建增量数据
@@ -235,57 +235,17 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private fun startDownload(homeworkTypeBean: HomeworkTypeBean){
         val bookBean= Gson().fromJson(homeworkTypeBean.contentJson, HomeworkBookBean::class.java)
         bookBean.drawUrl=homeworkTypeBean.downloadUrl
-        //判断没有手写直接下书
-        if (homeworkTypeBean.downloadUrl.equals("null")){
-            downloadBook(bookBean)
-        }
-        else{
-            downloadBookDrawing(bookBean)
-        }
-    }
-
-    /**
-     * 下载题卷本手写内容
-     */
-    private fun downloadBookDrawing(book: HomeworkBookBean){
-        val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
-                        override fun onFinish() {
-                            //创建增量更新
-                            DataUpdateManager.createDataUpdate(8,book.bookId,2,book.bookId
-                                ,"",book.bookDrawPath)
-                            //删除教材的zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            downloadBook(book)
-                        }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                        }
-                        override fun onStart() {
-                        }
-                    })
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                }
-            })
+        downloadBook(bookBean,!homeworkTypeBean.downloadUrl.isNullOrEmpty())
     }
 
     /**
      * 下载题卷本
      */
-    private fun downloadBook(book: HomeworkBookBean) {
+    private fun downloadBook(book: HomeworkBookBean,isDraw:Boolean) {
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        FileDownManager.with(activity).create(book.bodyUrl).setPath(zipPath)
+        val url=if (isDraw) book.drawUrl else book.bodyUrl
+        FileDownManager.with(activity).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
@@ -312,7 +272,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             //创建增量更新
                             DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId
                                 ,Gson().toJson(book),book.bodyUrl)
-
+                            if (isDraw){
+                                DataUpdateManager.createDataUpdate(8,book.bookId,2,book.bookId
+                                    ,"",book.bookDrawPath)
+                            }
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
@@ -353,10 +316,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         mCloudPresenter.getList(map)
     }
 
-    override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
+    override fun onCloudList(cloudList: CloudList) {
+        setPageNumber(cloudList.total)
         types.clear()
-        for (type in item.list){
+        for (type in cloudList.list){
             if (type.listJson.isNotEmpty()){
                 val homeworkTypeBean= Gson().fromJson(type.listJson, HomeworkTypeBean::class.java)
                 homeworkTypeBean.cloudId=type.id

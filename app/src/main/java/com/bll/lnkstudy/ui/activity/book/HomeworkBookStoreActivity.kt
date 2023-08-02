@@ -312,11 +312,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
                     }
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                 }
-                else{
-                    val homeworkTypeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(book.bookId)
-                    homeworkTypeBean.bgResId=book.imageUrl
-                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-                }
 
                 val homeworkBookBean=HomeworkBookBean().apply {
                     bookId=book.bookId

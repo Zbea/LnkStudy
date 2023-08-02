@@ -309,6 +309,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         intent.putExtra("path", bookBean.bookPath)
         intent.putExtra("tool", result.toString())
         intent.putExtra("key_book_id",bookBean.bookId.toString())
+        intent.putExtra("bookName", bookBean.bookName)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
         startActivity(intent)
@@ -540,13 +541,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         showToast(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
-
-        Handler().postDelayed(Runnable {
-            val intent=Intent(this, AccountLoginActivity::class.java)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-        }, 500)
+        val intent=Intent(this, AccountLoginActivity::class.java)
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        startActivity(intent)
+        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
     }
 
     override fun hideLoading() {

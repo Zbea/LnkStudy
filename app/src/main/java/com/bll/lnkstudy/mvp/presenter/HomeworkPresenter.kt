@@ -48,6 +48,40 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     }
 
     /**
+     * 获取家长作业本消息
+     */
+    fun getParentMessage(map :HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.getParentMessage(body)
+        doRequest(type, object : Callback<Map<String,ParentHomeworkMessage>>(view) {
+            override fun failed(tBaseResult: BaseResult<Map<String,ParentHomeworkMessage>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Map<String,ParentHomeworkMessage>>) {
+                if (tBaseResult.data!=null)
+                    view.onParentMessageList(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    /**
+     * 获取家长作业本批改下发
+     */
+    fun getParentReel(map :HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.getParentReel(body)
+        doRequest(type, object : Callback<Map<String,MutableList<ParentHomeworkBean>>>(view) {
+            override fun failed(tBaseResult: BaseResult<Map<String,MutableList<ParentHomeworkBean>>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Map<String,MutableList<ParentHomeworkBean>>>) {
+                if (tBaseResult.data!=null)
+                    view.onParentReel(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    /**
      * 获取老师下发作业消息
      */
     fun getList(map: HashMap<String, Any>) {
@@ -110,6 +144,22 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     }
 
     /**
+     * 家长下发作业卷下载成功
+     */
+    fun downloadParent(id:Int) {
+        val body=RequestUtils.getBody(Pair.create("id",id))
+        val type = RetrofitManager.service.commitParentLoad(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onDownloadSuccess()
+            }
+        }, false)
+    }
+
+    /**
      * 老师下发作业卷下载成功
      */
     fun commitDownload(id:Int) {
@@ -123,19 +173,6 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
                 view.onDownloadSuccess()
             }
         }, false)
-    }
-
-    fun commitHomework(map:HashMap<String,Any>){
-        val body= RequestUtils.getBody(map)
-        val commit = RetrofitManager.service.commitPaper(body)
-        doRequest(commit, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onCommitSuccess()
-            }
-        }, true)
     }
 
 }

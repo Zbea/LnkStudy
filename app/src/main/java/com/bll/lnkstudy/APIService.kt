@@ -286,8 +286,24 @@ interface APIService{
     /**
      * 消息列表
      */
-    @GET("student/job/list")
-    fun getParentMessage(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
+    @POST("student/job/listByIds")
+    fun getParentMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String,ParentHomeworkMessage>>>
+    /**
+     * 消息列表
+     */
+    @POST("student/job/downloadByIds")
+    fun getParentReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String,MutableList<ParentHomeworkBean>>>>
+    /**
+     * 作业卷下载完成后 通知后台
+     */
+    @POST("student/job/downloadChange")
+    fun commitParentLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 学生提交考卷
+     */
+    @POST("student/job/childSubmit")
+    fun commitParent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
     /**
      * 公共年级接口
      */

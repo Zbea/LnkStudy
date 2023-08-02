@@ -260,6 +260,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    showLog(e?.message.toString())
                     //删除缓存 poolmap
                     hideLoading()
                     showToast(book.bookName+getString(R.string.book_download_fail))

@@ -16,7 +16,6 @@ import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -41,7 +40,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private var homeworks = mutableListOf<HomeworkContentBean>() //所有作业内容
 
     private var page = 0//页码
-    private var messages = mutableListOf<HomeworkMessage.MessageBean>()
+    private var messages = mutableListOf<ItemList>()
     private var drawingCommitDialog: DrawingCommitDialog? = null
     private var homeworkCommit: HomeworkCommit? = null
     private val commitItems = mutableListOf<ItemList>()
@@ -57,11 +56,17 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map = HashMap<String, Any>()
-                    map["studentTaskId"] = homeworkCommit?.messageId!!
-                    map["studentUrl"] = ToolUtils.getImagesStr(urls)
-                    mUploadPresenter.commit(map)
+                    if (homeworkType?.createStatus==1){
+                        map["studentTaskId"] = homeworkCommit?.messageId!!
+                        map["studentUrl"] = ToolUtils.getImagesStr(urls)
+                        mUploadPresenter.commit(map)
+                    }
+                    else{
+                        map["id"] = homeworkCommit?.messageId!!
+                        map["submitUrl"] = ToolUtils.getImagesStr(urls)
+                        mUploadPresenter.commitParent(map)
+                    }
                 }
-
                 override fun onUploadFail() {
                     hideLoading()
                     showToast(R.string.upload_fail)
@@ -102,11 +107,31 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkTypeId = homeworkType?.typeId!!
         course = homeworkType?.course!!
 
-        val list = homeworkType?.messages
-        if (!list.isNullOrEmpty()) {
-            for (item in list) {
-                if (item.endTime > 0 && item.status == 3) {
-                    messages.add(item)
+        when(homeworkType?.createStatus){
+            1->{
+                val list = homeworkType?.messages
+                if (!list.isNullOrEmpty()) {
+                    for (item in list) {
+                        if (item.endTime > 0 && item.status == 3) {
+                            messages.add(ItemList().apply {
+                                id=item.studentTaskId
+                                name=item.title
+                            })
+                        }
+                    }
+                }
+            }
+            2->{
+                val list = homeworkType?.parents
+                if (!list.isNullOrEmpty()) {
+                    for (item in list) {
+                        if (item.endTime > 0 && item.status == 1) {
+                            messages.add(ItemList().apply {
+                                id=item.id
+                                name=item.content
+                            })
+                        }
+                    }
                 }
             }
         }
@@ -147,14 +172,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             if (messages.size == 0 || homeworkContent?.state != 0)
                 return@setOnClickListener
             if (drawingCommitDialog == null) {
-                val items= mutableListOf<ItemList>()
-                for (item in messages){
-                    items.add(ItemList().apply {
-                        id=item.studentTaskId
-                        name=item.title
-                    })
-                }
-                drawingCommitDialog = DrawingCommitDialog(this, getCurrentScreenPos(), items).builder()
+                drawingCommitDialog = DrawingCommitDialog(this, getCurrentScreenPos(), messages).builder()
                 drawingCommitDialog?.setOnDialogClickListener {
                     homeworkCommit = it
                     commit()
@@ -294,7 +312,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             updateImage(elik_b!!, homeworkContent!!)
             v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
         } else {
-            GlideUtils.setImageFile(this, File(homeworkContent?.path), v_content_b)
+            GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
         }
         tv_page_b.text = "${page + 1}"
 

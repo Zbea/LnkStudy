@@ -15,6 +15,8 @@ import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean;
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage;
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
@@ -140,13 +142,14 @@ public interface IContractView {
         void onTypeList(List<HomeworkTypeBean> list);
         void onTypeParentList(List<ParentTypeBean> list);
         void onMessageList(Map<String, HomeworkMessage> map);
+        void onParentMessageList(Map<String, ParentHomeworkMessage> map);
         void onListReel(Map<String, HomeworkPaperList> map);
+        void onParentReel(Map<String, List<ParentHomeworkBean>> map);
         void onDetails(List<HomeworkDetails.HomeworkDetailBean> details);
         /**
          * 下发作业下载成功
          */
         void onDownloadSuccess();
-        void onCommitSuccess();
     }
 
     interface IMessageView extends IBaseView{

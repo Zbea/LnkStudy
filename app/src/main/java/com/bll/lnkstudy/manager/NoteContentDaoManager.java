@@ -2,6 +2,7 @@ package com.bll.lnkstudy.manager;
 
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.mvp.model.NoteContentBean;
@@ -19,17 +20,9 @@ public class NoteContentDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static NoteContentDaoManager mDbController;
-
-
-    private NoteContentBeanDao noteDao;  //note表
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= NoteContentBeanDao.Properties.UserId.eq(userId);
+    private final NoteContentBeanDao noteDao;  //note表
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -50,6 +43,8 @@ public class NoteContentDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= NoteContentBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

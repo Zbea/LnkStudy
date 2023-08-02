@@ -635,13 +635,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         showToast(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
-
-        Handler().postDelayed(Runnable {
-            val intent=Intent(this, AccountLoginActivity::class.java)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-        }, 500)
+        val intent=Intent(this, AccountLoginActivity::class.java)
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        startActivity(intent)
+        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
     }
 
     override fun hideLoading() {

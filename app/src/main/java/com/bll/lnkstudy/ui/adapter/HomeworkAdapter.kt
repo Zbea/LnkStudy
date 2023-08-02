@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.adapter
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.TextView
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.GlideUtils
@@ -24,7 +25,8 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
             }
             else{
                 setImageResource(R.id.iv_image,R.color.color_transparent)
-                setBackgroundRes(R.id.iv_image,ToolUtils.getImageResId(mContext, item.bgResId))
+                val bg=if (item.bgResId.isNullOrEmpty()) DataBeanManager.getHomeworkCoverStr() else item.bgResId
+                setBackgroundRes(R.id.iv_image,ToolUtils.getImageResId(mContext,bg))
             }
 
             if (item.isPg) {

@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NotebookDao;
 import com.bll.lnkstudy.mvp.model.Notebook;
@@ -18,16 +19,9 @@ public class NotebookDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static NotebookDaoManager mDbController;
-
-
-    private NotebookDao dao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= NotebookDao.Properties.UserId.eq(userId);
+    private final NotebookDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -48,6 +42,8 @@ public class NotebookDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= NotebookDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

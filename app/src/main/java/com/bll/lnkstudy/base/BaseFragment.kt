@@ -2,7 +2,6 @@ package com.bll.lnkstudy.base
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -640,12 +639,10 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         showToast(screenPos,R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
-        Handler().postDelayed(Runnable {
-            val intent=Intent(activity, AccountLoginActivity::class.java)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-        }, 500)
+        val intent=Intent(activity, AccountLoginActivity::class.java)
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        startActivity(intent)
+        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
     }
     override fun hideLoading() {
         if (mView==null||activity==null)return

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.DataBeanManager;
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteDao;
 import com.bll.lnkstudy.mvp.model.Note;
@@ -19,15 +20,9 @@ public class NoteDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static NoteDaoManager mDbController;
-
-    private NoteDao dao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= NoteDao.Properties.UserId.eq(userId);
+    private final NoteDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -48,6 +43,8 @@ public class NoteDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= NoteDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

@@ -20,16 +20,10 @@ import com.bll.lnkstudy.mvp.model.CatalogParent
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.BitmapUtils
-import com.bll.lnkstudy.utils.FileImageUploadManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ToolUtils
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bll.lnkstudy.utils.*
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
@@ -51,7 +45,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
     private var pageCount = 0
     private var page = 0 //当前页码
-    private var messages= mutableListOf<HomeworkMessage.MessageBean>()
+    private var messages= mutableListOf<ItemList>()
     private var drawingCommitDialog:DrawingCommitDialog?=null
     private var homeworkCommit: HomeworkCommit?=null
     private val commitItems = mutableListOf<ItemList>()
@@ -67,10 +61,18 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
-                    map["studentTaskId"]=homeworkCommit?.messageId!!
-                    map["page"]=ToolUtils.getImagesStr(homeworkCommit?.contents!!)
-                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
-                    mUploadPresenter.commit(map)
+                    if (homeworkType?.createStatus==1){
+                        map["studentTaskId"]=homeworkCommit?.messageId!!
+                        map["page"]=ToolUtils.getImagesStr(homeworkCommit?.contents!!)
+                        map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                        mUploadPresenter.commit(map)
+                    }
+                    else{
+                        map["pageStr"]=ToolUtils.getImagesStr(homeworkCommit?.contents!!)
+                        map["id"] = homeworkCommit?.messageId!!
+                        map["submitUrl"] = ToolUtils.getImagesStr(urls)
+                        mUploadPresenter.commitParent(map)
+                    }
                 }
                 override fun onUploadFail() {
                     hideLoading()
@@ -94,11 +96,31 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
 
-        val list=homeworkType?.messages
-        if (!list.isNullOrEmpty()){
-            for (item in list){
-                if (item.endTime>0&&item.status==3){
-                    messages.add(item)
+        when(homeworkType?.createStatus){
+            1->{
+                val list = homeworkType?.messages
+                if (!list.isNullOrEmpty()) {
+                    for (item in list) {
+                        if (item.endTime > 0 && item.status == 3) {
+                            messages.add(ItemList().apply {
+                                id=item.studentTaskId
+                                name=item.title
+                            })
+                        }
+                    }
+                }
+            }
+            2->{
+                val list = homeworkType?.parents
+                if (!list.isNullOrEmpty()) {
+                    for (item in list) {
+                        if (item.endTime > 0 && item.status == 1) {
+                            messages.add(ItemList().apply {
+                                id=item.id
+                                name=item.content
+                            })
+                        }
+                    }
                 }
             }
         }
@@ -170,14 +192,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             if (messages.size==0)
                 return@setOnClickListener
             if (drawingCommitDialog==null){
-                val items= mutableListOf<ItemList>()
-                for (item in messages){
-                    items.add(ItemList().apply {
-                        id=item.studentTaskId
-                        name=item.title
-                    })
-                }
-                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),items).builder()
+                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
                 drawingCommitDialog?.setOnDialogClickListener {
                     homeworkCommit=it
                     commit()
@@ -289,22 +304,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
         val showFile = getIndexFile(index)
         if (showFile != null) {
-//            val simpleTarget = object : CustomTarget<Drawable>() {
-//                override fun onLoadCleared(placeholder: Drawable?) {
-//                }
-//                override fun onResourceReady(
-//                    resource: Drawable,
-//                    transition: Transition<in Drawable>?
-//                ) {
-//                    view.background = resource
-//                }
-//            }
-            Glide.with(this)
-                .load(showFile)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .fitCenter().into(view)
-
+            GlideUtils.setImageFileNoCache(this, showFile, view)
             val drawPath = book?.bookDrawPath+"/${index+1}/draw.tch"
             elik.setLoadFilePath(drawPath, true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {

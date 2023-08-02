@@ -31,9 +31,7 @@ public class HomeworkBookDaoManager {
 
     private HomeworkBookBeanDao dao;
 
-    private final long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    WhereCondition whereUser= HomeworkBookBeanDao.Properties.UserId.eq(userId);
-
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -54,6 +52,8 @@ public class HomeworkBookDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= HomeworkBookBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

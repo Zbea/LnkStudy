@@ -3,6 +3,7 @@ package com.bll.lnkstudy.utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,12 +18,10 @@ import com.bll.lnkstudy.net.ExceptionHandle;
 
 
 /**
- * emmmm .........
  * 取名 super Toast 的意思
  * 同一时间只能显示一个toast
  * 支持在任意线程调用
  * 可以取消toast
- * Create by sanvar , 18-11-5
  */
 public class SToast {
     private static Context ctx;
@@ -41,26 +40,25 @@ public class SToast {
     public static void showText(int screen, final CharSequence str) {
         if (Thread.currentThread().getId() != 1) {
             // 在子线程
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    finalShow(screen,str);
-                }
-            });
+            handler.post(() -> finalShow(screen,str));
         } else {
             finalShow(screen,str);
         }
     }
 
     private static void finalShow(int screen,CharSequence str) {
-        toast = Toast.makeText(ctx, str, Toast.LENGTH_SHORT);
-        TextView text = toast.getView().findViewById(android.R.id.message);
-        text.setWidth(400);
-        text.setGravity(Gravity.CENTER);
-        text.setTextColor(Color.WHITE);
-        text.setTextSize(20);
-        text.setPadding(30, 20, 30, 20);
-        toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
+        if (toast == null) {
+            toast = Toast.makeText(ctx, str, Toast.LENGTH_SHORT);
+        }
+        if (Build.VERSION.SDK_INT < 30) {
+            TextView text = toast.getView().findViewById(android.R.id.message);
+            text.setWidth(400);
+            text.setGravity(Gravity.CENTER);
+            text.setTextColor(Color.WHITE);
+            text.setTextSize(20);
+            text.setPadding(30, 20, 30, 20);
+            toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
+        }
         if (screen==2){
             toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
         }
@@ -70,6 +68,7 @@ public class SToast {
         else {
             toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
         }
+        toast.setText(str);
         toast.show();
     }
 

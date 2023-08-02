@@ -10,7 +10,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 
-class HomeworkManageDialog(val context: Context, private val screenPos: Int,private var isCreate:Boolean) {
+class HomeworkManageDialog(val context: Context, private val screenPos: Int,private var createStatus:Int) {
 
     fun builder(): HomeworkManageDialog {
         val dialog = Dialog(context)
@@ -27,7 +27,7 @@ class HomeworkManageDialog(val context: Context, private val screenPos: Int,priv
         val iv_close = dialog.findViewById<ImageView>(R.id.iv_close)
         val ll_skin = dialog.findViewById<LinearLayout>(R.id.ll_skin)
         val ll_delete = dialog.findViewById<LinearLayout>(R.id.ll_delete)
-        ll_delete.visibility=if (isCreate) View.VISIBLE else View.INVISIBLE
+        ll_skin.visibility=if (createStatus==4) View.INVISIBLE else View.VISIBLE
 
         iv_close.setOnClickListener {
             dialog.dismiss()

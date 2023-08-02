@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaperBeanDao;
 import com.bll.lnkstudy.greendao.PaperContentBeanDao;
@@ -13,6 +14,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PaperContentDaoManager {
 
@@ -20,17 +22,9 @@ public class PaperContentDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static PaperContentDaoManager mDbController;
-
-
-    private PaperContentBeanDao dao;
-
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= PaperContentBeanDao.Properties.UserId.eq(userId);
+    private final PaperContentBeanDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -52,6 +46,8 @@ public class PaperContentDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= PaperContentBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

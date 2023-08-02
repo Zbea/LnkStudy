@@ -218,7 +218,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
                             date=System.currentTimeMillis()
                             grade=item.grade
                             listJson= Gson().toJson(item)
-                            downloadUrl="null"
                         })
                         if (cloudList.size==PaperTypeDaoManager.getInstance().queryAllExcludeCloud().size){
                             mCloudUploadPresenter.upload(cloudList)

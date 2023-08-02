@@ -57,5 +57,17 @@ class FileUploadPresenter(view: IContractView.IFileUploadView):
         }, true)
     }
 
+    fun commitParent(map:HashMap<String,Any>){
+        val body= RequestUtils.getBody(map)
+        val commit = RetrofitManager.service.commitParent(body)
+        doRequest(commit, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onCommitSuccess()
+            }
+        }, true)
+    }
 
 }

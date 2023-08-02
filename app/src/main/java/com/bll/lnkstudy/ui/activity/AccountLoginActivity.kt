@@ -8,10 +8,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.ActivityManager
-import com.bll.lnkstudy.utils.MD5Utils
-import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.*
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 
 class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
@@ -44,6 +41,8 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
+
+        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
 
         ed_user.setText("zhufeng")
         ed_psw.setText("123456")

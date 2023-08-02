@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
 import com.bll.lnkstudy.mvp.model.User;
@@ -10,29 +11,22 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PaintingBeanDaoManager {
     /**
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static PaintingBeanDaoManager mDbController;
-
-
-    private PaintingBeanDao dao;
-
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= PaintingBeanDao.Properties.UserId.eq(userId);
+    private final PaintingBeanDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
      */
     public PaintingBeanDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-
         dao = mDaoSession.getPaintingBeanDao();
     }
 
@@ -48,6 +42,8 @@ public class PaintingBeanDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= PaintingBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

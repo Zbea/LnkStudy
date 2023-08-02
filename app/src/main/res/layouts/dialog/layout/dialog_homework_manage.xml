@@ -46,6 +46,7 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:visibility="invisible"
             android:background="@mipmap/icon_setting_btn_bg"
             >
 

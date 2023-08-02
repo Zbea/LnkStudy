@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.AppBeanDao;
+import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoMaster;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper;
@@ -15,6 +16,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AppDaoManager {
 
@@ -27,10 +29,9 @@ public class AppDaoManager {
      */
     private static AppDaoManager mDbController;
 
-    private AppBeanDao dao;
+    private final AppBeanDao dao;
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
-    private WhereCondition whereUser= AppBeanDao.Properties.UserId.eq(userId);
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -51,6 +52,8 @@ public class AppDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= AppBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

@@ -288,9 +288,9 @@ class CloudPaintingFragment : BaseCloudFragment() {
         mCloudPresenter.getList(map)
     }
 
-    override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
-        cloudLists=item.list
+    override fun onCloudList(cloudList: CloudList) {
+        setPageNumber(cloudList.total)
+        cloudLists=cloudList.list
 
         when(typeId){
             7,8->{
