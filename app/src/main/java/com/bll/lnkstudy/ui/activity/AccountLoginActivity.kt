@@ -77,7 +77,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 //        mUser?.nickname="朱"
 //        mUser?.grade=3
 //        mUser?.schoolProvince="广东省"
-//
 //        SPUtil.putObj("user",mUser!!)
 
         val tokenStr=SPUtil.getString("token")

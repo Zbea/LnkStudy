@@ -26,7 +26,7 @@ class Constants{
 
     companion object {
 
-            //44 50
+            //44 50ad
         const val PAGE_SIZE = 12
         const val WIDTH = 1404
         const val HEIGHT = 1872

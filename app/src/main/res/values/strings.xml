@@ -260,12 +260,12 @@
 
     <string name="note_manage_str">笔记本管理</string>
     <string name="notebook_create_str">新建笔记本</string>
-    <string name="note_create_str">新建笔记</string>
-    <string name="note_create_hint">输入笔记</string>
+    <string name="note_create_str">新建主题</string>
+    <string name="note_create_hint">输入主题</string>
     <string name="notebook_create_hint">输入笔记本</string>
     <string name="note_module_str">笔记模板</string>
     <string name="note_is_set_diary_password_tips">设置日记密码？</string>
-    <string name="note_is_delete_tips">删除笔记？</string>
+    <string name="note_is_delete_tips">删除主题？</string>
     <string name="notebook_is_delete_tips">删除笔记本？</string>
     <string name="note_delete_diary_password">删除日记密码</string>
     <string name="password_input">输入密码</string>

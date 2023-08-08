@@ -79,8 +79,8 @@ class RecordActivity : BaseAppCompatActivity() {
                 release()
                 null
             }
+            iv_record.setImageResource(R.mipmap.icon_record_show)
             mRecorder = MediaRecorder().apply {
-                iv_record.setImageResource(R.mipmap.icon_record_show)
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
                 setOutputFile(pathFile)
@@ -95,8 +95,8 @@ class RecordActivity : BaseAppCompatActivity() {
         }
 
         ll_record_stop.setOnClickListener {
+            iv_record.setImageResource(R.mipmap.icon_record_file)
             mRecorder?.apply {
-                iv_record.setImageResource(R.mipmap.icon_record_file)
                 setOnErrorListener(null)
                 setOnInfoListener(null)
                 setPreviewDisplay(null)

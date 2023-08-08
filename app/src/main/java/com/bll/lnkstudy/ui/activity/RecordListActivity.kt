@@ -208,7 +208,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     private fun pause(pos:Int){
         mediaPlayer?.pause()
         recordBeans[pos].state=0
-        mAdapter?.notifyItemChanged(position)//刷新为结束状态
+        mAdapter?.notifyItemChanged(pos)//刷新为结束状态
     }
 
 

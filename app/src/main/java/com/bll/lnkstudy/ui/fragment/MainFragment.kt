@@ -36,10 +36,7 @@ import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.ImageDownLoadUtils
-import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -137,9 +134,11 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     }
 
     override fun lazyLoad() {
-        mCommonPresenter.getCommonGrade()
-        findMessages()
-        fetchExam()
+        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+            mCommonPresenter.getCommonGrade()
+            findMessages()
+            fetchExam()
+        }
     }
 
     //课程表相关处理
@@ -361,7 +360,5 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         setDateView()
         lazyLoad()
     }
-
-
 
 }

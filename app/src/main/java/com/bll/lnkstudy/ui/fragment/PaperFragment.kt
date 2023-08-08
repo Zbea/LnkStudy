@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.ImageDownLoadUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_radiogroup.*
@@ -241,6 +242,9 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun fetchData() {
+        if (!NetworkUtil.isNetworkAvailable(requireActivity())){
+            return
+        }
         val classGroups = DataBeanManager.classGroups
         if (classGroups.size>0){
             var teacherId = 0

@@ -949,6 +949,9 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      * 请求作业分类
      */
     private fun fetchHomeworkType(){
+        if (!NetworkUtil.isNetworkAvailable(requireActivity())){
+            return
+        }
         val classGroups = DataBeanManager.classGroups
         if (classGroups.size>0){
             var teacherId = 0

@@ -5,6 +5,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.KeyEvent
+import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
@@ -132,7 +133,9 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     //单屏、全屏内容切换
     private fun changeExpandView(){
         showView(v_content_a,ll_page_content_a,v_empty)
-        disMissView(iv_expand,iv_tool_left,iv_tool_right)
+        disMissView(iv_expand_left,iv_expand_right)
+        iv_tool_left.visibility= View.INVISIBLE
+        iv_tool_right.visibility=View.INVISIBLE
     }
 
     override fun onPageDown() {

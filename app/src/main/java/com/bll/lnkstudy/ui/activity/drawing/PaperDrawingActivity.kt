@@ -63,7 +63,10 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         }
         changeExpandView()
 
-        iv_expand.setOnClickListener {
+        iv_expand_left.setOnClickListener {
+            onChangeExpandContent()
+        }
+        iv_expand_right.setOnClickListener {
             onChangeExpandContent()
         }
         iv_expand_a.setOnClickListener {
@@ -129,21 +132,29 @@ class PaperDrawingActivity: BaseDrawingActivity(){
 
     //单屏、全屏内容切换
     private fun changeExpandView(){
-        iv_expand.visibility=if(isExpand) View.GONE else View.VISIBLE
         v_content_a.visibility=if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         if (isExpand){
             if (screenPos==1){
-                showView(iv_expand_a)
-                disMissView(iv_expand_b)
+                showView(iv_tool_left,iv_expand_a,iv_tool_right)
+                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
             }
             else{
-                showView(iv_expand_b)
-                disMissView(iv_expand_a)
+                showView(iv_tool_left,iv_tool_right,iv_expand_b)
+                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
             }
         }
-        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
+        else{
+            if (screenPos==1){
+                showView(iv_tool_left,iv_expand_right)
+                disMissView(iv_tool_right)
+            }
+            else{
+                showView(iv_tool_right,iv_expand_left)
+                disMissView(iv_tool_left)
+            }
+        }
     }
 
     /**

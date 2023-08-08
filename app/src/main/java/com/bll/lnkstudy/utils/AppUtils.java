@@ -237,9 +237,24 @@ public class AppUtils {
 
     //根据包名启动app
     public static void startAPP(Context context, String appPackageName) throws Exception {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        if (isAvailable(context,appPackageName)){
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
+
+    public static boolean isAvailable(Context context,String packageName) {
+        final PackageManager packageManager = context.getPackageManager();
+        // 获取所有已安装程序的包信息
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        for (int i = 0; i < pinfo.size(); i++) {
+            // 循环判断是否存在指定包名
+            if (pinfo.get(i).packageName.equalsIgnoreCase(packageName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //重启app
@@ -266,8 +281,7 @@ public class AppUtils {
                 if (!packageInfo.packageName.equals(context.getPackageName()))
                 {
                     AppBean myAppInfo = new AppBean();
-                    String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-                    myAppInfo.appName=appName;
+                    myAppInfo.appName= packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     myAppInfo.packageName=packageInfo.packageName;
                     if (packageInfo.applicationInfo.loadIcon(packageManager) == null) {
                         continue;

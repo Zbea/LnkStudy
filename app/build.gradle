@@ -21,13 +21,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -64,6 +57,40 @@ android {
                     ]
         }
     }
+
+//    signingConfigs {
+//        release {
+//            keyAlias 'key-one'
+//            storePassword '123456'
+//            keyPassword '123456'
+//            storeFile file('D:\\workspace\\LnkStudy\\app\\src\\main\\assets\\keystore.jks')
+//        }
+//        debug {
+//            keyAlias 'key-one'
+//            storePassword '123456'
+//            keyPassword '123456'
+//            storeFile file('D:\\workspace\\LnkStudy\\app\\src\\main\\assets\\keystore.jks')
+//        }
+//    }
+//
+//    buildTypes {
+//        debug {
+//            minifyEnabled false
+//            debuggable true
+//            signingConfig signingConfigs.debug
+//        }
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            debuggable false
+//            signingConfig signingConfigs.release
+//            aaptOptions.cruncherEnabled = false
+//            aaptOptions.useNewCruncher = false
+//            //Zipalign优化
+//            zipAlignEnabled true
+//        }
+//
+//    }
 
 }
 

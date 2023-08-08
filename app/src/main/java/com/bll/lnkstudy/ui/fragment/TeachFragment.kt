@@ -17,6 +17,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.activity.TeachListActivity
 import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
@@ -80,10 +81,12 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
     }
 
     override fun lazyLoad() {
-        if (DataBeanManager.courses.isEmpty())
-            mCommonPresenter.getCommonGrade()
-        if (videoType==null)
-            mPresenter.getType()
+        if(NetworkUtil.isNetworkAvailable(requireActivity())){
+            if (DataBeanManager.courses.isEmpty())
+                mCommonPresenter.getCommonGrade()
+            if (videoType==null)
+                mPresenter.getType()
+        }
     }
 
     //设置头部索引

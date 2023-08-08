@@ -66,13 +66,20 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
         setBg()
 
+        changeExpandView()
         changeContent()
 
         iv_catalog.setOnClickListener {
             showCatalog()
         }
 
-        iv_expand.setOnClickListener {
+        iv_expand_left.setOnClickListener {
+            if (paintingLists.size==1){
+                newHomeWorkContent()
+            }
+            onChangeExpandContent()
+        }
+        iv_expand_right.setOnClickListener {
             if (paintingLists.size==1){
                 newHomeWorkContent()
             }
@@ -150,20 +157,27 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
      * 切换屏幕view变化
      */
     private fun changeExpandView(){
-
-        iv_expand.visibility = if(isExpand) View.GONE else View.VISIBLE
         v_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
-        iv_tool_right.visibility=if(isExpand) View.VISIBLE else View.GONE
         v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
         if (isExpand){
             if (screenPos==1){
-                showView(iv_expand_a)
-                disMissView(iv_expand_b)
+                showView(iv_tool_left,iv_expand_a,iv_tool_right)
+                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
             }
             else{
-                showView(iv_expand_b)
-                disMissView(iv_expand_a)
+                showView(iv_tool_left,iv_tool_right,iv_expand_b)
+                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
+            }
+        }
+        else{
+            if (screenPos==1){
+                showView(iv_tool_left,iv_expand_right)
+                disMissView(iv_tool_right)
+            }
+            else{
+                showView(iv_tool_right,iv_expand_left)
+                disMissView(iv_tool_left)
             }
         }
 

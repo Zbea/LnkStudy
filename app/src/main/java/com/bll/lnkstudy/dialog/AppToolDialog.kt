@@ -13,6 +13,9 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
+/**
+ * 1左 2 右
+ */
 class AppToolDialog(val context: Context, val screenPos:Int, private val lists:  List<AppBean>) {
 
     private var dialog:Dialog?=null
@@ -22,7 +25,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
         dialog?.setContentView(R.layout.dialog_app_tool)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams =window?.attributes
+        val layoutParams =window.attributes
         layoutParams?.gravity = Gravity.BOTTOM or Gravity.LEFT
         layoutParams?.x=DP2PX.dip2px(context,12f)
         layoutParams?.y=50

@@ -112,23 +112,11 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         iv_back?.setOnClickListener { finish() }
 
         iv_tool_left?.setOnClickListener {
-            if (getCurrentScreenPos()==3)//全屏时点击左按钮在左
-            {
-                showDialogAppTool(1)
-            }
-            else{
-                showDialogAppTool(0)
-            }
+            showDialogAppTool(1)
         }
 
         iv_tool_right?.setOnClickListener {
-            if (getCurrentScreenPos()==3)
-            {
-                showDialogAppTool(2)
-            }
-            else{
-                showDialogAppTool(0)
-            }
+            showDialogAppTool(2)
         }
 
         iv_erasure?.setOnClickListener {

@@ -180,10 +180,12 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      * 获取控制信息指令
      */
     private fun onFetchControl(){
-        mControlMessagePresenter.getControlMessage()
-        mControlMessagePresenter.getSystemControlClear()
-        if (isRequestClassGroup)
-            mClassGroupPresenter.getClassGroupList(false)
+        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+            mControlMessagePresenter.getControlMessage()
+            mControlMessagePresenter.getSystemControlClear()
+            if (isRequestClassGroup)
+                mClassGroupPresenter.getClassGroupList(false)
+        }
     }
 
     private fun lazyLoadDataIfPrepared() {
