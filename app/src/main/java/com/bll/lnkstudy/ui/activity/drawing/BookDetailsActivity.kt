@@ -5,7 +5,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.EinkPWInterface
-import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
@@ -80,6 +79,8 @@ class BookDetailsActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
+        elik_a?.addOnTopView(iv_top)
+        elik_b?.addOnTopView(iv_top)
         setDrawingTitleClick(false)
         pageCount = catalogMsg?.totalCount!!
         tv_title_a.text=book?.bookName
@@ -120,15 +121,17 @@ class BookDetailsActivity : BaseDrawingActivity() {
         if (isExpand) {
             if (page > 1) {
                 page -= 2
+                changeContent()
             } else {
-                page = 0
+                page = 1
+                changeContent()
             }
         } else {
             if (page > 0) {
                 page -= 1
+                changeContent()
             }
         }
-        changeContent()
     }
 
     override fun onPageDown() {
@@ -144,48 +147,24 @@ class BookDetailsActivity : BaseDrawingActivity() {
         changeContent()
     }
 
-    //单屏、全屏内容切换
-    private fun changeExpandView() {
-        showView(v_content_a,ll_page_content_a)
-        v_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
-        ll_page_content_b.visibility = if (isExpand) View.VISIBLE else View.GONE
-        v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
-        if (isExpand){
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_a,iv_tool_right)
-                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
-            }
-            else{
-                showView(iv_tool_left,iv_tool_right,iv_expand_b)
-                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
-            }
-        }
-        else{
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_right)
-                disMissView(iv_tool_right)
-            }
-            else{
-                showView(iv_tool_right,iv_expand_left)
-                disMissView(iv_tool_left)
-            }
-        }
-    }
-
     /**
      * 更新内容
      */
     private fun changeContent() {
         //如果页码超出 则全屏展示最后两页
-        if (page >= pageCount - 1) {
-            page = if (isExpand) pageCount - 2 else pageCount - 1
+        if (page > pageCount - 1) {
+            page =  pageCount - 1
         }
 
-        tv_page_a.text = "${page + 1}/$pageCount"
-        loadPicture(page, elik_a!!, v_content_a)
+        if (page==0&&isExpand){
+            page=1
+        }
+
+        tv_page_b.text = "${page + 1}/$pageCount"
+        loadPicture(page, elik_b!!, v_content_b)
         if (isExpand) {
-            tv_page_b.text = "${page + 1 + 1}/$pageCount"
-            loadPicture(page + 1, elik_b!!, v_content_b)
+            tv_page_a.text = "${page}/$pageCount"
+            loadPicture(page-1, elik_a!!, v_content_a)
         }
 
         //设置当前展示页

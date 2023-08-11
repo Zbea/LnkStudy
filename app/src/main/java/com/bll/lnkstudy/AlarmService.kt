@@ -7,6 +7,7 @@ import android.util.Log
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_1MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_9MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_EVENT
+import com.bll.lnkstudy.Constants.Companion.EXAM_TIME_EVENT
 import com.bll.lnkstudy.mvp.model.EventBusData
 import org.greenrobot.eventbus.EventBus
 
@@ -43,6 +44,13 @@ class AlarmService:Service() {
                 val eventBusBean= EventBusData()
                 eventBusBean.event=Constants.VIDEO_EVENT
                 eventBusBean.id=state!!
+                EventBus.getDefault().post(eventBusBean)
+            }
+            Constants.ACTION_EXAM_TIME->{
+                Log.d("debug","考试提交")
+                val eventBusBean= EventBusData()
+                eventBusBean.event=EXAM_TIME_EVENT
+                //学生自动提交
                 EventBus.getDefault().post(eventBusBean)
             }
         }

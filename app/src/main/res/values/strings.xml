@@ -132,6 +132,7 @@
     <string name="line_black">黑线</string>
     <string name="line_gray">灰线</string>
     <string name="line_dotted">虚线</string>
+    <string name="pen">笔</string>
     <string name="geometry_title_str">几何绘图</string>
 
     <string name="semester_last">上学期</string>

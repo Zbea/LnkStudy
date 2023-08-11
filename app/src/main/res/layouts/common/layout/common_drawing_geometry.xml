@@ -6,17 +6,19 @@
     >
     <LinearLayout
         android:layout_width="980dp"
-        android:layout_height="98dp"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingEnd="@dimen/dp_20"
+        android:layout_height="100dp"
+        android:paddingStart="@dimen/dp_15"
+        android:paddingEnd="@dimen/dp_15"
         android:gravity="center_vertical"
         android:background="@drawable/bg_black_stroke_0dp_corner"
         android:orientation="horizontal">
         <LinearLayout
+            android:id="@+id/ll_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="5dp"
             >
 
             <TextView
@@ -33,17 +35,18 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_geometry_line"
                 android:layout_marginTop="@dimen/dp_15"
-
                 />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_rectangle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -69,9 +72,10 @@
             android:id="@+id/ll_circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_15"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -89,7 +93,7 @@
                 android:id="@+id/iv_circle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_geometry_circle"
+                android:src="@mipmap/icon_geometry_circle_1"
                 android:layout_marginTop="@dimen/dp_15"
 
                 />
@@ -97,11 +101,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_arc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -124,11 +130,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_oval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -151,11 +159,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -178,11 +188,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_parabola"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -205,11 +217,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_angle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
@@ -232,23 +246,56 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_axis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="@dimen/dp_5"
             >
 
             <TextView
+                android:id="@+id/tv_axis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/axis"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
+                android:drawableRight="@mipmap/icon_bookstore_arrow_down"
                 />
 
             <ImageView
                 android:id="@+id/iv_axis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_geometry_axis_1"
+                android:layout_marginTop="@dimen/dp_15"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_pen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/bg_black_stroke_0dp_corner"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pen"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+
+            <ImageView
+                android:id="@+id/iv_pen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_geometry_axis"
@@ -298,7 +345,7 @@
         <LinearLayout
             android:layout_width="78dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
             android:orientation="vertical"
             android:gravity="center_vertical"
             >
@@ -326,7 +373,7 @@
                 android:text="@string/scale"
                 android:textColor="@color/black"
                 android:textSize="22sp"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:background="@drawable/rb_geometry_bg"
                 />
 
         </LinearLayout>
@@ -334,7 +381,7 @@
         <LinearLayout
             android:layout_width="78dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_20"
             android:orientation="vertical"
             android:gravity="center_vertical"
             >

@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +14,8 @@ import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.*
+import android.widget.RelativeLayout
+import android.widget.RelativeLayout.LayoutParams
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -33,7 +38,12 @@ import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_book_details_drawing.*
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
+import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
+import kotlinx.android.synthetic.main.ac_drawing.v_content_a
+import kotlinx.android.synthetic.main.ac_drawing.v_content_b
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -59,6 +69,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     var isErasure=false
     var isTitleClick=true//标题是否可以编辑
     private var isLongPress=false
+    private var circlePos=0
+    private var axisPos=0
+    private var soundPool:SoundPool?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +101,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         initView()
 
         initGeometryView()
+
+        soundPool= SoundPool(1, AudioManager.STREAM_SYSTEM,0)
+        soundPool?.load(this,R.raw.screen,1)
     }
 
 
@@ -175,6 +191,21 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
      */
     private fun initGeometryView(){
 
+        val popsCircle= mutableListOf<PopupBean>()
+        popsCircle.add(PopupBean(0,getString(R.string.circle_1),R.mipmap.icon_geometry_circle_1))
+        popsCircle.add(PopupBean(1,getString(R.string.circle_2),R.mipmap.icon_geometry_circle_2))
+        popsCircle.add(PopupBean(2,getString(R.string.circle_3),R.mipmap.icon_geometry_circle_3))
+
+        val popsAxis= mutableListOf<PopupBean>()
+        popsAxis.add(PopupBean(0,getString(R.string.axis_one),R.mipmap.icon_geometry_axis_1))
+        popsAxis.add(PopupBean(1,getString(R.string.axis_two),R.mipmap.icon_geometry_axis_2))
+        popsAxis.add(PopupBean(2,getString(R.string.axis_three),R.mipmap.icon_geometry_axis_3))
+
+        val pops= mutableListOf<PopupBean>()
+        pops.add(PopupBean(0,getString(R.string.line_black),false))
+        pops.add(PopupBean(1,getString(R.string.line_gray),false))
+        pops.add(PopupBean(2,getString(R.string.line_dotted),false))
+
         iv_geometry?.setOnClickListener {
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
@@ -183,63 +214,77 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
 
         iv_line?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LINE)
+            setCheckView(ll_line)
         }
 
         iv_rectangle?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RECTANGLE)
+            setCheckView(ll_rectangle)
         }
 
-        ll_circle?.setOnClickListener {
-            val pops= mutableListOf<PopupBean>()
-            pops.add(PopupBean(0,getString(R.string.circle_1),R.mipmap.icon_geometry_circle_1))
-            pops.add(PopupBean(1,getString(R.string.circle_2),R.mipmap.icon_geometry_circle_2))
-            pops.add(PopupBean(2,getString(R.string.circle_3),R.mipmap.icon_geometry_circle_3))
-            PopupClick(this,pops,tv_circle,5).builder().setOnSelectListener{
-                when(it.id){
-                    0->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE)
-                    1->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE2)
-                    else->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE3)
-                }
+        tv_circle?.setOnClickListener {
+            PopupClick(this,popsCircle,tv_circle,5).builder().setOnSelectListener{
+                iv_circle.setImageResource(it.resId)
+                circlePos=it.id
             }
+        }
+
+        iv_circle?.setOnClickListener {
+            when(circlePos){
+                0->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE)
+                1->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE2)
+                else->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE3)
+            }
+            setCheckView(ll_circle)
         }
 
         iv_arc?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ARC)
+            setCheckView(ll_arc)
         }
 
         iv_oval?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_OVAL)
+            setCheckView(ll_oval)
         }
 
         iv_vertical?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_VERTICALLINE)
+            setCheckView(ll_vertical)
         }
 
         iv_parabola?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_PARABOLA)
+            setCheckView(ll_parabola)
         }
 
         iv_angle?.setOnClickListener {
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
+            setCheckView(ll_angle)
         }
 
-        iv_axis?.setOnClickListener {
-            DrawingGeometryAxisDialog(this,getCurrentScreenPos()).builder().setOnDialogClickListener {
-                    isScale, value, type ->
-                elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
-                elik_a?.setDrawAxisProperty(type, value, isScale)
-                elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
-                elik_b?.setDrawAxisProperty(type, value, isScale)
+        tv_axis?.setOnClickListener {
+            PopupClick(this,popsAxis,tv_axis,5).builder().setOnSelectListener{
+                iv_axis?.setImageResource(it.resId)
+                axisPos=it.id
             }
         }
 
+        iv_axis?.setOnClickListener {
+            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
+            elik_a?.setDrawAxisProperty(axisPos+1, 5, false)
+            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
+            elik_b?.setDrawAxisProperty(axisPos+1, 5, false)
+            setCheckView(ll_axis)
+        }
+
+        iv_pen?.setOnClickListener {
+            setDrawing()
+        }
+
         tv_gray_line?.setOnClickListener {
-            val pops= mutableListOf<PopupBean>()
-            pops.add(PopupBean(0,getString(R.string.line_black),false))
-            pops.add(PopupBean(1,getString(R.string.line_gray),false))
-            pops.add(PopupBean(2,getString(R.string.line_dotted),false))
             PopupClick(this,pops,tv_gray_line,5).builder().setOnSelectListener{
-                tv_gray_line.text=it.name
+                tv_gray_line?.text=it.name
                 when(it.id){
                     0->{
 
@@ -252,6 +297,11 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
                     }
                 }
             }
+        }
+
+        tv_scale?.setOnClickListener {
+            tv_scale.isSelected=!tv_scale.isSelected
+            tv_scale.setTextColor(getColor(if (tv_scale.isSelected) R.color.white else R.color.black))
         }
 
         tv_reduce?.setOnClickListener {
@@ -267,6 +317,23 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
             disMissView(ll_geometry,iv_geometry)
         }
 
+    }
+
+    /**
+     * 设置选中笔形
+     */
+    private fun setCheckView(view:View){
+        ll_line?.setBackgroundResource(R.color.color_transparent)
+        ll_rectangle?.setBackgroundResource(R.color.color_transparent)
+        ll_circle?.setBackgroundResource(R.color.color_transparent)
+        ll_arc?.setBackgroundResource(R.color.color_transparent)
+        ll_oval?.setBackgroundResource(R.color.color_transparent)
+        ll_vertical?.setBackgroundResource(R.color.color_transparent)
+        ll_parabola?.setBackgroundResource(R.color.color_transparent)
+        ll_angle?.setBackgroundResource(R.color.color_transparent)
+        ll_axis?.setBackgroundResource(R.color.color_transparent)
+        ll_pen?.setBackgroundResource(R.color.color_transparent)
+        view.setBackgroundResource(R.drawable.bg_black_stroke_0dp_corner)
     }
 
     /**
@@ -324,7 +391,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     /**
      * 工具栏弹窗
      */
-    private fun showDialogAppTool(scree:Int){
+    private fun showDialogAppTool(location:Int){
         val tools= mutableListOf<AppBean>()
         tools.add(AppBean().apply {
             appName=getString(R.string.geometry_title_str)
@@ -332,7 +399,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
 //            packageName="com.android.htfyunnote"
         })
         tools.addAll(toolApps)
-        AppToolDialog(this,scree,tools).builder()?.setDialogClickListener{ pos->
+        AppToolDialog(this,getCurrentScreenPos(),location,tools).builder()?.setDialogClickListener{ pos->
             if (pos==0){
                 setViewElikUnable(ll_geometry)
                 showView(ll_geometry)
@@ -360,6 +427,33 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     open fun onPageUp(){
     }
 
+    //单屏、全屏内容切换
+    open fun changeExpandView() {
+        v_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
+        ll_page_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
+        v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
+        if (isExpand){
+            if (screenPos==1){
+                showView(iv_tool_left,iv_expand_a,iv_tool_right)
+                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
+            }
+            else{
+                showView(iv_tool_left,iv_tool_right,iv_expand_b)
+                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
+            }
+        }
+        else{
+            if (screenPos==1){
+                showView(iv_tool_left,iv_expand_right)
+                disMissView(iv_tool_right)
+            }
+            else{
+                showView(iv_tool_right,iv_expand_left)
+                disMissView(iv_tool_left)
+            }
+        }
+    }
+
     /**
      * 设置擦除
      */
@@ -381,6 +475,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
       */
     private fun setDrawing(){
         setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
+        setCheckView(ll_pen)
     }
 
     /**
@@ -657,11 +752,12 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        soundPool?.release()
     }
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(bean: EventBusData) {
+    open fun onMessageEvent(bean: EventBusData) {
         if (bean.event== Constants.SCREEN_EVENT){
             val screen=bean.screen
             screenPos=when(screen){
@@ -679,43 +775,45 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     open fun changeScreenPage(){
     }
 
+    /**
+     * 播放声音
+     */
+    private fun playSound(){
+        soundPool?.play(1, 1F, 1F, 0, 0, 1F)
+    }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        if (!isLongPress){
-            when(keyCode){
-                KeyEvent.KEYCODE_PAGE_DOWN->{
-                    onPageDown()
-                }
-                KeyEvent.KEYCODE_PAGE_UP->{
-                    onPageUp()
-                }
-            }
-        }
-        else{
-            isLongPress=false
-        }
-        return false
-    }
-
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-        isLongPress=true
         when(keyCode){
             KeyEvent.KEYCODE_PAGE_DOWN->{
-                //切换成右屏
-                isExpand=true
-                onChangeExpandContent()
-                moveToScreen(2)
+                onPageDown()
             }
             KeyEvent.KEYCODE_PAGE_UP->{
-                //切换成左屏
-                isExpand=true
-                onChangeExpandContent()
-                moveToScreen(1)
+                onPageUp()
             }
         }
-        return super.onKeyLongPress(keyCode, event)
+        return super.onKeyUp(keyCode, event)
     }
-
+//
+//    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
+//        isLongPress=true
+//        when(keyCode){
+//            KeyEvent.KEYCODE_PAGE_DOWN->{
+//                //切换成右屏
+//                isExpand=true
+//                onChangeExpandContent()
+//                moveToScreen(2)
+//                playSound()
+//            }
+//            KeyEvent.KEYCODE_PAGE_UP->{
+//                //切换成左屏
+//                isExpand=true
+//                onChangeExpandContent()
+//                moveToScreen(1)
+//                playSound()
+//            }
+//        }
+//        return super.onKeyLongPress(keyCode, event)
+//    }
 
 }
 

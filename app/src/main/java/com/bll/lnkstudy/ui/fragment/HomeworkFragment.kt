@@ -64,7 +64,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!)
                 item.course = mCourse
                 item.createStatus=1
-                if (!isSaveHomework(item)) {
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(item.typeId)) {
                     item.id=null
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     //创建增量数据
@@ -341,20 +341,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             }
         }
         return homeworkTypeBean
-    }
-
-    /**
-     * 判断 老师下发作业本是否已经保存本地
-     */
-    private fun isSaveHomework(item: HomeworkTypeBean): Boolean {
-        var isSave = false
-        val items=HomeworkTypeDaoManager.getInstance().queryAllByCourse(mCourse)
-        for (list in items) {
-            if (item.name == list.name && item.typeId == list.typeId) {
-                isSave = true
-            }
-        }
-        return isSave
     }
 
     /**

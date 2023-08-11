@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.View
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -244,32 +243,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
-    }
-
-    private fun changeExpandView() {
-        v_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
-        ll_page_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
-        v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
-        if (isExpand){
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_a,iv_tool_right)
-                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
-            }
-            else{
-                showView(iv_tool_left,iv_tool_right,iv_expand_b)
-                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
-            }
-        }
-        else{
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_right)
-                disMissView(iv_tool_right)
-            }
-            else{
-                showView(iv_tool_right,iv_expand_left)
-                disMissView(iv_tool_left)
-            }
-        }
     }
 
     /**

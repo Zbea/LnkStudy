@@ -21,6 +21,7 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class HomeworkTypeBean implements Serializable {
+
     @Transient
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +34,6 @@ public class HomeworkTypeBean implements Serializable {
     public int grade;//年级
     @Unique
     public int typeId;//作业本分类id
-    @Unique
     public int parentTypeId;//家长作业本id（防止和老师作业本重复）
     @SerializedName("subType")
     public int state;//1作业卷 2普通作业本 3听读本4题卷本
@@ -122,6 +122,12 @@ public class HomeworkTypeBean implements Serializable {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
+    public int getParentTypeId() {
+        return this.parentTypeId;
+    }
+    public void setParentTypeId(int parentTypeId) {
+        this.parentTypeId = parentTypeId;
+    }
     public int getState() {
         return this.state;
     }
@@ -182,12 +188,5 @@ public class HomeworkTypeBean implements Serializable {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-    public int getParentTypeId() {
-        return this.parentTypeId;
-    }
-    public void setParentTypeId(int parentTypeId) {
-        this.parentTypeId = parentTypeId;
-    }
-
-
+    
 }

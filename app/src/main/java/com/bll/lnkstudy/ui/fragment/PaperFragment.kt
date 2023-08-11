@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_testpaper.*
 import java.io.File
 
 /**
- * 考卷
+ * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
  */
 class PaperFragment : BaseFragment(),IContractView.IPaperView{
 

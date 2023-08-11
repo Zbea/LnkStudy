@@ -48,7 +48,7 @@ public class PaperTypeDaoManager {
             }
         }
         long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-        whereUser= PaperTypeBeanDao.Properties.UserId.eq(userId);
+        whereUser= PaperTypeBeanDao.Properties.StudentId.eq(userId);
         return mDbController;
     }
 

@@ -244,6 +244,16 @@ public class AppUtils {
         }
     }
 
+    //根据包名启动app
+    public static void startAPP(Context context, String appPackageName,int screen) throws Exception {
+        if (isAvailable(context,appPackageName)){
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN",screen);
+            context.startActivity(intent);
+        }
+    }
+
     public static boolean isAvailable(Context context,String packageName) {
         final PackageManager packageManager = context.getPackageManager();
         // 获取所有已安装程序的包信息

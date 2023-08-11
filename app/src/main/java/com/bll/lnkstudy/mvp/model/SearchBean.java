@@ -10,6 +10,7 @@ public class SearchBean {
     public String noteStr;
     public int type;
     public int state;
+    public int createState;
     public String course;
     public String imageUrl;
     public String path;

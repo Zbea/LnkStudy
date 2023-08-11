@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
@@ -204,33 +203,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
-    }
-
-    //单屏、全屏内容切换
-    private fun changeExpandView(){
-        v_content_a.visibility=if(isExpand) View.VISIBLE else View.GONE
-        ll_page_content_a.visibility = if(isExpand) View.VISIBLE else View.GONE
-        v_empty.visibility=if(isExpand) View.VISIBLE else View.GONE
-        if (isExpand){
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_a,iv_tool_right)
-                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
-            }
-            else{
-                showView(iv_tool_left,iv_tool_right,iv_expand_b)
-                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
-            }
-        }
-        else{
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_right)
-                disMissView(iv_tool_right)
-            }
-            else{
-                showView(iv_tool_right,iv_expand_left)
-                disMissView(iv_tool_left)
-            }
-        }
     }
 
     /**

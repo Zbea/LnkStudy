@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.content.pm.ActivityInfo
 import android.widget.MediaController
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -22,6 +23,8 @@ class TeachActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(teach?.videoName!!)
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
         val mediacontroller = MediaController(this)
         videoView.setMediaController(mediacontroller)

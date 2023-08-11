@@ -1,9 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.os.Environment
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ImageDialog
@@ -24,8 +22,6 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
     private var listMap=HashMap<Int,MutableList<PaintingBean>>()
     private var leftPath=""
     private var rightPath=""
-    private var leftSavePath=Environment.getExternalStorageDirectory().path+"/standby.png"
-    private var rightSavePath=Environment.getExternalStorageDirectory().path+"/standby1.png"
 
     override fun layoutId(): Int {
         return R.layout.ac_my_wallpaper_list
@@ -51,7 +47,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             //用来确定翻页后选中的位置
-            val index=(pageIndex-1)* Constants.PAGE_SIZE+position
+            val index=(pageIndex-1)* pageSize+position
             val wallpaperItem=lists[index]
             if (view.id==R.id.cb_left){
                 if(wallpaperItem.isLeft){
@@ -89,9 +85,11 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
                 return@setOnClickListener
             if(File(leftPath).exists()){
                 android.os.SystemProperties.set("xsys.eink.standby",leftPath)
+//                android.os.SystemProperties.set("xsys.eink.poweroff",leftPath)
             }
             if(File(rightPath).exists()){
                 android.os.SystemProperties.set("xsys.eink.standby1",rightPath)
+//                android.os.SystemProperties.set("xsys.eink.poweroff1",rightPath)
             }
         }
 

@@ -1,5 +1,9 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
@@ -7,6 +11,7 @@ import android.view.EinkPWInterface
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
+import com.bll.lnkstudy.AlarmService
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
@@ -14,6 +19,7 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
@@ -26,6 +32,7 @@ import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.*
 
 /**
  * 考卷考试页面
@@ -104,6 +111,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
             drawPaths.add("$outImageStr/${i+1}/draw.tch")
         }
 
+        startAlarmManager()
     }
 
     override fun initView() {
@@ -114,6 +122,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         changeExpandView()
 
         tv_title_a.text=exam?.title
+        tv_title_b.text=exam?.title
 
         changeContent()
 
@@ -130,8 +139,39 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         }
     }
 
+    /**
+     * 开启定时任务
+     */
+    private fun startAlarmManager(){
+        val date=Date(exam?.endTime!!)
+        val mCalendar = Calendar.getInstance()
+        val currentTimeMillisLong = System.currentTimeMillis()
+        mCalendar.timeInMillis = currentTimeMillisLong
+        mCalendar.timeZone = TimeZone.getTimeZone("GMT+8")
+        mCalendar.set(Calendar.HOUR_OF_DAY, date.hours)
+        mCalendar.set(Calendar.MINUTE, date.minutes)
+        mCalendar.set(Calendar.SECOND, 0)
+        mCalendar.set(Calendar.MILLISECOND, 0)
+
+        val selectLong = mCalendar.timeInMillis
+        if (currentTimeMillisLong > selectLong) {
+//            mCalendar.add(Calendar.DAY_OF_MONTH, 1)
+//            selectLong = mCalendar.timeInMillis
+            showToast("已过提交时间")
+            return
+        }
+        val intent = Intent(this, AlarmService::class.java)
+        intent.action = Constants.ACTION_EXAM_TIME
+        val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, selectLong,
+            AlarmManager.INTERVAL_DAY, pendingIntent
+        )
+    }
+
     //单屏、全屏内容切换
-    private fun changeExpandView(){
+     override fun changeExpandView(){
         showView(v_content_a,ll_page_content_a,v_empty)
         disMissView(iv_expand_left,iv_expand_right)
         iv_tool_left.visibility= View.INVISIBLE
@@ -267,6 +307,14 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
         return false
+    }
+
+    override fun onMessageEvent(bean: EventBusData) {
+        super.onMessageEvent(bean)
+        if (bean.event==Constants.EXAM_TIME_EVENT){
+            showLoading()
+            commit()
+        }
     }
 
 }

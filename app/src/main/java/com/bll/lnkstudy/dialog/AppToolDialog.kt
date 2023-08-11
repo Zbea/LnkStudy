@@ -16,7 +16,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 /**
  * 1左 2 右
  */
-class AppToolDialog(val context: Context, val screenPos:Int, private val lists:  List<AppBean>) {
+class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,private val lists:  List<AppBean>) {
 
     private var dialog:Dialog?=null
 
@@ -29,7 +29,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
         layoutParams?.gravity = Gravity.BOTTOM or Gravity.LEFT
         layoutParams?.x=DP2PX.dip2px(context,12f)
         layoutParams?.y=50
-        if (screenPos==2){
+        if (location==2){
             layoutParams?.gravity = Gravity.BOTTOM or Gravity.RIGHT
         }
         dialog?.show()
@@ -46,7 +46,23 @@ class AppToolDialog(val context: Context, val screenPos:Int, private val lists: 
             }
             else{
                 val packageName= lists[position].packageName
-                AppUtils.startAPP(context,packageName)
+                when(screenPos){
+                    1->{
+                        AppUtils.startAPP(context,packageName,2)
+                    }
+                    2->{
+                        AppUtils.startAPP(context,packageName,1)
+                    }
+                    3->{
+                        if (location==1){
+                            AppUtils.startAPP(context,packageName,2)
+                        }
+                        else{
+                            AppUtils.startAPP(context,packageName,1)
+                        }
+                    }
+                }
+
             }
         }
 

@@ -62,7 +62,7 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
                 "\"NAME\" TEXT," + // 3: name
                 "\"GRADE\" INTEGER NOT NULL ," + // 4: grade
                 "\"TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 5: typeId
-                "\"PARENT_TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 6: parentTypeId
+                "\"PARENT_TYPE_ID\" INTEGER NOT NULL ," + // 6: parentTypeId
                 "\"STATE\" INTEGER NOT NULL ," + // 7: state
                 "\"DATE\" INTEGER NOT NULL ," + // 8: date
                 "\"CONTENT_RES_ID\" TEXT," + // 9: contentResId

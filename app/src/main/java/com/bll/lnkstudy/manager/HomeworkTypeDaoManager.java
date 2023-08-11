@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.manager;
 
+import android.util.Log;
+
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -7,6 +9,7 @@ import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
+import com.google.gson.Gson;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -44,7 +47,7 @@ public class HomeworkTypeDaoManager {
             }
         }
         long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-        whereUser= HomeworkTypeBeanDao.Properties.UserId.eq(userId);
+        whereUser= HomeworkTypeBeanDao.Properties.StudentId.eq(userId);
         return mDbController;
     }
 

@@ -25,6 +25,7 @@ class DataUpdateReceiver : BroadcastReceiver() {
                 EventBus.getDefault().postSticky(Constants.DATA_CLEAT_EVENT)
             }
             "ACTION_GLOBAL_SEARCH"->{
+                Log.d("debug","搜索")
                 ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
                 val intent = Intent(context,SearchActivity::class.java)
                 intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK

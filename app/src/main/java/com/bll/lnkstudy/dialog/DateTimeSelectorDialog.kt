@@ -71,7 +71,7 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
         }
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        var okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
+        val okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
 
         cancleTv?.setOnClickListener { dismiss() }
         okTv?.setOnClickListener {

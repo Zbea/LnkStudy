@@ -27,6 +27,7 @@ public class PaperList implements Serializable {
         public String path;//文件夹路径
         public String[] paths;//图片路径
         public long date;
+        public long endTime;
     }
 
 }

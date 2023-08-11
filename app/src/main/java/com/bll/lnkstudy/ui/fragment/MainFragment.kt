@@ -96,12 +96,16 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
         setTitle(R.string.main_home_title)
         setClassGroupRequest(true)
 
+//        showView(tv_search)
+
         initDateView()
         initMessageView()
         initClassGroupView()
         initHomeWorkView()
         initCourse()
         initNote()
+
+
 
         tv_search.setOnClickListener {
 //            AppUtils.clearAppData(requireContext())

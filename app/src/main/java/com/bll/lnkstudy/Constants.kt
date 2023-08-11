@@ -26,8 +26,6 @@ class Constants{
 
     companion object {
 
-            //44 50ad
-        const val PAGE_SIZE = 12
         const val WIDTH = 1404
         const val HEIGHT = 1872
 
@@ -70,7 +68,6 @@ class Constants{
         //断点记录文件保存的文件夹
         val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
 
-        const val PATH_SF = "file:///android_asset/sf/"
 
         //eventbus通知标志
         const val AUTO_UPLOAD_1MONTH_EVENT = "AutoUploadEvent1Month"
@@ -96,12 +93,14 @@ class Constants{
         const val DATA_DOWNLOAD_EVENT = "DataDownload"
         const val DATA_RENT_EVENT = "DataRent"
         const val DATA_CLEAT_EVENT="DataClear"
+        const val EXAM_TIME_EVENT="ExamTime"
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
         const val ACTION_UPLOAD_1MONTH = "com.bll.lnkstudy.upload.1month"
         const val ACTION_UPLOAD_9MONTH = "com.bll.lnkstudy.upload.9month"
         const val ACTION_VIDEO = "com.bll.lnkstudy.raw"
+        const val ACTION_EXAM_TIME = "com.bll.lnkstudy.exam.time"
     }
 
 }
