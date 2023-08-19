@@ -13,6 +13,7 @@ import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Stack;
 
 
@@ -221,7 +222,7 @@ public class ActivityManager {
             if (activity.getClass().getName().equals(HomeworkPaperDrawingActivity.class.getName())) {
                 String course= activity.getIntent().getStringExtra("course");
                 int categoryId= activity.getIntent().getIntExtra("typeId",0);
-                if (course==mCourse && categoryId==mTypeId){
+                if (Objects.equals(course, mCourse) && categoryId==mTypeId){
                     activity.finish();
                     it.remove();
                 }

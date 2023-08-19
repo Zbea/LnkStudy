@@ -61,9 +61,11 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
             setOnItemClickListener { adapter, view, position ->
                 ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
                 val intent=Intent(this@PaintingTypeListActivity, PaintingDrawingActivity::class.java)
+                intent.flags=type
                 val bundle= Bundle()
                 bundle.putSerializable("painting",types[position])
                 intent.putExtra("paintingBundle",bundle)
+                intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
                 customStartActivity1(intent)
             }
         }

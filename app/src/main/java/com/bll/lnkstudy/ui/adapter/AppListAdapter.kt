@@ -22,7 +22,7 @@ class AppListAdapter(private val type:Int, layoutResId: Int, data: List<AppBean>
                 }
                 setChecked(R.id.cb_check,isCheck)
             }
-            addOnClickListener(R.id.iv_image,R.id.cb_check)
+            addOnClickListener(R.id.cb_check)
         }
     }
 

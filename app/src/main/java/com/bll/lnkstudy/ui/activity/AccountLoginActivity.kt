@@ -25,11 +25,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     override fun getAccount(user: User?) {
         user?.token=token
         SPUtil.putObj("user",user!!)
-        val intent=Intent(this,MainActivity::class.java)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
-        startActivity(intent)
-        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+        gotoMainActivity()
     }
 
     override fun layoutId(): Int {
@@ -83,12 +79,17 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
         if (tokenStr.isNotEmpty() && mUser!=null)
         {
-            val intent=Intent(this,MainActivity::class.java)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-            startActivity(intent)
-            ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+            gotoMainActivity()
         }
 
+    }
+
+    private fun gotoMainActivity(){
+        val intent=Intent(this,MainActivity::class.java)
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
+        startActivity(intent)
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
     }
 
     override fun onResume() {

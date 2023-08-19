@@ -83,10 +83,7 @@ public class AppUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(
-                    context
-                    , "com.bll.lnkstudy"
-                    , apkFile);
+            Uri contentUri = FileProvider.getUriForFile(context, "com.bll.lnkstudy", apkFile);
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
             intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
@@ -214,6 +211,16 @@ public class AppUtils {
     public static String getAndroidID(Context context) {
         BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
         return myDevice.getName();
+    }
+
+    /**
+     * uninstall apk file
+     * @param packageName
+     */
+    public static void uninstallAPK(Context context,String packageName){
+        Uri uri=Uri.parse("package:"+packageName);
+        Intent intent=new Intent(Intent.ACTION_DELETE,uri);
+        context.startActivity(intent);
     }
 
     /**

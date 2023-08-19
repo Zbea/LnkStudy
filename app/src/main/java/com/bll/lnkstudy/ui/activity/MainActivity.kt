@@ -91,6 +91,10 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
         startRemind9Month()
     }
 
+    //全屏首页不发送通知
+    override fun sendEventScreen() {
+    }
+
     /**
      * 开始每天定时任务 下午三点
      */

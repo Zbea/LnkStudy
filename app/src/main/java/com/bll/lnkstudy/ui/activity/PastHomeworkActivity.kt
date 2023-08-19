@@ -67,6 +67,7 @@ class PastHomeworkActivity:BaseAppCompatActivity() {
                             val bundle= Bundle()
                             bundle.putSerializable("homework",item)
                             intent.putExtra("homeworkBundle",bundle)
+                            intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
                             customStartActivity(intent)
                         }
                         else{

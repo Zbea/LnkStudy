@@ -44,6 +44,7 @@
     <string name="toast_commit_success">提交成功</string>
     <string name="toast_input_message">请输入消息</string>
     <string name="edit_input_keyword">请输入关键字</string>
+    <string name="toast_uninstall">确定卸载应用？</string>
 
     <string name="item_is_delete_tips">确定删除？</string>
     <string name="account_is_logout_tips">确定退出登录？</string>

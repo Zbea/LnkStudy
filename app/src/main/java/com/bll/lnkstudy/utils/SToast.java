@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -46,7 +47,7 @@ public class SToast {
         }
     }
 
-    private static void finalShow(int screen,CharSequence str) {
+    private static void finalShow(int screen, CharSequence str) {
         if (toast == null) {
             toast = Toast.makeText(ctx, str, Toast.LENGTH_SHORT);
         }
@@ -59,15 +60,7 @@ public class SToast {
             text.setPadding(30, 20, 30, 20);
             toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
         }
-        if (screen==2){
-            toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
-        }
-        else if (screen==3){
-            toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
-        }
-        else {
-            toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
-        }
+        toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
         toast.setText(str);
         toast.show();
     }

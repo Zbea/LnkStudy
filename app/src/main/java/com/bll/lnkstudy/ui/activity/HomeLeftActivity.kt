@@ -47,11 +47,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
     }
 
     override fun initView() {
-        //发送通知，全屏自动收屏到主页的另外一边
-        EventBus.getDefault().post(EventBusData().apply {
-            event = Constants.SCREEN_EVENT
-            screen = getCurrentScreenPos()
-        })
+        sendEventScreen()
 
         mainFragment = MainFragment()
         bookcaseFragment = BookCaseFragment()
@@ -89,6 +85,16 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
             customStartActivity(Intent(this, AccountInfoActivity::class.java))
         }
 
+    }
+
+    /**
+     * 打开单屏主页时候，发送通知，全屏手写自动收屏到主页的另外一边
+     */
+    open fun sendEventScreen(){
+        EventBus.getDefault().post(EventBusData().apply {
+            event = Constants.SCREEN_EVENT
+            screen = getCurrentScreenPos()
+        })
     }
 
     //跳转笔记

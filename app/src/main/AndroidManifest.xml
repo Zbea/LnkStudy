@@ -46,6 +46,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.DELETE_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".MyApplication"
@@ -58,7 +60,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
         <receiver
-            android:name=".DataUpdateReceiver"
+            android:name=".MyBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             >
@@ -68,8 +70,12 @@
                 <action android:name="com.android.settings.cleardata"/>
                 <action android:name="ACTION_GLOBAL_SEARCH"/>
                 <action android:name="com.geniatech.knote.reader.save.note.broadcast"/>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden"

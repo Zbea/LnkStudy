@@ -298,7 +298,7 @@
                 android:id="@+id/iv_pen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_geometry_axis"
+                android:src="@mipmap/icon_geometry_pen"
                 android:layout_marginTop="@dimen/dp_15"
 
                 />
@@ -319,7 +319,7 @@
             >
 
             <TextView
-                android:id="@+id/tv_lengthen"
+                android:id="@+id/tv_revocation"
                 android:layout_width="match_parent"
                 android:layout_height="33dp"
                 android:gravity="center"
@@ -330,7 +330,7 @@
                 />
 
             <TextView
-                android:id="@+id/tv_excision"
+                android:id="@+id/tv_parallel"
                 android:layout_width="match_parent"
                 android:layout_height="33dp"
                 android:layout_marginTop="@dimen/dp_15"
@@ -338,7 +338,7 @@
                 android:text="@string/parallel"
                 android:textColor="@color/black"
                 android:textSize="22sp"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:background="@drawable/rb_geometry_bg"
                 />
 
         </LinearLayout>
@@ -358,7 +358,7 @@
                 android:paddingStart="@dimen/dp_5"
                 android:drawableRight="@mipmap/icon_bookstore_arrow_down"
                 android:gravity="center"
-                android:text="@string/grayLine"
+                android:text="@string/line_black"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"

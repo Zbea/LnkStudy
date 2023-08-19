@@ -254,13 +254,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     /**
-     * 单双屏展开
-     */
-    fun moveToScreen(isExpand:Boolean){
-        moveToScreenPanel(if (isExpand) 3 else screenPos )
-    }
-
-    /**
      * 得到当前屏幕位置
      */
     fun getCurrentScreenPos():Int{
@@ -274,6 +267,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         ActivityManager.getInstance().checkBookIDisExist(id)
         val intent=Intent(this, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -325,6 +319,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         val intent=Intent(this, HomeworkDrawingActivity::class.java)
         intent.putExtra("homeworkBundle",bundle)
         intent.putExtra("page",page)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -337,6 +332,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         intent.putExtra("course",mCourse)
         intent.putExtra("typeId",mTypeId)
         intent.putExtra("page",mTypeId)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -349,6 +345,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         bundle.putSerializable("note", noteBook)
         intent.putExtra("bundle", bundle)
         intent.putExtra("page",page)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity(intent)
     }
 
@@ -362,6 +359,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         bundle.putSerializable("homework",item)
         intent.putExtra("bundle",bundle)
         intent.putExtra("page",page)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -510,29 +508,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                     .build()
                     .show()
         }
-    }
-
-    fun showMissingPermissionDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("提示")
-        builder.setMessage("当前应用缺少必要权限。请点击\"设置\"-\"权限\"-打开所需权限。")
-        // 拒绝, 退出应用
-        builder.setNegativeButton("取消") { dialog, which ->
-
-        }
-        builder.setPositiveButton("确定") { dialog, which -> startAppSettings() }
-
-        builder.setCancelable(false)
-        builder.show()
-    }
-
-    /**
-     * 启动应用的设置
-     */
-    private fun startAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.parse("package:" + "com.bll.lnkstudy")
-        startActivity(intent)
     }
 
     override fun addSubscription(d: Disposable) {

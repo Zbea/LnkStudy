@@ -206,7 +206,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, noteContentBean: NoteContentBean) {
-        elik.setPWEnabled(true)
         elik.setLoadFilePath(noteContentBean.filePath, true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {

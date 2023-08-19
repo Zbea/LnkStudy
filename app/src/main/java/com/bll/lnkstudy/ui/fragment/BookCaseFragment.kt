@@ -150,9 +150,11 @@ class BookCaseFragment: BaseFragment() {
     fun upload(token:String){
         if (grade==0) return
         cloudList.clear()
+        val maxBooks= mutableListOf<BookBean>()
         val books= BookGreenDaoManager.getInstance().queryAllBook()
         for (item in books){
             if (System.currentTimeMillis()>=item.downDate+halfYear){
+                maxBooks.add(item)
                 //判读是否存在手写内容
                 if (File(item.bookDrawPath).exists()){
                     FileUploadManager(token).apply {
@@ -168,7 +170,7 @@ class BookCaseFragment: BaseFragment() {
                                 listJson= Gson().toJson(item)
                                 bookId=item.bookId
                             })
-                            if (cloudList.size==books.size)
+                            if (cloudList.size==maxBooks.size)
                                 mCloudUploadPresenter.upload(cloudList)
                         }
                     }
@@ -183,7 +185,7 @@ class BookCaseFragment: BaseFragment() {
                         listJson= Gson().toJson(item)
                         bookId=item.bookId
                     })
-                    if (cloudList.size==books.size)
+                    if (cloudList.size==maxBooks.size)
                         mCloudUploadPresenter.upload(cloudList)
                 }
             }

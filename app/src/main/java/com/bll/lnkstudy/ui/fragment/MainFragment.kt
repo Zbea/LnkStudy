@@ -249,6 +249,7 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
                     intent.putExtra("outImageStr", paper.path)
                     intent.putExtra("bundle", bundle)
                     intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                    intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
                     customStartActivity(intent)
                 } else {
                     showLoading()

@@ -40,11 +40,15 @@ interface APIService{
     @POST("student/data/insert")
     fun onAddDataUpdate(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 添加增量更新
+     * 删除增量更新
      */
     @POST("student/data/delete")
     fun onDeleteDataUpdate(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 清空增量更新
+     */
+    @POST("student/data/deleteAll")
+    fun onClearDataUpdate(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 用户登录 "/login"
      */

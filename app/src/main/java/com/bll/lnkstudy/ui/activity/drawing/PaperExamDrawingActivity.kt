@@ -271,6 +271,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
         if (isExpand){
             if (page+1<pageCount){
+                elik_b?.setPWEnabled(true)
                 loadImage(page+1,elik_b!!,v_content_b)
                 tv_page_b.text="${page+1+1}/$pageCount"
             }
@@ -285,7 +286,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     //加载图片
     private fun loadImage(index: Int,elik:EinkPWInterface,view: ImageView) {
-        elik.setPWEnabled(true)
         GlideUtils.setImageUrl(this,paths[index],view)
         elik.setLoadFilePath(drawPaths[index],true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {

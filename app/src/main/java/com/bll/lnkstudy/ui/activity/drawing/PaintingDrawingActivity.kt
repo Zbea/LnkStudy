@@ -219,7 +219,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun updateImage(elik: EinkPWInterface, bean: PaintingDrawingBean) {
-        elik.setPWEnabled(true)
         elik.setLoadFilePath(bean.path, true)
         elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -317,7 +316,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun changeScreenPage() {
-        super.changeScreenPage()
         if (isExpand){
             onChangeExpandContent()
         }

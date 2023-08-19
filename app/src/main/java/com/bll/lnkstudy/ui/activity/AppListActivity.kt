@@ -7,6 +7,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.activity.download.DownloadAppActivity
@@ -82,27 +83,38 @@ class AppListActivity:BaseDrawingActivity() {
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(5,70))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.iv_image){
-                when(position){
-                    0->{
-                        customStartActivity(Intent(this, DownloadAppActivity::class.java))
-                    }
-                    1->{
-                        customStartActivity(Intent(this, DownloadWallpaperActivity::class.java))
-                    }
-                    2->{
-                        customStartActivity(Intent(this, DownloadPaintingActivity::class.java))
-                    }
-                    else->{
-                        val packageName= apps[position].packageName
-                        AppUtils.startAPP(this,packageName)
-                    }
-                }
-            }
             if (view.id==R.id.cb_check){
                 apps[position].isCheck=! apps[position].isCheck
                 mAdapter?.notifyItemChanged(position)
             }
+        }
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            when(position){
+                0->{
+                    customStartActivity(Intent(this, DownloadAppActivity::class.java))
+                }
+                1->{
+                    customStartActivity(Intent(this, DownloadWallpaperActivity::class.java))
+                }
+                2->{
+                    customStartActivity(Intent(this, DownloadPaintingActivity::class.java))
+                }
+                else->{
+                    val packageName= apps[position].packageName
+                    AppUtils.startAPP(this,packageName)
+                }
+            }
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            CommonDialog(this).setContent(R.string.toast_uninstall).builder().setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    AppUtils.uninstallAPK(this@AppListActivity,apps[position].packageName)
+                }
+            })
+            true
         }
 
     }
@@ -127,6 +139,11 @@ class AppListActivity:BaseDrawingActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag== Constants.APP_EVENT){
+            apps.clear()
+            apps.addAll(DataBeanManager.appBaseList)
+            apps.addAll(getLocalApp())
+            mAdapter?.setNewData(apps)
+
             getAppTool()
             mAdapterTool?.setNewData(toolApps)
         }

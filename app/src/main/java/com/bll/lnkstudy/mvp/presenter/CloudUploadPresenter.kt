@@ -9,6 +9,10 @@ class CloudUploadPresenter(view: IContractView.ICloudUploadView):
     BasePresenter<IContractView.ICloudUploadView>(view) {
 
     fun upload(list:List<CloudListBean>) {
+        if (list.isEmpty())
+        {
+            return
+        }
         val body= RequestUtils.getBody(
             Pair.create("listModel",list)
         )

@@ -367,6 +367,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         ActivityManager.getInstance().checkBookIDisExist(id)
         val intent=Intent(activity, BookDetailsActivity::class.java)
         intent.putExtra("book_id",id)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -379,6 +380,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         bundle.putSerializable("homework",item)
         val intent=Intent(context, HomeworkDrawingActivity::class.java)
         intent.putExtra("homeworkBundle",bundle)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -407,9 +409,11 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         } else{
             ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
             val intent=Intent(context, PaintingDrawingActivity::class.java)
+            intent.flags=type
             val bundle= Bundle()
             bundle.putSerializable("painting",item)
             intent.putExtra("paintingBundle",bundle)
+            intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
             customStartActivity1(intent)
         }
 
@@ -423,6 +427,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         val intent=Intent(activity, PaperDrawingActivity::class.java)
         intent.putExtra("course",mCourse)
         intent.putExtra("typeId",mTypeId)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -435,6 +440,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         val bundle= Bundle()
         bundle.putSerializable("homework",item)
         intent.putExtra("bundle",bundle)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity1(intent)
     }
 
@@ -493,6 +499,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         val bundle = Bundle()
         bundle.putSerializable("note", note)
         intent.putExtra("bundle", bundle)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
         customStartActivity(intent)
     }
 

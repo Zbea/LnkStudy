@@ -3,19 +3,17 @@ package com.bll.lnkstudy.base
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Rect
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.*
-import android.widget.RelativeLayout
-import android.widget.RelativeLayout.LayoutParams
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +23,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -54,24 +51,28 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
-abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     val DEFAULT_PAGE=-1//默认页码（打开最后一页）
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var toolApps= mutableListOf<AppBean>()
     var isExpand=false
     var elik_a: EinkPWInterface? = null
     var elik_b: EinkPWInterface? = null
     var isErasure=false
-    var isTitleClick=true//标题是否可以编辑
-    private var isLongPress=false
+    var isTitleClick=true//标题是否可以编
     private var circlePos=0
     private var axisPos=0
-    private var soundPool:SoundPool?=null
+    private var isGeometry=false//是否处于几何绘图
+    private var isParallel=false//是否选中平行
+    private var isCurrent=false//当前支持的几何绘图笔形
+    private var isScale=false//是否选中刻度
+    private var revocationList= mutableListOf<Int>()
+    private var currentGeometry=0
+    private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +86,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         screenPos=getCurrentScreenPos()
         showLog(localClassName+"当前屏幕：$screenPos")
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarColor(ContextCompat.getColor(this, R.color.white))
-        }
+        setStatusBarColor(ContextCompat.getColor(this, R.color.white))
 
         if (v_content_a!=null && v_content_b!=null){
             elik_a = v_content_a?.pwInterFace
@@ -101,9 +100,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         initView()
 
         initGeometryView()
-
-        soundPool= SoundPool(1, AudioManager.STREAM_SYSTEM,0)
-        soundPool?.load(this,R.raw.screen,1)
     }
 
 
@@ -213,95 +209,120 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         }
 
         iv_line?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LINE)
             setCheckView(ll_line)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LINE)
+            currentGeometry=1
         }
 
         iv_rectangle?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RECTANGLE)
             setCheckView(ll_rectangle)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RECTANGLE)
+            currentGeometry=2
         }
 
         tv_circle?.setOnClickListener {
             PopupClick(this,popsCircle,tv_circle,5).builder().setOnSelectListener{
                 iv_circle.setImageResource(it.resId)
                 circlePos=it.id
+                setEilkCircle()
             }
         }
 
         iv_circle?.setOnClickListener {
-            when(circlePos){
-                0->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE)
-                1->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE2)
-                else->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE3)
-            }
-            setCheckView(ll_circle)
+            setEilkCircle()
         }
 
         iv_arc?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ARC)
             setCheckView(ll_arc)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ARC)
+            currentGeometry=4
         }
 
         iv_oval?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_OVAL)
             setCheckView(ll_oval)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_OVAL)
+            currentGeometry=5
         }
 
         iv_vertical?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_VERTICALLINE)
             setCheckView(ll_vertical)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_VERTICALLINE)
+            currentGeometry=6
         }
 
         iv_parabola?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_PARABOLA)
             setCheckView(ll_parabola)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_PARABOLA)
+            currentGeometry=7
         }
 
         iv_angle?.setOnClickListener {
-            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
             setCheckView(ll_angle)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
+            currentGeometry=8
         }
 
         tv_axis?.setOnClickListener {
             PopupClick(this,popsAxis,tv_axis,5).builder().setOnSelectListener{
                 iv_axis?.setImageResource(it.resId)
                 axisPos=it.id
+                setEilkAxis()
             }
         }
 
         iv_axis?.setOnClickListener {
-            elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
-            elik_a?.setDrawAxisProperty(axisPos+1, 5, false)
-            elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_AXIS
-            elik_b?.setDrawAxisProperty(axisPos+1, 5, false)
-            setCheckView(ll_axis)
+            setEilkAxis()
         }
 
         iv_pen?.setOnClickListener {
             setDrawing()
         }
 
+        tv_revocation?.setOnClickListener {
+            if (isScale){
+                tv_scale?.callOnClick()
+                revocationList.clear()
+                return@setOnClickListener
+            }
+            if (revocationList.size>0){
+                val type=revocationList.last()
+                if (type==1)
+                {
+                    elik_a?.unDo()
+                }
+                else{
+                    elik_b?.unDo()
+                }
+                revocationList.removeLast()
+            }
+        }
+
         tv_gray_line?.setOnClickListener {
+            if (!isGeometry){
+                return@setOnClickListener
+            }
             PopupClick(this,pops,tv_gray_line,5).builder().setOnSelectListener{
                 tv_gray_line?.text=it.name
-                when(it.id){
-                    0->{
-
-                    }
-                    1->{
-
-                    }
-                    else->{
-
-                    }
-                }
+                setLine(it.id)
             }
         }
 
         tv_scale?.setOnClickListener {
+            if (isErasure){
+                stopErasure()
+            }
             tv_scale.isSelected=!tv_scale.isSelected
-            tv_scale.setTextColor(getColor(if (tv_scale.isSelected) R.color.white else R.color.black))
+            isScale=tv_scale.isSelected
+            tv_scale.setTextColor(getColor(if (isScale) R.color.white else R.color.black))
+        }
+
+        tv_parallel?.setOnClickListener {
+            if (isErasure){
+                stopErasure()
+            }
+            tv_parallel.isSelected=!isParallel
+            isParallel=tv_parallel.isSelected
+            tv_parallel.setTextColor(getColor(if (isParallel) R.color.white else R.color.black))
         }
 
         tv_reduce?.setOnClickListener {
@@ -309,20 +330,140 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
             disMissView(ll_geometry)
             showView(iv_geometry)
             setViewElikUnable(iv_geometry)
+            if (isParallel){
+                tv_parallel?.callOnClick()
+            }
+            if (isScale){
+                tv_scale?.callOnClick()
+            }
         }
 
         tv_out?.setOnClickListener {
             if (this.localClassName == PaperExamDrawingActivity::class.java.name) return@setOnClickListener
             setDrawing()
             disMissView(ll_geometry,iv_geometry)
+            if (isParallel){
+                tv_parallel?.callOnClick()
+            }
+            if (isScale){
+                tv_scale?.callOnClick()
+            }
         }
 
+        elik_a?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                elik_a?.setShifted(isCurrent&&isParallel)
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
+                revocationList.add(1)
+                reDrawGeometry(elik_a!!,1)
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+            }
+        })
+
+        elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                elik_b?.setShifted(isCurrent&&isParallel)
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
+                revocationList.add(2)
+                reDrawGeometry(elik_b!!,2)
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+            }
+        })
+
+        this.setTouchAsFocus(true)
+    }
+
+    /**
+     * 设置刻度重绘
+     */
+    private fun reDrawGeometry(elik:EinkPWInterface,location: Int){
+        if (isErasure)
+            return
+        if (isScale){
+            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==8){
+                GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
+                    ?.setOnDialogClickListener{
+                            width, height ->
+                        if (currentGeometry==2||currentGeometry==5){
+                            elik.reDrawShape(width,height)
+                        }
+                        else{
+                            elik.reDrawShape(width,-1f)
+                        }
+                    }
+            }
+        }
+    }
+
+    /**
+     * 画圆
+     */
+    private fun setEilkCircle(){
+        setCheckView(ll_circle)
+        when(circlePos){
+            0->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE)
+            1->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE2)
+            else->setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_CIRCLE3)
+        }
+        currentGeometry=3
+    }
+
+    /**
+     * 画坐标
+     */
+    private fun setEilkAxis(){
+        setCheckView(ll_axis)
+        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
+        elik_a?.setDrawAxisProperty(axisPos+1, 5, false)
+        elik_b?.setDrawAxisProperty(axisPos+1, 5, false)
+        currentGeometry=9
+    }
+
+    /**
+     * 设置线
+     */
+    private fun setLine(type: Int){
+        when(type){
+            0->{
+                elik_a?.penColor = Color.BLACK
+                elik_a?.setPaintEffect(0)
+
+                elik_b?.penColor = Color.BLACK
+                elik_b?.setPaintEffect(0)
+            }
+            1->{
+                elik_a?.penColor = Color.parseColor("#999999")
+                elik_a?.setPaintEffect(0)
+
+                elik_b?.penColor = Color.parseColor("#999999")
+                elik_b?.setPaintEffect(0)
+            }
+            else->{
+                elik_a?.penColor = Color.BLACK
+                elik_a?.setPaintEffect(1)
+
+                elik_b?.penColor = Color.BLACK
+                elik_b?.setPaintEffect(1)
+            }
+        }
     }
 
     /**
      * 设置选中笔形
      */
     private fun setCheckView(view:View){
+        if (isErasure){
+            stopErasure()
+        }
+        if (view!=ll_pen){
+            isGeometry=true
+        }
+        //当前支持平行的view
+        isCurrent = view==ll_line||view==ll_angle||view==ll_axis
         ll_line?.setBackgroundResource(R.color.color_transparent)
         ll_rectangle?.setBackgroundResource(R.color.color_transparent)
         ll_circle?.setBackgroundResource(R.color.color_transparent)
@@ -342,6 +483,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     private fun setDrawOjectType(type:Int){
         elik_a?.drawObjectType = type
         elik_b?.drawObjectType = type
+        if (type!=PWDrawObjectHandler.DRAW_OBJ_CHOICERASE)
+            currentDrawObj=type
     }
 
     /**
@@ -356,7 +499,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
      */
     fun getAppTool(){
         toolApps= AppDaoManager.getInstance().queryAll()
-        //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除 没有卸载则拿到对应图标
+        //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除
         val it=toolApps.iterator()
         while (it.hasNext()){
             val item=it.next()
@@ -396,13 +539,14 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         tools.add(AppBean().apply {
             appName=getString(R.string.geometry_title_str)
             imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
-//            packageName="com.android.htfyunnote"
         })
         tools.addAll(toolApps)
         AppToolDialog(this,getCurrentScreenPos(),location,tools).builder()?.setDialogClickListener{ pos->
             if (pos==0){
                 setViewElikUnable(ll_geometry)
                 showView(ll_geometry)
+                if (isErasure)
+                    stopErasure()
             }
         }
     }
@@ -466,16 +610,24 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
      * （在展平、收屏时候都结束擦除）
      */
     private fun stopErasure(){
+        isErasure=false
+        //关闭橡皮擦
         iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
-        setDrawing()
+        setDrawOjectType(currentDrawObj)
     }
 
     /**
      * 恢复手写
       */
     private fun setDrawing(){
-        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
         setCheckView(ll_pen)
+        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
+        currentGeometry=0
+        //设置黑线
+        setLine(0)
+        tv_gray_line?.text=getString(R.string.line_black)
+
+        isGeometry=false
     }
 
     /**
@@ -642,76 +794,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         Log.d("debug",getString(sId))
     }
 
-    /**
-     * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
-     * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
-     *
-     * @param requestCode  权限请求的识别码
-     * @param permissions  申请的权限
-     * @param grantResults 授权结果
-     */
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-    /**
-     * 当权限被成功申请的时候执行回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        Log.i("EasyPermissions", "获取成功的权限$perms")
-    }
-    /**
-     * 当权限申请失败的时候执行的回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
-        //处理权限名字字符串
-        val sb = StringBuffer()
-        for (str in perms) {
-            sb.append(str)
-            sb.append("\n")
-        }
-        sb.replace(sb.length - 2, sb.length, "")
-        //用户点击拒绝并不在询问时候调用
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            Toast.makeText(this, "已拒绝权限" + sb + "并不再询问", Toast.LENGTH_SHORT).show()
-            AppSettingsDialog.Builder(this)
-                    .setRationale("此功能需要" + sb + "权限，否则无法正常使用，是否打开设置")
-                    .setPositiveButton("好")
-                    .setNegativeButton("不行")
-                    .build()
-                    .show()
-        }
-    }
-
-    fun showMissingPermissionDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("提示")
-        builder.setMessage("当前应用缺少必要权限。请点击\"设置\"-\"权限\"-打开所需权限。")
-        // 拒绝, 退出应用
-        builder.setNegativeButton("取消") { dialog, which ->
-
-        }
-        builder.setPositiveButton("确定") { dialog, which -> startAppSettings() }
-
-        builder.setCancelable(false)
-        builder.show()
-    }
-
-    /**
-     * 启动应用的设置
-     */
-    private fun startAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.parse("package:" + "com.bll.lnkstudy")
-        startActivity(intent)
-    }
-
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
@@ -752,7 +834,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
-        soundPool?.release()
     }
 
     //更新数据
@@ -775,14 +856,12 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
     open fun changeScreenPage(){
     }
 
-    /**
-     * 播放声音
-     */
-    private fun playSound(){
-        soundPool?.play(1, 1F, 1F, 0, 0, 1F)
-    }
-
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        //屏蔽长按切焦点造成原手写翻页
+        if (getKeyEventStatus()==17||getKeyEventStatus()==34){
+            return super.onKeyUp(keyCode, event)
+        }
+
         when(keyCode){
             KeyEvent.KEYCODE_PAGE_DOWN->{
                 onPageDown()
@@ -793,27 +872,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), EasyPermissions.Permis
         }
         return super.onKeyUp(keyCode, event)
     }
-//
-//    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-//        isLongPress=true
-//        when(keyCode){
-//            KeyEvent.KEYCODE_PAGE_DOWN->{
-//                //切换成右屏
-//                isExpand=true
-//                onChangeExpandContent()
-//                moveToScreen(2)
-//                playSound()
-//            }
-//            KeyEvent.KEYCODE_PAGE_UP->{
-//                //切换成左屏
-//                isExpand=true
-//                onChangeExpandContent()
-//                moveToScreen(1)
-//                playSound()
-//            }
-//        }
-//        return super.onKeyLongPress(keyCode, event)
-//    }
 
 }
 

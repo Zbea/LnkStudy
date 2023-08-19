@@ -99,6 +99,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         val bundle= Bundle()
                         bundle.putSerializable("homework",typeBook)
                         intent.putExtra("homeworkBundle",bundle)
+                        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
                         customStartActivity(intent)
                     }
                 }
