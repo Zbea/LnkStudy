@@ -19,6 +19,7 @@ import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
@@ -509,23 +510,24 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 paths.add(homework.path)
             }
             //获得下载地址
-            val images = item.changeUrl.split(",").toTypedArray()
-            val imageDownLoad = ImageDownLoadUtils(activity, images, paths)
-            imageDownLoad.startDownload1()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    //下载完成后 请求
-                    mPresenter.downloadParent(item.id)
-                    deleteDoneTask(imageDownLoad)
-                    //更新增量数据
-                    for (homework in homeworkContents) {
-                        DataUpdateManager.editDataUpdate(2,homework.id.toInt(),2,homework.homeworkTypeId)
+            val images = item.changeUrl.split(",").toMutableList()
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                     }
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
-                }
-            })
+                    override fun completed(task: BaseDownloadTask?) {
+                        //下载完成后 请求
+                        mPresenter.downloadParent(item.id)
+                        //更新增量数据
+                        for (homework in homeworkContents) {
+                            DataUpdateManager.editDataUpdate(2,homework.id.toInt(),2,homework.homeworkTypeId)
+                        }
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 
@@ -542,21 +544,22 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 paths.add(getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!)
             }
             //获得下载地址
-            val images = item.changeUrl.split(",").toTypedArray()
-            val imageDownLoad = ImageDownLoadUtils(activity, images, paths)
-            imageDownLoad.startDownload1()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    //下载完成后 请求
-                    mPresenter.downloadParent(item.id)
-                    deleteDoneTask(imageDownLoad)
-                    //更新增量数据
-                    DataUpdateManager.editDataUpdate(8,homeworkBookBean.bookId,2,homeworkBookBean.bookId)
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
-                }
-            })
+            val images = item.changeUrl.split(",").toMutableList()
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        //下载完成后 请求
+                        mPresenter.downloadParent(item.id)
+                        //更新增量数据
+                        DataUpdateManager.editDataUpdate(8,homeworkBookBean.bookId,2,homeworkBookBean.bookId)
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 
@@ -574,21 +577,22 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 paths.add(getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!)
             }
             //获得下载地址
-            val images = item.submitUrl.split(",").toTypedArray()
-            val imageDownLoad = ImageDownLoadUtils(activity, images, paths)
-            imageDownLoad.startDownload1()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    //下载完成后 请求
-                    mPresenter.commitDownload(item.id)
-                    deleteDoneTask(imageDownLoad)
-                    //更新增量数据
-                    DataUpdateManager.editDataUpdate(8,homeworkBookBean.bookId,2,homeworkBookBean.bookId)
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
-                }
-            })
+            val images = item.submitUrl.split(",").toMutableList()
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        //下载完成后 请求
+                        mPresenter.commitDownload(item.id)
+                        //更新增量数据
+                        DataUpdateManager.editDataUpdate(8,homeworkBookBean.bookId,2,homeworkBookBean.bookId)
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 
@@ -606,33 +610,34 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      */
     private fun loadHomeworkImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            //拿到对应作业的所有本地图片地址
-            val paths = mutableListOf<String>()
             val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id)
             if (homeworkContents.isNullOrEmpty()){
                 continue
             }
+            //拿到对应作业的所有本地图片地址
+            val paths = mutableListOf<String>()
             for (homework in homeworkContents) {
                 paths.add(homework.path)
             }
             //获得下载地址
-            val images = item.submitUrl.split(",").toTypedArray()
-            val imageDownLoad = ImageDownLoadUtils(activity, images, paths)
-            imageDownLoad.startDownload1()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    //下载完成后 请求
-                    mPresenter.commitDownload(item.id)
-                    deleteDoneTask(imageDownLoad)
-                    //更新增量数据
-                    for (homework in homeworkContents) {
-                        DataUpdateManager.editDataUpdate(2,homework.id.toInt(),2,homework.homeworkTypeId)
+            val images = item.submitUrl.split(",").toMutableList()
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                     }
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
-                }
-            })
+                    override fun completed(task: BaseDownloadTask?) {
+                        //下载完成后 请求
+                        mPresenter.commitDownload(item.id)
+                        //更新增量数据
+                        for (homework in homeworkContents) {
+                            DataUpdateManager.editDataUpdate(2,homework.id.toInt(),2,homework.homeworkTypeId)
+                        }
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 
@@ -641,86 +646,88 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      */
     private fun loadHomeworkPaperImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            if (mDownMapPool[item.id]!=null)
-                continue
             //设置路径 作业卷路径
             val pathStr = FileAddress().getPathHomework(mCourse, item.typeId, item.id)
             //学生未提交
             val images = if (item.sendStatus == 2) {
-                item.submitUrl.split(",").toTypedArray()
+                item.submitUrl.split(",").toMutableList()
             } else {
-                item.imageUrl.split(",").toTypedArray()
+                item.imageUrl.split(",").toMutableList()
             }
-            val imageDownLoad = ImageDownLoadUtils(activity, images, pathStr)
-            imageDownLoad.startDownload()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    mPresenter.commitDownload(item.id)
-                    deleteDoneTask(imageDownLoad)
-                    val paperDaoManager = HomeworkPaperDaoManager.getInstance()
-                    val paperContentDaoManager = HomeworkPaperContentDaoManager.getInstance()
-                    if (item.sendStatus == 2) {
-                        val paper = paperDaoManager.queryByContentID(item.id)
-                        if (paper != null) {
-                            paper.isPg = true
-                            paper.state=item.status
-                            paperDaoManager.insertOrReplace(paper)
-                            //获取本次作业的所有作业卷内容
-                            val contentPapers=paperContentDaoManager.queryByID(item.id)
-                            //更新目录增量数据
-                            DataUpdateManager.editDataUpdate(2,item.id,2,item.typeId,Gson().toJson(paper))
-                            //更新作业卷内容增量数据
-                            for (contentPaper in contentPapers){
-                                DataUpdateManager.editDataUpdate(2,contentPaper.id.toInt(),3,contentPaper.typeId)
+            val paths= mutableListOf<String>()
+            for (i in images.indices){
+                paths.add("$pathStr/${i+1}.png")
+            }
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        mPresenter.commitDownload(item.id)
+                        val paperDaoManager = HomeworkPaperDaoManager.getInstance()
+                        val paperContentDaoManager = HomeworkPaperContentDaoManager.getInstance()
+                        if (item.sendStatus == 2) {
+                            val paper = paperDaoManager.queryByContentID(item.id)
+                            if (paper != null) {
+                                paper.isPg = true
+                                paper.state=item.status
+                                paperDaoManager.insertOrReplace(paper)
+                                //获取本次作业的所有作业卷内容
+                                val contentPapers=paperContentDaoManager.queryByID(item.id)
+                                //更新目录增量数据
+                                DataUpdateManager.editDataUpdate(2,item.id,2,item.typeId,Gson().toJson(paper))
+                                //更新作业卷内容增量数据
+                                for (contentPaper in contentPapers){
+                                    DataUpdateManager.editDataUpdate(2,contentPaper.id.toInt(),3,contentPaper.typeId)
+                                }
                             }
-                        }
-                    } else {
-                        val contentBean = paperDaoManager.queryByContentID(item.id)
-                        if (contentBean != null) return//避免重复下载
-                        //查找到之前已经存储的数据、用于页码计算
-                        val papers = paperDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
-                        val paperContents = paperContentDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
-                        //创建作业卷目录
-                        val paper = HomeworkPaperBean().apply {
-                            contentId = item.id
-                            course = item.subject
-                            typeId = item.typeId
-                            type = item.typeName
-                            title = item.title
-                            path = pathStr
-                            page = paperContents.size //子内容的第一个页码位置
-                            index = papers.size //作业位置
-                            endTime = item.endTime //提交时间
-                            isPg = false
-                            isCommit = item.submitStatus == 0
-                            state = item.status
-                        }
-                        paperDaoManager.insertOrReplace(paper)
-                        //创建增量数据
-                        DataUpdateManager.createDataUpdate(2,item.id,2,item.typeId,1,Gson().toJson(item))
-
-                        for (i in 0 until map?.size!!) {
-                            //创建作业卷内容
-                            val paperContent = HomeworkPaperContentBean().apply {
+                        } else {
+                            val contentBean = paperDaoManager.queryByContentID(item.id)
+                            if (contentBean != null) return//避免重复下载
+                            //查找到之前已经存储的数据、用于页码计算
+                            val papers = paperDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
+                            val paperContents = paperContentDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
+                            //创建作业卷目录
+                            val paper = HomeworkPaperBean().apply {
+                                contentId = item.id
                                 course = item.subject
                                 typeId = item.typeId
-                                contentId = item.id
-                                path = map[i]
-                                drawPath = "$pathStr/${i + 1}/draw.tch"
-                                page = paperContents.size + i
+                                type = item.typeName
+                                title = item.title
+                                path = pathStr
+                                page = paperContents.size //子内容的第一个页码位置
+                                index = papers.size //作业位置
+                                endTime = item.endTime //提交时间
+                                isPg = false
+                                isCommit = item.submitStatus == 0
+                                state = item.status
                             }
-                            val id=paperContentDaoManager.insertOrReplaceGetId(paperContent)
+                            paperDaoManager.insertOrReplace(paper)
                             //创建增量数据
-                            DataUpdateManager.createDataUpdate(2,id.toInt(),3,item.typeId,1
-                                ,Gson().toJson(paperContent),pathStr)
+                            DataUpdateManager.createDataUpdate(2,item.id,2,item.typeId,1,Gson().toJson(item))
+
+                            for (i in paths.indices) {
+                                //创建作业卷内容
+                                val paperContent = HomeworkPaperContentBean().apply {
+                                    course = item.subject
+                                    typeId = item.typeId
+                                    contentId = item.id
+                                    path = paths[i]
+                                    drawPath = "$pathStr/${i + 1}/draw.tch"
+                                    page = paperContents.size + i
+                                }
+                                val id=paperContentDaoManager.insertOrReplaceGetId(paperContent)
+                                //创建增量数据
+                                DataUpdateManager.createDataUpdate(2,id.toInt(),3,item.typeId,1
+                                    ,Gson().toJson(paperContent),pathStr)
+                            }
                         }
                     }
-                }
-
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                }
-            })
-            mDownMapPool[item.id]=imageDownLoad
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 

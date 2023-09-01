@@ -88,7 +88,7 @@
     <string name="tool">工具</string>
     <string name="eliminate">剔除</string>
     <string name="press">出版社</string>
-    <string name="addressList">通讯录</string>
+    <string name="addressList">同学录</string>
     <string name="play">播放</string>
     <string name="pause">暂停</string>
     <string name="collect">收藏</string>
@@ -152,6 +152,7 @@
     <string name="edit_name">修改姓名</string>
     <string name="edit_grade">修改年级</string>
     <string name="edit_password">修改密码</string>
+    <string name="main_main_title">主页</string>
     <string name="main_home_title">首页</string>
     <string name="register">注册账号</string>
     <string name="find_password">找回密码</string>
@@ -241,9 +242,12 @@
     <string name="week_7">周日</string>
 
     <string name="main_class_schedule">课程表</string>
-    <string name="main_message">信息</string>
+    <string name="main_message">消息通知</string>
+    <string name="main_date_plan">学习计划</string>
+    <string name="main_date_day">重要日子</string>
     <string name="main_receive_paper">收到考卷</string>
     <string name="main_classgroup">班群管理</string>
+    <string name="main_book">书籍阅读</string>
 
     <string name="date_plan">学习计划</string>
     <string name="date_day">重要日子</string>

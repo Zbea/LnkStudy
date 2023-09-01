@@ -12,7 +12,7 @@
         >
         <ImageView
             android:id="@+id/iv_expand_left"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_marginStart="44dp"
             android:scaleType="center"
@@ -20,7 +20,7 @@
             android:src="@mipmap/icon_draw_expand" />
         <ImageView
             android:id="@+id/iv_tool_left"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_marginStart="44dp"
             android:scaleType="center"
@@ -29,7 +29,7 @@
 
         <ImageView
             android:id="@+id/iv_erasure"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_marginStart="44dp"
             android:scaleType="center"
@@ -37,7 +37,7 @@
 
         <ImageView
             android:id="@+id/btn_page_up"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:scaleType="center"
             android:layout_marginStart="44dp"
@@ -66,7 +66,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
+            android:textSize="20sp"
             />
         <TextView
             android:id="@+id/tv_page_a"
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="20sp"
             />
     </LinearLayout>
 
@@ -94,7 +94,7 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_expand_a"
-                android:layout_width="@dimen/drawing_bottom_height"
+                android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:scaleType="center"
                 android:layout_marginEnd="44dp"
@@ -109,7 +109,7 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_expand_b"
-                android:layout_width="@dimen/drawing_bottom_height"
+                android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="44dp"
                 android:scaleType="center"
@@ -133,7 +133,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
+            android:textSize="20sp"
             />
         <TextView
             android:id="@+id/tv_page_b"
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:text="1/1"
             />
     </LinearLayout>
@@ -162,21 +162,21 @@
 
     <ImageView
         android:id="@+id/btn_page_down"
-        android:layout_width="@dimen/drawing_bottom_height"
+        android:layout_width="32dp"
         android:layout_height="match_parent"
         android:scaleType="center"
         android:layout_marginEnd="44dp"
         android:src="@mipmap/icon_draw_page_down" />
     <ImageView
         android:id="@+id/iv_draft"
-        android:layout_width="@dimen/drawing_bottom_height"
+        android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="44dp"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_draft" />
     <ImageView
         android:id="@+id/iv_expand_right"
-        android:layout_width="@dimen/drawing_bottom_height"
+        android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="44dp"
         android:scaleType="center"
@@ -185,7 +185,7 @@
 
     <ImageView
         android:id="@+id/iv_tool_right"
-        android:layout_width="@dimen/drawing_bottom_height"
+        android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="44dp"
         android:scaleType="center"

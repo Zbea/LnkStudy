@@ -17,6 +17,7 @@ import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -43,6 +44,10 @@ class AppListActivity:BaseDrawingActivity() {
 
         initRecycler()
         initRecyclerTool()
+
+        iv_back?.setOnClickListener {
+            finish()
+        }
 
         tv_add.setOnClickListener {
             for (item in apps){
@@ -76,7 +81,6 @@ class AppListActivity:BaseDrawingActivity() {
 
     @SuppressLint("WrongConstant")
     private fun initRecycler(){
-
         rv_list.layoutManager = GridLayoutManager(this,5)//创建布局管理
         mAdapter = AppListAdapter(0,R.layout.item_app_list, apps)
         rv_list.adapter = mAdapter

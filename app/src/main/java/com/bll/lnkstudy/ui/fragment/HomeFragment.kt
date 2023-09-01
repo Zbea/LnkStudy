@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_EVENT
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
@@ -13,9 +13,6 @@ import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
@@ -38,6 +35,7 @@ import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_title.*
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -49,7 +47,7 @@ import java.util.*
 /**
  * 首页
  */
-class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView,ICommonView{
+class HomeFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView,ICommonView{
 
     private val mMainPresenter = MainPresenter(this)
     private val mMessagePresenter=MessagePresenter(this)
@@ -237,23 +235,14 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
                     loadPapers()
                     return@setOnItemClickListener
                 }
-                val paths = mutableListOf<String>()
-                for (file in files) {
-                    paths.add(file.path)
-                }
-                if (files.size == paper.imageUrl.split(",").toTypedArray().size) {
+                if (files.size == paper.paths.size) {
                     val bundle = Bundle()
-                    bundle.putSerializable("receivePaper", paper)
+                    bundle.putSerializable("exam", paper)
                     val intent = Intent(activity, PaperExamDrawingActivity::class.java)
-                    intent.putStringArrayListExtra("imagePaths", paths as ArrayList<String>?)
-                    intent.putExtra("outImageStr", paper.path)
                     intent.putExtra("bundle", bundle)
                     intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
                     intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
                     customStartActivity(intent)
-                } else {
-                    showLoading()
-                    loadPapers()
                 }
             }
         }
@@ -314,24 +303,32 @@ class MainFragment : BaseFragment(), IContractView.IMainView, IContractView.IMes
     private fun loadPapers() {
         for (item in examPapers) {
             //设置路径
-            val file = File(FileAddress().getPathTestPaper(item.examId, item.id))
-            item.path = file.path
-            val files = FileUtils.getFiles(file.path)
-            val images=item.imageUrl.split(",").toTypedArray()
-            if (files == null || files.size != images.size) {
-                val imageDownLoad = ImageDownLoadUtils(activity,images, file.path)
-                imageDownLoad.startDownload()
-                imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                    override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                        hideLoading()
-                    }
-                    override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                        hideLoading()
-                        imageDownLoad.reloadImage()
-                    }
-                })
+            val pathStr = FileAddress().getPathTestPaper(item.examId, item.id)
+            val files = FileUtils.getFiles(pathStr)
+            val images=item.imageUrl.split(",").toMutableList()
+            val paths= mutableListOf<String>()
+            for (i in images.indices){
+                paths.add("$pathStr/${i+1}.png")
+            }
+            item.path = pathStr
+            item.paths=paths
+            if (files == null || files.size > images.size) {
+                FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                    object : FileMultitaskDownManager.MultiTaskCallBack {
+                        override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                        }
+                        override fun completed(task: BaseDownloadTask?) {
+                            hideLoading()
+                        }
+                        override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                        }
+                        override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                            hideLoading()
+                        }
+                    })
             }
         }
+        receivePaperAdapter?.notifyDataSetChanged()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

@@ -18,9 +18,10 @@ import com.bll.lnkstudy.mvp.presenter.DownloadPaintingPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.ImageDownLoadUtils
+import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_download_app.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -135,48 +136,45 @@ class DownloadPaintingActivity:BaseAppCompatActivity(),IContractView.IPaintingVi
      * 下载
      */
     private fun onDownload(){
-        val item=items[position]
         showLoading()
+        val item=items[position]
         val pathStr= FileAddress().getPathImage("painting" ,item.fontDrawId)
-        val images= mutableListOf<String>()
-        images.add(item.bodyUrl)
-        val imageDownLoad= ImageDownLoadUtils(this,images.toTypedArray(),pathStr)
-        imageDownLoad.startDownload()
-        imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-            override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                hideLoading()
-                val paths= mutableListOf<String>()
-                if (map != null) {
-                    for (m in map){
-                        paths.add(m.value)
-                    }
+        val images = mutableListOf(item.bodyUrl)
+        val savePaths= arrayListOf("$pathStr/1.png")
+        FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
+            object : FileMultitaskDownManager.MultiTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                 }
-                val bean= PaintingBean()
-                bean.contentId=item.fontDrawId
-                bean.type=2
-                bean.title=item.drawName
-                bean.date=System.currentTimeMillis()
-                bean.paths=paths
-                bean.time=dynasty
-                bean.timeStr=popTimes[dynasty-1].name
-                bean.paintingType=paintingType
-                bean.paintingTypeStr=popPaintings[paintingType-1].name
-                bean.info=item.drawDesc
-                bean.price=item.price
-                bean.imageUrl=item.bodyUrl
-                bean.author=item.author
-                bean.supply=item.supply
-                bean.bodyUrl=item.bodyUrl
-                val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
-                //新建增量更新
-                DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
-                showToast(R.string.book_download_success)
-            }
-            override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                hideLoading()
-                showToast(R.string.book_download_fail)
-            }
-        })
+                override fun completed(task: BaseDownloadTask?) {
+                    hideLoading()
+                    val bean= PaintingBean()
+                    bean.contentId=item.fontDrawId
+                    bean.type=2
+                    bean.title=item.drawName
+                    bean.date=System.currentTimeMillis()
+                    bean.paths=savePaths
+                    bean.time=dynasty
+                    bean.timeStr=popTimes[dynasty-1].name
+                    bean.paintingType=paintingType
+                    bean.paintingTypeStr=popPaintings[paintingType-1].name
+                    bean.info=item.drawDesc
+                    bean.price=item.price
+                    bean.imageUrl=item.bodyUrl
+                    bean.author=item.author
+                    bean.supply=item.supply
+                    bean.bodyUrl=item.bodyUrl
+                    val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
+                    //新建增量更新
+                    DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
+                    showToast(R.string.book_download_success)
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    hideLoading()
+                    showToast(R.string.book_download_fail)
+                }
+            })
     }
 
 

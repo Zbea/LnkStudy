@@ -13,11 +13,12 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
+import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.FileUploadManager
-import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 import java.io.File
@@ -132,29 +133,31 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
      */
     private fun loadPapers(papers:MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
-            if (mDownMapPool[item.id]!=null)
-                continue
             //设置路径
-            val file = File(FileAddress().getPathTestPaper(item.examId, item.id))
-            item.path = file.path
-            val images=item.submitUrl.split(",").toTypedArray()
-            val imageDownLoad = ImageDownLoadUtils(activity,images, file.path)
-            imageDownLoad.startDownload()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    mPresenter.deletePaper(item.id)
-                    deleteDoneTask(imageDownLoad)
-                    val contentPapers=PaperContentDaoManager.getInstance().queryByID(item.id)
-                    //更新考卷内容增量数据
-                    for (contentPaper in contentPapers){
-                        DataUpdateManager.editDataUpdate(3,contentPaper.id.toInt(),3,contentPaper.typeId)
+            val pathStr = FileAddress().getPathTestPaper(item.examId, item.id)
+            item.path = pathStr
+            val images=item.submitUrl.split(",").toMutableList()
+            val savePaths= mutableListOf<String>()
+            for (i in images.indices){
+                savePaths.add("$pathStr/${i+1}.png")
+            }
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                     }
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    hideLoading()
-                }
-            })
-            mDownMapPool[item.id]=imageDownLoad
+                    override fun completed(task: BaseDownloadTask?) {
+                        mPresenter.deletePaper(item.id)
+                        val contentPapers=PaperContentDaoManager.getInstance().queryByID(item.id)
+                        //更新考卷内容增量数据
+                        for (contentPaper in contentPapers){
+                            DataUpdateManager.editDataUpdate(3,contentPaper.id.toInt(),3,contentPaper.typeId)
+                        }
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 

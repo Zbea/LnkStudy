@@ -25,7 +25,7 @@ public class PaperList implements Serializable {
         @SerializedName("taskImageId")
         public String imageUrl;
         public String path;//文件夹路径
-        public String[] paths;//图片路径
+        public List<String> paths;//图片路径
         public long date;
         public long endTime;
     }

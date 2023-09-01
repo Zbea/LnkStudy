@@ -28,7 +28,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
-        layoutParams.y=DP2PX.dip2px(context,32f)
+        layoutParams.y=DP2PX.dip2px(context,38f)
         dialog?.show()
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)

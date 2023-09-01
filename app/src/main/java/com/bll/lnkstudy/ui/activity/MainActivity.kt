@@ -761,27 +761,29 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
         else{
             FileAddress().getPathImage("painting", item.contentId)
         }
-        val images = mutableListOf<String>()
-        images.add(item.bodyUrl)
-        val imageDownLoad = ImageDownLoadUtils(this, images.toTypedArray(), pathStr)
-        imageDownLoad.startDownload()
-        imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-            override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                PaintingBeanDaoManager.getInstance().insertOrReplace(item)
-                //新建增量更新
-                DataUpdateManager.createDataUpdateSource(
-                    7,
-                    item.id.toInt(),
-                    1,
-                    item.contentId,
-                    Gson().toJson(item),
-                    item.bodyUrl
-                )
-            }
-            override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                imageDownLoad.reloadImage()
-            }
-        })
+        val images = mutableListOf(item.bodyUrl)
+        val savePaths= arrayListOf("$pathStr/1.png")
+        FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
+            object : FileMultitaskDownManager.MultiTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    PaintingBeanDaoManager.getInstance().insertOrReplace(item)
+                    //新建增量更新
+                    DataUpdateManager.createDataUpdateSource(
+                        7,
+                        item.id.toInt(),
+                        1,
+                        item.contentId,
+                        Gson().toJson(item),
+                        item.bodyUrl
+                    )
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                }
+            })
     }
 
     /**

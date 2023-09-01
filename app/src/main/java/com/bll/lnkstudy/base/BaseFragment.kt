@@ -12,14 +12,12 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
@@ -50,13 +48,11 @@ import kotlin.math.ceil
 
 
 abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
-    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, IContractView.IClassGroupView, EasyPermissions.PermissionCallbacks, IBaseView {
+    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, EasyPermissions.PermissionCallbacks, IBaseView {
 
-    val mDownMapPool = HashMap<Int, ImageDownLoadUtils>()//下载管理
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mControlMessagePresenter= ControlMessagePresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
-    val mClassGroupPresenter = ClassGroupPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -125,20 +121,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     override fun onList(list: MutableList<DataUpdateBean>?) {
     }
 
-    //班级回调
-    override fun onInsert() {
-    }
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        if (DataBeanManager.classGroups != classGroups){
-            DataBeanManager.classGroups=classGroups
-            EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
-        }
-    }
-    override fun onQuit() {
-    }
-    override fun onUser(lists: MutableList<ClassGroupUser>?) {
-    }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -183,8 +165,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
             mControlMessagePresenter.getControlMessage()
             mControlMessagePresenter.getSystemControlClear()
-            if (isRequestClassGroup)
-                mClassGroupPresenter.getClassGroupList(false)
         }
     }
 
@@ -516,21 +496,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      */
     private fun customStartActivity1(intent: Intent){
         startActivity(intent)
-    }
-
-    fun deleteDoneTask(task: ImageDownLoadUtils?) {
-        if (mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-            val iterator = entries.iterator();
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val entity = entry.value
-                if (task == entity) {
-                    iterator.remove()
-                }
-            }
-        }
     }
 
     /**

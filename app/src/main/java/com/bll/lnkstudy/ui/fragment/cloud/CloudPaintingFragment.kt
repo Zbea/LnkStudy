@@ -22,8 +22,8 @@ import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ImageDownLoadUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -166,21 +166,26 @@ class CloudPaintingFragment : BaseCloudFragment() {
     private fun downloadPainting(item:PaintingBean){
         showLoading()
         val pathStr= FileAddress().getPathImage("painting" ,item.contentId)
-        val images= mutableListOf<String>()
-        images.add(item.bodyUrl)
-        val imageDownLoad= ImageDownLoadUtils(activity,images.toTypedArray(),pathStr)
-        imageDownLoad.startDownload()
-        imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-            override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                hideLoading()
-                val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(item)
-                //新建增量更新
-                DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,item.contentId, Gson().toJson(item),item.bodyUrl)
-            }
-            override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                imageDownLoad.reloadImage()
-            }
-        })
+        val images = mutableListOf(item.bodyUrl)
+        val savePaths= arrayListOf("$pathStr/1.png")
+        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
+            object : FileMultitaskDownManager.MultiTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    hideLoading()
+                    val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(item)
+                    //新建增量更新
+                    DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,item.contentId, Gson().toJson(item),item.bodyUrl)
+                    showToast(1,R.string.book_download_success)
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    hideLoading()
+                    showToast(1,R.string.book_download_fail)
+                }
+            })
     }
 
     /**

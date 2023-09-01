@@ -48,7 +48,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     private var paperContents= mutableListOf<PaperContentBean>()
 
     private var exam: PaperList.PaperListBean?=null
-    private var outImageStr = ""
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
     private val commitItems = mutableListOf<ItemList>()
@@ -95,9 +94,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     override fun initData() {
         isExpand=true
 
-        exam=intent.getBundleExtra("bundle")?.getSerializable("receivePaper") as PaperList.PaperListBean
-        outImageStr = intent.getStringExtra("outImageStr").toString()
-        paths = intent.getStringArrayListExtra("imagePaths")!!
+        exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as PaperList.PaperListBean
+        paths = exam?.paths!!
         pageCount = paths.size
 
         course=exam?.subject!!
@@ -107,8 +105,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         papers= daoManager?.queryAll(course,commonTypeId) as MutableList<PaperBean>
         paperContents= daoContentManager?.queryAll(course,commonTypeId) as MutableList<PaperContentBean>
 
-        for (i in 0 until paths.size){
-            drawPaths.add("$outImageStr/${i+1}/draw.tch")
+        for (i in paths.indices){
+            drawPaths.add("${exam?.path}/${i+1}/draw.tch")
         }
 
         startAlarmManager()
@@ -302,18 +300,23 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         })
     }
 
-    override fun onBackPressed() {
-    }
-
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-        return false
-    }
 
     override fun onMessageEvent(bean: EventBusData) {
         super.onMessageEvent(bean)
         if (bean.event==Constants.EXAM_TIME_EVENT){
             showLoading()
             commit()
+        }
+    }
+
+    override fun onBackPressed() {
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        return if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+            true
+        } else {
+            super.dispatchKeyEvent(event)
         }
     }
 

@@ -3,10 +3,10 @@
     <dimen name="height">1363dp</dimen>
     <dimen name="width">1021dp</dimen>
     <dimen name="drawing_height">1295dp</dimen>
-    <dimen name="drawing_bottom_height">32dp</dimen>
+    <dimen name="drawing_bottom_height">38dp</dimen>
     <dimen name="navigation_height">90dp</dimen>
     <dimen name="navigation_text">31sp</dimen>
-    <dimen name="main_content_title_height">48dp</dimen>
+    <dimen name="main_content_title_height">60dp</dimen>
     <dimen name="xtab_height">50dp</dimen>
     <dimen name="dialog_padding">40dp</dimen>
     <dimen name="statusbar_height">38dp</dimen>

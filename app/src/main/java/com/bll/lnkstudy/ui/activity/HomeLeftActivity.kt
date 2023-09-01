@@ -25,7 +25,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
     private var mData = mutableListOf<MainList>()
     private var lastFragment: Fragment? = null
 
-    var mainFragment: MainFragment? = null
+    var homeFragment: HomeFragment? = null
     var bookcaseFragment: BookCaseFragment? = null
     var textbookFragment: TextbookFragment? = null
     var paperFragment: PaperFragment? = null
@@ -49,7 +49,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
     override fun initView() {
         sendEventScreen()
 
-        mainFragment = MainFragment()
+        homeFragment = HomeFragment()
         bookcaseFragment = BookCaseFragment()
         textbookFragment = TextbookFragment()
         paperFragment = PaperFragment()
@@ -58,7 +58,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
         paintingFragment = PaintingFragment()
         teachFragment = TeachFragment()
 
-        switchFragment(lastFragment, mainFragment)
+        switchFragment(lastFragment, homeFragment)
 
         mHomeAdapter = MainListAdapter(R.layout.item_main_list, mData).apply {
             rv_list.layoutManager = LinearLayoutManager(this@HomeLeftActivity)//创建布局管理
@@ -68,7 +68,7 @@ open class HomeLeftActivity : BaseAppCompatActivity(){
                 updateItem(lastPosition, false)//原来的位置去掉勾选
                 updateItem(position, true)//更新新的位置
                 when (position) {
-                    0 -> switchFragment(lastFragment, mainFragment)//首页
+                    0 -> switchFragment(lastFragment, homeFragment)//首页
                     1 -> switchFragment(lastFragment, bookcaseFragment)//书架
                     2 -> switchFragment(lastFragment, textbookFragment)//课本
                     3 -> switchFragment(lastFragment, homeworkFragment)//作业

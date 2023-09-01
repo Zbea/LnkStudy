@@ -1,6 +1,5 @@
 package com.bll.lnkstudy
 
-import android.annotation.SuppressLint
 import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
@@ -139,7 +138,6 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    @SuppressLint("UseCompatLoadingForDrawables")
     fun getIndexData(): MutableList<MainList> {
         val list = mutableListOf<MainList>()
         val h0 = MainList().apply {
@@ -208,6 +206,101 @@ object DataBeanManager {
         list.add(h7)
         return list
     }
+
+
+    /**
+     * 获取index栏目
+     *
+     * @param context
+     * @return
+     */
+    fun getIndexDataLeft(): MutableList<MainList> {
+        val list = mutableListOf<MainList>()
+        val h0 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_sy)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
+            checked = true
+            name = mContext.getString(listTitle[0])
+        }
+
+        val h1 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_sj)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
+            checked = false
+            name = mContext.getString(listTitle[1])
+        }
+
+        val h2 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_kb)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_kb_check)
+            checked = false
+            name = mContext.getString(listTitle[2])
+        }
+
+        val h3 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_yj)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
+            checked = false
+            name = mContext.getString(listTitle[7])
+        }
+        list.add(h0)
+        list.add(h1)
+        list.add(h2)
+        list.add(h3)
+        return list
+    }
+
+
+    /**
+     * 获取index栏目
+     *
+     * @param context
+     * @return
+     */
+    fun getIndexDataRight(): MutableList<MainList> {
+        val list = mutableListOf<MainList>()
+        val h0 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_sy)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
+            checked = true
+            name = mContext.getString(listTitle[0])
+        }
+
+        val h1 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_zy)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_zy_check)
+            checked = false
+            name = mContext.getString(listTitle[3])
+        }
+
+        val h2 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_ks)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_ks_check)
+            checked = false
+            name = mContext.getString(listTitle[4])
+        }
+
+        val h3 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_bj)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_bj_check)
+            checked = false
+            name = mContext.getString(listTitle[5])
+        }
+
+        val h4 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_sh)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_sh_check)
+            checked = false
+            name = mContext.getString(listTitle[6])
+        }
+        list.add(h0)
+        list.add(h1)
+        list.add(h2)
+        list.add(h3)
+        list.add(h4)
+        return list
+    }
+
 
     val remind: MutableList<DateRemind>
         get() {
