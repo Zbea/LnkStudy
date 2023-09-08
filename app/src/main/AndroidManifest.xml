@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.bll.lnkstudy">
 
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -114,7 +115,9 @@
             android:name=".ui.activity.TeachActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity android:name=".ui.activity.book.TextbookStoreActivity" />
-        <activity android:name=".ui.activity.book.BookStoreTypeActivity" />
+        <activity android:name=".ui.activity.BookStoreTypeActivity"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".ui.activity.PaintingListActivity" />
         <activity android:name=".ui.activity.MessageListActivity" />
         <activity android:name=".ui.activity.MainCourseActivity" />
@@ -161,9 +164,6 @@
         <activity
             android:name=".ui.activity.CampusModeActivity"
              />
-        <activity
-            android:name=".ui.activity.ClassGroupActivity"
-            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity" />
@@ -171,6 +171,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.PastHomeworkActivity"/>
+        <activity android:name=".ui.activity.drawing.FreeNoteActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

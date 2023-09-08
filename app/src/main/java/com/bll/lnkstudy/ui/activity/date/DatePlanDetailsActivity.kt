@@ -93,9 +93,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         mWeekAdapter?.bindToRecyclerView(rv_week)
 
         iv_add.setOnClickListener {
-            val date = DatePlan()
-            planList.add(date)
-            mAdapter?.notifyDataSetChanged()
+            planList.add(DatePlan())
+            mAdapter?.notifyItemChanged(planList.size-1)
         }
 
         rl_date.setOnClickListener{
@@ -151,8 +150,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
         dateEventBean?.weeks=selectWeeks
 
-        var plans = mutableListOf<DatePlan>()
-        var items = mAdapter?.data!!
+        val plans = mutableListOf<DatePlan>()
+        val items = mAdapter?.data!!
         for (item in items) {
             if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty() && !item.endTimeStr.isNullOrEmpty()) {
                 plans.add(item)

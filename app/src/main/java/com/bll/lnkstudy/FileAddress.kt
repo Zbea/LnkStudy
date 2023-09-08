@@ -2,6 +2,7 @@ package com.bll.lnkstudy
 
 import com.bll.lnkstudy.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
+import com.bll.lnkstudy.Constants.Companion.FREE_NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
 import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
@@ -155,6 +156,20 @@ class FileAddress {
      */
     fun getPathDraft():String{
         return "$IMAGE_PATH/$mUserId/draft"
+    }
+
+    /**
+     * 文件夹路径
+     */
+    fun getPathFreeRecord():String{
+        return "$HOMEWORK_PATH/${mUserId}"
+    }
+
+    /**
+     * 随笔文件路径
+     */
+    fun getPathFreeNote(title:String):String{
+        return "$FREE_NOTE_PATH/${mUserId}/$title"
     }
 
 }

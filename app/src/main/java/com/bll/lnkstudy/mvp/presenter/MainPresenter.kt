@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.presenter
 
+import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
@@ -17,7 +18,34 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
                 return false
             }
             override fun success(tBaseResult: BaseResult<PaperList>) {
-                view.onExam(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onExam(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    fun getHomeworkNotice() {
+        val map=HashMap<String,Any>()
+        map["size"]=7
+        val type = RetrofitManager.service.getHomeworkNotice(map)
+        doRequest(type, object : Callback<HomeworkNoticeList>(view) {
+            override fun failed(tBaseResult: BaseResult<HomeworkNoticeList>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<HomeworkNoticeList>) {
+                if (tBaseResult.data!=null)
+                    view.onHomeworkNotice(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    fun deleteHomeworkNotice() {
+        val type = RetrofitManager.service.deleteHomeworkNotice()
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
             }
         }, false)
     }

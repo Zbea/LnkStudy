@@ -125,7 +125,7 @@ public class DateUtils {
             return null;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
@@ -332,7 +332,6 @@ public class DateUtils {
         return 0;
     }
 
-
     /**
      *
      * 把时间long 的格式转为天
@@ -340,6 +339,38 @@ public class DateUtils {
      */
     public static String longToDay(long time){
         return String.valueOf(time/(24*60*60*1000));
+    }
+
+    public static long getStartOfDayInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getEndOfDayInMillis() {
+        // Add one day's time to the beginning of the day.
+        // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds = 1 day
+        return getStartOfDayInMillis() + (24 * 60 * 60 * 1000);
+    }
+
+    public static long getStartOfDayInMillis(long date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(date));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * @param date the date in the format "yyyy-MM-dd"
+     */
+    public static long getEndOfDayInMillis(long date){
+        return getStartOfDayInMillis(date) + (24 * 60 * 60 * 1000);
     }
 
 }

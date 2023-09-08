@@ -12,11 +12,11 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="95dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="120dp"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
+        android:background="@drawable/bg_line_bottom"
         android:gravity="center_vertical">
 
         <TextView
@@ -25,7 +25,8 @@
             android:layout_weight="1"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
-            android:text="标题"
+            android:gravity="center"
+            android:text="@string/date_day_content_hint"
             android:textStyle="bold"
             android:lines="1"
             android:ellipsize="end"
@@ -71,9 +72,10 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="120dp"
+        android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="40dp"
         />
 
 

@@ -1,11 +1,9 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
-import com.bll.lnkstudy.mvp.model.homework.RecordBean;
+import com.bll.lnkstudy.mvp.model.RecordBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -59,6 +57,28 @@ public class RecordDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
+    /**
+     * 随笔录音
+     * @return
+     */
+    public List<RecordBean> queryAllRecord() {
+        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(0);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition1)
+                .orderDesc(RecordBeanDao.Properties.Date).build().list();
+    }
+
+    public List<RecordBean> queryAllRecord(int page, int pageSize) {
+        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(0);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition1)
+                .orderDesc(RecordBeanDao.Properties.Date).offset((page-1)*pageSize).limit(pageSize).build().list();
+    }
+
+    /**
+     * 作业录音
+     * @param course
+     * @param typeId
+     * @return
+     */
     public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(typeId);

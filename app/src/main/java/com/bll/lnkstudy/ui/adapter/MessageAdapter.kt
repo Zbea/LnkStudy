@@ -22,7 +22,7 @@ class MessageAdapter(private val type:Int,layoutResId: Int, data: MutableList<Me
                 }
             }
             setText(R.id.tv_message_name, typeNameStr)
-            setText(R.id.tv_message_content,item.content)
+            setText(R.id.tv_message_content,"内容："+item.content)
             if (type==1){
                 setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date*1000))
             }

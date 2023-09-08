@@ -35,7 +35,7 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, pri
         recyclerview.layoutManager = LinearLayoutManager(context)
         val mAdapter= MessageAdapter(R.layout.item_homework_message_selector, messages)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,10))
+        recyclerview.addItemDecoration(SpaceItemDeco(10,false))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val item=messages[position]
             for (ite in messages)

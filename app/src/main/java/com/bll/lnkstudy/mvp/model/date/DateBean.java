@@ -5,7 +5,7 @@ import com.bll.lnkstudy.utils.date.Solar;
 
 import java.util.List;
 
-public class Date {
+public class DateBean {
 
     public int year;
     public int month;

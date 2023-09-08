@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.model.PaintingList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList;
 import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean;
 import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage;
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
@@ -121,6 +122,7 @@ public interface IContractView {
          * @param exam
          */
         void onExam(PaperList exam);
+        void onHomeworkNotice(HomeworkNoticeList list);
     }
 
     //公共接口

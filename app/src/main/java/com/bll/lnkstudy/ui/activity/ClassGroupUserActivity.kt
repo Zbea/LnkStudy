@@ -8,7 +8,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUser
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupUserAdapter
-import kotlinx.android.synthetic.main.ac_classgroup.*
+import kotlinx.android.synthetic.main.ac_classgroup_user.*
 
 
 class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {

@@ -31,11 +31,12 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Note>?) 
                 }
                 setGone(R.id.iv_encrypt,item.typeStr==DataBeanManager.noteBook[0].name)
                 setImageResource(R.id.iv_encrypt,if (item.isEncrypt) R.mipmap.icon_encrypt_check else R.mipmap.icon_encrypt)
-                addOnClickListener(R.id.iv_encrypt)
-                addOnClickListener(R.id.iv_more)
             }
             setText(R.id.tv_title,title)
             setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date) )
+
+            addOnClickListener(R.id.iv_encrypt)
+            addOnClickListener(R.id.iv_more)
         }
     }
 

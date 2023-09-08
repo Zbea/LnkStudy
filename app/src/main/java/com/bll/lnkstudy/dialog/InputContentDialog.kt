@@ -12,6 +12,7 @@ import com.bll.lnkstudy.utils.KeyboardUtils
 
 class InputContentDialog(val context: Context, private val screenPos:Int, val string: String) {
 
+    constructor(context: Context ,string: String) :this(context,1,string)
 
     fun builder(): InputContentDialog? {
 

@@ -24,10 +24,7 @@ import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.HomeLeftActivity
-import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
-import com.bll.lnkstudy.ui.activity.RecordListActivity
+import com.bll.lnkstudy.ui.activity.*
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
@@ -74,8 +71,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
-
-    var isRequestClassGroup=false//页面是否请求
 
     //控制消息回调
     override fun onControlMessage(controlMessages: MutableList<ControlMessage>) {
@@ -145,18 +140,14 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         grade=mUser?.grade!!
         initCommonTitle()
         initView()
+        if (activity is MainActivity)
+            screenPos=(activity as MainActivity).getCurrentScreenPos()
         if (activity is HomeLeftActivity)
             screenPos=(activity as HomeLeftActivity).getCurrentScreenPos()
         mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
     }
 
-    /**
-     * 设置页面是否请求班群信息
-     */
-    fun setClassGroupRequest(isBoolean: Boolean){
-        this.isRequestClassGroup=isBoolean
-    }
 
     /**
      * 获取控制信息指令
@@ -462,8 +453,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         intent.putExtra("tool", result.toString())
         intent.putExtra("key_book_id",bookBean.bookId.toString())
         intent.putExtra("bookName", bookBean.bookName)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)1 else screenPos)
         startActivity(intent)
     }
 

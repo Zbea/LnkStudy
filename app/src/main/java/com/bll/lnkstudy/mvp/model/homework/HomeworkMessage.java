@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * 老师作业本消息
+ */
 public class HomeworkMessage implements Serializable {
 
     public int total;

@@ -6,7 +6,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.view.KeyEvent
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.*
@@ -16,11 +19,14 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.ui.adapter.MainListAdapter
+import com.bll.lnkstudy.ui.fragment.*
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
+import kotlinx.android.synthetic.main.ac_launcher.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -28,11 +34,32 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.util.*
 
-class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView.IDataUpdateView {
+class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContractView.IDataUpdateView {
 
     private val mQiniuPresenter = QiniuPresenter(this)
     private val mDataUpdatePresenter = DataUpdatePresenter(this)
     private var eventType = ""
+
+    var mainLeftFragment: MainLeftFragment? = null
+    var bookcaseFragment: BookCaseFragment? = null
+    var textbookFragment: TextbookFragment? = null
+    var teachFragment: TeachFragment? = null
+    var classGroupFragment:ClassGroupFragment?=null
+
+    var mainRightFragment: MainRightFragment? = null
+    var paperFragment: PaperFragment? = null
+    var homeworkFragment: HomeworkFragment? = null
+    var noteFragment: NoteFragment? = null
+    var paintingFragment: PaintingFragment? = null
+
+    private var leftPosition = 0
+    private var mAdapterLeft: MainListAdapter? = null
+    private var leftFragment: Fragment? = null
+
+    private var rightPosition = 0
+    private var mAdapterRight: MainListAdapter? = null
+    private var rightFragment: Fragment? = null
+
     override fun onToken(token: String) {
         when (eventType) {
             Constants.AUTO_UPLOAD_EVENT -> {
@@ -74,8 +101,10 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
         return R.layout.ac_launcher
     }
 
+    override fun initData() {
+    }
+
     override fun initView() {
-        super.initView()
         EventBus.getDefault().register(this)
         EasyPermissions.requestPermissions(
             this, "请求权限", 1,
@@ -86,14 +115,111 @@ class MainActivity : HomeLeftActivity(), IContractView.IQiniuView, IContractView
             Manifest.permission.RECORD_AUDIO
         )
 
+        mainLeftFragment = MainLeftFragment()
+        bookcaseFragment = BookCaseFragment()
+        textbookFragment = TextbookFragment()
+        paperFragment = PaperFragment()
+        homeworkFragment = HomeworkFragment()
+        noteFragment = NoteFragment()
+        paintingFragment = PaintingFragment()
+        teachFragment = TeachFragment()
+        mainRightFragment = MainRightFragment()
+        classGroupFragment= ClassGroupFragment()
+
+        switchLeftFragment(leftFragment, mainLeftFragment)
+        switchRightFragment(rightFragment,mainRightFragment)
+
+        mAdapterLeft = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexDataLeft()).apply {
+            rv_list_a.layoutManager = LinearLayoutManager(this@MainActivity)//创建布局管理
+            rv_list_a.adapter = this
+            bindToRecyclerView(rv_list_a)
+            setOnItemClickListener { adapter, view, position ->
+                updateItem(leftPosition, false)//原来的位置去掉勾选
+                updateItem(position, true)//更新新的位置
+                when (position) {
+                    0 -> switchLeftFragment(leftFragment, mainLeftFragment)//首页
+                    1 -> switchLeftFragment(leftFragment, bookcaseFragment)//书架
+                    2 -> switchLeftFragment(leftFragment, textbookFragment)//课本
+                    3 -> switchLeftFragment(leftFragment, teachFragment)//义教
+                    4 -> switchLeftFragment(leftFragment, classGroupFragment)//班群管理
+                }
+                leftPosition = position
+            }
+        }
+
+        mAdapterRight = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexDataRight()).apply {
+            rv_list_b.layoutManager = LinearLayoutManager(this@MainActivity)//创建布局管理
+            rv_list_b.adapter = this
+            bindToRecyclerView(rv_list_b)
+            setOnItemClickListener { adapter, view, position ->
+                updateItem(rightPosition, false)//原来的位置去掉勾选
+                updateItem(position, true)//更新新的位置
+                when (position) {
+                    0 -> switchRightFragment(rightFragment, mainRightFragment)//首页
+                    1 -> switchRightFragment(rightFragment, homeworkFragment)//书架
+                    2 -> switchRightFragment(rightFragment, paperFragment)//课本
+                    3 -> switchRightFragment(rightFragment, noteFragment)//义教
+                    4 -> switchRightFragment(rightFragment, paintingFragment)//义教
+                }
+                rightPosition = position
+            }
+        }
+
         startRemind()
         startRemind1Month()
         startRemind9Month()
+
+        iv_user_a.setOnClickListener {
+            customStartActivity(Intent(this, AccountInfoActivity::class.java))
+        }
+        iv_user_b.setOnClickListener {
+            customStartActivity(Intent(this, AccountInfoActivity::class.java))
+        }
     }
 
-    //全屏首页不发送通知
-    override fun sendEventScreen() {
+
+    //页码跳转
+    private fun switchLeftFragment(from: Fragment?, to: Fragment?) {
+        if (from != to) {
+            leftFragment = to
+            val fm = supportFragmentManager
+            val ft = fm.beginTransaction()
+
+            if (!to!!.isAdded) {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.add(R.id.frame_layout_a, to).commit()
+            } else {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.show(to).commit()
+            }
+        }
     }
+
+    //页码跳转
+    private fun switchRightFragment(from: Fragment?, to: Fragment?) {
+        if (from != to) {
+            rightFragment = to
+            val fm = supportFragmentManager
+            val ft = fm.beginTransaction()
+
+            if (!to!!.isAdded) {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.add(R.id.frame_layout_b, to).commit()
+            } else {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.show(to).commit()
+            }
+        }
+    }
+
 
     /**
      * 开始每天定时任务 下午三点

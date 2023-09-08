@@ -1,15 +1,10 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DataUpdateBeanDao;
-import com.bll.lnkstudy.greendao.PaperTypeBeanDao;
-import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.mvp.model.homework.RecordBean;
-import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;

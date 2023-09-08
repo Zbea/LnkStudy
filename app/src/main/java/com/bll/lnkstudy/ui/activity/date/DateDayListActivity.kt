@@ -13,7 +13,10 @@ import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DateDayListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_date_day_list.*
+import kotlinx.android.synthetic.main.ac_date_day_list.rv_list
+import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -55,6 +58,7 @@ class DateDayListActivity:BaseAppCompatActivity() {
         mAdapter = DateDayListAdapter(R.layout.item_date_day_list, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        rv_list?.addItemDecoration(SpaceItemDeco(30,false))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val intent=Intent(this,DateDayDetailsActivity::class.java)
             intent.addFlags(1)
@@ -82,8 +86,8 @@ class DateDayListActivity:BaseAppCompatActivity() {
     }
 
     private fun findDatas(){
-        days=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1,nowDate)
-        days.addAll(DateEventGreenDaoManager.getInstance().queryAllDateEvent1(1,nowDate))
+        days=DateEventGreenDaoManager.getInstance().queryAllDayEvent(nowDate)
+        days.addAll(DateEventGreenDaoManager.getInstance().queryAllDayEventOld(nowDate))
         mAdapter?.setNewData(days)
     }
 

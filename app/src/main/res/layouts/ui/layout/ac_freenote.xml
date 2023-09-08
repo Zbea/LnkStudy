@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:paddingTop="@dimen/statusbar_height"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        android:gravity="center_vertical"
+        android:background="@color/bg_page">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:textColor="@color/black"
+            android:textSize="31sp"
+            android:text="@string/freenote_title_str"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/iv_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="40dp"
+            android:src="@mipmap/icon_freenote_recorder"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_theme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="105dp"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:text="@string/freenote_theme_str"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:text="@string/freenote_insert_str"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_record_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="30dp"
+            android:drawableStart="@mipmap/icon_freenote_recorder_list"
+            android:drawablePadding="@dimen/dp_5"
+            android:text="列表"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_15"
+            android:paddingEnd="@dimen/dp_15"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+        <TextView
+            android:id="@+id/tv_free_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="40dp"
+            android:drawableStart="@mipmap/icon_freenote_note_list"
+            android:drawablePadding="@dimen/dp_5"
+            android:text="列表"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_15"
+            android:paddingEnd="@dimen/dp_15"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/icon_freenote_bg_1" />
+
+        <include
+            android:id="@+id/ll_geometry"
+            layout="@layout/common_drawing_geometry"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/iv_geometry"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/dp_10"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:padding="1dp"
+            android:src="@mipmap/icon_app_geometry"
+            android:background="@drawable/bg_black_stroke_0dp_corner"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_bottom_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+
+
+            <ImageView
+                android:id="@+id/iv_erasure"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="120dp"
+                android:scaleType="center"
+                android:src="@mipmap/icon_draw_erasure" />
+
+            <ImageView
+                android:id="@+id/btn_page_up"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:layout_marginStart="44dp"
+                android:src="@mipmap/icon_draw_page_up" />
+
+            <View
+                android:id="@+id/iv_catalog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:text="1/1"
+            />
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <View
+                android:id="@+id/iv_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
+
+            <ImageView
+                android:id="@+id/btn_page_down"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:layout_marginEnd="44dp"
+                android:src="@mipmap/icon_draw_page_down" />
+
+            <ImageView
+                android:id="@+id/iv_tool_right"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="120dp"
+                android:scaleType="center"
+                android:src="@mipmap/icon_draw_tool"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

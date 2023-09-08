@@ -63,7 +63,7 @@ class BookCaseFragment: BaseFragment() {
             rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,23f),28))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,22f),28))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
                 gotoBookDetails(bookBean)
@@ -81,7 +81,7 @@ class BookCaseFragment: BaseFragment() {
      * 查找本地书籍
      */
     private fun findBook(){
-        books=BookGreenDaoManager.getInstance().queryAllBook(true)
+        books=BookGreenDaoManager.getInstance().queryAllBook(true,13)
         if (books.size==0){
             bookTopBean=null
         }

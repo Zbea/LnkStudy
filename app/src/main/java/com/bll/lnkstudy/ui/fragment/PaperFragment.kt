@@ -69,7 +69,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
 
     override fun initView() {
         setTitle(R.string.main_testpaper_title)
-        setClassGroupRequest(true)
 
         initRecyclerView()
         initTab()

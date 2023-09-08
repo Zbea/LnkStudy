@@ -197,7 +197,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         pageSize=9
         setTitle(R.string.main_homework_title)
         showView(iv_manager)
-        setClassGroupRequest(true)
 
         popWindowBeans.add(PopupBean(0, getString(R.string.homework_commit_details_str),true))
         popWindowBeans.add(PopupBean(1, getString(R.string.homework_correct_details_str),false))

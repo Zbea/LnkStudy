@@ -3,18 +3,19 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:gravity="center">
 
-    <ImageView
-        android:id="@+id/tv_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/icon_course_time_1"/>
 
-    <ImageView
+    <TextView
+        android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/icon_course_time_3"/>
+        android:lineSpacingMultiplier="1.5"
+        android:gravity="center"
+        android:textSize="@dimen/sp_26"
+        android:textColor="@color/black"
+        />
 
 
 </LinearLayout>

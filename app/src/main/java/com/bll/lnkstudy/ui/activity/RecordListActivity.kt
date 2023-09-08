@@ -20,7 +20,7 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.homework.RecordBean
+import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
@@ -115,7 +115,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         }
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = RecordAdapter(R.layout.item_record, recordBeans)
+        mAdapter = RecordAdapter(R.layout.item_homework_record, recordBeans)
         rv_list.adapter = mAdapter
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),DP2PX.dip2px(this,50f),20)

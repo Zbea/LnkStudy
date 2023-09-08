@@ -355,5 +355,15 @@ interface APIService{
      */
     @POST("cloud/data/delete")
     fun deleteCloudList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取消息通知
+     */
+    @GET("job/message/list")
+    fun getHomeworkNotice(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkNoticeList>>
+    /**
+     * 删除作业通知
+     */
+    @POST("job/message/deleteAll")
+    fun deleteHomeworkNotice(): Observable<BaseResult<Any>>
 
 }

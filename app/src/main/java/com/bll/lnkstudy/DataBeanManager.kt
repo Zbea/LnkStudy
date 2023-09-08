@@ -20,7 +20,8 @@ object DataBeanManager {
         R.string.main_home_title,R.string.main_bookcase_title,
         R.string.main_textbook_title,R.string.main_homework_title,
         R.string.main_testpaper_title,R.string.main_note_title,
-        R.string.main_painting_title,R.string.main_teach_title
+        R.string.main_painting_title,R.string.main_teach_title,
+        R.string.main_classgroup
     )
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
@@ -220,7 +221,7 @@ object DataBeanManager {
             icon = mContext.getDrawable(R.mipmap.icon_main_sy)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
             checked = true
-            name = mContext.getString(listTitle[0])
+            name = mContext.getString(R.string.main_home_title)
         }
 
         val h1 = MainList().apply {
@@ -243,10 +244,17 @@ object DataBeanManager {
             checked = false
             name = mContext.getString(listTitle[7])
         }
+        val h4 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_yj)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
+            checked = false
+            name = mContext.getString(listTitle[8])
+        }
         list.add(h0)
         list.add(h1)
         list.add(h2)
         list.add(h3)
+        list.add(h4)
         return list
     }
 
@@ -263,7 +271,7 @@ object DataBeanManager {
             icon = mContext.getDrawable(R.mipmap.icon_main_sy)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
             checked = true
-            name = mContext.getString(listTitle[0])
+            name = mContext.getString(R.string.main_home_title)
         }
 
         val h1 = MainList().apply {
@@ -605,31 +613,37 @@ object DataBeanManager {
                 name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
+                resFreeNoteBg=R.mipmap.icon_freenote_bg_0
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_1
+                resFreeNoteBg=R.mipmap.icon_freenote_bg_1
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_2
+                resFreeNoteBg=R.mipmap.icon_freenote_bg_2
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_yyb)
                 resId = R.mipmap.icon_note_module_bg_3
                 resContentId = R.mipmap.icon_note_details_bg_3
+                resFreeNoteBg=R.mipmap.icon_freenote_bg_3
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_tzb)
                 resId = R.mipmap.icon_note_module_bg_4
                 resContentId = R.mipmap.icon_note_details_bg_4
+                resFreeNoteBg=R.mipmap.icon_freenote_bg_4
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_wxp)
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
+                resFreeNoteBg=R.mipmap.icon_freenote_bg_5
             })
             return list
         }

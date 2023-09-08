@@ -17,6 +17,7 @@ public class Notebook {
     public int typeId;//分类id
     public String name;
     public long date;
+
     @Generated(hash = 1572388701)
     public Notebook(Long id, long userId, int typeId, String name, long date) {
         this.id = id;
@@ -28,6 +29,7 @@ public class Notebook {
     @Generated(hash = 1348176405)
     public Notebook() {
     }
+
     public Long getId() {
         return this.id;
     }

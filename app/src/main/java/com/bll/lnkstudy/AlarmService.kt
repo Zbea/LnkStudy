@@ -8,6 +8,7 @@ import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_1MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_9MONTH_EVENT
 import com.bll.lnkstudy.Constants.Companion.AUTO_UPLOAD_EVENT
 import com.bll.lnkstudy.Constants.Companion.EXAM_TIME_EVENT
+import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.mvp.model.EventBusData
 import org.greenrobot.eventbus.EventBus
 
@@ -33,11 +34,15 @@ class AlarmService:Service() {
                 Log.d("debug","1月1日日记上传")
                 //开启全局自动打包上传
                 EventBus.getDefault().postSticky(AUTO_UPLOAD_1MONTH_EVENT)
+                //清除作业通知（每学期上学开始）
+                EventBus.getDefault().post(MAIN_HOMEWORK_NOTICE_EVENT)
             }
             Constants.ACTION_UPLOAD_9MONTH->{
                 Log.d("debug","9月1课本、作业、考卷、书画")
                 //开启全局自动打包上传
                 EventBus.getDefault().postSticky(AUTO_UPLOAD_9MONTH_EVENT)
+                //清除作业通知（每学期上学开始）
+                EventBus.getDefault().post(MAIN_HOMEWORK_NOTICE_EVENT)
             }
             Constants.ACTION_VIDEO->{
                 Log.d("debug",state.toString())

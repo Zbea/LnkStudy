@@ -60,7 +60,13 @@ public class SToast {
             text.setPadding(30, 20, 30, 20);
             toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
         }
-        toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
+        if (screen==1){
+            toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
+        }
+        else {
+            toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
+        }
+
         toast.setText(str);
         toast.show();
     }

@@ -67,7 +67,7 @@ class Constants{
 
         //断点记录文件保存的文件夹
         val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
-
+        val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
 
         //eventbus通知标志
         const val AUTO_UPLOAD_1MONTH_EVENT = "AutoUploadEvent1Month"
@@ -93,7 +93,8 @@ class Constants{
         const val DATA_DOWNLOAD_EVENT = "DataDownload"
         const val DATA_RENT_EVENT = "DataRent"
         const val DATA_CLEAT_EVENT="DataClear"
-        const val EXAM_TIME_EVENT="ExamTime"
+        const val EXAM_TIME_EVENT="ExamTime"//考试到时自动提交广播
+        const val MAIN_HOMEWORK_NOTICE_EVENT="MainHomeworkNoticeEvent"//作业通知清除广播
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

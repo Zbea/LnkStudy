@@ -38,7 +38,7 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int,val typ
         recyclerview.layoutManager = LinearLayoutManager(context)
         mAdapter= CommitAdapter(R.layout.item_homework_commit,type, list)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(0,0,0,20,))
+        recyclerview.addItemDecoration(SpaceItemDeco(20,false))
 
         return this
     }

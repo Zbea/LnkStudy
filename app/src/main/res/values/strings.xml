@@ -45,6 +45,8 @@
     <string name="toast_input_message">请输入消息</string>
     <string name="edit_input_keyword">请输入关键字</string>
     <string name="toast_uninstall">确定卸载应用？</string>
+    <string name="toast_freenote_insert_fail">暂无笔记本，无法插入</string>
+    <string name="toast_freenote_insert_success">插入成功</string>
 
     <string name="item_is_delete_tips">确定删除？</string>
     <string name="account_is_logout_tips">确定退出登录？</string>
@@ -56,7 +58,8 @@
     <string name="cancel">取消</string>
     <string name="ok">确认</string>
     <string name="add">添加</string>
-    <string name="copy">复制</string>
+    <string name="add_plan">添加计划</string>
+    <string name="copy">复制计划</string>
     <string name="save">保存</string>
     <string name="rename">重命名</string>
     <string name="delete">删除</string>
@@ -152,7 +155,6 @@
     <string name="edit_name">修改姓名</string>
     <string name="edit_grade">修改年级</string>
     <string name="edit_password">修改密码</string>
-    <string name="main_main_title">主页</string>
     <string name="main_home_title">首页</string>
     <string name="register">注册账号</string>
     <string name="find_password">找回密码</string>
@@ -243,11 +245,13 @@
 
     <string name="main_class_schedule">课程表</string>
     <string name="main_message">消息通知</string>
-    <string name="main_date_plan">学习计划</string>
-    <string name="main_date_day">重要日子</string>
+    <string name="main_date_plan">今日计划</string>
     <string name="main_receive_paper">收到考卷</string>
-    <string name="main_classgroup">班群管理</string>
+    <string name="main_classgroup">班群</string>
     <string name="main_book">书籍阅读</string>
+    <string name="main_textbook">课本阅读</string>
+    <string name="main_homework_message">作业通知</string>
+    <string name="main_plan">计划总览</string>
 
     <string name="date_plan">学习计划</string>
     <string name="date_day">重要日子</string>
@@ -321,6 +325,7 @@
     <string name="year">年</string>
     <string name="month">月</string>
     <string name="date_day_title_hint">生日/纪恋日/其他</string>
+    <string name="date_day_content_hint">内容</string>
     <string name="date_day_date_hint">日期</string>
     <string name="date_day_time_str">倒计时</string>
     <string name="date_day_remind_str">提醒</string>
@@ -331,7 +336,6 @@
     <string name="date_plan_start_str">开始日期</string>
     <string name="date_plan_end_str">结束日期</string>
 
-    <string name="classGroup_manager_str">班群管理</string>
     <string name="toast_add_classGroup_success">加入班群成功</string>
     <string name="toast_out_classGroup_success">退出班群成功</string>
     <string name="classGroup_is_classGroup_tips">确定退出班群？</string>
@@ -376,4 +380,8 @@
     <string name="search_exam_str">考卷</string>
     <string name="search_note_str">笔记</string>
 
+    <string name="freenote_title_str">随笔</string>
+    <string name="freenote_insert_str">插入</string>
+    <string name="freenote_theme_str">格式</string>
+    <string name="freenote_module_str">随笔模板</string>
 </resources>

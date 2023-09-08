@@ -1,6 +1,5 @@
-package com.bll.lnkstudy.mvp.model.homework;
+package com.bll.lnkstudy.mvp.model;
 
-import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;

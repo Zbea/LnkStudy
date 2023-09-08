@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.utils;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
@@ -209,6 +210,7 @@ public class AppUtils {
      *
      * @return 设备ID
      */
+    @SuppressLint("MissingPermission")
     public static String getAndroidID(Context context) {
         BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
         return myDevice.getName();

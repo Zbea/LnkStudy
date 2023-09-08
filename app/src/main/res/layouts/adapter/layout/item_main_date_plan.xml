@@ -2,15 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dp_40"
+    android:background="@drawable/bg_line_bottom"
     android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/tv_start_time"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_18"
+        android:layout_marginStart="@dimen/dp_10"
+        android:textSize="@dimen/sp_20"
         android:textColor="@color/black"
+        android:gravity="center"
         />
 
     <TextView
@@ -18,33 +21,36 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:textSize="@dimen/sp_18"
+        android:textSize="@dimen/sp_20"
         android:textColor="@color/black"
         android:text="~"/>
 
     <TextView
         android:id="@+id/tv_end_time"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_18"
-        android:textColor="@color/black" />
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        android:gravity="center"
+        />
 
     <TextView
         android:id="@+id/tv_course"
-        android:layout_width="@dimen/dp_60"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:textSize="@dimen/sp_18"
+        android:textSize="@dimen/sp_20"
         android:textColor="@color/black"
         />
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_20" />
 
 </LinearLayout>

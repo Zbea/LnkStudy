@@ -279,11 +279,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         }
 
         tv_revocation?.setOnClickListener {
-            if (isScale){
-                tv_scale?.callOnClick()
-                revocationList.clear()
-                return@setOnClickListener
-            }
             if (revocationList.size>0){
                 val type=revocationList.last()
                 if (type==1)
@@ -314,6 +309,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             tv_scale.isSelected=!tv_scale.isSelected
             isScale=tv_scale.isSelected
             tv_scale.setTextColor(getColor(if (isScale) R.color.white else R.color.black))
+            if (currentGeometry==9){
+                setEilkAxis()
+            }
         }
 
         tv_parallel?.setOnClickListener {
@@ -384,15 +382,20 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         if (isErasure)
             return
         if (isScale){
-            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==8){
+            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==8||currentGeometry==9){
                 GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
                     ?.setOnDialogClickListener{
                             width, height ->
-                        if (currentGeometry==2||currentGeometry==5){
-                            elik.reDrawShape(width,height)
-                        }
-                        else{
-                            elik.reDrawShape(width,-1f)
+                        when (currentGeometry) {
+                            2, 5 -> {
+                                elik.reDrawShape(width,height)
+                            }
+                            9 -> {
+                                elik.reDrawShape(height,width)
+                            }
+                            else -> {
+                                elik.reDrawShape(width,-1f)
+                            }
                         }
                     }
             }
@@ -418,8 +421,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private fun setEilkAxis(){
         setCheckView(ll_axis)
         setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
-        elik_a?.setDrawAxisProperty(axisPos+1, 5, false)
-        elik_b?.setDrawAxisProperty(axisPos+1, 5, false)
+        elik_a?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
+        elik_b?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
         currentGeometry=9
     }
 

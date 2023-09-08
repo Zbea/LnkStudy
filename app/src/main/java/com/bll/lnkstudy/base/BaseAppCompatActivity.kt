@@ -109,7 +109,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
 
         mDialog = ProgressDialog(this,screenPos)
-        initBookType()
         initData()
         initView()
 
@@ -148,34 +147,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
     }
 
-    /**
-     * 书城分类
-     */
-    private fun initBookType(){
-        iv_jc?.setOnClickListener {
-            customStartActivity(Intent(this, TextbookStoreActivity::class.java))
-        }
-
-        iv_gj?.setOnClickListener {
-            gotoBookStore(1)
-        }
-
-        iv_zrkx?.setOnClickListener {
-            gotoBookStore(2)
-        }
-
-        iv_shkx?.setOnClickListener {
-            gotoBookStore(3)
-        }
-
-        iv_swkx?.setOnClickListener {
-            gotoBookStore(4)
-        }
-
-        iv_ydcy?.setOnClickListener {
-            gotoBookStore(5)
-        }
-    }
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
@@ -271,7 +242,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         customStartActivity1(intent)
     }
 
-   private fun gotoBookStore(type: Int){
+    fun gotoBookStore(type: Int){
         val intent=Intent(this, BookStoreActivity::class.java)
         intent.flags=type
         customStartActivity(intent)
@@ -304,8 +275,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         intent.putExtra("tool", result.toString())
         intent.putExtra("key_book_id",bookBean.bookId.toString())
         intent.putExtra("bookName", bookBean.bookName)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)2 else screenPos)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)1 else screenPos)
         startActivity(intent)
     }
 

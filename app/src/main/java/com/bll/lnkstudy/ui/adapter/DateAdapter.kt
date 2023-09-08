@@ -9,18 +9,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.date.Date
+import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.activity.date.DateDayDetailsActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class DateAdapter(layoutResId: Int, data: List<Date>?) :
-    BaseQuickAdapter<Date, BaseViewHolder>(layoutResId, data) {
+class DateAdapter(layoutResId: Int, data: List<DateBean>?) :
+    BaseQuickAdapter<DateBean, BaseViewHolder>(layoutResId, data) {
 
     @SuppressLint("WrongConstant")
-    override fun convert(helper: BaseViewHolder, item: Date) {
+    override fun convert(helper: BaseViewHolder, item: DateBean) {
         helper.apply {
             item.apply {
                 val tvDay = getView<TextView>(R.id.tv_day)

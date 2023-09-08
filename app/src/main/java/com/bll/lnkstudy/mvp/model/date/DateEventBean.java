@@ -13,6 +13,8 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
@@ -24,7 +26,7 @@ public class DateEventBean implements Serializable ,Cloneable{
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int type;//0学习计划 1重要日子
 
     public String title;//标题

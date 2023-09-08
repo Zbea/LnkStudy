@@ -94,10 +94,10 @@ public class BookGreenDaoManager {
      * @param isLook
      * @return
      */
-    public List<BookBean> queryAllBook(boolean isLook) {
+    public List<BookBean> queryAllBook(boolean isLook,int size) {
         WhereCondition whereCondition=BookBeanDao.Properties.Category.notEq(0);
         WhereCondition whereCondition1=BookBeanDao.Properties.IsLook.eq(isLook);
-        return bookBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(BookBeanDao.Properties.Time).limit(13).build().list();
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(BookBeanDao.Properties.Time).limit(size).build().list();
     }
 
     //根据类别 细分子类

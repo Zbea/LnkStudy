@@ -78,6 +78,16 @@ public class NoteDaoManager {
     }
 
     /**
+     * 查询所有笔记 除开日记
+     * @return
+     */
+    public List<Note> queryNotesExceptDiary(int size) {
+        WhereCondition whereCondition=NoteDao.Properties.TypeStr.notEq(DataBeanManager.INSTANCE.getNoteBook().get(0).name);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date)
+                .limit(size).build().list();
+    }
+
+    /**
      * 查询所有笔记数目 除开日记
      * @return
      */

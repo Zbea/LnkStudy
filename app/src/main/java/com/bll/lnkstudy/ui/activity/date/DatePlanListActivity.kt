@@ -9,12 +9,13 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DatePlanCopyDialog
-import com.bll.lnkstudy.dialog.PopupList
+import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DatePlanListAdapter
 import com.bll.lnkstudy.utils.CalendarReminderUtils
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +24,6 @@ import org.greenrobot.eventbus.ThreadMode
 
 class DatePlanListActivity:BaseAppCompatActivity() {
 
-    private var popupList: PopupList?=null
     private var popWindowBeans = mutableListOf<PopupBean>()
 
     private var mAdapter:DatePlanListAdapter?=null
@@ -36,8 +36,8 @@ class DatePlanListActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        popWindowBeans.add(PopupBean(0, getString(R.string.add), true))
-        popWindowBeans.add(PopupBean(0, getString(R.string.copy), false))
+        popWindowBeans.add(PopupBean(0, getString(R.string.add_plan)))
+        popWindowBeans.add(PopupBean(1, getString(R.string.copy)))
 
         startStr=getString(R.string.start)
         endStr=getString(R.string.end)
@@ -58,6 +58,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         mAdapter = DatePlanListAdapter(R.layout.item_date_plan_list, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        rv_list?.addItemDecoration(SpaceItemDeco(30,false))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val intent=Intent(this,DatePlanDetailsActivity::class.java)
             intent.addFlags(1)
@@ -99,25 +100,18 @@ class DatePlanListActivity:BaseAppCompatActivity() {
     }
 
     private fun setPopWindow(){
-        if (popupList==null)
-        {
-            popupList= PopupList(this,popWindowBeans,iv_manager,5).builder()
-            popupList?.setOnSelectListener { item ->
-                if (item.id == 0) {
-                    customStartActivity(Intent(this,DatePlanDetailsActivity::class.java).addFlags(0))
-                }
-                if (item.id==1){
-                    setCopy()
-                }
+         PopupClick(this,popWindowBeans,iv_manager,5).builder().setOnSelectListener { item ->
+            if (item.id == 0) {
+                customStartActivity(Intent(this,DatePlanDetailsActivity::class.java).addFlags(0))
             }
-        }
-        else{
-            popupList?.show()
+            if (item.id==1){
+                setCopy()
+            }
         }
     }
 
     private fun findDatas(){
-        plans= DateEventGreenDaoManager.getInstance().queryAllDateEvent(0)
+        plans= DateEventGreenDaoManager.getInstance().queryAllDateEvent()
         mAdapter?.setNewData(plans)
     }
 

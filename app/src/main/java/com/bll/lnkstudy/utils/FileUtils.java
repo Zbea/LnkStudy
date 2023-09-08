@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.utils;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -279,6 +281,47 @@ public class FileUtils {
 
             }
         });
+    }
+
+    /**
+     * 复制文件到指定文件夹
+     * @param oldPathName
+     * @param newPathName
+     * @return
+     */
+    public static boolean copyFile(String oldPathName, String newPathName) {
+        try {
+            File oldFile = new File(oldPathName);
+            if (!oldFile.exists()) {
+                Log.d("debug", "copyFile:  oldFile not exist.");
+                return false;
+            } else if (!oldFile.isFile()) {
+                Log.d("debug", "copyFile:  oldFile not file.");
+                return false;
+            } else if (!oldFile.canRead()) {
+                Log.d("debug", "copyFile:  oldFile cannot read.");
+                return false;
+            }
+            File newFile = new File(newPathName);
+            if (!newFile.exists()){
+                newFile.getParentFile().mkdirs();
+                newFile.createNewFile();
+            }
+            FileInputStream fileInputStream = new FileInputStream(oldPathName);
+            FileOutputStream fileOutputStream = new FileOutputStream(newPathName);
+            byte[] buffer = new byte[1024];
+            int byteRead;
+            while (-1 != (byteRead = fileInputStream.read(buffer))) {
+                fileOutputStream.write(buffer, 0, byteRead);
+            }
+            fileInputStream.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**

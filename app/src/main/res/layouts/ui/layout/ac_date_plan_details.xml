@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="130dp"
-        android:layout_marginEnd="130dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:orientation="vertical">
 
 
@@ -20,11 +20,11 @@
             android:id="@+id/et_title"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:layout_margin="57dp"
+            android:layout_margin="50dp"
             android:textSize="@dimen/sp_26"
             android:textColor="@color/black"
             android:hint="@string/date_plan_title_str"
-            android:textColorHint="@color/black"
+            android:textColorHint="@color/color_text_hint"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:lines="1"
@@ -36,7 +36,7 @@
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
             android:layout_height="520dp"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_20"
             />
 
         <ImageView
@@ -46,8 +46,6 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_50"
             android:src="@mipmap/icon_add" />
-
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_week"

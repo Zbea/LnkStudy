@@ -10,7 +10,7 @@ class MainNoteAdapter(layoutResId: Int, data: List<Note>?) : BaseQuickAdapter<No
 
     override fun convert(helper: BaseViewHolder, item: Note) {
         helper.apply {
-            setText(R.id.tv_title,"(${item.typeStr})"+item.title)
+            setText(R.id.tv_title,"（${item.typeStr}）"+item.title)
             setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date))
         }
     }

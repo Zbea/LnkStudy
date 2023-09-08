@@ -34,29 +34,33 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
         val et_height = dialog.findViewById<EditText>(R.id.et_height)
         when(currentGeometry){
             1->{
-                et_width.hint = "输入直线距离"
+                et_width.hint = "输入直线距离(mm)"
                 et_height.visibility= View.GONE
             }
             2->{
-                et_width.hint = "输入矩形宽度"
-                et_height.hint = "输入矩形高度"
+                et_width.hint = "输入矩形宽度(mm)"
+                et_height.hint = "输入矩形高度(mm)"
             }
             3->{
                 if (type==0){
-                    et_width.hint = "输入圆半径"
+                    et_width.hint = "输入圆半径(mm)"
                 }
                 else{
-                    et_width.hint = "输入圆直径"
+                    et_width.hint = "输入圆直径(mm)"
                 }
                 et_height.visibility= View.GONE
             }
             5->{
-                et_width.hint = "输入椭圆半宽度"
-                et_height.hint = "输入椭圆半高度"
+                et_width.hint = "输入椭圆半宽度(mm)"
+                et_height.hint = "输入椭圆半高度(mm)"
             }
             8->{
                 et_width.hint = "输入角度"
                 et_height.visibility= View.GONE
+            }
+            9->{
+                et_width.hint = "输入每格刻度"
+                et_height.hint = "输入每格长度(mm)"
             }
         }
 
@@ -69,7 +73,7 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
             val height=et_height.text.toString()
             if (width.isNotEmpty()) {
                 dialog.dismiss()
-                if (currentGeometry==2||currentGeometry==5){
+                if (currentGeometry==2||currentGeometry==5||currentGeometry==9){
                     if (height.isNotEmpty()){
                         dialog.dismiss()
                         listener?.onClick(width.toFloat(),height.toFloat())

@@ -41,7 +41,6 @@ class TextbookFragment : BaseFragment() {
     override fun initView() {
         pageSize=9
         setTitle(R.string.main_textbook_title)
-        setClassGroupRequest(true)
 
         initTab()
         initRecyclerView()

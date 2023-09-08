@@ -25,7 +25,7 @@ class BookManageDialog(val context: Context,private val screenPos:Int, val type:
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         if (screenPos==3){
-            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,430F))/2
         }
         dialog.show()

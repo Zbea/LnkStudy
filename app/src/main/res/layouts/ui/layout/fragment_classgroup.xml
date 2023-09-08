@@ -3,11 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page"
     >
 
-    <include layout="@layout/common_title"/>
+    <include
+        layout="@layout/common_fragment_title"
+        />
 
     <include layout="@layout/item_classgroup"
         android:layout_width="match_parent"

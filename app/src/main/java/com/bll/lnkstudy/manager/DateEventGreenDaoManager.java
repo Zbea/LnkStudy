@@ -2,7 +2,6 @@ package com.bll.lnkstudy.manager;
 
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.DateEventBeanDao;
 import com.bll.lnkstudy.mvp.model.date.DateEventBean;
@@ -64,36 +63,49 @@ public class DateEventGreenDaoManager {
         dateEventDao.insertOrReplace(bean);
     }
 
-    //根据Id 查询DateEvent
-    public DateEventBean queryID(Long id) {
-        return  dateEventDao.queryBuilder().where(whereUser,DateEventBeanDao.Properties.Id.eq(id)).build().unique();
-    }
-
-    //查询所有当天事件 根据当天时间
-    public List<DateEventBean> queryAllDateEvent(int type, long dayTim) {
-        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(type);
-        WhereCondition whereCondition2=DateEventBeanDao.Properties.DayLong.ge(dayTim);
-        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventBeanDao.Properties.Id).build().list();
-    }
-
-    //查询当天所有已过期日程
-    public List<DateEventBean> queryAllDateEvent1(int type, long dayTim) {
-        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(type);
-        WhereCondition whereCondition2=DateEventBeanDao.Properties.DayLong.lt(dayTim);
-        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventBeanDao.Properties.Id).build().list();
-    }
 
     //查询所有
-    public List<DateEventBean> queryAllDateEvent(int type) {
-        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(type);
+    public List<DateEventBean> queryAllDateEvent() {
+        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(0);
         return dateEventDao.queryBuilder().where(whereUser,whereCondition1).orderDesc(DateEventBeanDao.Properties.Id).build().list();
     }
 
-    //查询当天重要日子
+    //查询所有当天事件
     public List<DateEventBean> queryAllDateEvent(long dayTim) {
+        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(0);
+        WhereCondition whereCondition2=DateEventBeanDao.Properties.StartTime.le(dayTim);
+        WhereCondition whereCondition3=DateEventBeanDao.Properties.EndTime.ge(dayTim);
+        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+                .orderDesc(DateEventBeanDao.Properties.Id).build().list();
+    }
+
+    //查询当天所有已过期日程
+    public List<DateEventBean> queryAllDayEventOld(long dayTim) {
+        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(1);
+        WhereCondition whereCondition2=DateEventBeanDao.Properties.DayLong.lt(dayTim);
+        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventBeanDao.Properties.DayLong).build().list();
+    }
+
+    //查询当天及以后日程
+    public List<DateEventBean> queryAllDayEvent(long dayTim, int size) {
+        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(1);
+        WhereCondition whereCondition2=DateEventBeanDao.Properties.DayLong.ge(dayTim);
+        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderAsc(DateEventBeanDao.Properties.DayLong)
+                .limit(size).build().list();
+    }
+
+    //查询当天及以后日程
+    public List<DateEventBean> queryAllDayEvent(long dayTim) {
+        WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(1);
+        WhereCondition whereCondition2=DateEventBeanDao.Properties.DayLong.ge(dayTim);
+        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderAsc(DateEventBeanDao.Properties.DayLong).build().list();
+    }
+
+    //查询当天日程
+    public List<DateEventBean> queryAllDayEventTotal(long dayTim) {
         WhereCondition whereCondition1=DateEventBeanDao.Properties.Type.eq(1);
         WhereCondition whereCondition2=DateEventBeanDao.Properties.DayLong.eq(dayTim);
-        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderDesc(DateEventBeanDao.Properties.Id).build().list();
+        return dateEventDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderAsc(DateEventBeanDao.Properties.DayLong).build().list();
     }
 
 

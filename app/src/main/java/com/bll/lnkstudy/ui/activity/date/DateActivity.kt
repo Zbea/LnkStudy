@@ -5,7 +5,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupDateSelector
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.date.Date
+import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DateAdapter
 import com.bll.lnkstudy.utils.DateUtils
@@ -20,7 +20,7 @@ class DateActivity:BaseAppCompatActivity() {
     private var yearNow=DateUtils.getYear()
     private var monthNow=DateUtils.getMonth()
     private var mAdapter:DateAdapter?=null
-    private var dates= mutableListOf<Date>()
+    private var dateBeans= mutableListOf<DateBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_date
@@ -88,7 +88,7 @@ class DateActivity:BaseAppCompatActivity() {
 
     //根据月份获取当月日期
     private fun getDates(){
-        dates.clear()
+        dateBeans.clear()
         val lastYear: Int
         val lastMonth: Int
         val nextYear: Int
@@ -127,71 +127,70 @@ class DateActivity:BaseAppCompatActivity() {
 //            val maxDay=DateUtils.getMonthMaxDay(lastYear,lastMonth-1)
 //            val day=maxDay-(week-2)+(i+1)
 //            dates.add(getDateBean(lastYear,lastMonth,day,false))
-            dates.add(Date())
+            dateBeans.add(DateBean())
         }
 
         val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
         for (i in 1 .. max)
         {
-            dates.add(getDateBean(yearNow,monthNow,i,true))
+            dateBeans.add(getDateBean(yearNow,monthNow,i,true))
         }
 
-        if (dates.size>35){
+        if (dateBeans.size>35){
             //补齐下月天数
-            for (i in 0 until 42-dates.size){
+            for (i in 0 until 42-dateBeans.size){
 //                val day=i+1
 //                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(Date())
+                dateBeans.add(DateBean())
             }
         }
         else{
-            for (i in 0 until 35-dates.size){
+            for (i in 0 until 35-dateBeans.size){
 //                val day=i+1
 //                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(Date())
+                dateBeans.add(DateBean())
             }
         }
 
-        mAdapter?.setNewData(dates)
+        mAdapter?.setNewData(dateBeans)
 
     }
 
-    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
+    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): DateBean {
         val solar=Solar()
         solar.solarYear=year
         solar.solarMonth=month
         solar.solarDay=day
 
-        val date= Date()
-        date.year=year
-        date.month=month
-        date.day=day
-        date.time=DateUtils.dateToStamp("$year-$month-$day")
-        date.isNow=day==DateUtils.getDay()
-        date.isNowMonth=isMonth
-        date.solar= solar
-        date.week=DateUtils.getWeek(date.time)
-        date.lunar=LunarSolarConverter.SolarToLunar(solar)
+        val dateBean= DateBean()
+        dateBean.year=year
+        dateBean.month=month
+        dateBean.day=day
+        dateBean.time=DateUtils.dateToStamp("$year-$month-$day")
+        dateBean.isNow=day==DateUtils.getDay()
+        dateBean.isNowMonth=isMonth
+        dateBean.solar= solar
+        dateBean.week=DateUtils.getWeek(dateBean.time)
+        dateBean.lunar=LunarSolarConverter.SolarToLunar(solar)
 
+        //获取当天学习计划
         val dateEventBeans= mutableListOf<DateEventBean>()
-        val plans=DateEventGreenDaoManager.getInstance().queryAllDateEvent(0,date.time)
+        val plans=DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean.time)
         for (item in plans){
-            //当天时间是否在日期内
-            if (date.time>=item.startTime&&date.time<=item.endTime){
-                //当天时间是否是学习计划选中的星期
-                for (week in item.weeks){
-                    if (date.week==week.week){
-                        dateEventBeans.add(item)
-                        break
-                    }
+            //当天时间是否是学习计划选中的星期
+            for (week in item.weeks){
+                if (dateBean.week==week.week){
+                    dateEventBeans.add(item)
+                    break
                 }
             }
         }
 
-        dateEventBeans.addAll(DateEventGreenDaoManager.getInstance().queryAllDateEvent(date.time))
-        date.dateEventBeans=dateEventBeans
+        //获取当天重要日子
+        dateEventBeans.addAll(DateEventGreenDaoManager.getInstance().queryAllDayEventTotal(dateBean.time))
+        dateBean.dateEventBeans=dateEventBeans
 
-        return date
+        return dateBean
     }
 
 
