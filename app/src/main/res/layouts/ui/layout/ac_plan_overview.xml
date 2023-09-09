@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/statusbar_height"
+    android:background="@color/bg_page"
+    >
+
+    <include
+        layout="@layout/common_title"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        >
+
+        <RadioGroup
+            android:id="@+id/rg_group"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_45"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_month"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="105dp"
+                android:button="@null"
+                android:text="@string/plan_month_str"
+                android:textSize="@dimen/sp_24"
+                android:textColor="@drawable/color_black_gray_selector"
+                android:textStyle="bold"
+                android:checked="true"
+                android:gravity="center"
+                android:background="@drawable/bg_rb_line_selector"/>
+
+            <RadioButton
+                android:id="@+id/rb_week"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="44dp"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/plan_week_str"
+                android:textSize="@dimen/sp_24"
+                android:textStyle="bold"
+                android:textColor="@drawable/color_black_gray_selector"
+                android:background="@drawable/bg_rb_line_selector"/>
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_40"
+            >
+
+            <ImageView
+                android:id="@+id/iv_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="center"
+                android:src="@mipmap/icon_date_arrow_up"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_15"
+                android:layout_marginEnd="@dimen/dp_15"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/iv_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_date_arrow_down"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <com.android.internal.widget.PreferenceImageView
+        android:id="@+id/v_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/icon_freenote_bg_1"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_bottom_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+
+
+
+            <ImageView
+                android:id="@+id/btn_page_up"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:layout_marginStart="200dp"
+                android:src="@mipmap/icon_draw_page_up" />
+
+            <View
+                android:id="@+id/iv_catalog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:text="1/1"
+            />
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <View
+                android:id="@+id/iv_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
+
+            <ImageView
+                android:id="@+id/btn_page_down"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:layout_marginEnd="200dp"
+                android:src="@mipmap/icon_draw_page_down" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

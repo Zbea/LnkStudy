@@ -12,6 +12,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_my_wallpaper_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
 import kotlin.math.ceil
 
@@ -34,6 +35,8 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(R.string.download_wallpaper)
+        showView(tv_setting)
+        tv_setting.text=getString(R.string.ok)
 
         mAdapter = MyWallpaperAdapter(R.layout.item_my_wallpaper, null).apply {
             rv_list.layoutManager = GridLayoutManager(this@MyWallpaperActivity,4)//创建布局管理
@@ -80,7 +83,7 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
 
         pageNumberView()
 
-        tv_ok.setOnClickListener {
+        tv_setting.setOnClickListener {
             if (leftPath.isEmpty()&&rightPath.isEmpty())
                 return@setOnClickListener
             if(File(leftPath).exists()){
@@ -110,7 +113,8 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         }
 
         setPageNumber(lists.size)
-        fetchData()
+        if (lists.size>0)
+            fetchData()
 
     }
 

@@ -331,12 +331,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()
+        FreeNoteDaoManager.getInstance().clear()
         BookGreenDaoManager.getInstance().clear()
 
         HomeworkTypeDaoManager.getInstance().clear()
         //删除所有作业
         HomeworkContentDaoManager.getInstance().clear()
-        //删除所有朗读
+        //删除所有录音
         RecordDaoManager.getInstance().clear()
         //删除所有作业卷内容
         HomeworkPaperDaoManager.getInstance().clear()

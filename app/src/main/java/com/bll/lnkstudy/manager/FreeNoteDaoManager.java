@@ -63,5 +63,8 @@ public class FreeNoteDaoManager {
         dao.delete(bean);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 
 }

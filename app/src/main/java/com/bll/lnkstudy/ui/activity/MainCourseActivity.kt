@@ -102,9 +102,10 @@ class MainCourseActivity : BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(R.string.course_title_str)
-        showSaveView()
+        showView(tv_setting)
+        tv_setting.text=getString(R.string.save)
 
-        iv_save?.setOnClickListener {
+        tv_setting?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
             CourseGreenDaoManager.getInstance().deleteAll()//清除以前存储的课程
             CourseGreenDaoManager.getInstance().insertAll(selectLists)

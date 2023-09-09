@@ -73,6 +73,17 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
             customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
 
+        tv_class_template.setOnClickListener {
+            CourseModuleDialog(requireActivity(), screenPos).builder()
+                ?.setOnClickListener { type ->
+                    customStartActivity(
+                        Intent(activity, MainCourseActivity::class.java)
+                            .setFlags(0)
+                            .putExtra("courseType", type)
+                    )
+                }
+        }
+
         ll_course.setOnClickListener {
             val courseType = SPUtil.getInt("courseType")
             customStartActivity(
@@ -100,18 +111,6 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         val path=Constants.SCREEN_PATH + "/course.png"
         if (File(path).exists())
             GlideUtils.setImageNoCacheUrl(activity,path , iv_course)
-
-        tv_class_template.setOnClickListener {
-            CourseModuleDialog(requireActivity(), screenPos).builder()
-                ?.setOnClickListener { type ->
-                    customStartActivity(
-                        Intent(activity, MainCourseActivity::class.java)
-                            .setFlags(0)
-                            .putExtra("courseType", type)
-                    )
-                }
-        }
-
     }
 
 

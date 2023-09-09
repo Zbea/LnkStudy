@@ -116,7 +116,7 @@ class HomeFragment : BaseFragment(), IContractView.IClassGroupView,ICommonView{
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
             setOnItemClickListener { adapter, view, position ->
-                gotoIntent(noteAdapter?.data?.get(position)!!)
+                gotoIntent(noteAdapter?.data?.get(position)!!,0)
             }
         }
     }

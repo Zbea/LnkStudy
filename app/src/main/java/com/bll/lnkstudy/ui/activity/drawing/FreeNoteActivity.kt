@@ -1,11 +1,9 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 
-import PopupFreeNoteRecordList
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import android.media.MediaRecorder
 import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
@@ -16,7 +14,10 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PopupFreeNoteList
-import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.manager.FreeNoteDaoManager
+import com.bll.lnkstudy.manager.NoteContentDaoManager
+import com.bll.lnkstudy.manager.NoteDaoManager
+import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -24,14 +25,9 @@ import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.io.IOException
 
 class FreeNoteActivity : BaseDrawingActivity() {
 
-    private var isRecord = false
-    private var recordBean: RecordBean? = null
-    private var mRecorder: MediaRecorder? = null
-    private var recordPath: String? = null
     private var bgRes = ""
     private var freeNoteBean: FreeNoteBean? = null
     private var posImage = 0
@@ -59,6 +55,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
+        setPageTitle(R.string.freenote_title_str)
         elik_b = v_content_b.pwInterFace
         tv_name.text = freeNoteBean?.title
 
@@ -66,15 +63,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
             InputContentDialog(this, tv_name.text.toString()).builder()?.setOnDialogClickListener {
                 tv_name.text = it
                 freeNoteBean?.title = it
-            }
-        }
-
-        iv_record.setOnClickListener {
-            isRecord = !isRecord
-            if (isRecord) {
-                startRecord()
-            } else {
-                stopRecord()
             }
         }
 
@@ -108,9 +96,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
             }
         }
 
-        tv_record_list.setOnClickListener {
-            PopupFreeNoteRecordList(this, tv_record_list).builder()
-        }
 
         if (posImage >= bgResList.size) {
             bgResList.add(bgRes)
@@ -199,52 +184,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
         }
     }
 
-    /**
-     * 开始录音
-     */
-    private fun startRecord() {
-        iv_record.setImageResource(R.mipmap.icon_freenote_recording)
-        recordBean = RecordBean()
-        recordBean?.date = System.currentTimeMillis()
-        recordBean?.title = tv_name.text.toString()
-
-        val path = FileAddress().getPathFreeRecord()
-        if (!File(path).exists())
-            File(path).mkdir()
-        recordPath = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
-
-        mRecorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-            setOutputFile(recordPath)
-            setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-            try {
-                prepare()//准备
-                start()//开始录音
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    /**
-     * 结束录音
-     */
-    private fun stopRecord() {
-        iv_record.setImageResource(R.mipmap.icon_freenote_recorder)
-        mRecorder?.apply {
-            setOnErrorListener(null)
-            setOnInfoListener(null)
-            setPreviewDisplay(null)
-            stop()
-            release()
-            mRecorder = null
-        }
-        recordBean?.path = recordPath
-        RecordDaoManager.getInstance().insertOrReplace(recordBean)
-        recordBean = null
-        recordPath = null
-    }
 
     private fun saveFreeNote() {
         //清空没有手写页面
@@ -262,9 +201,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (recordBean != null) {
-            stopRecord()
-        }
         saveFreeNote()
     }
 }

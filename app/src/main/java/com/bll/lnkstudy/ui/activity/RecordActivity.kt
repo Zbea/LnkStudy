@@ -42,14 +42,15 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(R.string.record_title_str)
-        showSaveView()
+        showView(tv_setting)
+        tv_setting.text=getString(R.string.save)
 
         iv_back?.setOnClickListener {
             finish()
             FileUtils.deleteFile(File(pathFile))
         }
 
-        iv_save?.setOnClickListener {
+        tv_setting?.setOnClickListener {
             hideKeyboard()
             if (!FileUtils.isExist(pathFile)) {
                 showToast(R.string.toast_record)

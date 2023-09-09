@@ -34,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginTop="23dp"
         android:visibility="gone"
         />
 
@@ -41,6 +42,7 @@
         android:id="@+id/iv_manager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
         android:layout_marginEnd="@dimen/dp_40"
         android:visibility="gone"
         android:src="@mipmap/icon_manager"/>

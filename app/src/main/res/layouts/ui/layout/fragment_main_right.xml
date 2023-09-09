@@ -16,6 +16,7 @@
             android:id="@+id/tv_free_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
             android:text="随笔"
             android:textColor="@color/black"
             android:textSize="24sp"
@@ -167,7 +168,6 @@
 
 
     <LinearLayout
-        android:id="@+id/ll_course"
         android:layout_width="786dp"
         android:layout_height="750dp"
         android:layout_marginTop="@dimen/dp_50"
@@ -176,6 +176,7 @@
         >
 
         <LinearLayout
+            android:id="@+id/ll_course"
             android:layout_width="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"

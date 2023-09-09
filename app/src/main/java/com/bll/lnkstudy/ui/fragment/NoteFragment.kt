@@ -101,15 +101,15 @@ class NoteFragment : BaseFragment(){
                 if (positionType==0){
                     if (notebook.isEncrypt){
                         NotebookPasswordDialog(requireContext(),screenPos).builder()?.setOnDialogClickListener{
-                            gotoIntent(notebook)
+                            gotoIntent(notebook,0)
                         }
                     }
                     else{
-                        gotoIntent(notebook)
+                        gotoIntent(notebook,0)
                     }
 
                 }else{
-                    gotoIntent(notebook)
+                    gotoIntent(notebook,0)
                 }
             }
             setOnItemChildClickListener { adapter, view, position ->

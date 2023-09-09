@@ -6,44 +6,9 @@
     android:paddingTop="@dimen/statusbar_height"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="52dp"
-            android:scaleType="center"
-            android:src="@mipmap/icon_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:layout_toEndOf="@+id/iv_back"
-            android:textColor="@color/black"
-            android:textSize="@dimen/navigation_text" />
-
-        <TextView
-            android:id="@+id/tv_ok"
-            android:layout_width="100dp"
-            android:layout_height="@dimen/dp_45"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:gravity="center"
-            android:text="@string/ok"
-            android:textColor="@color/black"
-            android:textSize="22sp" />
-
-    </RelativeLayout>
+    <include
+        layout="@layout/common_title"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

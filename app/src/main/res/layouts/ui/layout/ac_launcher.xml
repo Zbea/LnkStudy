@@ -22,7 +22,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_10"
                 android:src="@mipmap/icon_main_account" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:id="@+id/rv_list_a"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="70dp" />
+                android:layout_marginTop="120dp" />
         </LinearLayout>
         <View
             android:layout_width="1.5dp"
@@ -65,7 +65,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_10"
                 android:src="@mipmap/icon_main_account" />
 
             <TextView
@@ -82,7 +82,7 @@
                 android:id="@+id/rv_list_b"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="70dp" />
+                android:layout_marginTop="120dp" />
         </LinearLayout>
         <View
             android:layout_width="1.5dp"

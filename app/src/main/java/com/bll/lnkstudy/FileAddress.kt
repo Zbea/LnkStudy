@@ -7,6 +7,7 @@ import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
 import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.PAINTING_PATH
+import com.bll.lnkstudy.Constants.Companion.RECORDER_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CONTENTS
@@ -162,7 +163,7 @@ class FileAddress {
      * 文件夹路径
      */
     fun getPathFreeRecord():String{
-        return "$HOMEWORK_PATH/${mUserId}"
+        return "$RECORDER_PATH/${mUserId}"
     }
 
     /**

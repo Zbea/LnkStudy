@@ -166,9 +166,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
     }
 
-    fun showSaveView() {
-        showView(iv_save)
-    }
 
     fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle

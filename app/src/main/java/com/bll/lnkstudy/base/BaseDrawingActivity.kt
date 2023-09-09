@@ -672,10 +672,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
 
-    fun showSaveView() {
-        showView(iv_save)
-    }
-
     fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }

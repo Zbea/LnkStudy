@@ -29,6 +29,7 @@ import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainView
+import com.bll.lnkstudy.ui.activity.PlanOverviewActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
@@ -95,7 +96,7 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
     }
 
     override fun initView() {
-        setTitle(R.string.main_home_title)
+        setTitle(R.string.main_main_title)
 
         popupDates.add(PopupBean(0,getString(R.string.main_plan)))
         popupDates.add(PopupBean(1,getString(R.string.date_day)))
@@ -115,7 +116,7 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
         iv_date_more.setOnClickListener {
             PopupClick(requireActivity(),popupDates,iv_date_more,-20).builder().setOnSelectListener{
                 if (it.id==0){
-
+                    customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
                 }
                 else{
                     customStartActivity(Intent(activity, DateDayListActivity::class.java))
@@ -208,7 +209,7 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
             setOnItemClickListener { adapter, view, position ->
-                gotoIntent(noteAdapter?.data?.get(position)!!)
+                gotoIntent(noteAdapter?.data?.get(position)!!,2)
             }
         }
     }
@@ -236,8 +237,8 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
      * 查找书籍
      */
     private fun findBook(){
-        val books= BookGreenDaoManager.getInstance().queryAllBook(true,9)
-        //val books=BookGreenDaoManager.getInstance().queryAllTextBook(DataBeanManager.textbookType[0],1,9)
+//        val books= BookGreenDaoManager.getInstance().queryAllBook(true,9)
+        val books=BookGreenDaoManager.getInstance().queryAllTextBook(DataBeanManager.textbookType[0],1,9)
         bookAdapter?.setNewData(books)
     }
 

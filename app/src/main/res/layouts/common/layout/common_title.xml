@@ -124,21 +124,18 @@
 
     <TextView
         android:id="@+id/tv_setting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dp_45"
+        android:gravity="center"
         android:layout_marginEnd="@dimen/dp_40"
         android:textColor="@color/black"
-        android:textSize="28sp"
+        android:textSize="22sp"
         android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_black_stroke_5dp_corner"
+
         />
 
-    <ImageView
-        android:id="@+id/iv_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:visibility="gone"
-        android:src="@mipmap/icon_save"/>
 
     <ImageView
         android:id="@+id/iv_manager"
@@ -146,6 +143,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_40"
         android:visibility="gone"
+        android:layout_marginTop="23dp"
         android:src="@mipmap/icon_manager"/>
 
 </LinearLayout>

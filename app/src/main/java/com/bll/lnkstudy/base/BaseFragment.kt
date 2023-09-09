@@ -461,7 +461,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     /**
      * 跳转笔记写作
      */
-    fun gotoIntent(note: Note){
+    fun gotoIntent(note: Note,screen: Int){
         note.date=System.currentTimeMillis()
         NoteDaoManager.getInstance().insertOrReplace(note)
         EventBus.getDefault().post(Constants.NOTE_EVENT)
@@ -471,6 +471,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         bundle.putSerializable("note", note)
         intent.putExtra("bundle", bundle)
         intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
+        if (screen!=0)
+            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", screen)
         customStartActivity(intent)
     }
 
