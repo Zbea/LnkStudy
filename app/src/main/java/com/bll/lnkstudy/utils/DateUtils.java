@@ -272,9 +272,7 @@ public class DateUtils {
     public static long dateToStamp(int year,int month,int day) {
         String s=year+"-"+month+"-"+day;
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-            Date date = simpleDateFormat.parse(s);
-            return date.getTime();
+            return dateToStamp(s);
         } catch (Exception e) {
             e.printStackTrace();
         }

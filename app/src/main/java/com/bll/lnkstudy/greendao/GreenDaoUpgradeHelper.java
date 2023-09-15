@@ -3,6 +3,7 @@ package com.bll.lnkstudy.greendao;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bll.lnkstudy.mvp.model.DiaryBean;
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
 
 import org.greenrobot.greendao.database.Database;
@@ -44,7 +45,8 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
                 PaintingBeanDao.class,
                 DataUpdateBeanDao.class,
                 HomeworkBookBeanDao.class,
-                FreeNoteBeanDao.class
+                FreeNoteBeanDao.class,
+                DiaryBeanDao.class
         );
     }
 }

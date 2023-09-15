@@ -1,9 +1,8 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.book
 
 import android.content.Intent
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.ui.activity.book.TextbookStoreActivity
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
 
 /**
@@ -47,8 +46,12 @@ class BookStoreTypeActivity:BaseAppCompatActivity() {
             gotoBookStore(4)
         }
 
-        iv_ydcy?.setOnClickListener {
+        iv_ydjk?.setOnClickListener {
             gotoBookStore(5)
+        }
+
+        iv_yscn?.setOnClickListener {
+            gotoBookStore(6)
         }
     }
 }

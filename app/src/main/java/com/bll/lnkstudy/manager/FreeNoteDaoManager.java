@@ -51,9 +51,6 @@ public class FreeNoteDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    /**
-     * @return
-     */
     public List<FreeNoteBean> queryList(long startTime,long endTime) {
         WhereCondition whereCondition= FreeNoteBeanDao.Properties.Date.between(startTime,endTime);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();

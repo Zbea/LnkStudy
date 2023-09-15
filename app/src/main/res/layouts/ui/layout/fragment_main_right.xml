@@ -11,13 +11,26 @@
         android:layout_height="@dimen/navigation_height"
         android:gravity="center_vertical|right">
 
+        <TextView
+            android:id="@+id/tv_diarl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="@string/diary_title_str"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:drawablePadding="@dimen/dp_10"
+            android:drawableStart="@mipmap/icon_diary"
+            android:layout_marginEnd="40dp"
+            />
 
         <TextView
             android:id="@+id/tv_free_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
-            android:text="随笔"
+            android:layout_marginTop="28dp"
+            android:text="@string/freenote_title_str"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:gravity="center"
@@ -30,22 +43,25 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="350dp"
+        android:layout_width="800dp"
+        android:layout_height="357dp"
         android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_exam"
-            android:layout_width="368dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
+            android:paddingBottom="7dp"
+            android:paddingEnd="7dp"
+            android:background="@mipmap/icon_main_content_right_top"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_content_title_height"
-                android:drawableLeft="@mipmap/icon_main_homework"
+                android:drawableLeft="@mipmap/icon_main_exam"
                 android:drawablePadding="@dimen/dp_15"
                 android:layout_marginStart="@dimen/dp_15"
                 android:layout_marginEnd="@dimen/dp_15"
@@ -132,10 +148,13 @@
 
         <LinearLayout
             android:id="@+id/ll_message"
-            android:layout_width="368dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingBottom="7dp"
+            android:paddingEnd="7dp"
             android:orientation="vertical"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
+            android:background="@mipmap/icon_main_content_right_top"
             >
             <TextView
                 android:layout_width="match_parent"
@@ -159,7 +178,7 @@
                 android:id="@+id/rv_list_message"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="1dp"
+                android:padding="2px"
                 />
 
         </LinearLayout>
@@ -168,11 +187,13 @@
 
 
     <LinearLayout
-        android:layout_width="786dp"
-        android:layout_height="750dp"
+        android:layout_width="800dp"
+        android:layout_height="756dp"
         android:layout_marginTop="@dimen/dp_50"
         android:orientation="vertical"
-        android:background="@drawable/bg_black_stroke_10dp_corner"
+        android:paddingEnd="7dp"
+        android:paddingBottom="7dp"
+        android:background="@mipmap/icon_main_content_right_bottom"
         >
 
         <LinearLayout

@@ -1,8 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.EinkPWInterface
 import android.widget.ImageView
@@ -192,27 +189,29 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
             val drawPath = book?.bookDrawPath+"/${index+1}.tch"
             elik.setLoadFilePath(drawPath, true)
-            elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-                override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-                }
+        }
+    }
 
-                override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-                }
+    override fun onElikSava_a() {
+        saveElik(elik_a!!)
+    }
 
-                override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                    elik.saveBitmap(true) {}
-                    if (File(drawPath).exists()){
-                        DataUpdateManager.editDataUpdate(1,book?.bookId!!,2,book?.bookId!!)
-                    }
-                    else{
-                        //创建增量更新
-                        DataUpdateManager.createDataUpdate(1,book?.bookId!!,2,book?.bookId!!
-                            ,"",book?.bookDrawPath!!)
-                    }
+    override fun onElikSava_b() {
+        saveElik(elik_b!!)
+    }
 
-                }
-
-            })
+    /**
+     * 抬笔后保存手写
+     */
+    private fun saveElik(elik: EinkPWInterface){
+        elik.saveBitmap(true) {}
+        if (File(elik?.pwBitmapFilePath).exists()){
+            DataUpdateManager.editDataUpdate(1,book?.bookId!!,2,book?.bookId!!)
+        }
+        else{
+            //创建增量更新
+            DataUpdateManager.createDataUpdate(1,book?.bookId!!,2,book?.bookId!!
+                ,"",book?.bookDrawPath!!)
         }
     }
 
@@ -228,12 +227,6 @@ class BookDetailsActivity : BaseDrawingActivity() {
         book?.pageIndex = page
         BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
-    }
-
-    override fun changeScreenPage() {
-        if (isExpand) {
-            onChangeExpandContent()
-        }
     }
 
 }

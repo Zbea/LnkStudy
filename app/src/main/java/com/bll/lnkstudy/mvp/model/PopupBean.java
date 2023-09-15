@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.mvp.model.date.DateEventBean;
+
 public class PopupBean {
 
     public int id;

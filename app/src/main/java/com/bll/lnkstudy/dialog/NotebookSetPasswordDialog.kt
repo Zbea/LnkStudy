@@ -11,11 +11,12 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 
 
-class NotebookSetPasswordDialog(private val context: Context, private val screenPos:Int) {
+class NotebookSetPasswordDialog(private val context: Context) {
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
@@ -25,10 +26,8 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        if (screenPos==3){
-            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
-        }
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
         popWindowBeans.add(
@@ -81,36 +80,37 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
             val answerStr=etPasswordQuestion?.text.toString()
             val questionStr=tvQuestion?.text.toString()
             if (questionStr==context.getString(R.string.password_question_select_str)){
-                SToast.showText(screenPos,R.string.password_question_select_str)
+                SToast.showText(1,R.string.password_question_select_str)
                 return@setOnClickListener
             }
             if (answerStr.isEmpty()){
-                SToast.showText(screenPos,R.string.toast_password_input_question)
+                SToast.showText(1,R.string.toast_password_input_question)
                 return@setOnClickListener
             }
 
             if (passwordStr.isEmpty()){
-                SToast.showText(screenPos,R.string.password_input)
+                SToast.showText(1,R.string.password_input)
                 return@setOnClickListener
             }
             if (passwordAgainStr.isEmpty()){
-                SToast.showText(screenPos,R.string.password_again)
+                SToast.showText(1,R.string.password_again)
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(screenPos,R.string.password_different)
+                SToast.showText(1,R.string.password_different)
                 return@setOnClickListener
             }
             val notePassword=NotePassword()
             notePassword.question=tvQuestion.text.toString()
             notePassword.answer=answerStr
             notePassword.password=MD5Utils.digest(passwordStr)
-            SPUtil.putObj("notePassword",notePassword)
+            val user=SPUtil.getObj("user", User::class.java)
+            SPUtil.putObj("${user?.accountId}notePassword",notePassword)
             //创建增量数据(日记密码)
-            DataUpdateManager.createDataUpdate(4,1,4,3,Gson().toJson(notePassword))
+            DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(notePassword))
             dialog.dismiss()
-            listener?.onClick()
+            listener?.onClick(notePassword)
 
         }
 
@@ -125,7 +125,7 @@ class NotebookSetPasswordDialog(private val context: Context, private val screen
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick()
+        fun onClick(notePassword: NotePassword)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

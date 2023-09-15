@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
+import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
 import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
+import com.bll.lnkstudy.dialog.NotebookPasswordDialog
+import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
@@ -19,6 +22,7 @@ import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.*
+import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.ui.adapter.*
@@ -41,6 +45,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     private var positionPaper = 0
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
+    private var notePassword=SPUtil.getObj("${mUser?.accountId}notePassword",NotePassword::class.java)
 
     override fun onList(message: Message) {
         if (message.list.isNotEmpty()){
@@ -96,6 +101,17 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
         }
 
+        tv_diarl.setOnClickListener {
+            if (notePassword!=null&&notePassword?.isSet==true){
+                NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    customStartActivity(Intent(activity,DiaryActivity::class.java))
+                }
+            }
+            else{
+                customStartActivity(Intent(activity,DiaryActivity::class.java))
+            }
+        }
+
     }
 
     override fun lazyLoad() {
@@ -108,7 +124,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     //课程表相关处理
     @SuppressLint("WrongConstant")
     private fun initCourse() {
-        val path=Constants.SCREEN_PATH + "/course.png"
+        val path=Constants.IMAGE_PATH + "/course.png"
         if (File(path).exists())
             GlideUtils.setImageNoCacheUrl(activity,path , iv_course)
     }
@@ -205,6 +221,20 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         }
     }
 
+    /**
+     * 半年删除日记
+     */
+    fun deleteDiary(){
+        val time=System.currentTimeMillis()-Constants.halfYear
+        val diarys=DiaryDaoManager.getInstance().queryList(time)
+        for (item in diarys){
+            DiaryDaoManager.getInstance().delete(item)
+            FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(item.date))))
+            val id=item.date.div(1000).toInt()
+            DataUpdateManager.deleteDateUpdate(9,id,1,id)
+        }
+    }
+
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             COURSE_EVENT -> {
@@ -216,6 +246,9 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
             }
             MESSAGE_EVENT -> {
                 findMessages()
+            }
+            PASSWORD_EVENT->{
+                notePassword=SPUtil.getObj("${mUser?.accountId}notePassword",NotePassword::class.java)
             }
         }
     }

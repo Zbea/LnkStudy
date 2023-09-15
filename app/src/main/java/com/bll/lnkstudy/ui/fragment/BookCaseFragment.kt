@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
@@ -28,7 +29,6 @@ import java.io.File
  */
 class BookCaseFragment: BaseFragment() {
 
-    private val halfYear=180*24*60*60*1000
     private var mAdapter: BookAdapter?=null
     private var position=0
     private var books= mutableListOf<BookBean>()//所有数据
@@ -153,7 +153,7 @@ class BookCaseFragment: BaseFragment() {
         val maxBooks= mutableListOf<BookBean>()
         val books= BookGreenDaoManager.getInstance().queryAllBook()
         for (item in books){
-            if (System.currentTimeMillis()>=item.downDate+halfYear){
+            if (System.currentTimeMillis()>=item.downDate+Constants.halfYear){
                 maxBooks.add(item)
                 //判读是否存在手写内容
                 if (File(item.bookDrawPath).exists()){

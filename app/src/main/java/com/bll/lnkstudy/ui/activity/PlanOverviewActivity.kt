@@ -1,19 +1,24 @@
 package com.bll.lnkstudy.ui.activity
 
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.*
-import java.text.DecimalFormat
+import java.io.File
 
 class PlanOverviewActivity:BaseDrawingActivity() {
 
-    private val weekTime=7*24*60*60*1000
     private var type=1//1月计划 2 周计划
     private var nowYear=0
     private var nowMonth=1
     private var weekStartDate=0L
     private var weekEndDate=0L
+    private var posImage = 0
+    private var images = mutableListOf<String>()//手写地址
 
     override fun layoutId(): Int {
         return R.layout.ac_plan_overview
@@ -23,6 +28,7 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     }
     override fun initView() {
         setPageTitle(R.string.main_plan)
+        elik_b=v_content.pwInterFace
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){
@@ -51,8 +57,8 @@ class PlanOverviewActivity:BaseDrawingActivity() {
                 }
             }
             else{
-                weekStartDate-=weekTime
-                weekEndDate-=weekTime
+                weekStartDate-=Constants.weekTime
+                weekEndDate-=Constants.weekTime
             }
             setChangeDate()
         }
@@ -68,21 +74,72 @@ class PlanOverviewActivity:BaseDrawingActivity() {
                 }
             }
             else{
-                weekStartDate+=weekTime
-                weekEndDate+=weekTime
+                weekStartDate+=Constants.weekTime
+                weekEndDate+=Constants.weekTime
             }
             setChangeDate()
         }
 
     }
 
+    override fun onPageUp() {
+        if (posImage>0)
+            posImage-=1
+        setContentImage()
+    }
+
+    override fun onPageDown() {
+        posImage+=1
+        setContentImage()
+    }
+
+    /**
+     * 得到文件大小
+     */
+    private fun getPathsSize(){
+        val path=if (type==1){
+            FileAddress().getPathPlan(nowYear,nowMonth)
+        }
+        else{
+            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))
+        }
+        images.clear()
+        if (File(path).exists()){
+            for (file in FileUtils.getFiles(path,"tch")){
+                images.add(file.path)
+            }
+        }
+    }
+
     private fun setChangeDate(){
         if (type==1){
-            tv_date.text=nowYear.toString()+"年"+DecimalFormat("00").format(nowMonth)+"月"
+            tv_date.text=nowYear.toString()+"年"+ToolUtils.getFormatNum(nowMonth,"00")+"月"
         }
         else{
             tv_date.text=DateUtils.longToStringDataNoYear(weekStartDate)+"~"+DateUtils.longToStringDataNoYear(weekEndDate)
         }
+        posImage=0
+        getPathsSize()
+        setContentImage()
+    }
+
+    /**
+     * 更换内容
+     */
+    private fun setContentImage() {
+        val path = if (type==1){
+            FileAddress().getPathPlan(nowYear,nowMonth)+ "/${posImage + 1}.tch"
+        }
+        else{
+            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))+ "/${posImage + 1}.tch"
+        }
+        //判断路径是否已经创建
+        if (!images.contains(path)) {
+            images.add(path)
+        }
+        tv_page.text = "${posImage + 1}/${images.size}"
+
+        elik_b?.setLoadFilePath(path, true)
     }
 
 }

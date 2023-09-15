@@ -30,6 +30,7 @@ import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.utils.*
@@ -84,7 +85,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         EventBus.getDefault().register(this)
 
         screenPos=getCurrentScreenPos()
-        showLog(localClassName+"当前屏幕：$screenPos")
+//        showLog(localClassName+"当前屏幕：$screenPos")
 
         setStatusBarColor(ContextCompat.getColor(this, R.color.white))
 
@@ -357,6 +358,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                 reDrawGeometry(elik_a!!,1)
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                onElikSava_a()
             }
         })
 
@@ -369,6 +371,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                 reDrawGeometry(elik_b!!,2)
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                onElikSava_b()
             }
         })
 
@@ -538,13 +541,18 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(location:Int){
+        var type=0
         val tools= mutableListOf<AppBean>()
         tools.add(AppBean().apply {
             appName=getString(R.string.geometry_title_str)
             imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
         })
         tools.addAll(toolApps)
-        AppToolDialog(this,getCurrentScreenPos(),location,tools).builder()?.setDialogClickListener{ pos->
+        if (this is DiaryActivity){
+            type=1
+            tools.removeFirst()
+        }
+        AppToolDialog(this,getCurrentScreenPos(),location,tools,type).builder()?.setDialogClickListener{ pos->
             if (pos==0){
                 setViewElikUnable(ll_geometry)
                 showView(ll_geometry)
@@ -567,11 +575,22 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      */
     open fun onPageDown(){
     }
-
     /**
      * 上一页
      */
     open fun onPageUp(){
+    }
+
+    /**
+     * 左屏抬笔
+     */
+    open fun onElikSava_a(){
+    }
+
+    /**
+     * 右屏抬笔
+     */
+    open fun onElikSava_b(){
     }
 
     //单屏、全屏内容切换
@@ -838,22 +857,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     open fun onMessageEvent(bean: EventBusData) {
-        if (bean.event== Constants.SCREEN_EVENT){
-            val screen=bean.screen
-            screenPos=when(screen){
-                1->2
-                2->1
-                else->2
-            }
-            changeScreenPage()
-        }
     }
 
-    /**
-     * 自动收屏
-     */
-    open fun changeScreenPage(){
-    }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         //屏蔽长按切焦点造成原手写翻页

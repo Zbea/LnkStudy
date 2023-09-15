@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.utils;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -22,6 +24,8 @@ import androidx.core.content.FileProvider;
 import com.bll.lnkstudy.mvp.model.AppBean;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +130,7 @@ public class AppUtils {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                ActivityManager manager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
                 if (manager != null) {
                     manager.clearApplicationUserData();
                 }
@@ -217,6 +221,22 @@ public class AppUtils {
     }
 
     /**
+     * 关闭第三方应用
+     * @param packageName
+     */
+    public static void stopApp(Context context,String packageName){
+//        Process process= Runtime.getRuntime().exec("su");
+//        OutputStream out = process.getOutputStream();
+//        String cmd = "am force-stop " + packageName + " \n";
+//        out.write(cmd.getBytes());
+//        out.flush();
+//        process.getOutputStream().close();
+        ActivityManager am = (ActivityManager)context.getSystemService(
+                Context.ACTIVITY_SERVICE);
+        am.killBackgroundProcesses(packageName);
+    }
+
+    /**
      * uninstall apk file
      * @param packageName
      */
@@ -280,6 +300,15 @@ public class AppUtils {
     //重启app
     public static void reOpenApk(Context context){
         final Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+        //杀掉以前进程
+        android.os.Process.killProcess(android.os.Process.myPid());
+
+    }
+
+    public static void reOpenApk(Context context,String packageName){
+        final Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
         //杀掉以前进程

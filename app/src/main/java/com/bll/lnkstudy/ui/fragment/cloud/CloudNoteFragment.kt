@@ -16,7 +16,6 @@ import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.NoteContentBean
 import com.bll.lnkstudy.mvp.model.Notebook
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
@@ -68,14 +67,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             noteType=id
-            if (noteType==0){
-                grade=(activity as CloudStorageActivity).year
-                (activity as CloudStorageActivity).showYearView()
-            }
-            else{
-                grade=(activity as CloudStorageActivity).grade
-                (activity as CloudStorageActivity).closeYearView()
-            }
             noteTypeStr=types[id]
             pageIndex=1
             fetchData()
@@ -197,11 +188,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
         //新建笔记本增量更新
         DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(item))
-    }
-
-    fun changeYear(year:Int){
-        grade=year
-        fetchData()
     }
 
     override fun fetchData() {

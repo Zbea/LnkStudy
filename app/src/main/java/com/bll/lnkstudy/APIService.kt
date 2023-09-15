@@ -35,6 +35,11 @@ interface APIService{
     @GET("student/data/list")
     fun onListDataUpdate(): Observable<BaseResult<MutableList<DataUpdateBean>>>
     /**
+     * 获取增量更新列表
+     */
+    @GET("student/data/list")
+    fun onListDataUpdate(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<DataUpdateBean>>>
+    /**
      * 添加增量更新
      */
     @POST("student/data/insert")

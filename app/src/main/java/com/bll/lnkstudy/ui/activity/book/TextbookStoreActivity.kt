@@ -14,10 +14,7 @@ import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -28,7 +25,6 @@ import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
 
 /**
@@ -266,13 +262,8 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
-                            val s = getFormatNum(
-                                soFarBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M/" + getFormatNum(
-                                totalBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M"
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                             ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                             bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -349,11 +340,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
             }
 
         })
-    }
-
-    fun getFormatNum(pi: Double, format: String?): String? {
-        val df = DecimalFormat(format)
-        return df.format(pi)
     }
 
     /**

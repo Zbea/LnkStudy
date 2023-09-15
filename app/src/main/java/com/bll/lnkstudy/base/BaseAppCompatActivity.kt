@@ -102,7 +102,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
 
         screenPos=getCurrentScreenPos()
-        showLog(localClassName+"当前屏幕：$screenPos")
+//        showLog(localClassName+"当前屏幕：$screenPos")
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
@@ -249,6 +249,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      * 跳转阅读器
      */
     fun gotoBookDetails(bookBean: BookBean){
+        AppUtils.stopApp(this,"com.geniatech.knote.reader")
+
         bookBean.isLook=true
         bookBean.time=System.currentTimeMillis()
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)

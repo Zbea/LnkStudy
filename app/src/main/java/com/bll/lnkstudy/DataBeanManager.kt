@@ -139,14 +139,8 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    fun getIndexData(): MutableList<MainList> {
+    fun getIndexDataCloud(): MutableList<MainList> {
         val list = mutableListOf<MainList>()
-        val h0 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
-            checked = true
-            name = mContext.getString(listTitle[0])
-        }
 
         val h1 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_sj)
@@ -189,22 +183,12 @@ object DataBeanManager {
             checked = false
             name = mContext.getString(listTitle[6])
         }
-
-        val h7 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_yj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
-            checked = false
-            name = mContext.getString(listTitle[7])
-        }
-
-        list.add(h0)
         list.add(h1)
         list.add(h2)
         list.add(h3)
         list.add(h4)
         list.add(h5)
         list.add(h6)
-        list.add(h7)
         return list
     }
 
@@ -237,19 +221,19 @@ object DataBeanManager {
             checked = false
             name = mContext.getString(listTitle[2])
         }
-
         val h3 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_yj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
+            icon = mContext.getDrawable(R.mipmap.icon_main_bq)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_bq_check)
             checked = false
-            name = mContext.getString(listTitle[7])
+            name = mContext.getString(listTitle[8])
         }
         val h4 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_yj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
             checked = false
-            name = mContext.getString(listTitle[8])
+            name = mContext.getString(listTitle[7])
         }
+
         list.add(h0)
         list.add(h1)
         list.add(h2)
@@ -595,12 +579,12 @@ object DataBeanManager {
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
-                resContentId = R.mipmap.icon_note_details_bg_6
+                resContentId = R.mipmap.icon_diary_details_bg_1
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
-                resContentId = R.mipmap.icon_note_details_bg_7
+                resContentId = R.mipmap.icon_diary_details_bg_2
             })
             return list
         }
@@ -681,7 +665,11 @@ object DataBeanManager {
         })
         list.add(ItemList().apply {
             type=5
-            desc=mContext.getString(R.string.book_tab_ydcy)
+            desc=mContext.getString(R.string.book_tab_ydjk)
+        })
+        list.add(ItemList().apply {
+            type=6
+            desc=mContext.getString(R.string.book_tab_yscn)
         })
         return list
     }

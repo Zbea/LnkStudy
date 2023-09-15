@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.dialog.SchoolSelectDialog
+import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.mvp.model.NotePassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
@@ -19,6 +18,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
 import org.greenrobot.eventbus.EventBus
 
@@ -34,6 +34,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
+    private var notePassword:NotePassword?=null
 
     override fun onLogout() {
     }
@@ -82,10 +83,11 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         setPageTitle(R.string.my_account)
 
+        notePassword=SPUtil.getObj("${mUser?.accountId}notePassword", NotePassword::class.java)
+
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
-            tv_account_id.text = accountId.toString()
             tv_phone.text = telNumber.substring(0, 3) + "****" + telNumber.substring(7, 11)
             tv_birthday.text = DateUtils.intToStringDataNoHour(birthdayTime)
             tv_parent.text = parentName
@@ -101,8 +103,14 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_area.text = schoolArea
         }
 
-        btn_edit_psd.setOnClickListener {
-            customStartActivity(Intent(this, AccountRegisterActivity::class.java).setFlags(2))
+        if (notePassword!=null){
+            showView(tv_check_pad)
+            if (notePassword?.isSet == true){
+                btn_psd_check.text=getString(R.string.cancel_password)
+            }
+            else{
+                btn_psd_check.text=getString(R.string.set_password)
+            }
         }
 
         btn_edit_name.setOnClickListener {
@@ -115,6 +123,10 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         btn_edit_school.setOnClickListener {
             editSchool()
+        }
+
+        btn_psd_check.setOnClickListener {
+            setPassword()
         }
 
         btn_logout.setOnClickListener {
@@ -132,6 +144,33 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                         ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
                     }
                 })
+        }
+
+    }
+
+    /**
+     * 设置查看密码
+     */
+    private fun setPassword(){
+        if (notePassword==null){
+            NotebookSetPasswordDialog(this).builder().setOnDialogClickListener{
+                notePassword=it
+                showView(tv_check_pad)
+                btn_psd_check.text=getString(R.string.set_password)
+                SPUtil.putObj("${mUser?.accountId}notePassword",notePassword!!)
+                EventBus.getDefault().post(Constants.PASSWORD_EVENT)
+            }
+        }
+        else{
+            NotebookPasswordDialog(this).builder()?.setOnDialogClickListener{
+                notePassword?.isSet=!notePassword?.isSet!!
+                btn_psd_check.text=if (notePassword?.isSet==true) getString(R.string.cancel_password)
+                                   else getString(R.string.set_password)
+                SPUtil.putObj("${mUser?.accountId}notePassword",notePassword!!)
+                //更新增量更新
+                DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(notePassword))
+                EventBus.getDefault().post(Constants.PASSWORD_EVENT)
+            }
         }
 
     }

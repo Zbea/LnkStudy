@@ -30,11 +30,10 @@ public class NoteDao extends AbstractDao<Note, Long> {
         public final static Property TypeStr = new Property(3, String.class, "typeStr", false, "TYPE_STR");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property ContentResId = new Property(5, String.class, "contentResId", false, "CONTENT_RES_ID");
-        public final static Property IsEncrypt = new Property(6, boolean.class, "isEncrypt", false, "IS_ENCRYPT");
-        public final static Property Encrypt = new Property(7, String.class, "encrypt", false, "ENCRYPT");
-        public final static Property Grade = new Property(8, int.class, "grade", false, "GRADE");
-        public final static Property IsCloud = new Property(9, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(10, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property IsCancelPassword = new Property(6, boolean.class, "isCancelPassword", false, "IS_CANCEL_PASSWORD");
+        public final static Property Grade = new Property(7, int.class, "grade", false, "GRADE");
+        public final static Property IsCloud = new Property(8, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property CloudId = new Property(9, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -56,11 +55,10 @@ public class NoteDao extends AbstractDao<Note, Long> {
                 "\"TYPE_STR\" TEXT," + // 3: typeStr
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
                 "\"CONTENT_RES_ID\" TEXT," + // 5: contentResId
-                "\"IS_ENCRYPT\" INTEGER NOT NULL ," + // 6: isEncrypt
-                "\"ENCRYPT\" TEXT," + // 7: encrypt
-                "\"GRADE\" INTEGER NOT NULL ," + // 8: grade
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 9: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 10: cloudId
+                "\"IS_CANCEL_PASSWORD\" INTEGER NOT NULL ," + // 6: isCancelPassword
+                "\"GRADE\" INTEGER NOT NULL ," + // 7: grade
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 8: isCloud
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 9: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -94,15 +92,10 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (contentResId != null) {
             stmt.bindString(6, contentResId);
         }
-        stmt.bindLong(7, entity.getIsEncrypt() ? 1L: 0L);
- 
-        String encrypt = entity.getEncrypt();
-        if (encrypt != null) {
-            stmt.bindString(8, encrypt);
-        }
-        stmt.bindLong(9, entity.getGrade());
-        stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(11, entity.getCloudId());
+        stmt.bindLong(7, entity.getIsCancelPassword() ? 1L: 0L);
+        stmt.bindLong(8, entity.getGrade());
+        stmt.bindLong(9, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(10, entity.getCloudId());
     }
 
     @Override
@@ -130,15 +123,10 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (contentResId != null) {
             stmt.bindString(6, contentResId);
         }
-        stmt.bindLong(7, entity.getIsEncrypt() ? 1L: 0L);
- 
-        String encrypt = entity.getEncrypt();
-        if (encrypt != null) {
-            stmt.bindString(8, encrypt);
-        }
-        stmt.bindLong(9, entity.getGrade());
-        stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(11, entity.getCloudId());
+        stmt.bindLong(7, entity.getIsCancelPassword() ? 1L: 0L);
+        stmt.bindLong(8, entity.getGrade());
+        stmt.bindLong(9, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(10, entity.getCloudId());
     }
 
     @Override
@@ -155,11 +143,10 @@ public class NoteDao extends AbstractDao<Note, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // typeStr
             cursor.getLong(offset + 4), // date
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // contentResId
-            cursor.getShort(offset + 6) != 0, // isEncrypt
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // encrypt
-            cursor.getInt(offset + 8), // grade
-            cursor.getShort(offset + 9) != 0, // isCloud
-            cursor.getInt(offset + 10) // cloudId
+            cursor.getShort(offset + 6) != 0, // isCancelPassword
+            cursor.getInt(offset + 7), // grade
+            cursor.getShort(offset + 8) != 0, // isCloud
+            cursor.getInt(offset + 9) // cloudId
         );
         return entity;
     }
@@ -172,11 +159,10 @@ public class NoteDao extends AbstractDao<Note, Long> {
         entity.setTypeStr(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
         entity.setContentResId(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setIsEncrypt(cursor.getShort(offset + 6) != 0);
-        entity.setEncrypt(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setGrade(cursor.getInt(offset + 8));
-        entity.setIsCloud(cursor.getShort(offset + 9) != 0);
-        entity.setCloudId(cursor.getInt(offset + 10));
+        entity.setIsCancelPassword(cursor.getShort(offset + 6) != 0);
+        entity.setGrade(cursor.getInt(offset + 7));
+        entity.setIsCloud(cursor.getShort(offset + 8) != 0);
+        entity.setCloudId(cursor.getInt(offset + 9));
      }
     
     @Override

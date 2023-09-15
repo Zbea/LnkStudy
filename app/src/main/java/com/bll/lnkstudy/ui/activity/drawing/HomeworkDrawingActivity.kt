@@ -1,9 +1,6 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -58,11 +55,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     if (homeworkType?.createStatus==1){
                         map["studentTaskId"] = homeworkCommit?.messageId!!
                         map["studentUrl"] = ToolUtils.getImagesStr(urls)
+                        map["commonTypeId"]=homeworkTypeId
                         mUploadPresenter.commit(map)
                     }
                     else{
                         map["id"] = homeworkCommit?.messageId!!
                         map["submitUrl"] = ToolUtils.getImagesStr(urls)
+                        map["commonTypeId"]=homeworkTypeId
                         mUploadPresenter.commitParent(map)
                     }
                 }
@@ -271,18 +270,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private fun changeContent() {
 
         homeworkContent = homeworks[page]
-
         if (isExpand) {
             if (page > 0) {
                 homeworkContent_a = homeworks[page - 1]
             }
-            if (page == 0) {
+            else{
                 page = 1
                 homeworkContent = homeworks[page]
                 homeworkContent_a = homeworks[page - 1]
             }
-        } else {
-            homeworkContent_a = null
         }
 
         tv_title_b.text = homeworkContent?.title
@@ -298,7 +294,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
 
         if (homeworkContent?.state == 0) {
-            updateImage(elik_b!!, homeworkContent!!)
+            setElikLoadPath(elik_b!!, homeworkContent!!)
             v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
         } else {
             GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
@@ -306,42 +302,43 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         tv_page_b.text = "${page + 1}"
 
         if (isExpand) {
-            if (homeworkContent_a != null) {
-                if (homeworkType?.isCloud==true){
-                    elik_a?.setPWEnabled(false)
-                }
-                else{
-                    //已提交后不能手写，显示合图后的图片
-                    elik_a?.setPWEnabled(homeworkContent?.state == 0)
-                }
-                if (homeworkContent_a?.state == 0) {
-                    updateImage(elik_a!!, homeworkContent_a!!)
-                    v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
-                } else {
-                    GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
-                }
-                tv_page_a.text = "$page"
+            if (homeworkType?.isCloud==true){
+                elik_a?.setPWEnabled(false)
             }
+            else{
+                //已提交后不能手写，显示合图后的图片
+                elik_a?.setPWEnabled(homeworkContent?.state == 0)
+            }
+            if (homeworkContent_a?.state == 0) {
+                setElikLoadPath(elik_a!!, homeworkContent_a!!)
+                v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+            } else {
+                GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
+            }
+            tv_page_a.text = "$page"
         }
 
     }
 
-    //保存绘图以及更新手绘
-    private fun updateImage(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
+    //设置手写
+    private fun setElikLoadPath(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
         elik.setLoadFilePath(homeworkContent.path.replace("png", "tch"), true)
-        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
+    }
 
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
+    override fun onElikSava_a() {
+        saveElik(elik_a!!,homeworkContent_a!!)
+    }
 
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik.saveBitmap(true) {}
-                DataUpdateManager.editDataUpdate(2, homeworkContent.id.toInt(), 2, homeworkTypeId)
-            }
+    override fun onElikSava_b() {
+        saveElik(elik_b!!,homeworkContent!!)
+    }
 
-        })
+    /**
+     * 抬笔后保存手写
+     */
+    private fun saveElik(elik: EinkPWInterface,homeworkContent: HomeworkContentBean){
+        elik.saveBitmap(true) {}
+        DataUpdateManager.editDataUpdate(2, homeworkContent.id.toInt(), 2, homeworkTypeId)
     }
 
 
@@ -414,12 +411,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         FileUtils.deleteFile(File(drawPath.replace("png", "tch")))
 
         return drawPath
-    }
-
-    override fun changeScreenPage() {
-        if (isExpand) {
-            onChangeExpandContent()
-        }
     }
 
     override fun setDrawingTitle_a(title: String) {

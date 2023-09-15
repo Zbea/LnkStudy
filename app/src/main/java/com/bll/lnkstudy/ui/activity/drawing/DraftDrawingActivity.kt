@@ -1,8 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.Gravity
 import android.view.PWDrawObjectHandler
@@ -94,22 +91,8 @@ class DraftDrawingActivity:BaseDrawingActivity(){
     }
 
     private fun onClick(index:Int){
-        changeEilk(paths[index])
+        eink?.setLoadFilePath(paths[index], true)
         SPUtil.putObj("draft",index)
     }
-
-    private fun changeEilk(path:String){
-        eink?.setLoadFilePath(path, true)
-        eink?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                eink?.saveBitmap(true) {}
-            }
-        })
-    }
-
 
 }

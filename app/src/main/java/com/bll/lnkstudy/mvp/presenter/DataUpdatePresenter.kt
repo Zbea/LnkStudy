@@ -20,6 +20,19 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
         }, false)
     }
 
+    fun onList(map: HashMap<String, Any>){
+        val type = RetrofitManager.service.onListDataUpdate(map)
+        doRequest(type, object : Callback<MutableList<DataUpdateBean>>(view) {
+            override fun failed(tBaseResult: BaseResult<MutableList<DataUpdateBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<DataUpdateBean>>) {
+                if (!tBaseResult.data.isNullOrEmpty())
+                    view.onList(tBaseResult.data)
+            }
+        }, false)
+    }
+
     fun onAddData(map: Map<String,Any>) {
         val body= RequestUtils.getBody(map)
         val type = RetrofitManager.service.onAddDataUpdate(body)

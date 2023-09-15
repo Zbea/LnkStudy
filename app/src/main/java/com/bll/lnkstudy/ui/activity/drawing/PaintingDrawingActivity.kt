@@ -1,8 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -203,7 +200,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
 
         tv_title_b.text=paintingDrawingBean?.title
-        updateImage(elik_b!!, paintingDrawingBean!!)
+        setElikLoadPath(elik_b!!, paintingDrawingBean!!)
         tv_page_b.text = (page + 1).toString()
 
         //切换页面内容的一些变化
@@ -211,27 +208,31 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             if (paintingDrawingBean_a != null) {
                 tv_title_a.text=paintingDrawingBean_a?.title
                 v_content_a.setImageResource(resId)
-                updateImage(elik_a!!, paintingDrawingBean_a!!)
+                setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
                 tv_page_a.text = "$page"
             }
         }
     }
 
     //保存绘图以及更新手绘
-    private fun updateImage(elik: EinkPWInterface, bean: PaintingDrawingBean) {
+    private fun setElikLoadPath(elik: EinkPWInterface, bean: PaintingDrawingBean) {
         elik.setLoadFilePath(bean.path, true)
-        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
+    }
 
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
+    override fun onElikSava_a() {
+        saveElik(elik_a!!,paintingDrawingBean_a!!)
+    }
 
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik.saveBitmap(true) {}
-                DataUpdateManager.editDataUpdate(5,bean.id.toInt(),2,1)
-            }
-        })
+    override fun onElikSava_b() {
+        saveElik(elik_b!!,paintingDrawingBean!!)
+    }
+
+    /**
+     * 抬笔后保存手写
+     */
+    private fun saveElik(elik: EinkPWInterface,item: PaintingDrawingBean){
+        elik.saveBitmap(true) {}
+        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2,1)
     }
 
 
@@ -313,12 +314,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
         changeContent()
 
-    }
-
-    override fun changeScreenPage() {
-        if (isExpand){
-            onChangeExpandContent()
-        }
     }
 
     override fun setDrawingTitle_a(title: String) {

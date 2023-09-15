@@ -8,7 +8,6 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.MainList
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
@@ -41,8 +40,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     var grade=mUser?.grade!!
     private var popWindowDynasty:PopupList?=null
     private var popWindowGrade:PopupList?=null
-    private var popWindowYear:PopupList?=null
-    private var popYears= mutableListOf<PopupBean>()
 
     override fun onList(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
@@ -61,20 +58,13 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     }
 
     override fun initData() {
-        mData= DataBeanManager.getIndexData()
-        mData.removeFirst()
-        mData.removeLast()
-        mData[0].checked=true
+        mData= DataBeanManager.getIndexDataCloud()
 
         if (DataBeanManager.grades.size>0){
             tv_grade.text=DataBeanManager.grades[grade-1].desc
         }
         else{
             mCommonPresenter.getCommonGrade()
-        }
-
-        for (year in DataBeanManager.years){
-            popYears.add(PopupBean(year,year.toString(),year==DateUtils.getYear()))
         }
 
         tv_course.text=DataBeanManager.popupDynasty()[0].name
@@ -111,13 +101,7 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
                     1 -> switchFragment(lastFragment, textbookFragment)//课本
                     2 -> switchFragment(lastFragment, homeworkFragment)//作业
                     3 -> switchFragment(lastFragment, paperFragment)//考卷
-                    4 -> {
-                        showYearView()
-                        if (noteFragment?.noteType!=0){
-                            closeYearView()
-                        }
-                        switchFragment(lastFragment, noteFragment)//笔记
-                    }
+                    4 -> switchFragment(lastFragment, noteFragment)//笔记
                     5 -> {
                         showDynastyView()
                         closeGradeView()
@@ -160,31 +144,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
             }
         }
 
-        tv_province.setOnClickListener {
-            if (popWindowYear==null)
-            {
-                popWindowYear= PopupList(this,popYears,tv_province,tv_province.width,5).builder()
-                popWindowYear?.setOnSelectListener { item ->
-                    tv_province.text=item.name
-                    year=item.id
-                    noteFragment?.changeYear(year)
-                }
-            }
-            else{
-                popWindowYear?.show()
-            }
-        }
-
-    }
-
-    fun showYearView(){
-        closeGradeView()
-        showView(tv_province)
-    }
-
-    fun closeYearView(){
-        showGradeView()
-        disMissView(tv_province)
     }
 
     fun closeDynastyView(){

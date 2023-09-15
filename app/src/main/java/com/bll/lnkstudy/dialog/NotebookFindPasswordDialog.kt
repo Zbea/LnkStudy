@@ -7,9 +7,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.NotePassword
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
+import com.google.gson.Gson
 
 
 class NotebookFindPasswordDialog(private val context: Context, private val screenPos:Int) {
@@ -26,7 +29,8 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
         }
         dialog.show()
 
-        val notePassword=SPUtil.getObj("notePassword",NotePassword::class.java)
+        val user=SPUtil.getObj("user", User::class.java)
+        val notePassword=SPUtil.getObj("${user?.accountId}notePassword",NotePassword::class.java)
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -70,6 +74,8 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
 
             notePassword.password=MD5Utils.digest(passwordStr)
             SPUtil.putObj("notePassword",notePassword)
+            //更新增量更新
+            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(notePassword))
             dialog.dismiss()
             listener?.onClick()
 

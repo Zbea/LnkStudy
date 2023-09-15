@@ -1,8 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.DataUpdateManager
@@ -39,6 +36,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var papers= mutableListOf<HomeworkPaperBean>()
     private var paperContents= mutableListOf<HomeworkPaperContentBean>()
     private var paper: HomeworkPaperBean?=null
+    private var paperContentBean:HomeworkPaperContentBean?=null
+    private var paperContentBean_a:HomeworkPaperContentBean?=null
 
     private var currentPosition=0
     private var page = 0//页码
@@ -262,11 +261,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
 
         if (isExpand){
-            loadImage(page,elik_a!!,v_content_a)
+            paperContentBean_a=paperContents[page]
+            setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a)
             tv_page_a.text="${paperContents[page].page+1}"
 
             if (page+1<pageCount){
-                loadImage(page+1,elik_b!!,v_content_b)
+                paperContentBean=paperContents[page+1]
+                setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
                 tv_page_b.text="${paperContents[page+1].page+1}"
             }
             else{
@@ -277,37 +278,34 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             }
         }
         else{
-            loadImage(page,elik_b!!,v_content_b)
+            paperContentBean=paperContents[page]
+            setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
             tv_page_b.text="${paperContents[page].page+1}"
         }
     }
 
 
     //加载图片
-    private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
-        val contentBean=paperContents[index]
-        GlideUtils.setImageFileNoCache(this,File(contentBean.path),view)
-
-        elik.setLoadFilePath(contentBean.drawPath,true)
-        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik.saveBitmap(true) {}
-                //更新增量作业卷内容(未提交原图和手写图)
-                DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
-            }
-        })
+    private fun setElikLoadPath(paperContentBean: HomeworkPaperContentBean, elik:EinkPWInterface, view:ImageView) {
+        GlideUtils.setImageFileNoCache(this,File(paperContentBean.path),view)
+        elik.setLoadFilePath(paperContentBean.drawPath,true)
     }
 
-    override fun changeScreenPage() {
-        if (isExpand){
-            onChangeExpandContent()
-        }
+    override fun onElikSava_a() {
+        saveElik(elik_a!!,paperContentBean_a!!)
+    }
+
+    override fun onElikSava_b() {
+        saveElik(elik_b!!,paperContentBean!!)
+    }
+
+    /**
+     * 抬笔后保存手写
+     */
+    private fun saveElik(elik: EinkPWInterface,contentBean:HomeworkPaperContentBean){
+        elik.saveBitmap(true) {}
+        //更新增量作业卷内容(未提交原图和手写图)
+        DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
     }
 
     /**

@@ -24,7 +24,10 @@ import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.*
+import com.bll.lnkstudy.ui.activity.AccountLoginActivity
+import com.bll.lnkstudy.ui.activity.MainActivity
+import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
+import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
@@ -142,8 +145,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         initView()
         if (activity is MainActivity)
             screenPos=(activity as MainActivity).getCurrentScreenPos()
-        if (activity is HomeLeftActivity)
-            screenPos=(activity as HomeLeftActivity).getCurrentScreenPos()
         mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
     }
@@ -430,6 +431,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      * 跳转阅读器
      */
     fun gotoBookDetails(bookBean: BookBean){
+        AppUtils.stopApp(requireActivity(),"com.geniatech.knote.reader")
+
         bookBean.isLook=true
         bookBean.time=System.currentTimeMillis()
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)

@@ -25,7 +25,6 @@ import java.io.File
 class PaintingFragment : BaseFragment(){
 
     private var typeId = 0//类型
-    private val halfYear=180*24*60*60*1000
     private var isLocalDrawing=false
 
     override fun getLayoutId(): Int {
@@ -121,7 +120,7 @@ class PaintingFragment : BaseFragment(){
         val paintings=PaintingBeanDaoManager.getInstance().queryPaintings()
         for (item in paintings){
             if (item.isCloud) continue //已上传过的不用再上传
-            if (System.currentTimeMillis()>=item.date+halfYear){
+            if (System.currentTimeMillis()>=item.date+Constants.halfYear){
                 cloudList.add(CloudListBean().apply {
                     type=5
                     zipUrl=item.bodyUrl
@@ -198,7 +197,7 @@ class PaintingFragment : BaseFragment(){
         else{
             val paintings=PaintingBeanDaoManager.getInstance().queryPaintings()
             for (item in paintings){
-                if (System.currentTimeMillis()>=item.date+halfYear){
+                if (System.currentTimeMillis()>=item.date+Constants.halfYear){
                     val path=FileAddress().getPathImage("painting" ,item.contentId)
                     FileUtils.deleteFile(File(path))
                     val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)

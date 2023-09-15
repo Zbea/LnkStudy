@@ -19,6 +19,7 @@ import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -26,7 +27,6 @@ import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import java.text.DecimalFormat
 
 /**
  * 书城
@@ -207,13 +207,8 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning && task == mDownMapPool[book.bookPlusId]) {
                         runOnUiThread {
-                            val s = getFormatNum(
-                                soFarBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M/" + getFormatNum(
-                                totalBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M"
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                             bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -230,7 +225,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
                             "思维科学", "自然科学" -> {
                                 "科学技术"
                             }
-                            "运动才艺" -> {
+                            "运动健康","艺术才能" -> {
                                 "运动才艺"
                             }
                             else -> {
@@ -268,12 +263,6 @@ class BookStoreActivity : BaseAppCompatActivity(),
                 }
             })
         return download
-    }
-
-
-    fun getFormatNum(pi: Double, format: String?): String? {
-        val df = DecimalFormat(format)
-        return df.format(pi)
     }
 
     /**

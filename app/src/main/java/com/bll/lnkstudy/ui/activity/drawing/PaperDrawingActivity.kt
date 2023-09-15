@@ -1,8 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.R
@@ -170,11 +167,11 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         tv_title_b.text=paper?.title
 
         if (isExpand){
-            loadImage(page,elik_a!!,v_content_a)
+            setElikLoadPath(page,elik_a!!,v_content_a)
             tv_page_a.text="${paperContents[page].page+1}"
 
             if (page+1<paperContentCount){
-                loadImage(page+1,elik_b!!,v_content_b)
+                setElikLoadPath(page+1,elik_b!!,v_content_b)
                 tv_page_b.text="${paperContents[page+1].page+1}"
             }
             else{
@@ -184,35 +181,18 @@ class PaperDrawingActivity: BaseDrawingActivity(){
             }
         }
         else{
-            loadImage(page,elik_b!!,v_content_b)
+            setElikLoadPath(page,elik_b!!,v_content_b)
             tv_page_b.text="${paperContents[page].page+1}"
         }
     }
 
 
     //加载图片
-    private fun loadImage(index: Int,elik:EinkPWInterface,view:ImageView) {
+    private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
         val testPaperContent=paperContents[index]
         GlideUtils.setImageFileNoCache(this,File(testPaperContent.path),view)
-
         elik.setLoadFilePath(testPaperContent.drawPath,true)
-        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik.saveBitmap(true) {}
-            }
-        })
     }
 
-    override fun changeScreenPage() {
-        if (isExpand){
-            onChangeExpandContent()
-        }
-    }
 
 }

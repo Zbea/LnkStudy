@@ -3,6 +3,7 @@ package com.bll.lnkstudy.utils;
 import android.content.Context;
 import android.widget.RadioButton;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +13,30 @@ import java.util.regex.Pattern;
 public class ToolUtils {
 
     /**
+     * 格式化数据显示
+     * @param num
+     * @param format
+     * @return
+     */
+    public static String getFormatNum(Object num, String format){
+        return new DecimalFormat(format).format(num);
+    }
+
+    /**
      * 得到唯一id
      * @return
      */
     public static int getDateId(){
         long date=System.currentTimeMillis()/1000;
+        return Long.valueOf(date).intValue();
+    }
+
+    /**
+     * 得到唯一id
+     * @return
+     */
+    public static int getDateId(long time){
+        long date=time/1000;
         return Long.valueOf(date).intValue();
     }
 

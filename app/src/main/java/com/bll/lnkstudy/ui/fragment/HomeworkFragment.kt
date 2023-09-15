@@ -73,7 +73,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 }
             }
         }
-        fetchData()
+        fetchParentType()
     }
 
     override fun onTypeParentList(list: MutableList<ParentTypeBean>) {
@@ -150,11 +150,11 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     1->{
                         loadHomeworkPaperImage(reels)
                     }
+                    2->{
+                        loadHomeworkImage(reels)
+                    }
                     4->{
                         loadHomeworkBook(reels)
-                    }
-                    else->{
-                        loadHomeworkImage(reels)
                     }
                 }
             }
@@ -540,7 +540,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             //拿到对应作业的所有本地图片地址
             val paths = mutableListOf<String>()
             for (i in item.pageStr.split(",")){
-                paths.add(getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!)
+                val path=getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!
+                paths.add(path)
             }
             //获得下载地址
             val images = item.changeUrl.split(",").toMutableList()
@@ -573,7 +574,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             //拿到对应作业的所有本地图片地址
             val paths = mutableListOf<String>()
             for (i in item.page.split(",")){
-                paths.add(getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!)
+                val path=getIndexFile(homeworkBookBean,i.toInt()-1)?.path!!
+                paths.add(path)
             }
             //获得下载地址
             val images = item.submitUrl.split(",").toMutableList()
@@ -655,7 +657,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
             }
             val paths= mutableListOf<String>()
             for (i in images.indices){
-                paths.add("$pathStr/${i+1}.png")
+                val path="$pathStr/${i+1}.png"
+                paths.add(path)
             }
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -954,19 +957,23 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 }
             }
 
-            val parentMap=HashMap<String,Any>()
-            parentMap["subject"] = DataBeanManager.getCourseId(mCourse)
-            parentMap["childId"] = mUser?.accountId!!
-            mPresenter.getTypeParentList(parentMap)
-
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!
             map["type"] = 2
             map["userId"] = teacherId
             mPresenter.getTypeList(map)
-
         }
+    }
+
+    /**
+     * 获取家长作业分类
+     */
+    private fun fetchParentType(){
+        val parentMap=HashMap<String,Any>()
+        parentMap["subject"] = DataBeanManager.getCourseId(mCourse)
+        parentMap["childId"] = mUser?.accountId!!
+        mPresenter.getTypeParentList(parentMap)
     }
 
     /**

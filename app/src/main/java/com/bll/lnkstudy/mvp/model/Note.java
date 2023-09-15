@@ -23,8 +23,7 @@ public class Note implements Serializable {
     public String typeStr;//分类
     public long date; //创建时间
     public String contentResId; //笔记内容背景id
-    public boolean isEncrypt;//是否加密
-    public String encrypt;//密码
+    public boolean isCancelPassword;//取消加密
     public int grade;//年级
     public boolean isCloud;
     public int cloudId;//云id
@@ -32,9 +31,9 @@ public class Note implements Serializable {
     public String downloadUrl;
     @Transient
     public String contentJson;
-    @Generated(hash = 1653318477)
+    @Generated(hash = 1977792127)
     public Note(Long id, long userId, String title, String typeStr, long date,
-            String contentResId, boolean isEncrypt, String encrypt, int grade,
+            String contentResId, boolean isCancelPassword, int grade,
             boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
@@ -42,8 +41,7 @@ public class Note implements Serializable {
         this.typeStr = typeStr;
         this.date = date;
         this.contentResId = contentResId;
-        this.isEncrypt = isEncrypt;
-        this.encrypt = encrypt;
+        this.isCancelPassword = isCancelPassword;
         this.grade = grade;
         this.isCloud = isCloud;
         this.cloudId = cloudId;
@@ -87,17 +85,11 @@ public class Note implements Serializable {
     public void setContentResId(String contentResId) {
         this.contentResId = contentResId;
     }
-    public boolean getIsEncrypt() {
-        return this.isEncrypt;
+    public boolean getIsCancelPassword() {
+        return this.isCancelPassword;
     }
-    public void setIsEncrypt(boolean isEncrypt) {
-        this.isEncrypt = isEncrypt;
-    }
-    public String getEncrypt() {
-        return this.encrypt;
-    }
-    public void setEncrypt(String encrypt) {
-        this.encrypt = encrypt;
+    public void setIsCancelPassword(boolean isCancelPassword) {
+        this.isCancelPassword = isCancelPassword;
     }
     public int getGrade() {
         return this.grade;

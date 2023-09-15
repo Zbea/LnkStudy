@@ -28,6 +28,9 @@ class Constants{
 
         const val WIDTH = 1404
         const val HEIGHT = 1872
+        const val halfYear=180*24*60*60*1000
+        const val dayLong=24*60*60*1000
+        const val weekTime=7*24*60*60*1000
 
 //        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
@@ -46,9 +49,6 @@ class Constants{
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
 
-
-        //截图保存目录
-        val SCREEN_PATH= MyApplication.mContext.getExternalFilesDir("Screen")!!.path
 
         //收到题卷地址
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
@@ -84,7 +84,6 @@ class Constants{
         const val NOTE_EVENT = "NoteEvent"
         const val RECORD_EVENT = "RecordEvent"
         const val RECEIVE_PAPER_COMMIT_EVENT = "ReceivePaperCommit"
-        const val SCREEN_EVENT = "AutoScreenEvent"
         const val VIDEO_EVENT = "VideoEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
@@ -95,6 +94,7 @@ class Constants{
         const val DATA_CLEAT_EVENT="DataClear"
         const val EXAM_TIME_EVENT="ExamTime"//考试到时自动提交广播
         const val MAIN_HOMEWORK_NOTICE_EVENT="MainHomeworkNoticeEvent"//作业通知清除广播
+        const val PASSWORD_EVENT="PasswordEvent"//设置密码广播
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

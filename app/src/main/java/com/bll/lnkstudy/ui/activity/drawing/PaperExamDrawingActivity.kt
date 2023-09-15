@@ -4,9 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.view.KeyEvent
 import android.view.View
@@ -263,14 +260,13 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     //内容切换
     private fun changeContent(){
-
-        loadImage(page,elik_a!!,v_content_a)
+        setElikLoadPath(page,elik_a!!,v_content_a)
         tv_page_a.text="${page+1}/$pageCount"
 
         if (isExpand){
             if (page+1<pageCount){
                 elik_b?.setPWEnabled(true)
-                loadImage(page+1,elik_b!!,v_content_b)
+                setElikLoadPath(page+1,elik_b!!,v_content_b)
                 tv_page_b.text="${page+1+1}/$pageCount"
             }
             else{
@@ -279,30 +275,22 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                 tv_page_b.text=""
             }
         }
-
     }
 
     //加载图片
-    private fun loadImage(index: Int,elik:EinkPWInterface,view: ImageView) {
+    private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
         GlideUtils.setImageUrl(this,paths[index],view)
         elik.setLoadFilePath(drawPaths[index],true)
-        elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik.saveBitmap(true) {}
-            }
-
-        })
     }
 
+    override fun onElikSava_a() {
+        elik_a?.saveBitmap(true) {}
+    }
+    override fun onElikSava_b() {
+        elik_b?.saveBitmap(true) {}
+    }
 
     override fun onMessageEvent(bean: EventBusData) {
-        super.onMessageEvent(bean)
         if (bean.event==Constants.EXAM_TIME_EVENT){
             showLoading()
             commit()

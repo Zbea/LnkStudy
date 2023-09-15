@@ -44,6 +44,20 @@ public class GlideUtils {
                 .into(imageView);
     }
 
+    public static final void setImageFileRound(Context mContext, File file, ImageView imageView, int round){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+        requestOptions.skipMemoryCache(false);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+        requestOptions.transform(new RoundedCorners(round));
+
+        Glide.with(mContext)
+                .load(file)
+                .apply(requestOptions)
+                .into(imageView);
+    }
+
     public static void setImageFileNoCache(Context mContext, File file, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();

@@ -16,7 +16,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 /**
  * 1左 2 右
  */
-class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,private val lists:  List<AppBean>) {
+class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,private val lists:  List<AppBean>,private val type:Int) {
 
     private var dialog:Dialog?=null
 
@@ -40,7 +40,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,p
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            if (position==0){
+            if (type==0&&position==0){
                 dismiss()
                 listener?.onClick(position)
             }

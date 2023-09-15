@@ -79,7 +79,6 @@
     <string name="logout">退出登录</string>
     <string name="quit">退出</string>
     <string name="login">登录</string>
-    <string name="id">I   D</string>
     <string name="name">姓名</string>
     <string name="name_1">名称</string>
     <string name="grade">年级</string>
@@ -155,6 +154,8 @@
     <string name="edit_name">修改姓名</string>
     <string name="edit_grade">修改年级</string>
     <string name="edit_password">修改密码</string>
+    <string name="set_password">设置密码</string>
+    <string name="create_password">创建密码</string>
     <string name="main_home_title">首页</string>
     <string name="main_main_title">主页</string>
     <string name="register">注册账号</string>
@@ -167,6 +168,9 @@
     <string name="buy_pay_type">支付方式</string>
     <string name="school_message">学校信息</string>
     <string name="edit_school_message">修改学校</string>
+    <string name="password_login">登录密码</string>
+    <string name="password_check">查看密码</string>
+    <string name="cancel_password">取消密码</string>
 
     <string name="main_bookcase_title">书架</string>
     <string name="main_textbook_title">课本</string>
@@ -186,6 +190,8 @@
     <string name="book_tab_zrkx">自然科学</string>
     <string name="book_tab_shkx">社会科学</string>
     <string name="book_tab_sxkx">思维科学</string>
+    <string name="book_tab_ydjk">运动健康</string>
+    <string name="book_tab_yscn">艺术才能</string>
 
     <string name="book_tab_sjcc">诗经楚辞</string>
     <string name="book_tab_tssc">唐诗宋词</string>
@@ -278,7 +284,6 @@
     <string name="note_create_hint">输入主题</string>
     <string name="notebook_create_hint">输入笔记本</string>
     <string name="note_module_str">笔记模板</string>
-    <string name="note_is_set_diary_password_tips">设置日记密码？</string>
     <string name="note_is_delete_tips">删除主题？</string>
     <string name="notebook_is_delete_tips">删除笔记本？</string>
     <string name="note_delete_diary_password">删除日记密码</string>
@@ -388,4 +393,8 @@
     <string name="freenote_insert_str">插入</string>
     <string name="freenote_theme_str">格式</string>
     <string name="freenote_module_str">随笔模板</string>
+
+    <string name="diary_title_str">日记本</string>
+    <string name="digest">摘要</string>
+    <string name="diary_module_str">日记模板</string>
 </resources>

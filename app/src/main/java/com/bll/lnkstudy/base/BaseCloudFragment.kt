@@ -20,7 +20,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.HomeLeftActivity
+import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -90,8 +90,8 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
         initCommonTitle()
         initView()
 
-        if (activity is HomeLeftActivity)
-            screenPos=(activity as HomeLeftActivity).getCurrentScreenPos()
+        if (activity is CloudStorageActivity)
+            screenPos=(activity as CloudStorageActivity).getCurrentScreenPos()
         mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
     }

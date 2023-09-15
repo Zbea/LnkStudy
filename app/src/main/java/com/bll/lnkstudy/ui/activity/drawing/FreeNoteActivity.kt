@@ -1,10 +1,6 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
-import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
@@ -23,6 +19,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.*
+import kotlinx.android.synthetic.main.common_drawing_bottom_one.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -133,17 +130,10 @@ class FreeNoteActivity : BaseDrawingActivity() {
         tv_page.text = "${posImage + 1}/${images.size}"
 
         elik_b?.setLoadFilePath(path, true)
-        elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
+    }
 
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik_b?.saveBitmap(true) {}
-            }
-        })
+    override fun onElikSava_b() {
+        elik_b?.saveBitmap(true) {}
     }
 
     /**
@@ -186,17 +176,12 @@ class FreeNoteActivity : BaseDrawingActivity() {
 
 
     private fun saveFreeNote() {
-        //清空没有手写页面
-        val sImages = mutableListOf<String>()
-        for (i in images.indices) {
-            if (File(images[i]).exists()) {
-                sImages.add(images[i])
-            }
-        }
-        freeNoteBean?.paths = images
-        freeNoteBean?.bgRes = bgResList
-        if (sImages.size > 0)
+        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
+        if (!File(path).list().isNullOrEmpty()){
+            freeNoteBean?.paths = images
+            freeNoteBean?.bgRes = bgResList
             FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+        }
     }
 
     override fun onDestroy() {

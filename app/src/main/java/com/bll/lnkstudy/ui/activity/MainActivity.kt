@@ -25,6 +25,7 @@ import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_launcher.*
 import org.greenrobot.eventbus.EventBus
@@ -68,10 +69,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 uploadDataUpdate(token)
             }
             Constants.ACTION_UPLOAD_1MONTH -> {
-                noteFragment?.uploadNote(token, true)
+
             }
             Constants.ACTION_UPLOAD_9MONTH -> {
-                noteFragment?.uploadNote(token, false)
+                noteFragment?.uploadNote(token)
                 paintingFragment?.uploadLocalDrawing(token)
             }
             Constants.CONTROL_MESSAGE_EVENT -> {
@@ -87,6 +88,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     //增量更新回调
     override fun onSuccess() {
+        showLog("增量更新上传成功")
     }
 
     override fun onList(list: MutableList<DataUpdateBean>) {
@@ -102,6 +104,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
+        val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
+        val type= object : TypeToken<List<Area>>() {}.type
+        DataBeanManager.provinces = Gson().fromJson(areaJson, type)
     }
 
     override fun initView() {
@@ -140,8 +145,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     0 -> switchLeftFragment(leftFragment, mainLeftFragment)//首页
                     1 -> switchLeftFragment(leftFragment, bookcaseFragment)//书架
                     2 -> switchLeftFragment(leftFragment, textbookFragment)//课本
-                    3 -> switchLeftFragment(leftFragment, teachFragment)//义教
-                    4 -> switchLeftFragment(leftFragment, classGroupFragment)//班群管理
+                    3 -> switchLeftFragment(leftFragment, classGroupFragment)//班群管理
+                    4 -> switchLeftFragment(leftFragment, teachFragment)//义教
                 }
                 leftPosition = position
             }
@@ -155,11 +160,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 updateItem(rightPosition, false)//原来的位置去掉勾选
                 updateItem(position, true)//更新新的位置
                 when (position) {
-                    0 -> switchRightFragment(rightFragment, mainRightFragment)//首页
-                    1 -> switchRightFragment(rightFragment, homeworkFragment)//书架
-                    2 -> switchRightFragment(rightFragment, paperFragment)//课本
-                    3 -> switchRightFragment(rightFragment, noteFragment)//义教
-                    4 -> switchRightFragment(rightFragment, paintingFragment)//义教
+                    0 -> switchRightFragment(rightFragment, mainRightFragment)
+                    1 -> switchRightFragment(rightFragment, homeworkFragment)
+                    2 -> switchRightFragment(rightFragment, paperFragment)
+                    3 -> switchRightFragment(rightFragment, noteFragment)
+                    4 -> switchRightFragment(rightFragment, paintingFragment)
                 }
                 rightPosition = position
             }
@@ -332,6 +337,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()
         FreeNoteDaoManager.getInstance().clear()
+        DiaryDaoManager.getInstance().clear()
         BookGreenDaoManager.getInstance().clear()
 
         HomeworkTypeDaoManager.getInstance().clear()
@@ -369,6 +375,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
         EventBus.getDefault().post(Constants.NOTE_EVENT)
         EventBus.getDefault().post(Constants.RECORD_EVENT)
+        EventBus.getDefault().post(Constants.PASSWORD_EVENT)
+        EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
     }
 
     /**
@@ -456,12 +464,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         3->{
                             downloadNote(item)
                         }
-                        4->{
-                            val notePassword= Gson().fromJson(item.listJson, NotePassword::class.java)
-                            SPUtil.putObj("notePassword",notePassword)
-                            //创建增量数据(日记密码)
-                            DataUpdateManager.createDataUpdate(4,1,4,3, Gson().toJson(notePassword))
-                        }
                     }
                 }
                 5->{
@@ -491,6 +493,15 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }
                 8->{
                     downloadHomeworkBook(item)
+                }
+                9->{
+                    downloadDiary(item)
+                }
+                10->{
+                    val notePassword= Gson().fromJson(item.listJson, NotePassword::class.java)
+                    SPUtil.putObj("${mUser?.accountId}notePassword",notePassword)
+                    //创建增量数据(日记密码)
+                    DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(notePassword))
                 }
             }
         }
@@ -957,6 +968,42 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
+     * 下载日记
+     */
+    private fun downloadDiary(item: DataUpdateBean){
+        val contentBean = Gson().fromJson(item.listJson, DiaryBean::class.java)
+        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object :
+                FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
+                        override fun onFinish() {
+                            DiaryDaoManager.getInstance().insertOrReplace(contentBean)
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdate(9, item.uid,1,item.typeId,
+                                Gson().toJson(contentBean),item.path)
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                        }
+                        override fun onStart() {
+                        }
+                    })
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                }
+            })
+    }
+
+    /**
      * 每天上传增量数据
      */
     private fun uploadDataUpdate(token: String) {
@@ -1005,6 +1052,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     fun onMessageEvent(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
+                mainRightFragment?.deleteDiary()
                 eventType = Constants.AUTO_UPLOAD_EVENT
                 mQiniuPresenter.getToken()
             }
@@ -1031,6 +1079,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 mDataUpdatePresenter.onList()
             }
             Constants.DATA_RENT_EVENT -> {
+                val map=HashMap<String,Any>()
+                map["type"]= arrayOf(1,2,3,8)
                 mDataUpdatePresenter.onList()
             }
             Constants.DATA_CLEAT_EVENT -> {

@@ -173,4 +173,24 @@ class FileAddress {
         return "$FREE_NOTE_PATH/${mUserId}/$title"
     }
 
+    /**
+     * 计划总览路径
+     */
+    fun getPathPlan(year:Int,month:Int):String{
+        return "$IMAGE_PATH/${mUserId}/month/$year$month"
+    }
+    /**
+     * 计划总览路径
+     */
+    fun getPathPlan(startTime:String):String{
+        return "$IMAGE_PATH/${mUserId}/week/$startTime"
+    }
+
+    /**
+     * 日记路径
+     */
+    fun getPathDiary(time:String):String{
+        return "$IMAGE_PATH/${mUserId}/diary/$time"
+    }
+
 }

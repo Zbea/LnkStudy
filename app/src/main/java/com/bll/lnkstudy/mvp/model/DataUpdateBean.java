@@ -18,7 +18,7 @@ public class DataUpdateBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int uid;
-    public int type;//类型1课本2作业3考卷4笔记5画本6书架
+    public int type;//类型1课本2作业3考卷4笔记5画本6书架7线上书画8作业课本9日记10密码
     public int typeId;//分类id
     public int contentType;//内容分类
     public int state;//作业分类
