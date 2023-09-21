@@ -12,7 +12,7 @@ import com.bll.lnkstudy.dialog.NotebookPasswordDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.BookBean
-import com.bll.lnkstudy.mvp.model.NotePassword
+import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
@@ -113,8 +113,8 @@ class SearchActivity : BaseAppCompatActivity() {
             }
             4->{
                 val noteBook= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
-                val notePassword=SPUtil.getObj("${mUser?.accountId}notePassword", NotePassword::class.java)
-                if (item.typeStr==getString(R.string.note_tab_diary)&&notePassword!=null&&notePassword.isSet&&!noteBook.isCancelPassword)
+                val checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword", CheckPassword::class.java)
+                if (item.typeStr==getString(R.string.note_tab_diary)&&checkPassword!=null&&checkPassword.isSet&&!noteBook.isCancelPassword)
                 {
                     NotebookPasswordDialog(this).builder()?.setOnDialogClickListener{
                         gotoNote(noteBook,item.page)

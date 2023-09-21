@@ -20,7 +20,7 @@ class DateCalendarDialog(private val context: Context){
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.TOP or  Gravity.END
-        layoutParams.y= DP2PX.dip2px(context,175f)
+        layoutParams.y= DP2PX.dip2px(context,165f)
         layoutParams.x=DP2PX.dip2px(context,50f)
         dialog?.show()
 

@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.NotePassword
+import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
@@ -101,16 +101,16 @@ class NotebookSetPasswordDialog(private val context: Context) {
                 SToast.showText(1,R.string.password_different)
                 return@setOnClickListener
             }
-            val notePassword=NotePassword()
-            notePassword.question=tvQuestion.text.toString()
-            notePassword.answer=answerStr
-            notePassword.password=MD5Utils.digest(passwordStr)
+            val checkPassword= CheckPassword()
+            checkPassword.question=tvQuestion.text.toString()
+            checkPassword.answer=answerStr
+            checkPassword.password=MD5Utils.digest(passwordStr)
             val user=SPUtil.getObj("user", User::class.java)
-            SPUtil.putObj("${user?.accountId}notePassword",notePassword)
+            SPUtil.putObj("${user?.accountId}notePassword",checkPassword)
             //创建增量数据(日记密码)
-            DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(notePassword))
+            DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
             dialog.dismiss()
-            listener?.onClick(notePassword)
+            listener?.onClick(checkPassword)
 
         }
 
@@ -125,7 +125,7 @@ class NotebookSetPasswordDialog(private val context: Context) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(notePassword: NotePassword)
+        fun onClick(checkPassword: CheckPassword)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

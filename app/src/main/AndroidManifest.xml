@@ -82,7 +82,7 @@
 
         <activity
             android:name=".ui.activity.MainActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity
             android:name=".ui.activity.AccountLoginActivity"
@@ -155,12 +155,9 @@
         <activity android:name=".ui.activity.date.DatePlanListActivity" />
         <activity android:name=".ui.activity.date.DateDayListActivity" />
         <activity android:name=".ui.activity.date.DateDayDetailsActivity" />
-        <activity
-            android:name=".ui.activity.date.DatePlanDetailsActivity"
+        <activity android:name=".ui.activity.date.DatePlanDetailsActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".ui.activity.CampusModeActivity"
-             />
+        <activity android:name=".ui.activity.CampusModeActivity" />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity" />
@@ -168,13 +165,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
         <activity android:name=".ui.activity.PastHomeworkActivity"/>
-        <activity android:name=".ui.activity.drawing.FreeNoteActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
+        <activity android:name=".ui.activity.drawing.FreeNoteActivity" />
         <activity android:name=".ui.activity.PlanOverviewActivity"/>
-        <activity android:name=".ui.activity.drawing.DiaryActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            />
+        <activity android:name=".ui.activity.drawing.DiaryActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

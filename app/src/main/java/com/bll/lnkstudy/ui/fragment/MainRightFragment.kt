@@ -45,7 +45,8 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     private var positionPaper = 0
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
-    private var notePassword=SPUtil.getObj("${mUser?.accountId}notePassword",NotePassword::class.java)
+    private var checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+        CheckPassword::class.java)
 
     override fun onList(message: Message) {
         if (message.list.isNotEmpty()){
@@ -102,7 +103,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         }
 
         tv_diarl.setOnClickListener {
-            if (notePassword!=null&&notePassword?.isSet==true){
+            if (checkPassword!=null&&checkPassword?.isSet==true){
                 NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                     customStartActivity(Intent(activity,DiaryActivity::class.java))
                 }
@@ -248,7 +249,8 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                 findMessages()
             }
             PASSWORD_EVENT->{
-                notePassword=SPUtil.getObj("${mUser?.accountId}notePassword",NotePassword::class.java)
+                checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+                    CheckPassword::class.java)
             }
         }
     }

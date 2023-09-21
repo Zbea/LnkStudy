@@ -14,6 +14,8 @@
         android:text="唐诗宋词"
         android:lines="1"
         android:textStyle="bold"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:background="@drawable/bg_rb_line_selector"
+        />
 
 </LinearLayout>

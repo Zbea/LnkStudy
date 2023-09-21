@@ -498,10 +498,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     downloadDiary(item)
                 }
                 10->{
-                    val notePassword= Gson().fromJson(item.listJson, NotePassword::class.java)
-                    SPUtil.putObj("${mUser?.accountId}notePassword",notePassword)
+                    val checkPassword= Gson().fromJson(item.listJson, CheckPassword::class.java)
+                    SPUtil.putObj("${mUser?.accountId}notePassword",checkPassword)
                     //创建增量数据(日记密码)
-                    DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(notePassword))
+                    DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
                 }
             }
         }

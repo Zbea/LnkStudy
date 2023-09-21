@@ -8,44 +8,49 @@
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="33dp"
         android:textColor="@color/black"
         android:textSize="36sp" />
 
-
-    <TextView
-        android:id="@+id/tv_search"
-        android:layout_width="200dp"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/bg_gary_arch"
-        android:drawableStart="@mipmap/icon_search"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/dp_20"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/iv_setting"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:layout_marginTop="23dp"
-        android:visibility="gone"
-        />
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        >
+        <TextView
+            android:id="@+id/tv_search"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:background="@drawable/bg_gary_arch"
+            android:drawableStart="@mipmap/icon_search"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_20"
+            android:visibility="gone"
+            />
 
-    <ImageView
-        android:id="@+id/iv_manager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:visibility="gone"
-        android:src="@mipmap/icon_manager"/>
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/iv_manager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:visibility="gone"
+            android:src="@mipmap/icon_manager"/>
+
+    </LinearLayout>
+
 
 
 </LinearLayout>

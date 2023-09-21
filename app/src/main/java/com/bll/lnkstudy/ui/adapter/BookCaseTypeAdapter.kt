@@ -11,17 +11,8 @@ class BookCaseTypeAdapter(layoutResId: Int, data: List<ItemList>?) : BaseQuickAd
     override fun convert(helper: BaseViewHolder, item: ItemList) {
         val tv_name=helper.getView<TextView>(R.id.tv_name)
         tv_name.text=item.name
-        if (item.isCheck)
-        {
-            tv_name.setBackgroundResource(R.drawable.bg_line_bottom_black)
-            tv_name.setTextColor(mContext.resources.getColor(R.color.black))
-        }
-        else
-        {
-            tv_name.setBackgroundResource(R.color.color_transparent)
-            tv_name.setTextColor(mContext.resources.getColor(R.color.black_90))
-        }
-
+        tv_name.isSelected=item.isCheck
+        tv_name.setTextColor(mContext.resources.getColor(if (item.isCheck)R.color.black else R.color.black_90))
     }
 
 }

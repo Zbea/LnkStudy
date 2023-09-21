@@ -9,34 +9,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
-        android:gravity="center_vertical|right">
+        android:layout_marginEnd="50dp"
+        android:gravity="bottom|right">
 
         <TextView
             android:id="@+id/tv_diarl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginEnd="30dp"
+            android:drawableStart="@mipmap/icon_diary"
+            android:drawablePadding="@dimen/dp_10"
+            android:gravity="center"
             android:text="@string/diary_title_str"
             android:textColor="@color/black"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:drawablePadding="@dimen/dp_10"
-            android:drawableStart="@mipmap/icon_diary"
-            android:layout_marginEnd="40dp"
-            />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tv_free_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
             android:text="@string/freenote_title_str"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:gravity="center"
             android:drawablePadding="@dimen/dp_10"
             android:drawableStart="@mipmap/icon_free_note"
-            android:layout_marginEnd="70dp"
             />
 
     </LinearLayout>

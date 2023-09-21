@@ -8,7 +8,7 @@ import android.widget.EditText
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.NotePassword
+import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
@@ -29,7 +29,8 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
         dialog.show()
 
         val user=SPUtil.getObj("user", User::class.java)
-        val notePassword=SPUtil.getObj("${user?.accountId}notePassword",NotePassword::class.java)
+        val checkPassword=SPUtil.getObj("${user?.accountId}notePassword",
+            CheckPassword::class.java)
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -45,7 +46,7 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
             val passwordAgainStr=etPasswordAgain?.text.toString()
             val passwordOldStr=etPasswordOld?.text.toString()
 
-            if (MD5Utils.digest(passwordOldStr)!=notePassword?.password){
+            if (MD5Utils.digest(passwordOldStr)!=checkPassword?.password){
                 SToast.showText(screenPos,R.string.password_old_error)
                 return@setOnClickListener
             }
@@ -64,10 +65,10 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
                 return@setOnClickListener
             }
 
-            notePassword?.password= MD5Utils.digest(notePassword?.password)
-            SPUtil.putObj("${user?.accountId}notePassword",notePassword!!)
+            checkPassword?.password= MD5Utils.digest(checkPassword?.password)
+            SPUtil.putObj("${user?.accountId}notePassword",checkPassword!!)
             //更新增量更新
-            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(notePassword))
+            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
             dialog.dismiss()
             listener?.onClick()
 

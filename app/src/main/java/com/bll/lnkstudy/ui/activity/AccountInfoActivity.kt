@@ -8,7 +8,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.mvp.model.NotePassword
+import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
@@ -34,7 +34,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
-    private var notePassword:NotePassword?=null
+    private var checkPassword: CheckPassword?=null
 
     override fun onLogout() {
     }
@@ -83,7 +83,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         setPageTitle(R.string.my_account)
 
-        notePassword=SPUtil.getObj("${mUser?.accountId}notePassword", NotePassword::class.java)
+        checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword", CheckPassword::class.java)
 
         mUser?.apply {
             tv_user.text = account
@@ -103,9 +103,9 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_area.text = schoolArea
         }
 
-        if (notePassword!=null){
+        if (checkPassword!=null){
             showView(tv_check_pad)
-            if (notePassword?.isSet == true){
+            if (checkPassword?.isSet == true){
                 btn_psd_check.text=getString(R.string.cancel_password)
             }
             else{
@@ -152,23 +152,23 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      * 设置查看密码
      */
     private fun setPassword(){
-        if (notePassword==null){
+        if (checkPassword==null){
             NotebookSetPasswordDialog(this).builder().setOnDialogClickListener{
-                notePassword=it
+                checkPassword=it
                 showView(tv_check_pad)
                 btn_psd_check.text=getString(R.string.set_password)
-                SPUtil.putObj("${mUser?.accountId}notePassword",notePassword!!)
+                SPUtil.putObj("${mUser?.accountId}notePassword",checkPassword!!)
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)
             }
         }
         else{
             NotebookPasswordDialog(this).builder()?.setOnDialogClickListener{
-                notePassword?.isSet=!notePassword?.isSet!!
-                btn_psd_check.text=if (notePassword?.isSet==true) getString(R.string.cancel_password)
+                checkPassword?.isSet=!checkPassword?.isSet!!
+                btn_psd_check.text=if (checkPassword?.isSet==true) getString(R.string.cancel_password)
                                    else getString(R.string.set_password)
-                SPUtil.putObj("${mUser?.accountId}notePassword",notePassword!!)
+                SPUtil.putObj("${mUser?.accountId}notePassword",checkPassword!!)
                 //更新增量更新
-                DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(notePassword))
+                DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)
             }
         }

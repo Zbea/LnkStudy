@@ -8,7 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.NotePassword
+import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 
@@ -49,8 +49,9 @@ class NotebookPasswordDialog(private val context: Context) {
                 return@setOnClickListener
             }
             val user=SPUtil.getObj("user",User::class.java)
-            val notePassword=SPUtil.getObj("${user?.accountId}notePassword",NotePassword::class.java)
-            if (MD5Utils.digest(passwordStr) != notePassword?.password){
+            val checkPassword=SPUtil.getObj("${user?.accountId}notePassword",
+                CheckPassword::class.java)
+            if (MD5Utils.digest(passwordStr) != checkPassword?.password){
                 SToast.showText(3,R.string.toast_password_error)
                 return@setOnClickListener
             }

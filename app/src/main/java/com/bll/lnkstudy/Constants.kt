@@ -49,7 +49,6 @@ class Constants{
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
 
-
         //收到题卷地址
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
 
@@ -62,7 +61,6 @@ class Constants{
         //画本保存目录
         val PAINTING_PATH= MyApplication.mContext.getExternalFilesDir("Painting")!!.path
 
-        //壁纸、书画、工具栏应用图标目录
         val IMAGE_PATH= MyApplication.mContext.getExternalFilesDir("Image")!!.path
 
         //断点记录文件保存的文件夹

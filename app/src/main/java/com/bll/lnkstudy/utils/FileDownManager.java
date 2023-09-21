@@ -54,6 +54,7 @@ public class FileDownManager {
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
                 .addHeader("Accept-Encoding", "identity")
                 .addHeader(auth, token)
+                .setForceReDownload(true)
                 .setPath(path).setListener(new FileDownloadListener() {
 
             @Override

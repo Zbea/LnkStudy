@@ -14,8 +14,8 @@ import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.Note
-import com.bll.lnkstudy.mvp.model.NotePassword
 import com.bll.lnkstudy.mvp.model.Notebook
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
@@ -46,7 +46,8 @@ class NoteFragment : BaseFragment(){
     private var mAdapter: NotebookAdapter? = null
     private var position = 0 //当前笔记标记
     private var resId = ""
-    private var notePassword=SPUtil.getObj("${mUser?.accountId}notePassword",NotePassword::class.java)
+    private var checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+        CheckPassword::class.java)
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -100,7 +101,7 @@ class NoteFragment : BaseFragment(){
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 val note=notes[position]
-                if (positionType==0&&notePassword!=null&&notePassword?.isSet==true&&!note.isCancelPassword){
+                if (positionType==0&&checkPassword!=null&&checkPassword?.isSet==true&&!note.isCancelPassword){
                     NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                         gotoIntent(note,0)
                     }
@@ -117,7 +118,7 @@ class NoteFragment : BaseFragment(){
                     for (item in popWindowMoreBeans){
                         pops.add(item)
                     }
-                    if (positionType==0&&notePassword?.isSet==true){
+                    if (positionType==0&&checkPassword?.isSet==true){
                         if (note.isCancelPassword){
                             pops.add(PopupBean(2, getString(R.string.set_password), false))
                         }
@@ -293,7 +294,8 @@ class NoteFragment : BaseFragment(){
             fetchData()
         }
         if (msgFlag== PASSWORD_EVENT){
-            notePassword=SPUtil.getObj("${mUser?.accountId}notePassword",NotePassword::class.java)
+            checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+                CheckPassword::class.java)
         }
     }
 
