@@ -18,9 +18,9 @@ import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
@@ -32,9 +32,6 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadView{
@@ -102,7 +99,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
     override fun initView() {
         setPageTitle(course+getString(R.string.record_read))
-        EventBus.getDefault().register(this)
 
         disMissView(ll_page_number)
         if (homeworkType?.isCloud == false){
@@ -273,9 +269,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             }
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onMessageEvent(msgFlag: String) {
         if (msgFlag == Constants.RECORD_EVENT) {
             findDatas()
         }
@@ -283,7 +277,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().unregister(this)
         release()
     }
 

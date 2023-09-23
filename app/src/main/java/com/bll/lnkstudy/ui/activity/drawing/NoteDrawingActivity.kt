@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
+import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -32,7 +33,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        val bundle = intent.getBundleExtra("bundle")
+        val bundle = intent.getBundleExtra("noteBundle")
         noteBook = bundle?.getSerializable("note") as Note
         page=intent.getIntExtra("page",DEFAULT_PAGE)
         type = noteBook?.typeStr.toString()
@@ -92,11 +93,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 total->{
                     newNoteContent()
                     newNoteContent()
-                    page==total
+                    page=total
                 }
                 total-1->{
                     newNoteContent()
-                    page==total
+                    page=total
                 }
                 else->{
                     page+=2
@@ -147,7 +148,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<ItemList>()
+        val list= mutableListOf<ItemList>()
         for (item in noteContents){
             val itemList= ItemList()
             itemList.name=item.title

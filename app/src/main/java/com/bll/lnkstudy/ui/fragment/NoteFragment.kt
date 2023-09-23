@@ -2,13 +2,10 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.NoteContentDaoManager
@@ -38,7 +35,6 @@ import java.io.File
 class NoteFragment : BaseFragment(){
 
     private var popWindowBeans = mutableListOf<PopupBean>()
-    private var popWindowMoreBeans = mutableListOf<PopupBean>()
     private var noteTypes = mutableListOf<Notebook>()
     private var notes = mutableListOf<Note>()
     private var positionType = 0//当前笔记本标记
@@ -59,9 +55,6 @@ class NoteFragment : BaseFragment(){
         popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str), true))
         popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str), false))
         popWindowBeans.add(PopupBean(2, getString(R.string.note_create_str), false))
-
-        popWindowMoreBeans.add(PopupBean(0, getString(R.string.rename), true))
-        popWindowMoreBeans.add(PopupBean(1, getString(R.string.delete), false))
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)
@@ -103,50 +96,32 @@ class NoteFragment : BaseFragment(){
                 val note=notes[position]
                 if (positionType==0&&checkPassword!=null&&checkPassword?.isSet==true&&!note.isCancelPassword){
                     NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                        gotoIntent(note,0)
+                        MethodManager.gotoNoteDrawing(requireActivity(),note,0, Constants.DEFAULT_PAGE)
                     }
                 }
                 else{
-                    gotoIntent(note,0)
+                    MethodManager.gotoNoteDrawing(requireActivity(),note,0, Constants.DEFAULT_PAGE)
                 }
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@NoteFragment.position = position
                 val note=notes[position]
-                if (view.id == R.id.iv_more) {
-                    val pops= mutableListOf<PopupBean>()
-                    for (item in popWindowMoreBeans){
-                        pops.add(item)
-                    }
-                    if (positionType==0&&checkPassword?.isSet==true){
-                        if (note.isCancelPassword){
-                            pops.add(PopupBean(2, getString(R.string.set_password), false))
-                        }
-                        else{
-                            pops.add(PopupBean(2, getString(R.string.cancel_password), false))
+                when(view.id){
+                    R.id.iv_password->{
+                        NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                            note.isCancelPassword=!note.isCancelPassword
+                            mAdapter?.notifyItemChanged(position)
+                            NoteDaoManager.getInstance().insertOrReplace(note)
+                            editDataUpdate(note.id.toInt(),note)
                         }
                     }
-                    PopupClick(requireActivity(), pops, view, -20).builder()
-                        .setOnSelectListener { item ->
-                            when (item.id) {
-                                0 -> {
-                                    editNote(note.title)
-                                }
-                                1 -> {
-                                    deleteNote()
-                                }
-                                else->{
-                                    NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                                        note.isCancelPassword=!note.isCancelPassword
-                                        mAdapter?.notifyItemChanged(position)
-                                        NoteDaoManager.getInstance().insertOrReplace(note)
-                                        editDataUpdate(note.id.toInt(),note)
-                                    }
-                                }
-                            }
-                        }
+                    R.id.iv_edit->{
+                        editNote(note.title)
+                    }
+                    R.id.iv_delete->{
+                        deleteNote()
+                    }
                 }
-
             }
         }
 
@@ -230,7 +205,7 @@ class NoteFragment : BaseFragment(){
 
     //删除
     private fun deleteNote() {
-        CommonDialog(requireActivity(),screenPos).setContent(R.string.note_is_delete_tips).builder()
+        CommonDialog(requireActivity(),2).setContent(R.string.note_is_delete_tips).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
@@ -356,6 +331,9 @@ class NoteFragment : BaseFragment(){
         notes = NoteDaoManager.getInstance().queryAll(typeStr,pageIndex,pageSize)
         val total= NoteDaoManager.getInstance().queryAll(typeStr)
         setPageNumber(total.size)
+        for (item in notes){
+            item.isSet = positionType==0&&checkPassword!=null&&checkPassword?.isSet==true
+        }
         mAdapter?.setNewData(notes)
     }
 

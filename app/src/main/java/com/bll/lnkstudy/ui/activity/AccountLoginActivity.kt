@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
@@ -25,6 +26,13 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     override fun getAccount(user: User?) {
         user?.token=token
         SPUtil.putObj("user",user!!)
+
+        //发出登录广播
+        val i = Intent()
+        i.putExtra("token", token)
+        i.action = Constants.LOGIN_BROADCAST_EVENT
+        sendBroadcast(intent)
+
         gotoMainActivity()
     }
 
@@ -37,9 +45,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-
         ed_user.setText("zhufeng")
         ed_psw.setText("123456")
 

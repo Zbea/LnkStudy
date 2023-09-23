@@ -1,16 +1,15 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.PastHomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -53,22 +52,17 @@ class PastHomeworkActivity:BaseAppCompatActivity() {
                 val item = homeworkTypes[position]
                 when (item.state) {
                     1 -> {
-                        gotoHomeworkReelDrawing(item,-1)
+                        MethodManager.gotoHomeworkReelDrawing(this@PastHomeworkActivity,item,Constants.DEFAULT_PAGE)
                     }
                     2 -> {
-                        gotoHomeworkDrawing(item,-1)
+                        MethodManager.gotoHomeworkDrawing(this@PastHomeworkActivity,item,Constants.DEFAULT_PAGE)
                     }
                     3 -> {
-                        gotoHomeworkRecord(item)
+                        MethodManager.gotoHomeworkRecord(this@PastHomeworkActivity,item)
                     }
                     4->{
                         if (HomeworkBookDaoManager.getInstance().isExist(item.bookId)){
-                            val intent= Intent(this@PastHomeworkActivity, HomeworkBookDetailsActivity::class.java)
-                            val bundle= Bundle()
-                            bundle.putSerializable("homework",item)
-                            intent.putExtra("homeworkBundle",bundle)
-                            intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-                            customStartActivity(intent)
+                            MethodManager.gotoHomeworkBookDetails(this@PastHomeworkActivity,item)
                         }
                         else{
                             showToast(R.string.toast_homework_unDownload)

@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.BookManageDialog
@@ -73,12 +74,12 @@ class TextbookFragment : BaseFragment() {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
-                gotoTextBookDetails(books[position].bookId)
+                MethodManager.gotoTextBookDetails(requireActivity(),books[position].bookId)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position
                 if (typeId==0){
-                    CommonDialog(requireActivity(),screenPos).setContent(R.string.book_is_delete_all_textbook).builder()
+                    CommonDialog(requireActivity(),1).setContent(R.string.book_is_delete_all_textbook).builder()
                         .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }

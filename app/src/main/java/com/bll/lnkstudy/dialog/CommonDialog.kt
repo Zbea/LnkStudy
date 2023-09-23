@@ -58,7 +58,11 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
-        if (screenPos==3){
+        if (screenPos==1){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
+        }
+        if (screenPos==2){
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
         }

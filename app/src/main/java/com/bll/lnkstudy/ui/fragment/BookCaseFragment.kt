@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -50,7 +51,8 @@ class BookCaseFragment: BaseFragment() {
         }
         
         ll_book_top.setOnClickListener {
-            bookTopBean?.let { gotoBookDetails(it) }
+            if (bookTopBean!=null)
+                MethodManager.gotoBookDetails(requireActivity(),bookTopBean,screenPos)
         }
 
     }
@@ -66,7 +68,7 @@ class BookCaseFragment: BaseFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,22f),28))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodManager.gotoBookDetails(requireActivity(),bookBean,screenPos)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookCaseFragment.position=position
@@ -114,7 +116,7 @@ class BookCaseFragment: BaseFragment() {
 
     //删除书架书籍
     private fun delete(){
-        CommonDialog(requireActivity(),screenPos).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
+        CommonDialog(requireActivity(),1).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

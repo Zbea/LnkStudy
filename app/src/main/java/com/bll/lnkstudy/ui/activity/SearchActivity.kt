@@ -1,11 +1,10 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.NotebookPasswordDialog
@@ -15,7 +14,6 @@ import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
-import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -76,53 +74,48 @@ class SearchActivity : BaseAppCompatActivity() {
         when(item.category){
             0->{
                 val bookBean=Gson().fromJson(item.listJson,BookBean::class.java)
-                gotoBookDetails(bookBean)
+                MethodManager.gotoBookDetails(this,bookBean,screenPos)
                 finish()
             }
             1->{
-                gotoTextBookDetails(item.id)
+                MethodManager.gotoTextBookDetails(this,item.id)
                 finish()
             }
             2->{
                 val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
                 when(item.state){
                     1->{
-                        gotoHomeworkReelDrawing(typeItem,item.page)
+                        MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page)
                     }
                     2->{
-                        gotoHomeworkDrawing(typeItem,item.page)
+                        MethodManager.gotoHomeworkDrawing(this,typeItem,item.page)
                     }
                     3->{
-                        gotoHomeworkRecord(typeItem)
+                        MethodManager.gotoHomeworkRecord(this,typeItem)
                     }
                     4->{
-                        val typeBook=HomeworkTypeDaoManager.getInstance().queryByBookId(item.type)
-                        val intent= Intent(this, HomeworkBookDetailsActivity::class.java)
-                        val bundle= Bundle()
-                        bundle.putSerializable("homework",typeBook)
-                        intent.putExtra("homeworkBundle",bundle)
-                        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-                        customStartActivity(intent)
+                        val typeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(item.type)
+                        MethodManager.gotoHomeworkBookDetails(this,typeBean)
                     }
                 }
                 finish()
             }
             3->{
-                gotoPaperDrawing(item.course,item.type,item.page)
+                MethodManager.gotoPaperDrawing(this,item.course,item.type,item.page)
                 finish()
             }
             4->{
-                val noteBook= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
+                val note= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
                 val checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword", CheckPassword::class.java)
-                if (item.typeStr==getString(R.string.note_tab_diary)&&checkPassword!=null&&checkPassword.isSet&&!noteBook.isCancelPassword)
+                if (item.typeStr==getString(R.string.note_tab_diary)&&checkPassword!=null&&checkPassword.isSet&&!note.isCancelPassword)
                 {
                     NotebookPasswordDialog(this).builder()?.setOnDialogClickListener{
-                        gotoNote(noteBook,item.page)
+                        MethodManager.gotoNoteDrawing(this,note,0,item.page)
                         finish()
                     }
                 }
                 else{
-                    gotoNote(noteBook,item.page)
+                    MethodManager.gotoNoteDrawing(this,note,0,item.page)
                     finish()
                 }
             }

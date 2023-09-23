@@ -1,17 +1,14 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean
-import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity
 import com.bll.lnkstudy.ui.adapter.PaintingTypeAdapter
-import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_list.*
@@ -59,14 +56,8 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(3, 60))
             setOnItemClickListener { adapter, view, position ->
-                ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
-                val intent=Intent(this@PaintingTypeListActivity, PaintingDrawingActivity::class.java)
-                intent.flags=type
-                val bundle= Bundle()
-                bundle.putSerializable("painting",types[position])
-                intent.putExtra("paintingBundle",bundle)
-                intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-                customStartActivity1(intent)
+                val item=types[position]
+                MethodManager.gotoPaintingDrawing(this@PaintingTypeListActivity,item, type)
             }
         }
     }

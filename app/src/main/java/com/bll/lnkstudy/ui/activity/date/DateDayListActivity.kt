@@ -18,9 +18,6 @@ import kotlinx.android.synthetic.main.ac_date_day_list.*
 import kotlinx.android.synthetic.main.ac_date_day_list.rv_list
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,8 +35,6 @@ class DateDayListActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        EventBus.getDefault().register(this)
-
         setPageTitle(R.string.date_day)
         setPageSetting(R.string.add)
 
@@ -91,17 +86,10 @@ class DateDayListActivity:BaseAppCompatActivity() {
         mAdapter?.setNewData(days)
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onMessageEvent(msgFlag: String) {
         if (msgFlag== Constants.DATE_EVENT){
             findDatas()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
     }
 
 }

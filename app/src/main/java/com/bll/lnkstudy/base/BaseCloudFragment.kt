@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.base
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.User
@@ -19,9 +19,11 @@ import com.bll.lnkstudy.mvp.presenter.CloudPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.KeyboardUtils
+import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.SToast
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -330,12 +332,7 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
     override fun login() {
         if (mView==null||activity==null)return
         showToast(screenPos,R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        val intent= Intent(activity, AccountLoginActivity::class.java)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        startActivity(intent)
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        MethodManager.logout(requireActivity())
     }
     override fun hideLoading() {
         if (mView==null||activity==null)return

@@ -85,7 +85,8 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
             setOnItemClickListener { adapter, view, position ->
-                gotoPaperDrawing(course,paperTypes[position].typeId)
+                val item=paperTypes[position]
+                MethodManager.gotoPaperDrawing(requireActivity(),item.course,item.typeId,Constants.DEFAULT_PAGE)
             }
         }
     }
@@ -273,7 +274,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         super.uploadSuccess(cloudIds)
         paperTypes.clear()
         mAdapter?.notifyDataSetChanged()
-        setClearPaper()
+        setClearExamPaper()
         setSystemControlClear()
     }
 

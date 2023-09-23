@@ -11,6 +11,7 @@ import com.bll.lnkstudy.manager.PaintingTypeDaoManager
 import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.PaintingListActivity
+import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -100,6 +101,9 @@ class PaintingFragment : BaseFragment(){
         }
     }
 
+    /**
+     * 调整本地我的书画
+     */
     private fun onClick(time: Int) {
         val intent = Intent(activity, PaintingListActivity::class.java)
         intent.putExtra("title", "${getString(DataBeanManager.dynastys[time-1])}   ${DataBeanManager.PAINTING[typeId]}")
@@ -107,6 +111,36 @@ class PaintingFragment : BaseFragment(){
         intent.putExtra("paintingType", typeId+1)
         intent.flags = 0
         customStartActivity(intent)
+    }
+
+
+    /**
+     * 跳转手写画本
+     */
+    private fun gotoPaintingDrawing(type: Int){
+        val items=PaintingTypeDaoManager.getInstance().queryAllByType(type)
+        //当前年级 画本、书法分类为null则创建
+        var item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
+        if (item==null) {
+            val date=System.currentTimeMillis()
+            item=PaintingTypeBean()
+            item.type = type
+            item.grade = grade
+            item.date = date
+            val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(item)
+            //创建本地画本增量更新
+            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(item))
+        }
+
+        //当本地画本或者书法分类不止一个时候，进去列表
+        if (items.size>1){
+            val intent=Intent(activity, PaintingTypeListActivity::class.java)
+            intent.flags=type
+            customStartActivity(intent)
+        } else{
+            MethodManager.gotoPaintingDrawing(requireActivity(),item,type)
+        }
+
     }
 
     /**

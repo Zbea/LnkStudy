@@ -8,11 +8,12 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class HomeworkBookBean {
+public class HomeworkBookBean  {
 
     @Id(autoincrement = true)
     @Unique

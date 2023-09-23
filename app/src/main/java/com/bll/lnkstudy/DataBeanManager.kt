@@ -21,7 +21,7 @@ object DataBeanManager {
         R.string.main_textbook_title,R.string.main_homework_title,
         R.string.main_testpaper_title,R.string.main_note_title,
         R.string.main_painting_title,R.string.main_teach_title,
-        R.string.main_classgroup
+        R.string.main_app
     )
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
@@ -221,19 +221,19 @@ object DataBeanManager {
             checked = false
             name = mContext.getString(listTitle[2])
         }
+
         val h3 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_bq)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_bq_check)
-            checked = false
-            name = mContext.getString(listTitle[8])
-        }
-        val h4 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_yj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
             checked = false
             name = mContext.getString(listTitle[7])
         }
-
+        val h4 = MainList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_app)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_app_check)
+            checked = false
+            name = mContext.getString(listTitle[8])
+        }
         list.add(h0)
         list.add(h1)
         list.add(h2)

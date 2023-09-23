@@ -31,6 +31,9 @@ public class Note implements Serializable {
     public String downloadUrl;
     @Transient
     public String contentJson;
+    @Transient
+    public boolean isSet;
+
     @Generated(hash = 1977792127)
     public Note(Long id, long userId, String title, String typeStr, long date,
             String contentResId, boolean isCancelPassword, int grade,

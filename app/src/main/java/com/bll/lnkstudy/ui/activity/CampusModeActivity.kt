@@ -5,12 +5,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CampusModeVideoDialog
 import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.AlarmService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -73,9 +73,8 @@ class CampusModeActivity:BaseAppCompatActivity() {
             selectLong = mCalendar.timeInMillis
         }
 
-        val intent = Intent(this, AlarmService::class.java)
+        val intent = Intent(this, MyBroadcastReceiver::class.java)
         intent.putExtra("id",itemList.id)
-        intent.action = Constants.ACTION_VIDEO
         val pendingIntent = PendingIntent.getService(this, itemList.id, intent, 0)
         pendingIntents.add(pendingIntent)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager

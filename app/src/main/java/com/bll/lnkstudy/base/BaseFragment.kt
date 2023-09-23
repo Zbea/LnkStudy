@@ -8,47 +8,37 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.*
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.ControlMessage
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.MainActivity
-import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
-import com.bll.lnkstudy.ui.activity.RecordListActivity
-import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
-import com.google.gson.Gson
-import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import kotlin.math.ceil
 
 
 abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
-    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, EasyPermissions.PermissionCallbacks, IBaseView {
+    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, IBaseView {
 
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mControlMessagePresenter= ControlMessagePresenter(this)
@@ -333,164 +323,10 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
     /**
-     * 跳转书籍详情
-     */
-    fun gotoTextBookDetails(id: Int){
-        ActivityManager.getInstance().checkBookIDisExist(id)
-        val intent=Intent(activity, BookDetailsActivity::class.java)
-        intent.putExtra("book_id",id)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转作业本
-     */
-    fun gotoHomeworkDrawing(item: HomeworkTypeBean){
-        ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        val intent=Intent(context, HomeworkDrawingActivity::class.java)
-        intent.putExtra("homeworkBundle",bundle)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转画本
-     */
-    fun gotoPaintingDrawing(type: Int){
-        val items=PaintingTypeDaoManager.getInstance().queryAllByType(type)
-        //当前年级 手写书画分类为null则创建
-        var item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
-        if (item==null) {
-            val date=System.currentTimeMillis()
-            item=PaintingTypeBean()
-            item.type = type
-            item.grade = grade
-            item.date = date
-            val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(item)
-            //创建本地画本增量更新
-            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(item))
-        }
-
-        if (items.size>1){
-            val intent=Intent(activity, PaintingTypeListActivity::class.java)
-            intent.flags=type
-            customStartActivity(intent)
-        } else{
-            ActivityManager.getInstance().checkPaintingDrawingIsExist(type)
-            val intent=Intent(context, PaintingDrawingActivity::class.java)
-            intent.flags=type
-            val bundle= Bundle()
-            bundle.putSerializable("painting",item)
-            intent.putExtra("paintingBundle",bundle)
-            intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-            customStartActivity1(intent)
-        }
-
-    }
-
-    /**
-     * 跳转考卷
-     */
-    fun gotoPaperDrawing(mCourse:String,mTypeId:Int){
-        ActivityManager.getInstance().checkPaperDrawingIsExist(mCourse,mTypeId)
-        val intent=Intent(activity, PaperDrawingActivity::class.java)
-        intent.putExtra("course",mCourse)
-        intent.putExtra("typeId",mTypeId)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转作业卷
-     */
-    fun gotoHomeworkReelDrawing(item: HomeworkTypeBean){
-        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item.course,item.typeId)
-        val intent=Intent(activity, HomeworkPaperDrawingActivity::class.java)
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        intent.putExtra("bundle",bundle)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转录音
-     */
-    fun gotoHomeworkRecord(item:HomeworkTypeBean){
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        val intent=Intent(activity, RecordListActivity::class.java)
-        intent.putExtra("homeworkBundle",bundle)
-        customStartActivity(intent)
-    }
-
-    /**
-     * 跳转阅读器
-     */
-    fun gotoBookDetails(bookBean: BookBean){
-        AppUtils.stopApp(requireActivity(),"com.geniatech.knote.reader")
-
-        bookBean.isLook=true
-        bookBean.time=System.currentTimeMillis()
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-        val toolApps= AppDaoManager.getInstance().queryAll()
-
-        val result = JSONArray()
-        for (item in toolApps){
-            val jsonObject = JSONObject()
-            try {
-                jsonObject.put("appName", item.appName)
-                jsonObject.put("packageName", item.packageName)
-            } catch (_: JSONException) {
-            }
-            result.put(jsonObject)
-        }
-        val intent = Intent()
-        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-        intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("tool", result.toString())
-        intent.putExtra("key_book_id",bookBean.bookId.toString())
-        intent.putExtra("bookName", bookBean.bookName)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)1 else screenPos)
-        startActivity(intent)
-    }
-
-    /**
-     * 跳转笔记写作
-     */
-    fun gotoIntent(note: Note,screen: Int){
-        note.date=System.currentTimeMillis()
-        NoteDaoManager.getInstance().insertOrReplace(note)
-        EventBus.getDefault().post(Constants.NOTE_EVENT)
-
-        val intent = Intent(activity, NoteDrawingActivity::class.java)
-        val bundle = Bundle()
-        bundle.putSerializable("note", note)
-        intent.putExtra("bundle", bundle)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        if (screen!=0)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", screen)
-        customStartActivity(intent)
-    }
-
-    /**
      * 跳转活动(关闭已经打开的)
      */
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
-        startActivity(intent)
-    }
-
-    /**
-     * 跳转活动
-     */
-    private fun customStartActivity1(intent: Intent){
         startActivity(intent)
     }
 
@@ -521,7 +357,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     /**
      * 清空考卷
      */
-    fun setClearPaper(){
+    fun setClearExamPaper(){
         //删除本地考卷分类
         PaperTypeDaoManager.getInstance().clear()
         //删除所有考卷内容
@@ -545,60 +381,11 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             //考卷上传完之后升年级
             mUser?.grade=grade+1
             SPUtil.putObj("user", mUser!!)
-            EventBus.getDefault().post(Constants.USER_EVENT)
+            EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
             mControlMessagePresenter.editGrade(mUser?.grade!!)
             //上传完之后 删除控制删除消息
             val controlClearIds=SPUtil.getListInt("ControlClear")
             mControlMessagePresenter.deleteSystemClearMessage(controlClearIds)
-        }
-    }
-
-    /**
-     * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
-     * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
-     *
-     * @param requestCode  权限请求的识别码
-     * @param permissions  申请的权限
-     * @param grantResults 授权结果
-     */
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    /**
-     * 当权限被成功申请的时候执行回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        Log.i("EasyPermissions", "获取成功的权限$perms")
-    }
-
-    /**
-     * 当权限申请失败的时候执行的回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
-        //处理权限名字字符串
-        val sb = StringBuffer()
-        for (str in perms) {
-            sb.append(str)
-            sb.append("\n")
-        }
-        sb.replace(sb.length - 2, sb.length, "")
-        //用户点击拒绝并不在询问时候调用
-        if (EasyPermissions.somePermissionPermanentlyDenied(requireActivity(), perms)) {
-            Toast.makeText(activity, "已拒绝权限" + sb + "并不再询问", Toast.LENGTH_SHORT).show()
-            AppSettingsDialog.Builder(requireActivity())
-                    .setRationale("此功能需要" + sb + "权限，否则无法正常使用，是否打开设置")
-                    .setPositiveButton("好")
-                    .setNegativeButton("不行")
-                    .build()
-                    .show()
         }
     }
 
@@ -607,12 +394,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     override fun login() {
         if (mView==null||activity==null)return
         showToast(screenPos,R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        val intent=Intent(activity, AccountLoginActivity::class.java)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        startActivity(intent)
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        MethodManager.logout(requireActivity())
     }
     override fun hideLoading() {
         if (mView==null||activity==null)return
@@ -638,14 +420,14 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         when(msgFlag){
-            Constants.USER_EVENT->{
+            Constants.USER_CHANGE_EVENT->{
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
                 setClearHomework()
-                setClearPaper()
+                setClearExamPaper()
             }
             else->{
                 onEventBusMessage(msgFlag)

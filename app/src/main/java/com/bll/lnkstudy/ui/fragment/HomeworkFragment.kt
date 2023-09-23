@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseFragment
@@ -14,7 +13,6 @@ import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkstudy.ui.activity.PastHomeworkActivity
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
-import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -255,22 +253,17 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     1 -> {
                         item.isMessage = false
                         notifyItemChanged(position)
-                        gotoHomeworkReelDrawing(item)
+                        MethodManager.gotoHomeworkReelDrawing(requireActivity(),item,Constants.DEFAULT_PAGE)
                     }
                     2 -> {
-                        gotoHomeworkDrawing(item)
+                        MethodManager.gotoHomeworkDrawing(requireActivity(),item,Constants.DEFAULT_PAGE)
                     }
                     3 -> {
-                        gotoHomeworkRecord(item)
+                        MethodManager.gotoHomeworkRecord(requireActivity(),item)
                     }
                     4->{
                         if (HomeworkBookDaoManager.getInstance().isExist(item.bookId)){
-                            val intent=Intent(context, HomeworkBookDetailsActivity::class.java)
-                            val bundle= Bundle()
-                            bundle.putSerializable("homework",item)
-                            intent.putExtra("homeworkBundle",bundle)
-                            intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-                            customStartActivity(intent)
+                            MethodManager.gotoHomeworkBookDetails(requireActivity(),item)
                         }
                         else{
                             showToast(screenPos,R.string.toast_homework_unDownload)
@@ -349,7 +342,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      */
     private fun showHomeworkManage() {
         val item = homeworkTypes[position]
-        HomeworkManageDialog(requireContext(), screenPos, item.state).builder()
+        HomeworkManageDialog(requireContext(),  item.state).builder()
             .setOnDialogClickListener(object :
                 HomeworkManageDialog.OnDialogClickListener {
                 override fun onSkin() {

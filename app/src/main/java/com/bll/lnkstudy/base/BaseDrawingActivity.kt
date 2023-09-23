@@ -1,40 +1,31 @@
 package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
-import android.media.AudioManager
-import android.media.SoundPool
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
-import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.utils.*
-import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -48,13 +39,10 @@ import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
 
 
 abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
-    val DEFAULT_PAGE=-1//默认页码（打开最后一页）
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
@@ -94,7 +82,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             elik_b = v_content_b?.pwInterFace
         }
 
-        getAppTool()
+        toolApps=MethodManager.getAppTools(this)
 
         mDialog = ProgressDialog(this,screenPos)
         initData()
@@ -501,43 +489,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 获取工具应用
-     */
-    fun getAppTool(){
-        toolApps= AppDaoManager.getInstance().queryAll()
-        //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除
-        val it=toolApps.iterator()
-        while (it.hasNext()){
-            val item=it.next()
-            if (!isAppContains(item,getLocalApp())){
-                it.remove()
-                AppDaoManager.getInstance().deleteBean(item)
-            }
-        }
-    }
-
-    /**
-     * 判断app是否已经存在
-     */
-    fun isAppContains(item:AppBean,list: List<AppBean>):Boolean{
-        var isContain=false
-        for (ite in list){
-            if (ite.packageName.equals(item.packageName))
-            {
-                isContain=true
-            }
-        }
-        return isContain
-    }
-
-    /**
-     * 拿到本地全部应用
-     */
-    fun getLocalApp():List<AppBean>{
-        return AppUtils.scanLocalInstallAppList(this)
-    }
-
-    /**
      * 工具栏弹窗
      */
     private fun showDialogAppTool(location:Int){
@@ -816,12 +767,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
     override fun login() {
         showToast(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        val intent=Intent(this, AccountLoginActivity::class.java)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        startActivity(intent)
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        MethodManager.logout(this)
     }
 
     override fun hideLoading() {
@@ -856,7 +802,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
-    open fun onMessageEvent(bean: EventBusData) {
+    open fun onMessageEvent(msgFlag: String) {
     }
 
 

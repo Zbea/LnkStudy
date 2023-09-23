@@ -66,13 +66,15 @@ public class AppDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-
-    /**
-     * @return
-     */
     public List<AppBean> queryAll() {
         List<AppBean> queryList = dao.queryBuilder().where(whereUser).build().list();
         return queryList;
+    }
+
+    public boolean isExist(String packageName) {
+        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
+        AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+        return appBean!=null;
     }
 
     public void deleteBean(AppBean bean){

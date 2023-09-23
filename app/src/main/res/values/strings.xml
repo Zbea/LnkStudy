@@ -254,7 +254,7 @@
     <string name="main_message">消息通知</string>
     <string name="main_date_plan">今日计划</string>
     <string name="main_receive_paper">收到考卷</string>
-    <string name="main_classgroup">班群</string>
+    <string name="main_app">应用</string>
     <string name="main_book">书籍阅读</string>
     <string name="main_textbook">课本阅读</string>
     <string name="main_homework_message">作业通知</string>
@@ -344,6 +344,7 @@
     <string name="date_plan_start_str">开始日期</string>
     <string name="date_plan_end_str">结束日期</string>
 
+    <string name="classGroup">班群</string>
     <string name="toast_add_classGroup_success">加入班群成功</string>
     <string name="toast_out_classGroup_success">退出班群成功</string>
     <string name="classGroup_is_classGroup_tips">确定退出班群？</string>

@@ -5,11 +5,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
+import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.PopupClick
@@ -197,7 +199,7 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
             rv_main_book.addItemDecoration(SpaceGridItemDeco1(3, 0,35))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean= bookAdapter?.data?.get(position)
-                gotoBookDetails(bookBean!!)
+                MethodManager.gotoTextBookDetails(requireActivity(),bookBean?.bookId!!)
             }
         }
     }
@@ -209,7 +211,8 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
             setOnItemClickListener { adapter, view, position ->
-                gotoIntent(noteAdapter?.data?.get(position)!!,2)
+                val item=noteAdapter?.data?.get(position)!!
+                MethodManager.gotoNoteDrawing(requireActivity(),item,2, DEFAULT_PAGE)
             }
         }
     }
@@ -237,7 +240,6 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
      * 查找书籍
      */
     private fun findBook(){
-//        val books= BookGreenDaoManager.getInstance().queryAllBook(true,9)
         val books=BookGreenDaoManager.getInstance().queryAllTextBook(DataBeanManager.textbookType[0],1,9)
         bookAdapter?.setNewData(books)
     }

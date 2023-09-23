@@ -19,8 +19,6 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class DatePlanListActivity:BaseAppCompatActivity() {
 
@@ -43,10 +41,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         endStr=getString(R.string.end)
     }
 
-    @SuppressLint("WrongConstant")
     override fun initView() {
-        EventBus.getDefault().register(this)
-
         setPageTitle(R.string.date_plan)
         showView(iv_manager)
 
@@ -128,17 +123,10 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         }
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onMessageEvent(msgFlag: String) {
         if (msgFlag== Constants.DATE_EVENT){
             findDatas()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
     }
 
 }

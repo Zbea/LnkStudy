@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.Manifest
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -29,9 +28,6 @@ import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_launcher.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.util.*
 
@@ -45,7 +41,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     var bookcaseFragment: BookCaseFragment? = null
     var textbookFragment: TextbookFragment? = null
     var teachFragment: TeachFragment? = null
-    var classGroupFragment:ClassGroupFragment?=null
+    var appFragment: AppFragment?=null
 
     var mainRightFragment: MainRightFragment? = null
     var paperFragment: PaperFragment? = null
@@ -67,9 +63,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 paintingFragment?.uploadPainting()
                 bookcaseFragment?.upload(token)
                 uploadDataUpdate(token)
-            }
-            Constants.ACTION_UPLOAD_1MONTH -> {
-
             }
             Constants.ACTION_UPLOAD_9MONTH -> {
                 noteFragment?.uploadNote(token)
@@ -110,16 +103,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initView() {
-        EventBus.getDefault().register(this)
-        EasyPermissions.requestPermissions(
-            this, "请求权限", 1,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_CALENDAR,
-            Manifest.permission.READ_CALENDAR,
-            Manifest.permission.RECORD_AUDIO
-        )
-
         mainLeftFragment = MainLeftFragment()
         bookcaseFragment = BookCaseFragment()
         textbookFragment = TextbookFragment()
@@ -129,7 +112,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         paintingFragment = PaintingFragment()
         teachFragment = TeachFragment()
         mainRightFragment = MainRightFragment()
-        classGroupFragment= ClassGroupFragment()
+        appFragment= AppFragment()
 
         switchLeftFragment(leftFragment, mainLeftFragment)
         switchRightFragment(rightFragment,mainRightFragment)
@@ -145,8 +128,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     0 -> switchLeftFragment(leftFragment, mainLeftFragment)//首页
                     1 -> switchLeftFragment(leftFragment, bookcaseFragment)//书架
                     2 -> switchLeftFragment(leftFragment, textbookFragment)//课本
-                    3 -> switchLeftFragment(leftFragment, classGroupFragment)//班群管理
-                    4 -> switchLeftFragment(leftFragment, teachFragment)//义教
+                    3 -> switchLeftFragment(leftFragment, teachFragment)//义教
+                    4 -> switchLeftFragment(leftFragment, appFragment)//应用
                 }
                 leftPosition = position
             }
@@ -177,8 +160,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         iv_user_a.setOnClickListener {
             customStartActivity(Intent(this, AccountInfoActivity::class.java))
         }
-        iv_user_b.setOnClickListener {
-            customStartActivity(Intent(this, AccountInfoActivity::class.java))
+        iv_classgroup.setOnClickListener {
+            customStartActivity(Intent(this, ClassGroupActivity::class.java))
         }
     }
 
@@ -247,9 +230,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 selectLong = timeInMillis
             }
 
-            val intent = Intent(this@MainActivity, AlarmService::class.java)
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD
-            val pendingIntent = PendingIntent.getService(this@MainActivity, 0, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
              alarmManager.setRepeating(
                  AlarmManager.RTC_WAKEUP, selectLong,
@@ -282,9 +265,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 selectLong=timeInMillis
             }
 
-            val intent = Intent(this@MainActivity, AlarmService::class.java)
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_9MONTH
-            val pendingIntent = PendingIntent.getService(this@MainActivity, 0, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -316,9 +299,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 selectLong=timeInMillis
             }
 
-            val intent = Intent(this@MainActivity, AlarmService::class.java)
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_1MONTH
-            val pendingIntent = PendingIntent.getService(this@MainActivity, 0, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -1046,10 +1029,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         SPUtil.putInt("DataUpdateTime", endTime.toInt())
     }
 
-
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onMessageEvent(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
                 mainRightFragment?.deleteDiary()
@@ -1072,7 +1052,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 eventType = Constants.CONTROL_CLEAR_EVENT
                 mQiniuPresenter.getToken()
             }
-            Constants.USER_EVENT -> {
+            Constants.USER_CHANGE_EVENT -> {
                 mUser = SPUtil.getObj("user", User::class.java)
             }
             Constants.DATA_DOWNLOAD_EVENT -> {
@@ -1098,9 +1078,5 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
 
 }

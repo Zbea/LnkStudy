@@ -37,11 +37,25 @@
 
 
     <ImageView
-        android:id="@+id/iv_more"
+        android:id="@+id/iv_password"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:src="@mipmap/icon_encrypt_check"/>
+
+
+    <ImageView
+        android:id="@+id/iv_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:padding="@dimen/dp_5"
-        android:src="@mipmap/icon_more"/>
+        android:layout_marginEnd="@dimen/dp_20"
+        android:src="@mipmap/icon_notebook_edit"/>
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:src="@mipmap/icon_delete"/>
 
 </LinearLayout>

@@ -1,11 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.CheckPassword
@@ -15,7 +11,6 @@ import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
-import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.google.gson.Gson
@@ -49,7 +44,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         showToast(R.string.toast_edit_success)
         mUser?.grade = grade
         tv_grade_str.text = DataBeanManager.grades[grade - 1].desc
-        EventBus.getDefault().post(Constants.USER_EVENT)
+        EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
     }
 
     override fun onEditSchool() {
@@ -136,12 +131,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                     override fun cancel() {
                     }
                     override fun ok() {
-                        SPUtil.putString("token", "")
-                        SPUtil.removeObj("user")
-                        val intent = Intent(this@AccountInfoActivity, AccountLoginActivity::class.java)
-                        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-                        startActivity(intent)
-                        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+                        MethodManager.logout(this@AccountInfoActivity)
                     }
                 })
         }

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -94,8 +95,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initData() {
-        homeworkType = intent.getBundleExtra("bundle")?.getSerializable("homework") as HomeworkTypeBean
-        currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
+        homeworkType = intent.getBundleExtra("homeworkBundle")?.getSerializable("homework") as HomeworkTypeBean
+        currentPosition=intent.getIntExtra("page",Constants.DEFAULT_PAGE)
         course=homeworkType?.course!!
         typeId=homeworkType?.typeId!!
 
@@ -109,7 +110,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun initView() {
         setDrawingTitleClick(false)
         if(papers.size>0){
-            if (currentPosition==DEFAULT_PAGE)
+            if (currentPosition==Constants.DEFAULT_PAGE)
                 currentPosition=papers.size-1
             changeContent()
         }

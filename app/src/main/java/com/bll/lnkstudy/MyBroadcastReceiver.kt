@@ -12,17 +12,39 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action){
+            Constants.ACTION_UPLOAD->{
+                Log.d("debug","全局自动打包上传")
+                //开启全局自动打包上传
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
+            }
+            Constants.ACTION_UPLOAD_1MONTH->{
+                Log.d("debug","1月1日下学期开学")
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_1MONTH_EVENT)
+                //清除作业通知（每学期上学开始）
+                EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+            }
+            Constants.ACTION_UPLOAD_9MONTH->{
+                Log.d("debug","9月1日升年级、清空")
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_9MONTH_EVENT)
+                //清除作业通知（每学期上学开始）
+                EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+            }
+            Constants.ACTION_EXAM_TIME->{
+                Log.d("debug","考试提交")
+                //学生自动提交
+                EventBus.getDefault().post(Constants.EXAM_TIME_EVENT)
+            }
             "com.android.settings.importdata"->{
                 Log.d("debug","一键下载")
-                EventBus.getDefault().postSticky(Constants.DATA_DOWNLOAD_EVENT)
+                EventBus.getDefault().post(Constants.DATA_DOWNLOAD_EVENT)
             }
             "com.android.settings.importrentdata"->{
                 Log.d("debug","租用下载")
-                EventBus.getDefault().postSticky(Constants.DATA_RENT_EVENT)
+                EventBus.getDefault().post(Constants.DATA_RENT_EVENT)
             }
             "com.android.settings.cleardata"->{
                 Log.d("debug","一键清除")
-                EventBus.getDefault().postSticky(Constants.DATA_CLEAT_EVENT)
+                EventBus.getDefault().post(Constants.DATA_CLEAT_EVENT)
             }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d("debug","搜索")

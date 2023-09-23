@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -22,8 +23,6 @@ import kotlinx.android.synthetic.main.ac_book_type_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
@@ -43,12 +42,10 @@ class BookTypeListActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
+        pageSize = 12
     }
 
     override fun initView() {
-        pageSize = 12
-        EventBus.getDefault().register(this)
-
         setPageTitle(R.string.book_type_title)
         showSearchView(true)
 
@@ -74,7 +71,7 @@ class BookTypeListActivity : BaseAppCompatActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodManager.gotoBookDetails(this@BookTypeListActivity,bookBean,screenPos)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                     pos = position
@@ -120,7 +117,7 @@ class BookTypeListActivity : BaseAppCompatActivity() {
 
     //删除书架书籍
     private fun delete() {
-        CommonDialog(this, screenPos).setContent(R.string.item_is_delete_tips).builder()
+        CommonDialog(this).setContent(R.string.item_is_delete_tips).builder()
             .setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
@@ -140,18 +137,12 @@ class BookTypeListActivity : BaseAppCompatActivity() {
             })
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onMessageEvent(msgFlag: String) {
         if (msgFlag == BOOK_EVENT) {
             fetchData()
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
 
     override fun fetchData() {
         hideKeyboard()

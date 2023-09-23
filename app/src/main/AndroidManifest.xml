@@ -76,14 +76,17 @@
                 <action android:name="com.geniatech.knote.reader.save.note.broadcast"/>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="com.bll.lnkstudy.exam.time"/>
+                <action android:name="com.bll.lnkstudy.upload"/>
+                <action android:name="com.bll.lnkstudy.upload.1month"/>
+                <action android:name="com.bll.lnkstudy.upload.9month"/>
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".ui.activity.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.AccountLoginActivity"
             android:exported="true">
@@ -158,6 +161,9 @@
         <activity android:name=".ui.activity.date.DatePlanDetailsActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.CampusModeActivity" />
+        <activity android:name=".ui.activity.ClassGroupActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity" />
@@ -179,7 +185,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service android:name=".AlarmService" />
     </application>
 
 </manifest>

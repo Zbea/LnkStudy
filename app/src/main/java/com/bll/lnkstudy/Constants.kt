@@ -31,6 +31,7 @@ class Constants{
         const val halfYear=180*24*60*60*1000
         const val dayLong=24*60*60*1000
         const val weekTime=7*24*60*60*1000
+        const val DEFAULT_PAGE=-1
 
 //        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
@@ -85,8 +86,8 @@ class Constants{
         const val VIDEO_EVENT = "VideoEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
-        const val USER_EVENT = "UserEvent"
-        const val CONTROL_CLEAR_EVENT = "ControlClearEvent"
+        const val USER_CHANGE_EVENT = "UserChangeEvent" //账户信息变化
+        const val CONTROL_CLEAR_EVENT = "ControlClearEvent" //控制清除作业本
         const val DATA_DOWNLOAD_EVENT = "DataDownload"
         const val DATA_RENT_EVENT = "DataRent"
         const val DATA_CLEAT_EVENT="DataClear"
@@ -98,8 +99,10 @@ class Constants{
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
         const val ACTION_UPLOAD_1MONTH = "com.bll.lnkstudy.upload.1month"
         const val ACTION_UPLOAD_9MONTH = "com.bll.lnkstudy.upload.9month"
-        const val ACTION_VIDEO = "com.bll.lnkstudy.raw"
         const val ACTION_EXAM_TIME = "com.bll.lnkstudy.exam.time"
+        //广播
+        const val LOGIN_BROADCAST_EVENT="com.bll.lnkstudy.account.login"
+        const val LOGOUT_BROADCAST_EVENT="com.bll.lnkstudy.account.logout"
     }
 
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
@@ -139,10 +140,29 @@ public class ActivityManager {
     }
 
     /**
+     * 获取当前作业书是否已经打开
+     * @return
+     */
+    public void checkHomeworkBookIsExist(HomeworkTypeBean typeBean){
+        Iterator<WeakReference<Activity>> it = stack.iterator();
+        while (it.hasNext()) {
+            WeakReference<Activity> weak = it.next();
+            Activity activity=weak.get();
+            if (activity.getClass().getName().equals(HomeworkBookDetailsActivity.class.getName())) {
+                HomeworkTypeBean beam= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
+                if (beam.typeId==typeBean.typeId){
+                    activity.finish();
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    /**
      * 检查当前作业本是否已经打开
      * @return
      */
-    public void checkHomeworkDrawingisExist(HomeworkTypeBean item){
+    public void checkHomeworkDrawingIsExist(HomeworkTypeBean item){
 
         Iterator<WeakReference<Activity>> it = stack.iterator();
         while (it.hasNext()) {
@@ -150,13 +170,33 @@ public class ActivityManager {
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkDrawingActivity.class.getName())) {
                 HomeworkTypeBean homeworkType= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
-                if (item.course==homeworkType.course&&item.typeId ==homeworkType.typeId){
+                if (Objects.equals(item.course, homeworkType.course) &&item.typeId ==homeworkType.typeId){
                     activity.finish();
                     it.remove();
                 }
             }
         }
 
+    }
+
+    /**
+     * 检查当前作业卷是否打开
+     * @return
+     */
+    public void checkHomeworkPaperDrawingIsExist(HomeworkTypeBean typeBean){
+
+        Iterator<WeakReference<Activity>> it = stack.iterator();
+        while (it.hasNext()) {
+            WeakReference<Activity> weak = it.next();
+            Activity activity=weak.get();
+            if (activity.getClass().getName().equals(HomeworkPaperDrawingActivity.class.getName())) {
+                HomeworkTypeBean bean= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
+                if (Objects.equals(bean.course, typeBean.course) && bean.typeId==typeBean.typeId){
+                    activity.finish();
+                    it.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -193,27 +233,6 @@ public class ActivityManager {
             if (activity.getClass().getName().equals(PaperDrawingActivity.class.getName())) {
                 String course= activity.getIntent().getStringExtra("course");
                 int categoryId= activity.getIntent().getIntExtra("typeId",0);
-                if (course==mCourse && categoryId==mTypeId){
-                    activity.finish();
-                    it.remove();
-                }
-            }
-        }
-    }
-
-    /**
-     * 检查当前作业卷是否打开
-     * @return
-     */
-    public void checkHomeworkPaperDrawingIsExist(String mCourse, int mTypeId){
-
-        Iterator<WeakReference<Activity>> it = stack.iterator();
-        while (it.hasNext()) {
-            WeakReference<Activity> weak = it.next();
-            Activity activity=weak.get();
-            if (activity.getClass().getName().equals(HomeworkPaperDrawingActivity.class.getName())) {
-                String course= activity.getIntent().getStringExtra("course");
-                int categoryId= activity.getIntent().getIntExtra("typeId",0);
                 if (Objects.equals(course, mCourse) && categoryId==mTypeId){
                     activity.finish();
                     it.remove();
@@ -221,5 +240,7 @@ public class ActivityManager {
             }
         }
     }
+
+
 
 }

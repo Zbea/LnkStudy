@@ -288,7 +288,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //确认删除
     private fun delete() {
-        CommonDialog(this,getCurrentScreenPos()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
+        CommonDialog(this).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

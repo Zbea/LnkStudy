@@ -17,14 +17,14 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_10"
-            android:src="@mipmap/icon_main_account" />
+            android:src="@mipmap/icon_main_group" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="@dimen/dp_10"
             android:gravity="center"
-            android:text="@string/account"
+            android:text="@string/classGroup"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20" />
 
@@ -43,8 +43,6 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-
 
 
 </LinearLayout>

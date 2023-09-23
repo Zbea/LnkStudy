@@ -15,7 +15,9 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Note>?) 
             var title=""
             if (type==0){
                 title=item.title
-                setGone(R.id.iv_more,false)
+                setGone(R.id.iv_password,false)
+                setGone(R.id.iv_delete,false)
+                setGone(R.id.iv_edit,false)
             }
             else{
                 if (item.isCloud){
@@ -28,8 +30,11 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Note>?) 
             }
             setText(R.id.tv_title,title)
             setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date) )
+            setGone(R.id.iv_password,item.isSet&&item.typeStr==mContext.getString(R.string.note_tab_diary))
+            if (item.isSet)
+                helper.setImageResource(R.id.iv_password,if (item.isCancelPassword) R.mipmap.icon_encrypt else R.mipmap.icon_encrypt_check)
 
-            addOnClickListener(R.id.iv_more)
+            addOnClickListener(R.id.iv_password,R.id.iv_delete,R.id.iv_edit)
         }
     }
 

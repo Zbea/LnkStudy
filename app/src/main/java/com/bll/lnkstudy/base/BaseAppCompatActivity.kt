@@ -1,13 +1,9 @@
 package com.bll.lnkstudy.base
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -19,33 +15,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity
-import com.bll.lnkstudy.ui.activity.RecordListActivity
 import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
-import com.bll.lnkstudy.ui.activity.book.TextbookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
-import com.google.gson.Gson
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
@@ -57,7 +44,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -100,7 +86,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 Manifest.permission.RECORD_AUDIO
             )
         }
-
+        EventBus.getDefault().register(this)
         screenPos=getCurrentScreenPos()
 //        showLog(localClassName+"当前屏幕：$screenPos")
 
@@ -144,16 +130,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 pageIndex+=1
                 fetchData()
             }
-        }
-    }
-
-
-    fun showBackView(isShow:Boolean) {
-        if (isShow){
-            showView(iv_back)
-        }
-        else{
-            disMissView(iv_back)
         }
     }
 
@@ -228,119 +204,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         return getCurrentScreenPanel()
     }
 
-    /**
-     * 跳转书籍详情
-     */
-    fun gotoTextBookDetails(id: Int){
-        ActivityManager.getInstance().checkBookIDisExist(id)
-        val intent=Intent(this, BookDetailsActivity::class.java)
-        intent.putExtra("book_id",id)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
     fun gotoBookStore(type: Int){
         val intent=Intent(this, BookStoreActivity::class.java)
         intent.flags=type
-        customStartActivity(intent)
-    }
-
-    /**
-     * 跳转阅读器
-     */
-    fun gotoBookDetails(bookBean: BookBean){
-        AppUtils.stopApp(this,"com.geniatech.knote.reader")
-
-        bookBean.isLook=true
-        bookBean.time=System.currentTimeMillis()
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-        val toolApps= AppDaoManager.getInstance().queryAll()
-
-        val result = JSONArray()
-        for (item in toolApps){
-            val jsonObject = JSONObject()
-            try {
-                jsonObject.put("appName", item.appName)
-                jsonObject.put("packageName", item.packageName)
-            } catch (_: JSONException) {
-            }
-            result.put(jsonObject)
-        }
-        val intent = Intent()
-        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-        intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("tool", result.toString())
-        intent.putExtra("key_book_id",bookBean.bookId.toString())
-        intent.putExtra("bookName", bookBean.bookName)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", if (screenPos==3)1 else screenPos)
-        startActivity(intent)
-    }
-
-    /**
-     * 跳转作业本
-     */
-    fun gotoHomeworkDrawing(item: HomeworkTypeBean,page: Int){
-        ActivityManager.getInstance().checkHomeworkDrawingisExist(item)
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        val intent=Intent(this, HomeworkDrawingActivity::class.java)
-        intent.putExtra("homeworkBundle",bundle)
-        intent.putExtra("page",page)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转考卷
-     */
-    fun gotoPaperDrawing(mCourse:String,mTypeId:Int,page: Int){
-        ActivityManager.getInstance().checkPaperDrawingIsExist(mCourse,mTypeId)
-        val intent= Intent(this, PaperDrawingActivity::class.java)
-        intent.putExtra("course",mCourse)
-        intent.putExtra("typeId",mTypeId)
-        intent.putExtra("page",mTypeId)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转日记
-     */
-    fun gotoNote(noteBook: Note, page:Int){
-        val intent = Intent(this, NoteDrawingActivity::class.java)
-        val bundle = Bundle()
-        bundle.putSerializable("note", noteBook)
-        intent.putExtra("bundle", bundle)
-        intent.putExtra("page",page)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity(intent)
-    }
-
-    /**
-     * 跳转作业卷
-     */
-    fun gotoHomeworkReelDrawing(item: HomeworkTypeBean,page: Int){
-        ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item.course,item.typeId)
-        val intent=Intent(this, HomeworkPaperDrawingActivity::class.java)
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        intent.putExtra("bundle",bundle)
-        intent.putExtra("page",page)
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-        customStartActivity1(intent)
-    }
-
-    /**
-     * 跳转录音
-     */
-    fun gotoHomeworkRecord(item:HomeworkTypeBean){
-        val bundle= Bundle()
-        bundle.putSerializable("homework",item)
-        val intent=Intent(this, RecordListActivity::class.java)
-        intent.putExtra("homeworkBundle",bundle)
         customStartActivity(intent)
     }
 
@@ -410,12 +276,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         startActivity(intent)
     }
 
-    /**
-     * 跳转活动
-     */
-    fun customStartActivity1(intent: Intent){
-        startActivity(intent)
-    }
 
     fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
         val radioButton =
@@ -484,12 +344,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
     override fun login() {
         showToast(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        val intent=Intent(this, AccountLoginActivity::class.java)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        startActivity(intent)
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        MethodManager.logout(this)
     }
 
     override fun hideLoading() {
@@ -518,7 +373,16 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     open fun fetchData(){
+    }
 
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    open fun onMessageEvent(msgFlag: String) {
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 }

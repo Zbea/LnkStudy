@@ -5,8 +5,9 @@ import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
@@ -18,17 +19,16 @@ import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 /**
  * 官方应用
  */
-class AppListActivity:BaseDrawingActivity() {
+class AppListActivity:BaseAppCompatActivity() {
 
     private val apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null
     private var mAdapterTool:AppListAdapter?=null
+    private var toolApps= mutableListOf<AppBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_app_list
@@ -36,13 +36,15 @@ class AppListActivity:BaseDrawingActivity() {
 
     override fun initData() {
         apps.addAll(DataBeanManager.appBaseList)
-        apps.addAll(getLocalApp())
+        apps.addAll(AppUtils.scanLocalInstallAppList(this))
+
+        toolApps=MethodManager.getAppTools(this)
     }
 
     override fun initView() {
         setPageTitle(R.string.download_app)
 
-        initRecycler()
+        initRecyclerView()
         initRecyclerTool()
 
         iv_back?.setOnClickListener {
@@ -53,7 +55,7 @@ class AppListActivity:BaseDrawingActivity() {
             for (item in apps){
                 if (item.isCheck){
                     item.isCheck=false
-                    if (!isAppContains(item,toolApps)){
+                    if (!AppDaoManager.getInstance().isExist(item.packageName)){
                         AppDaoManager.getInstance().insertOrReplace(item)
                         item.id=AppDaoManager.getInstance().insertId
                         toolApps.add(item)
@@ -65,7 +67,6 @@ class AppListActivity:BaseDrawingActivity() {
         }
 
         tv_remove.setOnClickListener {
-
             val it=toolApps.iterator()
             while (it.hasNext()){
                 val item=it.next()
@@ -80,7 +81,7 @@ class AppListActivity:BaseDrawingActivity() {
     }
 
     @SuppressLint("WrongConstant")
-    private fun initRecycler(){
+    private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this,5)//创建布局管理
         mAdapter = AppListAdapter(0,R.layout.item_app_list, apps)
         rv_list.adapter = mAdapter
@@ -139,16 +140,28 @@ class AppListActivity:BaseDrawingActivity() {
 
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    /**
+     * 判断app是否已经存在
+     */
+    private fun isAppContains(item:AppBean,list: List<AppBean>):Boolean{
+        var isContain=false
+        for (ite in list){
+            if (ite.packageName.equals(item.packageName))
+            {
+                isContain=true
+            }
+        }
+        return isContain
+    }
+
+    override fun onMessageEvent(msgFlag: String) {
         if (msgFlag== Constants.APP_EVENT){
             apps.clear()
             apps.addAll(DataBeanManager.appBaseList)
-            apps.addAll(getLocalApp())
+            apps.addAll(AppUtils.scanLocalInstallAppList(this))
             mAdapter?.setNewData(apps)
 
-            getAppTool()
+            toolApps=MethodManager.getAppTools(this)
             mAdapterTool?.setNewData(toolApps)
         }
     }

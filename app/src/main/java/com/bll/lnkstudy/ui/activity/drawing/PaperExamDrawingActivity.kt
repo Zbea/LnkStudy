@@ -8,15 +8,14 @@ import android.view.EinkPWInterface
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
-import com.bll.lnkstudy.AlarmService
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.mvp.model.EventBusData
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
@@ -122,7 +121,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         changeContent()
 
         iv_btn.setOnClickListener {
-            CommonDialog(this,getCurrentScreenPos()).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
+            CommonDialog(this,2).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
@@ -155,9 +154,9 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
             showToast("已过提交时间")
             return
         }
-        val intent = Intent(this, AlarmService::class.java)
+        val intent = Intent(this, MyBroadcastReceiver::class.java)
         intent.action = Constants.ACTION_EXAM_TIME
-        val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP, selectLong,
@@ -290,8 +289,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         elik_b?.saveBitmap(true) {}
     }
 
-    override fun onMessageEvent(bean: EventBusData) {
-        if (bean.event==Constants.EXAM_TIME_EVENT){
+    override fun onMessageEvent(msgFlag: String) {
+        if (msgFlag==Constants.EXAM_TIME_EVENT){
             showLoading()
             commit()
         }
