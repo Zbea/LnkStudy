@@ -23,7 +23,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_painting.*
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import java.io.File
 
@@ -35,7 +35,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_content
+        return R.layout.fragment_cloud_content
     }
 
     override fun initView() {
@@ -45,6 +45,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
+        fetchData()
     }
 
     private fun initTab(){
@@ -85,7 +86,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                         downloadBook(book)
                     }
                 } else {
-                    showToast(screenPos,R.string.toast_downloaded)
+                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -151,7 +152,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                         , Gson().toJson(book),book.downloadUrl)
                     Handler().postDelayed({
                         hideLoading()
-                        showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                        showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
                     },500)
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -159,7 +160,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     hideLoading()
                     //下载失败删掉已下载手写内容
                     FileUtils.deleteFile(File(book.bookDrawPath))
-                    showToast(screenPos,book.bookName+getString(R.string.book_download_fail))
+                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
                 }
             })
     }

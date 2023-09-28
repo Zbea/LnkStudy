@@ -61,20 +61,27 @@ public class AppDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public long getInsertId(){
-        List<AppBean> queryList = dao.queryBuilder().build().list();
-        return queryList.get(queryList.size()-1).id;
-    }
-
     public List<AppBean> queryAll() {
-        List<AppBean> queryList = dao.queryBuilder().where(whereUser).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser).build().list();
     }
 
-    public boolean isExist(String packageName) {
+    public List<AppBean> queryToolAll() {
+        WhereCondition whereCondition=AppBeanDao.Properties.IsTool.eq(true);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+    }
+
+    public boolean isTool(String packageName) {
+        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
+        WhereCondition whereCondition1=AppBeanDao.Properties.IsTool.eq(true);
+        AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
+        return appBean!=null;
+    }
+
+    public void deleteBean(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
         AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition).build().unique();
-        return appBean!=null;
+        if (appBean!=null)
+            deleteBean(appBean);
     }
 
     public void deleteBean(AppBean bean){

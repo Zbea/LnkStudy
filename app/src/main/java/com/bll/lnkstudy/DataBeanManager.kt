@@ -4,7 +4,6 @@ import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
-import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
@@ -60,6 +59,10 @@ object DataBeanManager {
         mContext.getString(R.string.painting_mbsf),mContext.getString(R.string.painting_ssh),
         mContext.getString(R.string.painting_hnh),mContext.getString(R.string.painting_rwh),
         mContext.getString(R.string.painting_smh),mContext.getString(R.string.painting_ybsf)
+    )
+    var resources = arrayOf(
+        mContext.getString(R.string.main_app),mContext.getString(R.string.tool),
+        mContext.getString(R.string.download_wallpaper),mContext.getString(R.string.download_painting)
     )
 
     val popupGrades: MutableList<PopupBean>
@@ -125,6 +128,14 @@ object DataBeanManager {
         return list
     }
 
+    fun popupDynastyNow():MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (i in 6 until dynastys.size){
+            list.add(PopupBean(i + 1, mContext.getString(dynastys[i]), i == 6))
+        }
+        return list
+    }
+
     fun popupPainting():MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()
         for (i in PAINTING.indices){
@@ -145,7 +156,7 @@ object DataBeanManager {
         val h1 = MainList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_sj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
-            checked = false
+            checked = true
             name = mContext.getString(listTitle[1])
         }
 
@@ -540,27 +551,6 @@ object DataBeanManager {
         return ToolUtils.getImageResStr(mContext, covers[index].resId)
     }
 
-    val appBaseList: List<AppBean>
-        get() {
-            val apps= mutableListOf<AppBean>()
-            apps.add(AppBean().apply {
-                appName = mContext.getString(R.string.download_app)
-                imageByte = BitmapUtils.drawableToByte(mContext.getDrawable(R.mipmap.icon_app_center))
-                isBase = true
-            })
-            apps.add(AppBean().apply {
-                appName = mContext.getString(R.string.download_wallpaper)
-                imageByte =  BitmapUtils.drawableToByte(mContext.getDrawable(R.mipmap.icon_app_wallpaper))
-                isBase = true
-            })
-            apps.add(AppBean().apply {
-                appName = mContext.getString(R.string.download_painting)
-                imageByte =  BitmapUtils.drawableToByte(mContext.getDrawable(R.mipmap.icon_app_painting))
-                isBase = true
-            })
-            return apps
-        }
-
     //基础笔记分类
     val noteBook: MutableList<Notebook>
         get() {
@@ -639,6 +629,17 @@ object DataBeanManager {
             val list = mutableListOf<PopupBean>()
             list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))
             list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
+            return list
+        }
+
+    /**
+     * 市场
+     */
+    val supplys: MutableList<PopupBean>
+        get() {
+            val list = mutableListOf<PopupBean>()
+            list.add(PopupBean(1, mContext.getString(R.string.official_str),true))
+            list.add(PopupBean(2,mContext.getString(R.string.thirdParty_str),false))
             return list
         }
 

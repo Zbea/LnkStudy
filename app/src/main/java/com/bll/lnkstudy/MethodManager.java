@@ -10,9 +10,8 @@ import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.BookBean;
 import com.bll.lnkstudy.mvp.model.Note;
-import com.bll.lnkstudy.mvp.model.PaintingTypeBean;
+import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
-import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
@@ -31,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -219,12 +219,19 @@ public class MethodManager {
     /**
      * 获取工具app
      * @param context
+     * @param type 0 全部应用 1 设置为工具应用
      * @return
      */
-    public static List<AppBean> getAppTools(Context context){
-        List<AppBean> toolApps= AppDaoManager.getInstance().queryAll();
+    public static List<AppBean> getAppTools(Context context,int type){
+        List<AppBean> apps;
+        if (type==0){
+            apps=AppDaoManager.getInstance().queryAll();
+        }
+        else {
+            apps=AppDaoManager.getInstance().queryToolAll();
+        }
         //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除
-        Iterator it=toolApps.iterator();
+        Iterator it=apps.iterator();
         while (it.hasNext()){
             AppBean item= (AppBean) it.next();
             if (!AppUtils.isAvailable(context,item.packageName)){
@@ -232,7 +239,7 @@ public class MethodManager {
                 AppDaoManager.getInstance().deleteBean(item);
             }
         }
-        return toolApps;
+        return apps;
     }
     
 }

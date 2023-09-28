@@ -27,8 +27,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_note.*
-import kotlinx.android.synthetic.main.fragment_painting.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -45,7 +45,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_content
+        return R.layout.fragment_cloud_content
     }
 
     override fun initView() {
@@ -90,7 +90,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                     downloadNote(notebook)
                 }
                 else{
-                    showToast(screenPos,R.string.toast_downloaded)
+                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -116,10 +116,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         }
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val zipFile = File(zipPath)
-        if (zipFile.exists()) {
-            zipFile.delete()
-        }
         val fileTargetPath=FileAddress().getPathNote(item.grade,item.typeStr,item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
@@ -147,7 +143,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 EventBus.getDefault().post(Constants.NOTE_EVENT)
-                                showToast(screenPos,R.string.book_download_success)
+                                showToast(getScreenPosition(),R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -156,7 +152,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(screenPos,msg!!)
+                            showToast(getScreenPosition(),msg!!)
                             hideLoading()
                         }
 
@@ -166,7 +162,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(screenPos, R.string.book_download_fail)
+                    showToast(getScreenPosition(), R.string.book_download_fail)
                 }
             })
     }

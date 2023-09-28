@@ -1,4 +1,6 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.painting;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -12,7 +14,6 @@ public class PaintingList {
     public List<ListBean> list;
 
     public static class ListBean {
-
         public int fontDrawId;
         public String drawName;
         public String imageUrl;
@@ -22,10 +23,10 @@ public class PaintingList {
         public int type;//1壁纸2书画
         public int dynasty;//1汉朝
         public int subType;//1毛笔书法
-        public String version;
+        @SerializedName("version")
+        public String publisher;//出版社
         public int price;
         public String drawDesc;
-        public String createTime;
         public int status;
         public int buyStatus;//0未购买1购买
     }

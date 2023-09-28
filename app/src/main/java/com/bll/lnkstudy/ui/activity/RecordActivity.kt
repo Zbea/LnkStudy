@@ -42,8 +42,7 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(R.string.record_title_str)
-        showView(tv_setting)
-        tv_setting.text=getString(R.string.save)
+        setPageSetting(R.string.save)
 
         iv_back?.setOnClickListener {
             finish()

@@ -65,6 +65,7 @@
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
     <string name="author">作者</string>
+    <string name="publisher">出版社</string>
     <string name="introduction">简介</string>
     <string name="subject">科目</string>
     <string name="content">内容</string>
@@ -88,7 +89,7 @@
     <string name="family">家庭信息</string>
     <string name="commit">提交</string>
     <string name="tool">工具</string>
-    <string name="eliminate">剔除</string>
+    <string name="eliminate">剔出</string>
     <string name="press">出版社</string>
     <string name="addressList">同学录</string>
     <string name="play">播放</string>
@@ -212,7 +213,7 @@
     <string name="age_yuan">元朝</string>
     <string name="age_ming">明朝</string>
     <string name="age_qing">清朝</string>
-    <string name="age_jin">近代</string>
+    <string name="age_jin">现代</string>
     <string name="age_dan">当代</string>
 
     <string name="painting_mbsf">毛笔书法</string>
@@ -397,4 +398,6 @@
     <string name="diary_title_str">日记本</string>
     <string name="digest">摘要</string>
     <string name="diary_module_str">日记模板</string>
+    <string name="resource_center_str">资源中心</string>
+
 </resources>

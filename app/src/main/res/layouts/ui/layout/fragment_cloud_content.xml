@@ -6,13 +6,8 @@
     android:background="@color/bg_page"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <include
-            layout="@layout/common_radiogroup" />
-    </LinearLayout>
+    <include
+        layout="@layout/common_radiogroup_fragment" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
@@ -27,6 +22,8 @@
         android:layout_weight="1"
         android:visibility="gone"/>
 
-    <include layout="@layout/common_page_number"/>
+    <include layout="@layout/common_page_number"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

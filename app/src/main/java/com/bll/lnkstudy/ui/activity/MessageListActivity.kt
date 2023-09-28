@@ -58,9 +58,8 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     override fun initView() {
         setPageTitle(R.string.message_title_str)
         if (groups.size>0){
-            showView(tv_setting)
+            setPageSetting(R.string.send)
         }
-        tv_setting.text=getString(R.string.send)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MessageAdapter(1,R.layout.item_message, null).apply {

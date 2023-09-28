@@ -1,5 +1,6 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.painting;
 
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.greendao.StringConverter;
 
@@ -39,6 +40,7 @@ public class PaintingBean {
     public String bodyUrl;
     public int supply;//1官方2第三方
     public String author;//作者
+    public String publisher;//出版社
 
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;//图片保存地址
@@ -49,12 +51,11 @@ public class PaintingBean {
     public boolean isRight;
     public boolean isCloud;
     public int cloudId;//云id
-    @Generated(hash = 558616596)
-    public PaintingBean(Long id, long userId, int contentId, int type, int time,
-            String timeStr, int paintingType, String paintingTypeStr, String title,
-            String info, int price, String imageUrl, String bodyUrl, int supply,
-            String author, List<String> paths, long date, boolean isCloud,
-            int cloudId) {
+    @Generated(hash = 1528829099)
+    public PaintingBean(Long id, long userId, int contentId, int type, int time, String timeStr,
+            int paintingType, String paintingTypeStr, String title, String info, int price,
+            String imageUrl, String bodyUrl, int supply, String author, String publisher,
+            List<String> paths, long date, boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -70,6 +71,7 @@ public class PaintingBean {
         this.bodyUrl = bodyUrl;
         this.supply = supply;
         this.author = author;
+        this.publisher = publisher;
         this.paths = paths;
         this.date = date;
         this.isCloud = isCloud;
@@ -191,6 +193,12 @@ public class PaintingBean {
     }
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
+    }
+    public String getPublisher() {
+        return this.publisher;
+    }
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
     }
    
 }

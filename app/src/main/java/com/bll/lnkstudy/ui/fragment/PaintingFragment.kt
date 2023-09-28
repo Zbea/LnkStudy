@@ -8,14 +8,15 @@ import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
-import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.ui.activity.PaintingListActivity
 import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import com.qiniu.android.storage.*
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_painting.*
 import java.io.File
 
@@ -62,22 +63,6 @@ class PaintingFragment : BaseFragment(){
             onClick(8)
         }
 
-        tv_sm.setOnClickListener {
-            val intent = Intent(activity, PaintingListActivity::class.java)
-            intent.putExtra("title", getString(R.string.painting_smh))
-            intent.putExtra("paintingType", 4)
-            intent.flags = 1
-            customStartActivity(intent)
-        }
-
-        tv_yb.setOnClickListener {
-            val intent = Intent(activity, PaintingListActivity::class.java)
-            intent.putExtra("title", getString(R.string.painting_ybsf))
-            intent.putExtra("paintingType", 5)
-            intent.flags = 1
-            customStartActivity(intent)
-        }
-
         iv_hb.setOnClickListener {
             gotoPaintingDrawing(0)
         }
@@ -93,8 +78,8 @@ class PaintingFragment : BaseFragment(){
     //设置头部索引
     private fun initTab() {
         val tabStrs = DataBeanManager.PAINTING
-        for (i in 0..3) {
-            rg_group.addView(getRadioButton(i, tabStrs[i], 3))
+        for (i in tabStrs.indices) {
+            rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size-1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             typeId = id
@@ -109,7 +94,6 @@ class PaintingFragment : BaseFragment(){
         intent.putExtra("title", "${getString(DataBeanManager.dynastys[time-1])}   ${DataBeanManager.PAINTING[typeId]}")
         intent.putExtra("time", time)
         intent.putExtra("paintingType", typeId+1)
-        intent.flags = 0
         customStartActivity(intent)
     }
 
@@ -123,7 +107,7 @@ class PaintingFragment : BaseFragment(){
         var item=PaintingTypeDaoManager.getInstance().queryAllByGrade(type,grade)
         if (item==null) {
             val date=System.currentTimeMillis()
-            item=PaintingTypeBean()
+            item= PaintingTypeBean()
             item.type = type
             item.grade = grade
             item.date = date

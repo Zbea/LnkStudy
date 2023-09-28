@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textSize="22sp"
         android:layout_marginEnd="20dp"
-        android:textColor="@color/black"
+        android:textColor="@color/black_20"
         android:background="@color/color_transparent"
         android:text="@string/page_up_string"/>
 
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:textSize="22sp"
         android:layout_marginStart="20dp"
-        android:textColor="@color/black"
+        android:textColor="@color/black_20"
         android:background="@color/color_transparent"
         android:text="@string/page_down_string"/>
 

@@ -10,8 +10,8 @@ import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.PaintingTypeBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
@@ -24,7 +24,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     private var grade=0
     private var type=0
-    private var paintingTypeBean:PaintingTypeBean?=null
+    private var paintingTypeBean: PaintingTypeBean?=null
     private var popupDrawingManage: PopupDrawingManage? = null
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
@@ -242,7 +242,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         val path = FileAddress().getPathPainting(type,grade,date)
         val fileName = DateUtils.longToString(date)
 
-        paintingDrawingBean = PaintingDrawingBean()
+        paintingDrawingBean =
+            PaintingDrawingBean()
         paintingDrawingBean?.title=if (type==0)
             getString(R.string.drawing)+(paintingLists.size+1) else getString(R.string.calligraphy)+(paintingLists.size+1)
         paintingDrawingBean?.type = type

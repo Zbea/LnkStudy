@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
@@ -343,5 +344,29 @@ public class AppUtils {
             Log.e("TAG", "获取应用包信息失败");
         }
         return myAppInfos;
+    }
+
+    /**
+     * 查看本地应用图标
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static Drawable scanLocalInstallAppDrawable(Context context, String packageName) {
+        PackageManager packageManager=context.getPackageManager();
+        Drawable drawable=null;
+        try {
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+            for (int i = 0; i < packageInfos.size(); i++) {
+                PackageInfo packageInfo = (PackageInfo) packageInfos.get(i);
+                if (packageInfo.packageName.equals(packageName))
+                {
+                    drawable=packageInfo.applicationInfo.loadIcon(packageManager);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("TAG", "获取应用包信息失败");
+        }
+        return drawable;
     }
 }

@@ -1,30 +1,37 @@
-package com.bll.lnkstudy.ui.activity.download
+package com.bll.lnkstudy.ui.fragment.resource
 
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.manager.AppDaoManager
+import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.AppList
 import com.bll.lnkstudy.mvp.presenter.DownloadAppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadAppAdapter
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_download_app.*
+import kotlinx.android.synthetic.main.fragment_resource_content.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
+class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
 
-    private var presenter=DownloadAppPresenter(this)
-    private var type=1
-    private var mAdapter:DownloadAppAdapter?=null
+    private var index=0
+    private var presenter= DownloadAppPresenter(this)
+    private var mAdapter: DownloadAppAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
+    private var currentDownLoadTask: BaseDownloadTask?=null
     private var position=0
-    private var currentDownLoadTask:BaseDownloadTask?=null
+    private var supply=1
 
     override fun onAppList(appBean: AppList) {
         setPageNumber(appBean.total)
@@ -39,49 +46,53 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
             currentDownLoadTask = downLoadStart(apps[position])
         } else {
-            showToast(R.string.toast_download_install)
+            showToast(getScreenPosition(),R.string.toast_download_install)
         }
     }
 
-    override fun layoutId(): Int {
-        return R.layout.ac_download_app
+
+    /**
+     * 实例 传送数据
+     */
+    fun newInstance(index:Int): AppDownloadFragment {
+        val fragment= AppDownloadFragment()
+        val bundle= Bundle()
+        bundle.putInt("index",index)
+        fragment.arguments=bundle
+        return fragment
     }
 
-    override fun initData() {
-        pageSize=8
-        fetchData()
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_resource_content
     }
 
     override fun initView() {
-        setPageTitle(R.string.download_app)
-
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            type = if (id==R.id.rb_official){
-                1
-            }else{
-                2
-            }
-            pageIndex=1
-            fetchData()
-        }
-
+        index= arguments?.getInt("index")!!
+        pageSize=8
         initRecyclerView()
+    }
 
+    override fun lazyLoad() {
+        fetchData()
     }
 
     private fun initRecyclerView(){
 
-        val layoutParams=LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,52f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,52f),0)
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),52f),
+            DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),52f),0)
         layoutParams.weight=1f
+
         rv_list.layoutParams= layoutParams
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
+        rv_list.layoutManager = LinearLayoutManager(requireActivity())//创建布局管理
         mAdapter = DownloadAppAdapter(R.layout.item_download_app, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                this@DownloadAppActivity.position=position
+                this@AppDownloadFragment.position=position
                 val app=apps[position]
                 if (app.buyStatus==0){
                     val map = HashMap<String, Any>()
@@ -95,21 +106,19 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
                         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
                             currentDownLoadTask = downLoadStart(app)
                         } else {
-                            showToast(R.string.toast_download_install)
+                            showToast(getScreenPosition(),R.string.toast_download_install)
                         }
                     }
                 }
             }
         }
-
     }
-
 
     //下载应用
     private fun downLoadStart(bean: AppList.ListBean): BaseDownloadTask? {
         val targetFileStr= FileAddress().getPathApk(bean.applicationId.toString())
         showLoading()
-        val download = FileDownManager.with(this).create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+        val download = FileDownManager.with(requireActivity()).create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
 
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -122,7 +131,9 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
                 currentDownLoadTask = null//完成了废弃线程
             }
             override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                showToast(e!!.message!!)
+                hideLoading()
+                currentDownLoadTask = null//完成了废弃线程
+                showToast(getScreenPosition(),R.string.book_download_fail)
             }
         })
         return download
@@ -130,15 +141,15 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
 
     //安装apk
     private fun installApk(apkPath: String) {
-        AppUtils.installApp(this, apkPath)
+        AppUtils.installApp(requireActivity(), apkPath)
     }
 
     //是否已经下载安装
     private fun isInstalled(idName:String): Boolean {
         if (File(FileAddress().getPathApk(idName)).exists()){
-            val packageName = AppUtils.getApkInfo(this, FileAddress().getPathApk(idName))
-            if (AppUtils.isAvailable(this,packageName)){
-                AppUtils.startAPP(this, packageName)
+            val packageName = AppUtils.getApkInfo(requireActivity(), FileAddress().getPathApk(idName))
+            if (AppUtils.isAvailable(requireActivity(),packageName)){
+                AppUtils.startAPP(requireActivity(), packageName)
             }
             else{
                 //已经下载 直接去解析apk 去安装
@@ -149,12 +160,37 @@ class DownloadAppActivity:BaseAppCompatActivity(),IContractView.IAPPView{
         return false
     }
 
+    /**
+     * 改变供应商
+     */
+    fun changeSupply(supply:Int){
+        this.supply=supply
+        fetchData()
+    }
+
     override fun fetchData() {
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["type"] = type
+        map["type"] = supply
+        map["subType"]=index
+        map["mainType"]=2
         presenter.getAppList(map)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.APP_INSTALL_EVENT){
+            if (index==2){
+                val bean=apps[position]
+                val drawable=AppUtils.scanLocalInstallAppDrawable(requireActivity(),bean.packageName)
+                val item= AppBean()
+                item.appName=bean.nickname
+                item.packageName=bean.packageName
+                item.imageByte= BitmapUtils.drawableToByte(drawable)
+                AppDaoManager.getInstance().insertOrReplace(item)
+                EventBus.getDefault().post(Constants.APP_INSERT_EVENT)
+            }
+        }
     }
 
 }

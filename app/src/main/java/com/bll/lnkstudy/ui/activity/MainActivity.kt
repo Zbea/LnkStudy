@@ -12,6 +12,9 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.*
+import com.bll.lnkstudy.mvp.model.painting.PaintingBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
@@ -254,7 +257,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH,8)
             set(Calendar.DAY_OF_MONTH,1)
-            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -278,7 +281,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年1月1 3点执行
+     * 每年2月1 3点执行
      */
     private fun startRemind1Month() {
         val date=365*24*60*60*1000L
@@ -286,9 +289,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.MONTH,0)
+            set(Calendar.MONTH,1)
             set(Calendar.DAY_OF_MONTH,1)
-            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -300,7 +303,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_1MONTH
+            intent.action = Constants.ACTION_UPLOAD_2MONTH
             val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(

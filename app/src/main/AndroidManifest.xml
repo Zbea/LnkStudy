@@ -103,17 +103,13 @@
         <activity android:name=".ui.activity.book.BookStoreActivity" />
         <activity
             android:name=".ui.activity.drawing.BookDetailsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity
-            android:name=".ui.activity.AppListActivity"
+            android:name=".ui.activity.AppToolActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".ui.activity.download.DownloadAppActivity" />
-        <activity android:name=".ui.activity.download.DownloadPaintingActivity" />
-        <activity android:name=".ui.activity.download.DownloadWallpaperActivity" />
         <activity android:name=".ui.activity.TeachListActivity" />
         <activity
-            android:name=".ui.activity.TeachActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:name=".ui.activity.TeachActivity" />
         <activity android:name=".ui.activity.book.TextbookStoreActivity" />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
             android:launchMode="singleTask"
@@ -123,27 +119,27 @@
         <activity android:name=".ui.activity.MainCourseActivity" />
         <activity
             android:name=".ui.activity.drawing.NoteDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity android:name=".ui.activity.NotebookManagerActivity" />
         <activity android:name=".ui.activity.drawing.PaperExamDrawingActivity" />
         <activity
             android:name=".ui.activity.drawing.HomeworkDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity
             android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity android:name=".ui.activity.RecordActivity" />
         <activity android:name=".ui.activity.RecordListActivity" />
         <activity
             android:name=".ui.activity.drawing.PaintingDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity android:name=".ui.activity.book.BookTypeListActivity" />
         <activity
             android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask" />
         <activity
             android:name=".ui.activity.drawing.PaperDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
@@ -168,12 +164,15 @@
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity" />
         <activity android:name=".ui.activity.drawing.HomeworkBookDetailsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
         <activity android:name=".ui.activity.PastHomeworkActivity"/>
         <activity android:name=".ui.activity.drawing.FreeNoteActivity" />
         <activity android:name=".ui.activity.PlanOverviewActivity"/>
         <activity android:name=".ui.activity.drawing.DiaryActivity"/>
+        <activity android:name=".ui.activity.ResourceCenterActivity"
+            android:launchMode="singleTask"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

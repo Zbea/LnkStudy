@@ -40,17 +40,13 @@ public class ProgressDialog {
         layoutParams.width = 250;
         layoutParams.height = 250;
 
-        //全屏时 加载在a屏
-        if (screenPos==3 ){
-            layoutParams.gravity= Gravity.CENTER_VERTICAL|Gravity.LEFT;
-            layoutParams.x=570;
-        }
-
-        //主页、全屏时 加载在b屏
-        if (screenPos==3){
+        if (screenPos==2){
             layoutParams.gravity= Gravity.CENTER_VERTICAL|Gravity.RIGHT;
-            layoutParams.x=570;
         }
+        else {
+            layoutParams.gravity= Gravity.CENTER_VERTICAL|Gravity.LEFT;
+        }
+        layoutParams.x=570;
 
         window.setAttributes(layoutParams);
     }

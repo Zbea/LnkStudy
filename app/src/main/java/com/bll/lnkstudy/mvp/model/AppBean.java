@@ -22,21 +22,21 @@ public class AppBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String appName;
-    @Unique
     public String packageName;
     public byte[] imageByte;
+    public boolean isTool;
     @Transient
     public boolean isCheck;
-    @Transient
-    public boolean isBase;//基本数据
-    @Generated(hash = 1499838802)
-    public AppBean(Long id, long userId, String appName, String packageName,
-            byte[] imageByte) {
+
+    @Generated(hash = 867208658)
+    public AppBean(Long id, long userId, String appName, String packageName, byte[] imageByte,
+            boolean isTool) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
         this.packageName = packageName;
         this.imageByte = imageByte;
+        this.isTool = isTool;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -71,5 +71,11 @@ public class AppBean {
     public void setImageByte(byte[] imageByte) {
         this.imageByte = imageByte;
     }
-
+    public boolean getIsTool() {
+        return this.isTool;
+    }
+    public void setIsTool(boolean isTool) {
+        this.isTool = isTool;
+    }
+   
 }

@@ -59,6 +59,7 @@
             android:visibility="gone"
             android:background="@drawable/bg_gary_arch"
             />
+
         <TextView
             android:id="@+id/tv_grade"
             android:layout_width="160dp"
@@ -73,6 +74,7 @@
             android:visibility="gone"
             android:background="@drawable/bg_gary_arch"
             />
+
         <TextView
             android:id="@+id/tv_semester"
             android:layout_width="160dp"
@@ -126,7 +128,7 @@
 
         <TextView
             android:id="@+id/tv_setting"
-            android:layout_width="160dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_30"

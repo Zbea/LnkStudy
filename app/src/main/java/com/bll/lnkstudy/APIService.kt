@@ -4,6 +4,7 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.net.BaseResult

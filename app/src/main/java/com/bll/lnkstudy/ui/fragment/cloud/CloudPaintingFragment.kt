@@ -12,11 +12,11 @@ import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
-import com.bll.lnkstudy.mvp.model.PaintingBean
-import com.bll.lnkstudy.mvp.model.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
@@ -33,8 +33,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_my_painting_list.rv_list
-import kotlinx.android.synthetic.main.fragment_content.*
-import kotlinx.android.synthetic.main.fragment_painting.*
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import java.io.File
 
 class CloudPaintingFragment : BaseCloudFragment() {
@@ -48,7 +48,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     private var paintings= mutableListOf<PaintingBean>()//线上数据
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_content
+        return R.layout.fragment_cloud_content
     }
 
     override fun initView() {
@@ -114,7 +114,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                     downloadPainting(item)
                 }
                 else{
-                    showToast(screenPos,R.string.toast_downloaded)
+                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -149,7 +149,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                     downloadLocal(item)
                 }
                 else{
-                    showToast(screenPos,R.string.toast_downloaded)
+                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -163,7 +163,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     /**
      * 下载线上书画
      */
-    private fun downloadPainting(item:PaintingBean){
+    private fun downloadPainting(item: PaintingBean){
         showLoading()
         val pathStr= FileAddress().getPathImage("painting" ,item.contentId)
         val images = mutableListOf(item.bodyUrl)
@@ -207,7 +207,8 @@ class CloudPaintingFragment : BaseCloudFragment() {
                         override fun onFinish() {
                             //存储画本分类
                             val date=System.currentTimeMillis()
-                            val beanType = PaintingTypeBean()
+                            val beanType =
+                                PaintingTypeBean()
                             beanType.type = getType()
                             beanType.grade = item.grade
                             beanType.date = date
@@ -220,7 +221,8 @@ class CloudPaintingFragment : BaseCloudFragment() {
                             //存储画本内容
                             val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
                             for (json in jsonArray){
-                                val drawingBean=Gson().fromJson(json,PaintingDrawingBean::class.java)
+                                val drawingBean=Gson().fromJson(json,
+                                    PaintingDrawingBean::class.java)
                                 drawingBean.id=null
                                 val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                 //创建本地画本增量更新
@@ -230,7 +232,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                showToast(screenPos,R.string.book_download_success)
+                                showToast(getScreenPosition(),R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -239,7 +241,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(screenPos,msg!!)
+                            showToast(getScreenPosition(),msg!!)
                             hideLoading()
                         }
 
@@ -249,7 +251,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(screenPos, R.string.book_download_fail)
+                    showToast(getScreenPosition(), R.string.book_download_fail)
                 }
             })
     }
@@ -305,7 +307,8 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 paintings.clear()
                 for (item in cloudLists){
                     if (item.listJson.isNotEmpty()){
-                        val paintingBean=Gson().fromJson(item.listJson,PaintingBean::class.java)
+                        val paintingBean=Gson().fromJson(item.listJson,
+                            PaintingBean::class.java)
                         paintingBean.id=null //设置数据库id为null用于重新加入
                         paintingBean.cloudId=item.id
                         paintingBean.isCloud=true

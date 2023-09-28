@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.ui.adapter.CloudHomeworkAdapter
@@ -26,8 +26,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_homework.*
-import kotlinx.android.synthetic.main.fragment_painting.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -39,7 +39,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private val types= mutableListOf<HomeworkTypeBean>()
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_content
+        return R.layout.fragment_cloud_content
     }
 
     override fun initView() {
@@ -94,7 +94,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             startDownload(homeworkTypeBean)
                         }
                         else{
-                            showToast(screenPos,R.string.toast_downloaded)
+                            showToast(getScreenPosition(),R.string.toast_downloaded)
                         }
                     }
                     else{
@@ -102,10 +102,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
                             homeworkTypeBean.id=null
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-                            showToast(screenPos,R.string.book_download_success)
+                            showToast(getScreenPosition(),R.string.book_download_success)
                         }
                         else{
-                            showToast(screenPos,R.string.toast_downloaded)
+                            showToast(getScreenPosition(),R.string.toast_downloaded)
                         }
                     }
                 }
@@ -114,7 +114,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         download(homeworkTypeBean)
                     }
                     else{
-                        showToast(screenPos,R.string.toast_downloaded)
+                        showToast(getScreenPosition(),R.string.toast_downloaded)
                     }
                 }
             }
@@ -136,10 +136,6 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         }
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val zipFile = File(zipPath)
-        if (zipFile.exists()) {
-            zipFile.delete()
-        }
         val fileTargetPath=when(item.state){
             3-> FileAddress().getPathRecord(item.course,item.typeId)
             else->FileAddress().getPathHomework(item.course,item.typeId)
@@ -204,7 +200,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                showToast(screenPos,R.string.book_download_success)
+                                showToast(getScreenPosition(),R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -213,7 +209,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(screenPos,msg!!)
+                            showToast(getScreenPosition(),msg!!)
                             hideLoading()
                         }
 
@@ -223,7 +219,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(screenPos, R.string.book_download_fail)
+                    showToast(getScreenPosition(), R.string.book_download_fail)
                 }
             })
 
@@ -281,7 +277,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             Handler().postDelayed({
                                 hideLoading()
                                 EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
-                                showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                                showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
                             },500)
                         }
                         override fun onProgress(percentDone: Int) {
@@ -290,7 +286,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             hideLoading()
                             //下载失败删掉已下载手写内容
                             FileUtils.deleteFile(File(book.bookDrawPath))
-                            showToast(screenPos,msg!!)
+                            showToast(getScreenPosition(),msg!!)
                         }
                         override fun onStart() {
                         }
@@ -301,7 +297,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                     hideLoading()
                     //下载失败删掉已下载手写内容
                     FileUtils.deleteFile(File(book.bookDrawPath))
-                    showToast(screenPos,book.bookName+getString(R.string.book_download_fail))
+                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
                 }
             })
     }

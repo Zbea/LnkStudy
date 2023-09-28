@@ -26,6 +26,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.MainActivity
+import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -58,12 +59,13 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var accountId=SPUtil.getObj("user",User::class.java)?.accountId
-    var screenPos=0
+    var screenPos=1
     var grade=0
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+
 
     //控制消息回调
     override fun onControlMessage(controlMessages: MutableList<ControlMessage>) {
@@ -133,9 +135,10 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         grade=mUser?.grade!!
         initCommonTitle()
         initView()
-        if (activity is MainActivity)
-            screenPos=(activity as MainActivity).getCurrentScreenPos()
+
+        getScreenPosition()
         mDialog = ProgressDialog(activity,screenPos)
+
         lazyLoadDataIfPrepared()
     }
 
@@ -272,6 +275,19 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
                 view.visibility = View.GONE
             }
         }
+    }
+
+    /**
+     * 获取当前屏幕位置
+     */
+    fun getScreenPosition():Int{
+        if (activity is MainActivity){
+            screenPos=(activity as MainActivity).getCurrentScreenPos()
+        }
+        if (activity is ResourceCenterActivity){
+            screenPos=(activity as ResourceCenterActivity).getCurrentScreenPos()
+        }
+        return screenPos
     }
 
     /**

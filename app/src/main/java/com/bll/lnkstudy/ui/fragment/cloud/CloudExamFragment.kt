@@ -27,7 +27,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_painting.*
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 import java.io.File
 
@@ -39,7 +39,7 @@ class CloudExamFragment:BaseCloudFragment() {
     private var types= mutableListOf<PaperTypeBean>()
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_content
+        return R.layout.fragment_cloud_content
     }
 
     override fun initView() {
@@ -94,7 +94,7 @@ class CloudExamFragment:BaseCloudFragment() {
                     download(paperTypeBean)
                 }
                 else{
-                    showToast(screenPos,R.string.toast_downloaded)
+                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
         }
@@ -115,10 +115,6 @@ class CloudExamFragment:BaseCloudFragment() {
         }
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val zipFile = File(zipPath)
-        if (zipFile.exists()) {
-            zipFile.delete()
-        }
         val fileTargetPath= FileAddress().getPathTestPaper(item.typeId)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
@@ -156,7 +152,7 @@ class CloudExamFragment:BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                showToast(screenPos,R.string.book_download_success)
+                                showToast(getScreenPosition(),R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -165,7 +161,7 @@ class CloudExamFragment:BaseCloudFragment() {
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(screenPos,msg!!)
+                            showToast(getScreenPosition(),msg!!)
                             hideLoading()
                         }
 
@@ -175,7 +171,7 @@ class CloudExamFragment:BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(screenPos, R.string.book_download_fail)
+                    showToast(getScreenPosition(), R.string.book_download_fail)
                 }
             })
 

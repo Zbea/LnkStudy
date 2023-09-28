@@ -76,7 +76,9 @@ class Constants{
         const val BOOK_EVENT = "BookEvent"//书籍下载通知
         const val TEXT_BOOK_EVENT = "TextBookEvent"//课本下载通知
         const val HOMEWORK_BOOK_EVENT = "HomeworkBookEvent"//课本下载通知
-        const val APP_EVENT = "APPEvent"//应用下载安装通知
+        const val APP_INSTALL_EVENT = "AppInstallEvent"//应用下载安装通知
+        const val APP_UNINSTALL_EVENT = "AppUninstallEvent"//应用卸载安装通知
+        const val APP_INSERT_EVENT = "AppInsertEvent"//工具保存通知
         const val COURSE_EVENT = "CourseEvent"
         const val CLASSGROUP_EVENT = "ClassGroupEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
@@ -97,7 +99,7 @@ class Constants{
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
-        const val ACTION_UPLOAD_1MONTH = "com.bll.lnkstudy.upload.1month"
+        const val ACTION_UPLOAD_2MONTH = "com.bll.lnkstudy.upload.2month"
         const val ACTION_UPLOAD_9MONTH = "com.bll.lnkstudy.upload.9month"
         const val ACTION_EXAM_TIME = "com.bll.lnkstudy.exam.time"
         //广播

@@ -82,7 +82,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             elik_b = v_content_b?.pwInterFace
         }
 
-        toolApps=MethodManager.getAppTools(this)
+        toolApps=MethodManager.getAppTools(this,1)
 
         mDialog = ProgressDialog(this,screenPos)
         initData()

@@ -15,17 +15,17 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Constants.ACTION_UPLOAD->{
                 Log.d("debug","全局自动打包上传")
                 //开启全局自动打包上传
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
             }
-            Constants.ACTION_UPLOAD_1MONTH->{
-                Log.d("debug","1月1日下学期开学")
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_1MONTH_EVENT)
+            Constants.ACTION_UPLOAD_2MONTH->{
+                Log.d("debug","2月1日下学期开学")
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_1MONTH_EVENT)
                 //清除作业通知（每学期上学开始）
                 EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
             }
             Constants.ACTION_UPLOAD_9MONTH->{
                 Log.d("debug","9月1日升年级、清空")
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_9MONTH_EVENT)
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_9MONTH_EVENT)
                 //清除作业通知（每学期上学开始）
                 EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
             }
@@ -62,13 +62,16 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                 val path=intent.getStringExtra("note_path")
                 if (!bookId.isNullOrEmpty()){
                     //创建增量更新
-                    DataUpdateManager.createDataUpdate(6,bookId.toInt(),2,bookId.toInt()
-                        ,"",path!!)
+                    DataUpdateManager.createDataUpdate(6,bookId.toInt(),2,bookId.toInt(),"",path!!)
                 }
             }
-            "android.intent.action.PACKAGE_ADDED","android.intent.action.PACKAGE_REMOVED"->{
+            "android.intent.action.PACKAGE_ADDED"->{
                 Log.d("debug","刷新应用列表")
-                EventBus.getDefault().post(Constants.APP_EVENT)
+                EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
+            }
+            "android.intent.action.PACKAGE_REMOVED"->{
+                Log.d("debug","刷新应用列表")
+                EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)
             }
         }
     }

@@ -21,7 +21,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_22" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,14 +30,14 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal"
             >
             <TextView
                 android:id="@+id/tv_price"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,13 +58,13 @@
 
         <TextView
             android:id="@+id/btn_download"
-            android:layout_width="80dp"
-            android:layout_height="32dp"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
             android:background="@drawable/bg_black_arch"
             android:gravity="center"
             android:text="@string/buy"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18" />
+            android:textSize="@dimen/sp_16" />
 
     </LinearLayout>
 

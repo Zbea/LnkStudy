@@ -92,8 +92,8 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
         initCommonTitle()
         initView()
 
-        if (activity is CloudStorageActivity)
-            screenPos=(activity as CloudStorageActivity).getCurrentScreenPos()
+        getScreenPosition()
+
         mDialog = ProgressDialog(activity,screenPos)
         lazyLoadDataIfPrepared()
     }
@@ -228,6 +228,16 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
                 view.visibility = View.GONE
             }
         }
+    }
+
+    /**
+     * 获取当前屏幕位置
+     */
+    fun getScreenPosition():Int{
+        if (activity is CloudStorageActivity){
+            screenPos=(activity as CloudStorageActivity).getCurrentScreenPos()
+        }
+        return screenPos
     }
 
     /**

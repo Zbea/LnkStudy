@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity.download
+package com.bll.lnkstudy.ui.fragment.resource
 
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
-import com.bll.lnkstudy.mvp.model.PaintingBean
-import com.bll.lnkstudy.mvp.model.PaintingList
+import com.bll.lnkstudy.mvp.model.painting.PaintingBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.presenter.DownloadPaintingPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadWallpaperAdapter
@@ -19,14 +19,14 @@ import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_download_app.*
+import kotlinx.android.synthetic.main.fragment_resource_content.*
 
-class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingView{
+class WallpaperDownloadFragment :BaseFragment(), IContractView.IPaintingView{
 
-    private val presenter=DownloadPaintingPresenter(this)
+    private val presenter= DownloadPaintingPresenter(this)
     private var items= mutableListOf<PaintingList.ListBean>()
-    private var mAdapter:DownloadWallpaperAdapter?=null
-    private var supply=1//官方
+    private var mAdapter: DownloadWallpaperAdapter?=null
+    private var supply=1
     private var position=0
 
     override fun onList(bean: PaintingList) {
@@ -40,59 +40,49 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
         mAdapter?.notifyDataSetChanged()
     }
 
-    override fun layoutId(): Int {
-        return R.layout.ac_download_app
-    }
 
-    override fun initData() {
-        pageSize=12
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_resource_content
     }
 
     override fun initView() {
-        setPageTitle(R.string.download_wallpaper)
-
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            supply = if (id==R.id.rb_official){
-                1
-            }else{
-                2
-            }
-            pageIndex=1
-            fetchData()
-        }
-
+        pageSize=12
         initRecyclerView()
+    }
 
+    override fun lazyLoad() {
         fetchData()
-
     }
 
     private fun initRecyclerView(){
-
-        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapter = DownloadWallpaperAdapter(R.layout.item_download_wallpaper, items)
-        rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this,22f),30))
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,28f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,28f),0)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),28f),
+            DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),28f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
+        rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
+        mAdapter = DownloadWallpaperAdapter(R.layout.item_download_wallpaper, items)
+        rv_list.adapter = mAdapter
+        rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(),22f),35))
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            ImageDialog(this,items[position].bodyUrl).builder()
+            ImageDialog(requireActivity(),items[position].bodyUrl).builder()
         }
         mAdapter?.setOnItemChildClickListener{ adapter, view, position ->
             this.position=position
             val item=items[position]
             if (view.id==R.id.btn_download){
                 if (item.buyStatus==1){
-                    val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.fontDrawId)
+                    val paintingBean= PaintingBeanDaoManager.getInstance().queryBean(item.fontDrawId)
                     if (paintingBean==null){
                         onDownload()
                     }
                     else{
-                        showToast(R.string.toast_downloaded)
+                        showToast(getScreenPosition(),R.string.toast_downloaded)
                     }
                 }
                 else{
@@ -115,7 +105,7 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
         val pathStr= FileAddress().getPathImage("wallpaper",item.fontDrawId)
         val images = mutableListOf(item.bodyUrl)
         val savePaths= arrayListOf("$pathStr/1.png")
-        FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
+        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                 }
@@ -132,18 +122,26 @@ class DownloadWallpaperActivity:BaseAppCompatActivity(),IContractView.IPaintingV
                     bean.imageUrl=item.bodyUrl
                     bean.bodyUrl=item.bodyUrl
                     bean.supply=item.supply
-                    val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
+                    val id= PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
                     //新建增量更新
                     DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
-                    showToast(R.string.book_download_success)
+                    showToast(getScreenPosition(),R.string.book_download_success)
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(R.string.book_download_fail)
+                    showToast(getScreenPosition(),R.string.book_download_fail)
                 }
             })
+    }
+
+    /**
+     * 改变供应商
+     */
+    fun changeSupply(supply:Int){
+        this.supply=supply
+        fetchData()
     }
 
     override fun fetchData() {

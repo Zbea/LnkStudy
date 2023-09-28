@@ -27,10 +27,9 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         user?.token=token
         SPUtil.putObj("user",user!!)
 
-        //发出登录广播
-        val i = Intent()
-        i.putExtra("token", token)
-        i.action = Constants.LOGIN_BROADCAST_EVENT
+        val intent = Intent()
+        intent.putExtra("token", token)
+        intent.action = Constants.LOGIN_BROADCAST_EVENT
         sendBroadcast(intent)
 
         gotoMainActivity()
@@ -57,7 +56,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         }
 
         btn_login.setOnClickListener {
-
             val account = ed_user.text.toString()
             val password = MD5Utils.digest(ed_psw.text.toString())
 
@@ -66,19 +64,8 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             map ["password"]=password
             map ["role"]= 2
             presenter.login(map)
-
         }
-//
-//        SPUtil.putString("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2ODU5MTMsImlhdCI6MTY5MDQyNjcxMywianRpIjoiOTMwMjM3NjkifQ.zkiht3GPzRP-6aPo1majLlgiW6kprtRLtEg-SkWfZIM")
-//
-//        mUser=User()
-//        mUser?.accountId=93023769
-//        mUser?.telNumber="13048803395"
-//        mUser?.account="zhufeng"
-//        mUser?.nickname="朱"
-//        mUser?.grade=3
-//        mUser?.schoolProvince="广东省"
-//        SPUtil.putObj("user",mUser!!)
+
 
         val tokenStr=SPUtil.getString("token")
 

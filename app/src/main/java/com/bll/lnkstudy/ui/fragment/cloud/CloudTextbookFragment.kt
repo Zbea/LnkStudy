@@ -19,7 +19,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_painting.*
+import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -32,7 +32,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_content
+        return R.layout.fragment_cloud_content
     }
 
     override fun initView() {
@@ -82,7 +82,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                         downloadBook(book)
                     }
                 } else {
-                    showToast(screenPos,R.string.toast_downloaded)
+                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -154,7 +154,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                             Handler().postDelayed({
                                 hideLoading()
                                 EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-                                showToast(screenPos,book.bookName+getString(R.string.book_download_success))
+                                showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
                             },500)
                         }
                         override fun onProgress(percentDone: Int) {
@@ -163,7 +163,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                             hideLoading()
                             //下载失败删掉已下载手写内容
                             FileUtils.deleteFile(File(book.bookDrawPath))
-                            showToast(screenPos,msg!!)
+                            showToast(getScreenPosition(),msg!!)
                         }
                         override fun onStart() {
                         }
@@ -174,7 +174,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     hideLoading()
                     //下载失败删掉已下载手写内容
                     FileUtils.deleteFile(File(book.bookDrawPath))
-                    showToast(screenPos,book.bookName+getString(R.string.book_download_fail))
+                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
                 }
             })
     }

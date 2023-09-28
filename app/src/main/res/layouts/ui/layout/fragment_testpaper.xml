@@ -8,7 +8,7 @@
     <include layout="@layout/common_fragment_title" />
 
     <include
-        layout="@layout/common_radiogroup" />
+        layout="@layout/common_radiogroup_fragment" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
