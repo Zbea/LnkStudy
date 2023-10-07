@@ -48,10 +48,4 @@
     </style>
 
 
-    <style name="main_content_size">
-        <item name="android:layout_width">376dp</item>
-        <item name="android:layout_height">362dp</item>
-    </style>
-
-
 </resources>

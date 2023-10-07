@@ -13,7 +13,6 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.ui.activity.book.BookTypeListActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -23,9 +22,9 @@ import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import java.io.File
+
 
 /**
  * 书架
@@ -44,7 +43,6 @@ class BookCaseFragment: BaseFragment() {
 
     override fun initView() {
         setTitle(R.string.main_bookcase_title)
-        showView(tv_search)
 
         initRecyclerView()
         findBook()
@@ -56,10 +54,6 @@ class BookCaseFragment: BaseFragment() {
         ll_book_top.setOnClickListener {
             if (bookTopBean!=null)
                 MethodManager.gotoBookDetails(requireActivity(),bookTopBean,screenPos)
-        }
-
-        tv_search.setOnClickListener {
-            customStartActivity(Intent(requireActivity(),ResourceCenterActivity::class.java))
         }
 
     }

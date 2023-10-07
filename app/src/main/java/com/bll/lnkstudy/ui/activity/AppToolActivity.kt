@@ -58,13 +58,13 @@ class AppToolActivity:BaseAppCompatActivity() {
         }
 
         tv_out.setOnClickListener {
-            val it=toolApps.iterator()
-            while (it.hasNext()){
-                val item=it.next()
+            val iterator=toolApps.iterator()
+            while (iterator.hasNext()){
+                val item=iterator.next()
                 if (item.isCheck){
                     item.isTool=false
                     AppDaoManager.getInstance().insertOrReplace(item)
-                    it.remove()
+                    iterator.remove()
                 }
             }
             mAdapterTool?.notifyDataSetChanged()

@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
 import kotlin.math.ceil
 
-class MyWallpaperActivity:BaseAppCompatActivity() {
+class WallpaperListActivity:BaseAppCompatActivity() {
 
     private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyWallpaperAdapter?=null
@@ -43,13 +43,13 @@ class MyWallpaperActivity:BaseAppCompatActivity() {
         setPageSetting(R.string.ok)
 
         mAdapter = MyWallpaperAdapter(R.layout.item_my_wallpaper, null).apply {
-            rv_list.layoutManager = GridLayoutManager(this@MyWallpaperActivity,4)//创建布局管理
+            rv_list.layoutManager = GridLayoutManager(this@WallpaperListActivity,4)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@MyWallpaperActivity,19f),0))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@WallpaperListActivity,19f),0))
             setOnItemClickListener { adapter, view, position ->
-                ImageDialog(this@MyWallpaperActivity, File(lists[position].paths[0])).builder()
+                ImageDialog(this@WallpaperListActivity, File(lists[position].paths[0])).builder()
             }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.fragment
 
-import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
@@ -13,7 +12,6 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.ui.activity.AppToolActivity
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUploadManager
@@ -21,7 +19,6 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import java.io.File
@@ -45,16 +42,11 @@ class TextbookFragment : BaseFragment() {
     override fun initView() {
         pageSize=9
         setTitle(R.string.main_textbook_title)
-        showView(tv_search)
 
         initTab()
         initRecyclerView()
 
         fetchData()
-
-        tv_search.setOnClickListener {
-            customStartActivity(Intent(requireActivity(), AppToolActivity::class.java))
-        }
     }
 
     override fun lazyLoad() {

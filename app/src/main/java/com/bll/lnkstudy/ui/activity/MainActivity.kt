@@ -168,7 +168,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
     }
 
-
     //页码跳转
     private fun switchLeftFragment(from: Fragment?, to: Fragment?) {
         if (from != to) {

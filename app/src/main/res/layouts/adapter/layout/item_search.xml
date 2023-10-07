@@ -14,7 +14,8 @@
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
+            android:padding="1dp"
             android:src="@mipmap/icon_search_homework_bg"
             />
 

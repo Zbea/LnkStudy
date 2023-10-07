@@ -205,7 +205,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
      */
     private fun saveElik(elik: EinkPWInterface){
         elik.saveBitmap(true) {}
-        if (File(elik?.pwBitmapFilePath).exists()){
+        if (File(elik.pwBitmapFilePath).exists()){
             DataUpdateManager.editDataUpdate(1,book?.bookId!!,2,book?.bookId!!)
         }
         else{

@@ -62,6 +62,12 @@ class PaintingFragment : BaseFragment(){
         iv_dd.setOnClickListener {
             onClick(8)
         }
+        iv_jd_1.setOnClickListener {
+            onClick(7)
+        }
+        iv_dd_1.setOnClickListener {
+            onClick(8)
+        }
 
         iv_hb.setOnClickListener {
             gotoPaintingDrawing(0)
@@ -83,6 +89,14 @@ class PaintingFragment : BaseFragment(){
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             typeId = id
+            if (typeId==4||typeId==5){
+                showView(ll_content2)
+                disMissView(ll_content1)
+            }
+            else{
+                showView(ll_content1)
+                disMissView(ll_content2)
+            }
         }
     }
 

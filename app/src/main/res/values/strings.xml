@@ -170,7 +170,7 @@
     <string name="school_message">学校信息</string>
     <string name="edit_school_message">修改学校</string>
     <string name="password_login">登录密码</string>
-    <string name="password_check">查看密码</string>
+    <string name="password_check">隐私密码</string>
     <string name="cancel_password">取消密码</string>
 
     <string name="main_bookcase_title">书架</string>
@@ -298,8 +298,8 @@
     <string name="password_question_select_str">选择问题</string>
     <string name="password_father_name">爸爸姓名？</string>
     <string name="password_mother_name">妈妈姓名？</string>
-    <string name="password_grandfather_name">爷爷姓名？</string>
-    <string name="password_grandmother_name">奶奶姓名？</string>
+    <string name="password_grandfather_name">我的生日？</string>
+    <string name="password_grandmother_name">我的爱好？</string>
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
 

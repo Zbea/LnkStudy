@@ -33,7 +33,7 @@
             android:textSize="24sp"
             android:gravity="center"
             android:drawablePadding="@dimen/dp_10"
-            android:drawableStart="@mipmap/icon_free_note"
+            android:drawableStart="@mipmap/icon_freenote"
             />
 
     </LinearLayout>

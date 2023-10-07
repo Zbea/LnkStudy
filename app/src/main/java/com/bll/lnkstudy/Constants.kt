@@ -20,7 +20,7 @@ import android.os.Environment
 //      ┃┫┫　┃┫┫
 //      ┗┻┛　┗┻┛
 /**
- * desc: 常量  分辨率为 1404x1872，屏幕尺寸为 10.3
+ * desc: 常量  分辨率为 1404x1872，屏幕尺寸为 10.3 scale为 1.375
  */
 class Constants{
 

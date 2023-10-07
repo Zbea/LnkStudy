@@ -69,6 +69,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         return this
     }
 
+
     fun dismiss(){
         if(dialog!=null)
             dialog?.dismiss()
@@ -97,5 +98,6 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         }
 
     }
+
 
 }

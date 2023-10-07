@@ -14,21 +14,25 @@ class SearchAdapter(layoutResId: Int, data: List<SearchBean>?) : BaseQuickAdapte
         when(item.category){
             0,1->{
                 GlideUtils.setImageRoundUrl(mContext,item.imageUrl,helper.getView<ImageView>(R.id.iv_image),10)
+                helper.setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)
             }
             2->{
                 helper.setText(R.id.tv_course,item.course)
                 helper.setText(R.id.tv_type,item.typeStr)
                 helper.setImageResource(R.id.iv_image,R.mipmap.icon_search_homework_bg)
+                helper.setBackgroundRes(R.id.iv_image,R.color.color_transparent)
             }
             3->{
                 helper.setText(R.id.tv_course,item.course)
                 helper.setText(R.id.tv_type,item.typeStr)
                 helper.setImageResource(R.id.iv_image,R.mipmap.icon_search_exam_bg)
+                helper.setBackgroundRes(R.id.iv_image,R.color.color_transparent)
             }
             4->{
                 helper.setText(R.id.tv_course,item.typeStr)
                 helper.setText(R.id.tv_type,item.noteStr)
                 helper.setImageResource(R.id.iv_image,R.mipmap.icon_search_note_bg)
+                helper.setBackgroundRes(R.id.iv_image,R.color.color_transparent)
             }
         }
 

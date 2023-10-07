@@ -823,6 +823,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         return super.onKeyUp(keyCode, event)
     }
 
+
+
 }
 
 

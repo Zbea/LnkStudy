@@ -74,12 +74,14 @@
                 <action android:name="com.android.settings.cleardata"/>
                 <action android:name="ACTION_GLOBAL_SEARCH"/>
                 <action android:name="com.geniatech.knote.reader.save.note.broadcast"/>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
                 <action android:name="com.bll.lnkstudy.exam.time"/>
                 <action android:name="com.bll.lnkstudy.upload"/>
                 <action android:name="com.bll.lnkstudy.upload.1month"/>
                 <action android:name="com.bll.lnkstudy.upload.9month"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
@@ -146,7 +148,7 @@
         <activity
             android:name=".ui.activity.SearchActivity"
             android:theme="@style/activityCustom" />
-        <activity android:name=".ui.activity.MyWallpaperActivity" />
+        <activity android:name=".ui.activity.WallpaperListActivity" />
         <activity
             android:name=".ui.activity.drawing.DraftDrawingActivity"
             android:theme="@style/activityCustom" />
