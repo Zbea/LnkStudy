@@ -7,11 +7,11 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.NotebookPasswordDialog
+import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.BookBean
-import com.bll.lnkstudy.mvp.model.CheckPassword
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
@@ -106,10 +106,10 @@ class SearchActivity : BaseAppCompatActivity() {
             }
             4->{
                 val note= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
-                val checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword", CheckPassword::class.java)
-                if (item.typeStr==getString(R.string.note_tab_diary)&&checkPassword!=null&&checkPassword.isSet&&!note.isCancelPassword)
+                val privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword", PrivacyPassword::class.java)
+                if (item.typeStr==getString(R.string.note_tab_diary)&&privacyPassword!=null&&privacyPassword.isSet&&!note.isCancelPassword)
                 {
-                    NotebookPasswordDialog(this).builder()?.setOnDialogClickListener{
+                    PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
                         MethodManager.gotoNoteDrawing(this,note,0,item.page)
                         finish()
                     }

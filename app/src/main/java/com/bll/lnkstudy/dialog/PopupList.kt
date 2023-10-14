@@ -30,6 +30,7 @@ class PopupList(var context:Context, var list:MutableList<PopupBean>, var view: 
             isFocusable=true // 设置PopupWindow可获得焦点
             isTouchable=true // 设置PopupWindow可触摸
             isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+            isClippingEnabled = false
             if (this@PopupList.width!=0){
                 width=this@PopupList.width
             }

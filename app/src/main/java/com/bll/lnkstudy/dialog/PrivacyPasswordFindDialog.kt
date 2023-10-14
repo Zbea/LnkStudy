@@ -9,17 +9,17 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.CheckPassword
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 
 
-class NotebookFindPasswordDialog(private val context: Context, private val screenPos:Int) {
+class PrivacyPasswordFindDialog(private val context: Context, private val screenPos:Int) {
 
-    fun builder(): NotebookFindPasswordDialog? {
+    fun builder(): PrivacyPasswordFindDialog? {
         val dialog= Dialog(context)
-        dialog.setContentView(R.layout.dialog_notebook_find_password)
+        dialog.setContentView(R.layout.dialog_privacy_password_find)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
@@ -30,8 +30,8 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
         dialog.show()
 
         val user=SPUtil.getObj("user", User::class.java)
-        val checkPassword=SPUtil.getObj("${user?.accountId}notePassword",
-            CheckPassword::class.java)
+        val privacyPassword=SPUtil.getObj("${user?.accountId}notePassword",
+            PrivacyPassword::class.java)
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -40,7 +40,7 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
         val etPasswordAgain=dialog.findViewById<EditText>(R.id.et_password_again)
         val etPasswordFind=dialog.findViewById<EditText>(R.id.et_question_password)
         val tvFind=dialog.findViewById<TextView>(R.id.tv_question_password)
-        tvFind.text=checkPassword?.question
+        tvFind.text=privacyPassword?.question
 
 
         btn_cancel?.setOnClickListener { dialog.dismiss() }
@@ -54,7 +54,7 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
                 return@setOnClickListener
             }
 
-            if (passwordFindStr!=checkPassword?.answer){
+            if (passwordFindStr!=privacyPassword?.answer){
                 SToast.showText(screenPos,R.string.toast_password_question_error)
                 return@setOnClickListener
             }
@@ -73,10 +73,10 @@ class NotebookFindPasswordDialog(private val context: Context, private val scree
                 return@setOnClickListener
             }
 
-            checkPassword.password=MD5Utils.digest(passwordStr)
-            SPUtil.putObj("${user?.accountId}notePassword",checkPassword)
+            privacyPassword.password=MD5Utils.digest(passwordStr)
+            SPUtil.putObj("${user?.accountId}notePassword",privacyPassword)
             //更新增量更新
-            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
+            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()
             listener?.onClick()
 

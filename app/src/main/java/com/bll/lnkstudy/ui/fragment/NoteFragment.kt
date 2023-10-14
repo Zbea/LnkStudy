@@ -11,7 +11,7 @@ import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.CheckPassword
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.Notebook
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -42,8 +42,8 @@ class NoteFragment : BaseFragment(){
     private var mAdapter: NotebookAdapter? = null
     private var position = 0 //当前笔记标记
     private var resId = ""
-    private var checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-        CheckPassword::class.java)
+    private var privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+        PrivacyPassword::class.java)
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -94,8 +94,8 @@ class NoteFragment : BaseFragment(){
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 val note=notes[position]
-                if (positionType==0&&checkPassword!=null&&checkPassword?.isSet==true&&!note.isCancelPassword){
-                    NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                if (positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true&&!note.isCancelPassword){
+                    PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                         MethodManager.gotoNoteDrawing(requireActivity(),note,0, Constants.DEFAULT_PAGE)
                     }
                 }
@@ -108,7 +108,7 @@ class NoteFragment : BaseFragment(){
                 val note=notes[position]
                 when(view.id){
                     R.id.iv_password->{
-                        NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                        PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                             note.isCancelPassword=!note.isCancelPassword
                             mAdapter?.notifyItemChanged(position)
                             NoteDaoManager.getInstance().insertOrReplace(note)
@@ -269,8 +269,8 @@ class NoteFragment : BaseFragment(){
             fetchData()
         }
         if (msgFlag== PASSWORD_EVENT){
-            checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-                CheckPassword::class.java)
+            privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+                PrivacyPassword::class.java)
         }
     }
 
@@ -332,7 +332,7 @@ class NoteFragment : BaseFragment(){
         val total= NoteDaoManager.getInstance().queryAll(typeStr)
         setPageNumber(total.size)
         for (item in notes){
-            item.isSet = positionType==0&&checkPassword!=null&&checkPassword?.isSet==true
+            item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
         }
         mAdapter?.setNewData(notes)
     }

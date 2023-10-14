@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import com.bll.lnkstudy.ui.activity.SearchActivity
 import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.utils.SPUtil
 import org.greenrobot.eventbus.EventBus
 
 class MyBroadcastReceiver : BroadcastReceiver() {
@@ -48,11 +49,15 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d("debug","搜索")
-                ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
-                val intent = Intent(context,SearchActivity::class.java)
-                intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
-                intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2)
-                context.startActivity(intent)
+                val token=SPUtil.getString("token")
+                //判断是否登录
+                if (token.isNotEmpty()){
+                    ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
+                    val intent = Intent(context,SearchActivity::class.java)
+                    intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2)
+                    context.startActivity(intent)
+                }
             }
             //阅读器回传
             "com.geniatech.knote.reader.save.note.broadcast"->{

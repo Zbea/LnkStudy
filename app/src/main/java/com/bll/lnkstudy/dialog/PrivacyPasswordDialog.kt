@@ -8,16 +8,16 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.CheckPassword
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 
 
-class NotebookPasswordDialog(private val context: Context) {
+class PrivacyPasswordDialog(private val context: Context) {
 
-    fun builder(): NotebookPasswordDialog? {
+    fun builder(): PrivacyPasswordDialog? {
         val dialog= Dialog(context)
-        dialog.setContentView(R.layout.dialog_notebook_password)
+        dialog.setContentView(R.layout.dialog_privacy_password)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
@@ -32,13 +32,13 @@ class NotebookPasswordDialog(private val context: Context) {
 
         tvFind.setOnClickListener {
             dialog.dismiss()
-            NotebookFindPasswordDialog(context,3).builder()
+            PrivacyPasswordFindDialog(context,3).builder()
         }
 
         val tvEdit = dialog.findViewById<TextView>(R.id.tv_edit_password)
         tvEdit.setOnClickListener {
             dialog.dismiss()
-            NotebookEditPasswordDialog(context,3).builder()
+            PrivacyPasswordEditDialog(context,3).builder()
         }
 
         btn_cancel?.setOnClickListener { dialog.dismiss() }
@@ -49,9 +49,9 @@ class NotebookPasswordDialog(private val context: Context) {
                 return@setOnClickListener
             }
             val user=SPUtil.getObj("user",User::class.java)
-            val checkPassword=SPUtil.getObj("${user?.accountId}notePassword",
-                CheckPassword::class.java)
-            if (MD5Utils.digest(passwordStr) != checkPassword?.password){
+            val privacyPassword=SPUtil.getObj("${user?.accountId}notePassword",
+                PrivacyPassword::class.java)
+            if (MD5Utils.digest(passwordStr) != privacyPassword?.password){
                 SToast.showText(3,R.string.toast_password_error)
                 return@setOnClickListener
             }

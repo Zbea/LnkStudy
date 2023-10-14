@@ -1,26 +1,22 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
-import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PopupFreeNoteList
 import com.bll.lnkstudy.manager.FreeNoteDaoManager
-import com.bll.lnkstudy.manager.NoteContentDaoManager
-import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.FreeNoteBean
+import com.bll.lnkstudy.mvp.model.Notebook
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.*
 import kotlinx.android.synthetic.main.common_drawing_bottom_one.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class FreeNoteActivity : BaseDrawingActivity() {
@@ -70,10 +66,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
                     v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
                     bgResList[posImage] = bgRes
                 }
-        }
-
-        tv_insert.setOnClickListener {
-            insertNote()
         }
 
         tv_free_list.setOnClickListener {
@@ -135,45 +127,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}
     }
-
-    /**
-     * 插入笔记
-     */
-    private fun insertNote() {
-        if (popsNote.size == 0) {
-            showToast(R.string.toast_freenote_insert_fail)
-            return
-        }
-        PopupClick(this, popsNote, tv_insert, 10).builder().setOnSelectListener {
-            val note = Note()
-            note.title = freeNoteBean?.title
-            note.date = System.currentTimeMillis()
-            note.typeStr = it.name
-            note.contentResId = ToolUtils.getImageResStr(this, 0)
-            NoteDaoManager.getInstance().insertOrReplace(note)
-            for (i in images.indices) {
-                val oldPath = images[i]
-                if (File(oldPath).exists()) {
-                    val date = System.currentTimeMillis()
-                    val pathName = DateUtils.longToString(date)
-                    val path = FileAddress().getPathNote(mUser?.grade!!, it.name, note.title, date) + "/${pathName}.tch"
-                    FileUtils.copyFile(oldPath, path)
-                    val noteContent = NoteContentBean()
-                    noteContent.date = date
-                    noteContent.typeStr = note.typeStr
-                    noteContent.noteTitle = note.title
-                    noteContent.resId = note.contentResId
-                    noteContent.title = "未命名${i + 1}"
-                    noteContent.filePath = path
-                    noteContent.page = i
-                    NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-                }
-            }
-            showToast(R.string.toast_freenote_insert_success)
-            EventBus.getDefault().post(Constants.NOTE_EVENT)
-        }
-    }
-
 
     private fun saveFreeNote() {
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))

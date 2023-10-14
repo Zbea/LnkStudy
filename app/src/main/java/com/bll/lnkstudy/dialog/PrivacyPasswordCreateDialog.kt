@@ -9,20 +9,20 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 
 
-class NotebookSetPasswordDialog(private val context: Context) {
+class PrivacyPasswordCreateDialog(private val context: Context) {
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
-    fun builder(): NotebookSetPasswordDialog {
+    fun builder(): PrivacyPasswordCreateDialog {
         val dialog= Dialog(context)
-        dialog.setContentView(R.layout.dialog_notebook_set_password)
+        dialog.setContentView(R.layout.dialog_privacy_password_create)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
@@ -101,16 +101,16 @@ class NotebookSetPasswordDialog(private val context: Context) {
                 SToast.showText(1,R.string.password_different)
                 return@setOnClickListener
             }
-            val checkPassword= CheckPassword()
-            checkPassword.question=tvQuestion.text.toString()
-            checkPassword.answer=answerStr
-            checkPassword.password=MD5Utils.digest(passwordStr)
+            val privacyPassword= PrivacyPassword()
+            privacyPassword.question=tvQuestion.text.toString()
+            privacyPassword.answer=answerStr
+            privacyPassword.password=MD5Utils.digest(passwordStr)
             val user=SPUtil.getObj("user", User::class.java)
-            SPUtil.putObj("${user?.accountId}notePassword",checkPassword)
+            SPUtil.putObj("${user?.accountId}notePassword",privacyPassword)
             //创建增量数据(日记密码)
-            DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
+            DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()
-            listener?.onClick(checkPassword)
+            listener?.onClick(privacyPassword)
 
         }
 
@@ -125,7 +125,7 @@ class NotebookSetPasswordDialog(private val context: Context) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(checkPassword: CheckPassword)
+        fun onClick(privacyPassword: PrivacyPassword)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

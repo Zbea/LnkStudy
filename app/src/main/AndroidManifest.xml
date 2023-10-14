@@ -170,7 +170,7 @@
             />
         <activity android:name=".ui.activity.PastHomeworkActivity"/>
         <activity android:name=".ui.activity.drawing.FreeNoteActivity" />
-        <activity android:name=".ui.activity.PlanOverviewActivity"/>
+        <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
         <activity android:name=".ui.activity.drawing.DiaryActivity"/>
         <activity android:name=".ui.activity.ResourceCenterActivity"
             android:launchMode="singleTask"

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
@@ -24,6 +25,7 @@ import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
@@ -499,7 +501,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
         })
         tools.addAll(toolApps)
-        if (this is DiaryActivity){
+        if (this is DiaryActivity||this is FreeNoteActivity){
             type=1
             tools.removeFirst()
         }
@@ -562,11 +564,11 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         else{
             if (screenPos==1){
                 showView(iv_tool_left,iv_expand_right)
-                disMissView(iv_tool_right)
+                disMissView(iv_tool_right,iv_expand_left)
             }
             else{
                 showView(iv_tool_right,iv_expand_left)
-                disMissView(iv_tool_left)
+                disMissView(iv_tool_left,iv_expand_right)
             }
         }
     }
@@ -823,7 +825,14 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         return super.onKeyUp(keyCode, event)
     }
 
-
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        //移屏之后工具图标需要调动
+        if (!isExpand){
+            screenPos=getCurrentScreenPos()
+            changeExpandView()
+        }
+    }
 
 }
 

@@ -38,21 +38,10 @@
             android:id="@+id/tv_theme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="105dp"
             android:layout_marginEnd="@dimen/dp_30"
             android:text="@string/freenote_theme_str"
             android:textColor="@color/black"
             android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/tv_insert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:text="@string/freenote_insert_str"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
 
         <TextView
             android:id="@+id/tv_free_list"
@@ -67,36 +56,12 @@
 
     </LinearLayout>
 
-
-    <RelativeLayout
+    <com.android.internal.widget.PreferenceImageView
+        android:id="@+id/v_content_b"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/v_content_b"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/icon_freenote_bg_1" />
-
-        <include
-            android:id="@+id/ll_geometry"
-            layout="@layout/common_drawing_geometry"
-            android:visibility="gone"
-            />
-
-        <ImageView
-            android:id="@+id/iv_geometry"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="@dimen/dp_10"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:padding="1dp"
-            android:src="@mipmap/icon_app_geometry"
-            android:background="@drawable/bg_black_stroke_0dp_corner"
-            />
-    </RelativeLayout>
+        android:layout_weight="1"
+        android:src="@mipmap/icon_freenote_bg_1" />
 
     <include
         layout="@layout/common_drawing_bottom_one"

@@ -45,6 +45,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var grade=1
     private var school=0
     private var schools= mutableListOf<SchoolBean>()
+    private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onList(commonData: CommonData) {
         DataBeanManager.grades=commonData.grade
@@ -280,8 +281,15 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
      * 选择学校
      */
     private fun selectorSchool(){
-        SchoolSelectDialog(this,getCurrentScreenPos(),schools).builder().setOnDialogClickListener{
-            school=it
+        if (schoolSelectDialog==null){
+            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),schools).builder()
+            schoolSelectDialog?.setOnDialogClickListener{
+                school=it.id
+                tv_school.text=it.name
+            }
+        }
+        else{
+            schoolSelectDialog?.show()
         }
     }
 

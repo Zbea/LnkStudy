@@ -31,10 +31,10 @@ import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainView
-import com.bll.lnkstudy.ui.activity.PlanOverviewActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
+import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
@@ -101,7 +101,8 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
         setTitle(R.string.main_main_title)
 
         popupDates.add(PopupBean(0,getString(R.string.main_plan)))
-        popupDates.add(PopupBean(1,getString(R.string.date_day)))
+        popupDates.add(PopupBean(1,getString(R.string.date_plan)))
+        popupDates.add(PopupBean(2,getString(R.string.date_day)))
 
         initPlanView()
         initNoticeView()
@@ -111,17 +112,19 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
         }
-        ll_main_plan.setOnClickListener {
-            customStartActivity(Intent(activity, DatePlanListActivity::class.java))
-        }
 
         iv_date_more.setOnClickListener {
             PopupClick(requireActivity(),popupDates,iv_date_more,-20).builder().setOnSelectListener{
-                if (it.id==0){
-                    customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
-                }
-                else{
-                    customStartActivity(Intent(activity, DateDayListActivity::class.java))
+                when (it.id) {
+                    0 -> {
+                        customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
+                    }
+                    1->{
+                        customStartActivity(Intent(activity, DatePlanListActivity::class.java))
+                    }
+                    else -> {
+                        customStartActivity(Intent(activity, DateDayListActivity::class.java))
+                    }
                 }
             }
         }

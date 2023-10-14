@@ -7,13 +7,13 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
+import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
-import com.bll.lnkstudy.Constants.Companion.RECEIVE_PAPER_COMMIT_EVENT
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.dialog.NotebookPasswordDialog
+import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
@@ -45,8 +45,8 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     private var positionPaper = 0
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
-    private var checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-        CheckPassword::class.java)
+    private var privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+        PrivacyPassword::class.java)
 
     override fun onList(message: Message) {
         if (message.list.isNotEmpty()){
@@ -103,8 +103,8 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         }
 
         tv_diarl.setOnClickListener {
-            if (checkPassword!=null&&checkPassword?.isSet==true){
-                NotebookPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+            if (privacyPassword!=null&&privacyPassword?.isSet==true){
+                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                     customStartActivity(Intent(activity,DiaryActivity::class.java))
                 }
             }
@@ -241,7 +241,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
             COURSE_EVENT -> {
                 initCourse()
             }
-            RECEIVE_PAPER_COMMIT_EVENT -> {
+            EXAM_COMMIT_EVENT -> {
                 examPapers.removeAt(0)
                 disMissView(rl_exam)
             }
@@ -249,8 +249,8 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                 findMessages()
             }
             PASSWORD_EVENT->{
-                checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-                    CheckPassword::class.java)
+                privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
+                    PrivacyPassword::class.java)
             }
         }
     }

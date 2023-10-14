@@ -382,27 +382,27 @@ object DataBeanManager {
         val resId = when (courseStr) {
             "语文"-> {
                 if (grade < 7) {
-                    R.mipmap.icon_homework_other_xxlxb
+                    R.mipmap.icon_homework_content_other_xxlxb
                 } else {
-                    R.mipmap.icon_homework_other_lxb
+                    R.mipmap.icon_homework_content_other_lxb
                 }
             }
             "数学" -> {
                 if (grade < 7) {
-                    R.mipmap.icon_homework_sx_sxb
+                    R.mipmap.icon_homework_content_sx_sxb
                 } else {
-                    R.mipmap.icon_homework_other_lxb
+                    R.mipmap.icon_homework_content_other_lxb
                 }
             }
             "英语" -> {
                 if (grade < 7) {
-                    R.mipmap.icon_homework_yy_xxyyb
+                    R.mipmap.icon_homework_content_yy_yyb
                 } else {
-                    R.mipmap.icon_homework_yy_zxyyb
+                    R.mipmap.icon_homework_content_yy_zxyyb
                 }
             }
             else -> {
-                R.mipmap.icon_homework_other_lxb
+                R.mipmap.icon_homework_content_other_lxb
             }
         }
 
@@ -415,28 +415,28 @@ object DataBeanManager {
         if (grade <= 3) {
             val module = Module().apply {
                 name = mContext.getString(R.string.homework_type_pytzb)
-                resId = R.mipmap.icon_homework_yw_pytzb_1
-                resContentId = R.mipmap.icon_homework_yw_pytzb
+                resId = R.mipmap.icon_homework_module_yw_pytzb
+                resContentId = R.mipmap.icon_homework_content_yw_pytzb
             }
             val module1 = Module().apply {
                name = mContext.getString(R.string.homework_type_tzb)
-                resId = R.mipmap.icon_homework_yw_tzb_1
-                resContentId = R.mipmap.icon_homework_yw_tzb
+                resId = R.mipmap.icon_homework_module_yw_tzb
+                resContentId = R.mipmap.icon_homework_content_yw_tzb
             }
             val module2 = Module().apply {
                 name = mContext.getString(R.string.homework_type_pyb)
-                resId = R.mipmap.icon_homework_yw_pyb_1
-                resContentId = R.mipmap.icon_homework_yw_pyb
+                resId = R.mipmap.icon_homework_module_yw_pyb
+                resContentId = R.mipmap.icon_homework_content_yw_pyb
             }
             val module3 = Module().apply {
                name = mContext.getString(R.string.homework_type_zwb)
-                resId = R.mipmap.icon_homework_yw_zwb_1
-                resContentId = R.mipmap.icon_homework_yw_zwb
+                resId = R.mipmap.icon_homework_module_yw_zwb
+                resContentId = R.mipmap.icon_homework_content_yw_zwb
             }
             val module4 = Module().apply {
                 name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_other_lxb_1
-                resContentId = R.mipmap.icon_homework_other_xxlxb
+                resId = R.mipmap.icon_homework_module_other_lxb
+                resContentId = R.mipmap.icon_homework_content_other_xxlxb
             }
             list.add(module)
             list.add(module1)
@@ -446,26 +446,26 @@ object DataBeanManager {
         } else if (grade in 4..6) {
             val module = Module().apply {
                 name = mContext.getString(R.string.homework_type_zwb)
-                resId = R.mipmap.icon_homework_yw_zwb_1
-                resContentId = R.mipmap.icon_homework_yw_zwb
+                resId = R.mipmap.icon_homework_module_yw_zwb
+                resContentId = R.mipmap.icon_homework_content_yw_zwb
             }
             val module1 = Module().apply {
                 name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_other_lxb_1
-                resContentId = R.mipmap.icon_homework_other_xxlxb
+                resId = R.mipmap.icon_homework_module_other_lxb
+                resContentId = R.mipmap.icon_homework_content_other_xxlxb
             }
             list.add(module)
             list.add(module1)
         } else {
             val module = Module().apply {
                 name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_other_lxb_1
-                resContentId = R.mipmap.icon_homework_other_lxb
+                resId = R.mipmap.icon_homework_module_other_lxb
+                resContentId = R.mipmap.icon_homework_content_other_lxb
             }
             val module1 = Module().apply {
                 name = mContext.getString(R.string.homework_type_zwb)
-                resId = R.mipmap.icon_homework_yw_zwb_1
-                resContentId = R.mipmap.icon_homework_yw_zxzwb
+                resId = R.mipmap.icon_homework_module_yw_zwb
+                resContentId = R.mipmap.icon_homework_content_yw_zxzwb
             }
             list.add(module1)
             list.add(module)
@@ -479,14 +479,14 @@ object DataBeanManager {
         if (grade < 7) {
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_sxb)
-                resId = R.mipmap.icon_homework_sx_sxb_1
-                resContentId = R.mipmap.icon_homework_sx_sxb
+                resId = R.mipmap.icon_homework_module_sx_sxb
+                resContentId = R.mipmap.icon_homework_content_sx_sxb
             })
         } else {
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_sxb)
-                resId = R.mipmap.icon_homework_other_lxb_1
-                resContentId = R.mipmap.icon_homework_other_lxb
+                resId = R.mipmap.icon_homework_module_other_lxb
+                resContentId = R.mipmap.icon_homework_content_other_lxb
             })
         }
         return list
@@ -498,14 +498,14 @@ object DataBeanManager {
         if (grade < 7) {
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_yyb)
-                resId = R.mipmap.icon_homework_yy_xxyyb_1
-                resContentId = R.mipmap.icon_homework_yy_xxyyb
+                resId = R.mipmap.icon_homework_module_yy_yyb
+                resContentId = R.mipmap.icon_homework_content_yy_yyb
             })
         } else {
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_yyb)
-                resId = R.mipmap.icon_homework_yy_zxyyb_1
-                resContentId = R.mipmap.icon_homework_yy_zxyyb
+                resId = R.mipmap.icon_homework_module_yy_yyb
+                resContentId = R.mipmap.icon_homework_content_yy_zxyyb
             })
         }
         return list
@@ -517,8 +517,8 @@ object DataBeanManager {
             val list= mutableListOf<Module>()
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_other_lxb_1
-                resContentId = R.mipmap.icon_homework_other_lxb
+                resId = R.mipmap.icon_homework_module_other_lxb
+                resContentId = R.mipmap.icon_homework_content_other_lxb
             })
             return list
         }
@@ -587,7 +587,7 @@ object DataBeanManager {
                 name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
-                resFreeNoteBg=R.mipmap.icon_freenote_bg_0
+                resFreeNoteBg=0
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_hgb)

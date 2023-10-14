@@ -8,17 +8,17 @@ import android.widget.EditText
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.CheckPassword
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 
 
-class NotebookEditPasswordDialog(private val context: Context, private val screenPos:Int) {
+class PrivacyPasswordEditDialog(private val context: Context, private val screenPos:Int) {
 
-    fun builder(): NotebookEditPasswordDialog? {
+    fun builder(): PrivacyPasswordEditDialog? {
         val dialog= Dialog(context)
-        dialog.setContentView(R.layout.dialog_notebook_edit_password)
+        dialog.setContentView(R.layout.dialog_privacy_password_edit)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
@@ -29,8 +29,8 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
         dialog.show()
 
         val user=SPUtil.getObj("user", User::class.java)
-        val checkPassword=SPUtil.getObj("${user?.accountId}notePassword",
-            CheckPassword::class.java)
+        val privacyPassword=SPUtil.getObj("${user?.accountId}notePassword",
+            PrivacyPassword::class.java)
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -46,7 +46,7 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
             val passwordAgainStr=etPasswordAgain?.text.toString()
             val passwordOldStr=etPasswordOld?.text.toString()
 
-            if (MD5Utils.digest(passwordOldStr)!=checkPassword?.password){
+            if (MD5Utils.digest(passwordOldStr)!=privacyPassword?.password){
                 SToast.showText(screenPos,R.string.password_old_error)
                 return@setOnClickListener
             }
@@ -65,10 +65,10 @@ class NotebookEditPasswordDialog(private val context: Context, private val scree
                 return@setOnClickListener
             }
 
-            checkPassword?.password= MD5Utils.digest(checkPassword?.password)
-            SPUtil.putObj("${user?.accountId}notePassword",checkPassword!!)
+            privacyPassword?.password= MD5Utils.digest(privacyPassword?.password)
+            SPUtil.putObj("${user?.accountId}notePassword",privacyPassword!!)
             //更新增量更新
-            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
+            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()
             listener?.onClick()
 

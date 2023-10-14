@@ -83,8 +83,7 @@ class Constants{
         const val CLASSGROUP_EVENT = "ClassGroupEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
-        const val RECORD_EVENT = "RecordEvent"
-        const val RECEIVE_PAPER_COMMIT_EVENT = "ReceivePaperCommit"
+        const val RECORD_EVENT = "RecordEvent"//语音作业本录音通知
         const val VIDEO_EVENT = "VideoEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val CONTROL_MESSAGE_EVENT = "ControlMessageEvent"
@@ -93,9 +92,10 @@ class Constants{
         const val DATA_DOWNLOAD_EVENT = "DataDownload"
         const val DATA_RENT_EVENT = "DataRent"
         const val DATA_CLEAT_EVENT="DataClear"
+        const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
         const val EXAM_TIME_EVENT="ExamTime"//考试到时自动提交广播
         const val MAIN_HOMEWORK_NOTICE_EVENT="MainHomeworkNoticeEvent"//作业通知清除广播
-        const val PASSWORD_EVENT="PasswordEvent"//设置密码广播
+        const val PASSWORD_EVENT="PrivacyPasswordEvent"//设置隐私密码广播
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"

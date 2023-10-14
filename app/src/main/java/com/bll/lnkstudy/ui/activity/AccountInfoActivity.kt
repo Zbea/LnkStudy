@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.mvp.model.CheckPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
@@ -15,6 +15,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
+import kotlinx.android.synthetic.main.ac_account_register.*
 import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
@@ -29,7 +30,8 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
-    private var checkPassword: CheckPassword?=null
+    private var privacyPassword: PrivacyPassword?=null
+    private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onLogout() {
     }
@@ -78,7 +80,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         setPageTitle(R.string.my_account)
 
-        checkPassword=SPUtil.getObj("${mUser?.accountId}notePassword", CheckPassword::class.java)
+        privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword", PrivacyPassword::class.java)
 
         mUser?.apply {
             tv_user.text = account
@@ -98,9 +100,9 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_area.text = schoolArea
         }
 
-        if (checkPassword!=null){
+        if (privacyPassword!=null){
             showView(tv_check_pad)
-            if (checkPassword?.isSet == true){
+            if (privacyPassword?.isSet == true){
                 btn_psd_check.text=getString(R.string.cancel_password)
             }
             else{
@@ -142,23 +144,23 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      * 设置查看密码
      */
     private fun setPassword(){
-        if (checkPassword==null){
-            NotebookSetPasswordDialog(this).builder().setOnDialogClickListener{
-                checkPassword=it
+        if (privacyPassword==null){
+            PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
+                privacyPassword=it
                 showView(tv_check_pad)
                 btn_psd_check.text=getString(R.string.set_password)
-                SPUtil.putObj("${mUser?.accountId}notePassword",checkPassword!!)
+                SPUtil.putObj("${mUser?.accountId}notePassword",privacyPassword!!)
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)
             }
         }
         else{
-            NotebookPasswordDialog(this).builder()?.setOnDialogClickListener{
-                checkPassword?.isSet=!checkPassword?.isSet!!
-                btn_psd_check.text=if (checkPassword?.isSet==true) getString(R.string.cancel_password)
+            PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
+                privacyPassword?.isSet=!privacyPassword?.isSet!!
+                btn_psd_check.text=if (privacyPassword?.isSet==true) getString(R.string.cancel_password)
                                    else getString(R.string.set_password)
-                SPUtil.putObj("${mUser?.accountId}notePassword",checkPassword!!)
+                SPUtil.putObj("${mUser?.accountId}notePassword",privacyPassword!!)
                 //更新增量更新
-                DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(checkPassword))
+                DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)
             }
         }
@@ -185,15 +187,21 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      * 修改学校
      */
     private fun editSchool() {
-        SchoolSelectDialog(this, getCurrentScreenPos(),schools).builder().setOnDialogClickListener {
-            school=it
-            if (school==mUser?.schoolId)
-                return@setOnDialogClickListener
-            presenter.editSchool(it)
-            for (item in schools){
-                if (item.id==school)
-                    schoolBean=item
+        if (schoolSelectDialog==null){
+            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),schools).builder()
+            schoolSelectDialog?.setOnDialogClickListener{
+                school=it.id
+                if (school==mUser?.schoolId)
+                    return@setOnDialogClickListener
+                presenter.editSchool(it.id)
+                for (item in schools){
+                    if (item.id==school)
+                        schoolBean=item
+                }
             }
+        }
+        else{
+            schoolSelectDialog?.show()
         }
     }
 

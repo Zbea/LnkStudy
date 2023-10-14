@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.drawing
 
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress

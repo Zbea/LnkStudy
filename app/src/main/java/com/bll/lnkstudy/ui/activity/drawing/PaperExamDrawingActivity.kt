@@ -78,7 +78,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     }
     override fun onCommitSuccess() {
         savePaper()
-        EventBus.getDefault().post(Constants.RECEIVE_PAPER_COMMIT_EVENT)
+        EventBus.getDefault().post(Constants.EXAM_COMMIT_EVENT)
         finish()
     }
 

@@ -65,10 +65,11 @@ class MyApplication : Application(){
         }
 
         override fun onActivityResumed(activity: Activity) {
-
+            Log.d(TAG, "onResumed: " + activity.componentName.className)
         }
 
         override fun onActivityPaused(activity: Activity) {
+            Log.d(TAG, "onPaused: " + activity.componentName.className)
         }
 
         override fun onActivityStopped(activity: Activity) {
@@ -76,7 +77,7 @@ class MyApplication : Application(){
         }
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-
+            Log.d(TAG, "onActivitySaveInstanceState: " + activity.componentName.className)
         }
 
         override fun onActivityDestroyed(activity: Activity) {
