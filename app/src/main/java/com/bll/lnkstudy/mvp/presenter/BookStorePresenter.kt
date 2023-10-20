@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.BookStore
-import com.bll.lnkstudy.mvp.model.BookStoreType
+import com.bll.lnkstudy.mvp.model.book.BookStore
+import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 

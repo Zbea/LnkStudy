@@ -14,7 +14,7 @@ class ClassGroupAdapter(layoutResId: Int, data: MutableList<ClassGroup>?) : Base
         helper.setText(R.id.tv_groupNumber, ToolUtils.getFormatNum(item.classNum,"000000"))
         helper.setText(R.id.tv_teacher,item.teacher)
         helper.setText(R.id.tv_course,item.subject)
-        helper.setText(R.id.tv_date,DateUtils.longToStringDataNoHour(item.date*1000))
+        helper.setText(R.id.tv_date,DateUtils.longToStringDataNoHour(item.date))
         helper.addOnClickListener(R.id.tv_out)
     }
 

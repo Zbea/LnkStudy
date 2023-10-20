@@ -46,7 +46,7 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"COURSE_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"VIEW_ID\" INTEGER NOT NULL UNIQUE ," + // 2: viewId
+                "\"VIEW_ID\" INTEGER NOT NULL ," + // 2: viewId
                 "\"NAME\" TEXT," + // 3: name
                 "\"TYPE\" INTEGER NOT NULL );"); // 4: type
     }

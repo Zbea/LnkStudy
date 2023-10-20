@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.utils.GlideUtils
 
 

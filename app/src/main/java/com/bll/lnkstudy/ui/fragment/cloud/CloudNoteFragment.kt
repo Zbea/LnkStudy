@@ -12,9 +12,9 @@ import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.Note
-import com.bll.lnkstudy.mvp.model.NoteContentBean
-import com.bll.lnkstudy.mvp.model.Notebook
+import com.bll.lnkstudy.mvp.model.note.Note
+import com.bll.lnkstudy.mvp.model.note.NoteContentBean
+import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.DP2PX

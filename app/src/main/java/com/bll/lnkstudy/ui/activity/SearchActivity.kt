@@ -10,7 +10,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
@@ -73,7 +73,8 @@ class SearchActivity : BaseAppCompatActivity() {
     private fun onItemClick(item:SearchBean){
         when(item.category){
             0->{
-                val bookBean=Gson().fromJson(item.listJson,BookBean::class.java)
+                val bookBean=Gson().fromJson(item.listJson,
+                    BookBean::class.java)
                 MethodManager.gotoBookDetails(this,bookBean,screenPos)
                 finish()
             }

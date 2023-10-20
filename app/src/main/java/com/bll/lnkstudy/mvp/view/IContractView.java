@@ -3,14 +3,14 @@ package com.bll.lnkstudy.mvp.view;
 import com.bll.lnkstudy.mvp.model.AccountXDList;
 import com.bll.lnkstudy.mvp.model.AccountOrder;
 import com.bll.lnkstudy.mvp.model.AppList;
-import com.bll.lnkstudy.mvp.model.BookStore;
+import com.bll.lnkstudy.mvp.model.book.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
-import com.bll.lnkstudy.mvp.model.BookStoreType;
+import com.bll.lnkstudy.mvp.model.book.BookStoreType;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.ControlMessage;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
-import com.bll.lnkstudy.mvp.model.Message;
+import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
@@ -155,7 +155,7 @@ public interface IContractView {
     }
 
     interface IMessageView extends IBaseView{
-        void onList(Message message);
+        void onList(MessageList message);
         void onCommitSuccess();
     }
 

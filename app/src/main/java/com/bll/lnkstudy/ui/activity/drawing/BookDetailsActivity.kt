@@ -10,10 +10,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.BookBean
-import com.bll.lnkstudy.mvp.model.CatalogChild
-import com.bll.lnkstudy.mvp.model.CatalogMsg
-import com.bll.lnkstudy.mvp.model.CatalogParent
+import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
+import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
 import com.bll.lnkstudy.utils.FileUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -55,12 +55,14 @@ class BookDetailsActivity : BaseDrawingActivity() {
             catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
 
             for (item in catalogMsg?.contents!!) {
-                val catalogParent = CatalogParent()
+                val catalogParent =
+                    CatalogParent()
                 catalogParent.title = item.title
                 catalogParent.pageNumber = item.pageNumber
                 catalogParent.picName = item.picName
                 for (ite in item.subItems) {
-                    val catalogChild = CatalogChild()
+                    val catalogChild =
+                        CatalogChild()
                     catalogChild.title = ite.title
                     catalogChild.pageNumber = ite.pageNumber
                     catalogChild.picName = ite.picName

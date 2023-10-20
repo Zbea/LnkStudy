@@ -11,7 +11,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal">
 
         <TextView
@@ -53,30 +52,31 @@
             android:scaleType="fitXY"
             app:radius="6dp"/>
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/iv_content_down"
             android:layout_width="190dp"
             android:layout_height="match_parent"
-            android:padding="1dp"
-            android:background="@drawable/bg_black_stroke_5dp_corner">
-
-            <ImageView
-                android:id="@+id/iv_content_down"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="2dp"
-                android:scaleType="fitXY"
-                app:radius="6dp" />
-
-        </RelativeLayout>
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:padding="2dp"
+            android:scaleType="fitXY"
+            app:radius="6dp"/>
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_30"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="@dimen/sp_22"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_30"
         android:layout_marginStart="33dp"
         android:layout_marginEnd="33dp"
         />

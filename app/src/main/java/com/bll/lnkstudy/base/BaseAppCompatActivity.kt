@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.mvp.model.Note
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -285,6 +284,22 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             DP2PX.dip2px(this, 45f))
 
         layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
+    }
+
+    fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = isCheck
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(this, 45f))
+
+        layoutParams.marginEnd = DP2PX.dip2px(this, 44f)
         radioButton.layoutParams = layoutParams
 
         return radioButton

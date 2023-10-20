@@ -8,6 +8,7 @@ import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
 import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.PAINTING_PATH
 import com.bll.lnkstudy.Constants.Companion.RECORDER_PATH
+import com.bll.lnkstudy.Constants.Companion.SCREEN_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CONTENTS
@@ -191,6 +192,13 @@ class FileAddress {
      */
     fun getPathDiary(time:String):String{
         return "$IMAGE_PATH/${mUserId}/diary/$time"
+    }
+
+    /**
+     * 截图
+     */
+    fun getPathScreen(typeStr: String):String{
+        return "$SCREEN_PATH/${mUserId}/$typeStr"
     }
 
 }

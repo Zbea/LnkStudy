@@ -1,12 +1,10 @@
 package com.bll.lnkstudy.manager;
 
 
-import android.util.Log;
-
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.mvp.model.BookBean;
+import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 

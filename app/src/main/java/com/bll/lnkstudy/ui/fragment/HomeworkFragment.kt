@@ -6,6 +6,7 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.homework.*
@@ -37,6 +38,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     private var homeworkTypes = mutableListOf<HomeworkTypeBean>()//当前页分类
     private var popupType=0
     private var position=0
+    private val longItems= mutableListOf<ItemList>()
 
     override fun onTypeList(list: MutableList<HomeworkTypeBean>) {
         //遍历查询作业本是否保存
@@ -196,6 +198,15 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         setTitle(R.string.main_homework_title)
         showView(iv_manager)
 
+        longItems.add(ItemList().apply {
+            name="删除"
+            resId=R.mipmap.icon_setting_delete
+        })
+        longItems.add(ItemList().apply {
+            name="换肤"
+            resId=R.mipmap.icon_setting_skin
+        })
+
         popWindowBeans.add(PopupBean(0, getString(R.string.homework_commit_details_str),true))
         popWindowBeans.add(PopupBean(1, getString(R.string.homework_correct_details_str),false))
         popWindowBeans.add(PopupBean(2, getString(R.string.homework_create_str),false))
@@ -342,22 +353,10 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
      */
     private fun showHomeworkManage() {
         val item = homeworkTypes[position]
-        HomeworkManageDialog(requireContext(),  item.state).builder()
-            .setOnDialogClickListener(object :
-                HomeworkManageDialog.OnDialogClickListener {
-                override fun onSkin() {
-                    if (item.state!=4){
-                        val list = DataBeanManager.homeworkCover
-                        ModuleAddDialog(requireContext(), screenPos, getString(R.string.homework_cover_module_str), list).builder()
-                            ?.setOnDialogClickListener { moduleBean ->
-                                item.bgResId = ToolUtils.getImageResStr(activity, moduleBean.resId)
-                                mAdapter?.notifyItemChanged(position)
-                                HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                            }
-                    }
-                }
 
-                override fun onDelete() {
+        LongClickManageDialog(requireActivity(),3,item.name,longItems).builder()
+            .setOnDialogClickListener{
+                if (it==0){
                     //删除本地当前作业本
                     HomeworkTypeDaoManager.getInstance().deleteBean(item)
                     when(item.state){
@@ -419,7 +418,18 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                     }
                     mAdapter?.remove(position)
                 }
-            })
+                else{
+                    if (item.state!=4){
+                        val list = DataBeanManager.homeworkCover
+                        ModuleAddDialog(requireContext(), screenPos, getString(R.string.homework_cover_module_str), list).builder()
+                            ?.setOnDialogClickListener { moduleBean ->
+                                item.bgResId = ToolUtils.getImageResStr(activity, moduleBean.resId)
+                                mAdapter?.notifyItemChanged(position)
+                                HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
+                            }
+                    }
+                }
+        }
     }
 
     //添加封面

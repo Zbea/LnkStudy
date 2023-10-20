@@ -11,7 +11,11 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.homework.*
+import com.bll.lnkstudy.mvp.model.note.Note
+import com.bll.lnkstudy.mvp.model.note.NoteContentBean
+import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
@@ -41,7 +45,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     private var eventType = ""
 
     var mainLeftFragment: MainLeftFragment? = null
-    var bookcaseFragment: BookCaseFragment? = null
+    var bookcaseFragment: BookcaseFragment? = null
     var textbookFragment: TextbookFragment? = null
     var teachFragment: TeachFragment? = null
     var appFragment: AppFragment?=null
@@ -107,7 +111,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     override fun initView() {
         mainLeftFragment = MainLeftFragment()
-        bookcaseFragment = BookCaseFragment()
+        bookcaseFragment = BookcaseFragment()
         textbookFragment = TextbookFragment()
         paperFragment = PaperFragment()
         homeworkFragment = HomeworkFragment()
@@ -354,7 +358,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         CourseGreenDaoManager.getInstance().clear()
         AppDaoManager.getInstance().clear()
 
+        ItemTypeDaoManager.getInstance().clear()
+
+        FileUtils.deleteFile(File(Constants.BOOK_DRAW_PATH))
+        FileUtils.deleteFile(File(Constants.BOOK_PATH))
+        FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
+
         EventBus.getDefault().post(Constants.BOOK_EVENT)
         EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
         EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)

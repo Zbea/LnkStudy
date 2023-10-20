@@ -2,7 +2,7 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.widget.ImageView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

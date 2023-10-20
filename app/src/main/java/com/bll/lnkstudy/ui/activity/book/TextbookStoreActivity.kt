@@ -7,9 +7,9 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.BookBean
-import com.bll.lnkstudy.mvp.model.BookStore
-import com.bll.lnkstudy.mvp.model.BookStoreType
+import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.mvp.model.book.BookStore
+import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView

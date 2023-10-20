@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -138,18 +137,14 @@ class WallpaperListActivity:BaseAppCompatActivity() {
             val newList = lists.subList(index,index+toIndex)
             listMap[i+1]=newList
         }
-
         setPageNumber(lists.size)
         if (lists.size>0)
             fetchData()
-
     }
 
     override fun fetchData() {
         mAdapter?.setNewData(listMap[pageIndex]!!)
         tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageCount.toString()
-        ll_page_number.visibility=View.VISIBLE
     }
 
 }

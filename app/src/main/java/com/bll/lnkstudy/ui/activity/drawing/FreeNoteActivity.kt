@@ -9,10 +9,7 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.dialog.PopupFreeNoteList
 import com.bll.lnkstudy.manager.FreeNoteDaoManager
-import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.FreeNoteBean
-import com.bll.lnkstudy.mvp.model.Notebook
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.*
@@ -27,8 +24,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
     private var images = mutableListOf<String>()//手写地址
     private var bgResList = mutableListOf<String>()//背景地址
     private var freeNotePopWindow: PopupFreeNoteList? = null
-    private var popsNote = mutableListOf<PopupBean>()
-    private var notebooks = mutableListOf<Notebook>()
 
     override fun layoutId(): Int {
         return R.layout.ac_freenote
@@ -40,11 +35,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
         freeNoteBean?.date = System.currentTimeMillis()
         freeNoteBean?.title = DateUtils.longToStringNoYear(freeNoteBean?.date!!)
 
-        notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
-
-        for (i in notebooks.indices) {
-            popsNote.add(PopupBean(i, notebooks[i].name))
-        }
     }
 
     override fun initView() {

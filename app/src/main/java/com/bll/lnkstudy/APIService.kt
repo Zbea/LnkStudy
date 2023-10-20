@@ -1,6 +1,8 @@
 package com.bll.lnkstudy
 
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.book.BookStore
+import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
@@ -282,7 +284,7 @@ interface APIService{
      * 消息列表
      */
     @GET("message/inform/list")
-    fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
+    fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<MessageList>>
     /**
      * 发送消息
      */

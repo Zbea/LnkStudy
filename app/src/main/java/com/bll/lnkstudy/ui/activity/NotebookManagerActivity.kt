@@ -11,7 +11,7 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.Notebook
+import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson

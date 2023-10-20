@@ -43,12 +43,12 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     private val mMessagePresenter=MessagePresenter(this)
     private var examPapers = mutableListOf<PaperList.PaperListBean>()
     private var positionPaper = 0
-    private var messages= mutableListOf<MessageBean>()
+    private var messages= mutableListOf<MessageList.MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
     private var privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
         PrivacyPassword::class.java)
 
-    override fun onList(message: Message) {
+    override fun onList(message: MessageList) {
         if (message.list.isNotEmpty()){
             messages=message.list
             mMessageAdapter?.setNewData(messages)

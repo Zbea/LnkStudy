@@ -2,10 +2,9 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.DataBeanManager;
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteDao;
-import com.bll.lnkstudy.mvp.model.Note;
+import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 

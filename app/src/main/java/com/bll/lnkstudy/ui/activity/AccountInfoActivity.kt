@@ -24,7 +24,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private val presenter = AccountInfoPresenter(this)
     private var nickname = ""
 
-    private var popupGradeWindow: PopupList? = null
     private var grades = mutableListOf<PopupBean>()
     private var grade = 1
     private var schools= mutableListOf<SchoolBean>()
@@ -70,7 +69,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
 
     override fun initData() {
-        grades = DataBeanManager.popupGrades
+        grades = DataBeanManager.popupGrades(grade)
         school=mUser?.schoolId!!
         mSchoolPresenter.getCommonSchool()
     }
@@ -92,7 +91,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_parent_phone.text = parentTel
             tv_address.text = parentAddr
             if (grade != 0 && grades.size > 0){
-                tv_grade_str.text = grades[grade - 1].name
+                tv_grade_str.text = DataBeanManager.getGradeStr(grade)
             }
             tv_provinces.text = schoolProvince
             tv_city.text = schoolCity
@@ -171,15 +170,10 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      * 年级选择
      */
     private fun selectorGrade() {
-        if (popupGradeWindow == null) {
-            popupGradeWindow = PopupList(this, grades, btn_edit_grade, 15).builder()
-            popupGradeWindow?.setOnSelectListener { item ->
-                tv_grade_str.text = item.name
-                grade = item.id
-                presenter.editGrade(grade)
-            }
-        } else {
-            popupGradeWindow?.show()
+        PopupList(this, grades, btn_edit_grade, 15).builder().setOnSelectListener { item ->
+            tv_grade_str.text = item.name
+            grade = item.id
+            presenter.editGrade(grade)
         }
     }
 

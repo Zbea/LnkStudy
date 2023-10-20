@@ -7,12 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.MessageBean
+import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 
 
-class MessageDetailsDialog(private val context: Context,val screenPos:Int, private val messageBean: MessageBean) {
+class MessageDetailsDialog(private val context: Context,val screenPos:Int, private val messageBean: MessageList.MessageBean) {
 
     private var dialog: Dialog?=null
 

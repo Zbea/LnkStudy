@@ -12,8 +12,8 @@ import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.PrivacyPassword
-import com.bll.lnkstudy.mvp.model.Note
-import com.bll.lnkstudy.mvp.model.Notebook
+import com.bll.lnkstudy.mvp.model.note.Note
+import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.NotebookManagerActivity

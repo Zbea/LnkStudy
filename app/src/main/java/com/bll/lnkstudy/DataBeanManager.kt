@@ -4,6 +4,7 @@ import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
+import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
@@ -74,12 +75,22 @@ object DataBeanManager {
             return list
         }
 
-    fun popupGrades(grade:Int):MutableList<PopupBean>{
-        val list= mutableListOf<PopupBean>()
-        for (i in grades.indices){
-            list.add(PopupBean(grades[i].type, grades[i].desc, grades[i].type == grade))
+    fun popupGrades(grade: Int): MutableList<PopupBean> {
+        val list = mutableListOf<PopupBean>()
+        for (item in grades) {
+            list.add(PopupBean(item.type, item.desc, item.type == grade))
         }
         return list
+    }
+
+    fun getGradeStr(grade: Int): String {
+        var cls=""
+        for (item in grades) {
+            if (item.type == grade){
+                cls=item.desc
+            }
+        }
+        return cls
     }
 
     val popupTypeGrades: MutableList<PopupBean>
@@ -150,48 +161,43 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    fun getIndexDataCloud(): MutableList<MainList> {
-        val list = mutableListOf<MainList>()
+    fun getIndexDataCloud(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
 
-        val h1 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
-            checked = true
+        val h1 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
+            isCheck = true
             name = mContext.getString(listTitle[1])
         }
 
-        val h2 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_kb)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_kb_check)
-            checked = false
+        val h2 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
             name = mContext.getString(listTitle[2])
         }
 
-        val h3 = MainList().apply {
-           icon = mContext.getDrawable(R.mipmap.icon_main_zy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_zy_check)
-            checked = false
+        val h3 = ItemList().apply {
+           icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
             name = mContext.getString(listTitle[3])
         }
 
-        val h4 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_ks)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_ks_check)
-            checked = false
+        val h4 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_paper)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_paper_check)
             name = mContext.getString(listTitle[4])
         }
 
-        val h5 = MainList().apply {
-           icon = mContext.getDrawable(R.mipmap.icon_main_bj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_bj_check)
-            checked = false
+        val h5 = ItemList().apply {
+           icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
             name = mContext.getString(listTitle[5])
         }
 
-        val h6 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sh)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sh_check)
-            checked = false
+        val h6 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_sh)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_sh_check)
             name = mContext.getString(listTitle[6])
         }
         list.add(h1)
@@ -210,39 +216,35 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    fun getIndexDataLeft(): MutableList<MainList> {
-        val list = mutableListOf<MainList>()
-        val h0 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
-            checked = true
+    fun getIndexDataLeft(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        val h0 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
+            isCheck = true
             name = mContext.getString(R.string.main_home_title)
         }
 
-        val h1 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
-            checked = false
+        val h1 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
             name = mContext.getString(listTitle[1])
         }
 
-        val h2 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_kb)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_kb_check)
-            checked = false
+        val h2 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
             name = mContext.getString(listTitle[2])
         }
 
-        val h3 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_yj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_yj_check)
-            checked = false
+        val h3 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_video)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_video_check)
             name = mContext.getString(listTitle[7])
         }
-        val h4 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_app)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_app_check)
-            checked = false
+        val h4 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_app)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
             name = mContext.getString(listTitle[8])
         }
         list.add(h0)
@@ -260,40 +262,36 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    fun getIndexDataRight(): MutableList<MainList> {
-        val list = mutableListOf<MainList>()
-        val h0 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
-            checked = true
+    fun getIndexDataRight(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        val h0 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
+            isCheck = true
             name = mContext.getString(R.string.main_home_title)
         }
 
-        val h1 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_zy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_zy_check)
-            checked = false
+        val h1 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
             name = mContext.getString(listTitle[3])
         }
 
-        val h2 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_ks)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_ks_check)
-            checked = false
+        val h2 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_paper)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_paper_check)
             name = mContext.getString(listTitle[4])
         }
 
-        val h3 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_bj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_bj_check)
-            checked = false
+        val h3 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
             name = mContext.getString(listTitle[5])
         }
 
-        val h4 = MainList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sh)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sh_check)
-            checked = false
+        val h4 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_sh)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_sh_check)
             name = mContext.getString(listTitle[6])
         }
         list.add(h0)

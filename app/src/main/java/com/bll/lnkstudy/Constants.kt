@@ -22,50 +22,44 @@ import android.os.Environment
 /**
  * desc: 常量  分辨率为 1404x1872，屏幕尺寸为 10.3 scale为 1.375
  */
-class Constants{
+class Constants {
 
     companion object {
 
         const val WIDTH = 1404
         const val HEIGHT = 1872
-        const val halfYear=180*24*60*60*1000
-        const val dayLong=24*60*60*1000
-        const val weekTime=7*24*60*60*1000
-        const val DEFAULT_PAGE=-1
+        const val halfYear = 180 * 24 * 60 * 60 * 1000
+        const val dayLong = 24 * 60 * 60 * 1000
+        const val weekTime = 7 * 24 * 60 * 60 * 1000
+        const val DEFAULT_PAGE = -1
 
-//        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        //        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
-        val ZIP_PATH= MyApplication.mContext.getExternalFilesDir("Zip")!!.path
+        val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")!!.path
 
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
-        val APK_PATH= MyApplication.mContext.getExternalFilesDir("APK")!!.path
-        val BOOK_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Books"
-        val BOOK_DRAW_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Notes"
+        val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")!!.path
+        val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
+        val BOOK_DRAW_PATH = Environment.getExternalStoragePublicDirectory("Notes").absolutePath
+        val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
         //解压的目录
         ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
-        val TEXTBOOK_PATH= MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
-
+        val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
-
         //收到题卷地址
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
-
         //作业保存目录
-        val HOMEWORK_PATH= MyApplication.mContext.getExternalFilesDir("HomeWork")!!.path
-
+        val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("HomeWork")!!.path
         //笔记保存目录
-        val NOTE_PATH= MyApplication.mContext.getExternalFilesDir("Note")!!.path
-
+        val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")!!.path
         //画本保存目录
-        val PAINTING_PATH= MyApplication.mContext.getExternalFilesDir("Painting")!!.path
-
-        val IMAGE_PATH= MyApplication.mContext.getExternalFilesDir("Image")!!.path
-
+        val PAINTING_PATH = MyApplication.mContext.getExternalFilesDir("Painting")!!.path
+        val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")!!.path
         //断点记录文件保存的文件夹
-        val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+        val RECORDER_PATH = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
 
         //eventbus通知标志
@@ -91,20 +85,22 @@ class Constants{
         const val CONTROL_CLEAR_EVENT = "ControlClearEvent" //控制清除作业本
         const val DATA_DOWNLOAD_EVENT = "DataDownload"
         const val DATA_RENT_EVENT = "DataRent"
-        const val DATA_CLEAT_EVENT="DataClear"
+        const val DATA_CLEAT_EVENT = "DataClear"
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
-        const val EXAM_TIME_EVENT="ExamTime"//考试到时自动提交广播
-        const val MAIN_HOMEWORK_NOTICE_EVENT="MainHomeworkNoticeEvent"//作业通知清除广播
-        const val PASSWORD_EVENT="PrivacyPasswordEvent"//设置隐私密码广播
+        const val EXAM_TIME_EVENT = "ExamTime"//考试到时自动提交广播
+        const val MAIN_HOMEWORK_NOTICE_EVENT = "MainHomeworkNoticeEvent"//作业通知清除广播
+        const val PASSWORD_EVENT = "PrivacyPasswordEvent"//设置隐私密码广播
+        const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"//截图管理
 
         //定时任务标识
         const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
         const val ACTION_UPLOAD_2MONTH = "com.bll.lnkstudy.upload.2month"
         const val ACTION_UPLOAD_9MONTH = "com.bll.lnkstudy.upload.9month"
         const val ACTION_EXAM_TIME = "com.bll.lnkstudy.exam.time"
+
         //广播
-        const val LOGIN_BROADCAST_EVENT="com.bll.lnkstudy.account.login"
-        const val LOGOUT_BROADCAST_EVENT="com.bll.lnkstudy.account.logout"
+        const val LOGIN_BROADCAST_EVENT = "com.bll.lnkstudy.account.login"
+        const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkstudy.account.logout"
     }
 
 }

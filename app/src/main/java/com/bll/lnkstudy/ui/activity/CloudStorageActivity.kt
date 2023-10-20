@@ -7,12 +7,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.CommonData
-import com.bll.lnkstudy.mvp.model.MainList
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.cloud.*
-import com.bll.lnkstudy.utils.DateUtils
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_cloud_storage.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -26,7 +24,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
 
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
-    private var mData= mutableListOf<MainList>()
     private var lastFragment: Fragment? = null
 
     private var bookcaseFragment: CloudBookCaseFragment? = null
@@ -36,7 +33,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     private var noteFragment: CloudNoteFragment? = null
     private var paintingFragment: CloudPaintingFragment? = null
 
-    var year=0
     var grade=mUser?.grade!!
     private var popWindowDynasty:PopupList?=null
     private var popWindowGrade:PopupList?=null
@@ -58,8 +54,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     }
 
     override fun initData() {
-        mData= DataBeanManager.getIndexDataCloud()
-
         if (DataBeanManager.grades.size>0){
             tv_grade.text=DataBeanManager.grades[grade-1].desc
         }
@@ -68,8 +62,6 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
         }
 
         tv_course.text=DataBeanManager.popupDynasty()[0].name
-        year=DateUtils.getYear()
-        tv_province.text=year.toString()
     }
 
     override fun initView() {
@@ -84,7 +76,7 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
 
         switchFragment(lastFragment, bookcaseFragment)
 
-        mHomeAdapter = MainListAdapter(R.layout.item_main_list, mData).apply {
+        mHomeAdapter = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexDataCloud()).apply {
             rv_list.layoutManager = LinearLayoutManager(this@CloudStorageActivity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)

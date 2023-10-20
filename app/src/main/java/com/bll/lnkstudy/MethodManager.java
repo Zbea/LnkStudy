@@ -8,8 +8,8 @@ import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
-import com.bll.lnkstudy.mvp.model.BookBean;
-import com.bll.lnkstudy.mvp.model.Note;
+import com.bll.lnkstudy.mvp.model.book.BookBean;
+import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
@@ -30,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +51,7 @@ public class MethodManager {
         //发出退出登录广播
         Intent intent = new Intent();
         intent.putExtra("token", "");
+        intent.putExtra("userId", 0);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
     }

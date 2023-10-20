@@ -7,13 +7,15 @@ import android.view.View
 import android.widget.GridLayout
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.CourseSelectDialog
 import com.bll.lnkstudy.dialog.CourseTimeSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.ItemSelectorDialog
 import com.bll.lnkstudy.manager.CourseGreenDaoManager
 import com.bll.lnkstudy.mvp.model.CourseBean
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_course.*
@@ -553,27 +555,32 @@ class MainCourseActivity : BaseAppCompatActivity() {
      * 选择课程
      */
     private fun selectCourse(v: TextView) {
-        CourseSelectDialog(this).builder()
-            .setOnDialogClickListener { course ->
-                if (course != null) {
-                    v.text = course
-                    val courseBean=CourseBean()
-                    courseBean.name=course
-                    courseBean.viewId = v.id
-                    courseBean.type = type
+        val courses= DataBeanManager.classGroups
+        val lists= mutableListOf<ItemList>()
+        for(item in courses){
+            lists.add(ItemList(item.id,item.subject))
+        }
+        ItemSelectorDialog(this,"科目选择",lists).builder().setOnDialogClickListener{
+            val course=courses[it].subject
+            if (course != null) {
+                v.text = course
+                val courseBean=CourseBean()
+                courseBean.name=course
+                courseBean.viewId = v.id
+                courseBean.type = type
 
-                    //删除已经存在了的
-                    if (selectLists.size > 0) {
-                        var it = selectLists.iterator()
-                        while (it.hasNext()) {
-                            if (it.next().viewId == courseBean.viewId) {
-                                it.remove()
-                            }
+                //删除已经存在了的
+                if (selectLists.size > 0) {
+                    val it = selectLists.iterator()
+                    while (it.hasNext()) {
+                        if (it.next().viewId == courseBean.viewId) {
+                            it.remove()
                         }
                     }
-                    selectLists.add(courseBean)
                 }
+                selectLists.add(courseBean)
             }
+        }
     }
 
 

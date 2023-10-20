@@ -11,7 +11,7 @@ class CloudPaintingLocalAdapter(layoutResId: Int, data: List<CloudListBean>?) : 
     override fun convert(helper: BaseViewHolder, item: CloudListBean) {
         helper.apply {
             setImageResource(R.id.iv_painting,if (item.subType==7) R.mipmap.icon_painting_sm else R.mipmap.icon_painting_yb)
-            setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
+            setText(R.id.tv_grade, DataBeanManager.getGradeStr(item.grade))
         }
     }
 

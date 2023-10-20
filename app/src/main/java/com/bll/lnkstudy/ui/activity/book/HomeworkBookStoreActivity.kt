@@ -9,6 +9,9 @@ import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.mvp.model.book.BookStore
+import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter

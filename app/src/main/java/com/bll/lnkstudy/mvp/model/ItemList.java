@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model;
 
+import android.graphics.drawable.Drawable;
+
 import java.io.Serializable;
 
 public class ItemList implements Serializable,Comparable<ItemList> {
@@ -12,17 +14,25 @@ public class ItemList implements Serializable,Comparable<ItemList> {
     public String name;
     public int page;//目录页码
     public String date;
-
+    public Drawable icon;
+    public Drawable icon_check;
     public String info;
     public String url;
-    public String address="https://poss-videocloud.cns.com.cn/oss/2021/05/08/chinanews/MEIZI_YUNSHI/onair/25AFA3CA2F394DB38420CC0A44483E82.mp4";
+    public int resId;
 
     public ItemList() {
     }
 
-    public ItemList(int type, String desc) {
+    public ItemList(int id,int type, String desc) {
+        this.id=id;
         this.type = type;
         this.desc = desc;
+    }
+
+
+    public ItemList(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     @Override

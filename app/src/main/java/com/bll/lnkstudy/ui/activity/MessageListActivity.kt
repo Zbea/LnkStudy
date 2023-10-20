@@ -10,8 +10,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.dialog.MessageSendDialog
 import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.Message
-import com.bll.lnkstudy.mvp.model.MessageBean
+import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
@@ -23,11 +22,11 @@ import org.greenrobot.eventbus.EventBus
 class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     private var mMessagePresenter= MessagePresenter(this)
-    private var messages= mutableListOf<MessageBean>()
+    private var messages= mutableListOf<MessageList.MessageBean>()
     private var mAdapter:MessageAdapter?=null
     private var groups= mutableListOf<ClassGroup>()
 
-    override fun onList(message: Message) {
+    override fun onList(message: MessageList) {
         setPageNumber(message.total)
         messages=message.list
         mAdapter?.setNewData(messages)

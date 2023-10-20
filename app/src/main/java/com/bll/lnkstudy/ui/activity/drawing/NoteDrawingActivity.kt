@@ -9,8 +9,8 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.Note
-import com.bll.lnkstudy.mvp.model.NoteContentBean
+import com.bll.lnkstudy.mvp.model.note.Note
+import com.bll.lnkstudy.mvp.model.note.NoteContentBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson

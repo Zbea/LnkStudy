@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 //科目列表
 @Entity
@@ -19,19 +20,10 @@ public class CourseBean implements Serializable {
 
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
-    @Unique
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int viewId;//对应textview  ID
     public String name;//科目名称
     public int type;//五天六节课类型
-    @Transient
-    public Boolean isSelect=false;//是否存在加错
-    @Transient
-    public int imageId;//图片资源id
-    @Transient
-    public int courseId;//科目id
-    @Transient
-    public int mainCourseId;//首页课业进度背景图
 
     @Generated(hash = 1270664387)
     public CourseBean(Long id, long userId, int viewId, String name, int type) {

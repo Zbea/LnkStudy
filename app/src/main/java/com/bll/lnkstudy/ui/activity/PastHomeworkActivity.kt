@@ -33,7 +33,6 @@ class PastHomeworkActivity:BaseAppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this,60f),

@@ -7,10 +7,11 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.dialog.BookManageDialog
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.BookBean
+import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -108,10 +109,28 @@ class TextbookFragment : BaseFragment() {
 
     private fun onLongClick(){
         val book=books[position]
-        val type=if (typeId==3) 2 else 1
-        BookManageDialog(requireActivity(),screenPos,type,book).builder()
-            .setOnDialogClickListener(object : BookManageDialog.OnDialogClickListener {
-                override fun onDelete() {
+
+        val beans= mutableListOf<ItemList>()
+        if (typeId==3) {
+            beans.add(ItemList().apply {
+                name="删除"
+                resId=R.mipmap.icon_setting_delete
+            })
+            beans.add(ItemList().apply {
+                name=if (book.isLock)"解锁" else "加锁"
+                resId=if (book.isLock) R.mipmap.icon_setting_unlock else R.mipmap.icon_setting_lock
+            })
+        }
+        else{
+            beans.add(ItemList().apply {
+                name="删除"
+                resId=R.mipmap.icon_setting_delete
+            })
+        }
+
+        LongClickManageDialog(requireActivity(),1,book.bookName,beans).builder()
+            .setOnDialogClickListener {
+                if (it==0){
                     bookGreenDaoManager.deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     FileUtils.deleteFile(File(book.bookDrawPath))
@@ -120,7 +139,7 @@ class TextbookFragment : BaseFragment() {
                     DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
                     DataUpdateManager.deleteDateUpdate(1,book.bookId,2,book.bookId)
                 }
-                override fun onLock() {
+                else{
                     book.isLock=!book.isLock
                     mAdapter?.notifyItemChanged(position)
                     bookGreenDaoManager.insertOrReplaceBook(book)
@@ -128,8 +147,7 @@ class TextbookFragment : BaseFragment() {
                     DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId
                         ,Gson().toJson(book))
                 }
-            })
-
+            }
     }
 
     /**

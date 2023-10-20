@@ -2,8 +2,8 @@ package com.bll.lnkstudy.ui.adapter
 
 import android.widget.LinearLayout
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.CatalogChild
-import com.bll.lnkstudy.mvp.model.CatalogParent
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.entity.MultiItemEntity

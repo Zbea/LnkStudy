@@ -62,7 +62,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
         setTitle(R.string.main_teach_title)
         pageSize=8
 
-        tabs.add(ItemList(0,getString(R.string.course)))
+        tabs.add(ItemList(0,0,getString(R.string.course)))
 
         mAdapter = TeachCourseAdapter(R.layout.item_teach_course, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
