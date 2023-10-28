@@ -214,24 +214,22 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 total -> {
                     newHomeWorkContent()
                     newHomeWorkContent()
-                    page = total
+                    page = homeworks.size-1
                 }
                 total - 1 -> {
                     newHomeWorkContent()
-                    page = total
+                    page = homeworks.size-1
                 }
                 else -> {
                     page += 2
                 }
             }
         } else {
-            when (page) {
-                total -> {
-                    newHomeWorkContent()
-                }
-                else -> {
-                    page += 1
-                }
+            if (page >=total) {
+                newHomeWorkContent()
+                page=homeworks.size-1
+            } else {
+                page += 1
             }
         }
         changeContent()

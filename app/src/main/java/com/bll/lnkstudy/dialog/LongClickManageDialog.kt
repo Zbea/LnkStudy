@@ -23,10 +23,13 @@ class LongClickManageDialog(val context: Context, val screenPos:Int,val name:Str
         dialog.setContentView(R.layout.dialog_long_click_manage)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = dialog.window?.attributes
-        if (screenPos==3){
+        if (screenPos==1){
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,430F))/2
         }
+        else{
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        }
+        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,430F))/2
         dialog.show()
 
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)

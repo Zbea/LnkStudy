@@ -326,17 +326,16 @@ interface APIService{
      */
     @GET("school/list")
     fun getCommonSchool(): Observable<BaseResult<MutableList<SchoolBean>>>
-
-    /**
-     * 获取老师发送控制指令
-     */
-    @GET("delete/message/list")
-    fun getControlMessage(): Observable<BaseResult<MutableList<ControlMessage>>>
-    /**
-     * 删除老师发送控制指令
-     */
-    @POST("delete/message/delete")
-    fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+//    /**
+//     * 获取老师发送控制指令
+//     */
+//    @GET("delete/message/list")
+//    fun getControlMessage(): Observable<BaseResult<MutableList<ControlMessage>>>
+//    /**
+//     * 删除老师发送控制指令
+//     */
+//    @POST("delete/message/delete")
+//    fun deleteControlMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取系统发送控制指令
      */
@@ -354,7 +353,7 @@ interface APIService{
     @GET("cloud/data/list")
     fun getCloudList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudList>>
     /**
-     * 获取云列表
+     * 获取分类
      */
     @GET("cloud/data/types")
     fun getCloudType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<String>>>

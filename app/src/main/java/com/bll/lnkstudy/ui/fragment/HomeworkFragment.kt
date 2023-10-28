@@ -354,7 +354,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     private fun showHomeworkManage() {
         val item = homeworkTypes[position]
 
-        LongClickManageDialog(requireActivity(),3,item.name,longItems).builder()
+        LongClickManageDialog(requireActivity(),2,item.name,longItems).builder()
             .setOnDialogClickListener{
                 if (it==0){
                     //删除本地当前作业本

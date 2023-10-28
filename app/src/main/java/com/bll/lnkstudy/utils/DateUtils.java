@@ -25,6 +25,24 @@ import java.util.regex.Pattern;
 public class DateUtils {
 
     /**
+     * 判断是否是闰年
+     * @param year
+     * @return
+     */
+    public static boolean isleap(int year){
+        return year % 4 == 0 && year % 100 ==0 || year % 400 ==0;
+    }
+
+    /**
+     * 判断今年是否是闰年
+     * @return
+     */
+    public static boolean isleap(){
+        int year=getYear();
+        return year % 4 == 0 && year % 100 ==0 || year % 400 ==0;
+    }
+
+    /**
      * 基于当天剩余天数
      * @param date
      * @return

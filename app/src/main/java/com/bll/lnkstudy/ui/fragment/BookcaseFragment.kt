@@ -126,7 +126,7 @@ class BookcaseFragment: BaseFragment() {
         val maxBooks= mutableListOf<BookBean>()
         val books= BookGreenDaoManager.getInstance().queryAllBook()
         for (item in books){
-            if (System.currentTimeMillis()>=item.downDate+Constants.halfYear){
+            if (System.currentTimeMillis()>=item.time+Constants.halfYear){
                 maxBooks.add(item)
                 //判读是否存在手写内容
                 if (File(item.bookDrawPath).exists()){

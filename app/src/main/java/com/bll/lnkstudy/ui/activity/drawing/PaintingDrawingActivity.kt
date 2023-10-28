@@ -10,9 +10,9 @@ import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -49,7 +49,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             page = paintingLists.size - 1
 
         } else {
-            newHomeWorkContent()
+            newPaintingContent()
         }
 
     }
@@ -71,13 +71,13 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
         iv_expand_left.setOnClickListener {
             if (paintingLists.size==1){
-                newHomeWorkContent()
+                newPaintingContent()
             }
             onChangeExpandContent()
         }
         iv_expand_right.setOnClickListener {
             if (paintingLists.size==1){
-                newHomeWorkContent()
+                newPaintingContent()
             }
             onChangeExpandContent()
         }
@@ -118,13 +118,13 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         if(isExpand){
             when(page){
                 total->{
-                    newHomeWorkContent()
-                    newHomeWorkContent()
-                    page=total
+                    newPaintingContent()
+                    newPaintingContent()
+                    page=paintingLists.size-1
                 }
                 total-1->{
-                    newHomeWorkContent()
-                    page=total
+                    newPaintingContent()
+                    page=paintingLists.size-1
                 }
                 else->{
                     page+=2
@@ -133,7 +133,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
         else{
             if (page >=total) {
-                newHomeWorkContent()
+                newPaintingContent()
+                page=paintingLists.size-1
             } else {
                 page += 1
             }
@@ -178,7 +179,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //翻页内容更新切换
     private fun changeContent() {
-
         paintingDrawingBean = paintingLists[page]
 
         if (isExpand) {
@@ -237,7 +237,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
 
     //创建新的作业内容
-    private fun newHomeWorkContent() {
+    private fun newPaintingContent() {
         val date=System.currentTimeMillis()
         val path = FileAddress().getPathPainting(type,grade,date)
         val fileName = DateUtils.longToString(date)
@@ -289,7 +289,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     //确认删除
     private fun delete() {
-        CommonDialog(this).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
+        CommonDialog(this,getCurrentScreenPos()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
@@ -311,7 +311,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             page -= 1
         }
         else{
-            newHomeWorkContent()
+            newPaintingContent()
         }
         changeContent()
 

@@ -28,6 +28,8 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
 import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.date.Lunar
+import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.google.gson.Gson
@@ -71,11 +73,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 bookcaseFragment?.upload(token)
                 uploadDataUpdate(token)
             }
-            Constants.ACTION_UPLOAD_9MONTH -> {
+            Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
                 noteFragment?.uploadNote(token)
                 paintingFragment?.uploadLocalDrawing(token)
+
+                textbookFragment?.uploadTextBook(token)
             }
-            Constants.CONTROL_MESSAGE_EVENT -> {
+            Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 textbookFragment?.uploadTextBook(token)
             }
             Constants.CONTROL_CLEAR_EVENT -> {
@@ -272,7 +276,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_9MONTH
+            intent.action = Constants.ACTION_UPLOAD_LAST_SEMESTER
             val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
@@ -288,12 +292,20 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun startRemind1Month() {
         val date=365*24*60*60*1000L
+        //农历转阳历
+        val lunar=Lunar()
+        lunar.isleap=DateUtils.isleap()
+        lunar.lunarYear=DateUtils.getYear()
+        lunar.lunarMonth=1
+        lunar.lunarDay=10
+        val solar=LunarSolarConverter.LunarToSolar(lunar)
+
         Calendar.getInstance().apply {
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.MONTH,1)
-            set(Calendar.DAY_OF_MONTH,1)
+            set(Calendar.MONTH,solar.solarMonth)
+            set(Calendar.DAY_OF_MONTH,solar.solarDay)
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -306,7 +318,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_2MONTH
+            intent.action = Constants.ACTION_UPLOAD_NEXT_SEMESTER
             val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
@@ -497,6 +509,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     SPUtil.putObj("${mUser?.accountId}notePassword",privacyPassword)
                     //创建增量数据(日记密码)
                     DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
+                    EventBus.getDefault().post(Constants.PASSWORD_EVENT)
                 }
             }
         }
@@ -1048,16 +1061,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 eventType = Constants.AUTO_UPLOAD_EVENT
                 mQiniuPresenter.getToken()
             }
-            Constants.AUTO_UPLOAD_1MONTH_EVENT -> {
-                eventType = Constants.AUTO_UPLOAD_1MONTH_EVENT
+            Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
+                eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
                 mQiniuPresenter.getToken()
             }
-            Constants.AUTO_UPLOAD_9MONTH_EVENT -> {
-                eventType = Constants.AUTO_UPLOAD_9MONTH_EVENT
-                mQiniuPresenter.getToken()
-            }
-            Constants.CONTROL_MESSAGE_EVENT -> {
-                eventType = Constants.CONTROL_MESSAGE_EVENT
+            Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
+                eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
                 mQiniuPresenter.getToken()
             }
             Constants.CONTROL_CLEAR_EVENT -> {
@@ -1067,15 +1076,15 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.USER_CHANGE_EVENT -> {
                 mUser = SPUtil.getObj("user", User::class.java)
             }
-            Constants.DATA_DOWNLOAD_EVENT -> {
+            Constants.SETTING_DOWNLOAD_EVENT -> {
                 mDataUpdatePresenter.onList()
             }
-            Constants.DATA_RENT_EVENT -> {
+            Constants.SETTING_RENT_EVENT -> {
                 val map=HashMap<String,Any>()
                 map["type"]= arrayOf(1,2,3,8)
-                mDataUpdatePresenter.onList()
+                mDataUpdatePresenter.onList(map)
             }
-            Constants.DATA_CLEAT_EVENT -> {
+            Constants.SETTING_CLEAT_EVENT -> {
                 clearData()
             }
         }

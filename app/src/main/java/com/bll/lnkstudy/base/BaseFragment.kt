@@ -66,22 +66,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
-
-    //控制消息回调
-    override fun onControlMessage(controlMessages: MutableList<ControlMessage>) {
-        //发送全局老师控制删除
-        if (controlMessages.size>0){
-            EventBus.getDefault().post(Constants.CONTROL_MESSAGE_EVENT)
-            val list= mutableListOf<Int>()
-            for (item in controlMessages){
-                list.add(item.id)
-            }
-            mControlMessagePresenter.deleteControlMessage(list)
-        }
-    }
-    override fun onDeleteMessage() {
-    }
-
     override fun onSystemControlClear(controlMessages: MutableList<ControlMessage>) {
         if (controlMessages.size>0){
             EventBus.getDefault().post(Constants.CONTROL_CLEAR_EVENT)
@@ -148,7 +132,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      */
     private fun onFetchControl(){
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
-            mControlMessagePresenter.getControlMessage()
             mControlMessagePresenter.getSystemControlClear()
         }
     }

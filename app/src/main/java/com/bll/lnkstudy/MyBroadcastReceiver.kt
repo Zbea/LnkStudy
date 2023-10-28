@@ -16,19 +16,19 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Constants.ACTION_UPLOAD->{
                 Log.d("debug","全局自动打包上传")
                 //开启全局自动打包上传
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
             }
-            Constants.ACTION_UPLOAD_2MONTH->{
+            Constants.ACTION_UPLOAD_NEXT_SEMESTER->{
                 Log.d("debug","2月1日下学期开学")
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_1MONTH_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
                 //清除作业通知（每学期上学开始）
-                EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                EventBus.getDefault().postSticky(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
             }
-            Constants.ACTION_UPLOAD_9MONTH->{
+            Constants.ACTION_UPLOAD_LAST_SEMESTER->{
                 Log.d("debug","9月1日升年级、清空")
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_9MONTH_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT)
                 //清除作业通知（每学期上学开始）
-                EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                EventBus.getDefault().postSticky(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
             }
             Constants.ACTION_EXAM_TIME->{
                 Log.d("debug","考试提交")
@@ -37,15 +37,15 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             }
             "com.android.settings.importdata"->{
                 Log.d("debug","一键下载")
-                EventBus.getDefault().post(Constants.DATA_DOWNLOAD_EVENT)
+                EventBus.getDefault().post(Constants.SETTING_DOWNLOAD_EVENT)
             }
             "com.android.settings.importrentdata"->{
                 Log.d("debug","租用下载")
-                EventBus.getDefault().post(Constants.DATA_RENT_EVENT)
+                EventBus.getDefault().post(Constants.SETTING_RENT_EVENT)
             }
             "com.android.settings.cleardata"->{
                 Log.d("debug","一键清除")
-                EventBus.getDefault().post(Constants.DATA_CLEAT_EVENT)
+                EventBus.getDefault().post(Constants.SETTING_CLEAT_EVENT)
             }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d("debug","搜索")

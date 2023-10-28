@@ -813,7 +813,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         if (getKeyEventStatus()==17||getKeyEventStatus()==34){
             return super.onKeyUp(keyCode, event)
         }
-
         when(keyCode){
             KeyEvent.KEYCODE_PAGE_DOWN->{
                 onPageDown()

@@ -36,7 +36,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
         showToast(R.string.toast_commit_success)
         pageIndex=1
         fetchData()
-        EventBus.getDefault().post(Constants.MESSAGE_EVENT)
+        EventBus.getDefault().post(Constants.MESSAGE_COMMIT_EVENT)
     }
 
 

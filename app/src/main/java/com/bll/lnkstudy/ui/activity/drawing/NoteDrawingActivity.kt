@@ -93,11 +93,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 total->{
                     newNoteContent()
                     newNoteContent()
-                    page=total
+                    page=noteContents.size-1
                 }
                 total-1->{
                     newNoteContent()
-                    page=total
+                    page=noteContents.size-1
                 }
                 else->{
                     page+=2
@@ -105,13 +105,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
         }
         else{
-            when(page){
-                total->{
-                    newNoteContent()
-                }
-                else->{
-                    page += 1
-                }
+            if (page >=total) {
+                newNoteContent()
+                page=noteContents.size-1
+            } else {
+                page += 1
             }
         }
         changeContent()

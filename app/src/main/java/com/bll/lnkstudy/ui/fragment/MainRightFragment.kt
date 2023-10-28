@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
-import com.bll.lnkstudy.Constants.Companion.MESSAGE_EVENT
+import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CourseModuleDialog
@@ -245,7 +245,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                 examPapers.removeAt(0)
                 disMissView(rl_exam)
             }
-            MESSAGE_EVENT -> {
+            MESSAGE_COMMIT_EVENT -> {
                 findMessages()
             }
             PASSWORD_EVENT->{

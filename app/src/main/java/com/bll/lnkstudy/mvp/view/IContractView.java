@@ -180,13 +180,6 @@ public interface IContractView {
      */
     interface IControlMessageView extends IBaseView {
         /**
-         * 获取老师发送上传、移除课本指令
-         * @param controlMessages
-         */
-        void onControlMessage(List<ControlMessage> controlMessages);
-        void onDeleteMessage();
-
-        /**
          * 获取系统发送上传、删除本地作业考卷指令
          * @param controlMessages
          */
