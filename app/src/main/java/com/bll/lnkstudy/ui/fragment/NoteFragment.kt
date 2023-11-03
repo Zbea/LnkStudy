@@ -11,11 +11,11 @@ import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.PrivacyPassword
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.Notebook
-import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.NotebookManagerActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.FileUploadManager
@@ -280,6 +280,7 @@ class NoteFragment : BaseFragment(){
     fun uploadNote(token:String){
         if (grade==0) return
         val cloudList= mutableListOf<CloudListBean>()
+        val nullItems= mutableListOf<Note>()
         for (noteType in noteTypes){
             //查找到这个分类的所有内容，然后遍历上传所有内容
             val notes= NoteDaoManager.getInstance().queryAll(noteType.name)
@@ -304,23 +305,14 @@ class NoteFragment : BaseFragment(){
                                 downloadUrl=it
                             })
                             //当加入上传的内容等于全部需要上传时候，则上传
-                            if (cloudList.size== NoteDaoManager.getInstance().queryNotes().size)
+                            if (cloudList.size== NoteDaoManager.getInstance().queryNotes().size-nullItems.size)
                                 mCloudUploadPresenter.upload(cloudList)
                         }
                     }
                 }
                 else{
-                    cloudList.add(CloudListBean().apply {
-                        type=4
-                        subType=-1
-                        subTypeStr=item.typeStr
-                        date=System.currentTimeMillis()
-                        grade=item.grade
-                        listJson=Gson().toJson(item)
-                    })
-                    //当加入上传的内容等于全部需要上传时候，则上传
-                    if (cloudList.size== NoteDaoManager.getInstance().queryNotes().size)
-                        mCloudUploadPresenter.upload(cloudList)
+                    //没有内容不上传
+                    nullItems.add(item)
                 }
             }
         }

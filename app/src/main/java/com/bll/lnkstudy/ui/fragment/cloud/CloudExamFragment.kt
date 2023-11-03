@@ -9,6 +9,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
@@ -82,9 +83,16 @@ class CloudExamFragment:BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudExamFragment.position=position
-                val ids= mutableListOf<Int>()
-                ids.add(types[position].cloudId)
-                mCloudPresenter.deleteCloud(ids)
+                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            val ids= mutableListOf<Int>()
+                            ids.add(types[position].cloudId)
+                            mCloudPresenter.deleteCloud(ids)
+                        }
+                    })
                 true
             }
             setOnItemClickListener { adapter, view, position ->
@@ -104,15 +112,6 @@ class CloudExamFragment:BaseCloudFragment() {
      * 下载考试卷
      */
     private fun download(item:PaperTypeBean){
-        item.id=null//设置数据库id为null用于重新加入
-        //没有内容直接添加
-        if (item.downloadUrl.isNullOrEmpty())
-        {
-            PaperTypeDaoManager.getInstance().insertOrReplace(item)
-            //创建增量数据
-            DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
-            return
-        }
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
         val fileTargetPath= FileAddress().getPathTestPaper(item.typeId)
@@ -126,6 +125,7 @@ class CloudExamFragment:BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
+                            item.id=null//设置数据库id为null用于重新加入
                             PaperTypeDaoManager.getInstance().insertOrReplace(item)
                             //创建增量数据
                             DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))

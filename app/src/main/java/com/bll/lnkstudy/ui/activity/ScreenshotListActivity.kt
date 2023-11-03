@@ -40,18 +40,18 @@ class ScreenshotListActivity : BaseAppCompatActivity() {
     override fun initData() {
         pageSize=12
         longBeans.add(ItemList().apply {
-            name="删除"
+            name=getString(R.string.delete)
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="设置"
+            name=getString(R.string.setting)
             resId=R.mipmap.icon_setting_set
         })
     }
 
     override fun initView() {
         pageSize = 12
-        setPageTitle("截图列表（未分类）")
+        setPageTitle(R.string.screenshot_listNo_str)
 
         initRecycleView()
         getFetchFiles()
@@ -72,7 +72,7 @@ class ScreenshotListActivity : BaseAppCompatActivity() {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@ScreenshotListActivity, 22f), DP2PX.dip2px(this@ScreenshotListActivity, 70f)))
             setOnItemClickListener { adapter, view, position ->
                 val file=mAdapter?.getItem(position)
-                ImageDialog(this@ScreenshotListActivity, arrayListOf(file?.path!!)).builder()
+                ImageDialog(this@ScreenshotListActivity, file?.path!!).builder()
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position

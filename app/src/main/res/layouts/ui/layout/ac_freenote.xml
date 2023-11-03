@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_page"
     android:paddingTop="@dimen/statusbar_height"
+    android:background="@color/bg_page"
     android:orientation="vertical">
 
-    <include layout="@layout/common_title"/>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/common_title"
+        />
 
     <LinearLayout
+        android:id="@+id/ll_function"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
+        android:layout_below="@+id/ll_title"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
-
+        android:gravity="center_vertical"
+        >
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="180dp"
@@ -28,7 +33,7 @@
             android:textColor="@color/black"
             android:textSize="22sp" />
 
-        <View
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -39,32 +44,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:text="@string/freenote_theme_str"
+            android:text="格式"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tv_free_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="@dimen/dp_40"
             android:text="列表"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:gravity="center"
             />
-
     </LinearLayout>
 
     <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/v_content_b"
+        android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom"
+        android:layout_below="@+id/ll_function"
         android:src="@mipmap/icon_freenote_bg_1" />
 
     <include
-        layout="@layout/common_drawing_bottom_one"
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_bottom_height"
+        android:layout_alignParentBottom="true"
+        layout="@layout/common_drawing_bottom_one" />
+
+    <include
+        android:id="@+id/ll_geometry"
+        layout="@layout/common_drawing_geometry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_image"
+        android:visibility="gone"
         />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_geometry"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_above="@+id/ll_bottom"
+        android:visibility="gone"
+        android:padding="1dp"
+        android:src="@mipmap/icon_app_geometry"
+        android:background="@drawable/bg_black_stroke_0dp_corner"
+        />
+
+</RelativeLayout>

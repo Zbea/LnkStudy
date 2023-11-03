@@ -494,18 +494,13 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(location:Int){
-        var type=0
         val tools= mutableListOf<AppBean>()
         tools.add(AppBean().apply {
             appName=getString(R.string.geometry_title_str)
             imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
         })
         tools.addAll(toolApps)
-        if (this is DiaryActivity||this is FreeNoteActivity){
-            type=1
-            tools.removeFirst()
-        }
-        AppToolDialog(this,getCurrentScreenPos(),location,tools,type).builder()?.setDialogClickListener{ pos->
+        AppToolDialog(this,getCurrentScreenPos(),location,tools).builder()?.setDialogClickListener{ pos->
             if (pos==0){
                 setViewElikUnable(ll_geometry)
                 showView(ll_geometry)
@@ -826,6 +821,11 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        //草稿纸不执行
+        if (this is DraftDrawingActivity)
+        {
+            return
+        }
         //移屏之后工具图标需要调动
         if (!isExpand){
             screenPos=getCurrentScreenPos()

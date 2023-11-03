@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseCloudFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
@@ -79,34 +80,27 @@ class CloudHomeworkFragment:BaseCloudFragment(){
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 50))
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudHomeworkFragment.position=position
-                val ids= mutableListOf<Int>()
-                ids.add(types[position].cloudId)
-                mCloudPresenter.deleteCloud(ids)
+                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            val ids= mutableListOf<Int>()
+                            ids.add(types[position].cloudId)
+                            mCloudPresenter.deleteCloud(ids)
+                        }
+                    })
                 true
             }
             setOnItemClickListener { adapter, view, position ->
                 val homeworkTypeBean=types[position]
                 //如果是题卷本
                 if (homeworkTypeBean.state==4){
-                    //判断题卷本是否已下载题卷书籍
-                    if (homeworkTypeBean.contentJson.isNotEmpty()){
-                        if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
-                            startDownload(homeworkTypeBean)
-                        }
-                        else{
-                            showToast(getScreenPosition(),R.string.toast_downloaded)
-                        }
+                    if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
+                        startDownload(homeworkTypeBean)
                     }
                     else{
-                        //未下载书籍的题卷本直接存储
-                        if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
-                            homeworkTypeBean.id=null
-                            HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-                            showToast(getScreenPosition(),R.string.book_download_success)
-                        }
-                        else{
-                            showToast(getScreenPosition(),R.string.toast_downloaded)
-                        }
+                        showToast(getScreenPosition(),R.string.toast_downloaded)
                     }
                 }
                 else{
@@ -125,15 +119,6 @@ class CloudHomeworkFragment:BaseCloudFragment(){
      * 下载普通作业本、作业卷
      */
     private fun download(item: HomeworkTypeBean){
-        item.id=null//设置数据库id为null用于重新加入
-        //没有内容直接添加
-        if (item.downloadUrl.isNullOrEmpty())
-        {
-            HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-            //创建增量数据
-            DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
-            return
-        }
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
         val fileTargetPath=when(item.state){
@@ -150,6 +135,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
+                            item.id=null//设置数据库id为null用于重新加入
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                             //创建增量数据
                             DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
@@ -250,7 +236,6 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
-
                             val homeworkTypeBean=HomeworkTypeBean().apply {
                                 name=book.bookName
                                 grade=book.grade

@@ -41,31 +41,31 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         pageSize = 12
-        popupBeans.add(PopupBean(0, "创建分类", false))
-        popupBeans.add(PopupBean(1, "删除分类", false))
+        popupBeans.add(PopupBean(0, getString(R.string.item_type_create_str), false))
+        popupBeans.add(PopupBean(1, getString(R.string.item_type_delete_str), false))
 
         longBeans.add(ItemList().apply {
-            name="删除"
+            name=getString(R.string.delete)
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="移出"
+            name=getString(R.string.shiftOut)
             resId=R.mipmap.icon_setting_out
         })
 
     }
 
     override fun initView() {
-        setPageTitle("截图管理")
-        showView(tv_setting,tv_province)
+        setPageTitle(R.string.screenshot_manager_str)
+        showView(tv_btn,tv_province)
 
-        tv_setting.text="截图列表"
-        tv_province.text="分类管理"
+        tv_btn.text=getString(R.string.screenshot_list_str)
+        tv_province.text=getString(R.string.item_type_str)
 
         tv_province.setOnClickListener {
             setTopSelectView()
         }
-        tv_setting.setOnClickListener {
+        tv_btn.setOnClickListener {
             customStartActivity(Intent(this, ScreenshotListActivity::class.java))
         }
 
@@ -168,7 +168,7 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@ScreenshotManagerActivity, 22f), DP2PX.dip2px(this@ScreenshotManagerActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
                 val file=mAdapter?.getItem(position)
-                ImageDialog(this@ScreenshotManagerActivity, arrayListOf(file?.path!!)).builder()
+                ImageDialog(this@ScreenshotManagerActivity, file?.path!!).builder()
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos=position

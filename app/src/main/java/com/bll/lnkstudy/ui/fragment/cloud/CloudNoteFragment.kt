@@ -9,13 +9,14 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
 import com.bll.lnkstudy.mvp.model.note.Notebook
-import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
@@ -95,9 +96,16 @@ class CloudNoteFragment: BaseCloudFragment() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudNoteFragment.position=position
-                val ids= mutableListOf<Int>()
-                ids.add(notes[position].cloudId)
-                mCloudPresenter.deleteCloud(ids)
+                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            val ids= mutableListOf<Int>()
+                            ids.add(notes[position].cloudId)
+                            mCloudPresenter.deleteCloud(ids)
+                        }
+                    })
                 true
             }
         }
@@ -107,13 +115,6 @@ class CloudNoteFragment: BaseCloudFragment() {
      * 下载笔记
      */
     private fun downloadNote(item: Note){
-        item.id=null//设置数据库id为null用于重新加入
-        //没有存储内容的笔记直接添加
-        if (item.downloadUrl.isNullOrEmpty())
-        {
-            addNote(item)
-            return
-        }
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
         val fileTargetPath=FileAddress().getPathNote(item.grade,item.typeStr,item.title)
@@ -171,6 +172,7 @@ class CloudNoteFragment: BaseCloudFragment() {
      * 添加笔记（如果下载的笔记分类本地不存在则添加）
      */
     private fun addNote(item: Note){
+        item.id=null//设置数据库id为null用于重新加入
         val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
         if (!NotebookDaoManager.getInstance().isExist(item.typeStr)){
             val noteBook = Notebook().apply {

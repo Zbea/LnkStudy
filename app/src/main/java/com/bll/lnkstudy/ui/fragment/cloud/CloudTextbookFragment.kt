@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseCloudFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
@@ -87,9 +88,16 @@ class CloudTextbookFragment:BaseCloudFragment() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
-                val ids= mutableListOf<Int>()
-                ids.add(books[position].cloudId)
-                mCloudPresenter.deleteCloud(ids)
+                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            val ids= mutableListOf<Int>()
+                            ids.add(books[position].cloudId)
+                            mCloudPresenter.deleteCloud(ids)
+                        }
+                    })
                 true
             }
         }

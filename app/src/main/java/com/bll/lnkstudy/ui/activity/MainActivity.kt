@@ -334,6 +334,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun clearData(){
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+        SPUtil.putObj("${mUser?.accountId}notePassword","")//清除隐私密码
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()

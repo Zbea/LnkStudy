@@ -33,7 +33,7 @@ interface APIService{
     fun getQiniuToken(): Observable<BaseResult<String>>
 
     /**
-     * 获取增量更新列表
+     * 获取增量更新列表F
      */
     @GET("student/data/list")
     fun onListDataUpdate(): Observable<BaseResult<MutableList<DataUpdateBean>>>

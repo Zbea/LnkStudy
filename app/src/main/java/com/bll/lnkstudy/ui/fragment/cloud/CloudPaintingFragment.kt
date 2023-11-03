@@ -9,6 +9,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
@@ -260,9 +261,16 @@ class CloudPaintingFragment : BaseCloudFragment() {
      * 删除云数据
      */
     private fun deleteCloud(position:Int){
-        val ids= mutableListOf<Int>()
-        ids.add(paintings[position].cloudId)
-        mCloudPresenter.deleteCloud(ids)
+        CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    val ids= mutableListOf<Int>()
+                    ids.add(paintings[position].cloudId)
+                    mCloudPresenter.deleteCloud(ids)
+                }
+            })
     }
 
     /**

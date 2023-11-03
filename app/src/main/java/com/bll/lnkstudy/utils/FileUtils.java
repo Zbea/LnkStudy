@@ -336,4 +336,13 @@ public class FileUtils {
     public static boolean isExist(String path){
         return new File(path).exists();
     }
+
+    /**
+     * 判断文件夹是否存在内容
+     * @param path
+     * @return
+     */
+    public static boolean isExistContent(String path){
+        return getFiles(path)!=null;
+    }
 }

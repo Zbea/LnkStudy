@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@mipmap/icon_diary_details_bg_1"
-        android:layout_above="@+id/ll_tool"
+        android:layout_above="@+id/ll_bottom"
         />
 
     <TextView
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_40"
         android:text="@string/digest"
         android:textColor="@color/black"
@@ -35,7 +35,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="75dp"
         android:layout_marginEnd="@dimen/dp_40"
-        android:gravity="center_vertical"
         >
         <ImageView
             android:id="@+id/iv_up"
@@ -65,11 +64,32 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/ll_tool"
+        android:id="@+id/ll_bottom"
         layout="@layout/common_drawing_bottom_one"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawing_bottom_height"
         android:layout_alignParentBottom="true"
+        />
+
+    <include
+        android:id="@+id/ll_geometry"
+        layout="@layout/common_drawing_geometry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/iv_geometry"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_above="@+id/ll_bottom"
+        android:visibility="gone"
+        android:padding="1dp"
+        android:src="@mipmap/icon_app_geometry"
+        android:background="@drawable/bg_black_stroke_0dp_corner"
         />
 
 </RelativeLayout>
