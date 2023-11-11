@@ -14,10 +14,7 @@ import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -46,7 +43,12 @@ class CloudBookCaseFragment:BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     private fun initTab(){
@@ -202,4 +204,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         mAdapter?.remove(position)
     }
 
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
+    }
 }

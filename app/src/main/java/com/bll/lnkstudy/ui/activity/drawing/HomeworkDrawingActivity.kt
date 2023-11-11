@@ -38,12 +38,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     private var page = 0//页码
     private var messages = mutableListOf<ItemList>()
-    private var drawingCommitDialog: DrawingCommitDialog? = null
     private var homeworkCommit: HomeworkCommit? = null
     private val commitItems = mutableListOf<ItemList>()
 
     override fun onToken(token: String) {
-        showLoading()
         val commitPaths = mutableListOf<String>()
         for (item in commitItems) {
             commitPaths.add(item.url)
@@ -53,19 +51,19 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map = HashMap<String, Any>()
-                    if (homeworkType?.createStatus==1){
+                    if (homeworkType?.createStatus == 1) {
                         map["studentTaskId"] = homeworkCommit?.messageId!!
                         map["studentUrl"] = ToolUtils.getImagesStr(urls)
-                        map["commonTypeId"]=homeworkTypeId
+                        map["commonTypeId"] = homeworkTypeId
                         mUploadPresenter.commit(map)
-                    }
-                    else{
+                    } else {
                         map["id"] = homeworkCommit?.messageId!!
                         map["submitUrl"] = ToolUtils.getImagesStr(urls)
-                        map["commonTypeId"]=homeworkTypeId
+                        map["commonTypeId"] = homeworkTypeId
                         mUploadPresenter.commitParent(map)
                     }
                 }
+
                 override fun onUploadFail() {
                     hideLoading()
                     showToast(R.string.upload_fail)
@@ -79,6 +77,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
+        messages.removeAt(homeworkCommit?.index!!)
         for (i in homeworkCommit?.contents!!) {
             val homework = homeworks[i - 1]
             homework.state = 1
@@ -89,7 +88,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homeworkTypeId, Gson().toJson(homework))
         }
         //设置不能手写
-        if (homeworkCommit?.contents!!.contains(page+1)){
+        if (homeworkCommit?.contents!!.contains(page + 1)) {
             elik_a?.setPWEnabled(false)
             elik_b?.setPWEnabled(false)
         }
@@ -106,28 +105,28 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkTypeId = homeworkType?.typeId!!
         course = homeworkType?.course!!
 
-        when(homeworkType?.createStatus){
-            1->{
+        when (homeworkType?.createStatus) {
+            1 -> {
                 val list = homeworkType?.messages
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
                         if (item.endTime > 0 && item.status == 3) {
                             messages.add(ItemList().apply {
-                                id=item.studentTaskId
-                                name=item.title
+                                id = item.studentTaskId
+                                name = item.title
                             })
                         }
                     }
                 }
             }
-            2->{
+            2 -> {
                 val list = homeworkType?.parents
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
                         if (item.endTime > 0 && item.status == 1) {
                             messages.add(ItemList().apply {
-                                id=item.id
-                                name=item.content
+                                id = item.id
+                                name = item.content
                             })
                         }
                     }
@@ -175,16 +174,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
 
         iv_btn.setOnClickListener {
-            if (messages.size == 0 || homeworkContent?.state != 0)
-                return@setOnClickListener
-            if (drawingCommitDialog == null) {
-                drawingCommitDialog = DrawingCommitDialog(this, getCurrentScreenPos(), messages).builder()
-                drawingCommitDialog?.setOnDialogClickListener {
-                    homeworkCommit = it
-                    commit()
-                }
+            if (NetworkUtil(this).isNetworkConnected()) {
+                commit()
             } else {
-                drawingCommitDialog?.show()
+                showNetworkDialog()
             }
         }
 
@@ -214,20 +207,20 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 total -> {
                     newHomeWorkContent()
                     newHomeWorkContent()
-                    page = homeworks.size-1
+                    page = homeworks.size - 1
                 }
                 total - 1 -> {
                     newHomeWorkContent()
-                    page = homeworks.size-1
+                    page = homeworks.size - 1
                 }
                 else -> {
                     page += 2
                 }
             }
         } else {
-            if (page >=total) {
+            if (page >= total) {
                 newHomeWorkContent()
-                page=homeworks.size-1
+                page = homeworks.size - 1
             } else {
                 page += 1
             }
@@ -272,8 +265,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (isExpand) {
             if (page > 0) {
                 homeworkContent_a = homeworks[page - 1]
-            }
-            else{
+            } else {
                 page = 1
                 homeworkContent = homeworks[page]
                 homeworkContent_a = homeworks[page - 1]
@@ -284,10 +276,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (isExpand) {
             tv_title_a.text = homeworkContent_a?.title
         }
-        if (homeworkType?.isCloud==true){
+        if (homeworkType?.isCloud == true) {
             elik_b?.setPWEnabled(false)
-        }
-        else{
+        } else {
             //已提交后不能手写，显示合图后的图片
             elik_b?.setPWEnabled(homeworkContent?.state == 0)
         }
@@ -301,10 +292,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         tv_page_b.text = "${page + 1}"
 
         if (isExpand) {
-            if (homeworkType?.isCloud==true){
+            if (homeworkType?.isCloud == true) {
                 elik_a?.setPWEnabled(false)
-            }
-            else{
+            } else {
                 //已提交后不能手写，显示合图后的图片
                 elik_a?.setPWEnabled(homeworkContent?.state == 0)
             }
@@ -325,17 +315,17 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!,homeworkContent_a!!)
+        saveElik(elik_a!!, homeworkContent_a!!)
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!,homeworkContent!!)
+        saveElik(elik_b!!, homeworkContent!!)
     }
 
     /**
      * 抬笔后保存手写
      */
-    private fun saveElik(elik: EinkPWInterface,homeworkContent: HomeworkContentBean){
+    private fun saveElik(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
         elik.saveBitmap(true) {}
         DataUpdateManager.editDataUpdate(2, homeworkContent.id.toInt(), 2, homeworkTypeId)
     }
@@ -370,27 +360,34 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //作业提交
     private fun commit() {
-        showLoading()
-        commitItems.clear()
-        for (i in homeworkCommit?.contents!!) {
-            if (i > homeworks.size) {
-                showToast(R.string.toast_page_inexistence)
-                return
-            }
-            val homework = homeworks[i - 1]
-            //异步合图后排序
-            Thread {
-                val path = saveImage(homework)
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = path
-                })
-                if (commitItems.size == homeworkCommit?.contents!!.size) {
-                    commitItems.sort()
-                    mUploadPresenter.getToken()
+        if (messages.size == 0 || homeworkContent?.state != 0)
+            return
+        DrawingCommitDialog(this, getCurrentScreenPos(), messages).builder()
+            ?.setOnDialogClickListener {
+                homeworkCommit = it
+                showLoading()
+                commitItems.clear()
+                for (i in homeworkCommit?.contents!!) {
+                    if (i > homeworks.size) {
+                        hideLoading()
+                        showToast(R.string.toast_page_inexistence)
+                        return@setOnDialogClickListener
+                    }
+                    val homework = homeworks[i - 1]
+                    //异步合图后排序
+                    Thread {
+                        val path = saveImage(homework)
+                        commitItems.add(ItemList().apply {
+                            id = i
+                            url = path
+                        })
+                        if (commitItems.size == homeworkCommit?.contents!!.size) {
+                            commitItems.sort()
+                            mUploadPresenter.getToken()
+                        }
+                    }.start()
                 }
-            }.start()
-        }
+            }
     }
 
     /**
@@ -401,8 +398,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         val oldBitmap = BitmapFactory.decodeResource(resources, resId)
         val drawPath = homework.path
         val options = BitmapFactory.Options()
-        options.inJustDecodeBounds=false
-        val drawBitmap = BitmapFactory.decodeFile(drawPath,options)
+        options.inJustDecodeBounds = false
+        val drawBitmap = BitmapFactory.decodeFile(drawPath, options)
         if (drawBitmap != null) {
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
@@ -426,5 +423,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent))
     }
 
+    override fun onNetworkConnectionSuccess() {
+        commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
+    }
 
 }

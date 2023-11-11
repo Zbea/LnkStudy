@@ -18,10 +18,7 @@ import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
 import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -58,8 +55,13 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
-        mCloudPresenter.getType()
-        fetchData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            mCloudPresenter.getType()
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     private fun initTab(){
@@ -226,6 +228,11 @@ class CloudNoteFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        mCloudPresenter.getType()
+        fetchData()
     }
 
 }

@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Handler
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
@@ -19,10 +16,7 @@ import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.MD5Utils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -34,8 +28,7 @@ import kotlinx.android.synthetic.main.common_title.*
 /**
  * 书城
  */
-class BookStoreActivity : BaseAppCompatActivity(),
-    IContractView.IBookStoreView {
+class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView {
 
     private var type=0
     private var typeStr = ""//类别
@@ -93,8 +86,12 @@ class BookStoreActivity : BaseAppCompatActivity(),
             grade=gradeList[0].id
             initSelectorView()
         }
-
-        presenter.getBookType()
+        if (NetworkUtil(this).isNetworkConnected()){
+            presenter.getBookType()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
 
@@ -159,7 +156,7 @@ class BookStoreActivity : BaseAppCompatActivity(),
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
@@ -306,6 +303,10 @@ class BookStoreActivity : BaseAppCompatActivity(),
         if (bookNameStr.isNotEmpty())
             map["bookName"] = bookNameStr
         presenter.getBooks(map)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        presenter.getBookType()
     }
 
 }

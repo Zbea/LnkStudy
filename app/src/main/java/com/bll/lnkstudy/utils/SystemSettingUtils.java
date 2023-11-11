@@ -103,15 +103,15 @@ public class SystemSettingUtils {
     }
 
     /**
-     * 截图
+     *  课程路径
      * @param context
      * @param view
-     * @param picName
+     * @param path
      */
-    public static void saveScreenShot(Activity context, View view,String picName) {
+    public static void saveScreenShot(Activity context, View view,String path) {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
-        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getIMAGE_PATH(),picName);
+        BitmapUtils.saveBmpGallery(context,bitmap,path);
     }
 
     //获取最大多媒体音量

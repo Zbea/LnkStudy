@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_EVENT
+import com.bll.lnkstudy.Constants.Companion.APP_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
@@ -19,16 +19,13 @@ import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.ClassGroupUser
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
-import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.MainPresenter
-import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainView
 import com.bll.lnkstudy.ui.activity.date.DateActivity
@@ -41,20 +38,19 @@ import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.ui.adapter.MainNoteAdapter
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.fragment_main_left.*
-import org.greenrobot.eventbus.EventBus
 
 
 /**
  * 首页
  */
-class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonView,IMainView{
+class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
 
     private val mCommonPresenter= CommonPresenter(this)
-    private val mClassGroupPresenter = ClassGroupPresenter(this)
     private val mMainPresenter=MainPresenter(this)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var noteAdapter: MainNoteAdapter? = null
@@ -65,26 +61,16 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
 
     override fun onList(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
-            DataBeanManager.grades=commonData.grade
+            SPUtil.putList("grades", commonData.grade)
         if (!commonData.subject.isNullOrEmpty())
-            DataBeanManager.courses=commonData.subject
+            SPUtil.putList("courses", commonData.subject)
         if (!commonData.typeGrade.isNullOrEmpty())
-            DataBeanManager.typeGrades=commonData.typeGrade
+            SPUtil.putList("typeGrades", commonData.typeGrade)
     }
 
-    override fun onInsert() {
-    }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        if (DataBeanManager.classGroups != classGroups){
-            DataBeanManager.classGroups=classGroups
-            EventBus.getDefault().post(CLASSGROUP_EVENT)
-        }
+        MethodManager.saveClassGroups(classGroups)
     }
-    override fun onQuit() {
-    }
-    override fun onUser(lists: MutableList<ClassGroupUser>?) {
-    }
-
     override fun onExam(exam: PaperList?) {
     }
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
@@ -132,10 +118,10 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCommonPresenter.getCommonGrade()
-            mClassGroupPresenter.getClassGroupList(false)
             mMainPresenter.getHomeworkNotice()
+            mMainPresenter.getClassGroupList()
         }
         setDateView()
         findDataPlan()
@@ -269,6 +255,9 @@ class MainLeftFragment : BaseFragment(), IContractView.IClassGroupView,ICommonVi
             }
             MAIN_HOMEWORK_NOTICE_EVENT->{
                 mMainPresenter.deleteHomeworkNotice()
+            }
+            APP_REFRESH_EVENT->{
+                lazyLoad()
             }
         }
     }

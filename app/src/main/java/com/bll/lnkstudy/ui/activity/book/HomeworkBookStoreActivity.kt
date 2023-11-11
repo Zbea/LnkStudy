@@ -8,7 +8,8 @@ import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
@@ -17,10 +18,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -105,7 +103,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         gradeId = mUser?.grade!!
         gradeList=DataBeanManager.popupGrades(gradeId)
 
-        for (classGroup in DataBeanManager.classGroups){
+        for (classGroup in DataBeanManager.classGroups()){
             for (item in DataBeanManager.popupCourses){
                 if (classGroup.subject==item.name){
                     subjectList.add(item)
@@ -156,7 +154,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
@@ -393,22 +391,32 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
 
     override fun onDestroy() {
         super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
         FileDownloader.getImpl().pauseAll()
     }
 
     override fun fetchData() {
-        books.clear()
-        mAdapter?.notifyDataSetChanged()
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        if (tabId==1)
-            map["area"] = provinceStr
-        map["grade"] = gradeId
-        map["type"] = tabId
-        map["semester"]=semester
-        map["subjectName"]=courseId
-        presenter.getHomeworkBooks(map)
+        if (NetworkUtil(this).isNetworkConnected()){
+            books.clear()
+            mAdapter?.notifyDataSetChanged()
+            val map = HashMap<String, Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            if (tabId==1)
+                map["area"] = provinceStr
+            map["grade"] = gradeId
+            map["type"] = tabId
+            map["semester"]=semester
+            map["subjectName"]=courseId
+            presenter.getHomeworkBooks(map)
+        }
+        else{
+            showNetworkDialog()
+        }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

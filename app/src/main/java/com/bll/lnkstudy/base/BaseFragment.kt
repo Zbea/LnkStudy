@@ -15,6 +15,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.ControlMessage
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
@@ -57,6 +58,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
+    var mNetworkDialog:ProgressNetworkDialog?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var accountId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=1
@@ -121,7 +123,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         initView()
 
         getScreenPosition()
-        mDialog = ProgressDialog(activity,screenPos)
+        mDialog = ProgressDialog(requireActivity(),screenPos)
+        mNetworkDialog=ProgressNetworkDialog(requireActivity(),screenPos)
 
         lazyLoadDataIfPrepared()
     }
@@ -131,7 +134,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      * 获取控制信息指令
      */
     private fun onFetchControl(){
-        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mControlMessagePresenter.getSystemControlClear()
         }
     }
@@ -388,6 +391,14 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         }
     }
 
+    fun hideNetworkDialog() {
+        mNetworkDialog?.dismiss()
+    }
+    fun showNetworkDialog() {
+        mNetworkDialog?.show()
+        NetworkUtil(requireActivity()).toggleNetwork(true)
+    }
+
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
@@ -396,7 +407,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         MethodManager.logout(requireActivity())
     }
     override fun hideLoading() {
-        if (mView==null||activity==null)return
         mDialog?.dismiss()
     }
     override fun showLoading() {
@@ -425,8 +435,15 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             Constants.USER_CHANGE_EVENT->{
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
-                setClearHomework()
-                setClearExamPaper()
+                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
+            }
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                hideNetworkDialog()
+                onNetworkConnectionSuccess()
+            }
+            Constants.NETWORK_CONNECTION_FAIL_EVENT->{
+                hideNetworkDialog()
+                showToast(getScreenPosition(),R.string.net_work_error)
             }
             else->{
                 onEventBusMessage(msgFlag)
@@ -435,10 +452,15 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
     /**
+     * 网络连接成功处理事件
+     */
+    open fun onNetworkConnectionSuccess(){
+    }
+
+    /**
      * 收到eventbus事件处理
      */
     open fun onEventBusMessage(msgFlag: String){
-
     }
 
     /**

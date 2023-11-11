@@ -87,7 +87,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     override fun onResume() {
         super.onResume()
-        if (NetworkUtil.isNetworkAvailable(this)) {
+        if (NetworkUtil(this).isNetworkConnected()) {
             disMissView(tv_tips)
         } else {
             showView(tv_tips)

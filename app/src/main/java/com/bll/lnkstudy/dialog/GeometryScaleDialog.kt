@@ -10,6 +10,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
+import com.bll.lnkstudy.utils.SToast
 
 class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int,val location:Int) {
 
@@ -80,8 +81,14 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
                     }
                 }
                 else{
-                    dialog.dismiss()
-                    listener?.onClick(width.toFloat(),0f)
+                    val num=width.toFloat()
+                    if (currentGeometry==8&&num>360){
+                        SToast.showText(location,R.string.toast_geometry_angel_less_360)
+                    }
+                    else{
+                        dialog.dismiss()
+                        listener?.onClick(num,0f)
+                    }
                 }
             }
         }

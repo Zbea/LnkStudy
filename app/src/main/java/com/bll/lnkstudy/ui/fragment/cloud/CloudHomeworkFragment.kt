@@ -16,10 +16,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.ui.adapter.CloudHomeworkAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -50,21 +47,24 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     }
 
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     private fun initTab(){
-        val courses= DataBeanManager.courses
-        if (courses.size>0){
-            course=courses[0].desc
-            for (i in courses.indices) {
-                rg_group.addView(getRadioButton(i ,courses[i].desc,courses.size-1))
-            }
-            rg_group.setOnCheckedChangeListener { radioGroup, id ->
-                course=courses[id].desc
-                pageIndex=1
-                fetchData()
-            }
+        val courses= DataBeanManager.courses()
+        course=DataBeanManager.getCourseStr(0)
+        for (i in courses.indices) {
+            rg_group.addView(getRadioButton(i ,courses[i].desc,courses.size-1))
+        }
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            course=courses[id].desc
+            pageIndex=1
+            fetchData()
         }
     }
 
@@ -316,6 +316,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

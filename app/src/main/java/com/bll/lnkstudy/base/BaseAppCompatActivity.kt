@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -38,6 +40,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     var screenPos=0
     var mDialog: ProgressDialog? = null
+    var mNetworkDialog: ProgressNetworkDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
 
@@ -90,7 +93,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
         }
 
-        mDialog = ProgressDialog(this,screenPos)
+        mDialog = ProgressDialog(this,getCurrentScreenPos())
+        mNetworkDialog= ProgressNetworkDialog(this,getCurrentScreenPos())
         initData()
         initView()
 
@@ -198,6 +202,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      */
     fun getCurrentScreenPos():Int{
         return getCurrentScreenPanel()
+    }
+
+    fun hideNetworkDialog() {
+        mNetworkDialog?.dismiss()
+    }
+    fun showNetworkDialog() {
+        mNetworkDialog?.show()
+        NetworkUtil(this).toggleNetwork(true)
     }
 
     fun gotoBookStore(type: Int){
@@ -389,7 +401,32 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    open fun onMessageEvent(msgFlag: String) {
+    fun onMessageEvent(msgFlag: String) {
+        when(msgFlag){
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                hideNetworkDialog()
+                onNetworkConnectionSuccess()
+            }
+            Constants.NETWORK_CONNECTION_FAIL_EVENT->{
+                hideNetworkDialog()
+                showToast(R.string.net_work_error)
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
+    }
+
+    /**
+     * 网络连接成功处理事件
+     */
+    open fun onNetworkConnectionSuccess(){
+    }
+
+    /**
+     * 收到eventbus事件处理
+     */
+    open fun onEventBusMessage(msgFlag: String){
     }
 
     override fun onDestroy() {

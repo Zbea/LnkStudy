@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
@@ -22,6 +23,7 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
+import java.io.File
 
 /**
  * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
@@ -47,11 +49,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
                 DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
             }
         }
-        paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
-        mAdapter?.setNewData(paperTypes)
-        if(paperContents.size>0){
-            refreshView()
-        }
+        setData()
     }
 
     override fun onList(paperList: PaperList?) {
@@ -88,6 +86,24 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
                 val item=paperTypes[position]
                 MethodManager.gotoPaperDrawing(requireActivity(),item.course,item.typeId,Constants.DEFAULT_PAGE)
             }
+            setOnItemLongClickListener { adapter, view, position ->
+                CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(
+                    object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            val item = paperTypes[position]
+                            //删除本地当前作业本
+                            PaperTypeDaoManager.getInstance().deleteBean(item)
+                            PaperDaoManager.getInstance().delete(item.course,item.typeId)
+                            PaperContentDaoManager.getInstance().delete(item.course,item.typeId)
+                            val path=FileAddress().getPathTestPaper(item.typeId)
+                            FileUtils.deleteFile(File(path))
+                            remove(position)
+                        }
+                    })
+                true
+            }
         }
     }
 
@@ -96,7 +112,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         course=""
         rg_group.removeAllViews()
         rg_group.setOnCheckedChangeListener(null)
-        val classGroups= DataBeanManager.classGroups
+        val classGroups= DataBeanManager.classGroups()
         if (classGroups.size>0){
             course=classGroups[0].subject
             for (i in classGroups.indices) {
@@ -180,9 +196,14 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.CLASSGROUP_EVENT){
-            onlineTypes.clear()
-            initTab()
+        when(msgFlag){
+            Constants.CLASSGROUP_EVENT->{
+                onlineTypes.clear()
+                initTab()
+            }
+            Constants.APP_REFRESH_EVENT->{
+                fetchData()
+            }
         }
     }
 
@@ -191,30 +212,34 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         fetchData()
     }
 
+    private fun setData(){
+        paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
+        mAdapter?.setNewData(paperTypes)
+        if (NetworkUtil(requireActivity()).isNetworkConnected())
+            fetchCorrectPaper()
+    }
+
     override fun fetchData() {
-        if (!NetworkUtil.isNetworkAvailable(requireActivity())){
-            return
-        }
-        val classGroups = DataBeanManager.classGroups
-        if (classGroups.size>0){
-            var teacherId = 0
-            for (classGroup in classGroups) {
-                if (classGroup.subject == course) {
-                    teacherId = classGroup.teacherId
-                }
-            }
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!
             map["type"] = 1
-            map["userId"] = teacherId
+            map["userId"] = DataBeanManager.getClassGroupTeacherId(course)
             mPresenter.getTypeList(map)
-
-            val map1= HashMap<String,Any>()
-            map1["sendStatus"]=2
-            mPresenter.getList(map1)
         }
+        else{
+            setData()
+        }
+    }
 
+    /**
+     * 获取老师批改下发考卷
+     */
+    private fun fetchCorrectPaper(){
+        val map= HashMap<String,Any>()
+        map["sendStatus"]=2
+        mPresenter.getList(map)
     }
 
     /**
@@ -224,39 +249,37 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         if (grade==0) return
         val cloudList= mutableListOf<CloudListBean>()
         val nullItems= mutableListOf<PaperTypeBean>()
-        for(classGroup in DataBeanManager.classGroups){
-            val types=PaperTypeDaoManager.getInstance().queryAllByCourse(classGroup.subject)
+        for(classGroup in DataBeanManager.classGroups()){
+            //查找当前科目、年级的所有考卷(不包括云书库)
+            val types=PaperTypeDaoManager.getInstance().queryAllByCourseAndIsCloud(classGroup.subject)
             for (item in types){
-                //云考卷不重新上传
-                if (!item.isCloud){
-                    val papers= PaperDaoManager.getInstance().queryAll(item.course,item.typeId)
-                    val paperContents=PaperContentDaoManager.getInstance().queryAll(item.course,item.typeId)
-                    val path=FileAddress().getPathTestPaper(item.typeId)
-                    if (FileUtils.isExistContent(path)){
-                        FileUploadManager(token).apply {
-                            startUpload(path,item.name)
-                            setCallBack{
-                                cloudList.add(CloudListBean().apply {
-                                    type=3
-                                    subType=-1
-                                    subTypeStr=item.course
-                                    date=System.currentTimeMillis()
-                                    grade=item.grade
-                                    listJson=Gson().toJson(item)
-                                    contentJson= Gson().toJson(papers)
-                                    contentSubtypeJson=Gson().toJson(paperContents)
-                                    downloadUrl=it
-                                })
-                                if (cloudList.size==PaperTypeDaoManager.getInstance().queryAllExcludeCloud().size-nullItems.size){
-                                    mCloudUploadPresenter.upload(cloudList)
-                                }
+                val papers= PaperDaoManager.getInstance().queryAll(item.course,item.typeId)
+                val paperContents=PaperContentDaoManager.getInstance().queryAll(item.course,item.typeId)
+                val path=FileAddress().getPathTestPaper(item.typeId)
+                if (FileUtils.isExistContent(path)){
+                    FileUploadManager(token).apply {
+                        startUpload(path,item.name)
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=3
+                                subType=-1
+                                subTypeStr=item.course
+                                date=System.currentTimeMillis()
+                                grade=item.grade
+                                listJson=Gson().toJson(item)
+                                contentJson= Gson().toJson(papers)
+                                contentSubtypeJson=Gson().toJson(paperContents)
+                                downloadUrl=it
+                            })
+                            if (cloudList.size==PaperTypeDaoManager.getInstance().queryAllExcludeCloud().size-nullItems.size){
+                                mCloudUploadPresenter.upload(cloudList)
                             }
                         }
                     }
-                    else{
-                        //没有考卷内容不上传
-                        nullItems.add(item)
-                    }
+                }
+                else{
+                    //没有考卷内容不上传
+                    nullItems.add(item)
                 }
             }
         }

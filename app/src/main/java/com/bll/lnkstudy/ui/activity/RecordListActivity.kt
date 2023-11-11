@@ -24,10 +24,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileImageUploadManager
-import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -47,6 +44,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     private var pops= mutableListOf<PopupBean>()
     private var messages= mutableListOf<HomeworkMessage.MessageBean>()
     private var messageId=0
+    private var messageIndex=0
     private var commitPaths= mutableListOf<String>()
 
     override fun onToken(token: String) {
@@ -70,6 +68,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     override fun onSuccess(urls: MutableList<String>?) {
     }
     override fun onCommitSuccess() {
+        messages.removeAt(messageIndex)
         showToast(R.string.toast_commit_success)
         recordBeans[position].isCommit=true
         mAdapter?.notifyDataSetChanged()
@@ -128,8 +127,14 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 setSetting(view)
             }
             if (view.id==R.id.tv_save){
-                if (messages.size>0)
-                    commit()
+                if (messages.size==0)
+                    return@setOnItemChildClickListener
+                if (NetworkUtil(this).isNetworkConnected()){
+                        commit()
+                }
+                else{
+                    showNetworkDialog()
+                }
             }
 
         }
@@ -262,22 +267,28 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             })
         }
         HomeworkMessageSelectorDialog(this, screenPos, items).builder()
-            ?.setOnDialogClickListener {
+            ?.setOnDialogClickListener {position,it->
                 messageId=it.id
+                messageIndex=position
                 commitPaths.add(recordBeans[position].path)
                 mUploadPresenter.getToken()
             }
     }
 
-    override fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == Constants.RECORD_EVENT) {
             findDatas()
         }
     }
 
+    override fun onNetworkConnectionSuccess() {
+        commit()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         release()
+        NetworkUtil(this).toggleNetwork(false)
     }
 
 }

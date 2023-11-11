@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
@@ -164,7 +163,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
         }
 
-        startRemind()
+        startRemind8()
+        startRemind15()
+        startRemind18()
         startRemind1Month()
         startRemind9Month()
 
@@ -222,14 +223,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     /**
      * 开始每天定时任务 下午三点
      */
-    private fun startRemind() {
-
+    private fun startRemind15() {
          Calendar.getInstance().apply {
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.HOUR_OF_DAY, 15)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.MINUTE, 1)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
@@ -241,7 +241,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD
+            intent.action = Constants.ACTION_UPLOAD_15
             val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
              alarmManager.setRepeating(
@@ -249,8 +249,68 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                  AlarmManager.INTERVAL_DAY, pendingIntent
              )
         }
+    }
 
+    /**
+     * 开始每天定时任务 8点
+     */
+    private fun startRemind8() {
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.HOUR_OF_DAY, 8)
+            set(Calendar.MINUTE, 1)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
 
+            var selectLong = timeInMillis
+
+            if (currentTimeMillisLong > selectLong) {
+                add(Calendar.DAY_OF_MONTH, 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_UPLOAD_8
+            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.INTERVAL_DAY, pendingIntent
+            )
+        }
+    }
+
+    /**
+     * 开始每天定时任务  下午6点
+     */
+    private fun startRemind18() {
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.HOUR_OF_DAY, 18)
+            set(Calendar.MINUTE, 1)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            var selectLong = timeInMillis
+
+            if (currentTimeMillisLong > selectLong) {
+                add(Calendar.DAY_OF_MONTH, 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_UPLOAD_18
+            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.INTERVAL_DAY, pendingIntent
+            )
+        }
     }
 
     /**
@@ -1055,7 +1115,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         SPUtil.putInt("DataUpdateTime", endTime.toInt())
     }
 
-    override fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
                 mainRightFragment?.deleteDiary()
@@ -1090,15 +1150,4 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
         }
     }
-
-
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-            true
-        } else {
-            super.dispatchKeyEvent(event)
-        }
-    }
-
-
 }

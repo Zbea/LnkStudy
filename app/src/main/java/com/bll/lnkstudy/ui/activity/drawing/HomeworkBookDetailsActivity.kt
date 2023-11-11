@@ -10,10 +10,10 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
-import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -42,7 +42,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var pageCount = 0
     private var page = 0 //当前页码
     private var messages= mutableListOf<ItemList>()
-    private var drawingCommitDialog:DrawingCommitDialog?=null
     private var homeworkCommit: HomeworkCommit?=null
     private val commitItems = mutableListOf<ItemList>()
 
@@ -82,6 +81,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
+        messages.removeAt(homeworkCommit?.index!!)
     }
 
     override fun layoutId(): Int {
@@ -192,48 +192,47 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         iv_btn.setOnClickListener {
             if (messages.size==0)
                 return@setOnClickListener
-            if (drawingCommitDialog==null){
-                drawingCommitDialog= DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()
-                drawingCommitDialog?.setOnDialogClickListener {
-                    homeworkCommit=it
-                    commit()
-                }
+            if (NetworkUtil(this).isNetworkConnected()){
+                commit()
             }
             else{
-                drawingCommitDialog?.show()
+                showNetworkDialog()
             }
         }
     }
 
     //作业提交
     private fun commit() {
-        showLoading()
-        commitItems.clear()
-        showLog(homeworkCommit?.contents.toString())
-        for (i in homeworkCommit?.contents!!){
-            if (i>pageCount)
-            {
-                showToast(R.string.toast_page_inexistence)
-                return
-            }
-            val imageFile=getIndexFile(i-1)
-            val path=imageFile?.path.toString()
-            val drawPath = book?.bookDrawPath+"/$i/draw.png"
-            Thread{
-                BitmapUtils.mergeBitmap(path,drawPath)
-                FileUtils.deleteFile(File(drawPath).parentFile)
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = path
-                })
-                if (commitItems.size==homeworkCommit?.contents!!.size){
-                    commitItems.sort()
-                    //修手写合图后修改增量更新
-                    DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
-                    DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
-                    mUploadPresenter.getToken()
+        DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()?.setOnDialogClickListener {
+            homeworkCommit=it
+            showLoading()
+            commitItems.clear()
+            showLog(homeworkCommit?.contents.toString())
+            for (i in homeworkCommit?.contents!!){
+                if (i>pageCount)
+                {
+                    showToast(R.string.toast_page_inexistence)
+                    return@setOnDialogClickListener
                 }
-            }.start()
+                val imageFile=getIndexFile(i-1)
+                val path=imageFile?.path.toString()
+                val drawPath = book?.bookDrawPath+"/$i/draw.png"
+                Thread{
+                    BitmapUtils.mergeBitmap(path,drawPath)
+                    FileUtils.deleteFile(File(drawPath).parentFile)
+                    commitItems.add(ItemList().apply {
+                        id = i
+                        url = path
+                    })
+                    if (commitItems.size==homeworkCommit?.contents!!.size){
+                        commitItems.sort()
+                        //修手写合图后修改增量更新
+                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
+                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
+                        mUploadPresenter.getToken()
+                    }
+                }.start()
+            }
         }
     }
 
@@ -336,6 +335,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         book?.pageIndex = page
         HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
+        NetworkUtil(this).toggleNetwork(false)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        commit()
     }
 
 }

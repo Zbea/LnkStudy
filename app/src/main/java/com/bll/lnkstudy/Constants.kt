@@ -33,7 +33,7 @@ class Constants {
         const val weekTime = 7 * 24 * 60 * 60 * 1000
         const val DEFAULT_PAGE = -1
 
-//                        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        //                        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -69,6 +69,7 @@ class Constants {
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
 
         //eventbus通知标志
+        const val APP_REFRESH_EVENT = "AppRefreshEvent" //应用刷新
         const val AUTO_UPLOAD_LAST_SEMESTER_EVENT = "AutoUploadEventLastSemester" //上学期开学
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"//每天三点自动上传
@@ -93,13 +94,17 @@ class Constants {
         const val MAIN_HOMEWORK_NOTICE_EVENT = "MainHomeworkNoticeEvent"//作业通知清除广播
         const val PASSWORD_EVENT = "PrivacyPasswordEvent"//设置隐私密码广播
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理
+        const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
+        const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
 
         const val SETTING_DOWNLOAD_EVENT = "DataDownload"
         const val SETTING_RENT_EVENT = "DataRent"
         const val SETTING_CLEAT_EVENT = "DataClear"
 
         //定时任务标识
-        const val ACTION_UPLOAD = "com.bll.lnkstudy.upload"
+        const val ACTION_UPLOAD_8 = "com.bll.lnkstudy.upload_8"
+        const val ACTION_UPLOAD_15 = "com.bll.lnkstudy.upload_15"
+        const val ACTION_UPLOAD_18 = "com.bll.lnkstudy.upload_18"
         const val ACTION_UPLOAD_NEXT_SEMESTER = "com.bll.lnkstudy.upload.next.semester"
         const val ACTION_UPLOAD_LAST_SEMESTER = "com.bll.lnkstudy.upload.last.semester"
         const val ACTION_EXAM_TIME = "com.bll.lnkstudy.exam.time"

@@ -3,6 +3,9 @@ package com.bll.lnkstudy.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
+import com.bll.lnkstudy.mvp.model.ClassGroup
+import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.User
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.schedulers.Schedulers
@@ -29,14 +32,23 @@ object SPUtil {
         rootFile = context.cacheDir
     }
 
-    fun putList(key: String,list: MutableList<String>){
+    fun getUserId():String{
+        return getObj("user", User::class.java)?.accountId!!.toString()
+    }
+
+    fun putList(key: String,list: MutableList<ItemList>){
         val listStr= gson.toJson(list)
-        putString(key,listStr)
+        putString(getUserId()+key,listStr)
+    }
+
+    fun putClassGroups(key: String,list: MutableList<ClassGroup>){
+        val listStr= gson.toJson(list)
+        putString(getUserId()+key,listStr)
     }
 
     fun putListInt(key: String,list: MutableList<Int>){
         val listStr= gson.toJson(list)
-        putString(key,listStr)
+        putString(getUserId()+key,listStr)
     }
 
     fun putString(key: String, value: String) {
@@ -57,13 +69,18 @@ object SPUtil {
         return s as String
     }
 
-    fun getList(key: String): MutableList<String> {
-        return gson.fromJson(getString(key), object : TypeToken<List<String>>() {}.type)
+    fun getList(key: String): MutableList<ItemList> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ItemList>>() {}.type)
+            ?: return mutableListOf()
+    }
+
+    fun getClassGroups(key: String): MutableList<ClassGroup> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ClassGroup>>() {}.type)
             ?: return mutableListOf()
     }
 
     fun getListInt(key: String): MutableList<Int> {
-        return gson.fromJson(getString(key), object : TypeToken<List<Int>>() {}.type)
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<Int>>() {}.type)
             ?: return mutableListOf()
     }
 

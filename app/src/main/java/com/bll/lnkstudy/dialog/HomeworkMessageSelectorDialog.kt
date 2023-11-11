@@ -45,7 +45,7 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, pri
             item.isCheck=true
             mAdapter.notifyItemChanged(position)
             dismiss()
-            listener?.onClick(item)
+            listener?.onClick(position,item)
         }
 
         return this
@@ -64,7 +64,7 @@ class HomeworkMessageSelectorDialog(val context: Context, val screenPos:Int, pri
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: ItemList)
+        fun onClick(position:Int,item: ItemList)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener){

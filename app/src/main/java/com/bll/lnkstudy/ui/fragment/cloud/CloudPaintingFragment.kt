@@ -21,10 +21,7 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileMultitaskDownManager
-import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -60,7 +57,12 @@ class CloudPaintingFragment : BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     private fun initTab() {
@@ -338,6 +340,10 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 mAdapter?.remove(position)
             }
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

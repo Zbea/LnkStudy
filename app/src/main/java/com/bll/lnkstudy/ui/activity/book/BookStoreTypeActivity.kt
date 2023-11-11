@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity.book
 import android.content.Intent
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.ac_bookstore_type.*
 
 /**
@@ -53,5 +54,10 @@ class BookStoreTypeActivity:BaseAppCompatActivity() {
         iv_yscn?.setOnClickListener {
             gotoBookStore(6)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
     }
 }

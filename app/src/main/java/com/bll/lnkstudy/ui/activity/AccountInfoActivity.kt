@@ -44,7 +44,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun onEditGradeSuccess() {
         showToast(R.string.toast_edit_success)
         mUser?.grade = grade
-        tv_grade_str.text = DataBeanManager.grades[grade - 1].desc
+        tv_grade_str.text = DataBeanManager.getGradeStr(grade)
         EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
     }
 
@@ -76,7 +76,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-
         setPageTitle(R.string.my_account)
 
         privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword", PrivacyPassword::class.java)

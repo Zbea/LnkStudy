@@ -123,6 +123,7 @@ public interface IContractView {
          */
         void onExam(PaperList exam);
         void onHomeworkNotice(HomeworkNoticeList list);
+        void onClassGroupList(List<ClassGroup> classGroups);
     }
 
     //公共接口

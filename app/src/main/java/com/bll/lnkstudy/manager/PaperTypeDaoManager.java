@@ -79,6 +79,12 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
+    public List<PaperTypeBean> queryAllByCourseAndIsCloud(String course){
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition2= PaperTypeBeanDao.Properties.IsCloud.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
+    }
+
     public void deleteBean(PaperTypeBean bean){
         dao.delete(bean);
     }

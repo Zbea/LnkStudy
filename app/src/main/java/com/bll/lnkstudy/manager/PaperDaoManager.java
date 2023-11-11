@@ -64,9 +64,15 @@ public class PaperDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
     }
 
+
     public List<PaperBean> search(String title) {
         WhereCondition whereCondition1= PaperBeanDao.Properties.Title.like("%"+title+"%");
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+    }
+
+    public void delete(String course, int categoryId){
+        List<PaperBean> papers=queryAll(course,categoryId);
+        dao.deleteInTx(papers);
     }
 
     public void deleteBean(PaperBean bean){

@@ -16,7 +16,7 @@ class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuick
             setText(R.id.tv_name,item.name)
             setText(R.id.tv_score,item.score.toString())
             if (item.isCloud){
-                setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
+                setText(R.id.tv_grade, DataBeanManager.getGradeStr(item.grade))
                 setText(R.id.tv_date,DateUtils.intToStringDataNoHour(item.date))
             }
 

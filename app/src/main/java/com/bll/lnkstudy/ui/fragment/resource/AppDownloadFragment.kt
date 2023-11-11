@@ -14,10 +14,7 @@ import com.bll.lnkstudy.mvp.model.AppList
 import com.bll.lnkstudy.mvp.presenter.DownloadAppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadAppAdapter
-import com.bll.lnkstudy.utils.AppUtils
-import com.bll.lnkstudy.utils.BitmapUtils
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_resource_content.*
 import org.greenrobot.eventbus.EventBus
@@ -73,7 +70,12 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
     }
 
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+            fetchData()
+        }
+         else{
+             showNetworkDialog()
+         }
     }
 
     private fun initRecyclerView(){
@@ -169,13 +171,18 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
     }
 
     override fun fetchData() {
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["type"] = supply
-        map["subType"]=index
-        map["mainType"]=2
-        presenter.getAppList(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            val map = HashMap<String, Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["type"] = supply
+            map["subType"]=index
+            map["mainType"]=2
+            presenter.getAppList(map)
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     override fun onEventBusMessage(msgFlag: String) {
@@ -191,6 +198,10 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
                 EventBus.getDefault().post(Constants.APP_INSERT_EVENT)
             }
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

@@ -43,6 +43,7 @@
         <View
             android:layout_width="1.5dp"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@color/line_color" />
         <FrameLayout
             android:id="@+id/frame_layout_a"
@@ -87,7 +88,9 @@
         <View
             android:layout_width="1.5dp"
             android:layout_height="match_parent"
-            android:background="@color/line_color" />
+            android:background="@color/line_color"
+            android:layout_marginTop="@dimen/dp_10"
+            />
         <FrameLayout
             android:id="@+id/frame_layout_b"
             android:layout_width="match_parent"

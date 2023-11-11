@@ -52,7 +52,10 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
             ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION -> {
                 SToast.showText(0,MyApplication.mContext.getString(R.string.connect_error))
             }
-            ExceptionHandle.ERROR.NETWORD_ERROR,ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR -> {
+            ExceptionHandle.ERROR.NETWORD_ERROR-> {
+                SToast.showText(0,MyApplication.mContext.getString(R.string.net_work_error))
+            }
+            ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR -> {
                 SToast.showText(0,MyApplication.mContext.getString(R.string.connect_server_timeout))
             }
             ExceptionHandle.ERROR.PARSE_ERROR -> {

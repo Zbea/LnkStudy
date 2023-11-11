@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
@@ -36,6 +37,23 @@ public class AppUtils {
     public final static String WIDTH = "width";
 
     public final static String HEIGHT = "height";
+
+
+    /**
+     *移动网络开关
+     * @param context
+     * @param enabled
+     */
+    public static void setMobileDataEnabled(Context context, boolean enabled) {
+        try {
+            TelephonyManager telephonyService = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            Method setMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("setDataEnabled", boolean.class);
+            setMobileDataEnabledMethod.invoke(telephonyService, enabled);
+        } catch (Exception e) {
+            // 处理异常情况
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 获取状态栏高度

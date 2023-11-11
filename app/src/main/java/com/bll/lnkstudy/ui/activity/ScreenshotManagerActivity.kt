@@ -227,7 +227,7 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
         tv_page_current.text=pageIndex.toString()
     }
 
-    override fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.SCREENSHOT_MANAGER_EVENT){
             getFetchFiles()
         }

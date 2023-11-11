@@ -45,7 +45,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
-        for (item in DataBeanManager.classGroups){
+        for (item in DataBeanManager.classGroups()){
             if (item.status==1){
                 groups.add(item)
             }

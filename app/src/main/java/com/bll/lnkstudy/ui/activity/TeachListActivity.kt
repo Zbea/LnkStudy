@@ -14,6 +14,7 @@ import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
+import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.ac_teach_list.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -66,8 +67,12 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
             semester=semesters[0].id
             tv_semester.text = semesters[0].name
         }
-
-        fetchData()
+        if (NetworkUtil(this).isNetworkConnected()){
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
 
@@ -142,6 +147,15 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
             map["subType"] = item?.type!!
             mPresenter.getList(map)
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
     }
 
 }

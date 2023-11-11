@@ -9,6 +9,7 @@ import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.fragment.resource.AppDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
+import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -143,6 +144,11 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
                 ft.show(to).commit()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleMobileNet(false)
     }
 
 }

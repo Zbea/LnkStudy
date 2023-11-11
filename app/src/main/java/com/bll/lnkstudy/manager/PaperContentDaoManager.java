@@ -75,10 +75,13 @@ public class PaperContentDaoManager {
     public List<PaperContentBean> queryAll( String course, int categoryId) {
         WhereCondition whereCondition1= PaperContentBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition2= PaperContentBeanDao.Properties.TypeId.eq(categoryId);
-        List<PaperContentBean> queryList = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
-        return queryList;
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
     }
 
+    public void delete(String course, int categoryId){
+        List<PaperContentBean> paperContentBeans=queryAll(course,categoryId);
+        dao.deleteInTx(paperContentBeans);
+    }
 
     public void deleteBean(PaperContentBean bean){
         dao.delete(bean);

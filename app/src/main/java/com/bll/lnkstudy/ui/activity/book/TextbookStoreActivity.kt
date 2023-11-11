@@ -7,10 +7,10 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
@@ -89,12 +89,16 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         gradeList=DataBeanManager.popupGrades(gradeId)
         subjectList=DataBeanManager.popupCourses
 
-        if (subjectList.size>0){
-            courseId=subjectList[0].id
-            initSelectorView()
-            fetchData()
+        if (NetworkUtil(this).isNetworkConnected()){
+            if (subjectList.size>0){
+                courseId=subjectList[0].id
+                initSelectorView()
+                fetchData()
+            }
         }
-
+        else{
+            showNetworkDialog()
+        }
     }
 
     override fun initView() {
@@ -154,7 +158,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
@@ -382,6 +386,10 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         if (tabId!=0)
             map["subjectName"]=courseId
         presenter.getTextBooks(map)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

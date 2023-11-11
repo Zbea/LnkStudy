@@ -10,14 +10,13 @@ import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PastHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
-    BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
+class PastHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setText(R.id.tv_name, item.name)
             setGone(R.id.ll_info, false)
-            setText(R.id.tv_grade, DataBeanManager.grades[item.grade-1].desc)
+            setText(R.id.tv_grade, DataBeanManager.getGradeStr(item.grade))
             setText(R.id.tv_date, DateUtils.intToStringDataNoHour(item.date))
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){

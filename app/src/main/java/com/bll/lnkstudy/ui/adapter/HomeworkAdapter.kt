@@ -11,8 +11,7 @@ import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
-    BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
+class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {

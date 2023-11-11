@@ -43,7 +43,8 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePrese
                 return false
             }
             override fun success(tBaseResult: BaseResult<TeachingVideoType>) {
-                view.onType(tBaseResult.data)
+                if (tBaseResult!=null)
+                    view.onType(tBaseResult.data)
             }
         }, false)
     }

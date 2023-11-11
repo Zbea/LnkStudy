@@ -126,8 +126,13 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                     override fun cancel() {
                     }
                     override fun ok() {
-                        showLoading()
-                        commit()
+                        if (NetworkUtil(this@PaperExamDrawingActivity).isNetworkConnected()){
+                            showLoading()
+                            commit()
+                        }
+                        else{
+                            showNetworkDialog()
+                        }
                     }
                 })
         }
@@ -289,13 +294,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         elik_b?.saveBitmap(true) {}
     }
 
-    override fun onMessageEvent(msgFlag: String) {
-        if (msgFlag==Constants.EXAM_TIME_EVENT){
-            showLoading()
-            commit()
-        }
-    }
-
     override fun onBackPressed() {
     }
 
@@ -305,6 +303,23 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         } else {
             super.dispatchKeyEvent(event)
         }
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.EXAM_TIME_EVENT){
+            showLoading()
+            commit()
+        }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        showLoading()
+        commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
     }
 
 }

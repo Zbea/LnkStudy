@@ -20,12 +20,10 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Note>?) 
                 setGone(R.id.iv_edit,false)
             }
             else{
-                if (item.isCloud){
-                    if (DataBeanManager.grades.size>0){
-                        title =  "(${DataBeanManager.grades[item.grade-1].desc})${item.title}"
-                    }
+                title = if (item.isCloud){
+                    "(${DataBeanManager.getGradeStr(item.grade)})${item.title}"
                 } else{
-                    title = item.title
+                    item.title
                 }
             }
             setText(R.id.tv_title,title)

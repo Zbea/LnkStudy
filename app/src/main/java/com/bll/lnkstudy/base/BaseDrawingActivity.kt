@@ -14,18 +14,16 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
-import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
@@ -47,6 +45,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     var screenPos=0
     var mDialog: ProgressDialog? = null
+    var mNetworkDialog:ProgressNetworkDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var toolApps= mutableListOf<AppBean>()
@@ -64,6 +63,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private var revocationList= mutableListOf<Int>()
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
+    private var angle_a=0
+    private var angle_b=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +87,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
         toolApps=MethodManager.getAppTools(this,1)
 
-        mDialog = ProgressDialog(this,screenPos)
+        mDialog = ProgressDialog(this,getCurrentScreenPos())
+        mNetworkDialog=ProgressNetworkDialog(this,getCurrentScreenPos())
         initData()
         initView()
 
@@ -248,6 +250,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         }
 
         iv_angle?.setOnClickListener {
+            angle_a=0
+            angle_b=0
             setCheckView(ll_angle)
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
             currentGeometry=8
@@ -343,9 +347,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
                 elik_a?.setShifted(isCurrent&&isParallel)
             }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(1)
-                reDrawGeometry(elik_a!!,1)
+                //角度要是双数才能绘图
+                if (currentGeometry==8){
+                    angle_a+=1
+                    if (isEven(angle_a))
+                        reDrawGeometry(elik_a!!,1)
+                }
+                else{
+                    reDrawGeometry(elik_a!!,1)
+                }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 onElikSava_a()
@@ -356,9 +368,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
                 elik_b?.setShifted(isCurrent&&isParallel)
             }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(2)
-                reDrawGeometry(elik_b!!,2)
+                //角度要是双数才能绘图
+                if (currentGeometry==8){
+                    angle_b+=1
+                    if (isEven(angle_b))
+                        reDrawGeometry(elik_b!!,2)
+                }
+                else{
+                    reDrawGeometry(elik_b!!,2)
+                }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 onElikSava_b()
@@ -366,6 +386,13 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         })
 
         this.setTouchAsFocus(true)
+    }
+
+    /**
+     * 是否是偶数
+     */
+    private fun isEven(number: Int): Boolean {
+        return number and 1 == 0
     }
 
     /**
@@ -717,6 +744,14 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         startActivity(intent)
     }
 
+    fun hideNetworkDialog() {
+        mNetworkDialog?.dismiss()
+    }
+    fun showNetworkDialog() {
+        mNetworkDialog?.show()
+        NetworkUtil(this).toggleNetwork(true)
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected fun setStatusBarColor(statusColor: Int) {
@@ -798,10 +833,34 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    open fun onMessageEvent(msgFlag: String) {
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    fun onMessageEvent(msgFlag: String) {
+        when(msgFlag){
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                hideNetworkDialog()
+                onNetworkConnectionSuccess()
+            }
+            Constants.NETWORK_CONNECTION_FAIL_EVENT->{
+                hideNetworkDialog()
+                showToast(R.string.net_work_error)
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
     }
 
+    /**
+     * 网络连接成功处理事件
+     */
+    open fun onNetworkConnectionSuccess(){
+    }
+
+    /**
+     * 收到eventbus事件处理
+     */
+    open fun onEventBusMessage(msgFlag: String){
+    }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         //屏蔽长按切焦点造成原手写翻页

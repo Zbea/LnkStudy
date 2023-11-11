@@ -6,18 +6,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
-import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.activity.TeachListActivity
 import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
@@ -26,9 +24,8 @@ import kotlinx.android.synthetic.main.fragment_teach.*
 /**
  * 教学
  */
-class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonView {
+class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
 
-    private val mCommonPresenter=CommonPresenter(this)
     private val mPresenter=TeachingVideoPresenter(this)
     private var mAdapter: TeachCourseAdapter? = null
     private var videoType:TeachingVideoType?=null
@@ -37,20 +34,11 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
     private var flags=0//0课程 1其他
     private val map= mutableMapOf<Int,List<ItemList>>()
 
-    override fun onList(commonData: CommonData) {
-        if (!commonData.grade.isNullOrEmpty())
-            DataBeanManager.grades=commonData.grade
-        if (!commonData.subject.isNullOrEmpty())
-            DataBeanManager.courses=commonData.subject
-        if (!commonData.typeGrade.isNullOrEmpty())
-            DataBeanManager.typeGrades=commonData.typeGrade
-    }
-
     override fun onList(list: TeachingVideoList?) {
     }
-    override fun onType(type: TeachingVideoType?) {
+    override fun onType(type: TeachingVideoType) {
         videoType=type
-        tabs.addAll(type?.types!!)
+        SPUtil.putObj("${accountId}videoType",type)
         initTab()
     }
 
@@ -61,8 +49,6 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
     override fun initView() {
         setTitle(R.string.main_teach_title)
         pageSize=8
-
-        tabs.add(ItemList(0,0,getString(R.string.course)))
 
         mAdapter = TeachCourseAdapter(R.layout.item_teach_course, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
@@ -81,16 +67,25 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
     }
 
     override fun lazyLoad() {
-        if(NetworkUtil.isNetworkAvailable(requireActivity())){
-            if (DataBeanManager.courses.isEmpty())
-                mCommonPresenter.getCommonGrade()
-            if (videoType==null)
-                mPresenter.getType()
+        if(NetworkUtil(requireActivity()).isNetworkConnected()){
+            mPresenter.getType()
+        }
+        else{
+            if (videoType==null&&SPUtil.getObj("${accountId}videoType",TeachingVideoType::class.java)!=null){
+                videoType=SPUtil.getObj("${accountId}videoType",TeachingVideoType::class.java)
+                initTab()
+            }
         }
     }
 
     //设置头部索引
     private fun initTab() {
+        rg_group.removeAllViews()
+
+        tabs.clear()
+        tabs.add(ItemList(0,0,getString(R.string.course)))
+        tabs.addAll(videoType?.types!!)
+
         for (i in tabs.indices) {
             rg_group.addView(getRadioButton(i ,tabs[i].desc,tabs.size-1))
         }
@@ -98,7 +93,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
             pageIndex=1
             lists = if (i==0){
                 flags=0
-                DataBeanManager.courses
+                DataBeanManager.courses()
             } else{
                 flags=1
                 videoType?.subType?.get(i.toString()) as MutableList<ItemList>
@@ -106,7 +101,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView,ICommonVie
             pageNumberView()
         }
 
-        lists= DataBeanManager.courses
+        lists= DataBeanManager.courses()
         pageNumberView()
     }
 

@@ -19,6 +19,7 @@ import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 
@@ -48,7 +49,9 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onList(commonData: CommonData) {
-        DataBeanManager.grades=commonData.grade
+        SPUtil.putList("grades", commonData.grade)
+        SPUtil.putList("courses", commonData.subject)
+        SPUtil.putList("typeGrades", commonData.typeGrade)
         grades=DataBeanManager.popupGrades
         tv_grade.text=grades[0].name
     }

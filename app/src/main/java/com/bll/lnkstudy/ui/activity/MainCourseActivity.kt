@@ -8,6 +8,7 @@ import android.widget.GridLayout
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CourseTimeSelectorDialog
@@ -111,7 +112,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
             if (selectLists.size == 0) return@setOnClickListener
             CourseGreenDaoManager.getInstance().deleteAll()//清除以前存储的课程
             CourseGreenDaoManager.getInstance().insertAll(selectLists)
-            SystemSettingUtils.saveScreenShot(this, grid, "course")
+            SystemSettingUtils.saveScreenShot(this, grid, FileAddress().getPathCourse())
             EventBus.getDefault().post(Constants.COURSE_EVENT)
             SPUtil.putInt("courseType", type)
             finish()
@@ -128,8 +129,8 @@ class MainCourseActivity : BaseAppCompatActivity() {
     @SuppressLint("SuspiciousIndentation")
     private fun addTimeLayout() {
 
-        var heightTime1: Int
-        var heightTime2: Int
+        val heightTime1: Int
+        val heightTime2: Int
         when (type) {
             0, 1 -> {
                 heightTime1=weekHeight + dividerHeight + 4 * height
@@ -555,7 +556,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
      * 选择课程
      */
     private fun selectCourse(v: TextView) {
-        val courses= DataBeanManager.classGroups
+        val courses= DataBeanManager.classGroups()
         val lists= mutableListOf<ItemList>()
         for(item in courses){
             lists.add(ItemList(item.id,item.subject))

@@ -16,6 +16,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadWallpaperAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -51,7 +52,12 @@ class WallpaperDownloadFragment :BaseFragment(), IContractView.IPaintingView{
     }
 
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     private fun initRecyclerView(){
@@ -151,6 +157,10 @@ class WallpaperDownloadFragment :BaseFragment(), IContractView.IPaintingView{
         map["supply"]=supply
         map["type"]=1
         presenter.getList(map)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

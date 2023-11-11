@@ -86,7 +86,7 @@ class DateDayListActivity:BaseAppCompatActivity() {
         mAdapter?.setNewData(days)
     }
 
-    override fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag== Constants.DATE_EVENT){
             findDatas()
         }

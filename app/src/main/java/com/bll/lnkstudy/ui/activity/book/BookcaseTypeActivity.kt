@@ -11,8 +11,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -68,7 +68,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         mAdapter = BookAdapter(R.layout.item_book_type, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            setEmptyView(R.layout.common_book_empty)
+            setEmptyView(R.layout.common_empty)
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4,
                     DP2PX.dip2px(this@BookcaseTypeActivity, 22f),
                     DP2PX.dip2px(this@BookcaseTypeActivity, 35f)
@@ -136,13 +136,6 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
             }
     }
 
-    override fun onMessageEvent(msgFlag: String) {
-        if (msgFlag == BOOK_EVENT) {
-            fetchData()
-        }
-    }
-
-
     override fun fetchData() {
         hideKeyboard()
         val total: MutableList<BookBean>
@@ -158,5 +151,10 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         mAdapter?.setNewData(books)
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag == BOOK_EVENT) {
+            fetchData()
+        }
+    }
 
 }

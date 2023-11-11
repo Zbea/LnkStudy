@@ -12,7 +12,7 @@ class PaintingTypeAdapter(layoutResId: Int, data: List<PaintingTypeBean>?) : Bas
     override fun convert(helper: BaseViewHolder, item: PaintingTypeBean) {
         helper.apply {
             setImageResource(R.id.iv_painting,if (item.type==0) R.mipmap.icon_painting_sm else R.mipmap.icon_painting_yb)
-            setText(R.id.tv_grade,DataBeanManager.grades[item.grade-1].desc)
+            setText(R.id.tv_grade,DataBeanManager.getGradeStr(item.grade))
         }
     }
 

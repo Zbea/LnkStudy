@@ -8,6 +8,8 @@ import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.ClassGroup;
+import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean;
@@ -30,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -63,6 +66,7 @@ public class MethodManager {
      */
     public static void gotoBookDetails(Context context, BookBean bookBean,int screenPos)  {
         AppUtils.stopApp(context,"com.geniatech.knote.reader");
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
 
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
@@ -89,7 +93,8 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("userId",user.accountId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", screenPos==3? 1 : screenPos);
         context.startActivity(intent);
     }
@@ -241,5 +246,14 @@ public class MethodManager {
         }
         return apps;
     }
-    
+
+    /**
+     * 保存班群列表
+     * @param classGroups
+     */
+    public static void saveClassGroups(List<ClassGroup> classGroups){
+        SPUtil.INSTANCE.putClassGroups("classGroups", classGroups);
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT);
+    }
+
 }

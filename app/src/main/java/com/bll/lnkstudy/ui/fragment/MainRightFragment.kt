@@ -64,6 +64,9 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     }
     override fun onHomeworkNotice(list: HomeworkNoticeList?) {
     }
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
+        MethodManager.saveClassGroups(classGroups)
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_right
@@ -116,16 +119,17 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             findMessages()
             fetchExam()
+            mMainPresenter.getClassGroupList()
         }
     }
 
     //课程表相关处理
     @SuppressLint("WrongConstant")
     private fun initCourse() {
-        val path=Constants.IMAGE_PATH + "/course.png"
+        val path=FileAddress().getPathCourse()
         if (File(path).exists())
             GlideUtils.setImageNoCacheUrl(activity,path , iv_course)
     }
@@ -251,6 +255,9 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
             PASSWORD_EVENT->{
                 privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
                     PrivacyPassword::class.java)
+            }
+            Constants.APP_REFRESH_EVENT ->{
+                lazyLoad()
             }
         }
     }

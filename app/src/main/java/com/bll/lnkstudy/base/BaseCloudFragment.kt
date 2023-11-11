@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.presenter.CloudPresenter
@@ -20,20 +21,17 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.SToast
-import io.reactivex.annotations.NonNull
+import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.ceil
 
 
-abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseCloudFragment() : Fragment(), IContractView.ICloudView , IBaseView {
 
     val mCloudPresenter= CloudPresenter(this)
     /**
@@ -49,6 +47,7 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
+    var mNetworkDialog: ProgressNetworkDialog?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=0
@@ -87,6 +86,8 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
+
         isViewPrepare = true
         grade=mUser?.grade!!
         initCommonTitle()
@@ -94,7 +95,9 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
 
         getScreenPosition()
 
-        mDialog = ProgressDialog(activity,screenPos)
+        mDialog = ProgressDialog(requireActivity(),getScreenPosition())
+        mNetworkDialog=ProgressNetworkDialog(requireActivity(),getScreenPosition())
+
         lazyLoadDataIfPrepared()
     }
 
@@ -288,53 +291,12 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
         return radioButton
     }
 
-    /**
-     * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
-     * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
-     *
-     * @param requestCode  权限请求的识别码
-     * @param permissions  申请的权限
-     * @param grantResults 授权结果
-     */
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    fun hideNetworkDialog() {
+        mNetworkDialog?.dismiss()
     }
-
-    /**
-     * 当权限被成功申请的时候执行回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        Log.i("EasyPermissions", "获取成功的权限$perms")
-    }
-
-    /**
-     * 当权限申请失败的时候执行的回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
-        //处理权限名字字符串
-        val sb = StringBuffer()
-        for (str in perms) {
-            sb.append(str)
-            sb.append("\n")
-        }
-        sb.replace(sb.length - 2, sb.length, "")
-        //用户点击拒绝并不在询问时候调用
-        if (EasyPermissions.somePermissionPermanentlyDenied(requireActivity(), perms)) {
-            Toast.makeText(activity, "已拒绝权限" + sb + "并不再询问", Toast.LENGTH_SHORT).show()
-            AppSettingsDialog.Builder(requireActivity())
-                    .setRationale("此功能需要" + sb + "权限，否则无法正常使用，是否打开设置")
-                    .setPositiveButton("好")
-                    .setNegativeButton("不行")
-                    .build()
-                    .show()
-        }
+    fun showNetworkDialog() {
+        mNetworkDialog?.show()
+        NetworkUtil(requireActivity()).toggleNetwork(true)
     }
 
     override fun addSubscription(d: Disposable) {
@@ -398,4 +360,43 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , EasyPe
 
     }
 
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    fun onMessageEvent(msgFlag: String) {
+        when(msgFlag){
+            Constants.USER_CHANGE_EVENT->{
+                mUser= SPUtil.getObj("user", User::class.java)
+                grade=mUser?.grade!!
+                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
+            }
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                hideNetworkDialog()
+                onNetworkConnectionSuccess()
+            }
+            Constants.NETWORK_CONNECTION_FAIL_EVENT->{
+                hideNetworkDialog()
+                showToast(getScreenPosition(),R.string.net_work_error)
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
+    }
+
+    /**
+     * 网络连接成功处理事件
+     */
+    open fun onNetworkConnectionSuccess(){
+    }
+
+    /**
+     * 收到eventbus事件处理
+     */
+    open fun onEventBusMessage(msgFlag: String){
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
 }

@@ -74,8 +74,8 @@ class PastHomeworkActivity:BaseAppCompatActivity() {
     }
 
     override fun fetchData() {
-        val total=HomeworkTypeDaoManager.getInstance().queryAllByCloud(true).size
-        homeworkTypes=HomeworkTypeDaoManager.getInstance().queryAllByCloud(true,pageIndex,pageSize)
+        val total=HomeworkTypeDaoManager.getInstance().queryAllByOld(mUser?.grade!!).size
+        homeworkTypes=HomeworkTypeDaoManager.getInstance().queryAllByOld(mUser?.grade!!,pageIndex,pageSize)
         setPageNumber(total)
         mAdapter?.setNewData(homeworkTypes)
     }

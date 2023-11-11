@@ -11,8 +11,8 @@ public class HomeworkDetails {
     public class HomeworkDetailBean{
         public int studentTaskId;
 
-        public String jobTitle;
-        public String title;
+        public String jobTitle;//内容
+        public String title;//分类
         public long time;
         public long submitTime;
     }

@@ -6,11 +6,9 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.mvp.model.CommonData
-import com.bll.lnkstudy.mvp.presenter.CommonPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.cloud.*
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_cloud_storage.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -18,10 +16,7 @@ import kotlinx.android.synthetic.main.common_title.*
 /**
  * 云存储
  */
-class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
-
-    private var mCommonPresenter= CommonPresenter(this)
-
+class CloudStorageActivity: BaseAppCompatActivity(){
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
     private var lastFragment: Fragment? = null
@@ -37,30 +32,12 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     private var popWindowDynasty:PopupList?=null
     private var popWindowGrade:PopupList?=null
 
-    override fun onList(commonData: CommonData) {
-        if (!commonData.grade.isNullOrEmpty())
-            DataBeanManager.grades=commonData.grade
-        if (!commonData.subject.isNullOrEmpty())
-            DataBeanManager.courses=commonData.subject
-        if (!commonData.typeGrade.isNullOrEmpty())
-            DataBeanManager.typeGrades=commonData.typeGrade
-        if (DataBeanManager.grades.size>0){
-            tv_grade.text=DataBeanManager.grades[grade-1].desc
-        }
-    }
-
     override fun layoutId(): Int {
         return R.layout.ac_cloud_storage
     }
 
     override fun initData() {
-        if (DataBeanManager.grades.size>0){
-            tv_grade.text=DataBeanManager.grades[grade-1].desc
-        }
-        else{
-            mCommonPresenter.getCommonGrade()
-        }
-
+        tv_grade.text=DataBeanManager.getGradeStr(grade)
         tv_course.text=DataBeanManager.popupDynasty()[0].name
     }
 
@@ -190,6 +167,7 @@ class CloudStorageActivity: BaseAppCompatActivity() ,ICommonView{
     override fun onDestroy() {
         super.onDestroy()
         FileDownloader.getImpl().pauseAll()
+        NetworkUtil(this).toggleNetwork(false)
     }
 
 }

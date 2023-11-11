@@ -116,7 +116,7 @@ class AppToolActivity:BaseAppCompatActivity() {
         mAdapterTool?.setNewData(toolApps)
     }
 
-    override fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             Constants.APP_UNINSTALL_EVENT->{
                 setDataApp()

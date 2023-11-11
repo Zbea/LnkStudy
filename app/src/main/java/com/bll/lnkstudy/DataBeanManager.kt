@@ -5,15 +5,13 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.bll.lnkstudy.mvp.model.note.Notebook
+import com.bll.lnkstudy.utils.SPUtil.getClassGroups
+import com.bll.lnkstudy.utils.SPUtil.getList
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
 object DataBeanManager {
 
-    var classGroups= mutableListOf<ClassGroup>()
-    var grades= mutableListOf<Grade>()
-    var typeGrades= mutableListOf<Grade>()
-    var courses= mutableListOf<ItemList>()
     var provinces= mutableListOf<Area>()
 
     private val listTitle = arrayOf(
@@ -35,7 +33,6 @@ object DataBeanManager {
         mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str)
     )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
-    val years = arrayOf(2022,2023, 2024, 2025,2026)
     val bookType = arrayOf(
         "诗经楚辞", "唐诗宋词", "古代经典",
         "四大名著", "中国科技", "小说散文",
@@ -66,26 +63,58 @@ object DataBeanManager {
         mContext.getString(R.string.download_wallpaper),mContext.getString(R.string.download_painting)
     )
 
+    fun classGroups():MutableList<ClassGroup>{
+        return getClassGroups("classGroups")
+    }
+
+    /**
+     * 获取班群中对应科目的老师id
+     */
+    fun getClassGroupTeacherId(course: String):Int{
+        var teacherId = 0
+        for (classGroup in classGroups()) {
+            if (classGroup.subject == course) {
+                teacherId = classGroup.teacherId
+            }
+        }
+        return teacherId
+    }
+
+    fun grades():MutableList<ItemList>{
+        return getList("grades")
+    }
+
+    fun typeGrades():MutableList<ItemList>{
+        return getList("typeGrades")
+    }
+
+    fun courses():MutableList<ItemList>{
+        return getList("courses")
+    }
+
     val popupGrades: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()
-            for (i in grades.indices){
-                list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
+            for (i in grades().indices){
+                list.add(PopupBean(grades()[i].type, grades()[i].desc, i == 0))
             }
             return list
         }
 
     fun popupGrades(grade: Int): MutableList<PopupBean> {
         val list = mutableListOf<PopupBean>()
-        for (item in grades) {
+        for (item in grades()) {
             list.add(PopupBean(item.type, item.desc, item.type == grade))
         }
         return list
     }
 
+    /**
+     * 获取当前选中年级
+     */
     fun getGradeStr(grade: Int): String {
         var cls=""
-        for (item in grades) {
+        for (item in grades()) {
             if (item.type == grade){
                 cls=item.desc
             }
@@ -93,11 +122,12 @@ object DataBeanManager {
         return cls
     }
 
+
     val popupTypeGrades: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()
-            for (i in typeGrades.indices){
-                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
+            for (i in typeGrades().indices){
+                list.add(PopupBean(typeGrades()[i].type, typeGrades()[i].desc, i == 0))
             }
             return list
         }
@@ -105,15 +135,18 @@ object DataBeanManager {
     val popupCourses: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()
-            for (i in courses.indices){
-                list.add(PopupBean(courses[i].type, courses[i].desc, i == 0))
+            for (i in courses().indices){
+                list.add(PopupBean(courses()[i].type, courses()[i].desc, i == 0))
             }
             return list
         }
 
+    /**
+     * 获取选中科目
+     */
     fun getCourseStr(course:Int):String{
         var courseStr=""
-        for (item in courses){
+        for (item in courses()){
             if (course==item.type){
                 courseStr=item.desc
             }
@@ -121,9 +154,12 @@ object DataBeanManager {
         return courseStr
     }
 
+    /**
+     * 获取科目id
+     */
     fun getCourseId(course:String):Int{
         var courseId=0
-        for (item in courses){
+        for (item in courses()){
             if (course==item.desc){
                 courseId=item.type
             }

@@ -2,7 +2,7 @@
     <string name="app_name">青蓝学生本</string>
     <string name="authority">com.bll.lnkstudy</string>
     <string name="request_success">请求成功</string>
-    <string name="net_work_error">检查网络是否连接</string>
+    <string name="net_work_error">网络连接失败</string>
     <string name="connect_server_timeout">无法连接到服务器</string>
     <string name="parse_data_error">解析数据错误</string>
     <string name="connect_error">服务器连接失败</string>
@@ -47,6 +47,7 @@
     <string name="toast_uninstall">确定卸载应用？</string>
     <string name="toast_freenote_insert_fail">暂无笔记本，无法插入</string>
     <string name="toast_freenote_insert_success">插入成功</string>
+    <string name="toast_geometry_angel_less_360">角度要小于360°</string>
 
     <string name="item_is_delete_tips">确定删除？</string>
     <string name="account_is_logout_tips">确定退出登录？</string>

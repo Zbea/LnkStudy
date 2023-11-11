@@ -2,8 +2,7 @@ package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ClassGroupAddDialog
@@ -15,7 +14,6 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
 import kotlinx.android.synthetic.main.ac_classgroup.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -34,10 +32,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         groups = classGroups
         mAdapter?.setNewData(groups)
 
-        if (DataBeanManager.classGroups != classGroups){
-            DataBeanManager.classGroups=classGroups
-            EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
-        }
+        MethodManager.saveClassGroups(classGroups)
     }
 
     override fun onQuit() {
@@ -45,8 +40,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         groups.removeAt(positionGroup)
         mAdapter?.setNewData(groups)
         //退出班群，刷新科目
-        DataBeanManager.classGroups=groups
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        MethodManager.saveClassGroups(groups)
     }
     override fun onUser(lists: MutableList<ClassGroupUser>?) {
     }
