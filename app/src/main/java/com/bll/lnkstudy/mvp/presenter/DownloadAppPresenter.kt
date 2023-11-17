@@ -7,13 +7,13 @@ import com.bll.lnkstudy.net.*
 /**
  * 应用相关
  */
-class DownloadAppPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
+class DownloadAppPresenter(view: IContractView.IAPPView,val screen:Int=0) : BasePresenter<IContractView.IAPPView>(view) {
 
     fun getAppList(map: HashMap<String,Any>) {
 
         val app = RetrofitManager.service.getApks(map)
 
-        doRequest(app, object : Callback<AppList>(view) {
+        doRequest(app, object : Callback<AppList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AppList>): Boolean {
                 return false
             }
@@ -32,7 +32,7 @@ class DownloadAppPresenter(view: IContractView.IAPPView) : BasePresenter<IContra
         val requestBody=RequestUtils.getBody(map)
         val download = RetrofitManager.service.buyApk(requestBody)
 
-        doRequest(download, object : Callback<Any>(view) {
+        doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

@@ -148,7 +148,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        NetworkUtil(this).toggleMobileNet(false)
+        NetworkUtil(this).toggleNetwork(false)
     }
 
 }

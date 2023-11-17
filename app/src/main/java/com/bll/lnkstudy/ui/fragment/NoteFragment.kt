@@ -12,7 +12,6 @@ import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.NotebookDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.Notebook
@@ -20,7 +19,6 @@ import com.bll.lnkstudy.ui.activity.NotebookManagerActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -42,8 +40,7 @@ class NoteFragment : BaseFragment(){
     private var mAdapter: NotebookAdapter? = null
     private var position = 0 //当前笔记标记
     private var resId = ""
-    private var privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-        PrivacyPassword::class.java)
+    private var privacyPassword=MethodManager.getPrivacyPassword()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -261,19 +258,6 @@ class NoteFragment : BaseFragment(){
         DataUpdateManager.editDataUpdate(4,id,2,positionType,Gson().toJson(item))
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == NOTE_BOOK_MANAGER_EVENT) {
-            findTabs()
-        }
-        if (msgFlag == NOTE_EVENT) {
-            fetchData()
-        }
-        if (msgFlag== PASSWORD_EVENT){
-            privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-                PrivacyPassword::class.java)
-        }
-    }
-
     /**
      * 上传笔记
      */
@@ -355,6 +339,21 @@ class NoteFragment : BaseFragment(){
         if (ids.size>0)
             mCloudUploadPresenter.deleteCloud(ids)
         EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            NOTE_BOOK_MANAGER_EVENT -> {
+                findTabs()
+            }
+            NOTE_EVENT -> {
+                fetchData()
+            }
+            PASSWORD_EVENT -> {
+                privacyPassword=MethodManager.getPrivacyPassword()
+                fetchData()
+            }
+        }
     }
 
 }

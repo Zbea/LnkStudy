@@ -6,7 +6,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<IContractView.IBookStoreView>(view) {
+class BookStorePresenter(view: IContractView.IBookStoreView,val screen: Int =0) : BasePresenter<IContractView.IBookStoreView>(view) {
 
     /**
      * 书籍
@@ -15,7 +15,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
 
         val books = RetrofitManager.service.getBooks(map)
 
-        doRequest(books, object : Callback<BookStore>(view) {
+        doRequest(books, object : Callback<BookStore>(view,screen) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
                 return false
             }
@@ -36,7 +36,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
 
         val books = RetrofitManager.service.getHomeworkBooks(map)
 
-        doRequest(books, object : Callback<BookStore>(view) {
+        doRequest(books, object : Callback<BookStore>(view,screen) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
                 return false
             }
@@ -57,7 +57,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
 
         val books = RetrofitManager.service.getTextBooks(map)
 
-        doRequest(books, object : Callback<BookStore>(view) {
+        doRequest(books, object : Callback<BookStore>(view,screen) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
                 return false
             }
@@ -76,7 +76,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
 
         val type = RetrofitManager.service.getBookType()
 
-        doRequest(type, object : Callback<BookStoreType>(view) {
+        doRequest(type, object : Callback<BookStoreType>(view,screen) {
             override fun failed(tBaseResult: BaseResult<BookStoreType>): Boolean {
                 return false
             }
@@ -95,7 +95,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
         val body=RequestUtils.getBody(map)
         val buy = RetrofitManager.service.buyBooks(body)
 
-        doRequest(buy, object : Callback<Any>(view) {
+        doRequest(buy, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

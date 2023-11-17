@@ -12,9 +12,15 @@ import io.reactivex.disposables.Disposable
 abstract class Callback1<T> : Observer<T> {
 
     private var IBaseView: IBaseView
+    private var screen=0
 
     constructor(IBaseView: IBaseView) {
         this.IBaseView = IBaseView
+    }
+
+    constructor(IBaseView: IBaseView,screen:Int) {
+        this.IBaseView = IBaseView
+        this.screen=screen
     }
 
 
@@ -40,22 +46,22 @@ abstract class Callback1<T> : Observer<T> {
         e.printStackTrace()
         when (ExceptionHandle.handleException(e).code) {
             ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION -> {
-                SToast.showText(0,MyApplication.mContext.getString(R.string.connect_error))
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_error))
             }
             ExceptionHandle.ERROR.NETWORD_ERROR -> {
-                SToast.showText(0,MyApplication.mContext.getString(R.string.net_work_error))
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.net_work_error))
             }
             ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR -> {
-                SToast.showText(0,MyApplication.mContext.getString(R.string.connect_server_timeout))
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_server_timeout))
             }
             ExceptionHandle.ERROR.PARSE_ERROR -> {
-                SToast.showText(0,MyApplication.mContext.getString(R.string.parse_data_error))
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.parse_data_error))
             }
             ExceptionHandle.ERROR.HTTP_ERROR -> {
-                SToast.showText(0,MyApplication.mContext.getString(R.string.connect_error))
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_error))
             }
             else -> {
-                SToast.showText(0,MyApplication.mContext.getString(R.string.on_server_error))
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.on_server_error))
             }
         }
         IBaseView.hideLoading()

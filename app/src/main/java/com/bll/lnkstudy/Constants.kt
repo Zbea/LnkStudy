@@ -33,7 +33,7 @@ class Constants {
         const val weekTime = 7 * 24 * 60 * 60 * 1000
         const val DEFAULT_PAGE = -1
 
-        //                        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -69,7 +69,6 @@ class Constants {
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
 
         //eventbus通知标志
-        const val APP_REFRESH_EVENT = "AppRefreshEvent" //应用刷新
         const val AUTO_UPLOAD_LAST_SEMESTER_EVENT = "AutoUploadEventLastSemester" //上学期开学
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"//每天三点自动上传
@@ -88,7 +87,6 @@ class Constants {
         const val VIDEO_EVENT = "VideoEvent"
         const val MESSAGE_COMMIT_EVENT = "MessageCommitEvent"//发送消息提交通知刷新
         const val USER_CHANGE_EVENT = "UserChangeEvent" //个人信息变化
-        const val CONTROL_CLEAR_EVENT = "ControlClearEvent" //控制清除作业本
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
         const val EXAM_TIME_EVENT = "ExamTime"//考试到时自动提交广播
         const val MAIN_HOMEWORK_NOTICE_EVENT = "MainHomeworkNoticeEvent"//作业通知清除广播

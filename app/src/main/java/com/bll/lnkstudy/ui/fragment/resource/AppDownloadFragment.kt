@@ -23,7 +23,7 @@ import java.io.File
 class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
 
     private var index=0
-    private var presenter= DownloadAppPresenter(this)
+    private var presenter= DownloadAppPresenter(this,getScreenPosition())
     private var mAdapter: DownloadAppAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
     private var currentDownLoadTask: BaseDownloadTask?=null

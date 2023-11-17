@@ -30,7 +30,7 @@ import java.io.File
 
 class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
 
-    private val mUploadPresenter= FileUploadPresenter(this)
+    private val mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     private var homeworkType: HomeworkTypeBean? = null
     //屏幕当前位置
     private var book: HomeworkBookBean? = null

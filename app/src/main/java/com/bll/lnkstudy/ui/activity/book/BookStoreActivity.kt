@@ -33,7 +33,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     private var type=0
     private var typeStr = ""//类别
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
-    private val presenter = BookStorePresenter(this)
+    private val presenter = BookStorePresenter(this,getCurrentScreenPos())
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
     private var grade = 0
@@ -61,6 +61,8 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
             subtype=types[0].type
             initTab()
         }
+
+        POWER_SERVICE
 
         fetchData()
     }

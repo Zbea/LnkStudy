@@ -22,7 +22,7 @@ class NetworkUtil(val context: Context) {
      */
     fun isNetworkConnected(): Boolean {
         val networkInfo = connManager?.activeNetworkInfo
-        return !(networkInfo==null || !networkInfo.isAvailable )
+        return networkInfo!=null&&networkInfo.isConnected
     }
 
     /**

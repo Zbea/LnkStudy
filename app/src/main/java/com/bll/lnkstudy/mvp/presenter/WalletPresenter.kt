@@ -9,7 +9,7 @@ import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RetrofitManager
 
 
-class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContractView.IWalletView>(view) {
+class WalletPresenter(view: IContractView.IWalletView,val screen:Int=0) : BasePresenter<IContractView.IWalletView>(view) {
 
     //获取学豆列表
     fun getXdList(boolean: Boolean) {
@@ -19,7 +19,7 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
         map["pageSize"] = "10"
 
         val list = RetrofitManager.service.getSMoneyList(map)
-        doRequest(list, object : Callback<AccountXDList>(view) {
+        doRequest(list, object : Callback<AccountXDList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountXDList>): Boolean {
                 return false
             }
@@ -37,7 +37,7 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
     fun postXdOrder(id:String)
     {
         val post = RetrofitManager.service.postOrder(id)
-        doRequest(post, object : Callback<AccountOrder>(view) {
+        doRequest(post, object : Callback<AccountOrder>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
                 return false
             }
@@ -51,7 +51,7 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
     fun checkOrder(id:String)
     {
         val order = RetrofitManager.service.getOrderStatus(id)
-        doRequest(order, object : Callback<AccountOrder>(view) {
+        doRequest(order, object : Callback<AccountOrder>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
                 return false
             }

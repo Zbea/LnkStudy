@@ -12,7 +12,7 @@ class SchoolPresenter(view: IContractView.ISchoolView) : BasePresenter<IContract
 
     fun getCommonSchool() {
         val grade = RetrofitManager.service.getCommonSchool()
-        doRequest(grade, object : Callback<MutableList<SchoolBean>>(view) {
+        doRequest(grade, object : Callback<MutableList<SchoolBean>>(view,1) {
             override fun failed(tBaseResult: BaseResult<MutableList<SchoolBean>>): Boolean {
                 return false
             }
@@ -20,7 +20,7 @@ class SchoolPresenter(view: IContractView.ISchoolView) : BasePresenter<IContract
                 if (tBaseResult.data!=null)
                     view.onListSchools(tBaseResult.data)
             }
-        }, true)
+        }, false)
 
     }
 

@@ -23,7 +23,6 @@ class TeachActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as TeachingVideoList.ItemBean
-
     }
 
     override fun initView() {

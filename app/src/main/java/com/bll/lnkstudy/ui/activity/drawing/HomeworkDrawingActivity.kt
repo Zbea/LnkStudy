@@ -27,7 +27,7 @@ import java.io.File
  */
 class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
 
-    private val mUploadPresenter = FileUploadPresenter(this)
+    private val mUploadPresenter = FileUploadPresenter(this,getCurrentScreenPos())
     private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkTypeBean? = null

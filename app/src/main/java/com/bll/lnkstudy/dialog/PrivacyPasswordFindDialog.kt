@@ -8,10 +8,12 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.PrivacyPassword
-import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.KeyboardUtils
+import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.SToast
 import com.google.gson.Gson
 
 
@@ -29,9 +31,7 @@ class PrivacyPasswordFindDialog(private val context: Context, private val screen
         }
         dialog.show()
 
-        val user=SPUtil.getObj("user", User::class.java)
-        val privacyPassword=SPUtil.getObj("${user?.accountId}notePassword",
-            PrivacyPassword::class.java)
+        val privacyPassword=MethodManager.getPrivacyPassword()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -74,7 +74,7 @@ class PrivacyPasswordFindDialog(private val context: Context, private val screen
             }
 
             privacyPassword.password=MD5Utils.digest(passwordStr)
-            SPUtil.putObj("${user?.accountId}notePassword",privacyPassword)
+            MethodManager.savePrivacyPassword(privacyPassword)
             //更新增量更新
             DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()

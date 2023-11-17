@@ -52,36 +52,37 @@ class BookDetailsActivity : BaseDrawingActivity() {
         if (FileUtils.isExist(cataLogFilePath))
         {
             val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
-            catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
-
-            for (item in catalogMsg?.contents!!) {
-                val catalogParent =
-                    CatalogParent()
-                catalogParent.title = item.title
-                catalogParent.pageNumber = item.pageNumber
-                catalogParent.picName = item.picName
-                for (ite in item.subItems) {
-                    val catalogChild =
-                        CatalogChild()
-                    catalogChild.title = ite.title
-                    catalogChild.pageNumber = ite.pageNumber
-                    catalogChild.picName = ite.picName
-
-                    catalogParent.addSubItem(catalogChild)
-                    childItems.add(catalogChild)
+            try {
+                catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
+            } catch (e: Exception) {
+            }
+            if (catalogMsg!=null){
+                for (item in catalogMsg?.contents!!) {
+                    val catalogParent =
+                        CatalogParent()
+                    catalogParent.title = item.title
+                    catalogParent.pageNumber = item.pageNumber
+                    catalogParent.picName = item.picName
+                    for (ite in item.subItems) {
+                        val catalogChild = CatalogChild()
+                        catalogChild.title = ite.title
+                        catalogChild.pageNumber = ite.pageNumber
+                        catalogChild.picName = ite.picName
+                        catalogParent.addSubItem(catalogChild)
+                        childItems.add(catalogChild)
+                    }
+                    parentItems.add(catalogParent)
+                    catalogs.add(catalogParent)
                 }
-                parentItems.add(catalogParent)
-                catalogs.add(catalogParent)
             }
         }
-
     }
 
     override fun initView() {
         elik_a?.addOnTopView(iv_top)
         elik_b?.addOnTopView(iv_top)
         setDrawingTitleClick(false)
-        pageCount = catalogMsg?.totalCount!!
+        pageCount = if (catalogMsg==null)0 else catalogMsg?.totalCount!!
         tv_title_a.text=book?.bookName
         tv_title_b.text=book?.bookName
 

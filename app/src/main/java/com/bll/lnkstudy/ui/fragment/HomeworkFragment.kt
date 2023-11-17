@@ -32,7 +32,7 @@ import java.util.concurrent.CountDownLatch
  */
 class HomeworkFragment : BaseFragment(), IHomeworkView {
 
-    private var countDownTasks:CountDownLatch?=null //异步完成后操作
+    private var countDownTasks: CountDownLatch?=null //异步完成后操作
     private val mPresenter = HomeworkPresenter(this)
     private var popWindowBeans = mutableListOf<PopupBean>()
     private var mAdapter: HomeworkAdapter? = null
@@ -740,24 +740,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         }
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        when (msgFlag) {
-            Constants.CLASSGROUP_EVENT -> {
-                initTab()
-            }
-            Constants.HOMEWORK_BOOK_EVENT -> {
-                fetchData()
-            }
-            Constants.APP_REFRESH_EVENT ->{
-                fetchHomeworkType()
-            }
-        }
-    }
-
-    override fun onRefreshData() {
-        super.onRefreshData()
-        fetchHomeworkType()
-    }
 
     /**
      * 请求作业分类
@@ -784,8 +766,8 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 requireActivity().runOnUiThread {
                     fetchData()
                 }
+                countDownTasks=null
             }.start()
-
         } else {
             fetchData()
         }
@@ -989,6 +971,25 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     private fun startUpload(list: MutableList<CloudListBean>, nullList: MutableList<HomeworkTypeBean>) {
         if (list.size == HomeworkTypeDaoManager.getInstance().queryAllExcludeCloud().size - nullList.size)
             mCloudUploadPresenter.upload(list)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            Constants.CLASSGROUP_EVENT -> {
+                initTab()
+            }
+            Constants.HOMEWORK_BOOK_EVENT -> {
+                fetchData()
+            }
+        }
+    }
+
+    override fun onRefreshData() {
+        fetchHomeworkType()
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchHomeworkType()
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {

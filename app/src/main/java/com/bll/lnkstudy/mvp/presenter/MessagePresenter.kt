@@ -4,12 +4,12 @@ import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
-class MessagePresenter(view: IContractView.IMessageView): BasePresenter<IContractView.IMessageView>(view) {
+class MessagePresenter(view: IContractView.IMessageView,var screen:Int=0): BasePresenter<IContractView.IMessageView>(view) {
 
 
     fun getList(map: HashMap<String,Any>,boolean: Boolean){
         val list= RetrofitManager.service.getMessages(map)
-        doRequest(list, object : Callback<MessageList>(view) {
+        doRequest(list, object : Callback<MessageList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MessageList>): Boolean {
                 return false
             }
@@ -23,7 +23,7 @@ class MessagePresenter(view: IContractView.IMessageView): BasePresenter<IContrac
     fun commitMessage(map: HashMap<String,Any>){
         val body=RequestUtils.getBody(map)
         val list= RetrofitManager.service.commitMessage(body)
-        doRequest(list, object : Callback<Any>(view) {
+        doRequest(list, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

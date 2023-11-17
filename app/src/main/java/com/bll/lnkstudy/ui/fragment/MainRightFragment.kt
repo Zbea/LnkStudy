@@ -39,14 +39,13 @@ import java.util.*
  */
 class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView{
 
-    private val mMainPresenter = MainPresenter(this)
-    private val mMessagePresenter=MessagePresenter(this)
+    private val mMainPresenter = MainPresenter(this,2)
+    private val mMessagePresenter=MessagePresenter(this,2)
     private var examPapers = mutableListOf<PaperList.PaperListBean>()
     private var positionPaper = 0
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
-    private var privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-        PrivacyPassword::class.java)
+    private var privacyPassword=MethodManager.getPrivacyPassword()
 
     override fun onList(message: MessageList) {
         if (message.list.isNotEmpty()){
@@ -85,19 +84,14 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         tv_class_template.setOnClickListener {
             CourseModuleDialog(requireActivity(), screenPos).builder()
                 ?.setOnClickListener { type ->
-                    customStartActivity(
-                        Intent(activity, MainCourseActivity::class.java)
-                            .setFlags(0)
-                            .putExtra("courseType", type)
-                    )
+                    customStartActivity(Intent(activity, MainCourseActivity::class.java).setFlags(0).putExtra("courseType", type))
                 }
         }
 
         ll_course.setOnClickListener {
             val courseType = SPUtil.getInt("courseType")
             customStartActivity(
-                Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    .putExtra("courseType", courseType)
+                Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).putExtra("courseType", courseType)
             )
         }
 
@@ -253,17 +247,16 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                 findMessages()
             }
             PASSWORD_EVENT->{
-                privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword",
-                    PrivacyPassword::class.java)
-            }
-            Constants.APP_REFRESH_EVENT ->{
-                lazyLoad()
+                privacyPassword=MethodManager.getPrivacyPassword()
             }
         }
     }
 
+    override fun onNetworkConnectionSuccess() {
+        lazyLoad()
+    }
+
     override fun onRefreshData() {
-        super.onRefreshData()
         lazyLoad()
     }
 

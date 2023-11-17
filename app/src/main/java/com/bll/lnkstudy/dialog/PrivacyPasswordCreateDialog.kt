@@ -8,11 +8,14 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.PrivacyPassword
-import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.KeyboardUtils
+import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.SToast
 import com.google.gson.Gson
 
 
@@ -105,8 +108,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             privacyPassword.question=tvQuestion.text.toString()
             privacyPassword.answer=answerStr
             privacyPassword.password=MD5Utils.digest(passwordStr)
-            val user=SPUtil.getObj("user", User::class.java)
-            SPUtil.putObj("${user?.accountId}notePassword",privacyPassword)
+            MethodManager.savePrivacyPassword(privacyPassword)
             //创建增量数据(日记密码)
             DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()

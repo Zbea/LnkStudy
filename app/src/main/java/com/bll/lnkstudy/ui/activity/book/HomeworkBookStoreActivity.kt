@@ -41,7 +41,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
     private var tabStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
-    private val presenter = BookStorePresenter(this)
+    private val presenter = BookStorePresenter(this,getCurrentScreenPos())
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
     private var gradeId =0

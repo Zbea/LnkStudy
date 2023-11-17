@@ -7,12 +7,12 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
-class FileUploadPresenter(view: IContractView.IFileUploadView):
+class FileUploadPresenter(view: IContractView.IFileUploadView,val screen:Int=0):
     BasePresenter<IContractView.IFileUploadView>(view) {
 
     fun getToken(){
         val token = RetrofitManager.service.getQiniuToken()
-        doRequest(token, object : Callback<String>(view) {
+        doRequest(token, object : Callback<String>(view,screen) {
             override fun failed(tBaseResult: BaseResult<String>): Boolean {
                 return false
             }
@@ -34,7 +34,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView):
         }
 
         val type = RetrofitManager.service.upload(parts)
-        doRequest(type, object : Callback<List<String>>(view) {
+        doRequest(type, object : Callback<List<String>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<String>>): Boolean {
                 return false
             }
@@ -47,7 +47,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView):
     fun commit(map:HashMap<String,Any>){
         val body= RequestUtils.getBody(map)
         val commit = RetrofitManager.service.commitPaper(body)
-        doRequest(commit, object : Callback<Any>(view) {
+        doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -60,7 +60,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView):
     fun commitParent(map:HashMap<String,Any>){
         val body= RequestUtils.getBody(map)
         val commit = RetrofitManager.service.commitParent(body)
-        doRequest(commit, object : Callback<Any>(view) {
+        doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

@@ -33,7 +33,7 @@ import kotlin.math.ceil
 
 abstract class BaseCloudFragment() : Fragment(), IContractView.ICloudView , IBaseView {
 
-    val mCloudPresenter= CloudPresenter(this)
+    val mCloudPresenter= CloudPresenter(this,getScreenPosition())
     /**
      * 视图是否加载完毕
      */

@@ -9,11 +9,11 @@ import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RetrofitManager
 
 
-class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePresenter<IContractView.ITeachingVideoView>(view) {
+class TeachingVideoPresenter(view: IContractView.ITeachingVideoView,var screen:Int=0) : BasePresenter<IContractView.ITeachingVideoView>(view) {
 
     fun getCourseList(map: HashMap<String,Any>) {
         val list = RetrofitManager.service.getTeachCourseList(map)
-        doRequest(list, object : Callback<TeachingVideoList>(view) {
+        doRequest(list, object : Callback<TeachingVideoList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<TeachingVideoList>): Boolean {
                 return false
             }
@@ -26,7 +26,7 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePrese
 
     fun getList(map: HashMap<String,Any>) {
         val list = RetrofitManager.service.getTeachList(map)
-        doRequest(list, object : Callback<TeachingVideoList>(view) {
+        doRequest(list, object : Callback<TeachingVideoList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<TeachingVideoList>): Boolean {
                 return false
             }
@@ -38,7 +38,7 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView) : BasePrese
 
     fun getType() {
         val list = RetrofitManager.service.getTeachType()
-        doRequest(list, object : Callback<TeachingVideoType>(view) {
+        doRequest(list, object : Callback<TeachingVideoType>(view,screen) {
             override fun failed(tBaseResult: BaseResult<TeachingVideoType>): Boolean {
                 return false
             }

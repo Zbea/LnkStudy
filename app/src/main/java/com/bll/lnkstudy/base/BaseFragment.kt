@@ -17,13 +17,13 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.ControlMessage
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
-import com.bll.lnkstudy.mvp.presenter.ControlMessagePresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.IAccountInfoView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.MainActivity
@@ -39,12 +39,11 @@ import java.io.File
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
-    ,IContractView.IControlMessageView ,IContractView.IDataUpdateView, IBaseView {
+abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContractView.IDataUpdateView, IBaseView,IAccountInfoView{
 
     val mCloudUploadPresenter= CloudUploadPresenter(this)
-    val mControlMessagePresenter= ControlMessagePresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
+    val mAccountInfoPresenter=AccountInfoPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -68,20 +67,17 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
-    override fun onSystemControlClear(controlMessages: MutableList<ControlMessage>) {
-        if (controlMessages.size>0){
-            EventBus.getDefault().post(Constants.CONTROL_CLEAR_EVENT)
-            val list= mutableListOf<Int>()
-            for (item in controlMessages){
-                list.add(item.id)
-            }
-            SPUtil.putListInt("ControlClear",list)
-        }
-    }
-    override fun onDeleteSystemClear() {
-    }
 
+    override fun onLogout() {
+    }
+    override fun onEditNameSuccess() {
+    }
     override fun onEditGradeSuccess() {
+        mUser?.grade=grade+1
+        SPUtil.putObj("user", mUser!!)
+        EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
+    }
+    override fun onEditSchool() {
     }
 
     //云端上传回调
@@ -130,18 +126,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
     }
 
 
-    /**
-     * 获取控制信息指令
-     */
-    private fun onFetchControl(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mControlMessagePresenter.getSystemControlClear()
-        }
-    }
-
     private fun lazyLoadDataIfPrepared() {
         if (isViewPrepare && !hasLoadData) {
-            onFetchControl()
             lazyLoad()
             hasLoadData = true
         }
@@ -381,13 +367,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
         val paperTypes=PaperTypeDaoManager.getInstance().queryAll()
         if (homeworkTypes.isNullOrEmpty()&&paperTypes.isNullOrEmpty()){
             //考卷上传完之后升年级
-            mUser?.grade=grade+1
-            SPUtil.putObj("user", mUser!!)
-            EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
-            mControlMessagePresenter.editGrade(mUser?.grade!!)
-            //上传完之后 删除控制删除消息
-            val controlClearIds=SPUtil.getListInt("ControlClear")
-            mControlMessagePresenter.deleteSystemClearMessage(controlClearIds)
+            mAccountInfoPresenter.editGrade(grade+1)
         }
     }
 
@@ -435,7 +415,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
             Constants.USER_CHANGE_EVENT->{
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
-                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
             }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
                 hideNetworkDialog()
@@ -467,11 +446,9 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView
      * 页面切换刷新数据
      */
     open fun onRefreshData(){
-        onFetchControl()
     }
 
     open fun fetchData(){
-
     }
 
     /**

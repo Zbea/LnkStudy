@@ -7,15 +7,13 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.dialog.PopupList
+import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.book.BookBean
-import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
+import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_search.*
@@ -107,7 +105,7 @@ class SearchActivity : BaseAppCompatActivity() {
             }
             4->{
                 val note= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
-                val privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword", PrivacyPassword::class.java)
+                val privacyPassword=MethodManager.getPrivacyPassword()
                 if (item.typeStr==getString(R.string.note_tab_diary)&&privacyPassword!=null&&privacyPassword.isSet&&!note.isCancelPassword)
                 {
                     PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{

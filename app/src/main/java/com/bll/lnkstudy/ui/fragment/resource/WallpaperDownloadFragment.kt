@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_resource_content.*
 
 class WallpaperDownloadFragment :BaseFragment(), IContractView.IPaintingView{
 
-    private val presenter= DownloadPaintingPresenter(this)
+    private val presenter= DownloadPaintingPresenter(this,getScreenPosition())
     private var items= mutableListOf<PaintingList.ListBean>()
     private var mAdapter: DownloadWallpaperAdapter?=null
     private var supply=1

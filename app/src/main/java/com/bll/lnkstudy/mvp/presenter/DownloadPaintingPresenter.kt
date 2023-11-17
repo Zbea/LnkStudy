@@ -8,13 +8,13 @@ import com.bll.lnkstudy.net.*
 /**
  * 书画 壁纸
  */
-class DownloadPaintingPresenter(view: IContractView.IPaintingView) : BasePresenter<IContractView.IPaintingView>(view) {
+class DownloadPaintingPresenter(view: IContractView.IPaintingView,val screen:Int=0) : BasePresenter<IContractView.IPaintingView>(view) {
 
     fun getList(map: HashMap<String,Any>) {
 
         val app = RetrofitManager.service.getPaintings(map)
 
-        doRequest(app, object : Callback<PaintingList>(view) {
+        doRequest(app, object : Callback<PaintingList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<PaintingList>): Boolean {
                 return false
             }
@@ -33,7 +33,7 @@ class DownloadPaintingPresenter(view: IContractView.IPaintingView) : BasePresent
         val requestBody=RequestUtils.getBody(map)
         val download = RetrofitManager.service.buyPainting(requestBody)
 
-        doRequest(download, object : Callback<Any>(view) {
+        doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

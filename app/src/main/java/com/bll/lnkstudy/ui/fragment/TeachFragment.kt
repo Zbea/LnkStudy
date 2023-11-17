@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_teach.*
  */
 class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
 
-    private val mPresenter=TeachingVideoPresenter(this)
+    private val mPresenter=TeachingVideoPresenter(this,1)
     private var mAdapter: TeachCourseAdapter? = null
     private var videoType:TeachingVideoType?=null
     private var lists = mutableListOf<ItemList>()//列表数据
@@ -122,16 +122,13 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
         fetchData()
     }
 
-
-    override fun onRefreshData() {
-        super.onRefreshData()
-        lazyLoad()
-    }
-
     override fun fetchData() {
         lists= (map[pageIndex] as MutableList<ItemList>?)!!
         mAdapter?.setNewData(lists)
         tv_page_current.text=pageIndex.toString()
     }
 
+    override fun onNetworkConnectionSuccess() {
+        lazyLoad()
+    }
 }

@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.Constants.Companion.APP_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
@@ -51,7 +50,7 @@ import kotlinx.android.synthetic.main.fragment_main_left.*
 class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
 
     private val mCommonPresenter= CommonPresenter(this)
-    private val mMainPresenter=MainPresenter(this)
+    private val mMainPresenter=MainPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var noteAdapter: MainNoteAdapter? = null
     private var bookAdapter: BookAdapter? = null
@@ -114,21 +113,23 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
                 }
             }
         }
-
     }
 
     override fun lazyLoad() {
+        setDateView()
+        findDataPlan()
+        findBook()
+        findNotes()
+        fetchData()
+    }
+
+    override fun fetchData(){
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCommonPresenter.getCommonGrade()
             mMainPresenter.getHomeworkNotice()
             mMainPresenter.getClassGroupList()
         }
-        setDateView()
-        findDataPlan()
-        findBook()
-        findNotes()
     }
-
 
     /**
      * 设置当天时间日历
@@ -256,15 +257,15 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             MAIN_HOMEWORK_NOTICE_EVENT->{
                 mMainPresenter.deleteHomeworkNotice()
             }
-            APP_REFRESH_EVENT->{
-                lazyLoad()
-            }
         }
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         lazyLoad()
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
     }
 
 }

@@ -28,7 +28,7 @@ import java.io.File
  */
 class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
-    private val mUploadPresenter= FileUploadPresenter(this)
+    private val mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     private var homeworkType:HomeworkTypeBean?=null
     private var course=""
     private var typeId=0//分组id

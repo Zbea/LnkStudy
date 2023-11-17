@@ -36,10 +36,11 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     private var tabStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
-    private val presenter = BookStorePresenter(this)
+    private val presenter = BookStorePresenter(this,getCurrentScreenPos())
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
     private var gradeId =0
+    private var selectGradeId=0
     private var semester=1
     private var provinceStr=""
     private var courseId=0//科目
@@ -139,10 +140,12 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                 1 -> {
                     showView(tv_grade,tv_course,tv_semester)
                     disMissView(tv_download,tv_province)
+                    gradeId = selectGradeId
                 }
                 else -> {
                     showView(tv_course,tv_grade,tv_semester,tv_province)
                     disMissView(tv_download)
+                    gradeId = selectGradeId
                 }
             }
             tabId=i
@@ -186,7 +189,8 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
-                gradeId = item.id
+                selectGradeId = item.id
+                gradeId=selectGradeId
                 tv_grade.text = item.name
                 pageIndex = 1
                 fetchData()

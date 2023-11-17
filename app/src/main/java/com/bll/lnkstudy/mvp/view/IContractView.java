@@ -176,20 +176,6 @@ public interface IContractView {
         void onListSchools(List<SchoolBean> list);
     }
 
-    /**
-     * 控制指令
-     */
-    interface IControlMessageView extends IBaseView {
-        /**
-         * 获取系统发送上传、删除本地作业考卷指令
-         * @param controlMessages
-         */
-        void onSystemControlClear(List<ControlMessage> controlMessages);
-        void onDeleteSystemClear();
-        void onEditGradeSuccess();
-    }
-
-
     interface IQiniuView extends IBaseView {
         void onToken(String token);
     }

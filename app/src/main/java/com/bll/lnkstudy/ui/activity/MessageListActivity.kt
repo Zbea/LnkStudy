@@ -15,13 +15,14 @@ import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
-    private var mMessagePresenter= MessagePresenter(this)
+    private var mMessagePresenter= MessagePresenter(this,getCurrentScreenPos())
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mAdapter:MessageAdapter?=null
     private var groups= mutableListOf<ClassGroup>()
@@ -51,7 +52,12 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
             }
         }
         pageSize=10
-        fetchData()
+        if (NetworkUtil(this).isNetworkConnected()){
+            fetchData()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     override fun initView() {
@@ -89,13 +95,21 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     }
 
-
     override fun fetchData() {
         val map= HashMap<String,Any>()
         map["page"]=pageIndex
         map["size"]=pageSize
         map["type"]=2
         mMessagePresenter.getList(map,true)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
     }
 
 }

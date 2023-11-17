@@ -116,7 +116,6 @@ class BookcaseFragment: BaseFragment() {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         findBook()
     }
 

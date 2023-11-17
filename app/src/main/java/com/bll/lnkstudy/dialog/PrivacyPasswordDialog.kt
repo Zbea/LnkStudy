@@ -7,10 +7,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.PrivacyPassword
-import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.KeyboardUtils
+import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.SToast
 
 
 class PrivacyPasswordDialog(private val context: Context) {
@@ -48,9 +50,7 @@ class PrivacyPasswordDialog(private val context: Context) {
                 SToast.showText(3,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
-            val user=SPUtil.getObj("user",User::class.java)
-            val privacyPassword=SPUtil.getObj("${user?.accountId}notePassword",
-                PrivacyPassword::class.java)
+            val privacyPassword=MethodManager.getPrivacyPassword()
             if (MD5Utils.digest(passwordStr) != privacyPassword?.password){
                 SToast.showText(3,R.string.toast_password_error)
                 return@setOnClickListener

@@ -11,13 +11,14 @@ import com.bll.lnkstudy.mvp.model.AccountOrder
 import com.bll.lnkstudy.mvp.model.AccountXDList
 import com.bll.lnkstudy.mvp.presenter.WalletPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.king.zxing.util.CodeUtils
 import kotlinx.android.synthetic.main.ac_wallet.*
 
 class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
-    private var walletPresenter=WalletPresenter(this)
+    private var walletPresenter=WalletPresenter(this,getCurrentScreenPos())
     private var xdDialog:WalletBuyXdDialog?=null
     private var xdList= mutableListOf<AccountXDList.ListBean>()
     private var qrCodeDialog:Dialog?=null
@@ -53,7 +54,8 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
-
+        if (!NetworkUtil(this).isNetworkConnected())
+            showNetworkDialog()
     }
 
     override fun initView() {

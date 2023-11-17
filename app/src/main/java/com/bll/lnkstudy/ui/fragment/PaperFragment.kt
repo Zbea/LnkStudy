@@ -195,23 +195,6 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         mAdapter?.notifyDataSetChanged()
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        when(msgFlag){
-            Constants.CLASSGROUP_EVENT->{
-                onlineTypes.clear()
-                initTab()
-            }
-            Constants.APP_REFRESH_EVENT->{
-                fetchData()
-            }
-        }
-    }
-
-    override fun onRefreshData() {
-        super.onRefreshData()
-        fetchData()
-    }
-
     private fun setData(){
         paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
         mAdapter?.setNewData(paperTypes)
@@ -293,4 +276,20 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         setSystemControlClear()
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        when(msgFlag){
+            Constants.CLASSGROUP_EVENT->{
+                onlineTypes.clear()
+                initTab()
+            }
+        }
+    }
+
+    override fun onRefreshData() {
+        fetchData()
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
+    }
 }

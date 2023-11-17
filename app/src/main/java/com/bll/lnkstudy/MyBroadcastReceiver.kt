@@ -1,5 +1,6 @@
 package com.bll.lnkstudy
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,35 +14,49 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import org.greenrobot.eventbus.EventBus
 
-class MyBroadcastReceiver : BroadcastReceiver() {
 
+open class MyBroadcastReceiver : BroadcastReceiver() {
+
+    @SuppressLint("InvalidWakeLockTag")
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action){
             Constants.ACTION_UPLOAD_8->{
                 Log.d("debug","8点全局刷新")
-                EventBus.getDefault().postSticky(Constants.APP_REFRESH_EVENT)
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
             }
             Constants.ACTION_UPLOAD_15->{
                 Log.d("debug","15点增量上传、以及全局刷新")
-                //开启全局自动打包上传
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
-                EventBus.getDefault().postSticky(Constants.APP_REFRESH_EVENT)
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
             }
             Constants.ACTION_UPLOAD_18->{
                 Log.d("debug","18点全局刷新")
-                EventBus.getDefault().postSticky(Constants.APP_REFRESH_EVENT)
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
             }
             Constants.ACTION_UPLOAD_NEXT_SEMESTER->{
                 Log.d("debug","2月1日下学期开学")
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
-                //清除作业通知（每学期上学开始）
-                EventBus.getDefault().postSticky(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
             }
             Constants.ACTION_UPLOAD_LAST_SEMESTER->{
                 Log.d("debug","9月1日升年级、清空")
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT)
-                //清除作业通知（每学期上学开始）
-                EventBus.getDefault().postSticky(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT)
             }
             Constants.ACTION_EXAM_TIME->{
                 Log.d("debug","考试提交")
@@ -100,10 +115,9 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             WifiManager.NETWORK_STATE_CHANGED_ACTION->{
                 val info: NetworkInfo? = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)
                 if (info!!.state.equals(NetworkInfo.State.CONNECTED)) {
-                    val isNet=NetworkUtil(context).isNetworkConnected()
+                    val isNet = NetworkInfo.State.CONNECTED == info.state && info.isAvailable
                     Log.d("debug", "wifi监听网络变化$isNet")
-                    if (isNet)
-                        EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
+                    EventBus.getDefault().post(if (isNet) Constants.NETWORK_CONNECTION_COMPLETE_EVENT else Constants.NETWORK_CONNECTION_FAIL_EVENT)
                 }
             }
         }

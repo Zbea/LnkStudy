@@ -78,7 +78,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initView() {
         setPageTitle(R.string.my_account)
 
-        privacyPassword=SPUtil.getObj("${mUser?.accountId}notePassword", PrivacyPassword::class.java)
+        privacyPassword=MethodManager.getPrivacyPassword()
 
         mUser?.apply {
             tv_user.text = account
@@ -147,7 +147,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                 privacyPassword=it
                 showView(tv_check_pad)
                 btn_psd_check.text=getString(R.string.set_password)
-                SPUtil.putObj("${mUser?.accountId}notePassword",privacyPassword!!)
+                MethodManager.savePrivacyPassword(privacyPassword)
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)
             }
         }
@@ -156,7 +156,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                 privacyPassword?.isSet=!privacyPassword?.isSet!!
                 btn_psd_check.text=if (privacyPassword?.isSet==true) getString(R.string.cancel_password)
                                    else getString(R.string.set_password)
-                SPUtil.putObj("${mUser?.accountId}notePassword",privacyPassword!!)
+                MethodManager.savePrivacyPassword(privacyPassword)
                 //更新增量更新
                 DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)

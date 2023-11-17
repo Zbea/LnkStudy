@@ -10,11 +10,11 @@ import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RetrofitManager
 
 
-class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView.IMainView>(view) {
+class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePresenter<IContractView.IMainView>(view) {
 
     fun getExam(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getPapersList(map)
-        doRequest(type, object : Callback<PaperList>(view) {
+        doRequest(type, object : Callback<PaperList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<PaperList>): Boolean {
                 return false
             }
@@ -29,7 +29,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
         val map=HashMap<String,Any>()
         map["size"]=7
         val type = RetrofitManager.service.getHomeworkNotice(map)
-        doRequest(type, object : Callback<HomeworkNoticeList>(view) {
+        doRequest(type, object : Callback<HomeworkNoticeList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<HomeworkNoticeList>): Boolean {
                 return false
             }
@@ -42,7 +42,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
 
     fun deleteHomeworkNotice() {
         val type = RetrofitManager.service.deleteHomeworkNotice()
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -54,7 +54,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
     //班群列表
     fun getClassGroupList() {
         val list= RetrofitManager.service.groupList()
-        doRequest(list, object : Callback<List<ClassGroup>>(view) {
+        doRequest(list, object : Callback<List<ClassGroup>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroup>>): Boolean {
                 return false
             }

@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
@@ -75,15 +76,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
                 noteFragment?.uploadNote(token)
                 paintingFragment?.uploadLocalDrawing(token)
-
                 textbookFragment?.uploadTextBook(token)
+                homeworkFragment?.upload(token)
+                paperFragment?.uploadPaper(token)
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 textbookFragment?.uploadTextBook(token)
-            }
-            Constants.CONTROL_CLEAR_EVENT -> {
-                homeworkFragment?.upload(token)
-                paperFragment?.uploadPaper(token)
             }
         }
 
@@ -219,6 +217,36 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
     }
 
+    /**
+     * 开始每天定时任务
+     */
+    private fun startRemind8() {
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.HOUR_OF_DAY, 8)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            var selectLong = timeInMillis
+            if (currentTimeMillisLong > selectLong) {
+                add(Calendar.DAY_OF_MONTH, 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_UPLOAD_8
+            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.INTERVAL_DAY, pendingIntent
+            )
+        }
+    }
+
 
     /**
      * 开始每天定时任务 下午三点
@@ -229,12 +257,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.HOUR_OF_DAY, 15)
-            set(Calendar.MINUTE, 1)
+            set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
             var selectLong = timeInMillis
-
             if (currentTimeMillisLong > selectLong) {
                 add(Calendar.DAY_OF_MONTH, 1)
                 selectLong = timeInMillis
@@ -252,38 +279,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 开始每天定时任务 8点
-     */
-    private fun startRemind8() {
-        Calendar.getInstance().apply {
-            val currentTimeMillisLong = System.currentTimeMillis()
-            timeInMillis = currentTimeMillisLong
-            timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 8)
-            set(Calendar.MINUTE, 1)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            var selectLong = timeInMillis
-
-            if (currentTimeMillisLong > selectLong) {
-                add(Calendar.DAY_OF_MONTH, 1)
-                selectLong = timeInMillis
-            }
-
-            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_8
-            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                AlarmManager.INTERVAL_DAY, pendingIntent
-            )
-        }
-    }
-
-    /**
-     * 开始每天定时任务  下午6点
+     * 开始每天定时任务
      */
     private fun startRemind18() {
         Calendar.getInstance().apply {
@@ -291,12 +287,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.HOUR_OF_DAY, 18)
-            set(Calendar.MINUTE, 1)
+            set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
             var selectLong = timeInMillis
-
             if (currentTimeMillisLong > selectLong) {
                 add(Calendar.DAY_OF_MONTH, 1)
                 selectLong = timeInMillis
@@ -314,7 +309,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年9月1 3点执行
+     * 每年9月1 8点执行
      */
     private fun startRemind9Month() {
         val date=365*24*60*60*1000L
@@ -394,7 +389,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun clearData(){
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        SPUtil.putObj("${mUser?.accountId}notePassword","")//清除隐私密码
+        MethodManager.savePrivacyPassword(null)
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()
@@ -567,7 +562,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }
                 10->{
                     val privacyPassword= Gson().fromJson(item.listJson, PrivacyPassword::class.java)
-                    SPUtil.putObj("${mUser?.accountId}notePassword",privacyPassword)
+                    MethodManager.savePrivacyPassword(privacyPassword)
                     //创建增量数据(日记密码)
                     DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
                     EventBus.getDefault().post(Constants.PASSWORD_EVENT)
@@ -1120,19 +1115,25 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.AUTO_UPLOAD_EVENT -> {
                 mainRightFragment?.deleteDiary()
                 eventType = Constants.AUTO_UPLOAD_EVENT
-                mQiniuPresenter.getToken()
+                Handler().postDelayed({
+                    mQiniuPresenter.getToken()
+                },60*1000)
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
                 eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
-                mQiniuPresenter.getToken()
+                Handler().postDelayed({
+                    mQiniuPresenter.getToken()
+                    //清除作业通知（每学期上学开始）
+                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                },60*1000)
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
-                mQiniuPresenter.getToken()
-            }
-            Constants.CONTROL_CLEAR_EVENT -> {
-                eventType = Constants.CONTROL_CLEAR_EVENT
-                mQiniuPresenter.getToken()
+                Handler().postDelayed({
+                    mQiniuPresenter.getToken()
+                    //清除作业通知（每学期上学开始）
+                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                },60*1000)
             }
             Constants.USER_CHANGE_EVENT -> {
                 mUser = SPUtil.getObj("user", User::class.java)

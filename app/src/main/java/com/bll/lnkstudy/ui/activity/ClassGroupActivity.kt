@@ -12,6 +12,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUser
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
+import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.ac_classgroup.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -50,7 +51,12 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun initData() {
-        presenter.getClassGroupList(false)
+        if (NetworkUtil(this).isNetworkConnected()){
+            presenter.getClassGroupList(false)
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     override fun initView() {
@@ -96,4 +102,12 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         }
     }
 
+    override fun onNetworkConnectionSuccess() {
+        presenter.getClassGroupList(false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtil(this).toggleNetwork(false)
+    }
 }

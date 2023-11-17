@@ -1,14 +1,18 @@
 package com.bll.lnkstudy;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
+import com.bll.lnkstudy.mvp.model.PrivacyPassword;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
@@ -37,6 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MethodManager {
+
+    private static final User user=SPUtil.INSTANCE.getObj("user", User.class);
 
     /**
      * 退出登录
@@ -254,6 +260,44 @@ public class MethodManager {
     public static void saveClassGroups(List<ClassGroup> classGroups){
         SPUtil.INSTANCE.putClassGroups("classGroups", classGroups);
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT);
+    }
+
+    /**
+     * 打开屏幕
+     * @param context
+     */
+    @SuppressLint("InvalidWakeLockTag")
+    public static void wakeUpScreen(Context context){
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                try {
+                    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                    PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP),"Loneworker - FULL WAKE LOCK");
+                    fullWakeLock.acquire(5*60*1000L);
+                    fullWakeLock.release();
+                } catch (Exception e) {
+                    return e;
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    /**
+     * 保存私密密码
+     * @param privacyPassword
+     */
+    public static void savePrivacyPassword(PrivacyPassword privacyPassword){
+        SPUtil.INSTANCE.putObj(user.accountId+"PrivacyPassword",privacyPassword);
+    }
+
+    /**
+     * 获取私密密码
+     * @return
+     */
+    public static PrivacyPassword getPrivacyPassword(){
+        return SPUtil.INSTANCE.getObj(user.accountId+"PrivacyPassword", PrivacyPassword.class);
     }
 
 }
