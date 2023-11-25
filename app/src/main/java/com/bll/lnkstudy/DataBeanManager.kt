@@ -5,7 +5,6 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.bll.lnkstudy.mvp.model.note.Notebook
-import com.bll.lnkstudy.utils.SPUtil.getClassGroups
 import com.bll.lnkstudy.utils.SPUtil.getList
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
@@ -63,16 +62,12 @@ object DataBeanManager {
         mContext.getString(R.string.download_wallpaper),mContext.getString(R.string.download_painting)
     )
 
-    fun classGroups():MutableList<ClassGroup>{
-        return getClassGroups("classGroups")
-    }
-
     /**
      * 获取班群中对应科目的老师id
      */
     fun getClassGroupTeacherId(course: String):Int{
         var teacherId = 0
-        for (classGroup in classGroups()) {
+        for (classGroup in MethodManager.getClassGroups()) {
             if (classGroup.subject == course) {
                 teacherId = classGroup.teacherId
             }
@@ -109,6 +104,23 @@ object DataBeanManager {
         return list
     }
 
+    //学期选择
+    fun popupSemesters(): MutableList<PopupBean>{
+        val list = mutableListOf<PopupBean>()
+        list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))
+        list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
+        return list
+    }
+
+    fun popupSemester(semester:Int):MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (item in popupSemesters()){
+            list.add(PopupBean(item.id, item.name, item.id == semester))
+        }
+        return list
+    }
+
+
     /**
      * 获取当前选中年级
      */
@@ -140,6 +152,14 @@ object DataBeanManager {
             }
             return list
         }
+
+    fun popupCourses(course:Int): MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (item in courses()){
+            list.add(PopupBean(item.type, item.desc, item.type == course))
+        }
+        return list
+    }
 
     /**
      * 获取选中科目
@@ -653,16 +673,6 @@ object DataBeanManager {
                 resContentId = R.mipmap.icon_note_details_bg_5
                 resFreeNoteBg=R.mipmap.icon_freenote_bg_5
             })
-            return list
-        }
-
-
-    //学期选择
-    val semesters: MutableList<PopupBean>
-        get() {
-            val list = mutableListOf<PopupBean>()
-            list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))
-            list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
             return list
         }
 

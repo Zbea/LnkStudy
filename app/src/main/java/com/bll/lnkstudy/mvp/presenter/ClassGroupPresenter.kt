@@ -7,7 +7,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<IContractView.IClassGroupView>(view) {
+class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen: Int =0) : BasePresenter<IContractView.IClassGroupView>(view) {
 
     //加入班群
     fun onInsertClassGroup(classNum:Int) {
@@ -16,7 +16,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
             Pair.create("classNum",classNum)
         )
         val insert = RetrofitManager.service.insertGroup(body)
-        doRequest(insert, object : Callback<Any>(view) {
+        doRequest(insert, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -34,7 +34,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
         )
 
         val quit= RetrofitManager.service.quitClassGroup(body)
-        doRequest(quit, object : Callback<Any>(view) {
+        doRequest(quit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -47,7 +47,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
     //班群列表
     fun getClassGroupList(boolean: Boolean) {
         val list= RetrofitManager.service.groupList()
-        doRequest(list, object : Callback<List<ClassGroup>>(view) {
+        doRequest(list, object : Callback<List<ClassGroup>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroup>>): Boolean {
                 return false
             }
@@ -61,7 +61,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
     //获取同学列表
     fun getClassGroupUser() {
         val list= RetrofitManager.service.getClassGroupUser()
-        doRequest(list, object : Callback<List<ClassGroupUser>>(view) {
+        doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
                 return false
             }

@@ -6,10 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.GridLayout
 import android.widget.TextView
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CourseTimeSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
@@ -556,7 +553,7 @@ class MainCourseActivity : BaseAppCompatActivity() {
      * 选择课程
      */
     private fun selectCourse(v: TextView) {
-        val courses= DataBeanManager.classGroups()
+        val courses= MethodManager.getClassGroups()
         val lists= mutableListOf<ItemList>()
         for(item in courses){
             lists.add(ItemList(item.id,item.subject))

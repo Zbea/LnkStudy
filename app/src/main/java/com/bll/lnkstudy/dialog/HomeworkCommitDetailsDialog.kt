@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int,val type:Int, val list: List<HomeworkDetails.HomeworkDetailBean>) {
+class HomeworkCommitDetailsDialog(val context: Context,val type:Int) {
 
     private var dialog:Dialog?=null
     private var mAdapter:CommitAdapter?=null
@@ -27,14 +28,13 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int,val typ
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
         layoutParams?.width=DP2PX.dip2px(context,750f)
-        if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,750f))/2
-        }
+        layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,750f))/2
         dialog?.show()
 
-        val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
+        val list=HomeworkDetailsDaoManager.getInstance().queryAllByType(type)
 
+        val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
         recyclerview.layoutManager = LinearLayoutManager(context)
         mAdapter= CommitAdapter(R.layout.item_homework_commit,type, list)
         recyclerview.adapter = mAdapter
@@ -54,13 +54,11 @@ class HomeworkCommitDetailsDialog(val context: Context,val screenPos:Int,val typ
     }
 
 
-    class CommitAdapter(layoutResId: Int,val type: Int, data: List<HomeworkDetails.HomeworkDetailBean>) : BaseQuickAdapter<HomeworkDetails.HomeworkDetailBean, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: HomeworkDetails.HomeworkDetailBean) {
-            helper.setText(R.id.tv_title,item.jobTitle)
-            helper.setText(R.id.tv_type,item.title)
-            val time=if (type==0) item.time else item.submitTime
-            helper.setText(R.id.tv_date, DateUtils.longToStringWeek(time*1000))
+    class CommitAdapter(layoutResId: Int,val type: Int, data: List<HomeworkDetailsBean>) : BaseQuickAdapter<HomeworkDetailsBean, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item:HomeworkDetailsBean) {
+            helper.setText(R.id.tv_title,item.content)
+            helper.setText(R.id.tv_type,item.homeworkTypeStr)
+            helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.time))
         }
 
     }

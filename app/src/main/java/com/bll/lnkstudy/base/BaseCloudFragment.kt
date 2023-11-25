@@ -31,7 +31,7 @@ import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.ceil
 
 
-abstract class BaseCloudFragment() : Fragment(), IContractView.ICloudView , IBaseView {
+abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , IBaseView {
 
     val mCloudPresenter= CloudPresenter(this,getScreenPosition())
     /**

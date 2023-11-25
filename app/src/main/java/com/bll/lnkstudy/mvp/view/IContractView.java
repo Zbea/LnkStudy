@@ -1,31 +1,29 @@
 package com.bll.lnkstudy.mvp.view;
 
-import com.bll.lnkstudy.mvp.model.AccountXDList;
 import com.bll.lnkstudy.mvp.model.AccountOrder;
+import com.bll.lnkstudy.mvp.model.AccountXDList;
 import com.bll.lnkstudy.mvp.model.AppList;
-import com.bll.lnkstudy.mvp.model.book.BookStore;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
-import com.bll.lnkstudy.mvp.model.book.BookStoreType;
 import com.bll.lnkstudy.mvp.model.CommonData;
-import com.bll.lnkstudy.mvp.model.ControlMessage;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.MessageList;
-import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
-import com.bll.lnkstudy.mvp.model.cloud.CloudList;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList;
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean;
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage;
-import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
-import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
 import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.book.BookStore;
+import com.bll.lnkstudy.mvp.model.book.BookStoreType;
+import com.bll.lnkstudy.mvp.model.cloud.CloudList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean;
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage;
+import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
+import com.bll.lnkstudy.mvp.model.painting.PaintingList;
+import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.net.IBaseView;
 
@@ -148,7 +146,6 @@ public interface IContractView {
         void onParentMessageList(Map<String, ParentHomeworkMessage> map);
         void onListReel(Map<String, HomeworkPaperList> map);
         void onParentReel(Map<String, List<ParentHomeworkBean>> map);
-        void onDetails(List<HomeworkDetails.HomeworkDetailBean> details);
         /**
          * 下发作业下载成功
          */

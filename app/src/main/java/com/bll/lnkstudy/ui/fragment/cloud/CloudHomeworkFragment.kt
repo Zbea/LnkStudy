@@ -251,8 +251,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
 
                             HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量更新
-                            DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId
-                                ,Gson().toJson(book),book.bodyUrl)
+                            DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId,Gson().toJson(book),book.bodyUrl)
                             if (isDraw){
                                 DataUpdateManager.createDataUpdate(8,book.bookId,2,book.bookId
                                     ,"",book.bookDrawPath)

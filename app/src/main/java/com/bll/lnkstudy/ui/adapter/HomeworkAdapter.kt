@@ -15,7 +15,6 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
-            setText(R.id.tv_name, item.name)
             setVisible(R.id.ll_info, item.createStatus!=0||item.isCloud)
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){
@@ -23,6 +22,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
             }
             else{
+                setText(R.id.tv_name, item.name)
                 setImageResource(R.id.iv_image,R.color.color_transparent)
                 val bg=if (item.bgResId.isNullOrEmpty()) DataBeanManager.getHomeworkCoverStr() else item.bgResId
                 setBackgroundRes(R.id.iv_image,ToolUtils.getImageResId(mContext,bg))

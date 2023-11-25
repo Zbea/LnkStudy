@@ -13,14 +13,14 @@ class CloudHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
-            setText(R.id.tv_name, item.name)
-            setText(R.id.tv_date,DateUtils.intToStringDataNoHour(item.date))
-
             if (item.state==4){
                 setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)
                 GlideUtils.setImageRoundUrl(mContext, item.bgResId, getView(R.id.iv_image), 10)
             }
             else{
+                setText(R.id.tv_name, item.name)
+                setText(R.id.tv_date,DateUtils.intToStringDataNoHour(item.date))
+
                 setImageResource(R.id.iv_image,R.color.color_transparent)
                 setBackgroundRes(R.id.iv_image,ToolUtils.getImageResId(mContext, item.bgResId))
             }

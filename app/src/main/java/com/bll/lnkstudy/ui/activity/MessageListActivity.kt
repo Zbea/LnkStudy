@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageDetailsDialog
@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
-    private var mMessagePresenter= MessagePresenter(this,getCurrentScreenPos())
+    private var mMessagePresenter= MessagePresenter(this,2)
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mAdapter:MessageAdapter?=null
     private var groups= mutableListOf<ClassGroup>()
@@ -46,7 +46,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
-        for (item in DataBeanManager.classGroups()){
+        for (item in MethodManager.getClassGroups()){
             if (item.status==1){
                 groups.add(item)
             }

@@ -29,6 +29,7 @@ import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
 import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
+import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +43,11 @@ import java.util.List;
 
 public class MethodManager {
 
-    private static final User user=SPUtil.INSTANCE.getObj("user", User.class);
+    private static User user=SPUtil.INSTANCE.getObj("user", User.class);
+
+    public static void getUser(){
+        user=SPUtil.INSTANCE.getObj("user", User.class);
+    }
 
     /**
      * 退出登录
@@ -71,7 +76,7 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, BookBean bookBean,int screenPos)  {
-        AppUtils.stopApp(context,"com.geniatech.knote.reader");
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
         User user=SPUtil.INSTANCE.getObj("user", User.class);
 
         bookBean.isLook=true;
@@ -94,7 +99,7 @@ public class MethodManager {
 
         Intent intent = new Intent();
         intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
-        intent.setPackage("com.geniatech.knote.reader");
+        intent.setPackage(Constants.PACKAGE_READER);
         intent.putExtra("path", bookBean.bookPath);
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
@@ -258,8 +263,15 @@ public class MethodManager {
      * @param classGroups
      */
     public static void saveClassGroups(List<ClassGroup> classGroups){
-        SPUtil.INSTANCE.putClassGroups("classGroups", classGroups);
+        SPUtil.INSTANCE.putClassGroups(user.accountId+"classGroups", classGroups);
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT);
+    }
+
+    /**
+     * 得到班群列表
+     */
+    public static List<ClassGroup> getClassGroups(){
+        return SPUtil.INSTANCE.getClassGroups(user.accountId+"classGroups");
     }
 
     /**

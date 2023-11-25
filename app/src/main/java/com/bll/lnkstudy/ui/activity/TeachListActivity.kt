@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.common_title.*
 
 class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView {
 
-    private val mPresenter=TeachingVideoPresenter(this)
+    private val mPresenter=TeachingVideoPresenter(this,1)
     private var flags=0
     private var item:ItemList?=null
     private var grade=0//年级
@@ -63,7 +63,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         tv_grade.text = grades[grade-1].name
 
         if (flags==0){
-            semesters=DataBeanManager.semesters
+            semesters=DataBeanManager.popupSemesters()
             semester=semesters[0].id
             tv_semester.text = semesters[0].name
         }

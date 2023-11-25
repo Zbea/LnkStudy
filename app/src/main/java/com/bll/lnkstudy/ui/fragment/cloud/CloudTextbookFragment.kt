@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
-import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,9 +24,10 @@ import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.concurrent.CountDownLatch
 
 class CloudTextbookFragment:BaseCloudFragment() {
-
+    private var countDownTasks: CountDownLatch?=null //异步完成后操作
     private var mAdapter:TextBookAdapter?=null
     private var books= mutableListOf<BookBean>()
     private var textBook=""//用来区分课本类型
@@ -83,11 +83,15 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
                     if (!book.drawUrl.isNullOrEmpty()){
+                        countDownTasks= CountDownLatch(2)
+                        downloadBook(book)
                         downloadBookDrawing(book)
                     }
                     else{
+                        countDownTasks=CountDownLatch(1)
                         downloadBook(book)
                     }
+                    downloadSuccess(book)
                 } else {
                     showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
@@ -110,6 +114,34 @@ class CloudTextbookFragment:BaseCloudFragment() {
     }
 
     /**
+     * 下载完成
+     */
+    private fun downloadSuccess(book: BookBean){
+        //等待两个请求完成后刷新列表
+        Thread{
+            countDownTasks?.await()
+            requireActivity().runOnUiThread {
+                hideLoading()
+                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
+                if (localBook!=null){
+                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
+                    EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
+                }
+                else{
+                    if (FileUtils.isExistContent(book.bookDrawPath)){
+                        FileUtils.deleteFile(File(book.bookDrawPath))
+                    }
+                    if (FileUtils.isExistContent(book.bookPath)){
+                        FileUtils.deleteFile(File(book.bookPath))
+                    }
+                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
+                }
+            }
+            countDownTasks=null
+        }.start()
+    }
+
+    /**
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: BookBean){
@@ -125,11 +157,9 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
                         override fun onFinish() {
                             //创建增量更新
-                            DataUpdateManager.createDataUpdate(1,book.bookId,2,book.bookId
-                                ,"",book.bookDrawPath)
+                            DataUpdateManager.createDataUpdate(1,book.bookId,2,book.bookId,"",book.bookDrawPath)
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            downloadBook(book)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
@@ -138,8 +168,10 @@ class CloudTextbookFragment:BaseCloudFragment() {
                         override fun onStart() {
                         }
                     })
+                    countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    countDownTasks?.countDown()
                 }
             })
     }
@@ -165,30 +197,18 @@ class CloudTextbookFragment:BaseCloudFragment() {
                                 ,Gson().toJson(book),book.downloadUrl)
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            Handler().postDelayed({
-                                hideLoading()
-                                EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-                                showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
-                            },500)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
                         override fun onError(msg: String?) {
-                            hideLoading()
-                            //下载失败删掉已下载手写内容
-                            FileUtils.deleteFile(File(book.bookDrawPath))
-                            showToast(getScreenPosition(),msg!!)
                         }
                         override fun onStart() {
                         }
                     })
+                    countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
-                    hideLoading()
-                    //下载失败删掉已下载手写内容
-                    FileUtils.deleteFile(File(book.bookDrawPath))
-                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
+                    countDownTasks?.countDown()
                 }
             })
     }

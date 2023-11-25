@@ -24,7 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:text="作业本"
             android:textColor="@color/black"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -35,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/tv_name"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"
             />

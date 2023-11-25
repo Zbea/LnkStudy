@@ -56,7 +56,7 @@ class NetworkUtil(val context: Context) {
      * @param isEnable
      * @throws Exception
      */
-    fun toggleMobileNet(isEnable: Boolean) {
+    private fun toggleMobileNet(isEnable: Boolean) {
         try {
             val telephonyService = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             val setMobileDataEnabledMethod = telephonyService.javaClass.getDeclaredMethod("setDataEnabled", Boolean::class.javaPrimitiveType)
@@ -73,7 +73,7 @@ class NetworkUtil(val context: Context) {
      * @param enabled
      * @return 设置是否success
      */
-    fun toggleWiFi(enabled: Boolean): Boolean {
+    private fun toggleWiFi(enabled: Boolean): Boolean {
         val wm= context.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wm.setWifiEnabled(enabled)
     }

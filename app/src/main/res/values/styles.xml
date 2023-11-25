@@ -47,5 +47,8 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="activityCustomTextSize" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/sp_18</item>
+    </style>
 
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.utils.AppUtils
@@ -40,12 +41,12 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,p
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            if (position==0){
+            val packageName= lists[position].packageName
+            if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
                 dismiss()
                 listener?.onClick(position)
             }
             else{
-                val packageName= lists[position].packageName
                 when(screenPos){
                     1->{
                         AppUtils.startAPP(context,packageName,2)

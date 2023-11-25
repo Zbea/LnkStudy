@@ -25,6 +25,7 @@ import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
@@ -522,11 +523,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      */
     private fun showDialogAppTool(location:Int){
         val tools= mutableListOf<AppBean>()
-        tools.add(AppBean().apply {
-            appName=getString(R.string.geometry_title_str)
-            imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
-        })
-        tools.addAll(toolApps)
+        if (this is PlanOverviewActivity){
+            tools.addAll(toolApps)
+        }
+        else{
+            tools.add(AppBean().apply {
+                appName=getString(R.string.geometry_title_str)
+                packageName=Constants.PACKAGE_GEOMETRY
+                imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
+            })
+            tools.addAll(toolApps)
+        }
         AppToolDialog(this,getCurrentScreenPos(),location,tools).builder()?.setDialogClickListener{ pos->
             if (pos==0){
                 setViewElikUnable(ll_geometry)

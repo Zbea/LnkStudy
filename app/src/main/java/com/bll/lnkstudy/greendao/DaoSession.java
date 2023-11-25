@@ -19,6 +19,7 @@ import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.date.DateEventBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
@@ -43,6 +44,7 @@ import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DateEventBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkBookBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
+import com.bll.lnkstudy.greendao.HomeworkDetailsBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkPaperBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkPaperContentBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
@@ -76,6 +78,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig dateEventBeanDaoConfig;
     private final DaoConfig homeworkBookBeanDaoConfig;
     private final DaoConfig homeworkContentBeanDaoConfig;
+    private final DaoConfig homeworkDetailsBeanDaoConfig;
     private final DaoConfig homeworkPaperBeanDaoConfig;
     private final DaoConfig homeworkPaperContentBeanDaoConfig;
     private final DaoConfig homeworkTypeBeanDaoConfig;
@@ -100,6 +103,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DateEventBeanDao dateEventBeanDao;
     private final HomeworkBookBeanDao homeworkBookBeanDao;
     private final HomeworkContentBeanDao homeworkContentBeanDao;
+    private final HomeworkDetailsBeanDao homeworkDetailsBeanDao;
     private final HomeworkPaperBeanDao homeworkPaperBeanDao;
     private final HomeworkPaperContentBeanDao homeworkPaperContentBeanDao;
     private final HomeworkTypeBeanDao homeworkTypeBeanDao;
@@ -150,6 +154,9 @@ public class DaoSession extends AbstractDaoSession {
         homeworkContentBeanDaoConfig = daoConfigMap.get(HomeworkContentBeanDao.class).clone();
         homeworkContentBeanDaoConfig.initIdentityScope(type);
 
+        homeworkDetailsBeanDaoConfig = daoConfigMap.get(HomeworkDetailsBeanDao.class).clone();
+        homeworkDetailsBeanDaoConfig.initIdentityScope(type);
+
         homeworkPaperBeanDaoConfig = daoConfigMap.get(HomeworkPaperBeanDao.class).clone();
         homeworkPaperBeanDaoConfig.initIdentityScope(type);
 
@@ -197,6 +204,7 @@ public class DaoSession extends AbstractDaoSession {
         dateEventBeanDao = new DateEventBeanDao(dateEventBeanDaoConfig, this);
         homeworkBookBeanDao = new HomeworkBookBeanDao(homeworkBookBeanDaoConfig, this);
         homeworkContentBeanDao = new HomeworkContentBeanDao(homeworkContentBeanDaoConfig, this);
+        homeworkDetailsBeanDao = new HomeworkDetailsBeanDao(homeworkDetailsBeanDaoConfig, this);
         homeworkPaperBeanDao = new HomeworkPaperBeanDao(homeworkPaperBeanDaoConfig, this);
         homeworkPaperContentBeanDao = new HomeworkPaperContentBeanDao(homeworkPaperContentBeanDaoConfig, this);
         homeworkTypeBeanDao = new HomeworkTypeBeanDao(homeworkTypeBeanDaoConfig, this);
@@ -221,6 +229,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(DateEventBean.class, dateEventBeanDao);
         registerDao(HomeworkBookBean.class, homeworkBookBeanDao);
         registerDao(HomeworkContentBean.class, homeworkContentBeanDao);
+        registerDao(HomeworkDetailsBean.class, homeworkDetailsBeanDao);
         registerDao(HomeworkPaperBean.class, homeworkPaperBeanDao);
         registerDao(HomeworkPaperContentBean.class, homeworkPaperContentBeanDao);
         registerDao(HomeworkTypeBean.class, homeworkTypeBeanDao);
@@ -247,6 +256,7 @@ public class DaoSession extends AbstractDaoSession {
         dateEventBeanDaoConfig.clearIdentityScope();
         homeworkBookBeanDaoConfig.clearIdentityScope();
         homeworkContentBeanDaoConfig.clearIdentityScope();
+        homeworkDetailsBeanDaoConfig.clearIdentityScope();
         homeworkPaperBeanDaoConfig.clearIdentityScope();
         homeworkPaperContentBeanDaoConfig.clearIdentityScope();
         homeworkTypeBeanDaoConfig.clearIdentityScope();
@@ -303,6 +313,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public HomeworkContentBeanDao getHomeworkContentBeanDao() {
         return homeworkContentBeanDao;
+    }
+
+    public HomeworkDetailsBeanDao getHomeworkDetailsBeanDao() {
+        return homeworkDetailsBeanDao;
     }
 
     public HomeworkPaperBeanDao getHomeworkPaperBeanDao() {

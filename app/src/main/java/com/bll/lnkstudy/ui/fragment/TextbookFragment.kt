@@ -154,9 +154,7 @@ class TextbookFragment : BaseFragment() {
      * 上传本地课本
      */
     fun uploadTextBook(token:String){
-        if (grade==0) return
         val cloudList= mutableListOf<CloudListBean>()
-
         //获取当前往期教材中未加锁的教材
         val textBooks=bookGreenDaoManager.queryAllTextBookOldUnlock()
         if (textBooks.size==0){
@@ -166,7 +164,7 @@ class TextbookFragment : BaseFragment() {
         for (book in textBooks){
             val subTypeId=DataBeanManager.textbookType.indexOf(book.subtypeStr)
             //判读是否存在手写内容
-            if (File(book.bookDrawPath).exists()){
+            if (FileUtils.isExistContent(book.bookDrawPath)){
                 FileUploadManager(token).apply {
                     startUpload(book.bookDrawPath,File(book.bookDrawPath).name)
                     setCallBack{
@@ -255,8 +253,8 @@ class TextbookFragment : BaseFragment() {
             books = bookGreenDaoManager.queryAllTextBookOld(pageIndex, pageSize)
         }
         else{
-            books = bookGreenDaoManager.queryAllTextBook(textBook, pageIndex, pageSize)
             total = bookGreenDaoManager.queryAllTextBook(textBook).size
+            books = bookGreenDaoManager.queryAllTextBook(textBook, pageIndex, pageSize)
         }
         setPageNumber(total)
         mAdapter?.setNewData(books)

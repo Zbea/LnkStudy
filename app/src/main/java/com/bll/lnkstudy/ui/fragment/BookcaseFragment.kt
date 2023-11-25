@@ -3,8 +3,8 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.Constants.Companion.halfYear
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -120,46 +120,48 @@ class BookcaseFragment: BaseFragment() {
     }
 
     fun upload(token:String){
-        if (grade==0) return
         cloudList.clear()
         val maxBooks= mutableListOf<BookBean>()
         val books= BookGreenDaoManager.getInstance().queryAllBook()
+        //遍历获取所有需要上传的书籍数目
         for (item in books){
-            if (System.currentTimeMillis()>=item.time+Constants.halfYear){
+            if (System.currentTimeMillis()>=item.time+ halfYear){
                 maxBooks.add(item)
-                //判读是否存在手写内容
-                if (File(item.bookDrawPath).exists()){
-                    FileUploadManager(token).apply {
-                        startUpload(item.bookDrawPath,item.bookId.toString())
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=0
-                                zipUrl=item.downloadUrl
-                                downloadUrl=it
-                                subType=-1
-                                subTypeStr=item.subtypeStr
-                                date=System.currentTimeMillis()
-                                listJson= Gson().toJson(item)
-                                bookId=item.bookId
-                            })
-                            if (cloudList.size==maxBooks.size)
-                                mCloudUploadPresenter.upload(cloudList)
-                        }
+            }
+        }
+        //遍历上传书籍
+        for (item in maxBooks){
+            if (FileUtils.isExistContent(item.bookDrawPath)){
+                FileUploadManager(token).apply {
+                    startUpload(item.bookDrawPath,item.bookId.toString())
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=6
+                            zipUrl=item.downloadUrl
+                            downloadUrl=it
+                            subType=-1
+                            subTypeStr=item.subtypeStr
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(item)
+                            bookId=item.bookId
+                        })
+                        if (cloudList.size==maxBooks.size)
+                            mCloudUploadPresenter.upload(cloudList)
                     }
                 }
-                else{
-                    cloudList.add(CloudListBean().apply {
-                        type=0
-                        zipUrl=item.downloadUrl
-                        subType=-1
-                        subTypeStr=item.subtypeStr
-                        date=System.currentTimeMillis()
-                        listJson= Gson().toJson(item)
-                        bookId=item.bookId
-                    })
-                    if (cloudList.size==maxBooks.size)
-                        mCloudUploadPresenter.upload(cloudList)
-                }
+            }
+            else{
+                cloudList.add(CloudListBean().apply {
+                    type=6
+                    zipUrl=item.downloadUrl
+                    subType=-1
+                    subTypeStr=item.subtypeStr
+                    date=System.currentTimeMillis()
+                    listJson= Gson().toJson(item)
+                    bookId=item.bookId
+                })
+                if (cloudList.size==maxBooks.size)
+                    mCloudUploadPresenter.upload(cloudList)
             }
         }
     }
@@ -170,9 +172,11 @@ class BookcaseFragment: BaseFragment() {
             val bookBean=BookGreenDaoManager.getInstance().queryBookByID(item.bookId)
             //删除书籍
             FileUtils.deleteFile(File(bookBean.bookPath))
+            FileUtils.deleteFile(File(bookBean.bookDrawPath))
             BookGreenDaoManager.getInstance().deleteBook(bookBean)
             //删除增量数据
             DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1,bookBean.bookId)
+            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,2,bookBean.bookId)
         }
         findBook()
     }

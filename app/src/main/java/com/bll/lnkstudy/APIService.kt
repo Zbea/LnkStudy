@@ -5,7 +5,6 @@ import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.*
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetails.HomeworkDetailBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
@@ -270,16 +269,16 @@ interface APIService{
     @POST("task/group/studentListPlus")
     fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
 
-    /**
-     * 获取学生批改详情
-     */
-    @GET("task/group/sendList")
-    fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<HomeworkDetailBean>>>
-    /**
-     * 获取学生提交详情
-     */
-    @GET("submit/message/list")
-    fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkDetails>>
+//    /**
+//     * 获取学生批改详情
+//     */
+//    @GET("task/group/sendList")
+//    fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<HomeworkDetailBean>>>
+//    /**
+//     * 获取学生提交详情
+//     */
+//    @GET("submit/message/list")
+//    fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkDetails>>
     /**
      * 消息列表
      */

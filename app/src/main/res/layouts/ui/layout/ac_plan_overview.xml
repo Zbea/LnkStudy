@@ -94,75 +94,13 @@
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/v_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:src="@mipmap/icon_freenote_bg_1"
         android:layout_weight="1"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_bottom_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="400dp"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            >
-
-
-
-            <ImageView
-                android:id="@+id/btn_page_up"
-                android:layout_width="32dp"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                android:layout_marginStart="200dp"
-                android:src="@mipmap/icon_draw_page_up" />
-
-            <View
-                android:id="@+id/iv_catalog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_page"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:text="1/1"
-            />
-
-        <LinearLayout
-            android:layout_width="400dp"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            >
-
-            <View
-                android:id="@+id/iv_btn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                />
-
-            <ImageView
-                android:id="@+id/btn_page_down"
-                android:layout_width="32dp"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                android:layout_marginEnd="200dp"
-                android:src="@mipmap/icon_draw_page_down" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <include
+        layout="@layout/common_drawing_bottom_one"
+        />
 
 </LinearLayout>

@@ -50,6 +50,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     private var pageCount = 0
     private var page = 0 //当前页码
+    private var alarmManager:AlarmManager?=null
+    private var pendingIntent:PendingIntent?=null
 
     override fun onToken(token: String) {
         showLoading()
@@ -161,9 +163,9 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         }
         val intent = Intent(this, MyBroadcastReceiver::class.java)
         intent.action = Constants.ACTION_EXAM_TIME
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager?.setRepeating(
             AlarmManager.RTC_WAKEUP, selectLong,
             AlarmManager.INTERVAL_DAY, pendingIntent
         )
@@ -319,6 +321,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     override fun onDestroy() {
         super.onDestroy()
+        alarmManager?.cancel(pendingIntent)
+        alarmManager=null
         NetworkUtil(this).toggleNetwork(false)
     }
 

@@ -73,9 +73,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView,val screen: Int =0) 
      * 获取分类
      */
     fun getBookType() {
-
         val type = RetrofitManager.service.getBookType()
-
         doRequest(type, object : Callback<BookStoreType>(view,screen) {
             override fun failed(tBaseResult: BaseResult<BookStoreType>): Boolean {
                 return false

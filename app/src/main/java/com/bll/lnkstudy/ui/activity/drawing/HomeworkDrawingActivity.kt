@@ -10,9 +10,11 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -27,7 +29,7 @@ import java.io.File
  */
 class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
 
-    private val mUploadPresenter = FileUploadPresenter(this,getCurrentScreenPos())
+    private val mUploadPresenter = FileUploadPresenter(this)
     private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkTypeBean? = null
@@ -92,6 +94,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             elik_a?.setPWEnabled(false)
             elik_b?.setPWEnabled(false)
         }
+        //添加提交详情
+        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
+            type=1
+            studentTaskId=homeworkCommit?.messageId!!
+            content=homeworkCommit?.title
+            homeworkTypeStr=homeworkType?.name
+            course=homeworkType?.course
+            time=System.currentTimeMillis()
+        })
     }
 
     override fun layoutId(): Int {

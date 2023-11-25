@@ -10,12 +10,14 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -30,7 +32,7 @@ import java.io.File
 
 class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
 
-    private val mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
+    private val mUploadPresenter= FileUploadPresenter(this)
     private var homeworkType: HomeworkTypeBean? = null
     //屏幕当前位置
     private var book: HomeworkBookBean? = null
@@ -60,12 +62,14 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                         map["studentTaskId"]=homeworkCommit?.messageId!!
                         map["page"]=ToolUtils.getImagesStr(homeworkCommit?.contents!!)
                         map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                        map["commonTypeId"] = homeworkType?.typeId!!
                         mUploadPresenter.commit(map)
                     }
                     else{
                         map["pageStr"]=ToolUtils.getImagesStr(homeworkCommit?.contents!!)
                         map["id"] = homeworkCommit?.messageId!!
                         map["submitUrl"] = ToolUtils.getImagesStr(urls)
+                        map["commonTypeId"] = homeworkType?.typeId!!
                         mUploadPresenter.commitParent(map)
                     }
                 }
@@ -82,6 +86,15 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
         messages.removeAt(homeworkCommit?.index!!)
+        //添加提交详情
+        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
+            type=1
+            studentTaskId=homeworkCommit?.messageId!!
+            content=homeworkCommit?.title
+            homeworkTypeStr=homeworkType?.name
+            course=homeworkType?.course
+            time=System.currentTimeMillis()
+        })
     }
 
     override fun layoutId(): Int {
@@ -128,34 +141,34 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         if (FileUtils.isExist(catalogFilePath))
         {
             val catalogMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(catalogFilePath)))
-            catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
-
-            for (item in catalogMsg?.contents!!) {
-                val catalogParent =
-                    CatalogParent()
-                catalogParent.title = item.title
-                catalogParent.pageNumber = item.pageNumber
-                catalogParent.picName = item.picName
-                for (ite in item.subItems) {
-                    val catalogChild =
-                        CatalogChild()
-                    catalogChild.title = ite.title
-                    catalogChild.pageNumber = ite.pageNumber
-                    catalogChild.picName = ite.picName
-
-                    catalogParent.addSubItem(catalogChild)
-                    childItems.add(catalogChild)
+            try {
+                catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
+            } catch (e: Exception) {
+            }
+            if (catalogMsg!=null){
+                for (item in catalogMsg?.contents!!) {
+                    val catalogParent = CatalogParent()
+                    catalogParent.title = item.title
+                    catalogParent.pageNumber = item.pageNumber
+                    catalogParent.picName = item.picName
+                    for (ite in item.subItems) {
+                        val catalogChild = CatalogChild()
+                        catalogChild.title = ite.title
+                        catalogChild.pageNumber = ite.pageNumber
+                        catalogChild.picName = ite.picName
+                        catalogParent.addSubItem(catalogChild)
+                        childItems.add(catalogChild)
+                    }
+                    parentItems.add(catalogParent)
+                    catalogs.add(catalogParent)
                 }
-                parentItems.add(catalogParent)
-                catalogs.add(catalogParent)
             }
         }
-
     }
 
     override fun initView() {
         setDrawingTitleClick(false)
-        pageCount = catalogMsg?.totalCount!!
+        pageCount = if (catalogMsg==null)0 else catalogMsg?.totalCount!!
         tv_title_a.text=book?.bookName
         tv_title_b.text=book?.bookName
 
@@ -207,7 +220,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             homeworkCommit=it
             showLoading()
             commitItems.clear()
-            showLog(homeworkCommit?.contents.toString())
             for (i in homeworkCommit?.contents!!){
                 if (i>pageCount)
                 {
@@ -331,11 +343,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         book?.pageIndex = page
         HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
         NetworkUtil(this).toggleNetwork(false)
+        super.onDestroy()
     }
 
     override fun onNetworkConnectionSuccess() {

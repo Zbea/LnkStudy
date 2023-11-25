@@ -333,6 +333,8 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         HomeworkPaperContentDaoManager.getInstance().clear()
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
+        //提交详情
+        HomeworkDetailsDaoManager.getInstance().clear()
 
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
         //清除本地增量数据

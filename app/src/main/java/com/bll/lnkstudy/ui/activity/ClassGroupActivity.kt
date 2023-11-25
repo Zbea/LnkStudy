@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.common_title.*
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
 
-    private var presenter = ClassGroupPresenter(this)
+    private var presenter = ClassGroupPresenter(this,2)
     private var mAdapter: ClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
     private var positionGroup = 0

@@ -186,7 +186,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             rv_main_book.layoutManager = GridLayoutManager(activity,3)//创建布局管理
             rv_main_book.adapter = bookAdapter
             bindToRecyclerView(rv_main_book)
-            rv_main_book.addItemDecoration(SpaceGridItemDeco1(3, 0,35))
+            rv_main_book.addItemDecoration(SpaceGridItemDeco1(3, 0,5))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean= bookAdapter?.data?.get(position)
                 MethodManager.gotoTextBookDetails(requireActivity(),bookBean?.bookId!!)

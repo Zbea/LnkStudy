@@ -15,10 +15,12 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.RecordBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
@@ -56,6 +58,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=messageId
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    map["commonTypeId"] = homeworkType?.typeId!!
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -68,10 +71,20 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     override fun onSuccess(urls: MutableList<String>?) {
     }
     override fun onCommitSuccess() {
+        val messageBean=messages[messageIndex]
         messages.removeAt(messageIndex)
         showToast(R.string.toast_commit_success)
         recordBeans[position].isCommit=true
         mAdapter?.notifyDataSetChanged()
+        //添加提交详情
+        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
+            type=1
+            studentTaskId=messageBean.studentTaskId
+            content=messageBean.title
+            homeworkTypeStr=homeworkType?.name
+            course=homeworkType?.course
+            time=System.currentTimeMillis()
+        })
     }
 
     override fun layoutId(): Int {

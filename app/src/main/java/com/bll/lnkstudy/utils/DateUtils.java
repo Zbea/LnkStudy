@@ -210,6 +210,15 @@ public class DateUtils {
         String month = new SimpleDateFormat("MM").format(date);
         return Integer.parseInt(month);
     }
+
+    //返回当前月份
+    public static int getMonth(long datelong)
+    {
+        Date date = new Date(date10ToDate13(datelong));
+        String month = new SimpleDateFormat("MM").format(date);
+        return Integer.parseInt(month);
+    }
+
     //返回当前日
     public static int getDay()
     {

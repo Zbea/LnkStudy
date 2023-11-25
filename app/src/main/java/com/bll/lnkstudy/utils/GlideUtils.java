@@ -22,7 +22,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(mContext)
                 .load(url)
@@ -35,7 +35,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(false);
+        requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(mContext)
@@ -48,7 +48,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(false);
+        requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
         requestOptions.transform(new RoundedCorners(round));
 
@@ -75,6 +75,8 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
         requestOptions.transform(new RoundedCorners(round));
 
         Glide.with(mContext)

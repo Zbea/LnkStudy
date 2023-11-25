@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
@@ -33,6 +34,8 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         intent.action = Constants.LOGIN_BROADCAST_EVENT
         sendBroadcast(intent)
 
+        MethodManager.getUser()
+
         gotoMainActivity()
     }
 
@@ -45,8 +48,11 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-        ed_user.setText("zhufeng")
-        ed_psw.setText("123456")
+        val account=SPUtil.getString("account")
+        val password=SPUtil.getString("password")
+
+        ed_user.setText(account)
+        ed_psw.setText(password)
 
         tv_register.setOnClickListener {
             startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(0), 0)
@@ -58,7 +64,11 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
         btn_login.setOnClickListener {
             val account = ed_user.text.toString()
-            val password = MD5Utils.digest(ed_psw.text.toString())
+            val psdStr=ed_psw.text.toString()
+            val password = MD5Utils.digest(psdStr)
+
+            SPUtil.putString("account",account)
+            SPUtil.putString("password",psdStr)
 
             val map=HashMap<String,Any>()
             map ["account"]=account

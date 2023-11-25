@@ -185,8 +185,8 @@
     <string name="main_teaching">教材</string>
 
     <string name="textbook_tab_text">我的课本</string>
-    <string name="textbook_tab_course">解析课本</string>
-    <string name="textbook_tab_teaching">参考课本</string>
+    <string name="textbook_tab_course">参考课本</string>
+    <string name="textbook_tab_teaching">越级课本</string>
     <string name="textbook_tab_oldteaching">上期课本</string>
 
     <string name="book_tab_gj">古籍</string>
@@ -306,15 +306,15 @@
     <string name="password_set_question">设置密保</string>
 
     <string name="homework_book">题卷本</string>
-    <string name="homework_my_book">我的题卷本</string>
-    <string name="homework_other_book">参考题卷本</string>
+    <string name="homework_my_book">我的教辅</string>
+    <string name="homework_other_book">参考教辅</string>
     <string name="homework_receiver_reel">收到题卷</string>
     <string name="homework_receiver_message">收到通知</string>
     <string name="homework_create_str">新建作业本</string>
     <string name="homework_create_hint">输入作业本标题</string>
     <string name="homework_commit_details_str">提交详情</string>
     <string name="homework_correct_details_str">批改详情</string>
-    <string name="homework_book_str">新建题卷本</string>
+    <string name="homework_book_str">新建教辅本</string>
     <string name="homework_old_homework_str">往年作业本</string>
     <string name="homework_cover_module_str">封面模板</string>
     <string name="homework_module_str">作业本模板</string>
@@ -326,7 +326,7 @@
     <string name="homework_state_yes">已提交</string>
     <string name="homework_state_complete">已完成</string>
     <string name="homework_message">作业通知</string>
-    <string name="toast_homework_unDownload">题卷本未下载</string>
+    <string name="toast_homework_unDownload">教辅书未下载</string>
     <string name="toast_page_inexistence">页码不存在</string>
 
     <string name="testpaper_score_str">批改分</string>

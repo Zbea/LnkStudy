@@ -34,7 +34,7 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
 
         GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-        tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.semesters[book.semester-1].name
+        tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters()[book.semester-1].name
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
         tv_version?.text =context.getString(R.string.press)+"： " + book.version
         tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc

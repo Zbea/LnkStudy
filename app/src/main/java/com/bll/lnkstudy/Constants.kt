@@ -110,6 +110,9 @@ class Constants {
         //广播
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkstudy.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkstudy.account.logout"
+
+        const val PACKAGE_READER = "com.geniatech.knote.reader"
+        const val PACKAGE_GEOMETRY = "com.geometry"
     }
 
 }

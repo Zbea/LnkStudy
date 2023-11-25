@@ -66,7 +66,6 @@ public class SToast {
         else {
             toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
         }
-
         toast.setText(str);
         toast.show();
     }

@@ -8,9 +8,11 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -28,7 +30,7 @@ import java.io.File
  */
 class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
-    private val mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
+    private val mUploadPresenter= FileUploadPresenter(this)
     private var homeworkType:HomeworkTypeBean?=null
     private var course=""
     private var typeId=0//分组id
@@ -58,6 +60,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=paper?.contentId!!
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    map["commonTypeId"] = homeworkType?.typeId!!
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -87,6 +90,16 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             //更新增量作业卷内容(作业提交后合图后不存在手写内容)
             DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
         }
+
+        //添加提交详情
+        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
+            type=1
+            studentTaskId=paper?.contentId!!
+            content=paper?.title
+            homeworkTypeStr=homeworkType?.name
+            course=homeworkType?.course
+            time=System.currentTimeMillis()
+        })
     }
 
 

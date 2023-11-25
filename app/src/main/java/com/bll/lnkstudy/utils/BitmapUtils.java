@@ -206,12 +206,16 @@ public class BitmapUtils {
      * @param bmp
      * @param path 保存路径
      */
-    public static void saveBmpGallery(Context context,Bitmap bmp, String path) {
+    public static void saveBmpGallery(Context context,Bitmap bmp, String path)  {
         File file = null;
+        File paf=new File(path);
+        if (!paf.exists()){
+            paf.getParentFile().mkdirs();
+        }
         // 声明输出流
         FileOutputStream outStream = null;
         try {
-            file = new File(path);
+            file = new File(paf.getParent(),paf.getName());
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);

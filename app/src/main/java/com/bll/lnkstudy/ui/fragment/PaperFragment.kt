@@ -38,18 +38,21 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     private var paperContents= mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
 
     override fun onTypeList(list: MutableList<PaperTypeBean>) {
-        if (onlineTypes==list)
-            return
-        onlineTypes=list
-        for (item in list){
-            if (!isSavePaperType(item)){
-                item.course=course
-                PaperTypeDaoManager.getInstance().insertOrReplace(item)
-                //创建增量数据
-                DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
-            }
+        if (onlineTypes==list){
+            fetchCorrectPaper()
         }
-        setData()
+        else{
+            onlineTypes=list
+            for (item in list){
+                if (!isSavePaperType(item)){
+                    item.course=course
+                    PaperTypeDaoManager.getInstance().insertOrReplace(item)
+                    //创建增量数据
+                    DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
+                }
+            }
+            setData()
+        }
     }
 
     override fun onList(paperList: PaperList?) {
@@ -112,7 +115,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         course=""
         rg_group.removeAllViews()
         rg_group.setOnCheckedChangeListener(null)
-        val classGroups= DataBeanManager.classGroups()
+        val classGroups= MethodManager.getClassGroups()
         if (classGroups.size>0){
             course=classGroups[0].subject
             for (i in classGroups.indices) {
@@ -196,8 +199,10 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     private fun setData(){
-        paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
-        mAdapter?.setNewData(paperTypes)
+        if (paperTypes!=PaperTypeDaoManager.getInstance().queryAllByCourse(course)){
+            paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
+            mAdapter?.setNewData(paperTypes)
+        }
         if (NetworkUtil(requireActivity()).isNetworkConnected())
             fetchCorrectPaper()
     }
@@ -232,7 +237,7 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
         if (grade==0) return
         val cloudList= mutableListOf<CloudListBean>()
         val nullItems= mutableListOf<PaperTypeBean>()
-        for(classGroup in DataBeanManager.classGroups()){
+        for(classGroup in MethodManager.getClassGroups()){
             //查找当前科目、年级的所有考卷(不包括云书库)
             val types=PaperTypeDaoManager.getInstance().queryAllByCourseAndIsCloud(classGroup.subject)
             for (item in types){

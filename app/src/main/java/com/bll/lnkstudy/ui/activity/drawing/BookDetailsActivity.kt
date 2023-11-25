@@ -58,8 +58,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
             }
             if (catalogMsg!=null){
                 for (item in catalogMsg?.contents!!) {
-                    val catalogParent =
-                        CatalogParent()
+                    val catalogParent = CatalogParent()
                     catalogParent.title = item.title
                     catalogParent.pageNumber = item.pageNumber
                     catalogParent.picName = item.picName

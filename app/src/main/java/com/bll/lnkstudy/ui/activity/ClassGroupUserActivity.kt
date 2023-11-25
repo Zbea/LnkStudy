@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.ac_classgroup_user.*
 
 class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
 
-    private var presenter = ClassGroupPresenter(this)
+    private var presenter = ClassGroupPresenter(this,2)
     private var mAdapter: ClassGroupUserAdapter? = null
 
     override fun onInsert() {

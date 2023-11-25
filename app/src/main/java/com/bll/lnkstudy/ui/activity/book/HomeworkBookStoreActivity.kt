@@ -41,13 +41,13 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
     private var tabStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
-    private val presenter = BookStorePresenter(this,getCurrentScreenPos())
+    private val presenter = BookStorePresenter(this,2)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
     private var gradeId =0
     private var semester=1
     private var provinceStr=""
-    private var courseId=0//科目
+    private var courseId=1//科目
     private var course=""
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var position=0
@@ -63,19 +63,16 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         setPageNumber(bookStore.total)
         books = bookStore.list
         for (book in books){
-            book.version=bookVersion[book.bookVersion-1].desc
+            if (bookVersion.size>0)
+                book.version=bookVersion[book.bookVersion-1].desc
         }
         mAdapter?.setNewData(books)
     }
 
     override fun onType(bookStoreType: BookStoreType) {
         bookVersion=bookStoreType.bookVersion
-        if (subjectList.size>0){
-            courseId=subjectList[0].id
-            course=subjectList[0].name
-            initSelectorView()
-            fetchData()
-        }
+        initSelectorView()
+        fetchData()
     }
 
     override fun buyBookSuccess() {
@@ -94,24 +91,35 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         tabList = DataBeanManager.homeworkBookType.toMutableList()
         tabStr = tabList[0]
 
-        semesterList=DataBeanManager.semesters
+        semester=intent.getIntExtra("semester",0)
+        courseId=intent.getIntExtra("course",0)
 
         provinceStr= mUser?.schoolProvince.toString()
         for (i in DataBeanManager.provinces.indices){
             provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
         }
+
         gradeId = mUser?.grade!!
         gradeList=DataBeanManager.popupGrades(gradeId)
 
-        for (classGroup in DataBeanManager.classGroups()){
-            for (item in DataBeanManager.popupCourses){
-                if (classGroup.subject==item.name){
-                    subjectList.add(item)
-                }
-            }
+        if (semester==0){
+            semester=1
         }
+        semesterList=DataBeanManager.popupSemester(semester)
 
-        presenter.getBookType()
+        if (courseId==0){
+            courseId=1
+        }
+        subjectList=DataBeanManager.popupCourses(courseId)
+        course=DataBeanManager.getCourseStr(courseId)
+
+
+        if (NetworkUtil(this).isNetworkConnected()){
+            presenter.getBookType()
+        }
+        else{
+            showNetworkDialog()
+        }
     }
 
     override fun initView() {
@@ -121,7 +129,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
 
         initRecyclerView()
         initTab()
-
     }
 
     //设置tab分类
@@ -129,7 +136,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
         for (i in tabList.indices) {
             rg_group.addView(getRadioButton(i, tabList[i], tabList.size - 1))
         }
-
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
@@ -146,7 +152,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
             pageIndex = 1
             fetchData()
         }
-
     }
 
     private fun initRecyclerView() {
@@ -166,7 +171,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
      * 设置分类选择
      */
     private fun initSelectorView() {
-
         tv_province.text = provinceStr
         tv_province.setOnClickListener {
             PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
@@ -178,7 +182,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
                 }
         }
 
-        tv_grade.text =gradeList[gradeId-1].name
+        tv_grade.text =DataBeanManager.getGradeStr(gradeId)
         tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
@@ -200,7 +204,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
                 }
         }
 
-        tv_course.text = subjectList[0].name
+        tv_course.text = course
         tv_course.setOnClickListener {
             PopupList(this, subjectList, tv_course, tv_course.width, 5).builder()
                 .setOnSelectListener { item ->
@@ -390,33 +394,28 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookSt
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         NetworkUtil(this).toggleNetwork(false)
+        super.onDestroy()
         FileDownloader.getImpl().pauseAll()
     }
 
     override fun fetchData() {
-        if (NetworkUtil(this).isNetworkConnected()){
-            books.clear()
-            mAdapter?.notifyDataSetChanged()
-            val map = HashMap<String, Any>()
-            map["page"] = pageIndex
-            map["size"] = pageSize
-            if (tabId==1)
-                map["area"] = provinceStr
-            map["grade"] = gradeId
-            map["type"] = tabId
-            map["semester"]=semester
-            map["subjectName"]=courseId
-            presenter.getHomeworkBooks(map)
-        }
-        else{
-            showNetworkDialog()
-        }
+        books.clear()
+        mAdapter?.setNewData(books)
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        if (tabId==1)
+            map["area"] = provinceStr
+        map["grade"] = gradeId
+        map["type"] = tabId
+        map["semester"]=semester
+        map["subjectName"]=courseId
+        presenter.getHomeworkBooks(map)
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchData()
+        presenter.getBookType()
     }
 
 }

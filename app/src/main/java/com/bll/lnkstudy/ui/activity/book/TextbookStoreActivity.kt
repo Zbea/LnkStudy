@@ -36,7 +36,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
     private var tabStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
-    private val presenter = BookStorePresenter(this,getCurrentScreenPos())
+    private val presenter = BookStorePresenter(this,1)
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
     private var gradeId =0
@@ -79,7 +79,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         typeList.removeAt(3)
         tabStr = typeList[0]
 
-        semesterList=DataBeanManager.semesters
+        semesterList=DataBeanManager.popupSemesters()
         getSemester()
 
         provinceStr= mUser?.schoolProvince.toString()
@@ -87,15 +87,17 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
             provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
         }
         gradeId = mUser?.grade!!
+        selectGradeId=gradeId
         gradeList=DataBeanManager.popupGrades(gradeId)
         subjectList=DataBeanManager.popupCourses
 
+        if (subjectList.size>0){
+            courseId=subjectList[0].id
+        }
+        initSelectorView()
+
         if (NetworkUtil(this).isNetworkConnected()){
-            if (subjectList.size>0){
-                courseId=subjectList[0].id
-                initSelectorView()
-                fetchData()
-            }
+            fetchData()
         }
         else{
             showNetworkDialog()
@@ -104,7 +106,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
 
     override fun initView() {
         setPageTitle(R.string.main_teaching)
-        disMissView(ll_search,tv_course,tv_grade,tv_semester,tv_province)
+        disMissView(ll_search,tv_course,tv_grade,tv_semester)
 
         initRecyclerView()
         initTab()
@@ -115,8 +117,16 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
                 val localBooks = BookGreenDaoManager.getInstance().queryAllTextBook(typeList[0])
                 if (localBooks.isNullOrEmpty()){
                     for (item in books) {
-                        val downloadTask = downLoadStart(item.downloadUrl, item)
-                        mDownMapPool[item.bookId] = downloadTask!!
+                        val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
+                        if (localBook!=null){
+                            localBook.subtypeStr=tabStr
+                            localBook.time = System.currentTimeMillis()
+                            BookGreenDaoManager.getInstance().insertOrReplaceBook(localBook)
+                        }
+                        else{
+                            val downloadTask = downLoadStart(item.downloadUrl, item)
+                            mDownMapPool[item.bookId] = downloadTask!!
+                        }
                     }
                 }
             }
@@ -133,17 +143,17 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
             when (i) {
                 0 -> {
                     showView(tv_download)
-                    disMissView(tv_course,tv_grade,tv_semester,tv_province)
+                    disMissView(tv_course,tv_grade,tv_semester)
                     gradeId = mUser?.grade!!
                     getSemester()
                 }
                 1 -> {
                     showView(tv_grade,tv_course,tv_semester)
-                    disMissView(tv_download,tv_province)
+                    disMissView(tv_download)
                     gradeId = selectGradeId
                 }
                 else -> {
-                    showView(tv_course,tv_grade,tv_semester,tv_province)
+                    showView(tv_course,tv_grade,tv_semester)
                     disMissView(tv_download)
                     gradeId = selectGradeId
                 }
@@ -382,8 +392,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        if (tabId!=0)
-            map["area"] = provinceStr
+        map["area"] = provinceStr
         map["grade"] = gradeId
         map["type"] = if (tabId==1) 2 else 1
         map["semester"]=semester

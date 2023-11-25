@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.ac_wallet.*
 
 class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
-    private var walletPresenter=WalletPresenter(this,getCurrentScreenPos())
+    private var walletPresenter=WalletPresenter(this,1)
     private var xdDialog:WalletBuyXdDialog?=null
     private var xdList= mutableListOf<AccountXDList.ListBean>()
     private var qrCodeDialog:Dialog?=null
@@ -54,8 +54,12 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
-        if (!NetworkUtil(this).isNetworkConnected())
+        if (NetworkUtil(this).isNetworkConnected()){
+            walletPresenter.getXdList(false)
+        }
+        else{
             showNetworkDialog()
+        }
     }
 
     override fun initView() {
@@ -69,9 +73,6 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
                 walletPresenter.getXdList(true)
             }
         }
-
-        walletPresenter.getXdList(false)
-
     }
 
     //购买学豆
@@ -125,5 +126,8 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         }
     }
 
+    override fun onNetworkConnectionSuccess() {
+        walletPresenter.getXdList(false)
+    }
 
 }
