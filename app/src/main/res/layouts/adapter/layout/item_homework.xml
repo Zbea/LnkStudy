@@ -7,8 +7,10 @@
     android:gravity="center">
 
     <RelativeLayout
+        android:id="@+id/rl_bg"
         android:layout_width="220dp"
-        android:layout_height="292dp"
+        android:layout_height="288dp"
+        android:padding="1dp"
         >
 
         <ImageView
@@ -20,13 +22,17 @@
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:lines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="26sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"  />
 
         <TextView
             android:id="@+id/tv_grade"
@@ -34,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/tv_name"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"
             />

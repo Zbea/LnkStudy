@@ -23,7 +23,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/iv_cancel"
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="6dp"
@@ -53,7 +53,7 @@
             android:drawableEnd="@mipmap/icon_wallet_smoney"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
-            android:text="价格"
+            android:text="价格:   "
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:gravity="center_vertical"
-            android:text="科目"
+            android:text="科目:"
             android:textColor="@color/black"
             android:textSize="20sp" />
         <TextView
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:gravity="center_vertical"
-            android:text="出版社"
+            android:text="出版社:"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -82,7 +82,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginTop="@dimen/dp_5"
-            android:text="简介"
+            android:text="简介:"
             android:textColor="@color/black"
             android:textSize="20sp" />
 

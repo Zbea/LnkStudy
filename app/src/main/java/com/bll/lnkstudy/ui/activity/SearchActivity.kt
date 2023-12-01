@@ -148,7 +148,7 @@ class SearchActivity : BaseAppCompatActivity() {
         listMap.clear()
         when(typeId){
             0->{
-                val books= BookGreenDaoManager.getInstance().search(titleStr,1)
+                val books= BookGreenDaoManager.getInstance().search(titleStr)
                 for (book in books){
                     searchBeans.add(SearchBean().apply {
                         category=0
@@ -161,7 +161,7 @@ class SearchActivity : BaseAppCompatActivity() {
                 }
             }
             1->{
-                val books= BookGreenDaoManager.getInstance().search(titleStr,0)
+                val books= TextbookGreenDaoManager.getInstance().search(titleStr)
                 for (book in books){
                     searchBeans.add(SearchBean().apply {
                         category=1

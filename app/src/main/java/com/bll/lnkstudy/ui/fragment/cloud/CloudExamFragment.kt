@@ -4,7 +4,6 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -38,7 +37,7 @@ class CloudExamFragment:BaseCloudFragment() {
     private var mAdapter:PaperTypeAdapter?=null
     private var course=""
     private var position=0
-    private var types= mutableListOf<PaperTypeBean>()
+    private var paperTypes= mutableListOf<PaperTypeBean>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_cloud_content
@@ -46,13 +45,12 @@ class CloudExamFragment:BaseCloudFragment() {
 
     override fun initView() {
         pageSize=6
-        initTab()
         initRecyclerView()
     }
 
     override fun lazyLoad() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            fetchData()
+            mCloudPresenter.getType(3)
         }
         else{
             showNetworkDialog()
@@ -60,16 +58,16 @@ class CloudExamFragment:BaseCloudFragment() {
     }
 
     private fun initTab(){
-        val courses= DataBeanManager.courses()
-        course=DataBeanManager.getCourseStr(0)
-        for (i in courses.indices) {
-            rg_group.addView(getRadioButton(i ,courses[i].desc,courses.size-1))
+        course=types[0]
+        for (i in types.indices) {
+            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            course=courses[id].desc
+            course=types[id]
             pageIndex=1
             fetchData()
         }
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -93,14 +91,14 @@ class CloudExamFragment:BaseCloudFragment() {
                         }
                         override fun ok() {
                             val ids= mutableListOf<Int>()
-                            ids.add(types[position].cloudId)
+                            ids.add(paperTypes[position].cloudId)
                             mCloudPresenter.deleteCloud(ids)
                         }
                     })
                 true
             }
             setOnItemClickListener { adapter, view, position ->
-                val paperTypeBean=types[position]
+                val paperTypeBean=paperTypes[position]
                 val item= PaperTypeDaoManager.getInstance().queryById(paperTypeBean.typeId)
                 if (item==null){
                     download(paperTypeBean)
@@ -191,9 +189,15 @@ class CloudExamFragment:BaseCloudFragment() {
         mCloudPresenter.getList(map)
     }
 
+    override fun onCloudType(types: MutableList<String>) {
+        this.types=types
+        if (types.size>0)
+            initTab()
+    }
+
     override fun onCloudList(cloudList: CloudList) {
         setPageNumber(cloudList.total)
-        types.clear()
+        paperTypes.clear()
         for (type in cloudList.list){
             if (type.listJson.isNotEmpty()){
                 val paperTypeBean= Gson().fromJson(type.listJson, PaperTypeBean::class.java)
@@ -202,10 +206,10 @@ class CloudExamFragment:BaseCloudFragment() {
                 paperTypeBean.downloadUrl=type.downloadUrl
                 paperTypeBean.contentJson=type.contentJson
                 paperTypeBean.contentSubtypeJson=type.contentSubtypeJson
-                types.add(paperTypeBean)
+                paperTypes.add(paperTypeBean)
             }
         }
-        mAdapter?.setNewData(types)
+        mAdapter?.setNewData(paperTypes)
     }
 
     override fun onCloudDelete() {

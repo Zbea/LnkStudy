@@ -2,6 +2,7 @@ package com.bll.lnkstudy.mvp.model.homework;
 
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
+import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -21,55 +22,54 @@ public class HomeworkBookBean  {
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     @Unique
     public int bookId;
+    public int type;
     public String imageUrl;
     public String bookName;//书名
     public String bookDesc;//描述
     public int price;//书的价格
-    public String subtypeStr;
     public int semester;//学期
     public String area;//地区
     public int grade; //年级
+    @SerializedName("subjectName")
     public int subject;//课目
-    public String version;  //版本
+    public int version;  //版本
     public String supply ;  //官方
-    public String bodyUrl;//书籍下载url
+    @Unique
+    @SerializedName("bodyUrl")
+    public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径
     public String bookDrawPath;  //book书的手写路径
-    public long downDate;//下载时间
+    public long time;//观看时间
     public int pageIndex;//当前页
     public String pageUrl;//当前页路径
-    public boolean isCloud;
-    public int cloudId;
     @Transient
     public String drawUrl;//云存储的手写下载地址
-    @Generated(hash = 1219055239)
-    public HomeworkBookBean(Long id, long userId, int bookId, String imageUrl, String bookName,
-            String bookDesc, int price, String subtypeStr, int semester, String area, int grade,
-            int subject, String version, String supply, String bodyUrl, String bookPath,
-            String bookDrawPath, long downDate, int pageIndex, String pageUrl, boolean isCloud,
-            int cloudId) {
+
+    @Generated(hash = 697657062)
+    public HomeworkBookBean(Long id, long userId, int bookId, int type, String imageUrl,
+            String bookName, String bookDesc, int price, int semester, String area, int grade,
+            int subject, int version, String supply, String downloadUrl, String bookPath,
+            String bookDrawPath, long time, int pageIndex, String pageUrl) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
+        this.type = type;
         this.imageUrl = imageUrl;
         this.bookName = bookName;
         this.bookDesc = bookDesc;
         this.price = price;
-        this.subtypeStr = subtypeStr;
         this.semester = semester;
         this.area = area;
         this.grade = grade;
         this.subject = subject;
         this.version = version;
         this.supply = supply;
-        this.bodyUrl = bodyUrl;
+        this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
         this.bookDrawPath = bookDrawPath;
-        this.downDate = downDate;
+        this.time = time;
         this.pageIndex = pageIndex;
         this.pageUrl = pageUrl;
-        this.isCloud = isCloud;
-        this.cloudId = cloudId;
     }
     @Generated(hash = 1174222334)
     public HomeworkBookBean() {
@@ -91,6 +91,12 @@ public class HomeworkBookBean  {
     }
     public void setBookId(int bookId) {
         this.bookId = bookId;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
     }
     public String getImageUrl() {
         return this.imageUrl;
@@ -116,12 +122,6 @@ public class HomeworkBookBean  {
     public void setPrice(int price) {
         this.price = price;
     }
-    public String getSubtypeStr() {
-        return this.subtypeStr;
-    }
-    public void setSubtypeStr(String subtypeStr) {
-        this.subtypeStr = subtypeStr;
-    }
     public int getSemester() {
         return this.semester;
     }
@@ -146,10 +146,10 @@ public class HomeworkBookBean  {
     public void setSubject(int subject) {
         this.subject = subject;
     }
-    public String getVersion() {
+    public int getVersion() {
         return this.version;
     }
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
     public String getSupply() {
@@ -158,11 +158,11 @@ public class HomeworkBookBean  {
     public void setSupply(String supply) {
         this.supply = supply;
     }
-    public String getBodyUrl() {
-        return this.bodyUrl;
+    public String getDownloadUrl() {
+        return this.downloadUrl;
     }
-    public void setBodyUrl(String bodyUrl) {
-        this.bodyUrl = bodyUrl;
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
     }
     public String getBookPath() {
         return this.bookPath;
@@ -176,11 +176,11 @@ public class HomeworkBookBean  {
     public void setBookDrawPath(String bookDrawPath) {
         this.bookDrawPath = bookDrawPath;
     }
-    public long getDownDate() {
-        return this.downDate;
+    public long getTime() {
+        return this.time;
     }
-    public void setDownDate(long downDate) {
-        this.downDate = downDate;
+    public void setTime(long time) {
+        this.time = time;
     }
     public int getPageIndex() {
         return this.pageIndex;
@@ -193,18 +193,6 @@ public class HomeworkBookBean  {
     }
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
-    }
-    public boolean getIsCloud() {
-        return this.isCloud;
-    }
-    public void setIsCloud(boolean isCloud) {
-        this.isCloud = isCloud;
-    }
-    public int getCloudId() {
-        return this.cloudId;
-    }
-    public void setCloudId(int cloudId) {
-        this.cloudId = cloudId;
     }
    
 }

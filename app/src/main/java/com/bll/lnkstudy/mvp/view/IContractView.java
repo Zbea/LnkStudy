@@ -25,6 +25,7 @@ import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
 import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
+import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
 
 import java.util.List;
@@ -81,11 +82,17 @@ public interface IContractView {
         void checkOrder(AccountOrder order);
     }
 
-    //书城教材
+    //书城
     interface IBookStoreView extends IBaseView {
         void onBook(BookStore bookStore);
         void onType(BookStoreType bookStoreType);
-        void buyBookSuccess();
+        void buySuccess();
+    }
+
+    //教材
+    interface ITextbookStoreView extends IBaseView {
+        void onTextbook(TextbookStore bookStore);
+        void buySuccess();
     }
 
     //应用

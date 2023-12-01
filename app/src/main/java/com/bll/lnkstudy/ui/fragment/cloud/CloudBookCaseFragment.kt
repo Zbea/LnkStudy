@@ -80,7 +80,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
                 val book=books[position]
-                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookPlusId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookId)
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
@@ -123,7 +123,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
             countDownTasks?.await()
             requireActivity().runOnUiThread {
                 hideLoading()
-                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookPlusId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookId)
                 if (localBook!=null){
                     showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
                 }
@@ -156,6 +156,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     book.time=System.currentTimeMillis()
+                    book.isLook=false
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId, Gson().toJson(book),book.downloadUrl)
@@ -218,7 +219,6 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 val bookBean= Gson().fromJson(bookCloud.listJson, BookBean::class.java)
                 bookBean.id=null
                 bookBean.cloudId=bookCloud.id
-                bookBean.isCloud=true
                 bookBean.drawUrl=bookCloud.downloadUrl
                 books.add(bookBean)
             }

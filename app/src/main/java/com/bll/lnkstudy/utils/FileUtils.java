@@ -343,6 +343,7 @@ public class FileUtils {
      * @return
      */
     public static boolean isExistContent(String path){
-        return getFiles(path)!=null;
+        List<File> files=getFiles(path);
+        return files!=null&&files.size()>0;
     }
 }

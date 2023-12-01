@@ -184,10 +184,11 @@
     <string name="main_teach_title">义教</string>
     <string name="main_teaching">教材</string>
 
-    <string name="textbook_tab_text">我的课本</string>
-    <string name="textbook_tab_course">参考课本</string>
-    <string name="textbook_tab_teaching">越级课本</string>
-    <string name="textbook_tab_oldteaching">上期课本</string>
+    <string name="textbook">课本</string>
+    <string name="textbook_tab_my">我的课本</string>
+    <string name="textbook_tab_assist">参考课本</string>
+    <string name="textbook_tab_other">越级课本</string>
+    <string name="textbook_tab_old">往期课本</string>
 
     <string name="book_tab_gj">古籍</string>
     <string name="book_tab_zrkx">自然科学</string>
@@ -305,9 +306,8 @@
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
 
-    <string name="homework_book">题卷本</string>
-    <string name="homework_my_book">我的教辅</string>
-    <string name="homework_other_book">参考教辅</string>
+    <string name="homework_my_book">我的教辅本</string>
+    <string name="homework_other_book">参考教辅本</string>
     <string name="homework_receiver_reel">收到题卷</string>
     <string name="homework_receiver_message">收到通知</string>
     <string name="homework_create_str">新建作业本</string>

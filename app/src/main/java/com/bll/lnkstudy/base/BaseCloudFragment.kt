@@ -52,6 +52,7 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , IBaseV
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=0
     var grade=0
+    var types= mutableListOf<String>()
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据

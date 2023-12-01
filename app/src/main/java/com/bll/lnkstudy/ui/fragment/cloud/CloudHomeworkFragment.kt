@@ -34,7 +34,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private var mAdapter:CloudHomeworkAdapter?=null
     private var course=""
     private var position=0
-    private val types= mutableListOf<HomeworkTypeBean>()
+    private val homeworkTypes= mutableListOf<HomeworkTypeBean>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_cloud_content
@@ -42,13 +42,12 @@ class CloudHomeworkFragment:BaseCloudFragment(){
 
     override fun initView() {
         pageSize=9
-        initTab()
         initRecyclerView()
     }
 
     override fun lazyLoad() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            fetchData()
+            mCloudPresenter.getType(2)
         }
         else{
             showNetworkDialog()
@@ -56,28 +55,28 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     }
 
     private fun initTab(){
-        val courses= DataBeanManager.courses()
-        course=DataBeanManager.getCourseStr(0)
-        for (i in courses.indices) {
-            rg_group.addView(getRadioButton(i ,courses[i].desc,courses.size-1))
+        course=types[0]
+        for (i in types.indices) {
+            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            course=courses[id].desc
+            course=types[id]
             pageIndex=1
             fetchData()
         }
+        fetchData()
     }
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,20f),DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,20f),DP2PX.dip2px(activity,50f),DP2PX.dip2px(activity,20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity, 3)
         mAdapter = CloudHomeworkAdapter(R.layout.item_homework, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 50))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 60))
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudHomeworkFragment.position=position
                 CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
@@ -86,14 +85,14 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         }
                         override fun ok() {
                             val ids= mutableListOf<Int>()
-                            ids.add(types[position].cloudId)
+                            ids.add(homeworkTypes[position].cloudId)
                             mCloudPresenter.deleteCloud(ids)
                         }
                     })
                 true
             }
             setOnItemClickListener { adapter, view, position ->
-                val homeworkTypeBean=types[position]
+                val homeworkTypeBean=homeworkTypes[position]
                 //如果是题卷本
                 if (homeworkTypeBean.state==4){
                     if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
@@ -187,6 +186,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 showToast(getScreenPosition(),R.string.book_download_success)
+                                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
                                 hideLoading()
                             },500)
                         }
@@ -226,7 +226,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private fun downloadBook(book: HomeworkBookBean,isDraw:Boolean) {
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val url=if (isDraw) book.drawUrl else book.bodyUrl
+        val url=if (isDraw) book.drawUrl else book.downloadUrl
         FileDownManager.with(activity).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -248,10 +248,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                 createStatus=0
                             }
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-
+                            book.id=null
                             HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量更新
-                            DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId,Gson().toJson(book),book.bodyUrl)
+                            DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId,Gson().toJson(book),book.downloadUrl)
                             if (isDraw){
                                 DataUpdateManager.createDataUpdate(8,book.bookId,2,book.bookId
                                     ,"",book.bookDrawPath)
@@ -296,9 +296,15 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         mCloudPresenter.getList(map)
     }
 
+    override fun onCloudType(types: MutableList<String>) {
+        this.types=types
+        if (types.size>0)
+            initTab()
+    }
+
     override fun onCloudList(cloudList: CloudList) {
         setPageNumber(cloudList.total)
-        types.clear()
+        homeworkTypes.clear()
         for (type in cloudList.list){
             if (type.listJson.isNotEmpty()){
                 val homeworkTypeBean= Gson().fromJson(type.listJson, HomeworkTypeBean::class.java)
@@ -307,10 +313,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 homeworkTypeBean.downloadUrl=type.downloadUrl
                 homeworkTypeBean.contentJson=type.contentJson
                 homeworkTypeBean.contentSubtypeJson=type.contentSubtypeJson
-                types.add(homeworkTypeBean)
+                homeworkTypes.add(homeworkTypeBean)
             }
         }
-        mAdapter?.setNewData(types)
+        mAdapter?.setNewData(homeworkTypes)
     }
 
     override fun onCloudDelete() {

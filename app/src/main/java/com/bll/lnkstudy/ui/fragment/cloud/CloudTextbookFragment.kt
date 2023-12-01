@@ -3,12 +3,15 @@ package com.bll.lnkstudy.ui.fragment.cloud
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
+import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
@@ -29,7 +32,7 @@ import java.util.concurrent.CountDownLatch
 class CloudTextbookFragment:BaseCloudFragment() {
     private var countDownTasks: CountDownLatch?=null //异步完成后操作
     private var mAdapter:TextBookAdapter?=null
-    private var books= mutableListOf<BookBean>()
+    private var books= mutableListOf<TextbookBean>()
     private var textBook=""//用来区分课本类型
     private var position=0
 
@@ -53,8 +56,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
     }
 
     private fun initTab(){
-        val texts= DataBeanManager.textbookType.toMutableList()
-        texts.removeLast()
+        val texts= arrayListOf("往期课本","参考课本")
         textBook=texts[0]
         for (i in texts.indices) {
             rg_group.addView(getRadioButton(i ,texts[i],texts.size-1))
@@ -78,7 +80,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
                 val book=books[position]
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
+                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                 if (localBook == null) {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
@@ -116,13 +118,13 @@ class CloudTextbookFragment:BaseCloudFragment() {
     /**
      * 下载完成
      */
-    private fun downloadSuccess(book: BookBean){
+    private fun downloadSuccess(book: TextbookBean){
         //等待两个请求完成后刷新列表
         Thread{
             countDownTasks?.await()
             requireActivity().runOnUiThread {
                 hideLoading()
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
+                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                 if (localBook!=null){
                     showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
                     EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
@@ -144,7 +146,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
     /**
      * 下载书籍手写内容
      */
-    private fun downloadBookDrawing(book: BookBean){
+    private fun downloadBookDrawing(book: TextbookBean){
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
@@ -179,7 +181,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
     /**
      * 下载书籍
      */
-    private fun downloadBook(book: BookBean) {
+    private fun downloadBook(book: TextbookBean) {
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.downloadUrl).setPath(zipPath)
@@ -191,7 +193,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
-                            BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量更新
                             DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
                                 ,Gson().toJson(book),book.downloadUrl)
@@ -228,10 +230,9 @@ class CloudTextbookFragment:BaseCloudFragment() {
         books.clear()
         for (item in cloudList.list){
             if (item.listJson.isNotEmpty()){
-                val bookBean= Gson().fromJson(item.listJson, BookBean::class.java)
+                val bookBean= Gson().fromJson(item.listJson, TextbookBean::class.java)
                 bookBean.id=null
                 bookBean.cloudId=item.id
-                bookBean.isCloud=true
                 bookBean.drawUrl=item.downloadUrl
                 books.add(bookBean)
             }

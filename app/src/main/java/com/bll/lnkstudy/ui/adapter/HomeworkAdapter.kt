@@ -7,7 +7,6 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -18,14 +17,26 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
             setVisible(R.id.ll_info, item.createStatus!=0||item.isCloud)
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){
-                setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)
+                setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
                 GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
             }
             else{
                 setText(R.id.tv_name, item.name)
-                setImageResource(R.id.iv_image,R.color.color_transparent)
-                val bg=if (item.bgResId.isNullOrEmpty()) DataBeanManager.getHomeworkCoverStr() else item.bgResId
-                setBackgroundRes(R.id.iv_image,ToolUtils.getImageResId(mContext,bg))
+                if (item.isCloud)
+                    setText(R.id.tv_grade,DataBeanManager.getGradeStr(item.grade))
+                val bg=when(item.state){
+                    1->{
+                        R.mipmap.icon_homework_cover_3
+                    }
+                    3->{
+                        R.mipmap.icon_homework_cover_2
+                    }
+                    else->{
+                        R.mipmap.icon_homework_cover_1
+                    }
+                }
+                setImageResource(R.id.iv_image,bg)
+                setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
             }
 
             if (item.isPg) {

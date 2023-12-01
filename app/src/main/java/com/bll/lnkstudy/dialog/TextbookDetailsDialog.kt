@@ -6,12 +6,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.utils.GlideUtils
 
 
-class BookDetailsDialog(private val context: Context, private val book: BookBean) {
+class TextbookDetailsDialog(private val context: Context, private val book: TextbookBean) {
 
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null
@@ -30,14 +31,14 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
         val tv_version = dialog?.findViewById<TextView>(R.id.tv_version)
         val tv_info = dialog?.findViewById<TextView>(R.id.tv_info)
         val tv_book_name = dialog?.findViewById<TextView>(R.id.tv_book_name)
-        tv_course?.visibility=View.GONE
 
         GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-        tv_book_name?.text = book.bookName
+        tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters()[book.semester-1].name
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
-        tv_version?.text =context.getString(R.string.press)+"： " + book.version
+        tv_version?.text =context.getString(R.string.press)+"： " + DataBeanManager.bookVersion()[book.version-1].desc
         tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
+        tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.getCourseStr(book.subject)
 
         if (book.buyStatus == 1) {
             btn_ok?.setText(R.string.book_download_str)
@@ -48,12 +49,15 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
         if (book.loadSate==2)
             btn_ok?.visibility= View.GONE
 
+        if (book.typeStr==DataBeanManager.textbookType[0])
+            btn_ok?.visibility= View.GONE
 
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
         btn_ok?.setOnClickListener { listener?.onClick() }
 
         return dialog
     }
+
 
     fun setChangeStatus() {
         book.buyStatus=1
@@ -66,6 +70,7 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
             btn_ok?.isClickable = false
             btn_ok?.isEnabled = false//不能再按了
         }
+
     }
 
     fun setDissBtn(){
@@ -75,6 +80,7 @@ class BookDetailsDialog(private val context: Context, private val book: BookBean
     fun dismiss(){
         dialog?.dismiss()
     }
+
 
     private var listener: OnClickListener? = null
 

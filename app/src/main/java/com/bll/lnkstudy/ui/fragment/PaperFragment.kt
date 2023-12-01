@@ -28,27 +28,26 @@ import java.io.File
 /**
  * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
  */
-class PaperFragment : BaseFragment(),IContractView.IPaperView{
+class PaperFragment : BaseFragment(), IContractView.IPaperView {
 
     private val mPresenter = TestPaperPresenter(this)
-    private var mAdapter:PaperTypeAdapter?=null
-    private var paperTypes= mutableListOf<PaperTypeBean>()
-    private var onlineTypes= mutableListOf<PaperTypeBean>()
-    private var course=""//课程
-    private var paperContents= mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
+    private var mAdapter: PaperTypeAdapter? = null
+    private var paperTypes = mutableListOf<PaperTypeBean>()
+    private var onlineTypes = mutableListOf<PaperTypeBean>()
+    private var course = ""//课程
+    private var paperContents = mutableListOf<PaperList.PaperListBean>()//下载收到的考卷
 
     override fun onTypeList(list: MutableList<PaperTypeBean>) {
-        if (onlineTypes==list){
+        if (onlineTypes == list) {
             fetchCorrectPaper()
-        }
-        else{
-            onlineTypes=list
-            for (item in list){
-                if (!isSavePaperType(item)){
-                    item.course=course
+        } else {
+            onlineTypes = list
+            for (item in list) {
+                if (!isSavePaperType(item)) {
+                    item.course = course
                     PaperTypeDaoManager.getInstance().insertOrReplace(item)
                     //创建增量数据
-                    DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
+                    DataUpdateManager.createDataUpdate(3, item.typeId, 1, item.typeId, Gson().toJson(item))
                 }
             }
             setData()
@@ -56,10 +55,11 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun onList(paperList: PaperList?) {
-        paperContents= paperList?.list as MutableList<PaperList.PaperListBean>
+        paperContents = paperList?.list as MutableList<PaperList.PaperListBean>
         loadPapers(paperContents)
         refreshView()
     }
+
     override fun onDeleteSuccess() {
     }
 
@@ -79,28 +79,29 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     @SuppressLint("WrongConstant")
-    private fun initRecyclerView(){
-        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,paperTypes).apply {
-            rv_list.layoutManager = GridLayoutManager(activity,2)
+    private fun initRecyclerView() {
+        mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type, paperTypes).apply {
+            rv_list.layoutManager = GridLayoutManager(activity, 2)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
+            rv_list.addItemDecoration(SpaceGridItemDeco(2, 80))
             setOnItemClickListener { adapter, view, position ->
-                val item=paperTypes[position]
-                MethodManager.gotoPaperDrawing(requireActivity(),item.course,item.typeId,Constants.DEFAULT_PAGE)
+                val item = paperTypes[position]
+                MethodManager.gotoPaperDrawing(requireActivity(), item.course, item.typeId, Constants.DEFAULT_PAGE)
             }
             setOnItemLongClickListener { adapter, view, position ->
                 CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(
                     object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
+
                         override fun ok() {
                             val item = paperTypes[position]
                             //删除本地当前作业本
                             PaperTypeDaoManager.getInstance().deleteBean(item)
-                            PaperDaoManager.getInstance().delete(item.course,item.typeId)
-                            PaperContentDaoManager.getInstance().delete(item.course,item.typeId)
-                            val path=FileAddress().getPathTestPaper(item.typeId)
+                            PaperDaoManager.getInstance().delete(item.course, item.typeId)
+                            PaperContentDaoManager.getInstance().delete(item.course, item.typeId)
+                            val path = FileAddress().getPathTestPaper(item.typeId)
                             FileUtils.deleteFile(File(path))
                             remove(position)
                         }
@@ -111,23 +112,22 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     //设置头部索引
-    private fun initTab(){
-        course=""
+    private fun initTab() {
+        course = ""
         rg_group.removeAllViews()
         rg_group.setOnCheckedChangeListener(null)
-        val classGroups= MethodManager.getClassGroups()
-        if (classGroups.size>0){
-            course=classGroups[0].subject
+        val classGroups = MethodManager.getClassGroups()
+        if (classGroups.size > 0) {
+            course = classGroups[0].subject
             for (i in classGroups.indices) {
-                rg_group.addView(getRadioButton(i ,classGroups[i].subject,classGroups.size-1))
+                rg_group.addView(getRadioButton(i, classGroups[i].subject, classGroups.size - 1))
             }
             rg_group.setOnCheckedChangeListener { radioGroup, id ->
-                course=classGroups[id].subject
+                course = classGroups[id].subject
                 fetchData()
             }
             fetchData()
-        }
-        else{
+        } else {
             paperTypes.clear()
             mAdapter?.notifyDataSetChanged()
         }
@@ -150,30 +150,33 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     /**
      * 下载收到的考卷
      */
-    private fun loadPapers(papers:MutableList<PaperList.PaperListBean>) {
+    private fun loadPapers(papers: MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
             //设置路径
             val pathStr = FileAddress().getPathTestPaper(item.examId, item.id)
             item.path = pathStr
-            val images=item.submitUrl.split(",").toMutableList()
-            val savePaths= mutableListOf<String>()
-            for (i in images.indices){
-                savePaths.add("$pathStr/${i+1}.png")
+            val images = item.submitUrl.split(",").toMutableList()
+            val savePaths = mutableListOf<String>()
+            for (i in images.indices) {
+                savePaths.add("$pathStr/${i + 1}.png")
             }
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
+
                     override fun completed(task: BaseDownloadTask?) {
                         mPresenter.deletePaper(item.id)
-                        val contentPapers=PaperContentDaoManager.getInstance().queryByID(item.id)
+                        val contentPapers = PaperContentDaoManager.getInstance().queryByID(item.id)
                         //更新考卷内容增量数据
-                        for (contentPaper in contentPapers){
-                            DataUpdateManager.editDataUpdate(3,contentPaper.id.toInt(),3,contentPaper.typeId)
+                        for (contentPaper in contentPapers) {
+                            DataUpdateManager.editDataUpdate(3, contentPaper.id.toInt(), 3, contentPaper.typeId)
                         }
                     }
+
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
+
                     override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     }
                 })
@@ -183,24 +186,23 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     /**
      * 刷新批改分 循环遍历
      */
-    private fun refreshView(){
-        for (item in paperContents){
-            for (ite in paperTypes){
-                if (item.subject==ite.course&&item.examId==ite.typeId){
-                    ite.score=item.score
-                    ite.isPg=true
-                }
-                else{
-                    ite.isPg=false
+    private fun refreshView() {
+        for (item in paperContents) {
+            for (ite in paperTypes) {
+                if (item.subject == ite.course && item.examId == ite.typeId) {
+                    ite.score = item.score
+                    ite.isPg = true
+                } else {
+                    ite.isPg = false
                 }
             }
         }
         mAdapter?.notifyDataSetChanged()
     }
 
-    private fun setData(){
-        if (paperTypes!=PaperTypeDaoManager.getInstance().queryAllByCourse(course)){
-            paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(course)
+    private fun setData() {
+        if (paperTypes != PaperTypeDaoManager.getInstance().queryAllByCourse(course)) {
+            paperTypes = PaperTypeDaoManager.getInstance().queryAllByCourse(course)
             mAdapter?.setNewData(paperTypes)
         }
         if (NetworkUtil(requireActivity()).isNetworkConnected())
@@ -208,15 +210,14 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!
             map["type"] = 1
             map["userId"] = DataBeanManager.getClassGroupTeacherId(course)
             mPresenter.getTypeList(map)
-        }
-        else{
+        } else {
             setData()
         }
     }
@@ -224,51 +225,47 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     /**
      * 获取老师批改下发考卷
      */
-    private fun fetchCorrectPaper(){
-        val map= HashMap<String,Any>()
-        map["sendStatus"]=2
+    private fun fetchCorrectPaper() {
+        val map = HashMap<String, Any>()
+        map["sendStatus"] = 2
         mPresenter.getList(map)
     }
 
     /**
      * 控制上传
      */
-    fun uploadPaper(token: String){
-        if (grade==0) return
-        val cloudList= mutableListOf<CloudListBean>()
-        val nullItems= mutableListOf<PaperTypeBean>()
-        for(classGroup in MethodManager.getClassGroups()){
-            //查找当前科目、年级的所有考卷(不包括云书库)
-            val types=PaperTypeDaoManager.getInstance().queryAllByCourseAndIsCloud(classGroup.subject)
-            for (item in types){
-                val papers= PaperDaoManager.getInstance().queryAll(item.course,item.typeId)
-                val paperContents=PaperContentDaoManager.getInstance().queryAll(item.course,item.typeId)
-                val path=FileAddress().getPathTestPaper(item.typeId)
-                if (FileUtils.isExistContent(path)){
-                    FileUploadManager(token).apply {
-                        startUpload(path,item.name)
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=3
-                                subType=-1
-                                subTypeStr=item.course
-                                date=System.currentTimeMillis()
-                                grade=item.grade
-                                listJson=Gson().toJson(item)
-                                contentJson= Gson().toJson(papers)
-                                contentSubtypeJson=Gson().toJson(paperContents)
-                                downloadUrl=it
-                            })
-                            if (cloudList.size==PaperTypeDaoManager.getInstance().queryAllExcludeCloud().size-nullItems.size){
-                                mCloudUploadPresenter.upload(cloudList)
-                            }
-                        }
+    fun uploadPaper(token: String) {
+        if (grade == 0) return
+        val cloudList = mutableListOf<CloudListBean>()
+        val nullItems = mutableListOf<PaperTypeBean>()
+        //查找当前科目、年级的所有考卷(不包括云书库)
+        val types = PaperTypeDaoManager.getInstance().queryAllByNoIsCloud()
+        for (item in types) {
+            val papers = PaperDaoManager.getInstance().queryAll(item.course, item.typeId)
+            val paperContents = PaperContentDaoManager.getInstance().queryAll(item.course, item.typeId)
+            val path = FileAddress().getPathTestPaper(item.typeId)
+            if (FileUtils.isExistContent(path)) {
+                FileUploadManager(token).apply {
+                    startUpload(path, item.name)
+                    setCallBack {
+                        cloudList.add(CloudListBean().apply {
+                            type = 3
+                            subType = -1
+                            subTypeStr = item.course
+                            date = System.currentTimeMillis()
+                            grade = item.grade
+                            listJson = Gson().toJson(item)
+                            contentJson = Gson().toJson(papers)
+                            contentSubtypeJson = Gson().toJson(paperContents)
+                            downloadUrl = it
+                        })
+                        if (cloudList.size == types.size - nullItems.size)
+                            mCloudUploadPresenter.upload(cloudList)
                     }
                 }
-                else{
-                    //没有考卷内容不上传
-                    nullItems.add(item)
-                }
+            } else {
+                //没有考卷内容不上传
+                nullItems.add(item)
             }
         }
     }
@@ -282,8 +279,8 @@ class PaperFragment : BaseFragment(),IContractView.IPaperView{
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        when(msgFlag){
-            Constants.CLASSGROUP_EVENT->{
+        when (msgFlag) {
+            Constants.CLASSGROUP_EVENT -> {
                 onlineTypes.clear()
                 initTab()
             }

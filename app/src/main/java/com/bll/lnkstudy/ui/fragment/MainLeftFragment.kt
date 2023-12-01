@@ -14,9 +14,9 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.PopupClick
-import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
+import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -31,10 +31,10 @@ import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
-import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.ui.adapter.MainNoteAdapter
+import com.bll.lnkstudy.ui.adapter.TextbookStoreAdapter
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
@@ -53,7 +53,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     private val mMainPresenter=MainPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var noteAdapter: MainNoteAdapter? = null
-    private var bookAdapter: BookAdapter? = null
+    private var bookAdapter: TextbookStoreAdapter? = null
     private var mNoticeAdapter:MainHomeworkNoticeAdapter?=null
     private var nowDate = 0L
     private var popupDates= mutableListOf<PopupBean>()
@@ -65,6 +65,8 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             SPUtil.putList("courses", commonData.subject)
         if (!commonData.typeGrade.isNullOrEmpty())
             SPUtil.putList("typeGrades", commonData.typeGrade)
+        if (!commonData.version.isNullOrEmpty())
+            SPUtil.putList("bookVersions", commonData.version)
     }
 
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
@@ -125,7 +127,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
 
     override fun fetchData(){
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mCommonPresenter.getCommonGrade()
+            mCommonPresenter.getCommonData()
             mMainPresenter.getHomeworkNotice()
             mMainPresenter.getClassGroupList()
         }
@@ -182,7 +184,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
 
 
     private fun initBookView(){
-        bookAdapter = BookAdapter(R.layout.item_main_book, null).apply {
+        bookAdapter = TextbookStoreAdapter(R.layout.item_main_book, null).apply {
             rv_main_book.layoutManager = GridLayoutManager(activity,3)//创建布局管理
             rv_main_book.adapter = bookAdapter
             bindToRecyclerView(rv_main_book)
@@ -230,7 +232,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
      * 查找书籍
      */
     private fun findBook(){
-        val books=BookGreenDaoManager.getInstance().queryAllTextBook(DataBeanManager.textbookType[0],1,9)
+        val books= TextbookGreenDaoManager.getInstance().queryAllTextBook(DataBeanManager.textbookType[0],1,9)
         bookAdapter?.setNewData(books)
     }
 

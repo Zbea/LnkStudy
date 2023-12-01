@@ -9,11 +9,11 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
+import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.utils.FileUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -29,7 +29,7 @@ import java.io.File
 class BookDetailsActivity : BaseDrawingActivity() {
 
     //屏幕当前位置
-    private var book: BookBean? = null
+    private var book: TextbookBean? = null
     private var catalogMsg: CatalogMsg? = null
     private var catalogs = mutableListOf<MultiItemEntity>()
     private var parentItems = mutableListOf<CatalogParent>()
@@ -45,7 +45,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
 
     override fun initData() {
         val id = intent.getIntExtra("book_id", 0)
-        book = BookGreenDaoManager.getInstance().queryTextBookByID(id)
+        book = TextbookGreenDaoManager.getInstance().queryTextBookByID(id)
         if (book == null) return
         page = book?.pageIndex!!
         val cataLogFilePath = FileAddress().getPathTextbookCatalog(book?.bookPath!!)
@@ -221,13 +221,13 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return return if (listFiles!=null) listFiles[index] else null
+         return if (listFiles!=null) listFiles[index] else null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         book?.pageIndex = page
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 

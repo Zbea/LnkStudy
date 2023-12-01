@@ -20,9 +20,13 @@ object DataBeanManager {
         R.string.main_painting_title,R.string.main_teach_title,
         R.string.main_app
     )
+    val teachingType = arrayOf(
+        mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
+        mContext.getString(R.string.textbook_tab_other), mContext.getString(R.string.homework_my_book),mContext.getString(R.string.homework_other_book)
+    )
     val textbookType = arrayOf(
-        mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
-        mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_oldteaching)
+        mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
+        mContext.getString(R.string.textbook_tab_other),mContext.getString(R.string.textbook_tab_old)
     )
     val homeworkBookType = arrayOf(
         mContext.getString(R.string.homework_my_book),mContext.getString(R.string.homework_other_book)
@@ -73,6 +77,10 @@ object DataBeanManager {
             }
         }
         return teacherId
+    }
+
+    fun bookVersion():MutableList<ItemList>{
+        return getList("bookVersions")
     }
 
     fun grades():MutableList<ItemList>{
@@ -576,34 +584,6 @@ object DataBeanManager {
             })
             return list
         }
-
-    //封面
-    val homeworkCover: MutableList<Module>
-        get() {
-            val list= mutableListOf<Module>()
-            list.add(Module().apply {
-                resId = R.mipmap.icon_homework_cover_1
-            })
-            list.add(Module().apply {
-                resId = R.mipmap.icon_homework_cover_2
-            })
-            list.add(Module().apply {
-                resId = R.mipmap.icon_homework_cover_3
-            })
-            list.add(Module().apply {
-                resId = R.mipmap.icon_homework_cover_4
-            })
-            return list
-        }
-
-    /**
-     * 老师下发作业本随机得到背景图
-     */
-    fun getHomeworkCoverStr(): String {
-        val covers = homeworkCover
-        val index = Random().nextInt(covers.size)
-        return ToolUtils.getImageResStr(mContext, covers[index].resId)
-    }
 
     //基础笔记分类
     val noteBook: MutableList<Notebook>

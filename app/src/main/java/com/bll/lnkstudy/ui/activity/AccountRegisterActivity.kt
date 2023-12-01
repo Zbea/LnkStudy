@@ -52,6 +52,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
         SPUtil.putList("grades", commonData.grade)
         SPUtil.putList("courses", commonData.subject)
         SPUtil.putList("typeGrades", commonData.typeGrade)
+        SPUtil.putList("bookVersions", commonData.version)
         grades=DataBeanManager.popupGrades
         tv_grade.text=grades[0].name
     }
@@ -86,7 +87,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     override fun initData() {
         flags=intent.flags
         if (flags==0){
-            commonPresenter.getCommonGrade()
+            commonPresenter.getCommonData()
             mSchoolPresenter.getCommonSchool()
         }
     }

@@ -309,16 +309,17 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年9月1 8点执行
+     * 每年8月25 15点执行
      */
     private fun startRemind9Month() {
-        val date=365*24*60*60*1000L
+        val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
+        val date=allDay*24*60*60*1000L
         Calendar.getInstance().apply {
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.MONTH,8)
-            set(Calendar.DAY_OF_MONTH,1)
+            set(Calendar.MONTH,7)
+            set(Calendar.DAY_OF_MONTH,25)
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -346,7 +347,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 每年2月1 3点执行
      */
     private fun startRemind1Month() {
-        val date=365*24*60*60*1000L
+        val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
+        val date=allDay*24*60*60*1000L
         //农历转阳历
         val lunar=Lunar()
         lunar.isleap=DateUtils.isleap()
@@ -396,6 +398,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         FreeNoteDaoManager.getInstance().clear()
         DiaryDaoManager.getInstance().clear()
         BookGreenDaoManager.getInstance().clear()
+        TextbookGreenDaoManager.getInstance().clear()
 
         HomeworkTypeDaoManager.getInstance().clear()
         //删除所有作业
@@ -706,13 +709,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                                         date=System.currentTimeMillis()
                                         course=DataBeanManager.getCourseStr(bean.subject)
                                         bookId=bean.bookId
-                                        bgResId=DataBeanManager.getHomeworkCoverStr()
+                                        bgResId=bean.imageUrl
                                         createStatus=0
                                     }
                                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                                 }
                                 //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(8,bean.bookId,1,bean.bookId, Gson().toJson(bean),bean.bodyUrl)
+                                DataUpdateManager.createDataUpdateSource(8,bean.bookId,1,bean.bookId, Gson().toJson(bean),bean.downloadUrl)
                             }
                             else{
                                 //创建增量更新

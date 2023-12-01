@@ -107,7 +107,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         NetworkUtil(this).toggleNetwork(false)
+        super.onDestroy()
     }
 }

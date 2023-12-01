@@ -37,7 +37,6 @@ class CloudNoteFragment: BaseCloudFragment() {
 
     var noteType=0
     private var noteTypeStr=""
-    private var types= mutableListOf<String>()
     private var mAdapter:NotebookAdapter?=null
     private var notes= mutableListOf<Note>()
     private var position=0
@@ -49,15 +48,12 @@ class CloudNoteFragment: BaseCloudFragment() {
     override fun initView() {
         pageSize=10
         grade=DateUtils.getYear()
-        types.add(getString(R.string.note_tab_diary))
-        noteTypeStr=types[0]
         initRecyclerView()
     }
 
     override fun lazyLoad() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mCloudPresenter.getType()
-            fetchData()
+            mCloudPresenter.getType(4)
         }
         else{
             showNetworkDialog()
@@ -65,6 +61,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     private fun initTab(){
+        noteTypeStr=types[0]
         for (i in types.indices) {
             rg_group.addView(getRadioButton(i ,types[i],types.size-1))
         }
@@ -201,13 +198,9 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun onCloudType(types: MutableList<String>) {
-        for (str in types){
-            if (!this.types.contains(str))
-            {
-                this.types.add(str)
-            }
-        }
-        initTab()
+        this.types=types
+        if (types.size>0)
+            initTab()
     }
 
     override fun onCloudList(cloudList: CloudList) {
@@ -231,7 +224,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun onNetworkConnectionSuccess() {
-        mCloudPresenter.getType()
+        mCloudPresenter.getType(4)
         fetchData()
     }
 

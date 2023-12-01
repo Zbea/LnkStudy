@@ -6,7 +6,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class BookStorePresenter(view: IContractView.IBookStoreView,val screen: Int =0) : BasePresenter<IContractView.IBookStoreView>(view) {
+class BookStorePresenter(view: IContractView.IBookStoreView, val screen: Int =0) : BasePresenter<IContractView.IBookStoreView>(view) {
 
     /**
      * 书籍
@@ -23,47 +23,6 @@ class BookStorePresenter(view: IContractView.IBookStoreView,val screen: Int =0) 
             override fun success(tBaseResult: BaseResult<BookStore>) {
                 if (tBaseResult.data!=null)
                     view.onBook(tBaseResult.data)
-            }
-
-        }, true)
-
-    }
-
-    /**
-     * 题卷本
-     */
-    fun getHomeworkBooks(map: HashMap<String,Any>) {
-
-        val books = RetrofitManager.service.getHomeworkBooks(map)
-
-        doRequest(books, object : Callback<BookStore>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<BookStore>) {
-                if (tBaseResult.data!=null)
-                    view.onBook(tBaseResult.data)
-            }
-
-        }, true)
-
-    }
-
-    /**
-     * 教材
-     */
-    fun getTextBooks(map: HashMap<String,Any>) {
-
-        val books = RetrofitManager.service.getTextBooks(map)
-
-        doRequest(books, object : Callback<BookStore>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<BookStore>) {
-                view.onBook(tBaseResult.data)
             }
 
         }, true)
@@ -99,7 +58,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView,val screen: Int =0) 
             }
 
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.buyBookSuccess()
+                view.buySuccess()
             }
 
         }, true)

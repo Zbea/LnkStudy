@@ -27,32 +27,20 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property BookId = new Property(2, int.class, "bookId", false, "BOOK_ID");
-        public final static Property BookPlusId = new Property(3, int.class, "bookPlusId", false, "BOOK_PLUS_ID");
-        public final static Property Category = new Property(4, int.class, "category", false, "CATEGORY");
-        public final static Property TypeId = new Property(5, int.class, "typeId", false, "TYPE_ID");
-        public final static Property SubtypeStr = new Property(6, String.class, "subtypeStr", false, "SUBTYPE_STR");
-        public final static Property ImageUrl = new Property(7, String.class, "imageUrl", false, "IMAGE_URL");
-        public final static Property BookName = new Property(8, String.class, "bookName", false, "BOOK_NAME");
-        public final static Property BookDesc = new Property(9, String.class, "bookDesc", false, "BOOK_DESC");
-        public final static Property Price = new Property(10, int.class, "price", false, "PRICE");
-        public final static Property Semester = new Property(11, int.class, "semester", false, "SEMESTER");
-        public final static Property Area = new Property(12, String.class, "area", false, "AREA");
-        public final static Property Grade = new Property(13, int.class, "grade", false, "GRADE");
-        public final static Property SubjectName = new Property(14, int.class, "subjectName", false, "SUBJECT_NAME");
-        public final static Property Version = new Property(15, String.class, "version", false, "VERSION");
-        public final static Property Supply = new Property(16, String.class, "supply", false, "SUPPLY");
-        public final static Property DownloadUrl = new Property(17, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property BookPath = new Property(18, String.class, "bookPath", false, "BOOK_PATH");
-        public final static Property BookDrawPath = new Property(19, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
-        public final static Property DownDate = new Property(20, long.class, "downDate", false, "DOWN_DATE");
-        public final static Property Time = new Property(21, long.class, "time", false, "TIME");
-        public final static Property PageIndex = new Property(22, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PageUrl = new Property(23, String.class, "pageUrl", false, "PAGE_URL");
-        public final static Property IsLook = new Property(24, boolean.class, "isLook", false, "IS_LOOK");
-        public final static Property DateState = new Property(25, int.class, "dateState", false, "DATE_STATE");
-        public final static Property IsLock = new Property(26, boolean.class, "isLock", false, "IS_LOCK");
-        public final static Property IsCloud = new Property(27, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(28, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property TypeId = new Property(3, int.class, "typeId", false, "TYPE_ID");
+        public final static Property SubtypeStr = new Property(4, String.class, "subtypeStr", false, "SUBTYPE_STR");
+        public final static Property ImageUrl = new Property(5, String.class, "imageUrl", false, "IMAGE_URL");
+        public final static Property BookName = new Property(6, String.class, "bookName", false, "BOOK_NAME");
+        public final static Property BookDesc = new Property(7, String.class, "bookDesc", false, "BOOK_DESC");
+        public final static Property Price = new Property(8, int.class, "price", false, "PRICE");
+        public final static Property Grade = new Property(9, int.class, "grade", false, "GRADE");
+        public final static Property Version = new Property(10, String.class, "version", false, "VERSION");
+        public final static Property Supply = new Property(11, String.class, "supply", false, "SUPPLY");
+        public final static Property DownloadUrl = new Property(12, String.class, "downloadUrl", false, "DOWNLOAD_URL");
+        public final static Property BookPath = new Property(13, String.class, "bookPath", false, "BOOK_PATH");
+        public final static Property BookDrawPath = new Property(14, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
+        public final static Property Time = new Property(15, long.class, "time", false, "TIME");
+        public final static Property IsLook = new Property(16, boolean.class, "isLook", false, "IS_LOOK");
     }
 
 
@@ -70,33 +58,21 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"BOOK_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
-                "\"BOOK_PLUS_ID\" INTEGER NOT NULL ," + // 3: bookPlusId
-                "\"CATEGORY\" INTEGER NOT NULL ," + // 4: category
-                "\"TYPE_ID\" INTEGER NOT NULL ," + // 5: typeId
-                "\"SUBTYPE_STR\" TEXT," + // 6: subtypeStr
-                "\"IMAGE_URL\" TEXT," + // 7: imageUrl
-                "\"BOOK_NAME\" TEXT," + // 8: bookName
-                "\"BOOK_DESC\" TEXT," + // 9: bookDesc
-                "\"PRICE\" INTEGER NOT NULL ," + // 10: price
-                "\"SEMESTER\" INTEGER NOT NULL ," + // 11: semester
-                "\"AREA\" TEXT," + // 12: area
-                "\"GRADE\" INTEGER NOT NULL ," + // 13: grade
-                "\"SUBJECT_NAME\" INTEGER NOT NULL ," + // 14: subjectName
-                "\"VERSION\" TEXT," + // 15: version
-                "\"SUPPLY\" TEXT," + // 16: supply
-                "\"DOWNLOAD_URL\" TEXT UNIQUE ," + // 17: downloadUrl
-                "\"BOOK_PATH\" TEXT," + // 18: bookPath
-                "\"BOOK_DRAW_PATH\" TEXT," + // 19: bookDrawPath
-                "\"DOWN_DATE\" INTEGER NOT NULL ," + // 20: downDate
-                "\"TIME\" INTEGER NOT NULL ," + // 21: time
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 22: pageIndex
-                "\"PAGE_URL\" TEXT," + // 23: pageUrl
-                "\"IS_LOOK\" INTEGER NOT NULL ," + // 24: isLook
-                "\"DATE_STATE\" INTEGER NOT NULL ," + // 25: dateState
-                "\"IS_LOCK\" INTEGER NOT NULL ," + // 26: isLock
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 27: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 28: cloudId
+                "\"BOOK_ID\" INTEGER NOT NULL UNIQUE ," + // 2: bookId
+                "\"TYPE_ID\" INTEGER NOT NULL ," + // 3: typeId
+                "\"SUBTYPE_STR\" TEXT," + // 4: subtypeStr
+                "\"IMAGE_URL\" TEXT," + // 5: imageUrl
+                "\"BOOK_NAME\" TEXT," + // 6: bookName
+                "\"BOOK_DESC\" TEXT," + // 7: bookDesc
+                "\"PRICE\" INTEGER NOT NULL ," + // 8: price
+                "\"GRADE\" INTEGER NOT NULL ," + // 9: grade
+                "\"VERSION\" TEXT," + // 10: version
+                "\"SUPPLY\" TEXT," + // 11: supply
+                "\"DOWNLOAD_URL\" TEXT UNIQUE ," + // 12: downloadUrl
+                "\"BOOK_PATH\" TEXT," + // 13: bookPath
+                "\"BOOK_DRAW_PATH\" TEXT," + // 14: bookDrawPath
+                "\"TIME\" INTEGER NOT NULL ," + // 15: time
+                "\"IS_LOOK\" INTEGER NOT NULL );"); // 16: isLook
     }
 
     /** Drops the underlying database table. */
@@ -115,76 +91,56 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getBookId());
-        stmt.bindLong(4, entity.getBookPlusId());
-        stmt.bindLong(5, entity.getCategory());
-        stmt.bindLong(6, entity.getTypeId());
+        stmt.bindLong(4, entity.getTypeId());
  
         String subtypeStr = entity.getSubtypeStr();
         if (subtypeStr != null) {
-            stmt.bindString(7, subtypeStr);
+            stmt.bindString(5, subtypeStr);
         }
  
         String imageUrl = entity.getImageUrl();
         if (imageUrl != null) {
-            stmt.bindString(8, imageUrl);
+            stmt.bindString(6, imageUrl);
         }
  
         String bookName = entity.getBookName();
         if (bookName != null) {
-            stmt.bindString(9, bookName);
+            stmt.bindString(7, bookName);
         }
  
         String bookDesc = entity.getBookDesc();
         if (bookDesc != null) {
-            stmt.bindString(10, bookDesc);
+            stmt.bindString(8, bookDesc);
         }
-        stmt.bindLong(11, entity.getPrice());
-        stmt.bindLong(12, entity.getSemester());
- 
-        String area = entity.getArea();
-        if (area != null) {
-            stmt.bindString(13, area);
-        }
-        stmt.bindLong(14, entity.getGrade());
-        stmt.bindLong(15, entity.getSubjectName());
+        stmt.bindLong(9, entity.getPrice());
+        stmt.bindLong(10, entity.getGrade());
  
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(16, version);
+            stmt.bindString(11, version);
         }
  
         String supply = entity.getSupply();
         if (supply != null) {
-            stmt.bindString(17, supply);
+            stmt.bindString(12, supply);
         }
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(18, downloadUrl);
+            stmt.bindString(13, downloadUrl);
         }
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(19, bookPath);
+            stmt.bindString(14, bookPath);
         }
  
         String bookDrawPath = entity.getBookDrawPath();
         if (bookDrawPath != null) {
-            stmt.bindString(20, bookDrawPath);
+            stmt.bindString(15, bookDrawPath);
         }
-        stmt.bindLong(21, entity.getDownDate());
-        stmt.bindLong(22, entity.getTime());
-        stmt.bindLong(23, entity.getPageIndex());
- 
-        String pageUrl = entity.getPageUrl();
-        if (pageUrl != null) {
-            stmt.bindString(24, pageUrl);
-        }
-        stmt.bindLong(25, entity.getIsLook() ? 1L: 0L);
-        stmt.bindLong(26, entity.getDateState());
-        stmt.bindLong(27, entity.getIsLock() ? 1L: 0L);
-        stmt.bindLong(28, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(29, entity.getCloudId());
+        stmt.bindLong(16, entity.getTime());
+        stmt.bindLong(17, entity.getIsLook() ? 1L: 0L);
     }
 
     @Override
@@ -197,76 +153,56 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getBookId());
-        stmt.bindLong(4, entity.getBookPlusId());
-        stmt.bindLong(5, entity.getCategory());
-        stmt.bindLong(6, entity.getTypeId());
+        stmt.bindLong(4, entity.getTypeId());
  
         String subtypeStr = entity.getSubtypeStr();
         if (subtypeStr != null) {
-            stmt.bindString(7, subtypeStr);
+            stmt.bindString(5, subtypeStr);
         }
  
         String imageUrl = entity.getImageUrl();
         if (imageUrl != null) {
-            stmt.bindString(8, imageUrl);
+            stmt.bindString(6, imageUrl);
         }
  
         String bookName = entity.getBookName();
         if (bookName != null) {
-            stmt.bindString(9, bookName);
+            stmt.bindString(7, bookName);
         }
  
         String bookDesc = entity.getBookDesc();
         if (bookDesc != null) {
-            stmt.bindString(10, bookDesc);
+            stmt.bindString(8, bookDesc);
         }
-        stmt.bindLong(11, entity.getPrice());
-        stmt.bindLong(12, entity.getSemester());
- 
-        String area = entity.getArea();
-        if (area != null) {
-            stmt.bindString(13, area);
-        }
-        stmt.bindLong(14, entity.getGrade());
-        stmt.bindLong(15, entity.getSubjectName());
+        stmt.bindLong(9, entity.getPrice());
+        stmt.bindLong(10, entity.getGrade());
  
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(16, version);
+            stmt.bindString(11, version);
         }
  
         String supply = entity.getSupply();
         if (supply != null) {
-            stmt.bindString(17, supply);
+            stmt.bindString(12, supply);
         }
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(18, downloadUrl);
+            stmt.bindString(13, downloadUrl);
         }
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(19, bookPath);
+            stmt.bindString(14, bookPath);
         }
  
         String bookDrawPath = entity.getBookDrawPath();
         if (bookDrawPath != null) {
-            stmt.bindString(20, bookDrawPath);
+            stmt.bindString(15, bookDrawPath);
         }
-        stmt.bindLong(21, entity.getDownDate());
-        stmt.bindLong(22, entity.getTime());
-        stmt.bindLong(23, entity.getPageIndex());
- 
-        String pageUrl = entity.getPageUrl();
-        if (pageUrl != null) {
-            stmt.bindString(24, pageUrl);
-        }
-        stmt.bindLong(25, entity.getIsLook() ? 1L: 0L);
-        stmt.bindLong(26, entity.getDateState());
-        stmt.bindLong(27, entity.getIsLock() ? 1L: 0L);
-        stmt.bindLong(28, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(29, entity.getCloudId());
+        stmt.bindLong(16, entity.getTime());
+        stmt.bindLong(17, entity.getIsLook() ? 1L: 0L);
     }
 
     @Override
@@ -280,32 +216,20 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // bookId
-            cursor.getInt(offset + 3), // bookPlusId
-            cursor.getInt(offset + 4), // category
-            cursor.getInt(offset + 5), // typeId
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // subtypeStr
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // imageUrl
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // bookName
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // bookDesc
-            cursor.getInt(offset + 10), // price
-            cursor.getInt(offset + 11), // semester
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // area
-            cursor.getInt(offset + 13), // grade
-            cursor.getInt(offset + 14), // subjectName
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // version
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // supply
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // downloadUrl
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // bookPath
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // bookDrawPath
-            cursor.getLong(offset + 20), // downDate
-            cursor.getLong(offset + 21), // time
-            cursor.getInt(offset + 22), // pageIndex
-            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // pageUrl
-            cursor.getShort(offset + 24) != 0, // isLook
-            cursor.getInt(offset + 25), // dateState
-            cursor.getShort(offset + 26) != 0, // isLock
-            cursor.getShort(offset + 27) != 0, // isCloud
-            cursor.getInt(offset + 28) // cloudId
+            cursor.getInt(offset + 3), // typeId
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // subtypeStr
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // imageUrl
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bookName
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // bookDesc
+            cursor.getInt(offset + 8), // price
+            cursor.getInt(offset + 9), // grade
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // version
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // supply
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // downloadUrl
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // bookPath
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // bookDrawPath
+            cursor.getLong(offset + 15), // time
+            cursor.getShort(offset + 16) != 0 // isLook
         );
         return entity;
     }
@@ -315,32 +239,20 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setBookId(cursor.getInt(offset + 2));
-        entity.setBookPlusId(cursor.getInt(offset + 3));
-        entity.setCategory(cursor.getInt(offset + 4));
-        entity.setTypeId(cursor.getInt(offset + 5));
-        entity.setSubtypeStr(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setImageUrl(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setBookName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setBookDesc(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPrice(cursor.getInt(offset + 10));
-        entity.setSemester(cursor.getInt(offset + 11));
-        entity.setArea(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setGrade(cursor.getInt(offset + 13));
-        entity.setSubjectName(cursor.getInt(offset + 14));
-        entity.setVersion(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setSupply(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setDownloadUrl(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setBookPath(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
-        entity.setBookDrawPath(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
-        entity.setDownDate(cursor.getLong(offset + 20));
-        entity.setTime(cursor.getLong(offset + 21));
-        entity.setPageIndex(cursor.getInt(offset + 22));
-        entity.setPageUrl(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
-        entity.setIsLook(cursor.getShort(offset + 24) != 0);
-        entity.setDateState(cursor.getInt(offset + 25));
-        entity.setIsLock(cursor.getShort(offset + 26) != 0);
-        entity.setIsCloud(cursor.getShort(offset + 27) != 0);
-        entity.setCloudId(cursor.getInt(offset + 28));
+        entity.setTypeId(cursor.getInt(offset + 3));
+        entity.setSubtypeStr(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setImageUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setBookName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setBookDesc(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setPrice(cursor.getInt(offset + 8));
+        entity.setGrade(cursor.getInt(offset + 9));
+        entity.setVersion(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setSupply(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setDownloadUrl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setBookPath(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setBookDrawPath(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setTime(cursor.getLong(offset + 15));
+        entity.setIsLook(cursor.getShort(offset + 16) != 0);
      }
     
     @Override

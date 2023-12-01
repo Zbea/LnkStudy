@@ -7,18 +7,14 @@ import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class TextBookAdapter(layoutResId: Int, data: List<TextbookBean>?) :
-    BaseQuickAdapter<TextbookBean, BaseViewHolder>(layoutResId, data) {
-
+class TextbookStoreAdapter(layoutResId: Int, data: List<TextbookBean>?) : BaseQuickAdapter<TextbookBean, BaseViewHolder>(layoutResId, data) {
     override fun convert(helper: BaseViewHolder, item: TextbookBean) {
-        helper.setText(R.id.tv_name, item.bookName)
-        val image = helper.getView<ImageView>(R.id.iv_image)
+        helper.setText(R.id.tv_name,item.bookName)
+        val image=helper.getView<ImageView>(R.id.iv_image)
         if (item.pageUrl.isNullOrEmpty()) {
             GlideUtils.setImageRoundUrl(mContext, item.imageUrl, image, 10)
         } else {
             GlideUtils.setImageRoundUrl(mContext, item.pageUrl, image, 10)
         }
-        helper.setVisible(R.id.iv_lock, item.isLock)
     }
-
 }

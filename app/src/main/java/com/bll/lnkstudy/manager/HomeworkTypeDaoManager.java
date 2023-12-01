@@ -1,15 +1,11 @@
 package com.bll.lnkstudy.manager;
 
-import android.util.Log;
-
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
-import com.google.gson.Gson;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -78,61 +74,27 @@ public class HomeworkTypeDaoManager {
     }
 
     /**
-     * 查找往期作业本
+     * 获取所有科目未上传作业
      * @return
      */
-    public List<HomeworkTypeBean> queryAllByOld(int grade) {
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.Grade.notEq(grade);
+    public List<HomeworkTypeBean> queryAllNoisCloud() {
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
     /**
-     * 查找往期作业本
-     * @return
-     */
-    public List<HomeworkTypeBean> queryAllByOld(int grade,int page, int pageSize) {
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.Grade.notEq(grade);
-        return  dao.queryBuilder().where(whereUser,whereCondition1)
-                .offset((page-1)*pageSize).limit(pageSize)
-                .build().list();
-    }
-
-    /**
-     * 查找当前科目所有未上传作业本
+     * 查找当前科目、所有作业本
      * @param course
      * @return
      */
     public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
-    /**
-     * 获取所有科目未上传作业
-     * @return
-     */
-    public List<HomeworkTypeBean> queryAllExcludeCloud() {
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-    }
-
-    /**
-     * 查找当前科目、当年所有作业本
-     * @param course
-     * @param grade
-     * @return
-     */
-    public List<HomeworkTypeBean> queryAllByCourse(String course,int grade) {
+    public List<HomeworkTypeBean> queryAllByCourse(String course,int page, int pageSize) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.Grade.eq(grade);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition2).build().list();
-    }
-
-    public List<HomeworkTypeBean> queryAllByCourse(String course,int grade,int page, int pageSize) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.Grade.eq(grade);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition2)
+        return dao.queryBuilder().where(whereUser,whereCondition)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
     }

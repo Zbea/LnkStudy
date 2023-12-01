@@ -8,6 +8,7 @@ import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
+import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -156,7 +157,7 @@ interface APIService{
      * 教材列表
      */
     @GET("textbook/list")
-    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 书城列表
      */
@@ -166,7 +167,7 @@ interface APIService{
      * 题卷列表
      */
     @GET("book/list")
-    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 购买书籍
      */
@@ -319,7 +320,7 @@ interface APIService{
      * 公共年级接口
      */
     @GET("userTypes")
-    fun getCommonGrade(): Observable<BaseResult<CommonData>>
+    fun getCommonData(): Observable<BaseResult<CommonData>>
     /**
      * 获取学校接口
      */

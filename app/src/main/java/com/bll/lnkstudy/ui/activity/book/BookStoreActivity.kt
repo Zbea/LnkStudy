@@ -64,7 +64,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         fetchData()
     }
 
-    override fun buyBookSuccess() {
+    override fun buySuccess() {
         books[position].buyStatus=1
         bookDetailsDialog?.setChangeStatus()
         mAdapter?.notifyItemChanged(position)
@@ -139,6 +139,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     //设置tab分类
     @SuppressLint("InflateParams")
     private fun initTab() {
+        rg_group.removeAllViews()
         for (i in subTypeList.indices) {
             rg_group.addView(getRadioButton(i,subTypeList[i].desc,subTypeList.size-1))
         }
@@ -168,15 +169,14 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
      * 展示书籍详情
      */
     private fun showBookDetails(book: BookBean) {
-
         bookDetailsDialog = BookDetailsDialog(this, book)
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus==1){
-                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookPlusId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookId)
                 if (localBook == null) {
                     val downloadTask = downLoadStart(book.downloadUrl,book)
-                    mDownMapPool[book.bookPlusId] = downloadTask!!
+                    mDownMapPool[book.bookId] = downloadTask!!
                 } else {
                     book.loadSate =2
                     showToast(R.string.toast_downloaded)
@@ -187,7 +187,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
             else{
                 val map = HashMap<String, Any>()
                 map["type"] = 3
-                map["bookId"] = book.bookPlusId
+                map["bookId"] = book.bookId
                 presenter.buyBook(map)
             }
         }
@@ -204,7 +204,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                 FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookPlusId]) {
+                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
                                     ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
@@ -232,9 +232,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                             }
                         }
                         loadSate = 2
-                        category = 1
                         typeId=type
-                        downDate=System.currentTimeMillis()
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)

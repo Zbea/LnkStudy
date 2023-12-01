@@ -6,4 +6,5 @@ public class CommonData {
     public List<ItemList> grade;
     public List<ItemList> subject;
     public List<ItemList> typeGrade;
+    public List<ItemList> version;
 }

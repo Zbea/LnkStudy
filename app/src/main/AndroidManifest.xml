@@ -169,11 +169,12 @@
             />
         <activity android:name=".ui.activity.ClassGroupUserActivity" />
         <activity android:name=".ui.activity.PaintingTypeListActivity" />
-        <activity android:name=".ui.activity.book.HomeworkBookStoreActivity" />
+        <activity android:name=".ui.activity.book.HomeworkBookStoreActivity"
+            android:theme="@style/activityCustom"
+            />
         <activity android:name=".ui.activity.drawing.HomeworkBookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
-        <activity android:name=".ui.activity.PastHomeworkActivity"/>
         <activity android:name=".ui.activity.drawing.FreeNoteActivity" />
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
         <activity android:name=".ui.activity.drawing.DiaryActivity"/>

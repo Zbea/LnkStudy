@@ -10,9 +10,9 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContractView.ICommonView>(view) {
 
-    fun getCommonGrade() {
+    fun getCommonData() {
 
-        val grade = RetrofitManager.service.getCommonGrade()
+        val grade = RetrofitManager.service.getCommonData()
 
         doRequest(grade, object : Callback<CommonData>(view,1) {
             override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {

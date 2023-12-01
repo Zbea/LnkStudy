@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 
 public class DateUtils {
 
-    /**
-     * 判断是否是闰年
-     * @param year
-     * @return
-     */
-    public static boolean isleap(int year){
-        return year % 4 == 0 && year % 100 ==0 || year % 400 ==0;
+    // 判断是闰年还是平年
+    public boolean isYear(int year) {
+        boolean judge = false;
+        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+            judge = true;
+        }
+        return judge;
     }
 
     /**
