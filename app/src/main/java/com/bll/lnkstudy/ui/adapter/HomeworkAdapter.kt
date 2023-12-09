@@ -23,7 +23,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
             else{
                 setText(R.id.tv_name, item.name)
                 if (item.isCloud)
-                    setText(R.id.tv_grade,DataBeanManager.getGradeStr(item.grade))
+                    setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})")
                 val bg=when(item.state){
                     1->{
                         R.mipmap.icon_homework_cover_3

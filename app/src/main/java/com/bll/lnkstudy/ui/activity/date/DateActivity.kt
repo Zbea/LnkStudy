@@ -6,7 +6,6 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupDateSelector
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.date.DateBean
-import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.ui.adapter.DateAdapter
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
@@ -173,21 +172,8 @@ class DateActivity:BaseAppCompatActivity() {
         dateBean.week=DateUtils.getWeek(dateBean.time)
         dateBean.lunar=LunarSolarConverter.SolarToLunar(solar)
 
-        //获取当天学习计划
-        val dateEventBeans= mutableListOf<DateEventBean>()
-        val plans=DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean.time)
-        for (item in plans){
-            //当天时间是否是学习计划选中的星期
-            for (week in item.weeks){
-                if (dateBean.week==week.week){
-                    dateEventBeans.add(item)
-                    break
-                }
-            }
-        }
-
         //获取当天重要日子
-        dateEventBeans.addAll(DateEventGreenDaoManager.getInstance().queryAllDayEventTotal(dateBean.time))
+        val dateEventBeans=DateEventGreenDaoManager.getInstance().queryAllDayEventTotal(dateBean.time)
         dateBean.dateEventBeans=dateEventBeans
 
         return dateBean

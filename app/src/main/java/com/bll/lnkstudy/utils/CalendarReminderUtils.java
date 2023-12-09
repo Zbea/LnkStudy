@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.utils;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -54,6 +55,7 @@ public class CalendarReminderUtils {
     /**
      * 检查是否存在现有账户，存在则返回账户id，否则返回-1
      */
+    @SuppressLint("Range")
     private static int checkCalendarAccount(Context context) {
         Cursor userCursor = context.getContentResolver().query(Uri.parse(CALENDER_URL), null, null, null, null);
         try {
@@ -142,6 +144,21 @@ public class CalendarReminderUtils {
             return;
         }
 
+        //扩展属性 用于高版本安卓系统设置闹钟提醒
+        Uri extendedPropUri = CalendarContract.ExtendedProperties.CONTENT_URI;
+        extendedPropUri = extendedPropUri.buildUpon()
+                .appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, CALENDARS_ACCOUNT_NAME)
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, CALENDARS_ACCOUNT_TYPE).build();
+        ContentValues extendedProperties = new ContentValues();
+        extendedProperties.put(CalendarContract.ExtendedProperties.EVENT_ID, ContentUris.parseId(newEvent));
+        extendedProperties.put(CalendarContract.ExtendedProperties.VALUE, "{\"need_alarm\":true}");
+        extendedProperties.put(CalendarContract.ExtendedProperties.NAME, "agenda_info");
+        Uri uriExtended = context.getContentResolver().insert(extendedPropUri, extendedProperties);
+        if (uriExtended == null) { //添加事件提醒失败直接返回
+            return ;
+        }
+
         //事件提醒的设定
         ContentValues values = new ContentValues();
         values.put(CalendarContract.Reminders.EVENT_ID, ContentUris.parseId(newEvent));
@@ -203,6 +220,21 @@ public class CalendarReminderUtils {
             return;
         }
 
+        //扩展属性 用于高版本安卓系统设置闹钟提醒
+        Uri extendedPropUri = CalendarContract.ExtendedProperties.CONTENT_URI;
+        extendedPropUri = extendedPropUri.buildUpon()
+                .appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, CALENDARS_ACCOUNT_NAME)
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, CALENDARS_ACCOUNT_TYPE).build();
+        ContentValues extendedProperties = new ContentValues();
+        extendedProperties.put(CalendarContract.ExtendedProperties.EVENT_ID, ContentUris.parseId(newEvent));
+        extendedProperties.put(CalendarContract.ExtendedProperties.VALUE, "{\"need_alarm\":true}");
+        extendedProperties.put(CalendarContract.ExtendedProperties.NAME, "agenda_info");
+        Uri uriExtended = context.getContentResolver().insert(extendedPropUri, extendedProperties);
+        if (uriExtended == null) { //添加事件提醒失败直接返回
+            return ;
+        }
+
         int leadTime=day*24*60+3*60; //(上午九点)
         //事件提醒的设定
         ContentValues values = new ContentValues();
@@ -213,6 +245,7 @@ public class CalendarReminderUtils {
         if (uri == null) { //添加事件提醒失败直接返回
             return;
         }
+
     }
 
     /**
@@ -221,6 +254,7 @@ public class CalendarReminderUtils {
      * @param context
      * @param title
      */
+    @SuppressLint("Range")
     public static boolean checkCalendarEvent(Context context, String title, String description, long startTime) {
         if (context == null) {
             return false;
@@ -257,6 +291,7 @@ public class CalendarReminderUtils {
     /**
      * 删除日历事件
      */
+    @SuppressLint("Range")
     public static void deleteCalendarEvent(Context context, String title) {
         if (context == null) {
             return;

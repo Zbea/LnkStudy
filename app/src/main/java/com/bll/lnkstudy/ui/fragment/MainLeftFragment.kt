@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
@@ -20,7 +21,8 @@ import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.date.DatePlan
+import com.bll.lnkstudy.mvp.model.date.DateBean
+import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
@@ -29,6 +31,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainView
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
+import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
@@ -41,6 +44,7 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_main_left.*
 
 
@@ -57,6 +61,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     private var mNoticeAdapter:MainHomeworkNoticeAdapter?=null
     private var nowDate = 0L
     private var popupDates= mutableListOf<PopupBean>()
+    private var dateEvents= mutableListOf<DateEventBean>()
 
     override fun onList(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
@@ -168,6 +173,16 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             rv_main_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_plan.adapter = this
             bindToRecyclerView(rv_main_plan)
+            rv_main_plan.addItemDecoration(SpaceItemDeco(30,false))
+            setOnItemClickListener { adapter, view, position ->
+                val item =dateEvents[0]
+                val intent=Intent(requireActivity(), DatePlanDetailsActivity::class.java)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val bundle = Bundle()
+                bundle.putSerializable("dateEvent", item)
+                intent.putExtra("bundle", bundle)
+                customStartActivity(intent)
+            }
         }
     }
 
@@ -213,18 +228,27 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
      * 查找学习计划
      */
     private fun findDataPlan() {
-        val planList = DateEventGreenDaoManager.getInstance().queryAllDateEvent(nowDate)
-        val plans = mutableListOf<DatePlan>()
-        for (item in planList) {
-            //当天时间是否是学习计划选中的星期
-            for (week in item.weeks){
-                if (DateUtils.getWeek(nowDate)==week.week){
-                    plans.addAll(item.plans)
-                    break
-                }
+
+        val dates=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1)
+        for (item in dates){
+            if (item.maxLong<nowDate){
+                val selectDate=SPUtil.getListLong("date")
+                selectDate.removeAll(item.dates)
+                SPUtil.putListLong("date",selectDate)
+                DateEventGreenDaoManager.getInstance().deleteDateEvent(item)
             }
         }
-        mPlanAdapter?.setNewData(plans)
+
+        val years=DateUtils.longToStringDataNoHour(nowDate)
+        val dateBean= DateBean()
+        dateBean.year=years[0].toInt()
+        dateBean.month=years[1].toInt()
+        dateBean.day=years[2].toInt()
+        dateBean.time=nowDate
+        dateBean.week=DateUtils.getWeek(nowDate)
+
+        dateEvents=DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean)
+        mPlanAdapter?.setNewData(if (dateEvents.size>0)dateEvents[0].plans else null)
     }
 
 

@@ -191,6 +191,7 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
             for (ite in paperTypes) {
                 if (item.subject == ite.course && item.examId == ite.typeId) {
                     ite.score = item.score
+                    ite.paperTitle=item.title
                     ite.isPg = true
                 } else {
                     ite.isPg = false

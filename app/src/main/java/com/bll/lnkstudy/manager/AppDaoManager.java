@@ -65,6 +65,12 @@ public class AppDaoManager {
         return dao.queryBuilder().where(whereUser).build().list();
     }
 
+    public AppBean queryAllByPackageName(String packageName) {
+        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
+        WhereCondition where2= AppBeanDao.Properties.IsTool.eq(true);
+        return dao.queryBuilder().where(whereUser,whereCondition,where2).build().unique();
+    }
+
     public List<AppBean> queryToolAll() {
         WhereCondition whereCondition=AppBeanDao.Properties.IsTool.eq(true);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
@@ -76,6 +82,13 @@ public class AppDaoManager {
         AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
         return appBean!=null;
     }
+
+    public boolean isExist(String packageName){
+        WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
+        AppBean appBean=dao.queryBuilder().where(whereUser,where1).build().unique();
+        return appBean!=null;
+    }
+
 
     public void deleteBean(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);

@@ -14,6 +14,7 @@ import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -128,15 +129,16 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                     override fun cancel() {
                     }
                     override fun ok() {
-                        if (NetworkUtil(this@PaperExamDrawingActivity).isNetworkConnected()){
-                            showLoading()
-                            commit()
-                        }
-                        else{
-                            showNetworkDialog()
-                        }
+                        commit()
                     }
                 })
+        }
+
+        if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){
+            showView(iv_geometry)
+        }
+        else{
+            disMissView(iv_geometry)
         }
     }
 
@@ -210,22 +212,28 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     //提交
     private fun commit(){
-        for (i in paths.indices) {
-            Thread{
-                val path = paths[i] //当前原图路径
-                val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
-                BitmapUtils.mergeBitmap(path,drawPath)
-                //删除手写
-                FileUtils.deleteFile(File(drawPath).parentFile)
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = path
-                })
-                if (commitItems.size==paths.size){
-                    commitItems.sort()
-                    mUploadPresenter.getToken()
-                }
-            }.start()
+        if (NetworkUtil(this@PaperExamDrawingActivity).isNetworkConnected()){
+            showLoading()
+            for (i in paths.indices) {
+                Thread{
+                    val path = paths[i] //当前原图路径
+                    val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
+                    BitmapUtils.mergeBitmap(path,drawPath)
+                    //删除手写
+                    FileUtils.deleteFile(File(drawPath).parentFile)
+                    commitItems.add(ItemList().apply {
+                        id = i
+                        url = path
+                    })
+                    if (commitItems.size==paths.size){
+                        commitItems.sort()
+                        mUploadPresenter.getToken()
+                    }
+                }.start()
+            }
+        }
+        else{
+            showNetworkDialog()
         }
     }
 
@@ -309,13 +317,11 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.EXAM_TIME_EVENT){
-            showLoading()
             commit()
         }
     }
 
     override fun onNetworkConnectionSuccess() {
-        showLoading()
         commit()
     }
 

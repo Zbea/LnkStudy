@@ -44,7 +44,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,p
             val packageName= lists[position].packageName
             if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
                 dismiss()
-                listener?.onClick(position)
+                listener?.onClick()
             }
             else{
                 when(screenPos){
@@ -90,7 +90,7 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,p
     var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(position: Int)
+        fun onClick()
     }
 
     fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {

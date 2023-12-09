@@ -60,7 +60,6 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
         setPageSetting(R.string.save)
 
         tv_date.setOnClickListener {
-
             if (dateDialog==null){
                 dateDialog=DateDialog(this).builder()
                 dateDialog?.setOnDateListener { dateStr, dateTim ->
@@ -69,6 +68,9 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
                         dateEventBean?.dayLongStr = dateStr
                         tv_date.text = dateStr
                         tv_countdown.text = "还有" + DateUtils.sublongToDay(dateTim, nowDate) + "天"
+                    }
+                    else{
+                        showToast("当前时间设置无效")
                     }
                 }
             }

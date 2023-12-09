@@ -14,12 +14,12 @@
         android:textColor="@color/black"
         />
 
-    <CheckBox
+    <ImageView
         android:id="@+id/cb_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
-        android:button="@drawable/bg_check_selector"
+        android:src="@drawable/bg_check_selector"
         />
 
 </LinearLayout>

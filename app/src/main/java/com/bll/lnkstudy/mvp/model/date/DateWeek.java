@@ -8,6 +8,7 @@ public class DateWeek implements Serializable {
     public String identify;
     public int week;
     public boolean isCheck;
+    public boolean isSelected;//该星期是否已选
 
     public DateWeek(String name, String identify, int week, boolean isCheck) {
         this.name = name;

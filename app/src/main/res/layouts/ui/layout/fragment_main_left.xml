@@ -92,7 +92,7 @@
                 android:id="@+id/rv_main_plan"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="2px"/>
+                android:padding="10dp"/>
 
         </LinearLayout>
 
@@ -133,7 +133,7 @@
                 android:id="@+id/rv_main_notice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="2px"/>
+                android:padding="1dp"/>
 
         </LinearLayout>
 

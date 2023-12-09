@@ -12,8 +12,8 @@ class MainDatePlanAdapter(layoutResId: Int, data: List<DatePlan>?) : BaseQuickAd
             item.apply {
                 setText(R.id.tv_start_time, startTimeStr)
                 setText(R.id.tv_end_time, endTimeStr)
-                setText(R.id.tv_course, course)
-                setText(R.id.tv_title, content)
+                setText(R.id.tv_course,course)
+                setText(R.id.tv_content, content)
             }
         }
     }

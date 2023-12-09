@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.adapter
 
 
-import android.widget.CheckBox
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -13,10 +12,14 @@ class DatePlanWeekAdapter(layoutResId: Int, data: List<DateWeek>?) :
     override fun convert(helper: BaseViewHolder, item: DateWeek) {
         helper.apply {
             setText(R.id.tv_name,item.name)
-            setChecked(R.id.cb_week,item.isCheck)
-            getView<CheckBox>(R.id.cb_week).setOnClickListener{
-                item.isCheck=!item.isCheck
-                notifyDataSetChanged()
+            if (item.isSelected){
+               setEnabled(R.id.cb_week,false)
+               setImageResource(R.id.cb_week,R.mipmap.icon_check_focuse)
+            }
+            else{
+                setEnabled(R.id.cb_week,true)
+                setImageResource(R.id.cb_week,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
+                addOnClickListener(R.id.cb_week)
             }
         }
     }

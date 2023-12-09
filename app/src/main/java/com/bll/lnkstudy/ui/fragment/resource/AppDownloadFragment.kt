@@ -14,7 +14,10 @@ import com.bll.lnkstudy.mvp.model.AppList
 import com.bll.lnkstudy.mvp.presenter.DownloadAppPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DownloadAppAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_resource_content.*
 import org.greenrobot.eventbus.EventBus
@@ -189,11 +192,10 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
         if (msgFlag==Constants.APP_INSTALL_EVENT){
             if (index==2){
                 val bean=apps[position]
-                val drawable=AppUtils.scanLocalInstallAppDrawable(requireActivity(),bean.packageName)
                 val item= AppBean()
                 item.appName=bean.nickname
                 item.packageName=bean.packageName
-                item.imageByte= BitmapUtils.drawableToByte(drawable)
+                item.imageByte= AppUtils.scanLocalInstallAppDrawable(requireActivity(),bean.packageName)
                 AppDaoManager.getInstance().insertOrReplace(item)
                 EventBus.getDefault().post(Constants.APP_INSERT_EVENT)
             }

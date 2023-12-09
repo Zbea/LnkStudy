@@ -40,6 +40,7 @@ import org.json.JSONObject;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class MethodManager {
 
@@ -250,7 +251,7 @@ public class MethodManager {
         Iterator it=apps.iterator();
         while (it.hasNext()){
             AppBean item= (AppBean) it.next();
-            if (!AppUtils.isAvailable(context,item.packageName)){
+            if (!AppUtils.isAvailable(context,item.packageName)&& !Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)){
                 it.remove();
                 AppDaoManager.getInstance().deleteBean(item);
             }

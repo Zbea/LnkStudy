@@ -78,6 +78,7 @@
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         android:layout_marginEnd="@dimen/dp_10"
+        android:visibility="gone"
         android:text="@string/date_day_remind_str"/>
 
 </LinearLayout>

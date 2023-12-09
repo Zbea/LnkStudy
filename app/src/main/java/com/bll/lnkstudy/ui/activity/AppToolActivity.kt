@@ -9,6 +9,7 @@ import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -28,6 +29,14 @@ class AppToolActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
+        if (!AppDaoManager.getInstance().isExist(Constants.PACKAGE_GEOMETRY)){
+            AppDaoManager.getInstance().insertOrReplace(AppBean().apply {
+                appName="几何绘图"
+                imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
+                packageName=Constants.PACKAGE_GEOMETRY
+                isTool=false
+            })
+        }
         apps=MethodManager.getAppTools(this,0)
         toolApps=MethodManager.getAppTools(this,1)
     }
@@ -86,7 +95,8 @@ class AppToolActivity:BaseAppCompatActivity() {
         }
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val packageName= apps[position].packageName
-            AppUtils.startAPP(this,packageName)
+            if (packageName!=Constants.PACKAGE_GEOMETRY)
+                AppUtils.startAPP(this,packageName)
         }
 
     }

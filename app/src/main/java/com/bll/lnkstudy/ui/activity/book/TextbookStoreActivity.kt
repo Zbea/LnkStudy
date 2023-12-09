@@ -116,20 +116,23 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
         tv_download?.setOnClickListener {
             if (tabId == 0) {
-                //获取本地课本是否有数据
-                val localBooks = TextbookGreenDaoManager.getInstance().queryAllTextBook(typeList[0])
-                if (localBooks.isNullOrEmpty()){
-                    for (item in books) {
-                        val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
-                        if (localBook!=null){
+                val localBooks=TextbookGreenDaoManager.getInstance().queryAllTextBook(tabStr)
+                if (localBooks.size==books.size){
+                    showToast(R.string.toast_downloaded)
+                    return@setOnClickListener
+                }
+                for (item in books) {
+                    val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
+                    if (localBook!=null){
+                        if (localBook.typeStr!=tabStr){
                             localBook.typeStr=tabStr
                             localBook.time = System.currentTimeMillis()
                             TextbookGreenDaoManager.getInstance().insertOrReplaceBook(localBook)
                         }
-                        else{
-                            val downloadTask = downLoadStart(item.downloadUrl, item)
-                            mDownMapPool[item.bookId] = downloadTask!!
-                        }
+                    }
+                    else{
+                        val downloadTask = downLoadStart(item.downloadUrl, item)
+                        mDownMapPool[item.bookId] = downloadTask!!
                     }
                 }
             }

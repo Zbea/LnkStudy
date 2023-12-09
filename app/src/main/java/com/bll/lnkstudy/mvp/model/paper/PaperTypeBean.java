@@ -32,6 +32,8 @@ public class PaperTypeBean {
     public boolean isPg;//是否批改
     @Transient
     public int score;
+    @Transient
+    public String paperTitle;
     public boolean isCloud;
     public int cloudId;
     @Transient

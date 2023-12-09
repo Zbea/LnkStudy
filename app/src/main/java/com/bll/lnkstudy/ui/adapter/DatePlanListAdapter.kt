@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.date.DatePlan
-import com.bll.lnkstudy.widget.SpaceItemDeco
+import com.bll.lnkstudy.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import java.util.*
 
 class DatePlanListAdapter(layoutResId: Int, data: List<DateEventBean>?) : BaseQuickAdapter<DateEventBean, BaseViewHolder>(layoutResId, data) {
 
@@ -18,19 +17,24 @@ class DatePlanListAdapter(layoutResId: Int, data: List<DateEventBean>?) : BaseQu
         helper.apply {
             setText(R.id.tv_title, item.title)
             var weekStr=""
-            for (week in item.weeks)
-            {
-                weekStr += "${week.name}  "
+            if (item.date==0){
+                for (week in item.weeks)
+                {
+                    weekStr += "${week.name}  "
+                }
+            }
+            else{
+                for (date in item.dates)
+                {
+                    weekStr += "${DateUtils.longToStringDataNoYear(date)}  "
+                }
             }
             setText(R.id.tv_week,weekStr)
-            val dateStr=if (Date().time>item.endTime) "已过期" else item.startTimeStr+"~"+item.endTimeStr
-            setText(R.id.tv_date, dateStr)
             getView<RecyclerView>(R.id.rv_list).apply {
                 layoutManager = LinearLayoutManager(mContext)//创建布局管理
                 val childAdapter= ChildAdapter(R.layout.item_date_plan_list_child, item.plans)
                 adapter = childAdapter
                 childAdapter.bindToRecyclerView(this)
-                addItemDecoration(SpaceItemDeco(20,false))
             }
             addOnClickListener(R.id.iv_delete)
         }

@@ -5,79 +5,69 @@
     android:orientation="vertical"
     android:gravity="center"
     >
+
     <RelativeLayout
         android:layout_width="366dp"
         android:layout_height="306dp"
         android:background="@mipmap/icon_testpaper_bg">
         <TextView
-            android:id="@+id/tv_grade"
-            android:layout_width="182dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:layout_marginTop="@dimen/dp_20"
-            android:textSize="@dimen/sp_18"
-             />
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="182dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:layout_marginTop="50dp"
-            android:textSize="@dimen/sp_18"
-            />
-        <TextView
             android:id="@+id/tv_name"
-            android:layout_width="182dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_10"
             android:gravity="center"
-            android:lineSpacingMultiplier="1.5"
-            android:layout_centerVertical="true"
+            android:lines="1"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_grade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/ll_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="27dp"
-            android:visibility="gone"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_10"
             android:background="@mipmap/icon_testpaper_rank_bg"
+            android:visibility="gone"
             android:gravity="center"
             android:orientation="vertical">
 
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="@dimen/dp_50"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_30"
+                android:background="@drawable/bg_line_bottom"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/testpaper_score_str"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16" />
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_16" />
 
-                <TextView
-                    android:id="@+id/tv_score"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/bg_line_bottom"
-                    android:gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16" />
-
-
-            </LinearLayout>
         </LinearLayout>
 
 

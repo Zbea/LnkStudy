@@ -51,6 +51,11 @@ object SPUtil {
         putString(getUserId()+key,listStr)
     }
 
+    fun putListLong(key: String,list: MutableList<Long>){
+        val listStr= gson.toJson(list)
+        putString(getUserId()+key,listStr)
+    }
+
     fun putString(key: String, value: String) {
         map[key] = value
         Schedulers.io().run {
@@ -81,6 +86,11 @@ object SPUtil {
 
     fun getListInt(key: String): MutableList<Int> {
         return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<Int>>() {}.type)
+            ?: return mutableListOf()
+    }
+
+    fun getListLong(key: String): MutableList<Long> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<Long>>() {}.type)
             ?: return mutableListOf()
     }
 

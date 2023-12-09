@@ -18,6 +18,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
@@ -333,7 +334,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         }
 
         tv_out?.setOnClickListener {
-            if (this.localClassName == PaperExamDrawingActivity::class.java.name) return@setOnClickListener
+            if (this is PaperExamDrawingActivity){
+                tv_reduce?.callOnClick()
+                return@setOnClickListener
+            }
             setDrawing()
             disMissView(ll_geometry,iv_geometry)
             if (isParallel){
@@ -522,25 +526,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(location:Int){
-        val tools= mutableListOf<AppBean>()
         if (this is PlanOverviewActivity){
-            tools.addAll(toolApps)
-        }
-        else{
-            tools.add(AppBean().apply {
-                appName=getString(R.string.geometry_title_str)
-                packageName=Constants.PACKAGE_GEOMETRY
-                imageByte=BitmapUtils.drawableToByte(resources.getDrawable(R.mipmap.icon_app_geometry))
-            })
-            tools.addAll(toolApps)
-        }
-        AppToolDialog(this,getCurrentScreenPos(),location,tools).builder()?.setDialogClickListener{ pos->
-            if (pos==0){
-                setViewElikUnable(ll_geometry)
-                showView(ll_geometry)
-                if (isErasure)
-                    stopErasure()
+            val appBean=AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
+            if (appBean!=null){
+                toolApps.remove(appBean)
             }
+        }
+        AppToolDialog(this,getCurrentScreenPos(),location,toolApps).builder()?.setDialogClickListener{
+            setViewElikUnable(ll_geometry)
+            showView(ll_geometry)
+            if (isErasure)
+                stopErasure()
         }
     }
 

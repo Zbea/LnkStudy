@@ -2,7 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.DateCalendarDialog
+import com.bll.lnkstudy.dialog.CalendarSingleDialog
 import com.bll.lnkstudy.dialog.DiaryListDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
@@ -52,7 +52,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            DateCalendarDialog(this).builder().setOnDateListener{
+            CalendarSingleDialog(this).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
                 changeContent()
