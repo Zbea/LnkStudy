@@ -56,10 +56,8 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
 
         et_search.addTextChangedListener {
             bookNameStr = it.toString()
-            if (bookNameStr.isNotEmpty()) {
-                pageIndex = 1
-                fetchData()
-            }
+            pageIndex = 1
+            fetchData()
         }
 
         initTab()

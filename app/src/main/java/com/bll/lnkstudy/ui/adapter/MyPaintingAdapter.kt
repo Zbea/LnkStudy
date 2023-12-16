@@ -12,12 +12,8 @@ class MyPaintingAdapter(layoutResId: Int, data: List<PaintingBean>?) : BaseQuick
     override fun convert(helper: BaseViewHolder, item: PaintingBean) {
         helper.apply {
             setText(R.id.tv_name,item.title)
-            setGone(R.id.tv_price,false)
-            setGone(R.id.btn_download,false)
-            setText(R.id.tv_author,mContext.getString(R.string.author)+"：${item.author}")
-            setText(R.id.tv_introduce,mContext.getString(R.string.introduction)+"：${item.info}")
-            setText(R.id.tv_publishers,mContext.getString(R.string.publisher)+"：${item.publisher}")
             val image=getView<ImageView>(R.id.iv_image)
+            image.scaleType=ImageView.ScaleType.CENTER_INSIDE
             GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,5)
         }
     }

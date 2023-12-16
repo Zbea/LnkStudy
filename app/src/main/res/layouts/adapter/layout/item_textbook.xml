@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_book_lock"
             android:layout_alignParentEnd="true"
+            android:visibility="gone"
             />
     </RelativeLayout>
 

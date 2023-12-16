@@ -38,12 +38,6 @@ class AppFragment:BaseFragment() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(5,70))
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.cb_check){
-                apps[position].isCheck=! apps[position].isCheck
-                mAdapter?.notifyItemChanged(position)
-            }
-        }
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val packageName= apps[position].packageName
             AppUtils.startAPP(requireActivity(),packageName)

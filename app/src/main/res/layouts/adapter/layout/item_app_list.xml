@@ -14,17 +14,17 @@
         />
 
     <LinearLayout
+        android:id="@+id/ll_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <CheckBox
+        <ImageView
             android:id="@+id/cb_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/bg_check_selector"
             android:visibility="gone"
             />
 
@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:textSize="@dimen/sp_22"
-            android:text="名称"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/black"/>

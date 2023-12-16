@@ -14,8 +14,9 @@ class AppListAdapter(private val type:Int, layoutResId: Int, data: List<AppBean>
                 setText(R.id.tv_name,appName)
                 setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(imageByte))
                 setGone(R.id.cb_check,type==0)
+                setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
             }
-            addOnClickListener(R.id.cb_check)
+            addOnClickListener(R.id.ll_name)
         }
     }
 

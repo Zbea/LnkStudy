@@ -138,6 +138,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         iv_add.setOnClickListener {
             planList.add(DatePlan())
             mAdapter?.notifyItemChanged(planList.size-1)
+            rv_list.scrollToPosition(planList.size-1)
         }
 
         tv_setting.setOnClickListener {

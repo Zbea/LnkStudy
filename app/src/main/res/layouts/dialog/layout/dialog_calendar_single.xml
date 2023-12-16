@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
-            android:src="@mipmap/icon_draw_page_up"
+            android:src="@mipmap/icon_date_arrow_up"
             />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_5"
-            android:src="@mipmap/icon_draw_page_down"
+            android:src="@mipmap/icon_date_arrow_down"
             />
 
     </LinearLayout>

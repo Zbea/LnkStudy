@@ -44,7 +44,6 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_main_left.*
 
 
@@ -120,6 +119,18 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
                 }
             }
         }
+
+        tv_plan.setOnClickListener {
+            if (dateEvents.isEmpty())
+                return@setOnClickListener
+            val item =dateEvents[0]
+            val intent=Intent(requireActivity(), DatePlanDetailsActivity::class.java)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            val bundle = Bundle()
+            bundle.putSerializable("dateEvent", item)
+            intent.putExtra("bundle", bundle)
+            customStartActivity(intent)
+        }
     }
 
     override fun lazyLoad() {
@@ -173,16 +184,6 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             rv_main_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_plan.adapter = this
             bindToRecyclerView(rv_main_plan)
-            rv_main_plan.addItemDecoration(SpaceItemDeco(30,false))
-            setOnItemClickListener { adapter, view, position ->
-                val item =dateEvents[0]
-                val intent=Intent(requireActivity(), DatePlanDetailsActivity::class.java)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                val bundle = Bundle()
-                bundle.putSerializable("dateEvent", item)
-                intent.putExtra("bundle", bundle)
-                customStartActivity(intent)
-            }
         }
     }
 

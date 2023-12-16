@@ -444,6 +444,9 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                 //创建增量数据
                 DataUpdateManager.createDataUpdate(2, item.typeId, 1, item.typeId, item.state, Gson().toJson(item))
+                if (homeworkTypes.size==9){
+                    pageIndex+=1
+                }
                 fetchData()
             }
     }
@@ -728,11 +731,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 }
                             }
                         }
-                        override fun paused(
-                            task: BaseDownloadTask?,
-                            soFarBytes: Int,
-                            totalBytes: Int
-                        ) {
+                        override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }

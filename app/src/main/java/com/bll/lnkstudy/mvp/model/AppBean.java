@@ -2,6 +2,9 @@ package com.bll.lnkstudy.mvp.model;
 
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+
+import com.bll.lnkstudy.mvp.model.date.DateEventBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -77,5 +80,5 @@ public class AppBean {
     public void setIsTool(boolean isTool) {
         this.isTool = isTool;
     }
-   
+
 }

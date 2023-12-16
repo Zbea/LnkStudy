@@ -34,7 +34,19 @@ class MessageDetailsDialog(private val context: Context,val screenPos:Int, priva
         val tvTime = dialog?.findViewById<TextView>(R.id.tv_time)
         val tvContent = dialog?.findViewById<TextView>(R.id.tv_content)
 
-        tvName?.text=messageBean.teacherName
+        val typeNameStr=when(messageBean.sendType){
+            1->{
+                context.getString(R.string.message_sender)+messageBean.teacherName
+            }
+            2->{
+                context.getString(R.string.message_receiver)+messageBean.teacherName
+            }
+            else-> {
+                context.getString(R.string.notice)
+            }
+        }
+
+        tvName?.text=typeNameStr
         tvTime?.text= DateUtils.longToStringWeek(messageBean.date)
         tvContent?.text=messageBean.content
 

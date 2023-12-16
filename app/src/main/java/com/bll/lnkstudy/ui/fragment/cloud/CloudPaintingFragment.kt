@@ -30,7 +30,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_my_painting_list.rv_list
 import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import java.io.File

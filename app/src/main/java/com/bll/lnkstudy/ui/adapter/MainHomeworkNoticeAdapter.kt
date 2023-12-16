@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.adapter
 
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.utils.DateUtils
@@ -11,9 +10,9 @@ class MainHomeworkNoticeAdapter(layoutResId: Int, data: List<HomeworkNoticeList.
 
     override fun convert(helper: BaseViewHolder, item: HomeworkNoticeList.HomeworkNoticeBean) {
         helper.apply {
-            setText(R.id.tv_name,item.name+"  "+item.typeName)
+            setText(R.id.tv_name,"(${item.typeName})${item.name}")
             setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.time))
-            setText(R.id.tv_course, DataBeanManager.getCourseStr(item.subject))
+//            setText(R.id.tv_course, DataBeanManager.getCourseStr(item.subject))
             setText(R.id.tv_content,item.title)
             if (date10ToDate13(item.endTime)>System.currentTimeMillis()){
                 setText(R.id.tv_end_date, DateUtils.longToStringWeek(item.endTime)+"之前提交")

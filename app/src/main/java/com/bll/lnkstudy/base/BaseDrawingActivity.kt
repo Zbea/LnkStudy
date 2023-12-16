@@ -50,7 +50,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     var mNetworkDialog:ProgressNetworkDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
-    var toolApps= mutableListOf<AppBean>()
     var isExpand=false
     var elik_a: EinkPWInterface? = null
     var elik_b: EinkPWInterface? = null
@@ -86,8 +85,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             elik_a = v_content_a?.pwInterFace
             elik_b = v_content_b?.pwInterFace
         }
-
-        toolApps=MethodManager.getAppTools(this,1)
 
         mDialog = ProgressDialog(this,getCurrentScreenPos())
         mNetworkDialog=ProgressNetworkDialog(this,getCurrentScreenPos())
@@ -526,13 +523,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(location:Int){
-        if (this is PlanOverviewActivity){
-            val appBean=AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
-            if (appBean!=null){
-                toolApps.remove(appBean)
-            }
-        }
-        AppToolDialog(this,getCurrentScreenPos(),location,toolApps).builder()?.setDialogClickListener{
+        AppToolDialog(this,getCurrentScreenPos(),location).builder()?.setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

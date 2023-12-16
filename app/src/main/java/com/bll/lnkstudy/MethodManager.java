@@ -85,7 +85,7 @@ public class MethodManager {
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
         EventBus.getDefault().post(Constants.BOOK_EVENT);
 
-        List<AppBean> toolApps= AppDaoManager.getInstance().queryAll();
+        List<AppBean> toolApps= getAppTools(context,1);
         JSONArray result =new JSONArray();
         for (AppBean item :toolApps) {
             JSONObject jsonObject = new JSONObject();

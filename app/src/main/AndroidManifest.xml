@@ -187,6 +187,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ScreenshotListActivity"/>
+        <activity android:name=".ui.activity.PaintingDetailsActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

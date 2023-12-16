@@ -1075,7 +1075,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             if (!item.downloadUrl.isNullOrEmpty())
                 map["downloadUrl"] = item.downloadUrl
             map["state"]=item.state
-            if (item.path.isNullOrEmpty()||!File(item.path).exists()) {
+            if (!FileUtils.isExistContent(item.path)) {
                 mDataUpdatePresenter.onAddData(map)
             } else {
                 FileUploadManager(token).apply {

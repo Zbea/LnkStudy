@@ -12,7 +12,6 @@ import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
-import kotlinx.android.synthetic.main.common_title.*
 
 /**
  * 应用工具
@@ -37,8 +36,7 @@ class AppToolActivity:BaseAppCompatActivity() {
                 isTool=false
             })
         }
-        apps=MethodManager.getAppTools(this,0)
-        toolApps=MethodManager.getAppTools(this,1)
+
     }
 
     override fun initView() {
@@ -47,49 +45,44 @@ class AppToolActivity:BaseAppCompatActivity() {
         initRecyclerView()
         initRecyclerTool()
 
-        iv_back?.setOnClickListener {
-            finish()
-        }
-
         tv_add.setOnClickListener {
             for (item in apps){
                 if (item.isCheck){
-                    item.isCheck=false
                     item.isTool=true
                     if (!AppDaoManager.getInstance().isTool(item.packageName)){
                         AppDaoManager.getInstance().insertOrReplace(item)
-                        toolApps.add(item)
                     }
                 }
             }
-            mAdapter?.notifyDataSetChanged()
-            mAdapterTool?.notifyDataSetChanged()
+            setDataApp()
+            setDataAppTool()
         }
 
         tv_out.setOnClickListener {
-            val iterator=toolApps.iterator()
-            while (iterator.hasNext()){
-                val item=iterator.next()
+            for (item in toolApps){
                 if (item.isCheck){
                     item.isTool=false
                     AppDaoManager.getInstance().insertOrReplace(item)
-                    iterator.remove()
                 }
             }
-            mAdapterTool?.notifyDataSetChanged()
+            setDataApp()
+            setDataAppTool()
         }
 
+        setDataApp()
+        setDataAppTool()
     }
 
     private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this,6)//创建布局管理
-        mAdapter = AppListAdapter(0,R.layout.item_app_list, apps)
+        mAdapter = AppListAdapter(0,R.layout.item_app_list, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(6,50))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.cb_check){
-                apps[position].isCheck=! apps[position].isCheck
+            val item=apps[position]
+            if (view.id==R.id.ll_name){
+                item.isCheck=!item.isCheck
                 mAdapter?.notifyItemChanged(position)
             }
         }
@@ -103,13 +96,14 @@ class AppToolActivity:BaseAppCompatActivity() {
 
     private fun initRecyclerTool(){
         rv_list_tool.layoutManager = GridLayoutManager(this,6)//创建布局管理
-        mAdapterTool = AppListAdapter(0,R.layout.item_app_list, toolApps)
+        mAdapterTool = AppListAdapter(0,R.layout.item_app_list, null)
         rv_list_tool.adapter = mAdapterTool
         mAdapterTool?.bindToRecyclerView(rv_list_tool)
         rv_list_tool.addItemDecoration(SpaceGridItemDeco(6,30))
         mAdapterTool?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.cb_check){
-                toolApps[position].isCheck=! toolApps[position].isCheck
+            val item=toolApps[position]
+            if (view.id==R.id.ll_name){
+                item.isCheck=!item.isCheck
                 mAdapterTool?.notifyItemChanged(position)
             }
         }
@@ -118,11 +112,17 @@ class AppToolActivity:BaseAppCompatActivity() {
 
     private fun setDataApp(){
         apps=MethodManager.getAppTools(this,0)
+        for (item in apps){
+            item.isCheck=false
+        }
         mAdapter?.setNewData(apps)
     }
 
     private fun setDataAppTool(){
         toolApps=MethodManager.getAppTools(this,1)
+        for (item in toolApps){
+            item.isCheck=false
+        }
         mAdapterTool?.setNewData(toolApps)
     }
 

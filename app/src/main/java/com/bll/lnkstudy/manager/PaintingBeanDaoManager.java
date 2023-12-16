@@ -62,9 +62,8 @@ public class PaintingBeanDaoManager {
 
     public PaintingBean queryBean(int id) {
         WhereCondition whereCondition= PaintingBeanDao.Properties.ContentId.eq(id);
-        PaintingBean list = dao.queryBuilder().where(whereUser,whereCondition)
+        return dao.queryBuilder().where(whereUser,whereCondition)
                 .build().unique();
-        return list;
     }
 
     /**
@@ -95,10 +94,9 @@ public class PaintingBeanDaoManager {
     }
     public List<PaintingBean> queryPaintings() {
         WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
-        List<PaintingBean> list = dao.queryBuilder().where(whereUser,whereCondition1)
+        return dao.queryBuilder().where(whereUser,whereCondition1)
                 .orderDesc(PaintingBeanDao.Properties.Date)
                 .build().list();
-        return list;
     }
 
     /**
@@ -128,11 +126,21 @@ public class PaintingBeanDaoManager {
         WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
         WhereCondition whereCondition2= PaintingBeanDao.Properties.Time.eq(time);
         WhereCondition whereCondition3= PaintingBeanDao.Properties.PaintingType.eq(paintingType);
-        List<PaintingBean> list = dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
                 .orderDesc(PaintingBeanDao.Properties.Date)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
-        return list;
+    }
+
+    public List<PaintingBean> searchPaintings(String titleStr,int time, int paintingType,int page, int pageSize) {
+        WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
+        WhereCondition whereCondition2= PaintingBeanDao.Properties.Time.like("%"+titleStr+"%");
+        WhereCondition whereCondition3= PaintingBeanDao.Properties.Time.eq(time);
+        WhereCondition whereCondition4= PaintingBeanDao.Properties.PaintingType.eq(paintingType);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4)
+                .orderDesc(PaintingBeanDao.Properties.Date)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
     }
 
     /**

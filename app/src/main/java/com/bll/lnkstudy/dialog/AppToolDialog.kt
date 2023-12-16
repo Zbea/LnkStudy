@@ -6,8 +6,11 @@ import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
+import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DP2PX
@@ -17,7 +20,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 /**
  * 1左 2 右
  */
-class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,private val lists:  List<AppBean>) {
+class AppToolDialog(val context: Context, val screenPos:Int, val location:Int) {
 
     private var dialog:Dialog?=null
 
@@ -35,13 +38,21 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int ,p
         }
         dialog?.show()
 
+        val toolApps=MethodManager.getAppTools(context,1)
+        if (context is PlanOverviewActivity){
+            val appBean= AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
+            if (appBean!=null){
+                toolApps.remove(appBean)
+            }
+        }
+
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)
+        val mAdapter = MyAdapter(R.layout.item_app_name_list, toolApps)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            val packageName= lists[position].packageName
+            val packageName= toolApps[position].packageName
             if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
                 dismiss()
                 listener?.onClick()
