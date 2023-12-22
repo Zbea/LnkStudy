@@ -54,7 +54,6 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int) {
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val packageName= toolApps[position].packageName
             if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
-                dismiss()
                 listener?.onClick()
             }
             else{
@@ -74,8 +73,8 @@ class AppToolDialog(val context: Context, val screenPos:Int, val location:Int) {
                         }
                     }
                 }
-
             }
+            dismiss()
         }
 
         return this

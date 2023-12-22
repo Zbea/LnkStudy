@@ -16,7 +16,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
@@ -40,7 +39,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     var screenPos=0
     var mDialog: ProgressDialog? = null
-    var mNetworkDialog: ProgressNetworkDialog?=null
+    var mNetworkDialog: ProgressDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
 
@@ -93,8 +92,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
         }
 
-        mDialog = ProgressDialog(this,getCurrentScreenPos())
-        mNetworkDialog= ProgressNetworkDialog(this,getCurrentScreenPos())
+        mDialog = ProgressDialog(this,getCurrentScreenPos(),0)
+        mNetworkDialog= ProgressDialog(this,getCurrentScreenPos(),1)
         initData()
         initView()
 

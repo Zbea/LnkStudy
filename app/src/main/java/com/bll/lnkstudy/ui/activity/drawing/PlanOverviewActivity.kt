@@ -4,6 +4,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.CalendarSingleDialog
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
@@ -81,6 +82,21 @@ class PlanOverviewActivity:BaseDrawingActivity() {
             setChangeDate()
         }
 
+        tv_date.setOnClickListener {
+            CalendarSingleDialog(this,45f,190f).builder().setOnDateListener{
+                if (type==1){
+                    val dateStr=DateUtils.longToStringDataNoHour(it).split("-")
+                    nowYear=dateStr[0].toInt()
+                    nowMonth=dateStr[1].toInt()
+                }
+                else{
+                    val weekLong=DateUtils.getCurrentWeekTimeFrame(it)
+                    weekStartDate=weekLong[0]
+                    weekEndDate=weekLong[1]
+                }
+                setChangeDate()
+            }
+        }
     }
 
     override fun onPageUp() {

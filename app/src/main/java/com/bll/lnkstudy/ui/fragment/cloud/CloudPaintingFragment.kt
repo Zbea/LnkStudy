@@ -25,7 +25,6 @@ import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
@@ -49,7 +48,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=6
+        pageSize=9
         initTab()
         initRecyclerPaintingView()
         initRecyclerLocalView()
@@ -100,15 +99,15 @@ class CloudPaintingFragment : BaseCloudFragment() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(activity,20f),
-            DP2PX.dip2px(activity,50f),
+            DP2PX.dip2px(activity,20f),
             DP2PX.dip2px(activity,20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
-        rv_list.layoutManager = GridLayoutManager(activity,2)//创建布局管理
-        mAdapter = MyPaintingAdapter(R.layout.item_download_painting,null).apply {
+        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
+        mAdapter = MyPaintingAdapter(R.layout.item_textbook,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(2, DP2PX.dip2px(activity,20f),100))
+            rv_list?.addItemDecoration(SpaceGridItemDeco(3, 25))
             setOnItemClickListener { adapter, view, position ->
                 val item=paintings[position]
                 val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)

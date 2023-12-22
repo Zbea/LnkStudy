@@ -26,10 +26,9 @@ public class Lunar {
     }
 
     public String getChinaMonthString(int month) {
-        int n = month % 10 == 0 ? 9 : month % 10 - 1;
         if (month > 12||month==0)
             return "";
         else
-            return  chineseNumber[n];
+            return  chineseNumber[month-1];
     }
 }

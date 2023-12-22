@@ -2,6 +2,8 @@ package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
@@ -14,8 +16,9 @@ import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
-import kotlinx.android.synthetic.main.ac_teach_list.*
+import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
 
 class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView {
@@ -43,7 +46,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_teach_list
+        return R.layout.ac_list
     }
 
     override fun initData() {
@@ -75,13 +78,19 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         }
     }
 
-
-
     override fun initView() {
         setPageTitle(item?.desc!!)
         if (flags==0) showView(tv_grade,tv_semester) else showView(tv_grade)
 
-        rv_list.layoutManager = GridLayoutManager(this,5)//创建布局管理
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this, 20f),
+            DP2PX.dip2px(this, 40f),
+            DP2PX.dip2px(this, 20f), 0
+        )
+        layoutParams.weight = 1f
+        rv_list.layoutParams = layoutParams
+        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
         mAdapter = TeachListAdapter(R.layout.item_teach_content, null).apply {
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
@@ -96,14 +105,12 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         }
 
         initSelectorView()
-
     }
 
     /**
      * 设置分类选择
      */
     private fun initSelectorView() {
-
         tv_grade.setOnClickListener {
             if (popWindowGrade == null) {
                 popWindowGrade = PopupList(this, grades, tv_grade, tv_grade.width, 5).builder()

@@ -8,6 +8,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Objects;
+
 /**
  * 本次考试
  */
@@ -16,7 +18,7 @@ public class PaperBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     @Unique
     public int contentId;//这次考卷id
     public String course;//科目

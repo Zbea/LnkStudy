@@ -47,7 +47,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     var screenPos=0
     var mDialog: ProgressDialog? = null
-    var mNetworkDialog:ProgressNetworkDialog?=null
+    var mNetworkDialog:ProgressDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var isExpand=false
@@ -86,8 +86,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             elik_b = v_content_b?.pwInterFace
         }
 
-        mDialog = ProgressDialog(this,getCurrentScreenPos())
-        mNetworkDialog=ProgressNetworkDialog(this,getCurrentScreenPos())
+        mDialog = ProgressDialog(this,getCurrentScreenPos(),0)
+        mNetworkDialog= ProgressDialog(this,getCurrentScreenPos(),1)
         initData()
         initView()
 

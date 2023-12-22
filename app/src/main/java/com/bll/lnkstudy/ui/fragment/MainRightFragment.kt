@@ -17,7 +17,6 @@ import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
-import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -41,11 +40,10 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
 
     private val mMainPresenter = MainPresenter(this,2)
     private val mMessagePresenter=MessagePresenter(this,2)
-    private var examPapers = mutableListOf<PaperList.PaperListBean>()
-    private var positionPaper = 0
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
     private var privacyPassword=MethodManager.getPrivacyPassword()
+    private var examItem:ExamItem?=null
 
     override fun onList(message: MessageList) {
         if (message.list.isNotEmpty()){
@@ -56,8 +54,8 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     override fun onCommitSuccess() {
     }
 
-    override fun onExam(exam: PaperList?) {
-        examPapers= exam?.list as MutableList<PaperList.PaperListBean>
+    override fun onExam(exam: ExamItem) {
+        examItem=exam
         loadPapers()
         initExamView()
     }
@@ -144,29 +142,35 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
 
     //作业相关
     private fun initExamView() {
-        rl_exam.visibility=if (examPapers.size>0) View.VISIBLE else View.GONE
-        if (examPapers.size>0){
-            tv_exam_course.text= examPapers[0].subject
-            tv_exam_type.text=examPapers[0].examName
-            tv_exam_title.text=examPapers[0].title
-            tv_exam_time.text=DateUtils.longToHour(examPapers[0].endTime)+"之前提交"
+        if (examItem==null)
+        {
+            disMissView(rl_exam)
         }
-        rl_exam.setOnClickListener {
-            val paper = examPapers[positionPaper]
-            val files = FileUtils.getFiles(paper.path)
-            if (files==null){
-                showLoading()
-                loadPapers()
-                return@setOnClickListener
-            }
-            if (files.size == paper.paths.size) {
-                val bundle = Bundle()
-                bundle.putSerializable("exam", paper)
-                val intent = Intent(activity, PaperExamDrawingActivity::class.java)
-                intent.putExtra("bundle", bundle)
-                intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-                intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-                customStartActivity(intent)
+        else{
+            examItem?.apply {
+                rl_exam.visibility=if (exam.id==0) View.GONE else View.VISIBLE
+                tv_exam_course.text= exam.subject
+                tv_exam_type.text=exam.examName
+                tv_exam_title.text=exam.title
+                tv_exam_time.text=DateUtils.longToHour(exam.endTime)+"之前提交"
+                rl_exam.setOnClickListener {
+                    val pathStr = FileAddress().getPathTestPaper(exam.commonTypeId, exam.id)
+                    val files = FileUtils.getFiles(pathStr)
+                    if (files==null){
+                        showLoading()
+                        loadPapers()
+                        return@setOnClickListener
+                    }
+                    if (files.size == exam.paths.size) {
+                        val bundle = Bundle()
+                        bundle.putSerializable("exam", exam)
+                        val intent = Intent(activity, PaperExamDrawingActivity::class.java)
+                        intent.putExtra("bundle", bundle)
+                        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
+                        customStartActivity(intent)
+                    }
+                }
             }
         }
     }
@@ -176,7 +180,6 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
      */
     private fun fetchExam() {
         val map= HashMap<String, Any>()
-        map["size"] = 100
         map["type"] = 2
         mMainPresenter.getExam(map)
     }
@@ -191,17 +194,18 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
 
     //下载收到的图片
     private fun loadPapers() {
-        for (item in examPapers) {
+        if (examItem?.exam?.id==0)
+            return
+        examItem?.apply {
             //设置路径
-            val pathStr = FileAddress().getPathTestPaper(item.examId, item.id)
+            val pathStr = FileAddress().getPathTestPaper(exam.commonTypeId, exam.id)
             val files = FileUtils.getFiles(pathStr)
-            val images=item.imageUrl.split(",").toMutableList()
+            val images=exam.imageUrl.split(",").toMutableList()
             val paths= mutableListOf<String>()
             for (i in images.indices){
                 paths.add("$pathStr/${i+1}.png")
             }
-            item.path = pathStr
-            item.paths=paths
+            exam.paths=paths
             if (files == null || files.size > images.size) {
                 FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                     object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -240,7 +244,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                 initCourse()
             }
             EXAM_COMMIT_EVENT -> {
-                examPapers.removeAt(0)
+                examItem=null
                 disMissView(rl_exam)
             }
             MESSAGE_COMMIT_EVENT -> {

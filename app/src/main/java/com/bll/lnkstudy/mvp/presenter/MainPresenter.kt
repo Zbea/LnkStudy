@@ -1,8 +1,8 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.model.ClassGroup
+import com.bll.lnkstudy.mvp.model.ExamItem
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
-import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult
@@ -13,12 +13,12 @@ import com.bll.lnkstudy.net.RetrofitManager
 class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePresenter<IContractView.IMainView>(view) {
 
     fun getExam(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getPapersList(map)
-        doRequest(type, object : Callback<PaperList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<PaperList>): Boolean {
+        val type = RetrofitManager.service.getExams(map)
+        doRequest(type, object : Callback<ExamItem>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<ExamItem>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<PaperList>) {
+            override fun success(tBaseResult: BaseResult<ExamItem>) {
                 if (tBaseResult.data!=null)
                     view.onExam(tBaseResult.data)
             }

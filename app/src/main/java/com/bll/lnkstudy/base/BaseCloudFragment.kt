@@ -13,7 +13,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.presenter.CloudPresenter
@@ -47,7 +46,7 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , IBaseV
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mNetworkDialog: ProgressNetworkDialog?=null
+    var mNetworkDialog: ProgressDialog?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=0
@@ -96,8 +95,8 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , IBaseV
 
         getScreenPosition()
 
-        mDialog = ProgressDialog(requireActivity(),getScreenPosition())
-        mNetworkDialog=ProgressNetworkDialog(requireActivity(),getScreenPosition())
+        mDialog = ProgressDialog(requireActivity(),screenPos,0)
+        mNetworkDialog= ProgressDialog(requireActivity(),screenPos,1)
 
         lazyLoadDataIfPrepared()
     }

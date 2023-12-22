@@ -18,7 +18,7 @@ class TeachListAdapter(layoutResId: Int, data: List<TeachingVideoList.ItemBean>?
                 setText(R.id.tv_name,videoName)
                 setText(R.id.tv_info,videoDesc)
                 val image=getView<ImageView>(R.id.iv_image)
-                GlideUtils.setImageRoundUrl(mContext,imageUrl,image,5)
+                GlideUtils.setImageRoundUrl(mContext,imageUrl,image,10)
             }
         }
     }

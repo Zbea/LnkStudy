@@ -15,7 +15,6 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.dialog.ProgressNetworkDialog
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.User
@@ -57,7 +56,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mNetworkDialog:ProgressNetworkDialog?=null
+    var mNetworkDialog:ProgressDialog?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var accountId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=1
@@ -119,8 +118,9 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         initView()
 
         getScreenPosition()
-        mDialog = ProgressDialog(requireActivity(),screenPos)
-        mNetworkDialog=ProgressNetworkDialog(requireActivity(),screenPos)
+
+        mDialog = ProgressDialog(requireActivity(),screenPos,0)
+        mNetworkDialog= ProgressDialog(requireActivity(),screenPos,1)
 
         lazyLoadDataIfPrepared()
     }

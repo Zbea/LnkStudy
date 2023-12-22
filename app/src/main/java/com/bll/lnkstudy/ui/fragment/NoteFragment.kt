@@ -49,9 +49,8 @@ class NoteFragment : BaseFragment(){
     override fun initView() {
         pageSize=10
 
-        popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str), true))
-        popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str), false))
-        popWindowBeans.add(PopupBean(2, getString(R.string.note_create_str), false))
+        popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str)))
+        popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str)))
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)
@@ -67,13 +66,6 @@ class NoteFragment : BaseFragment(){
                     }
                     1 -> {
                         addNotebook()
-                    }
-                    else -> {
-                        ModuleAddDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBook).builder()
-                            ?.setOnDialogClickListener { moduleBean ->
-                                resId= ToolUtils.getImageResStr(activity, moduleBean.resContentId)
-                                createNote()
-                            }
                     }
                 }
             }
@@ -121,6 +113,15 @@ class NoteFragment : BaseFragment(){
                 }
             }
         }
+        val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
+        view.setOnClickListener {
+            ModuleAddDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBook).builder()
+                ?.setOnDialogClickListener { moduleBean ->
+                    resId= ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+                    createNote()
+                }
+        }
+        mAdapter?.addFooterView(view)
 
     }
 
@@ -166,8 +167,10 @@ class NoteFragment : BaseFragment(){
                 note.date = System.currentTimeMillis()
                 note.typeStr = typeStr
                 note.contentResId=resId
-                pageIndex=1
                 val id= NoteDaoManager.getInstance().insertOrReplaceGetId(note)
+                if (notes.size==10){
+                    pageIndex+=1
+                }
                 EventBus.getDefault().post(NOTE_EVENT)
                 //新建笔记本增量更新
                 DataUpdateManager.createDataUpdate(4,id.toInt(),2,positionType,Gson().toJson(note))
@@ -193,7 +196,6 @@ class NoteFragment : BaseFragment(){
                 }
                 note.title = string
                 NoteDaoManager.getInstance().insertOrReplace(note)
-                mAdapter?.notifyDataSetChanged()
 
                 EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                 editDataUpdate(note.id.toInt(),note)
@@ -208,8 +210,6 @@ class NoteFragment : BaseFragment(){
                 }
                 override fun ok() {
                     val note = notes[position]
-                    notes.removeAt(position)
-                    mAdapter?.notifyDataSetChanged()
                     //获取当前笔记本的所有内容
                     val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
                     //删除笔记本
@@ -218,13 +218,18 @@ class NoteFragment : BaseFragment(){
                     NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
                     val path=FileAddress().getPathNote(note.grade,note.typeStr,note.title)
                     FileUtils.deleteFile(File(path))
-                    EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
+
                     //删除当前笔记本增量更新
                     DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2,positionType)
                     //删除当前笔记本内容增量更新
                     for (item in noteContents){
                         DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3,positionType)
                     }
+                    notes.remove(note)
+                    if (pageIndex>1&&notes.size==0){
+                        pageIndex-=1
+                    }
+                    EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                 }
             })
     }

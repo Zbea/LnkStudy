@@ -13,9 +13,10 @@ import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 
 
-class CalendarSingleDialog(private val context: Context) {
+class CalendarSingleDialog(private val context: Context,private val x:Float,private val y:Float) {
 
     private var dialog: Dialog? = null
+    constructor(context: Context):this(context,50f,150f)
 
     @SuppressLint("SetTextI18n")
     fun builder(): CalendarSingleDialog {
@@ -25,8 +26,8 @@ class CalendarSingleDialog(private val context: Context) {
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.TOP or Gravity.END
-        layoutParams.y = DP2PX.dip2px(context, 150f)
-        layoutParams.x = DP2PX.dip2px(context, 50f)
+        layoutParams.x = DP2PX.dip2px(context, x)
+        layoutParams.y = DP2PX.dip2px(context, y)
         dialog?.show()
 
         val tv_year = dialog?.findViewById<TextView>(R.id.tv_year)

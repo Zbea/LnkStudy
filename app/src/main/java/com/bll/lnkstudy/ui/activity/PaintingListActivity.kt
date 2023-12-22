@@ -20,7 +20,6 @@ import java.io.File
 
 class PaintingListActivity:BaseAppCompatActivity() {
 
-    private var titleStr=""
     private var time=0
     private var paintingType=0
     private var lists= mutableListOf<PaintingBean>()

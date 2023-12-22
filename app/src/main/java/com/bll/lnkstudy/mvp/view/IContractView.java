@@ -7,6 +7,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
+import com.bll.lnkstudy.mvp.model.ExamItem;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
@@ -126,7 +127,7 @@ public interface IContractView {
          * 获取考试列表
          * @param exam
          */
-        void onExam(PaperList exam);
+        void onExam(ExamItem exam);
         void onHomeworkNotice(HomeworkNoticeList list);
         void onClassGroupList(List<ClassGroup> classGroups);
     }

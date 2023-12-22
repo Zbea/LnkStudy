@@ -9,22 +9,17 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.manager.PaperContentDaoManager
-import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.mvp.model.ExamItem.ExamBean
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
-import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
@@ -37,14 +32,9 @@ import java.util.*
 class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView{
 
     private val mUploadPresenter=FileUploadPresenter(this)
-    private var course=""
     private var commonTypeId=0
-    private var daoManager=PaperDaoManager.getInstance()
-    private var daoContentManager=PaperContentDaoManager.getInstance()
-    private var papers= mutableListOf<PaperBean>()
-    private var paperContents= mutableListOf<PaperContentBean>()
-
-    private var exam: PaperList.PaperListBean?=null
+    private var pathStr=""
+    private var exam: ExamBean?=null
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
     private val commitItems = mutableListOf<ItemList>()
@@ -80,11 +70,12 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     override fun onSuccess(urls: MutableList<String>?) {
     }
     override fun onCommitSuccess() {
-        savePaper()
+        showToast(R.string.toast_commit_success)
+        //删除本地考试卷以及手写
+        FileUtils.deleteFile(File(pathStr))
         EventBus.getDefault().post(Constants.EXAM_COMMIT_EVENT)
         finish()
     }
-
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -93,19 +84,14 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     override fun initData() {
         isExpand=true
 
-        exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as PaperList.PaperListBean
+        exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamBean
         paths = exam?.paths!!
         pageCount = paths.size
-
-        course=exam?.subject!!
+        pathStr = FileAddress().getPathTestPaper(exam!!.commonTypeId, exam!!.id)
         commonTypeId=exam?.commonTypeId!!
 
-        //获取之前所有收到的考卷，用来排序
-        papers= daoManager?.queryAll(course,commonTypeId) as MutableList<PaperBean>
-        paperContents= daoContentManager?.queryAll(course,commonTypeId) as MutableList<PaperContentBean>
-
         for (i in paths.indices){
-            drawPaths.add("${exam?.path}/${i+1}/draw.tch")
+            drawPaths.add("${pathStr}/${i+1}/draw.tch")
         }
 
         startAlarmManager()
@@ -236,41 +222,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
             showNetworkDialog()
         }
     }
-
-    /**
-     *  提交完成后，将考卷保存在本地试卷里面
-     */
-    private fun savePaper(){
-        //保存本次考试
-        val paper= PaperBean().apply {
-            contentId=exam?.id!!
-            course=this@PaperExamDrawingActivity.course
-            typeId=this@PaperExamDrawingActivity.commonTypeId
-            type=exam?.examName
-            title=exam?.title
-            path=exam?.path
-            page=paperContents.size
-            index=papers.size
-        }
-        daoManager?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,exam?.id!!,2,commonTypeId,Gson().toJson(paper))
-
-        for (i in paths.indices){
-            //保存本次考试的试卷内容
-            val paperContent= PaperContentBean()
-                .apply {
-                    course=this@PaperExamDrawingActivity.course
-                    typeId=this@PaperExamDrawingActivity.commonTypeId
-                    contentId=exam?.id!!
-                    path=paths[i]
-                    drawPath=drawPaths[i]
-                    page=paperContents.size+i
-                }
-            val id=daoContentManager.insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,commonTypeId,Gson().toJson(paperContent),paths[i])
-        }
-    }
-
 
     //内容切换
     private fun changeContent(){

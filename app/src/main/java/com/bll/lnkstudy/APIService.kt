@@ -205,12 +205,6 @@ interface APIService{
     fun getTeachCourseList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TeachingVideoList>>
 
     /**
-     * 教学视频 课程分类
-     */
-    @GET("subject/video/types")
-    fun getTeachCourseType(): Observable<BaseResult<TeachingVideoType>>
-
-    /**
      * 视频列表
      */
     @GET("talent/video/list")
@@ -230,8 +224,8 @@ interface APIService{
     /**
      * 学生获取考卷
      */
-    @GET("student/task/list")
-    fun getPapersList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperList>>
+    @GET("student/task/studentExam")
+    fun getExams(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamItem>>
     /**
      * 学生提交考卷
      */
@@ -242,6 +236,11 @@ interface APIService{
      */
     @POST("student/task/deleteTag")
     fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取下发考卷
+     */
+    @GET("student/task/list")
+    fun getPapersList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperList>>
 
     /**
      * 获取作业本分类

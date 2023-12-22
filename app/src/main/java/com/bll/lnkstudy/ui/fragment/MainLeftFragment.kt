@@ -20,11 +20,11 @@ import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.CommonData
+import com.bll.lnkstudy.mvp.model.ExamItem
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
-import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
@@ -76,7 +76,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         MethodManager.saveClassGroups(classGroups)
     }
-    override fun onExam(exam: PaperList?) {
+    override fun onExam(exam: ExamItem) {
     }
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
         if (list.list.isNotEmpty()){

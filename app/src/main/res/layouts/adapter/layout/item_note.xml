@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="96dp"
-    android:background="@drawable/bg_line_bottom"
+    android:background="@drawable/bg_line_bottom_black"
     android:gravity="center_vertical">
 
     <LinearLayout

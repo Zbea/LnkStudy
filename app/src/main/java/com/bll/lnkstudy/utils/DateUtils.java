@@ -426,5 +426,32 @@ public class DateUtils {
         return new long[]{startTime, endTime};
     }
 
+    /**
+     * 获取当前时间所在周开始、结束时间
+     * @return
+     */
+    public static long[] getCurrentWeekTimeFrame(long date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(date));
+        //start of the week
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            calendar.add(Calendar.DAY_OF_YEAR,-1);
+        }
+        calendar.add(Calendar.DAY_OF_WEEK, -(calendar.get(Calendar.DAY_OF_WEEK) - 2));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        long startTime = calendar.getTimeInMillis();
+        //end of the week
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        long endTime = calendar.getTimeInMillis();
+        return new long[]{startTime, endTime};
+    }
 
 }
