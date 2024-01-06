@@ -7,6 +7,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.fragment.resource.AppDownloadFragment
+import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -20,6 +21,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     private var toolFragment: AppDownloadFragment? = null
     private var wallpaperFragment: WallpaperDownloadFragment? = null
     private var paintingFragment: PaintingDownloadFragment? = null
+    private var calenderFragment: CalenderDownloadFragment? = null
 
     private var popSupplys= mutableListOf<PopupBean>()
     private var popTimes= mutableListOf<PopupBean>()
@@ -56,6 +58,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         toolFragment=AppDownloadFragment().newInstance(2)
         wallpaperFragment = WallpaperDownloadFragment()
         paintingFragment = PaintingDownloadFragment()
+        calenderFragment = CalenderDownloadFragment()
 
         switchFragment(lastFragment, appFragment)
         initTab()
@@ -67,6 +70,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
                 toolFragment?.changeSupply(it.id)
                 wallpaperFragment?.changeSupply(it.id)
                 paintingFragment?.changeSupply(it.id)
+                calenderFragment?.changeSupply(it.id)
             }
         }
 
@@ -119,6 +123,10 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
                 3->{
                     showView(tv_course,tv_grade)
                     switchFragment(lastFragment, paintingFragment)
+                }
+                4->{
+                    disMissView(tv_course,tv_grade)
+                    switchFragment(lastFragment, calenderFragment)
                 }
             }
         }

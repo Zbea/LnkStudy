@@ -42,7 +42,6 @@ class BookcaseFragment: BaseFragment() {
         setTitle(R.string.main_bookcase_title)
 
         initRecyclerView()
-        findBook()
 
         tv_type.setOnClickListener {
             customStartActivity(Intent(activity, BookcaseTypeActivity::class.java))
@@ -56,6 +55,7 @@ class BookcaseFragment: BaseFragment() {
     }
 
     override fun lazyLoad() {
+        findBook()
     }
 
     private fun initRecyclerView(){
@@ -111,12 +111,12 @@ class BookcaseFragment: BaseFragment() {
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==BOOK_EVENT){
-            findBook()
+            lazyLoad()
         }
     }
 
     override fun onRefreshData() {
-        findBook()
+        lazyLoad()
     }
 
     fun upload(token:String){
@@ -178,7 +178,7 @@ class BookcaseFragment: BaseFragment() {
             DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1,bookBean.bookId)
             DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,2,bookBean.bookId)
         }
-        findBook()
+        lazyLoad()
     }
 
 

@@ -31,7 +31,16 @@ interface APIService{
      */
     @POST("file/token")
     fun getQiniuToken(): Observable<BaseResult<String>>
-
+    /**
+     * 活跃查询
+     */
+    @GET("accounts/active")
+    fun active(): Observable<BaseResult<Any>>
+    /**
+     * 获取更新
+     */
+    @GET("app/info/one?type=1")
+    fun onAppUpdate(): Observable<BaseResult<AppUpdateBean>>
     /**
      * 获取增量更新列表F
      */
@@ -172,7 +181,7 @@ interface APIService{
      * 购买书籍
      */
     @POST("buy/book/createOrder")
-    fun buyBooks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun buy(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 应用列表
@@ -181,22 +190,11 @@ interface APIService{
     fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
 
     /**
-     * 购买apk
-     */
-    @POST("buy/book/createOrder")
-    fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
-    /**
      * 书画、壁纸
      */
     @GET("font/draw/list")
     fun getPaintings(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaintingList>>
 
-    /**
-     * 购买apk
-     */
-    @POST("buy/book/createOrder")
-    fun buyPainting(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 教学视频 课程列表
@@ -227,10 +225,15 @@ interface APIService{
     @GET("student/task/studentExam")
     fun getExams(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamItem>>
     /**
-     * 学生提交考卷
+     * 学生提交测试卷
      */
     @POST("student/task/pushExamWork")
     fun commitPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 学生提交年级考卷
+     */
+    @POST("student/task/pushGradeExam")
+    fun commitExam(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 学生下载完老师发送的已批改试卷删除
      */
@@ -269,11 +272,11 @@ interface APIService{
     @POST("task/group/studentListPlus")
     fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
 
-//    /**
-//     * 获取学生批改详情
-//     */
-//    @GET("task/group/sendList")
-//    fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<HomeworkDetailBean>>>
+    /**
+     * 获取学生批改详情
+     */
+    @GET("task/group/sendList")
+    fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<Any>>>
 //    /**
 //     * 获取学生提交详情
 //     */
@@ -351,5 +354,9 @@ interface APIService{
      */
     @POST("job/message/deleteAll")
     fun deleteHomeworkNotice(): Observable<BaseResult<Any>>
-
+    /**
+     * 台历列表
+     */
+    @GET("calendar/list")
+    fun getCalenderList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CalenderList>>
 }

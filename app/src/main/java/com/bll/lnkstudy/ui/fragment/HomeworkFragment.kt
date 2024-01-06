@@ -20,6 +20,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -201,8 +202,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         showView(iv_manager)
 
         popWindowBeans.add(PopupBean(0, getString(R.string.homework_commit_details_str), true))
-        popWindowBeans.add(PopupBean(1, getString(R.string.homework_correct_details_str), false))
-        popWindowBeans.add(PopupBean(2, getString(R.string.homework_create_str), false))
+        popWindowBeans.add(PopupBean(1, getString(R.string.homework_create_str), false))
 
         iv_manager.setOnClickListener {
             PopupList(requireActivity(), popWindowBeans, iv_manager, 5).builder()
@@ -212,9 +212,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                             HomeworkCommitDetailsDialog(requireActivity(),1).builder()
                         }
                         1 -> {
-                            HomeworkCommitDetailsDialog(requireActivity(),2).builder()
-                        }
-                        2 -> {
                             if (MethodManager.getClassGroups().size > 0) {
                                 addContentModule()
                             }
@@ -224,10 +221,13 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         }
 
         initRecyclerView()
-        initTab()
     }
 
     override fun lazyLoad() {
+        onlineParentTypes.clear()
+        onlineTeacherTypes.clear()
+        pageIndex=1
+        initTab()
     }
 
     private fun initRecyclerView() {
@@ -488,6 +488,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
+                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
@@ -531,6 +532,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
+                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
@@ -575,6 +577,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
+                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
@@ -629,6 +632,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=homework.course
                                 time=System.currentTimeMillis()
                             })
+                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int ) {
                         }
@@ -689,6 +693,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                     course=paper.course
                                     time=System.currentTimeMillis()
                                 })
+                                EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
 
                             } else {
                                 val contentBean = paperDaoManager.queryByContentID(item.id)
@@ -975,10 +980,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.CLASSGROUP_EVENT -> {
-                onlineParentTypes.clear()
-                onlineTeacherTypes.clear()
-                pageIndex=1
-                initTab()
+                lazyLoad()
             }
             Constants.HOMEWORK_BOOK_EVENT -> {
                 fetchData()

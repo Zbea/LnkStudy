@@ -1,7 +1,9 @@
 package com.bll.lnkstudy.utils.date;
 
 
-public class Solar {
+import java.io.Serializable;
+
+public class Solar implements Serializable {
     public int solarDay;
     public int solarMonth;
     public int solarYear;

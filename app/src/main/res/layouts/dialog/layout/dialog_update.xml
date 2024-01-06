@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    >
+
+    <LinearLayout
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/icon_update_top"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="新版本"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:layout_marginTop="250dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black_30"
+            android:textSize="@dimen/sp_20" />
+
+        <TextView
+            android:id="@+id/tv_update"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:gravity="center"
+            android:tag="beta_confirm_button"
+            android:text="更新"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

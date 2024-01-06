@@ -76,7 +76,7 @@ class WallpaperDownloadFragment :BaseFragment(), IContractView.IPaintingView{
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            ImageDialog(requireActivity(),items[position].bodyUrl).builder()
+            ImageDialog(requireActivity(), arrayListOf(items[position].bodyUrl) ).builder()
         }
         mAdapter?.setOnItemChildClickListener{ adapter, view, position ->
             this.position=position

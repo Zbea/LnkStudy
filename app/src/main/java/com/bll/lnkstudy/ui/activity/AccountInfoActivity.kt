@@ -12,10 +12,10 @@ import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
-import kotlinx.android.synthetic.main.ac_account_register.*
 import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
@@ -71,7 +71,8 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initData() {
         grades = DataBeanManager.popupGrades(grade)
         school=mUser?.schoolId!!
-        mSchoolPresenter.getCommonSchool()
+        if (NetworkUtil(this).isNetworkConnected())
+            mSchoolPresenter.getCommonSchool()
     }
 
     @SuppressLint("WrongConstant")
@@ -146,7 +147,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
                 privacyPassword=it
                 showView(tv_check_pad)
-                btn_psd_check.text=getString(R.string.set_password)
+                btn_psd_check.text=getString(R.string.cancel_password)
                 MethodManager.savePrivacyPassword(privacyPassword)
                 EventBus.getDefault().post(Constants.PASSWORD_EVENT)
             }

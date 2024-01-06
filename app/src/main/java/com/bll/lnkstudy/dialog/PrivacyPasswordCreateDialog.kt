@@ -108,6 +108,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             privacyPassword.question=tvQuestion.text.toString()
             privacyPassword.answer=answerStr
             privacyPassword.password=MD5Utils.digest(passwordStr)
+            privacyPassword.isSet=true
             MethodManager.savePrivacyPassword(privacyPassword)
             //创建增量数据(日记密码)
             DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))

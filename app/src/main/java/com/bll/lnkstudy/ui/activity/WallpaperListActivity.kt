@@ -48,7 +48,7 @@ class WallpaperListActivity:BaseAppCompatActivity() {
             setEmptyView(R.layout.common_empty)
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@WallpaperListActivity,19f),0))
             setOnItemClickListener { adapter, view, position ->
-                ImageDialog(this@WallpaperListActivity, File(lists[position].paths[0])).builder()
+                ImageDialog(this@WallpaperListActivity, arrayListOf(lists[position].paths[0])).builder()
             }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->

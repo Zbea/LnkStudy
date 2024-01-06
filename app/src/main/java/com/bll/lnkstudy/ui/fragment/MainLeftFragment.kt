@@ -2,26 +2,20 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
+import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
-import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.Constants.Companion.MAIN_CORRECT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
-import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
-import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
-import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.manager.NoteDaoManager
-import com.bll.lnkstudy.manager.TextbookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.CommonData
-import com.bll.lnkstudy.mvp.model.ExamItem
-import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
@@ -29,22 +23,22 @@ import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.MainPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainView
+import com.bll.lnkstudy.ui.activity.CalenderMyActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
+import com.bll.lnkstudy.ui.adapter.MainCorrectAdapter
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
-import com.bll.lnkstudy.ui.adapter.MainNoteAdapter
-import com.bll.lnkstudy.ui.adapter.TextbookStoreAdapter
-import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.date.CalenderUtils
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
+import java.io.File
 
 
 /**
@@ -55,27 +49,38 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     private val mCommonPresenter= CommonPresenter(this)
     private val mMainPresenter=MainPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
-    private var noteAdapter: MainNoteAdapter? = null
-    private var bookAdapter: TextbookStoreAdapter? = null
+    private var correctAdapter: MainCorrectAdapter? = null
     private var mNoticeAdapter:MainHomeworkNoticeAdapter?=null
     private var nowDate = 0L
+    private var nowDayPos=1
+    private var calenderPath=""
     private var popupDates= mutableListOf<PopupBean>()
     private var dateEvents= mutableListOf<DateEventBean>()
+    private var updateDialog:AppUpdateDialog?=null
+    private var isChange=false
 
     override fun onList(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
-            SPUtil.putList("grades", commonData.grade)
+            DataBeanManager.grades=commonData.grade
         if (!commonData.subject.isNullOrEmpty())
-            SPUtil.putList("courses", commonData.subject)
+            DataBeanManager.courses=commonData.subject
         if (!commonData.typeGrade.isNullOrEmpty())
-            SPUtil.putList("typeGrades", commonData.typeGrade)
+            DataBeanManager.typeGrades=commonData.typeGrade
         if (!commonData.version.isNullOrEmpty())
-            SPUtil.putList("bookVersions", commonData.version)
+            DataBeanManager.bookVersion=commonData.version
     }
 
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         MethodManager.saveClassGroups(classGroups)
     }
+
+    override fun onAppUpdate(item: AppUpdateBean) {
+//        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
+//            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
+//            downLoadStart(item)
+//        }
+    }
+
     override fun onExam(exam: ExamItem) {
     }
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
@@ -97,11 +102,14 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
 
         initPlanView()
         initNoticeView()
-        initNote()
-        initBookView()
+        initCorrect()
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
+        }
+
+        iv_calender_more.setOnClickListener {
+            customStartActivity(Intent(activity, CalenderMyActivity::class.java))
         }
 
         iv_date_more.setOnClickListener {
@@ -131,13 +139,42 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             intent.putExtra("bundle", bundle)
             customStartActivity(intent)
         }
+
+        v_up.setOnClickListener{
+            nowDate-= Constants.dayLong
+            setDateView()
+            if (nowDayPos>1){
+                nowDayPos-=1
+                setCalenderBg()
+            }
+        }
+
+        v_down.setOnClickListener {
+            nowDate+=Constants.dayLong
+            setDateView()
+            if (nowDayPos<=366){
+                nowDayPos+=1
+                setCalenderBg()
+            }
+        }
+
+        iv_change.setOnClickListener {
+            isChange=!isChange
+            if (isChange){
+                showView(iv_calender)
+            }
+            else{
+                disMissView(iv_calender)
+            }
+        }
     }
 
     override fun lazyLoad() {
+        nowDate=DateUtils.getStartOfDayInMillis()
         setDateView()
+        setCalenderView()
         findDataPlan()
-        findBook()
-        findNotes()
+        findCorrectDetails()
         fetchData()
     }
 
@@ -146,6 +183,8 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             mCommonPresenter.getCommonData()
             mMainPresenter.getHomeworkNotice()
             mMainPresenter.getClassGroupList()
+            mMainPresenter.getAppUpdate()
+            mMainPresenter.active()
         }
     }
 
@@ -153,7 +192,6 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
      * 设置当天时间日历
      */
     private fun setDateView(){
-        nowDate=DateUtils.getStartOfDayInMillis()
 
         val solar= Solar()
         solar.solarYear= DateUtils.getYear()
@@ -175,7 +213,44 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
                 }
             }
         }
-        tv_date_today.text=DateUtils.longToStringWeek(nowDate)+"  "+str
+        tv_date_today.text=DateUtils.longToStringWeek(nowDate)
+
+        val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate))+"/draw.png"
+        if (File(path).exists()){
+            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+        }
+        else{
+            iv_date.setImageResource(0)
+        }
+    }
+
+    /**
+     * 设置台历
+     */
+    private fun setCalenderView(){
+        val calenderUtils= CalenderUtils(DateUtils.longToStringDataNoHour(nowDate))
+        nowDayPos=calenderUtils.elapsedTime()
+        val item= CalenderDaoManager.getInstance().queryCalenderBean()
+        if (item!=null){
+            showView(iv_change)
+            calenderPath=item.path
+            setCalenderBg()
+        }
+        else{
+            calenderPath=""
+            disMissView(iv_change)
+        }
+    }
+
+    private fun setCalenderBg(){
+        val listFiles= FileUtils.getFiles(calenderPath) ?: return
+        val file=if (listFiles.size>nowDayPos-1){
+            listFiles[nowDayPos-1]
+        }
+        else{
+            listFiles[listFiles.size-1]
+        }
+        GlideUtils.setImageFile(requireActivity(),file,iv_calender)
     }
 
     //今日计划
@@ -199,37 +274,45 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     }
 
 
-    private fun initBookView(){
-        bookAdapter = TextbookStoreAdapter(R.layout.item_main_book, null).apply {
-            rv_main_book.layoutManager = GridLayoutManager(activity,3)//创建布局管理
-            rv_main_book.adapter = bookAdapter
-            bindToRecyclerView(rv_main_book)
-            rv_main_book.addItemDecoration(SpaceGridItemDeco1(3, 0,5))
-            setOnItemClickListener { adapter, view, position ->
-                val bookBean= bookAdapter?.data?.get(position)
-                MethodManager.gotoTextBookDetails(requireActivity(),bookBean?.bookId!!)
-            }
-        }
-    }
-
-    //笔记
-    private fun initNote() {
-        noteAdapter = MainNoteAdapter(R.layout.item_main_note, null).apply {
+    //批改详情
+    private fun initCorrect() {
+        correctAdapter = MainCorrectAdapter(R.layout.item_main_correct, null).apply {
             rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
-            setOnItemClickListener { adapter, view, position ->
-                val item=noteAdapter?.data?.get(position)!!
-                MethodManager.gotoNoteDrawing(requireActivity(),item,2, DEFAULT_PAGE)
-            }
         }
+    }
+
+    //下载应用
+    private fun downLoadStart(bean: AppUpdateBean){
+        val targetFileStr= FileAddress().getPathApk(bean.versionCode.toString())
+        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+            FileDownManager.SingleTaskCallBack {
+            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                if (task != null && task.isRunning) {
+                    requireActivity().runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                        updateDialog?.setUpdateBtn(s)
+                    }
+                }
+            }
+            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+            }
+            override fun completed(task: BaseDownloadTask?) {
+                updateDialog?.dismiss()
+                AppUtils.installApp(requireActivity(), targetFileStr)
+            }
+            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                updateDialog?.dismiss()
+            }
+        })
     }
 
     /**
      * 查找学习计划
      */
     private fun findDataPlan() {
-
         val dates=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1)
         for (item in dates){
             if (item.maxLong<nowDate){
@@ -252,37 +335,30 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
         mPlanAdapter?.setNewData(if (dateEvents.size>0)dateEvents[0].plans else null)
     }
 
-
     /**
-     * 查找书籍
+     * 批改详情
      */
-    private fun findBook(){
-        val books= TextbookGreenDaoManager.getInstance().queryAllTextBook(DataBeanManager.textbookType[0],1,9)
-        bookAdapter?.setNewData(books)
+    private fun findCorrectDetails(){
+        val list= HomeworkDetailsDaoManager.getInstance().queryCorrect()
+        correctAdapter?.setNewData(list)
     }
-
-    /**
-     * 查找笔记
-     */
-    private fun findNotes() {
-        val notes= NoteDaoManager.getInstance().queryNotesExceptDiary(12)
-        noteAdapter?.setNewData(notes)
-    }
-
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             DATE_EVENT -> {
                 findDataPlan()
             }
-            TEXT_BOOK_EVENT->{
-                findBook()
-            }
-            NOTE_BOOK_MANAGER_EVENT, NOTE_EVENT -> {
-                findNotes()
+            MAIN_CORRECT_EVENT-> {
+                findCorrectDetails()
             }
             MAIN_HOMEWORK_NOTICE_EVENT->{
                 mMainPresenter.deleteHomeworkNotice()
+            }
+            CALENDER_SET_EVENT->{
+                setCalenderView()
+            }
+            DATE_DRAWING_EVENT->{
+                setDateView()
             }
         }
     }

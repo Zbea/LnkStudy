@@ -65,6 +65,9 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         MethodManager.saveClassGroups(classGroups)
     }
 
+    override fun onAppUpdate(item: AppUpdateBean?) {
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_right
     }
@@ -88,8 +91,9 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
 
         ll_course.setOnClickListener {
             val courseType = SPUtil.getInt("courseType")
-            customStartActivity(
-                Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).putExtra("courseType", courseType)
+            customStartActivity(Intent(activity, MainCourseActivity::class.java)
+                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .putExtra("courseType", courseType)
             )
         }
 
@@ -165,6 +169,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                         val bundle = Bundle()
                         bundle.putSerializable("exam", exam)
                         val intent = Intent(activity, PaperExamDrawingActivity::class.java)
+                        intent.flags = type
                         intent.putExtra("bundle", bundle)
                         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
                         intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
@@ -194,7 +199,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
 
     //下载收到的图片
     private fun loadPapers() {
-        if (examItem?.exam?.id==0)
+        if (examItem==null||examItem?.exam?.id==0)
             return
         examItem?.apply {
             //设置路径
@@ -206,7 +211,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
                 paths.add("$pathStr/${i+1}.png")
             }
             exam.paths=paths
-            if (files == null || files.size > images.size) {
+            if (files == null || files.size != images.size) {
                 FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                     object : FileMultitaskDownManager.MultiTaskCallBack {
                         override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {

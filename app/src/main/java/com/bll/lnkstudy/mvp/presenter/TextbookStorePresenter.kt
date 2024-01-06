@@ -50,7 +50,7 @@ class TextbookStorePresenter(view: IContractView.ITextbookStoreView, val screen:
     fun buyBook(map: HashMap<String,Any>){
 
         val body=RequestUtils.getBody(map)
-        val buy = RetrofitManager.service.buyBooks(body)
+        val buy = RetrofitManager.service.buy(body)
 
         doRequest(buy, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {

@@ -154,6 +154,13 @@ class FileAddress {
     }
 
     /**
+     * 日历保存地址
+     */
+    fun getPathDate(dateStr:String):String{
+        return "$IMAGE_PATH/${mUserId}/date/$dateStr"
+    }
+
+    /**
      * 草稿纸
      */
     fun getPathDraft():String{
@@ -208,4 +215,10 @@ class FileAddress {
         return "$SCREEN_PATH/${mUserId}/$typeStr"
     }
 
+    /**
+     * 日历背景下载地址
+     */
+    fun getPathCalender(fileName: String):String{
+        return "$IMAGE_PATH/${mUserId}/calender/$fileName"
+    }
 }

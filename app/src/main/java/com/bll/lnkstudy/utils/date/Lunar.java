@@ -1,7 +1,9 @@
 package com.bll.lnkstudy.utils.date;
 
 
-public class Lunar {
+import java.io.Serializable;
+
+public class Lunar implements Serializable {
 
     public boolean isleap;//是否闰月
     public int lunarDay;

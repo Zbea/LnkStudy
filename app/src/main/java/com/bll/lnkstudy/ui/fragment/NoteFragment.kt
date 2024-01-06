@@ -56,7 +56,6 @@ class NoteFragment : BaseFragment(){
         showView(iv_manager)
 
         initRecyclerView()
-        findTabs()
 
         iv_manager?.setOnClickListener {
             PopupClick(requireActivity(), popWindowBeans, iv_manager, 5).builder().setOnSelectListener { item ->
@@ -73,8 +72,9 @@ class NoteFragment : BaseFragment(){
     }
 
     override fun lazyLoad() {
+        pageIndex=1
+        findTabs()
     }
-
 
     private fun initRecyclerView() {
         mAdapter = NotebookAdapter(1,R.layout.item_note, null).apply {
@@ -349,7 +349,7 @@ class NoteFragment : BaseFragment(){
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             NOTE_BOOK_MANAGER_EVENT -> {
-                findTabs()
+                lazyLoad()
             }
             NOTE_EVENT -> {
                 fetchData()

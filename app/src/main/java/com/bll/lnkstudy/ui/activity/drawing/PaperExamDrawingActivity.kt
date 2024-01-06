@@ -30,7 +30,7 @@ import java.util.*
  * 考卷考试页面
  */
 class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView{
-
+    private var flags=0
     private val mUploadPresenter=FileUploadPresenter(this)
     private var commonTypeId=0
     private var pathStr=""
@@ -54,11 +54,20 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    val map= HashMap<String, Any>()
-                    map["studentTaskId"]=exam?.id!!
-                    map["commonTypeId"]=exam?.commonTypeId!!
-                    map["studentUrl"]=ToolUtils.getImagesStr(urls)
-                    mUploadPresenter.commit(map)
+                    //老师测试卷
+                    if (flags==1){
+                        val map= HashMap<String, Any>()
+                        map["studentTaskId"]=exam?.id!!
+                        map["commonTypeId"]=exam?.commonTypeId!!
+                        map["studentUrl"]=ToolUtils.getImagesStr(urls)
+                        mUploadPresenter.commit(map)
+                    }
+                    else{//年级考卷
+                        val map= HashMap<String, Any>()
+                        map["studentTaskId"]=exam?.id!!
+                        map["studentUrl"]=ToolUtils.getImagesStr(urls)
+                        mUploadPresenter.commitExam(map)
+                    }
                 }
                 override fun onUploadFail() {
                     hideLoading()
@@ -83,7 +92,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     override fun initData() {
         isExpand=true
-
+        flags=intent.flags
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamBean
         paths = exam?.paths!!
         pageCount = paths.size

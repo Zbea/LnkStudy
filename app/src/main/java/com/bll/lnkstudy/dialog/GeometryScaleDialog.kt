@@ -61,7 +61,7 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
             }
             9->{
                 et_width.hint = "输入每格刻度"
-                et_height.hint = "输入每格长度(mm)"
+                et_height.visibility= View.GONE
             }
         }
 
@@ -74,7 +74,7 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
             val height=et_height.text.toString()
             if (width.isNotEmpty()) {
                 dialog.dismiss()
-                if (currentGeometry==2||currentGeometry==5||currentGeometry==9){
+                if (currentGeometry==2||currentGeometry==5){
                     if (height.isNotEmpty()){
                         dialog.dismiss()
                         listener?.onClick(width.toFloat(),height.toFloat())

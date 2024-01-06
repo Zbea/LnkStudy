@@ -9,6 +9,7 @@ import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.CalenderItemBean;
 import com.bll.lnkstudy.mvp.model.CourseBean;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.DiaryBean;
@@ -35,6 +36,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookBean;
 
 import com.bll.lnkstudy.greendao.AppBeanDao;
+import com.bll.lnkstudy.greendao.CalenderItemBeanDao;
 import com.bll.lnkstudy.greendao.CourseBeanDao;
 import com.bll.lnkstudy.greendao.DataUpdateBeanDao;
 import com.bll.lnkstudy.greendao.DiaryBeanDao;
@@ -70,6 +72,7 @@ import com.bll.lnkstudy.greendao.TextbookBeanDao;
 public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig appBeanDaoConfig;
+    private final DaoConfig calenderItemBeanDaoConfig;
     private final DaoConfig courseBeanDaoConfig;
     private final DaoConfig dataUpdateBeanDaoConfig;
     private final DaoConfig diaryBeanDaoConfig;
@@ -96,6 +99,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig textbookBeanDaoConfig;
 
     private final AppBeanDao appBeanDao;
+    private final CalenderItemBeanDao calenderItemBeanDao;
     private final CourseBeanDao courseBeanDao;
     private final DataUpdateBeanDao dataUpdateBeanDao;
     private final DiaryBeanDao diaryBeanDao;
@@ -127,6 +131,9 @@ public class DaoSession extends AbstractDaoSession {
 
         appBeanDaoConfig = daoConfigMap.get(AppBeanDao.class).clone();
         appBeanDaoConfig.initIdentityScope(type);
+
+        calenderItemBeanDaoConfig = daoConfigMap.get(CalenderItemBeanDao.class).clone();
+        calenderItemBeanDaoConfig.initIdentityScope(type);
 
         courseBeanDaoConfig = daoConfigMap.get(CourseBeanDao.class).clone();
         courseBeanDaoConfig.initIdentityScope(type);
@@ -201,6 +208,7 @@ public class DaoSession extends AbstractDaoSession {
         textbookBeanDaoConfig.initIdentityScope(type);
 
         appBeanDao = new AppBeanDao(appBeanDaoConfig, this);
+        calenderItemBeanDao = new CalenderItemBeanDao(calenderItemBeanDaoConfig, this);
         courseBeanDao = new CourseBeanDao(courseBeanDaoConfig, this);
         dataUpdateBeanDao = new DataUpdateBeanDao(dataUpdateBeanDaoConfig, this);
         diaryBeanDao = new DiaryBeanDao(diaryBeanDaoConfig, this);
@@ -227,6 +235,7 @@ public class DaoSession extends AbstractDaoSession {
         textbookBeanDao = new TextbookBeanDao(textbookBeanDaoConfig, this);
 
         registerDao(AppBean.class, appBeanDao);
+        registerDao(CalenderItemBean.class, calenderItemBeanDao);
         registerDao(CourseBean.class, courseBeanDao);
         registerDao(DataUpdateBean.class, dataUpdateBeanDao);
         registerDao(DiaryBean.class, diaryBeanDao);
@@ -255,6 +264,7 @@ public class DaoSession extends AbstractDaoSession {
     
     public void clear() {
         appBeanDaoConfig.clearIdentityScope();
+        calenderItemBeanDaoConfig.clearIdentityScope();
         courseBeanDaoConfig.clearIdentityScope();
         dataUpdateBeanDaoConfig.clearIdentityScope();
         diaryBeanDaoConfig.clearIdentityScope();
@@ -283,6 +293,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public AppBeanDao getAppBeanDao() {
         return appBeanDao;
+    }
+
+    public CalenderItemBeanDao getCalenderItemBeanDao() {
+        return calenderItemBeanDao;
     }
 
     public CourseBeanDao getCourseBeanDao() {

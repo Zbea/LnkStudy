@@ -74,12 +74,13 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
 
     override fun initView() {
         setTitle(R.string.main_testpaper_title)
-
         initRecyclerView()
-        initTab()
     }
 
     override fun lazyLoad() {
+        pageIndex=1
+        onlineTypes.clear()
+        initTab()
     }
 
     @SuppressLint("WrongConstant")
@@ -321,8 +322,7 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.CLASSGROUP_EVENT -> {
-                onlineTypes.clear()
-                initTab()
+                lazyLoad()
             }
         }
     }

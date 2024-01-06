@@ -30,7 +30,7 @@ class DownloadAppPresenter(view: IContractView.IAPPView,val screen:Int=0) : Base
     fun buyApk(map: HashMap<String, Any> ) {
 
         val requestBody=RequestUtils.getBody(map)
-        val download = RetrofitManager.service.buyApk(requestBody)
+        val download = RetrofitManager.service.buy(requestBody)
 
         doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {

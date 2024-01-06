@@ -6,8 +6,9 @@
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="52dp"
+        android:paddingEnd="@dimen/dp_15"
         android:layout_centerVertical="true"
         android:src="@mipmap/icon_back" />
 
@@ -15,7 +16,6 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/iv_back"
         android:textColor="@color/black"

@@ -238,6 +238,7 @@
     <string name="download_app">应用</string>
     <string name="download_painting">书画</string>
     <string name="download_wallpaper">壁纸</string>
+    <string name="calender">台历</string>
 
     <string name="homework_type_pytzb">拼音田字本</string>
     <string name="homework_type_tzb">田字本</string>
@@ -314,7 +315,7 @@
     <string name="homework_create_str">新建作业本</string>
     <string name="homework_create_hint">输入作业本标题</string>
     <string name="homework_commit_details_str">提交详情</string>
-    <string name="homework_correct_details_str">批改详情</string>
+    <string name="homework_correct_details_str">批改通知</string>
     <string name="homework_book_str">新建教辅本</string>
     <string name="homework_old_homework_str">往年作业本</string>
     <string name="homework_cover_module_str">封面模板</string>
@@ -335,6 +336,7 @@
     <string name="date_title_str">日历</string>
     <string name="day">天</string>
     <string name="year">年</string>
+    <string name="years">年份</string>
     <string name="month">月</string>
     <string name="date_day_title_hint">生日/纪恋日/其他</string>
     <string name="date_day_content_hint">内容</string>

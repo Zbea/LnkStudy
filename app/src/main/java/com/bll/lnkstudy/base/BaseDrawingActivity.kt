@@ -351,7 +351,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(1)
-                //角度要是双数才能绘图
                 if (currentGeometry==8){
                     angle_a+=1
                     if (isEven(angle_a))
@@ -413,7 +412,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                                 elik.reDrawShape(width,height)
                             }
                             9 -> {
-                                elik.reDrawShape(height,width)
+                                elik.reDrawShape(width,5f)
                             }
                             else -> {
                                 elik.reDrawShape(width,-1f)

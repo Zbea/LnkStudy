@@ -46,11 +46,11 @@ class TextbookFragment : BaseFragment() {
 
         initTab()
         initRecyclerView()
-
-        fetchData()
     }
 
     override fun lazyLoad() {
+        pageIndex=1
+        fetchData()
     }
 
     //设置头部索引
@@ -222,8 +222,7 @@ class TextbookFragment : BaseFragment() {
             DataUpdateManager.editDataUpdate(1,item.bookId,1,item.bookId,Gson().toJson(item))
         }
         bookGreenDaoManager.insertOrReplaceBooks(items)
-        pageIndex=1
-        fetchData()
+
     }
 
     override fun onEventBusMessage(msgFlag: String) {
@@ -255,8 +254,7 @@ class TextbookFragment : BaseFragment() {
             //删除增量更新
             DataUpdateManager.deleteDateUpdate(1,item.bookId,1,item.bookId)
         }
-        pageIndex=1
-        fetchData()
+        lazyLoad()
     }
 
 }

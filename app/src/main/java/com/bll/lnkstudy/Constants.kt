@@ -69,6 +69,7 @@ class Constants {
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
 
         //eventbus通知标志
+        const val REFRESH_EVENT = "RefreshEvent" //刷新页面
         const val AUTO_UPLOAD_LAST_SEMESTER_EVENT = "AutoUploadEventLastSemester" //上学期开学
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"//每天三点自动上传
@@ -84,7 +85,7 @@ class Constants {
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val RECORD_EVENT = "RecordEvent"//语音作业本录音通知
-        const val VIDEO_EVENT = "VideoEvent"
+        const val MAIN_CORRECT_EVENT = "MainCorrectEvent"//刷新主页批改详情通知
         const val MESSAGE_COMMIT_EVENT = "MessageCommitEvent"//发送消息提交通知刷新
         const val USER_CHANGE_EVENT = "UserChangeEvent" //个人信息变化
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
@@ -94,6 +95,8 @@ class Constants {
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
+        const val DATE_DRAWING_EVENT="DateDrawingEvent"//日程手写结束
+        const val CALENDER_SET_EVENT = "CalenderSetEvent"//台历设置
 
         const val SETTING_DOWNLOAD_EVENT = "DataDownload"
         const val SETTING_RENT_EVENT = "DataRent"

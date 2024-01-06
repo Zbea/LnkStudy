@@ -5,13 +5,16 @@ import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.bll.lnkstudy.mvp.model.note.Notebook
-import com.bll.lnkstudy.utils.SPUtil.getList
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
 object DataBeanManager {
 
     var provinces= mutableListOf<Area>()
+    var grades= mutableListOf<ItemList>()
+    var typeGrades= mutableListOf<ItemList>()
+    var courses= mutableListOf<ItemList>()
+    var bookVersion= mutableListOf<ItemList>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
@@ -64,6 +67,7 @@ object DataBeanManager {
     var resources = arrayOf(
         mContext.getString(R.string.main_app),mContext.getString(R.string.tool),
         mContext.getString(R.string.download_wallpaper),mContext.getString(R.string.download_painting)
+        ,mContext.getString(R.string.calender)
     )
 
     /**
@@ -79,34 +83,19 @@ object DataBeanManager {
         return teacherId
     }
 
-    fun bookVersion():MutableList<ItemList>{
-        return getList("bookVersions")
-    }
 
-    fun grades():MutableList<ItemList>{
-        return getList("grades")
-    }
-
-    fun typeGrades():MutableList<ItemList>{
-        return getList("typeGrades")
-    }
-
-    fun courses():MutableList<ItemList>{
-        return getList("courses")
-    }
-
-    val popupGrades: MutableList<PopupBean>
-        get() {
+    fun popupGrades(): MutableList<PopupBean>
+       {
             val list= mutableListOf<PopupBean>()
-            for (i in grades().indices){
-                list.add(PopupBean(grades()[i].type, grades()[i].desc, i == 0))
+            for (i in grades.indices){
+                list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
             }
             return list
         }
 
     fun popupGrades(grade: Int): MutableList<PopupBean> {
         val list = mutableListOf<PopupBean>()
-        for (item in grades()) {
+        for (item in grades) {
             list.add(PopupBean(item.type, item.desc, item.type == grade))
         }
         return list
@@ -134,7 +123,7 @@ object DataBeanManager {
      */
     fun getGradeStr(grade: Int): String {
         var cls=""
-        for (item in grades()) {
+        for (item in grades) {
             if (item.type == grade){
                 cls=item.desc
             }
@@ -146,8 +135,8 @@ object DataBeanManager {
     val popupTypeGrades: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()
-            for (i in typeGrades().indices){
-                list.add(PopupBean(typeGrades()[i].type, typeGrades()[i].desc, i == 0))
+            for (i in typeGrades.indices){
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
             }
             return list
         }
@@ -155,15 +144,15 @@ object DataBeanManager {
     val popupCourses: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()
-            for (i in courses().indices){
-                list.add(PopupBean(courses()[i].type, courses()[i].desc, i == 0))
+            for (i in courses.indices){
+                list.add(PopupBean(courses[i].type, courses[i].desc, i == 0))
             }
             return list
         }
 
     fun popupCourses(course:Int): MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()
-        for (item in courses()){
+        for (item in courses){
             list.add(PopupBean(item.type, item.desc, item.type == course))
         }
         return list
@@ -174,7 +163,7 @@ object DataBeanManager {
      */
     fun getCourseStr(course:Int):String{
         var courseStr=""
-        for (item in courses()){
+        for (item in courses){
             if (course==item.type){
                 courseStr=item.desc
             }
@@ -187,7 +176,7 @@ object DataBeanManager {
      */
     fun getCourseId(course:String):Int{
         var courseId=0
-        for (item in courses()){
+        for (item in courses){
             if (course==item.desc){
                 courseId=item.type
             }

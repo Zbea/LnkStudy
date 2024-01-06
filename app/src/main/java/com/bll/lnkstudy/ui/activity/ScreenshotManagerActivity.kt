@@ -168,7 +168,7 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@ScreenshotManagerActivity, 22f), DP2PX.dip2px(this@ScreenshotManagerActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
                 val file=mAdapter?.getItem(position)
-                ImageDialog(this@ScreenshotManagerActivity, file?.path!!).builder()
+                ImageDialog(this@ScreenshotManagerActivity, arrayListOf(file?.path!!) ).builder()
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos=position

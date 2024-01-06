@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.presenter
 
+import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.ExamItem
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
@@ -65,6 +66,30 @@ class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePrese
         }, false)
     }
 
+    //获取更新信息
+    fun getAppUpdate() {
+        val list= RetrofitManager.service.onAppUpdate()
+        doRequest(list, object : Callback<AppUpdateBean>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<AppUpdateBean>) {
+                if (tBaseResult.data!=null)
+                    view.onAppUpdate(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    fun active() {
+        val type = RetrofitManager.service.active()
+        doRequest(type, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+            }
+        }, false)
+    }
 
 
 }

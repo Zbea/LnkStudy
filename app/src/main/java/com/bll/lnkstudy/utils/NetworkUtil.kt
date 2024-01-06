@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager
 class NetworkUtil(val context: Context) {
 
     private var connManager: ConnectivityManager? = null
+    private var isForceOpenNet=false
 
     init {
         connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -23,6 +24,15 @@ class NetworkUtil(val context: Context) {
     fun isNetworkConnected(): Boolean {
         val networkInfo = connManager?.activeNetworkInfo
         return networkInfo!=null&&networkInfo.isConnected
+    }
+
+    /**
+     * 设置强制打开网络 true 强制打开后不能关闭 false 关闭后，可以打开以及关闭
+     */
+    fun setForceOpenNet(isEnable: Boolean){
+        toggleMobileNet(isEnable)
+        toggleWiFi(isEnable)
+        isForceOpenNet=isEnable
     }
 
     /**
@@ -57,13 +67,15 @@ class NetworkUtil(val context: Context) {
      * @throws Exception
      */
     private fun toggleMobileNet(isEnable: Boolean) {
-        try {
-            val telephonyService = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val setMobileDataEnabledMethod = telephonyService.javaClass.getDeclaredMethod("setDataEnabled", Boolean::class.javaPrimitiveType)
-            setMobileDataEnabledMethod.invoke(telephonyService, isEnable)
-        } catch (e: Exception) {
-            // 处理异常情况
-            e.printStackTrace()
+        if (!isForceOpenNet){
+            try {
+                val telephonyService = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                val setMobileDataEnabledMethod = telephonyService.javaClass.getDeclaredMethod("setDataEnabled", Boolean::class.javaPrimitiveType)
+                setMobileDataEnabledMethod.invoke(telephonyService, isEnable)
+            } catch (e: Exception) {
+                // 处理异常情况
+                e.printStackTrace()
+            }
         }
     }
 
@@ -74,8 +86,11 @@ class NetworkUtil(val context: Context) {
      * @return 设置是否success
      */
     private fun toggleWiFi(enabled: Boolean): Boolean {
-        val wm= context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        return wm.setWifiEnabled(enabled)
+        if (!isForceOpenNet){
+            val wm= context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            return wm.setWifiEnabled(enabled)
+        }
+        return false
     }
 
     /**

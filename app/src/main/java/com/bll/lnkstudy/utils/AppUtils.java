@@ -83,6 +83,23 @@ public class AppUtils {
     }
 
     /**
+     * 获取版本号
+     * @param context
+     * @return
+     */
+    public static int getVersionCode(Context context){
+        PackageManager manager = context.getPackageManager();
+        int code = 0;
+        try {
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            code = info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return code;
+    }
+
+    /**
      * @param context 上下文信息
      * @return 获取包信息
      * getPackageName()是当前类的包名，0代表获取版本信息

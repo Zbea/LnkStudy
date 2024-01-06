@@ -64,7 +64,7 @@ class AppFragment:BaseFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             Constants.APP_INSTALL_EVENT->{
-                findApps()
+                lazyLoad()
             }
             Constants.APP_UNINSTALL_EVENT->{
                 val item=apps[position]

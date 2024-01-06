@@ -391,7 +391,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun clearData(){
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        MethodManager.savePrivacyPassword(null)
+        SPUtil.removeObj(mUser?.accountId.toString() + "PrivacyPassword")
+        SPUtil.putListInt("week", mutableListOf())
+        SPUtil.putListLong("date",mutableListOf())
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()
@@ -437,13 +439,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
 
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-        EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
-        EventBus.getDefault().post(Constants.NOTE_EVENT)
-        EventBus.getDefault().post(Constants.RECORD_EVENT)
-        EventBus.getDefault().post(Constants.PASSWORD_EVENT)
-        EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
+        EventBus.getDefault().post(Constants.REFRESH_EVENT)
+        MethodManager.logout(this)
     }
 
     /**
@@ -953,7 +950,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         val savePaths= arrayListOf("$pathStr/1.png")
         FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     PaintingBeanDaoManager.getInstance().insertOrReplace(item)
@@ -1130,5 +1127,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 clearData()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
     }
 }

@@ -170,22 +170,18 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
      */
     fun changeSupply(supply:Int){
         this.supply=supply
+        pageIndex=1
         fetchData()
     }
 
     override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            val map = HashMap<String, Any>()
-            map["page"] = pageIndex
-            map["size"] = pageSize
-            map["type"] = supply
-            map["subType"]=index
-            map["mainType"]=2
-            presenter.getAppList(map)
-        }
-        else{
-            showNetworkDialog()
-        }
+        val map = HashMap<String, Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["type"] = supply
+        map["subType"]=index
+        map["mainType"]=2
+        presenter.getAppList(map)
     }
 
     override fun onEventBusMessage(msgFlag: String) {

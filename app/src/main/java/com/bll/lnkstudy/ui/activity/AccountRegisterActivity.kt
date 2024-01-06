@@ -19,7 +19,6 @@ import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.MD5Utils
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 
@@ -49,12 +48,12 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onList(commonData: CommonData) {
-        SPUtil.putList("grades", commonData.grade)
-        SPUtil.putList("courses", commonData.subject)
-        SPUtil.putList("typeGrades", commonData.typeGrade)
-        SPUtil.putList("bookVersions", commonData.version)
-        grades=DataBeanManager.popupGrades
-        tv_grade.text=grades[0].name
+        DataBeanManager.grades=commonData.grade
+        DataBeanManager.courses=commonData.subject
+        DataBeanManager.typeGrades=commonData.typeGrade
+        DataBeanManager.bookVersion=commonData.version
+        grades=DataBeanManager.popupGrades()
+        tv_grade_str.text=grades[0].name
     }
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
@@ -126,7 +125,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             presenter.sms(phone)
         }
 
-        tv_grade.setOnClickListener {
+        tv_grade_str.setOnClickListener {
             selectorGrade()
         }
 
@@ -270,9 +269,9 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private fun selectorGrade(){
         if (popupGradeWindow==null)
         {
-            popupGradeWindow= PopupList(this,grades,tv_grade,5).builder()
+            popupGradeWindow= PopupList(this,grades,tv_grade_str,5).builder()
             popupGradeWindow?.setOnSelectListener { item ->
-                tv_grade.text=item.name
+                tv_grade_str.text=item.name
                 grade=item.id
             }
         }

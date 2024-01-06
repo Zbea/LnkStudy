@@ -31,7 +31,7 @@ class DownloadPaintingPresenter(view: IContractView.IPaintingView,val screen:Int
     fun buy(map: HashMap<String, Any> ) {
 
         val requestBody=RequestUtils.getBody(map)
-        val download = RetrofitManager.service.buyPainting(requestBody)
+        val download = RetrofitManager.service.buy(requestBody)
 
         doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {

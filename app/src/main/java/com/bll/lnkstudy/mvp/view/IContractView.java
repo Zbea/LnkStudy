@@ -3,6 +3,8 @@ package com.bll.lnkstudy.mvp.view;
 import com.bll.lnkstudy.mvp.model.AccountOrder;
 import com.bll.lnkstudy.mvp.model.AccountXDList;
 import com.bll.lnkstudy.mvp.model.AppList;
+import com.bll.lnkstudy.mvp.model.AppUpdateBean;
+import com.bll.lnkstudy.mvp.model.CalenderList;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUser;
 import com.bll.lnkstudy.mvp.model.CommonData;
@@ -130,6 +132,7 @@ public interface IContractView {
         void onExam(ExamItem exam);
         void onHomeworkNotice(HomeworkNoticeList list);
         void onClassGroupList(List<ClassGroup> classGroups);
+        void onAppUpdate(AppUpdateBean item);
     }
 
     //公共接口
@@ -179,6 +182,11 @@ public interface IContractView {
 
     interface ISchoolView extends IBaseView {
         void onListSchools(List<SchoolBean> list);
+    }
+
+    interface ICalenderView extends IBaseView {
+        void onList(CalenderList list);
+        void buySuccess();
     }
 
     interface IQiniuView extends IBaseView {

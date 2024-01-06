@@ -67,6 +67,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun lazyLoad() {
+        pageIndex=1
         if(NetworkUtil(requireActivity()).isNetworkConnected()){
             mPresenter.getType()
         }
@@ -93,7 +94,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             pageIndex=1
             lists = if (i==0){
                 flags=0
-                DataBeanManager.courses()
+                DataBeanManager.courses
             } else{
                 flags=1
                 videoType?.subType?.get(i.toString()) as MutableList<ItemList>
@@ -101,7 +102,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             pageNumberView()
         }
 
-        lists= DataBeanManager.courses()
+        lists= DataBeanManager.courses
         pageNumberView()
     }
 

@@ -2,36 +2,57 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.GlideUtils
-import java.io.File
 
-class ImageDialog(val context: Context, val data:Any) {
+class ImageDialog(val context: Context, private val images:List<String>){
 
-    fun builder(): ImageDialog? {
+    private var page=0
+    private val total=images.size-1
+    private var tvPage: TextView?=null
+    private var ivImage:ImageView?=null
 
-         Dialog(context).apply {
-            setContentView(R.layout.dialog_image)
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-            show()
+    fun builder(): ImageDialog {
+        val dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_image)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
 
-            val iv_close=findViewById<ImageView>(R.id.iv_close)
-            iv_close.setOnClickListener {
-                dismiss()
+        ivImage=dialog.findViewById(R.id.iv_image)
+        val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
+        val rlPage=dialog.findViewById<RelativeLayout>(R.id.rl_page)
+        val ivUp=dialog.findViewById<ImageView>(R.id.iv_up)
+        val ivDown=dialog.findViewById<ImageView>(R.id.iv_down)
+        tvPage=dialog.findViewById(R.id.tv_page)
+        ivClose.setOnClickListener { dialog.dismiss() }
+
+        if (images.isNotEmpty()){
+            rlPage.visibility= View.VISIBLE
+            setChange()
+        }
+        ivUp.setOnClickListener {
+            if (page>0){
+                page-=1
+                setChange()
             }
+        }
 
-            val iv_image=findViewById<ImageView>(R.id.iv_image)
-            if (data is String){
-                GlideUtils.setImageRoundUrl(context,data,iv_image,10)
-            }
-
-            if (data is File){
-                GlideUtils.setImageFileRound(context,data,iv_image,10)
+        ivDown.setOnClickListener {
+            if (page<total){
+                page+=1
+                setChange()
             }
         }
         return this
     }
 
+    private fun setChange(){
+        GlideUtils.setImageUrl(context,images[page],ivImage)
+        tvPage?.text="${page+1}/${total+1}"
+    }
 
 }

@@ -426,6 +426,9 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
                 hideNetworkDialog()
                 showToast(getScreenPosition(),R.string.net_work_error)
             }
+            Constants.REFRESH_EVENT->{
+                lazyLoad()
+            }
             else->{
                 onEventBusMessage(msgFlag)
             }
