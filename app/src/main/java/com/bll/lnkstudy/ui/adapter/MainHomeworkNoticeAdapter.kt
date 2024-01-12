@@ -12,21 +12,8 @@ class MainHomeworkNoticeAdapter(layoutResId: Int, data: List<HomeworkNoticeList.
         helper.apply {
             setText(R.id.tv_name,"（${item.typeName}）${item.name}")
             setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.time))
-//            setText(R.id.tv_course, DataBeanManager.getCourseStr(item.subject))
             setText(R.id.tv_content,item.title)
-            if (date10ToDate13(item.endTime)>System.currentTimeMillis()){
-                setText(R.id.tv_end_date, DateUtils.longToStringWeek(item.endTime)+"之前提交")
-            }
         }
-    }
-
-    private fun date10ToDate13(date: Long): Long {
-        var date = date
-        val dateStr = "" + date
-        if (dateStr.length == 10) {
-            date *= 1000
-        }
-        return date
     }
 
 }

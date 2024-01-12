@@ -109,7 +109,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     override fun onDestroy() {
         super.onDestroy()
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
     }
 
 }

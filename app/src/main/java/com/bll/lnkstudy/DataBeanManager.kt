@@ -645,6 +645,29 @@ object DataBeanManager {
             return list
         }
 
+    //书法模板
+    val sfModule: MutableList<Module>
+        get() {
+            val list= mutableListOf<Module>()
+            list.add(Module().apply {
+                resId = R.drawable.bg_gray_stroke_10dp_corner
+                resContentId = 0
+            })
+            list.add(Module().apply {
+                resId = R.mipmap.icon_note_module_bg_1
+                resContentId = R.mipmap.icon_note_details_bg_1
+            })
+            list.add(Module().apply {
+                resId = R.mipmap.icon_note_module_bg_2
+                resContentId = R.mipmap.icon_note_details_bg_2
+            })
+            list.add(Module().apply {
+                resId = R.mipmap.icon_note_module_bg_3
+                resContentId = R.mipmap.icon_note_details_bg_3
+            })
+            return list
+        }
+
     /**
      * 市场
      */

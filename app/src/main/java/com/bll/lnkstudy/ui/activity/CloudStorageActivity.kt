@@ -8,7 +8,6 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.cloud.*
-import com.bll.lnkstudy.utils.NetworkUtil
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_cloud_storage.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -167,7 +166,7 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     override fun onDestroy() {
         super.onDestroy()
         FileDownloader.getImpl().pauseAll()
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
     }
 
 }

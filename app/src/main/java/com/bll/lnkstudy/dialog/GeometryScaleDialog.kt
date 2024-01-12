@@ -14,7 +14,6 @@ import com.bll.lnkstudy.utils.SToast
 
 class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int,val location:Int) {
 
-
     fun builder(): GeometryScaleDialog? {
 
         val dialog = Dialog(context)
@@ -54,6 +53,10 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
             5->{
                 et_width.hint = "输入椭圆半宽度(mm)"
                 et_height.hint = "输入椭圆半高度(mm)"
+            }
+            7->{
+                et_width.hint = "输入抛物线大小"
+                et_height.visibility= View.GONE
             }
             8->{
                 et_width.hint = "输入角度"

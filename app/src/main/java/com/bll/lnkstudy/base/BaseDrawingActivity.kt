@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.base
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -8,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
@@ -18,15 +20,12 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
-import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
@@ -41,6 +40,7 @@ import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.regex.Pattern
 
 
 abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
@@ -64,8 +64,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private var revocationList= mutableListOf<Int>()
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
-    private var angle_a=0
-    private var angle_b=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -249,8 +247,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         }
 
         iv_angle?.setOnClickListener {
-            angle_a=0
-            angle_b=0
             setCheckView(ll_angle)
             setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_ANGLE)
             currentGeometry=8
@@ -351,12 +347,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(1)
-                if (currentGeometry==8){
-                    angle_a+=1
-                    if (isEven(angle_a))
-                        reDrawGeometry(elik_a!!,1)
-                }
-                else{
+                if (elik_a?.curDrawObjStatus == true){
                     reDrawGeometry(elik_a!!,1)
                 }
             }
@@ -371,13 +362,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(2)
-                //角度要是双数才能绘图
-                if (currentGeometry==8){
-                    angle_b+=1
-                    if (isEven(angle_b))
-                        reDrawGeometry(elik_b!!,2)
-                }
-                else{
+                if (elik_b?.curDrawObjStatus == true){
                     reDrawGeometry(elik_b!!,2)
                 }
             }
@@ -390,26 +375,23 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 是否是偶数
-     */
-    private fun isEven(number: Int): Boolean {
-        return number and 1 == 0
-    }
-
-    /**
      * 设置刻度重绘
      */
     private fun reDrawGeometry(elik:EinkPWInterface,location: Int){
         if (isErasure)
             return
         if (isScale){
-            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==8||currentGeometry==9){
+            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
                 GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
                     ?.setOnDialogClickListener{
                             width, height ->
                         when (currentGeometry) {
                             2, 5 -> {
                                 elik.reDrawShape(width,height)
+                            }
+                            7->{
+                                val info=elik.curHandlerInfo
+                                elik.reDrawShape(if (setA(info)>0) width else -width ,info.split("&")[1].toFloat())
                             }
                             9 -> {
                                 elik.reDrawShape(width,5f)
@@ -421,6 +403,19 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                     }
             }
         }
+    }
+
+    /**
+     * 获取a值
+     */
+    private fun setA(info:String):Float{
+        val list= mutableListOf<String>()
+        val pattern= Pattern.compile("-?\\d+(\\.\\d+)") // 编译正则表达式，匹配连续的数字
+        val matcher= pattern.matcher(info) // 创建匹配器对象
+        while (matcher.find()){
+            list.add(matcher.group())
+        }
+        return list[0].toFloat()
     }
 
     /**
@@ -786,6 +781,20 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
     fun showLog(sId:Int){
         Log.d("debug",getString(sId))
+    }
+
+    /**
+     * 获取网络智启状态
+     * @return
+     */
+    private fun getNetworkIntelligence(): Boolean {
+        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
+        return value == 1
+    }
+
+    fun closeNetwork(){
+        if (getNetworkIntelligence())
+            NetworkUtil(this).toggleNetwork(false)
     }
 
     override fun addSubscription(d: Disposable) {

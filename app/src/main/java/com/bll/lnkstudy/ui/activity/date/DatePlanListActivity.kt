@@ -14,6 +14,7 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 
 class DatePlanListActivity:BaseAppCompatActivity() {
 
@@ -76,6 +77,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
                         DateEventGreenDaoManager.getInstance().deleteDateEvent(item)
                         plans.removeAt(position)
                         mAdapter?.notifyItemRemoved(position)
+                        EventBus.getDefault().post(Constants.DATE_EVENT)
                     }
                 })
             }

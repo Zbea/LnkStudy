@@ -73,6 +73,7 @@ class Constants {
         const val AUTO_UPLOAD_LAST_SEMESTER_EVENT = "AutoUploadEventLastSemester" //上学期开学
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"//每天三点自动上传
+        const val DATE_DAY_EVENT = "DateDayEvent"//重要日子刷新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"//书籍下载通知
         const val TEXT_BOOK_EVENT = "TextBookEvent"//课本下载通知
@@ -85,7 +86,6 @@ class Constants {
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val RECORD_EVENT = "RecordEvent"//语音作业本录音通知
-        const val MAIN_CORRECT_EVENT = "MainCorrectEvent"//刷新主页批改详情通知
         const val MESSAGE_COMMIT_EVENT = "MessageCommitEvent"//发送消息提交通知刷新
         const val USER_CHANGE_EVENT = "UserChangeEvent" //个人信息变化
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
@@ -113,6 +113,7 @@ class Constants {
         //广播
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkstudy.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkstudy.account.logout"
+        const val EXAM_MODE_BROADCAST_EVENT = "com.bll.lnkstudy.exam.mode"
 
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"

@@ -13,6 +13,7 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePresenter<IContractView.IMainView>(view) {
 
+    //获取老师下发考试卷
     fun getExam(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getExams(map)
         doRequest(type, object : Callback<ExamItem>(view,screen) {
@@ -26,6 +27,37 @@ class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePrese
         }, false)
     }
 
+    //获取批改通知
+    fun getCorrectNotice() {
+        val map=HashMap<String,Any>()
+        map["size"]=7
+        val type = RetrofitManager.service.getCorrectNotice(map)
+        doRequest(type, object : Callback<HomeworkNoticeList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<HomeworkNoticeList>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<HomeworkNoticeList>) {
+                if (tBaseResult.data!=null)
+                    view.onCorrect(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    /**
+     * 删除批改通知
+     */
+    fun deleteCorrectNotice() {
+        val type = RetrofitManager.service.deleteCorrectNotice()
+        doRequest(type, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+            }
+        }, false)
+    }
+
+    //获取作业通知
     fun getHomeworkNotice() {
         val map=HashMap<String,Any>()
         map["size"]=7
@@ -41,6 +73,9 @@ class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePrese
         }, false)
     }
 
+    /**
+     * 删除作业通知
+     */
     fun deleteHomeworkNotice() {
         val type = RetrofitManager.service.deleteHomeworkNotice()
         doRequest(type, object : Callback<Any>(view,screen) {

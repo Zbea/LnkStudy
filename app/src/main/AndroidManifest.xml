@@ -39,8 +39,7 @@
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ReservedSystemPermission" />
     <permission
-        android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ReservedSystemPermission" />
+        android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission
         android:name="android.permission.GET_PACKAGE_SIZE" />
     <uses-permission
@@ -98,7 +97,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -20,7 +20,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_homework.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -488,7 +487,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
-                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
@@ -532,7 +530,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
-                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
@@ -577,7 +574,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
-                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
@@ -632,7 +628,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                 course=homework.course
                                 time=System.currentTimeMillis()
                             })
-                            EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int ) {
                         }
@@ -693,8 +688,6 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
                                     course=paper.course
                                     time=System.currentTimeMillis()
                                 })
-                                EventBus.getDefault().post(Constants.MAIN_CORRECT_EVENT)
-
                             } else {
                                 val contentBean = paperDaoManager.queryByContentID(item.id)
                                 if (contentBean != null) return//避免重复下载

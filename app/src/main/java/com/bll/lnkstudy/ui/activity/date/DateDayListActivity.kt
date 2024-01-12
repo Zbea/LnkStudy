@@ -87,7 +87,7 @@ class DateDayListActivity:BaseAppCompatActivity() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag== Constants.DATE_EVENT){
+        if (msgFlag== Constants.DATE_DAY_EVENT){
             findDatas()
         }
     }

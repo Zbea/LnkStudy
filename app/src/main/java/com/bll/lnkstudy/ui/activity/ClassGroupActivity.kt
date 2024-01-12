@@ -32,7 +32,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         groups = classGroups
         mAdapter?.setNewData(groups)
-
         MethodManager.saveClassGroups(classGroups)
     }
 
@@ -107,7 +106,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun onDestroy() {
-        NetworkUtil(this).toggleNetwork(false)
         super.onDestroy()
+        closeNetwork()
     }
 }

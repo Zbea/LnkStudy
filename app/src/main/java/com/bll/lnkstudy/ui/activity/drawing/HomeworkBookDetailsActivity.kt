@@ -346,7 +346,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         book?.pageIndex = page
         HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
         super.onDestroy()
     }
 

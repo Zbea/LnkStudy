@@ -162,7 +162,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
 
     override fun onDestroy() {
         super.onDestroy()
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
     }
 
 }

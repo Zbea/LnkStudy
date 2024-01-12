@@ -20,19 +20,18 @@ public class HomeworkDetailsBean {
     public int studentTaskId;
     public int type;//1提交 2 批改
     public String content;//内容
-    public String HomeworkTypeStr;//分类
+    public String homeworkTypeStr;//分类
     public String course;
     public long time;//提交时间
-
-    @Generated(hash = 139645188)
+    @Generated(hash = 1148027112)
     public HomeworkDetailsBean(Long id, long userId, int studentTaskId, int type, String content,
-            String HomeworkTypeStr, String course, long time) {
+            String homeworkTypeStr, String course, long time) {
         this.id = id;
         this.userId = userId;
         this.studentTaskId = studentTaskId;
         this.type = type;
         this.content = content;
-        this.HomeworkTypeStr = HomeworkTypeStr;
+        this.homeworkTypeStr = homeworkTypeStr;
         this.course = course;
         this.time = time;
     }
@@ -70,22 +69,22 @@ public class HomeworkDetailsBean {
         this.content = content;
     }
     public String getHomeworkTypeStr() {
-        return this.HomeworkTypeStr;
+        return this.homeworkTypeStr;
     }
-    public void setHomeworkTypeStr(String HomeworkTypeStr) {
-        this.HomeworkTypeStr = HomeworkTypeStr;
-    }
-    public long getTime() {
-        return this.time;
-    }
-    public void setTime(long time) {
-        this.time = time;
+    public void setHomeworkTypeStr(String homeworkTypeStr) {
+        this.homeworkTypeStr = homeworkTypeStr;
     }
     public String getCourse() {
         return this.course;
     }
     public void setCourse(String course) {
         this.course = course;
+    }
+    public long getTime() {
+        return this.time;
+    }
+    public void setTime(long time) {
+        this.time = time;
     }
     
 }

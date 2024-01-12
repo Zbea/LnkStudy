@@ -123,7 +123,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
             if(dateEventBean?.isRemind==true){
                 CalendarReminderUtils.addCalendarEvent2(this,titleStr,dateEventBean?.dayLong!!,dateEventBean?.remindDay!!)
             }
-            EventBus.getDefault().post(Constants.DATE_EVENT)
+            EventBus.getDefault().post(Constants.DATE_DAY_EVENT)
             finish()
         }
 

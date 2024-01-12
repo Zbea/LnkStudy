@@ -413,4 +413,7 @@
     <string name="screenshot_list_str">截图列表</string>
     <string name="screenshot_listNo_str">截图列表(未分类)</string>
 
+    <string name="sf_module_str">书法模板</string>
+    <string name="painting_module_str">画本规矩图</string>
+
 </resources>

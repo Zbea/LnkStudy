@@ -68,6 +68,9 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     override fun onAppUpdate(item: AppUpdateBean?) {
     }
 
+    override fun onCorrect(list: HomeworkNoticeList?) {
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_right
     }

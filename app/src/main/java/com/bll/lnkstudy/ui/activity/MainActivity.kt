@@ -433,6 +433,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
         ItemTypeDaoManager.getInstance().clear()
         HomeworkDetailsDaoManager.getInstance().clear()
+        CalenderDaoManager.getInstance().clear()
 
         FileUtils.deleteFile(File(Constants.BOOK_DRAW_PATH))
         FileUtils.deleteFile(File(Constants.BOOK_PATH))
@@ -1129,8 +1130,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-    }
+//    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+//        showLog("dddddddddddddddd")
+//        return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK||keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
+//            false
+//        } else super.onKeyDown(keyCode, event)
+//    }
+
 }

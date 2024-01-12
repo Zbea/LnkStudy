@@ -29,7 +29,7 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
         public final static Property StudentTaskId = new Property(2, int.class, "studentTaskId", false, "STUDENT_TASK_ID");
         public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
         public final static Property Content = new Property(4, String.class, "content", false, "CONTENT");
-        public final static Property HomeworkTypeStr = new Property(5, String.class, "HomeworkTypeStr", false, "HOMEWORK_TYPE_STR");
+        public final static Property HomeworkTypeStr = new Property(5, String.class, "homeworkTypeStr", false, "HOMEWORK_TYPE_STR");
         public final static Property Course = new Property(6, String.class, "course", false, "COURSE");
         public final static Property Time = new Property(7, long.class, "time", false, "TIME");
     }
@@ -52,7 +52,7 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
                 "\"STUDENT_TASK_ID\" INTEGER NOT NULL ," + // 2: studentTaskId
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
                 "\"CONTENT\" TEXT," + // 4: content
-                "\"HOMEWORK_TYPE_STR\" TEXT," + // 5: HomeworkTypeStr
+                "\"HOMEWORK_TYPE_STR\" TEXT," + // 5: homeworkTypeStr
                 "\"COURSE\" TEXT," + // 6: course
                 "\"TIME\" INTEGER NOT NULL );"); // 7: time
     }
@@ -80,9 +80,9 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
             stmt.bindString(5, content);
         }
  
-        String HomeworkTypeStr = entity.getHomeworkTypeStr();
-        if (HomeworkTypeStr != null) {
-            stmt.bindString(6, HomeworkTypeStr);
+        String homeworkTypeStr = entity.getHomeworkTypeStr();
+        if (homeworkTypeStr != null) {
+            stmt.bindString(6, homeworkTypeStr);
         }
  
         String course = entity.getCourse();
@@ -109,9 +109,9 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
             stmt.bindString(5, content);
         }
  
-        String HomeworkTypeStr = entity.getHomeworkTypeStr();
-        if (HomeworkTypeStr != null) {
-            stmt.bindString(6, HomeworkTypeStr);
+        String homeworkTypeStr = entity.getHomeworkTypeStr();
+        if (homeworkTypeStr != null) {
+            stmt.bindString(6, homeworkTypeStr);
         }
  
         String course = entity.getCourse();
@@ -134,7 +134,7 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
             cursor.getInt(offset + 2), // studentTaskId
             cursor.getInt(offset + 3), // type
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // content
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // HomeworkTypeStr
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // homeworkTypeStr
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // course
             cursor.getLong(offset + 7) // time
         );

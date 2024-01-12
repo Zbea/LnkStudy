@@ -440,7 +440,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onDestroy() {
         super.onDestroy()
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
     }
 
 }

@@ -7,14 +7,13 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
-import com.bll.lnkstudy.Constants.Companion.MAIN_CORRECT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
+import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
@@ -29,7 +28,6 @@ import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
-import com.bll.lnkstudy.ui.adapter.MainCorrectAdapter
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.*
@@ -49,7 +47,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     private val mCommonPresenter= CommonPresenter(this)
     private val mMainPresenter=MainPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
-    private var correctAdapter: MainCorrectAdapter? = null
+    private var correctAdapter: MainHomeworkNoticeAdapter? = null
     private var mNoticeAdapter:MainHomeworkNoticeAdapter?=null
     private var nowDate = 0L
     private var nowDayPos=1
@@ -75,10 +73,14 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     }
 
     override fun onAppUpdate(item: AppUpdateBean) {
-//        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
-//            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
-//            downLoadStart(item)
-//        }
+        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
+            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
+            downLoadStart(item)
+        }
+    }
+
+    override fun onCorrect(list: HomeworkNoticeList) {
+        correctAdapter?.setNewData(list.list)
     }
 
     override fun onExam(exam: ExamItem) {
@@ -174,7 +176,6 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
         setDateView()
         setCalenderView()
         findDataPlan()
-        findCorrectDetails()
         fetchData()
     }
 
@@ -185,6 +186,7 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             mMainPresenter.getClassGroupList()
             mMainPresenter.getAppUpdate()
             mMainPresenter.active()
+            mMainPresenter.getCorrectNotice()
         }
     }
 
@@ -270,13 +272,16 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             rv_main_notice.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_notice.adapter = this
             bindToRecyclerView(rv_main_notice)
+            setOnItemClickListener { adapter, view, position ->
+                MainNoticeDetailsDialog(requireActivity(),data[position]).builder()
+            }
         }
     }
 
 
     //批改详情
     private fun initCorrect() {
-        correctAdapter = MainCorrectAdapter(R.layout.item_main_correct, null).apply {
+        correctAdapter = MainHomeworkNoticeAdapter(R.layout.item_main_homework_notice, null).apply {
             rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
@@ -335,24 +340,15 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
         mPlanAdapter?.setNewData(if (dateEvents.size>0)dateEvents[0].plans else null)
     }
 
-    /**
-     * 批改详情
-     */
-    private fun findCorrectDetails(){
-        val list= HomeworkDetailsDaoManager.getInstance().queryCorrect()
-        correctAdapter?.setNewData(list)
-    }
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             DATE_EVENT -> {
                 findDataPlan()
             }
-            MAIN_CORRECT_EVENT-> {
-                findCorrectDetails()
-            }
             MAIN_HOMEWORK_NOTICE_EVENT->{
                 mMainPresenter.deleteHomeworkNotice()
+                mMainPresenter.deleteCorrectNotice()
             }
             CALENDER_SET_EVENT->{
                 setCalenderView()

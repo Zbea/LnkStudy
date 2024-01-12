@@ -301,7 +301,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     override fun onDestroy() {
         super.onDestroy()
         release()
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
     }
 
 }

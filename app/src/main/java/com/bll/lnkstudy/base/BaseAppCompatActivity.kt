@@ -1,9 +1,11 @@
 package com.bll.lnkstudy.base
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -75,13 +77,16 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_CALENDAR,
                 Manifest.permission.READ_CALENDAR,
-                Manifest.permission.RECORD_AUDIO)){
+                Manifest.permission.RECORD_AUDIO
+//                Manifest.permission.WRITE_SETTINGS
+            )){
             EasyPermissions.requestPermissions(this,"请求权限",1,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_CALENDAR,
                 Manifest.permission.READ_CALENDAR,
                 Manifest.permission.RECORD_AUDIO
+//                Manifest.permission.WRITE_SETTINGS
             )
         }
         EventBus.getDefault().register(this)
@@ -283,6 +288,19 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         startActivity(intent)
     }
 
+    /**
+     * 获取网络智启状态
+     * @return
+     */
+    fun getNetworkIntelligence(): Boolean {
+        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
+        return value == 1
+    }
+
+    fun closeNetwork(){
+        if (getNetworkIntelligence())
+            NetworkUtil(this).toggleNetwork(false)
+    }
 
     fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
         val radioButton =

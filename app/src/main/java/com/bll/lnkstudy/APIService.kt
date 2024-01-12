@@ -272,11 +272,7 @@ interface APIService{
     @POST("task/group/studentListPlus")
     fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
 
-    /**
-     * 获取学生批改详情
-     */
-    @GET("task/group/sendList")
-    fun getHomeworkCorrectDetails(): Observable<BaseResult<MutableList<Any>>>
+
 //    /**
 //     * 获取学生提交详情
 //     */
@@ -354,6 +350,16 @@ interface APIService{
      */
     @POST("job/message/deleteAll")
     fun deleteHomeworkNotice(): Observable<BaseResult<Any>>
+    /**
+     * 获取学生批改通知
+     */
+    @GET("task/msg/list")
+    fun getCorrectNotice(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkNoticeList>>
+    /**
+     * 删除批改通知
+     */
+    @POST("task/msg/deleteAll")
+    fun deleteCorrectNotice(): Observable<BaseResult<Any>>
     /**
      * 台历列表
      */

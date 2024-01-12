@@ -38,33 +38,16 @@
             android:textSize="@dimen/sp_20" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:layout_marginStart="@dimen/dp_10"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        >
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:lines="1"
-            android:ellipsize="end"
-            android:textSize="@dimen/sp_20"
-            />
-        <TextView
-            android:id="@+id/tv_end_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:layout_marginStart="@dimen/dp_10"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
-    </LinearLayout>
+        android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_20"
+        />
 
 </LinearLayout>

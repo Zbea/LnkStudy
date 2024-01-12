@@ -91,6 +91,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     }
 
     override fun initData() {
+        setExamMode(true)
         isExpand=true
         flags=intent.flags
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamBean
@@ -264,6 +265,16 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         elik_b?.saveBitmap(true) {}
     }
 
+    /**
+     * 设置考试模式
+     */
+    private fun setExamMode(isMode:Boolean){
+        val intent = Intent()
+        intent.putExtra("exam", if (isMode)1 else 0)
+        intent.action = Constants.EXAM_MODE_BROADCAST_EVENT
+        sendBroadcast(intent)
+    }
+
     override fun onBackPressed() {
     }
 
@@ -289,7 +300,8 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         super.onDestroy()
         alarmManager?.cancel(pendingIntent)
         alarmManager=null
-        NetworkUtil(this).toggleNetwork(false)
+        closeNetwork()
+        setExamMode(false)
     }
 
 }

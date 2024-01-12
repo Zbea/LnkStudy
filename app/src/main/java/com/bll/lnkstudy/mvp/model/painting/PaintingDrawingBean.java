@@ -19,22 +19,22 @@ public class PaintingDrawingBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int type;//类型
-    public int bgResId;
     public long date;//开始时间
     public String path;//图片路径
     public String title;
+    public String bgRes;
     public int page;
     public int grade;
-    @Generated(hash = 228816449)
-    public PaintingDrawingBean(Long id, long userId, int type, int bgResId, long date, String path,
-            String title, int page, int grade) {
+    @Generated(hash = 361607556)
+    public PaintingDrawingBean(Long id, long userId, int type, long date, String path, String title,
+            String bgRes, int page, int grade) {
         this.id = id;
         this.userId = userId;
         this.type = type;
-        this.bgResId = bgResId;
         this.date = date;
         this.path = path;
         this.title = title;
+        this.bgRes = bgRes;
         this.page = page;
         this.grade = grade;
     }
@@ -59,12 +59,6 @@ public class PaintingDrawingBean {
     public void setType(int type) {
         this.type = type;
     }
-    public int getBgResId() {
-        return this.bgResId;
-    }
-    public void setBgResId(int bgResId) {
-        this.bgResId = bgResId;
-    }
     public long getDate() {
         return this.date;
     }
@@ -83,6 +77,12 @@ public class PaintingDrawingBean {
     public void setTitle(String title) {
         this.title = title;
     }
+    public String getBgRes() {
+        return this.bgRes;
+    }
+    public void setBgRes(String bgRes) {
+        this.bgRes = bgRes;
+    }
     public int getPage() {
         return this.page;
     }
@@ -95,5 +95,6 @@ public class PaintingDrawingBean {
     public void setGrade(int grade) {
         this.grade = grade;
     }
+
 
 }

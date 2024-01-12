@@ -1,12 +1,14 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -15,6 +17,7 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -30,7 +33,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
     private var page = 0//页码
-    private var resId=0
+    private var resId_b=0
+    private var resId_a=0
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -55,13 +59,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-
-        if (type==1){
-            resId = R.mipmap.icon_painting_bg_sf
-        }
-
-        setBg()
-
+        iv_draft.setImageResource(R.mipmap.icon_drawing_change)
         changeExpandView()
         changeContent()
 
@@ -91,6 +89,31 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
         iv_btn.setOnClickListener {
             showPopWindowBtn()
+        }
+
+        iv_draft.setOnClickListener {
+            val titleStr=if (type==1) getString(R.string.sf_module_str) else getString(R.string.painting_module_str)
+            ModuleAddDialog(this,3,titleStr, DataBeanManager.sfModule).builder()
+                ?.setOnDialogClickListener { moduleBean ->
+                    if (type==1){
+                        paintingDrawingBean?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
+                        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
+                        resId_b=moduleBean.resContentId
+                        setBg_b()
+                        if (isExpand){
+                            paintingDrawingBean_a?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
+                            PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+                            resId_a=moduleBean.resContentId
+                            setBg_a()
+                        }
+                    }
+                    else{
+                        resId_a=moduleBean.resContentId
+                        resId_b=moduleBean.resContentId
+                        setBg_a()
+                        setBg_b()
+                    }
+                }
         }
 
     }
@@ -172,9 +195,12 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
 
     //设置背景图
-    private fun setBg(){
-        v_content_a.setImageResource(resId)
-        v_content_b.setImageResource(resId)
+    private fun setBg_a(){
+        v_content_a.setImageResource(resId_a)
+    }
+
+    private fun setBg_b(){
+        v_content_b.setImageResource(resId_b)
     }
 
     //翻页内容更新切换
@@ -199,6 +225,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             elik_b?.setPWEnabled(false)
         }
 
+        if (type==1){
+            resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
+            setBg_b()
+        }
+
         tv_title_b.text=paintingDrawingBean?.title
         setElikLoadPath(elik_b!!, paintingDrawingBean!!)
         tv_page_b.text = (page + 1).toString()
@@ -206,8 +237,12 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         //切换页面内容的一些变化
         if (isExpand) {
             if (paintingDrawingBean_a != null) {
+                if (type==1){
+                    resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
+                    setBg_a()
+                }
                 tv_title_a.text=paintingDrawingBean_a?.title
-                v_content_a.setImageResource(resId)
+                v_content_a.setImageResource(resId_a)
                 setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
                 tv_page_a.text = "$page"
             }
@@ -250,6 +285,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$fileName.tch"
         paintingDrawingBean?.grade=grade
+        paintingDrawingBean?.bgRes="0"
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)
@@ -259,26 +295,24 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(paintingDrawingBean),path)
     }
 
-    //
     private fun showPopWindowBtn() {
         val pops= mutableListOf<PopupBean>()
         pops.add(PopupBean(0, getString(R.string.delete), false))
-        if (type == 0) {
-            pops.add(PopupBean(1, getString(R.string.gplot), false))
-        }
+        if (type==0)
+            pops.add(PopupBean(1, getString(R.string.revocation), false))
         if (popupDrawingManage == null) {
             popupDrawingManage = PopupDrawingManage(this, iv_btn, pops).builder()
             popupDrawingManage?.setOnSelectListener { item ->
-                if (item.id == 0) {
-                    delete()
-                }
-                if (item.id == 1) {
-                    resId = if (resId == 0) {
-                        R.mipmap.icon_painting_bg_hb
-                    } else {
-                        0
+                when(item.id){
+                    0->{
+                        delete()
                     }
-                    setBg()
+                    1->{
+                        resId_a=0
+                        resId_b=0
+                        setBg_a()
+                        setBg_b()
+                    }
                 }
             }
         } else {

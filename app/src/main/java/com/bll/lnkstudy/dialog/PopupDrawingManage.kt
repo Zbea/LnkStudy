@@ -54,7 +54,7 @@ class PopupDrawingManage(val context:Context, val view: View, var list:MutableLi
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,80, -(height+50))
+            mPopupWindow?.showAsDropDown(view,0, -(height+50))
         }
     }
 

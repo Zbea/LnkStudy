@@ -133,6 +133,7 @@ public interface IContractView {
         void onHomeworkNotice(HomeworkNoticeList list);
         void onClassGroupList(List<ClassGroup> classGroups);
         void onAppUpdate(AppUpdateBean item);
+        void onCorrect(HomeworkNoticeList list);
     }
 
     //公共接口
