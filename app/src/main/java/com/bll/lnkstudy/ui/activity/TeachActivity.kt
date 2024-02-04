@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.view.SFCommand
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
@@ -44,6 +46,18 @@ class TeachActivity:BaseAppCompatActivity() {
                 tv_current.text="00:00"
             }
         }
+
+        sb_bar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                if(isLoadVideoFinish()){
+                    videoView.seekTo(p0?.progress!!)
+                }
+            }
+        })
 
         iv_play.setOnClickListener {
             if(!isLoadVideoFinish()){

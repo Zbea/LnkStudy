@@ -187,6 +187,7 @@
         <activity android:name=".ui.activity.PaintingDetailsActivity"/>
         <activity android:name=".ui.activity.date.DateEventActivity"/>
         <activity android:name=".ui.activity.CalenderMyActivity"/>
+        <activity android:name=".ui.activity.drawing.CalligraphyDrawingActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

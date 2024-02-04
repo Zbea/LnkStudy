@@ -338,7 +338,7 @@
     <string name="year">年</string>
     <string name="years">年份</string>
     <string name="month">月</string>
-    <string name="date_day_title_hint">生日/纪恋日/其他</string>
+    <string name="date_day_title_hint">生日/纪念日/其他</string>
     <string name="date_day_content_hint">内容</string>
     <string name="date_day_date_hint">日期</string>
     <string name="date_day_time_str">倒计时</string>

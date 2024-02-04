@@ -19,7 +19,7 @@ class QiniuPresenter(view: IContractView.IQiniuView):
                 if (tBaseResult.data!=null)
                     view.onToken(tBaseResult.data)
             }
-        }, true)
+        }, false)
     }
 
 

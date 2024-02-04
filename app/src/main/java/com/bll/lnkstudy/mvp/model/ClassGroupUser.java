@@ -6,5 +6,6 @@ public class ClassGroupUser {
     public int id;
     public String name;
     public String job;
-
+    public String subject;
+    public String phone;
 }

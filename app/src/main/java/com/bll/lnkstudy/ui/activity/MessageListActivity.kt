@@ -4,11 +4,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.MessageDetailsDialog
-import com.bll.lnkstudy.dialog.MessageSendDialog
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
@@ -17,7 +14,6 @@ import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
@@ -46,11 +42,6 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
-        for (item in MethodManager.getClassGroups()){
-            if (item.status==1){
-                groups.add(item)
-            }
-        }
         pageSize=10
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
@@ -62,9 +53,6 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     override fun initView() {
         setPageTitle(R.string.message_title_str)
-        if (groups.size>0){
-            setPageSetting(R.string.send)
-        }
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MessageAdapter(1,R.layout.item_message, null).apply {
@@ -78,21 +66,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            setOnItemClickListener { adapter, view, position ->
-                MessageDetailsDialog(this@MessageListActivity,getCurrentScreenPos(), messages[position]).builder()
-            }
         }
-
-        tv_setting.setOnClickListener {
-            MessageSendDialog(this,groups).builder()?.setOnClickListener { contentStr, classGroup ->
-                val map=HashMap<String,Any>()
-                map["title"]=contentStr
-                map["userId"]=classGroup.teacherId
-                map["id"]=classGroup.classId
-                mMessagePresenter.commitMessage(map)
-            }
-        }
-
     }
 
     override fun fetchData() {

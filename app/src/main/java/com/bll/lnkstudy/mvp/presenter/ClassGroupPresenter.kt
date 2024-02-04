@@ -2,7 +2,7 @@ package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
 import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.ClassGroupUser
+import com.bll.lnkstudy.mvp.model.ClassGroupUserList
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
@@ -13,7 +13,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen: Int =0
     fun onInsertClassGroup(classNum:Int) {
 
         val body=RequestUtils.getBody(
-            Pair.create("classNum",classNum)
+            Pair.create("classId",classNum)
         )
         val insert = RetrofitManager.service.insertGroup(body)
         doRequest(insert, object : Callback<Any>(view,screen) {
@@ -59,14 +59,14 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen: Int =0
     }
 
     //获取同学列表
-    fun getClassGroupUser() {
-        val list= RetrofitManager.service.getClassGroupUser()
-        doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
+    fun getClassGroupUser(map: HashMap<String,Any>) {
+        val list= RetrofitManager.service.getClassGroupUser(map)
+        doRequest(list, object : Callback<ClassGroupUserList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<ClassGroupUserList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
-                if (!tBaseResult.data.isNullOrEmpty()){
+            override fun success(tBaseResult: BaseResult<ClassGroupUserList>) {
+                if (tBaseResult.data!=null){
                     view.onUser(tBaseResult.data)
                 }
             }

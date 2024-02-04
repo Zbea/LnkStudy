@@ -1,8 +1,8 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
-import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.ExamItem
+import com.bll.lnkstudy.mvp.model.CourseItem
+import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
@@ -11,21 +11,7 @@ import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RetrofitManager
 
 
-class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePresenter<IContractView.IMainView>(view) {
-
-    //获取老师下发考试卷
-    fun getExam(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getExams(map)
-        doRequest(type, object : Callback<ExamItem>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<ExamItem>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<ExamItem>) {
-                if (tBaseResult.data!=null)
-                    view.onExam(tBaseResult.data)
-            }
-        }, false)
-    }
+class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : BasePresenter<IContractView.IMainLeftView>(view) {
 
     //获取批改通知
     fun getCorrectNotice() {
@@ -87,16 +73,16 @@ class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePrese
         }, false)
     }
 
-    //班群列表
-    fun getClassGroupList() {
-        val list= RetrofitManager.service.groupList()
-        doRequest(list, object : Callback<List<ClassGroup>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<ClassGroup>>): Boolean {
+    //获取学生科目列表
+    fun getCourseItems() {
+        val list= RetrofitManager.service.getCourseItems()
+        doRequest(list, object : Callback<List<CourseItem>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<List<CourseItem>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<List<ClassGroup>>) {
+            override fun success(tBaseResult: BaseResult<List<CourseItem>>) {
                 if (tBaseResult.data!=null)
-                    view.onClassGroupList(tBaseResult.data)
+                    view.onCourseItems(tBaseResult.data)
             }
         }, false)
     }
@@ -126,5 +112,16 @@ class MainPresenter(view: IContractView.IMainView,val screen: Int=0) : BasePrese
         }, false)
     }
 
+    fun getTeachingType() {
+        val list = RetrofitManager.service.getTeachType()
+        doRequest(list, object : Callback<TeachingVideoType>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<TeachingVideoType>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<TeachingVideoType>) {
+                view.onType(tBaseResult.data)
+            }
+        }, false)
+    }
 
 }

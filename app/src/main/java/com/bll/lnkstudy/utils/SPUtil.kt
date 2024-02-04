@@ -3,7 +3,7 @@ package com.bll.lnkstudy.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
-import com.bll.lnkstudy.mvp.model.ClassGroup
+import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.User
 import com.google.gson.Gson
@@ -41,7 +41,7 @@ object SPUtil {
         putString(getUserId()+key,listStr)
     }
 
-    fun putClassGroups(key: String,list: MutableList<ClassGroup>){
+    fun putCourseItems(key: String,list: MutableList<CourseItem>){
         val listStr= gson.toJson(list)
         putString(getUserId()+key,listStr)
     }
@@ -79,8 +79,8 @@ object SPUtil {
             ?: return mutableListOf()
     }
 
-    fun getClassGroups(key: String): MutableList<ClassGroup> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ClassGroup>>() {}.type)
+    fun getCourseItems(key: String): MutableList<CourseItem> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<CourseItem>>() {}.type)
             ?: return mutableListOf()
     }
 

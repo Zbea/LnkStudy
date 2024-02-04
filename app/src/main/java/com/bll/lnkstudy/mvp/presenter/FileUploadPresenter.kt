@@ -12,7 +12,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView,val screen:Int=0):
 
     fun getToken(){
         val token = RetrofitManager.service.getQiniuToken()
-        doRequest(token, object : Callback<String>(view,screen) {
+        doRequest(token, object : Callback<String>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<String>): Boolean {
                 return false
             }

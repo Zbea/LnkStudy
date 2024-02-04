@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
@@ -203,21 +204,32 @@ public class ActivityManager {
      * 检查当前画本是否打开
      * @return
      */
-    public void checkPaintingDrawingIsExist(int type){
-
+    public void checkPaintingDrawingIsExist(){
         Iterator<WeakReference<Activity>> it = stack.iterator();
         while (it.hasNext()) {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(PaintingDrawingActivity.class.getName())) {
-                int flags= activity.getIntent().getFlags();
-                if (flags==type){
-                    activity.finish();
-                    it.remove();
-                }
+                activity.finish();
+                it.remove();
             }
         }
+    }
 
+    /**
+     * 检查当前书法是否打开
+     * @return
+     */
+    public void checkCalligraphyDrawingIsExist(){
+        Iterator<WeakReference<Activity>> it = stack.iterator();
+        while (it.hasNext()) {
+            WeakReference<Activity> weak = it.next();
+            Activity activity=weak.get();
+            if (activity.getClass().getName().equals(CalligraphyDrawingActivity.class.getName())) {
+                activity.finish();
+                it.remove();
+            }
+        }
     }
 
     /**

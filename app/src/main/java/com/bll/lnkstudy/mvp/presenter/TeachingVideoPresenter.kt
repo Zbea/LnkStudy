@@ -48,6 +48,4 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView,var screen:I
             }
         }, false)
     }
-
-
 }

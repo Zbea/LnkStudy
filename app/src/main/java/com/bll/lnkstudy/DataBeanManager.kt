@@ -70,20 +70,6 @@ object DataBeanManager {
         ,mContext.getString(R.string.calender)
     )
 
-    /**
-     * 获取班群中对应科目的老师id
-     */
-    fun getClassGroupTeacherId(course: String):Int{
-        var teacherId = 0
-        for (classGroup in MethodManager.getClassGroups()) {
-            if (classGroup.subject == course) {
-                teacherId = classGroup.teacherId
-            }
-        }
-        return teacherId
-    }
-
-
     fun popupGrades(): MutableList<PopupBean>
        {
             val list= mutableListOf<PopupBean>()

@@ -1,20 +1,25 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ClassGroupAddDialog
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.ClassGroupUser
+import com.bll.lnkstudy.mvp.model.ClassGroupUserList
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_classgroup.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -28,21 +33,15 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         showToast(R.string.toast_add_classGroup_success)
         presenter.getClassGroupList(true)
     }
-
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         groups = classGroups
         mAdapter?.setNewData(groups)
-        MethodManager.saveClassGroups(classGroups)
+        EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
     }
-
     override fun onQuit() {
-        showToast(R.string.toast_out_classGroup_success)
-        groups.removeAt(positionGroup)
-        mAdapter?.setNewData(groups)
-        //退出班群，刷新科目
-        MethodManager.saveClassGroups(groups)
+        presenter.getClassGroupList(false)
     }
-    override fun onUser(lists: MutableList<ClassGroupUser>?) {
+    override fun onUser(userList: ClassGroupUserList?) {
     }
 
     override fun layoutId(): Int {
@@ -51,7 +50,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
 
     override fun initData() {
         if (NetworkUtil(this).isNetworkConnected()){
-            presenter.getClassGroupList(false)
+            presenter.getClassGroupList(true)
         }
         else{
             showNetworkDialog()
@@ -61,35 +60,44 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     override fun initView() {
         setPageTitle(R.string.classGroup)
 
-        showView(iv_setting,iv_manager)
-        iv_setting.setImageResource(R.mipmap.icon_group_user)
+        showView(iv_manager)
         iv_manager.setImageResource(R.mipmap.icon_group_add)
 
         mAdapter = ClassGroupAdapter(R.layout.item_classgroup, groups).apply {
             rv_list.layoutManager = LinearLayoutManager(this@ClassGroupActivity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
+            rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(this@ClassGroupActivity,20f),false))
             setOnItemChildClickListener { adapter, view, position ->
-                if (view.id == R.id.tv_out) {
-                    CommonDialog(this@ClassGroupActivity).setContent(R.string.classGroup_is_classGroup_tips).builder()
-                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
-                            override fun ok() {
-                                positionGroup = position
-                                presenter.onQuitClassGroup(groups[position].id)
-                            }
-                        })
+                positionGroup = position
+                val classGroup=groups[position]
+                when(view.id){
+                    R.id.tv_out->{
+                        CommonDialog(this@ClassGroupActivity).setContent(R.string.classGroup_is_classGroup_tips).builder()
+                            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                                override fun cancel() {
+                                }
+                                override fun ok() {
+                                    presenter.onQuitClassGroup(classGroup.classId)
+                                }
+                            })
+                    }
+                    R.id.tv_info->{
+                        val intent= Intent(this@ClassGroupActivity, ClassGroupUserActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("classGroup",classGroup)
+                        intent.putExtra("bundle",bundle)
+                        customStartActivity(intent)
+                    }
+                    R.id.tv_course->{
+                        ImageDialog(this@ClassGroupActivity, arrayListOf(classGroup.imageUrl)).builder()
+                    }
                 }
             }
         }
 
         iv_manager?.setOnClickListener {
             addGroup()
-        }
-
-        iv_setting?.setOnClickListener {
-            customStartActivity(Intent(this, ClassGroupUserActivity::class.java))
         }
 
     }
@@ -107,6 +115,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
 
     override fun onDestroy() {
         super.onDestroy()
-        closeNetwork()
+//        closeNetwork()
     }
 }

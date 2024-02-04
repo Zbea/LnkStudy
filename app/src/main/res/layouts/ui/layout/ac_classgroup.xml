@@ -11,14 +11,6 @@
         layout="@layout/common_title"
         />
 
-    <include layout="@layout/item_classgroup"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginTop="30dp"
-        />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
@@ -26,6 +18,8 @@
         android:layout_weight="1"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
-        android:layout_marginBottom="@dimen/dp_20"/>
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_40"
+        />
 
 </LinearLayout>

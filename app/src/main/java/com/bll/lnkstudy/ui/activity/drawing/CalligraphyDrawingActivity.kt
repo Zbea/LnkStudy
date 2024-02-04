@@ -17,12 +17,13 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
-class PaintingDrawingActivity : BaseDrawingActivity() {
+class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
     private var grade=0
     private var paintingTypeBean: PaintingTypeBean?=null
@@ -31,16 +32,17 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
     private var page = 0//页码
-    private var resId=0
+    private var resId_b=0
+    private var resId_a=0
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
     }
 
     override fun initData() {
-        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("painting") as PaintingTypeBean
+        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("calligraphy") as PaintingTypeBean
         grade=paintingTypeBean?.grade!!
-        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
+        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,grade)
 
         if (paintingLists.size > 0) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
@@ -85,10 +87,18 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
 
         iv_draft.setOnClickListener {
-            ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.painting_module_str), DataBeanManager.sfModule).builder()
+            ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    resId=moduleBean.resContentId
-                    setBg()
+                    paintingDrawingBean?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
+                    PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
+                    resId_b=moduleBean.resContentId
+                    setBg_b()
+                    if (isExpand){
+                        paintingDrawingBean_a?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
+                        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+                        resId_a=moduleBean.resContentId
+                        setBg_a()
+                    }
                 }
         }
 
@@ -169,10 +179,14 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
     }
 
+
     //设置背景图
-    private fun setBg(){
-        v_content_a.setImageResource(resId)
-        v_content_b.setImageResource(resId)
+    private fun setBg_a(){
+        v_content_a.setImageResource(resId_a)
+    }
+
+    private fun setBg_b(){
+        v_content_b.setImageResource(resId_b)
     }
 
     //翻页内容更新切换
@@ -197,6 +211,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             elik_b?.setPWEnabled(false)
         }
 
+        resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
+        setBg_b()
+
         tv_title_b.text=paintingDrawingBean?.title
         setElikLoadPath(elik_b!!, paintingDrawingBean!!)
         tv_page_b.text = (page + 1).toString()
@@ -204,8 +221,10 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         //切换页面内容的一些变化
         if (isExpand) {
             if (paintingDrawingBean_a != null) {
+                resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
+                setBg_a()
                 tv_title_a.text=paintingDrawingBean_a?.title
-                v_content_a.setImageResource(resId)
+                v_content_a.setImageResource(resId_a)
                 setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
                 tv_page_a.text = "$page"
             }
@@ -237,16 +256,17 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newPaintingContent() {
         val date=System.currentTimeMillis()
-        val path = FileAddress().getPathPainting(0,grade,date)
+        val path = FileAddress().getPathPainting(1,grade,date)
         val fileName = DateUtils.longToString(date)
 
-        paintingDrawingBean = PaintingDrawingBean()
-        paintingDrawingBean?.title=getString(R.string.drawing)+(paintingLists.size+1)
-        paintingDrawingBean?.type = 0
+        paintingDrawingBean =
+            PaintingDrawingBean()
+        paintingDrawingBean?.title= getString(R.string.calligraphy)+(paintingLists.size+1)
+        paintingDrawingBean?.type = 1
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$fileName.tch"
         paintingDrawingBean?.grade=grade
-        paintingDrawingBean?.bgRes=""
+        paintingDrawingBean?.bgRes="0"
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)
@@ -259,7 +279,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     private fun showPopWindowBtn() {
         val pops= mutableListOf<PopupBean>()
         pops.add(PopupBean(0, getString(R.string.delete), false))
-        pops.add(PopupBean(1, getString(R.string.revocation), false))
         if (popupDrawingManage == null) {
             popupDrawingManage = PopupDrawingManage(this, iv_btn, pops).builder()
             popupDrawingManage?.setOnSelectListener { item ->
@@ -268,8 +287,10 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                         delete()
                     }
                     1->{
-                        resId=0
-                        setBg()
+                        resId_a=0
+                        resId_b=0
+                        setBg_a()
+                        setBg_b()
                     }
                 }
             }

@@ -26,12 +26,13 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_testpaper.*
 import java.io.File
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
  */
 class PaperFragment : BaseFragment(), IContractView.IPaperView {
-
+    private val lock = ReentrantLock()
     private val mPresenter = TestPaperPresenter(this)
     private var mAdapter: PaperTypeAdapter? = null
     private var paperTypes = mutableListOf<PaperTypeBean>()
@@ -39,6 +40,7 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
     private var course = ""//课程
     private var paperContents = mutableListOf<PaperList.PaperListBean>()//收到的考卷列表
     private var receiverPaperPos=0 //收到考卷列表位置
+    private var tabId=0
 
     override fun onTypeList(list: MutableList<PaperTypeBean>) {
         if (onlineTypes == list) {
@@ -120,15 +122,21 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
     private fun initTab() {
         course = ""
         rg_group.removeAllViews()
-        rg_group.setOnCheckedChangeListener(null)
-        val classGroups = MethodManager.getClassGroups()
-        if (classGroups.size > 0) {
-            course = classGroups[0].subject
-            for (i in classGroups.indices) {
-                rg_group.addView(getRadioButton(i, classGroups[i].subject, classGroups.size - 1))
+        val courseItems = MethodManager.getCourses()
+        val courses= mutableListOf<String>()
+        if (courseItems.size > 0) {
+            for (item in courseItems){
+                if (!courses.contains(item.subject)){
+                    courses.add(item.subject)
+                }
+            }
+            course = courses[0]
+            for (i in courses.indices) {
+                rg_group.addView(getRadioButton(i, courses[i], courses.size - 1))
             }
             rg_group.setOnCheckedChangeListener { radioGroup, id ->
-                course = classGroups[id].subject
+                tabId=id
+                course = courses[id]
                 fetchData()
             }
             fetchData()
@@ -157,6 +165,7 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
      */
     private fun loadPapers(papers: MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
+            lock.lock()
             val images = item.submitUrl.split(",").toMutableList()
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(getPaperPaths(item)).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -171,6 +180,7 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
                     override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     }
                 })
+            lock.unlock()
         }
     }
 
@@ -256,7 +266,7 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
             map["size"] = 100
             map["grade"] = mUser?.grade!!
             map["type"] = 1
-            map["userId"] = DataBeanManager.getClassGroupTeacherId(course)
+            map["userId"] = MethodManager.getCourses()[tabId].userId
             mPresenter.getTypeList(map)
         } else {
             setData()
@@ -321,14 +331,19 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
-            Constants.CLASSGROUP_EVENT -> {
+            Constants.COURSEITEM_EVENT -> {
                 lazyLoad()
             }
         }
     }
 
     override fun onRefreshData() {
-        fetchData()
+        if (rg_group?.childCount==0){
+            lazyLoad()
+        }
+        else{
+            fetchData()
+        }
     }
 
     override fun onNetworkConnectionSuccess() {

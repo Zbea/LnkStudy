@@ -27,9 +27,7 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
     override fun initData() {
         pageSize=9
         type = intent.flags
-
         types=PaintingTypeDaoManager.getInstance().queryAllByType(type)
-
     }
 
     override fun initView() {

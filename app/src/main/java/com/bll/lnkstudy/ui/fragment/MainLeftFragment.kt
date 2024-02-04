@@ -19,9 +19,9 @@ import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
-import com.bll.lnkstudy.mvp.presenter.MainPresenter
+import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
-import com.bll.lnkstudy.mvp.view.IContractView.IMainView
+import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
 import com.bll.lnkstudy.ui.activity.CalenderMyActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
@@ -36,16 +36,17 @@ import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
 /**
  * 首页
  */
-class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
+class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
 
     private val mCommonPresenter= CommonPresenter(this)
-    private val mMainPresenter=MainPresenter(this,1)
+    private val mMainLeftPresenter=MainLeftPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var correctAdapter: MainHomeworkNoticeAdapter? = null
     private var mNoticeAdapter:MainHomeworkNoticeAdapter?=null
@@ -68,10 +69,6 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
             DataBeanManager.bookVersion=commonData.version
     }
 
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        MethodManager.saveClassGroups(classGroups)
-    }
-
     override fun onAppUpdate(item: AppUpdateBean) {
         if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
             updateDialog=AppUpdateDialog(requireActivity(),item).builder()
@@ -83,11 +80,19 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
         correctAdapter?.setNewData(list.list)
     }
 
-    override fun onExam(exam: ExamItem) {
+    override fun onType(type: TeachingVideoType) {
+        SPUtil.putObj("${accountId}videoType",type)
     }
+
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
         if (list.list.isNotEmpty()){
             mNoticeAdapter?.setNewData(list.list)
+        }
+    }
+    override fun onCourseItems(courseItems: MutableList<CourseItem>) {
+        if (courseItems!=MethodManager.getCourses()){
+            MethodManager.saveCourses(courseItems)
+            EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
         }
     }
 
@@ -182,11 +187,12 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
     override fun fetchData(){
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCommonPresenter.getCommonData()
-            mMainPresenter.getHomeworkNotice()
-            mMainPresenter.getClassGroupList()
-            mMainPresenter.getAppUpdate()
-            mMainPresenter.active()
-            mMainPresenter.getCorrectNotice()
+            mMainLeftPresenter.getHomeworkNotice()
+            mMainLeftPresenter.getCourseItems()
+            mMainLeftPresenter.getAppUpdate()
+            mMainLeftPresenter.active()
+            mMainLeftPresenter.getCorrectNotice()
+            mMainLeftPresenter.getTeachingType()
         }
     }
 
@@ -347,8 +353,8 @@ class MainLeftFragment : BaseFragment(),ICommonView,IMainView{
                 findDataPlan()
             }
             MAIN_HOMEWORK_NOTICE_EVENT->{
-                mMainPresenter.deleteHomeworkNotice()
-                mMainPresenter.deleteCorrectNotice()
+                mMainLeftPresenter.deleteHomeworkNotice()
+                mMainLeftPresenter.deleteCorrectNotice()
             }
             CALENDER_SET_EVENT->{
                 setCalenderView()

@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
@@ -428,7 +429,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         PaintingBeanDaoManager.getInstance().clear()
 
         DateEventGreenDaoManager.getInstance().clear()
-        CourseGreenDaoManager.getInstance().clear()
         AppDaoManager.getInstance().clear()
 
         ItemTypeDaoManager.getInstance().clear()
@@ -1130,11 +1130,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
     }
 
-//    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-//        showLog("dddddddddddddddd")
-//        return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK||keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
-//            false
-//        } else super.onKeyDown(keyCode, event)
-//    }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK||keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
+            false
+        } else super.onKeyDown(keyCode, event)
+    }
 
 }

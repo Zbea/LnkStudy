@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.provider.Settings;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
-import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.PrivacyPassword;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
@@ -20,8 +18,10 @@ import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
+import com.bll.lnkstudy.mvp.model.CourseItem;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
@@ -30,7 +30,6 @@ import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
 import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
-import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,7 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -224,14 +222,25 @@ public class MethodManager {
      * 转跳本地画本、书法
      */
     public static void gotoPaintingDrawing(Context context, PaintingTypeBean item, int type){
-        ActivityManager.getInstance().checkPaintingDrawingIsExist(type);
-        Intent intent=new Intent(context, PaintingDrawingActivity.class);
-        intent.setFlags(type);
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("painting",item);
-        intent.putExtra("paintingBundle",bundle);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
-        context.startActivity(intent);
+        if (type==0){
+            ActivityManager.getInstance().checkPaintingDrawingIsExist();
+            Intent intent=new Intent(context, PaintingDrawingActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("painting",item);
+            intent.putExtra("paintingBundle",bundle);
+            intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
+            context.startActivity(intent);
+        }
+        else {
+            ActivityManager.getInstance().checkCalligraphyDrawingIsExist();
+            Intent intent=new Intent(context, CalligraphyDrawingActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("calligraphy",item);
+            intent.putExtra("paintingBundle",bundle);
+            intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
+            context.startActivity(intent);
+        }
+
     }
 
     /**
@@ -249,9 +258,9 @@ public class MethodManager {
             apps=AppDaoManager.getInstance().queryToolAll();
         }
         //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除
-        Iterator it=apps.iterator();
+        Iterator<AppBean> it=apps.iterator();
         while (it.hasNext()){
-            AppBean item= (AppBean) it.next();
+            AppBean item= it.next();
             if (!AppUtils.isAvailable(context,item.packageName)&& !Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)){
                 it.remove();
                 AppDaoManager.getInstance().deleteBean(item);
@@ -261,19 +270,18 @@ public class MethodManager {
     }
 
     /**
-     * 保存班群列表
-     * @param classGroups
+     * 保存学生科目
      */
-    public static void saveClassGroups(List<ClassGroup> classGroups){
-        SPUtil.INSTANCE.putClassGroups(user.accountId+"classGroups", classGroups);
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT);
+    public static void saveCourses(List<CourseItem> courseItems){
+        SPUtil.INSTANCE.putCourseItems("courses", courseItems);
+        EventBus.getDefault().post(Constants.COURSEITEM_EVENT);
     }
 
     /**
-     * 得到班群列表
+     * 获取学生科目
      */
-    public static List<ClassGroup> getClassGroups(){
-        return SPUtil.INSTANCE.getClassGroups(user.accountId+"classGroups");
+    public static List<CourseItem> getCourses(){
+        return SPUtil.INSTANCE.getCourseItems("courses");
     }
 
     /**

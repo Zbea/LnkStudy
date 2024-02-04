@@ -135,7 +135,11 @@ interface APIService{
      */
     @GET("wallets/order/{id}")
     fun getOrderStatus(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
-
+    /**
+     * 获取学生科目列表
+     */
+    @GET("class/group/teacherInfo")
+    fun getCourseItems(): Observable<BaseResult<List<CourseItem>>>
     /**
      * 加入班群
      */
@@ -149,13 +153,13 @@ interface APIService{
     /**
      * 退出班群
      */
-    @POST("class/quit")
+    @POST("class/group/studentQuit")
     fun quitClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 通讯录
      */
-    @GET("class/schoolmateList")
-    fun getClassGroupUser(): Observable<BaseResult<List<ClassGroupUser>>>
+    @GET("class/group/schoolList")
+    fun getClassGroupUser(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ClassGroupUserList>>
 
     /**
      * 教材分类
@@ -365,4 +369,10 @@ interface APIService{
      */
     @GET("calendar/list")
     fun getCalenderList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CalenderList>>
+
+    /**
+     * 获取老师课程表
+     */
+    @GET("class/group/courseInfo")
+    fun getTeacherCourse(): Observable<BaseResult<String>>
 }

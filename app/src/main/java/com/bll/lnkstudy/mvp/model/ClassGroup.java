@@ -9,28 +9,14 @@ import java.util.Objects;
 public class ClassGroup implements Serializable {
 
     public int id;
-    public int classNum;//群号
+    public int classId;
+    public int classGroupId;
     public String name;
     public String teacher;
+    public int state;//1主群2 子群
+    public String imageUrl;//课程表
+    public boolean isCheck;
     public int teacherId;
     public String subject;
-    public int classId;
-    public long date;
-    public int status;//1可以双通 0不可以
 
-    public boolean isCheck;
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj==null)
-            return false;
-        if (!(obj instanceof ClassGroup))
-            return false;
-        if (this==obj)
-            return true;
-        ClassGroup classGroup=(ClassGroup) obj;
-        return this.id==classGroup.id&& Objects.equals(this.name, classGroup.name) && Objects.equals(this.classNum, classGroup.classNum)
-                &&Objects.equals(this.teacher, classGroup.teacher)&&this.teacherId==classGroup.teacherId&&Objects.equals(this.subject, classGroup.subject)
-                &&this.classId==classGroup.classId&&this.date==classGroup.date&&this.status==classGroup.status;
-    }
 }

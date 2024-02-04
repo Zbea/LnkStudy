@@ -12,6 +12,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
 
     private var IBaseView: IBaseView
     private var screen=0
+    private var isComplete=true
 
     constructor(IBaseView: IBaseView) {
         this.IBaseView = IBaseView
@@ -20,6 +21,12 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     constructor(IBaseView: IBaseView,screen:Int) {
         this.IBaseView = IBaseView
         this.screen=screen
+    }
+
+    constructor(IBaseView: IBaseView,screen:Int,isComplete: Boolean) {
+        this.IBaseView = IBaseView
+        this.screen=screen
+        this.isComplete=isComplete
     }
 
     override fun onSubscribe(@NonNull d: Disposable) {
@@ -47,7 +54,8 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     }
 
     override fun onComplete() {
-        IBaseView.hideLoading()
+        if (isComplete)
+            IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {

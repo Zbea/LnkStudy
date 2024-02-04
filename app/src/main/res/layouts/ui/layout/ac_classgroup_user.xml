@@ -9,14 +9,48 @@
 
     <include layout="@layout/common_title"/>
 
-    <include
-        layout="@layout/item_classgroup_user"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="@dimen/dp_40"
+        android:gravity="center_vertical"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:layout_marginTop="@dimen/dp_20"
-        />
+        android:layout_marginBottom="@dimen/dp_20"
+        >
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="姓名"
+            android:gravity="center"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/tv_job"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="职务"
+            android:gravity="center"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="联系方式"
+            android:gravity="center"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

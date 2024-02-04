@@ -81,8 +81,7 @@ class Constants {
         const val APP_INSTALL_EVENT = "AppInstallEvent"//应用下载安装通知
         const val APP_UNINSTALL_EVENT = "AppUninstallEvent"//应用卸载安装通知
         const val APP_INSERT_EVENT = "AppInsertEvent"//工具保存通知
-        const val COURSE_EVENT = "CourseEvent" //课程表保存刷新
-        const val CLASSGROUP_EVENT = "ClassGroupEvent" //班群刷新
+        const val COURSEITEM_EVENT = "ClassItemEvent" //学生科目刷新
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val RECORD_EVENT = "RecordEvent"//语音作业本录音通知

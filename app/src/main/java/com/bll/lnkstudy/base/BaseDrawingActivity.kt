@@ -24,8 +24,7 @@ import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
-import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
-import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
@@ -558,6 +557,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     //单屏、全屏内容切换
     open fun changeExpandView() {
+        if (this is DiaryActivity||this is FreeNoteActivity|| this is PlanOverviewActivity)
+        {
+            return
+        }
         v_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
         ll_page_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
         v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
@@ -783,18 +786,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         Log.d("debug",getString(sId))
     }
 
-    /**
-     * 获取网络智启状态
-     * @return
-     */
-    private fun getNetworkIntelligence(): Boolean {
-        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
-        return value == 1
-    }
+//    /**
+//     * 获取网络智启状态
+//     * @return
+//     */
+//    private fun getNetworkIntelligence(): Boolean {
+//        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
+//        return value == 1
+//    }
 
     fun closeNetwork(){
-        if (getNetworkIntelligence())
-            NetworkUtil(this).toggleNetwork(false)
+        NetworkUtil(this).toggleNetwork(false)
     }
 
     override fun addSubscription(d: Disposable) {

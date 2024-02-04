@@ -6,7 +6,7 @@ import com.bll.lnkstudy.mvp.model.AppList;
 import com.bll.lnkstudy.mvp.model.AppUpdateBean;
 import com.bll.lnkstudy.mvp.model.CalenderList;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
-import com.bll.lnkstudy.mvp.model.ClassGroupUser;
+import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.ExamItem;
@@ -30,6 +30,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
+import com.bll.lnkstudy.mvp.model.CourseItem;
 
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,7 @@ public interface IContractView {
         void onInsert();
         void onClassGroupList(List<ClassGroup> classGroups);
         void onQuit();
-        void onUser(List<ClassGroupUser> lists);
+        void onUser(ClassGroupUserList userList);
     }
 
     //教学视频
@@ -124,16 +125,18 @@ public interface IContractView {
         void onType(TeachingVideoType type);//视频 其他分类
     }
 
-    interface IMainView extends IBaseView {
-        /**
-         * 获取考试列表
-         * @param exam
-         */
-        void onExam(ExamItem exam);
+    interface IMainLeftView extends IBaseView {
         void onHomeworkNotice(HomeworkNoticeList list);
-        void onClassGroupList(List<ClassGroup> classGroups);
+        void onCourseItems(List<CourseItem> courseItems);
         void onAppUpdate(AppUpdateBean item);
         void onCorrect(HomeworkNoticeList list);
+        void onType(TeachingVideoType type);
+    }
+
+    interface IMainRightView extends IBaseView {
+        void onExam(ExamItem exam);
+        void onCourseItems(List<CourseItem> courseItems);
+        void onCourse(String url);
     }
 
     //公共接口

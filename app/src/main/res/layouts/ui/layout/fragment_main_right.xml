@@ -214,15 +214,6 @@
                 android:textSize="@dimen/sp_24"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_class_template"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
-                android:text="模板"
-                android:textSize="@dimen/sp_24" />
-
         </LinearLayout>
 
         <View

@@ -1,44 +1,40 @@
 package com.bll.lnkstudy.ui.fragment
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
-import com.bll.lnkstudy.Constants.Companion.COURSE_EVENT
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
 import com.bll.lnkstudy.base.BaseFragment
-import com.bll.lnkstudy.dialog.CourseModuleDialog
-import com.bll.lnkstudy.dialog.MessageDetailsDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
-import com.bll.lnkstudy.mvp.model.*
-import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
-import com.bll.lnkstudy.mvp.presenter.MainPresenter
+import com.bll.lnkstudy.mvp.model.CourseItem
+import com.bll.lnkstudy.mvp.model.ExamItem
+import com.bll.lnkstudy.mvp.model.MessageList
+import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.activity.*
+import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
-import com.bll.lnkstudy.ui.adapter.*
+import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_main_right.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.*
 
 
 /**
  * 首页
  */
-class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView.IMessageView{
+class MainRightFragment : BaseFragment(), IContractView.IMainRightView, IContractView.IMessageView{
 
-    private val mMainPresenter = MainPresenter(this,2)
+    private val mMainPresenter = MainRightPresenter(this,2)
     private val mMessagePresenter=MessagePresenter(this,2)
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
@@ -53,22 +49,21 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     }
     override fun onCommitSuccess() {
     }
-
     override fun onExam(exam: ExamItem) {
         examItem=exam
         loadPapers()
         initExamView()
     }
-    override fun onHomeworkNotice(list: HomeworkNoticeList?) {
-    }
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        MethodManager.saveClassGroups(classGroups)
-    }
-
-    override fun onAppUpdate(item: AppUpdateBean?) {
+    override fun onCourseItems(courseItems: MutableList<CourseItem>) {
+        if (courseItems!=MethodManager.getCourses()){
+            MethodManager.saveCourses(courseItems)
+            EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
+        }
     }
 
-    override fun onCorrect(list: HomeworkNoticeList?) {
+    override fun onCourse(url: String) {
+        SPUtil.putString("${mUser?.accountId}courseUrl",url)
+        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
 
     override fun getLayoutId(): Int {
@@ -76,28 +71,11 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
     }
 
     override fun initView() {
-
         initMessageView()
         initExamView()
-        initCourse()
 
         ll_message.setOnClickListener {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
-        }
-
-        tv_class_template.setOnClickListener {
-            CourseModuleDialog(requireActivity(), screenPos).builder()
-                ?.setOnClickListener { type ->
-                    customStartActivity(Intent(activity, MainCourseActivity::class.java).setFlags(0).putExtra("courseType", type))
-                }
-        }
-
-        ll_course.setOnClickListener {
-            val courseType = SPUtil.getInt("courseType")
-            customStartActivity(Intent(activity, MainCourseActivity::class.java)
-                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .putExtra("courseType", courseType)
-            )
         }
 
         tv_free_note.setOnClickListener {
@@ -121,18 +99,12 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             findMessages()
             fetchExam()
-            mMainPresenter.getClassGroupList()
+            mMainPresenter.getCourseItems()
+            mMainPresenter.getTeacherCourse()
         }
+        val url=SPUtil.getString("${mUser?.accountId}courseUrl")
+        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
-
-    //课程表相关处理
-    @SuppressLint("WrongConstant")
-    private fun initCourse() {
-        val path=FileAddress().getPathCourse()
-        if (File(path).exists())
-            GlideUtils.setImageNoCacheUrl(activity,path , iv_course)
-    }
-
 
     //消息相关处理
     private fun initMessageView() {
@@ -140,9 +112,6 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
             rv_list_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list_message.adapter = this
             bindToRecyclerView(rv_list_message)
-            setOnItemClickListener { adapter, view, position ->
-                MessageDetailsDialog(requireContext(), screenPos, messages[position]).builder()
-            }
         }
     }
 
@@ -248,9 +217,6 @@ class MainRightFragment : BaseFragment(), IContractView.IMainView, IContractView
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
-            COURSE_EVENT -> {
-                initCourse()
-            }
             EXAM_COMMIT_EVENT -> {
                 examItem=null
                 disMissView(rl_exam)

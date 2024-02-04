@@ -10,7 +10,7 @@ class ClassGroupUserAdapter(layoutResId: Int, data: MutableList<ClassGroupUser>?
     override fun convert(helper: BaseViewHolder, item: ClassGroupUser) {
         helper.setText(R.id.tv_name,item.name)
         helper.setText(R.id.tv_job,item.job)
+        helper.setText(R.id.tv_phone,item.phone)
     }
-
 
 }

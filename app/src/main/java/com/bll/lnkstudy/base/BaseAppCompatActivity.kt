@@ -288,18 +288,17 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         startActivity(intent)
     }
 
-    /**
-     * 获取网络智启状态
-     * @return
-     */
-    fun getNetworkIntelligence(): Boolean {
-        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
-        return value == 1
-    }
+//    /**
+//     * 获取网络智启状态
+//     * @return
+//     */
+//    fun getNetworkIntelligence(): Boolean {
+//        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
+//        return value == 1
+//    }
 
     fun closeNetwork(){
-        if (getNetworkIntelligence())
-            NetworkUtil(this).toggleNetwork(false)
+        NetworkUtil(this).toggleNetwork(false)
     }
 
     fun getRadioButton(i:Int,str:String,max:Int): RadioButton {

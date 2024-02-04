@@ -17,6 +17,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
             setVisible(R.id.ll_info, item.createStatus!=0||item.isCloud)
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){
+                setText(R.id.tv_name, "")
                 setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
                 GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
             }

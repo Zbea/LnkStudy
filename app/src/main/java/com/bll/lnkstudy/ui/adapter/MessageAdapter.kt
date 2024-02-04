@@ -13,13 +13,13 @@ class MessageAdapter(private val type:Int,layoutResId: Int, data: MutableList<Me
         helper.apply {
             when(item.sendType){
                 1->{
-                    typeNameStr=mContext.getString(R.string.message_sender)+item.teacherName
+                    typeNameStr=item.teacherName
                 }
                 2->{
-                    typeNameStr=mContext.getString(R.string.message_receiver)+item.teacherName
+                    typeNameStr=item.teacherName
                 }
                 3-> {
-                    typeNameStr=mContext.getString(R.string.notice)
+                    typeNameStr="学校通知"
                 }
             }
             setText(R.id.tv_message_name, typeNameStr)
