@@ -13,7 +13,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen: Int =0
     fun onInsertClassGroup(classNum:Int) {
 
         val body=RequestUtils.getBody(
-            Pair.create("classId",classNum)
+            Pair.create("classGroupId",classNum)
         )
         val insert = RetrofitManager.service.insertGroup(body)
         doRequest(insert, object : Callback<Any>(view,screen) {

@@ -29,6 +29,7 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     override fun initData() {
     }
     override fun initView() {
+        disMissView(iv_catalog,iv_btn)
         setPageTitle(R.string.main_plan)
         elik_b=v_content.pwInterFace
 

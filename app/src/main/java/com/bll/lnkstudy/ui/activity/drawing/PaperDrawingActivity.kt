@@ -51,6 +51,7 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     }
 
     override fun initView() {
+        disMissView(iv_btn)
         setDrawingTitleClick(false)
         setPWEnabled(false)
         if (papers.size>0){
@@ -60,21 +61,22 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         }
         changeExpandView()
 
-        iv_expand_left.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_right.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_a.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b.setOnClickListener {
-            onChangeExpandContent()
-        }
+    }
 
-        iv_catalog.setOnClickListener {
-            showCatalog()
+    override fun onCatalog() {
+        val list= mutableListOf<ItemList>()
+        for (item in papers){
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
+            list.add(itemList)
+        }
+        DrawingCatalogDialog(this,list).builder()?.setOnDialogClickListener { position ->
+            if (currentPosition!=position){
+                currentPosition = papers[position].index
+                page = 0
+                changeContent()
+            }
         }
     }
 
@@ -125,25 +127,6 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
-    }
-
-    /**
-     * 弹出目录
-     */
-    private fun showCatalog(){
-        val list= mutableListOf<ItemList>()
-        for (item in papers){
-            val itemList= ItemList()
-            itemList.name=item.title
-            itemList.page=item.page
-            list.add(itemList)
-        }
-        DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener { position ->
-            currentPosition = papers[position].index
-            page = 0
-            changeContent()
-        }
     }
 
     /**

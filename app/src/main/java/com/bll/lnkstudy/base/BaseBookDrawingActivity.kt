@@ -20,33 +20,48 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
+import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.utils.*
+import com.chad.library.adapter.base.entity.MultiItemEntity
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.ac_book_details_drawing.*
+import kotlinx.android.synthetic.main.ac_book_details_drawing.iv_geometry
+import kotlinx.android.synthetic.main.ac_book_details_drawing.ll_geometry
+import kotlinx.android.synthetic.main.ac_book_details_drawing.v_content_a
+import kotlinx.android.synthetic.main.ac_book_details_drawing.v_content_b
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
-import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.regex.Pattern
 
 
-abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
+abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
 
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mNetworkDialog:ProgressDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
+
+    var catalogMsg: CatalogMsg? = null
+    var catalogs = mutableListOf<MultiItemEntity>()
+    var parentItems = mutableListOf<CatalogParent>()
+    var childItems = mutableListOf<CatalogChild>()
+
+    var pageCount = 0
+    var pageStart=1
+    var page = 0 //当前页码
+
     var isExpand=false
     var elik_a: EinkPWInterface? = null
     var elik_b: EinkPWInterface? = null
     var isErasure=false
-    var isTitleClick=true//标题是否可以编
     private var circlePos=0
     private var axisPos=0
     private var isGeometry=false//是否处于几何绘图
@@ -103,13 +118,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
 
-        iv_back?.setOnClickListener { finish() }
-
-        iv_tool_left?.setOnClickListener {
-            showDialogAppTool(1)
-        }
-
-        iv_tool_right?.setOnClickListener {
+        iv_tool?.setOnClickListener {
             showDialogAppTool(2)
         }
 
@@ -124,36 +133,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
         }
 
-        iv_draft?.setOnClickListener {
-            startActivity(Intent(this,DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        }
-
-        tv_title_a?.setOnClickListener {
-            if (isTitleClick){
-                val title=tv_title_a.text.toString()
-                var type=getCurrentScreenPos()
-                if (type==3)
-                    type=1
-                InputContentDialog(this,type,title).builder()?.setOnDialogClickListener { string ->
-                    tv_title_a.text = string
-                    setDrawingTitle_a(string)
-                }
-            }
-        }
-
-        tv_title_b?.setOnClickListener {
-            if (isTitleClick){
-                val title=tv_title_b.text.toString()
-                var type=getCurrentScreenPos()
-                if (type==3)
-                    type=2
-                InputContentDialog(this,type,title).builder()?.setOnDialogClickListener { string ->
-                    tv_title_b.text = string
-                    setDrawingTitle_b(string)
-                }
-            }
-        }
-
         btn_page_up?.setOnClickListener {
             onPageUp()
         }
@@ -162,24 +141,25 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             onPageDown()
         }
 
-        iv_catalog?.setOnClickListener {
-            onCatalog()
-        }
-
-        iv_expand_left?.setOnClickListener {
-            onChangeExpandNewContent()
-        }
-        iv_expand_right?.setOnClickListener {
-            onChangeExpandNewContent()
-        }
-
-        iv_expand_a?.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b?.setOnClickListener {
+        iv_expand.setOnClickListener {
             onChangeExpandContent()
         }
 
+        iv_catalog.setOnClickListener {
+            DrawingCatalogDialog(this, catalogs, 1, pageStart).builder()
+                ?.setOnDialogClickListener { position ->
+                    page = position - 1
+                    changeContent()
+                }
+        }
+
+    }
+
+    /**
+     * 设置页码
+     */
+    fun setPage(){
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
     }
 
     /**
@@ -337,10 +317,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         }
 
         tv_out?.setOnClickListener {
-            if (this is PaperExamDrawingActivity){
-                tv_reduce?.callOnClick()
-                return@setOnClickListener
-            }
             setDrawing()
             disMissView(ll_geometry,iv_geometry)
             if (isParallel){
@@ -516,18 +492,12 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             currentDrawObj=type
     }
 
-    /**
-     * 设置标题是否可以编辑
-     */
-    fun setDrawingTitleClick(boolean: Boolean){
-        isTitleClick=boolean
-    }
 
     /**
      * 工具栏弹窗
      */
     private fun showDialogAppTool(location:Int){
-        AppToolDialog(this,2,getCurrentScreenPos(),location).builder()?.setDialogClickListener{
+        AppToolDialog(this,1,getCurrentScreenPos(),location).builder()?.setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -555,12 +525,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 打开目录
-     */
-    open fun onCatalog(){
-    }
-
-    /**
      * 左屏抬笔
      */
     open fun onElikSava_a(){
@@ -572,35 +536,18 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     open fun onElikSava_b(){
     }
 
-    //单屏、全屏内容切换
+    /**
+     * 单屏、全屏内容切换
+     */
     open fun changeExpandView() {
-        if (this is DiaryActivity||this is FreeNoteActivity|| this is PlanOverviewActivity)
-        {
-            return
-        }
         v_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
-        ll_page_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
-        v_empty.visibility = if (isExpand) View.VISIBLE else View.GONE
-        if (isExpand){
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_a,iv_tool_right)
-                disMissView(iv_expand_b,iv_expand_left,iv_expand_right)
-            }
-            else{
-                showView(iv_tool_left,iv_tool_right,iv_expand_b)
-                disMissView(iv_expand_a,iv_expand_left,iv_expand_right)
-            }
-        }
-        else{
-            if (screenPos==1){
-                showView(iv_tool_left,iv_expand_right)
-                disMissView(iv_tool_right,iv_expand_left)
-            }
-            else{
-                showView(iv_tool_right,iv_expand_left)
-                disMissView(iv_tool_left,iv_expand_right)
-            }
-        }
+    }
+
+    /**
+     * 展示内容变化
+     */
+    open fun changeContent(){
+
     }
 
     /**
@@ -646,48 +593,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 标题a操作
-     */
-    open fun setDrawingTitle_a(title:String){
-    }
-
-    /**
-     * 标题a操作
-     */
-    open fun setDrawingTitle_b(title:String){
-    }
-
-    /**
-     * 单双屏切换以及创建新数据
-     */
-    open fun onChangeExpandNewContent(){
-        onChangeExpandContent()
-    }
-
-
-    /**
      * 单双屏切换
      */
     open fun onChangeExpandContent(){
-
-    }
-
-    fun showBackView(isShow:Boolean) {
-        if (isShow){
-            showView(iv_back)
-        }
-        else{
-            disMissView(iv_back)
-        }
-    }
-
-
-    fun setPageTitle(pageTitle: String) {
-        tv_title?.text = pageTitle
-    }
-
-    fun setPageTitle(titleId: Int) {
-        tv_title?.setText(titleId)
     }
 
     /**
@@ -760,14 +668,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         startActivity(intent)
     }
 
-    fun hideNetworkDialog() {
-        mNetworkDialog?.dismiss()
-    }
-    fun showNetworkDialog() {
-        mNetworkDialog?.show()
-        NetworkUtil(this).toggleNetwork(true)
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected fun setStatusBarColor(statusColor: Int) {
@@ -787,6 +687,18 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             ViewCompat.setFitsSystemWindows(mChildView, false)
             ViewCompat.requestApplyInsets(mChildView)
         }
+    }
+
+    fun hideNetworkDialog() {
+        mNetworkDialog?.dismiss()
+    }
+    fun showNetworkDialog() {
+        mNetworkDialog?.show()
+        NetworkUtil(this).toggleNetwork(true)
+    }
+
+    fun closeNetwork(){
+        NetworkUtil(this).toggleNetwork(false)
     }
 
     /**
@@ -811,18 +723,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         Log.d("debug",getString(sId))
     }
 
-//    /**
-//     * 获取网络智启状态
-//     * @return
-//     */
-//    private fun getNetworkIntelligence(): Boolean {
-//        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
-//        return value == 1
-//    }
-
-    fun closeNetwork(){
-        NetworkUtil(this).toggleNetwork(false)
-    }
 
     override fun addSubscription(d: Disposable) {
     }
@@ -891,6 +791,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     open fun onEventBusMessage(msgFlag: String){
     }
 
+
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         //屏蔽长按切焦点造成原手写翻页
         if (getKeyEventStatus()==17||getKeyEventStatus()==34){
@@ -905,20 +806,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
         }
         return super.onKeyUp(keyCode, event)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        //草稿纸不执行
-        if (this is DraftDrawingActivity)
-        {
-            return
-        }
-        //移屏之后工具图标需要调动
-        if (!isExpand){
-            screenPos=getCurrentScreenPos()
-            changeExpandView()
-        }
     }
 
 }

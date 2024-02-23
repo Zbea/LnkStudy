@@ -122,7 +122,6 @@
             />
         <activity android:name=".ui.activity.PaintingListActivity" />
         <activity android:name=".ui.activity.MessageListActivity" />
-        <activity android:name=".ui.activity.MainCourseActivity" />
         <activity
             android:name=".ui.activity.drawing.NoteDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
@@ -187,7 +186,9 @@
         <activity android:name=".ui.activity.PaintingDetailsActivity"/>
         <activity android:name=".ui.activity.date.DateEventActivity"/>
         <activity android:name=".ui.activity.CalenderMyActivity"/>
-        <activity android:name=".ui.activity.drawing.CalligraphyDrawingActivity"/>
+        <activity android:name=".ui.activity.drawing.CalligraphyDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

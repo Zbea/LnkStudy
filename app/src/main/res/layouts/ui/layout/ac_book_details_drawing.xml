@@ -13,7 +13,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_bottom"
         android:orientation="horizontal">
 
         <com.android.internal.widget.PreferenceImageView
@@ -24,22 +23,116 @@
             android:visibility="gone"
             android:scaleType="fitCenter" />
 
-        <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/v_content_b"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:scaleType="fitCenter" />
+            android:orientation="horizontal"
+            >
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_b"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitCenter" />
+
+            <LinearLayout
+                android:layout_width="@dimen/drawing_book_height"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tv_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="150dp"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_20"
+                    android:textColor="@color/black"
+                    />
+
+
+                <ImageView
+                    android:id="@+id/btn_page_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginTop="150dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_page_up" />
+
+                <ImageView
+                    android:id="@+id/btn_page_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginTop="60dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_page_down" />
+
+                <ImageView
+                    android:id="@+id/iv_erasure"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginTop="60dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_erasure" />
+
+                <ImageView
+                    android:id="@+id/iv_draft"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginTop="60dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_draft" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_commit"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginBottom="60dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_tool" />
+
+
+                <ImageView
+                    android:id="@+id/iv_tool"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginBottom="60dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_tool" />
+
+                <ImageView
+                    android:id="@+id/iv_catalog"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginBottom="60dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_catalog" />
+
+
+                <ImageView
+                    android:id="@+id/iv_expand"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/drawing_book_height"
+                    android:layout_marginBottom="150dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_expand" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/ll_bottom"
-        layout="@layout/common_drawing_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_bottom_height"
-        android:layout_alignParentBottom="true"
-        />
 
     <include
         android:id="@+id/ll_geometry"
@@ -54,7 +147,6 @@
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_above="@+id/ll_bottom"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

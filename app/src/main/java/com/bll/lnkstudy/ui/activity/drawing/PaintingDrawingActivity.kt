@@ -6,7 +6,6 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.dialog.PopupDrawingManage
@@ -52,33 +51,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        iv_draft.setImageResource(R.mipmap.icon_drawing_change)
+        iv_draft.setImageResource(R.mipmap.icon_draw_change)
         changeExpandView()
         changeContent()
-
-        iv_catalog.setOnClickListener {
-            showCatalog()
-        }
-
-        iv_expand_left.setOnClickListener {
-            if (paintingLists.size==1){
-                newPaintingContent()
-            }
-            onChangeExpandContent()
-        }
-        iv_expand_right.setOnClickListener {
-            if (paintingLists.size==1){
-                newPaintingContent()
-            }
-            onChangeExpandContent()
-        }
-
-        iv_expand_a.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b.setOnClickListener {
-            onChangeExpandContent()
-        }
 
         iv_btn.setOnClickListener {
             showPopWindowBtn()
@@ -92,6 +67,23 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 }
         }
 
+    }
+
+    override fun onCatalog() {
+        val list= mutableListOf<ItemList>()
+        for (item in paintingLists){
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
+            list.add(itemList)
+        }
+        DrawingCatalogDialog(this,list).builder()?.
+        setOnDialogClickListener { position ->
+            if (page != position) {
+                page = position
+                changeContent()
+            }
+        }
     }
 
     override fun onPageUp() {
@@ -141,32 +133,19 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         changeContent()
     }
 
+    override fun onChangeExpandNewContent() {
+        if (paintingLists.size==1){
+            newPaintingContent()
+        }
+        onChangeExpandContent()
+    }
+
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
-    }
-
-    /**
-     * 弹出目录
-     */
-    private fun showCatalog(){
-        val list= mutableListOf<ItemList>()
-        for (item in paintingLists){
-            val itemList= ItemList()
-            itemList.name=item.title
-            itemList.page=item.page
-            list.add(itemList)
-        }
-        DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener { position ->
-            if (page != position) {
-                page = position
-                changeContent()
-            }
-        }
     }
 
     //设置背景图
@@ -265,7 +244,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             popupDrawingManage?.setOnSelectListener { item ->
                 when(item.id){
                     0->{
-                        delete()
+                        deleteContent()
                     }
                     1->{
                         resId=0
@@ -278,19 +257,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
     }
 
-
-    //确认删除
-    private fun delete() {
-        CommonDialog(this,getCurrentScreenPos()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-
-            override fun ok() {
-                deleteContent()
-            }
-        })
-    }
 
     //删除内容
     private fun deleteContent() {

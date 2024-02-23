@@ -55,6 +55,8 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         pageSize=12
         bookId=intent.getIntExtra("bookId",0)
 
+        setDialogOutside(true)
+
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
         }

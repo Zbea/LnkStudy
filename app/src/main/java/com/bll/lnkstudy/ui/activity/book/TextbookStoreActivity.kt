@@ -51,7 +51,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var position=0
 
     private var subjectList = mutableListOf<PopupBean>()
-    private var semesterList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var provinceList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
@@ -82,7 +81,8 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         typeList = DataBeanManager.teachingType.toMutableList()
         tabStr = typeList[0]
 
-        semesterList=DataBeanManager.popupSemesters()
+        setDialogOutside(true)
+
         getSemester()
 
         provinceStr= mUser?.schoolProvince.toString()
@@ -152,6 +152,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                     disMissView(tv_course,tv_grade,tv_semester)
                     gradeId = mUser?.grade!!
                     getSemester()
+                    tv_semester.text = DataBeanManager.popupSemesters()[semester-1].name
                 }
                 else -> {
                     showView(tv_grade,tv_course,tv_semester)
@@ -196,7 +197,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 }
         }
 
-        tv_grade.text =gradeList[gradeId-1].name
+        tv_grade.text =DataBeanManager.getGradeStr(gradeId)
         tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()
             .setOnSelectListener { item ->
@@ -208,9 +209,9 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             }
         }
 
-        tv_semester.text = semesterList[semester-1].name
+        tv_semester.text = DataBeanManager.popupSemesters()[semester-1].name
         tv_semester.setOnClickListener {
-            PopupList(this, semesterList, tv_semester, tv_semester.width, 5).builder()
+            PopupList(this, DataBeanManager.popupSemesters(semester), tv_semester, tv_semester.width, 5).builder()
                 .setOnSelectListener { item ->
                     semester = item.id
                     tv_semester.text = item.name
@@ -219,7 +220,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 }
         }
 
-        tv_course.text = subjectList[0].name
+        tv_course.text = DataBeanManager.getCourseStr(courseId)
         tv_course.setOnClickListener {
             PopupList(this, subjectList, tv_course, tv_course.width, 5).builder()
                 .setOnSelectListener { item ->
@@ -445,9 +446,13 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 map["type"] = 2
                 presenter.getHomeworkBooks(map)
             }
+            1->{
+                map["type"] = 2
+                presenter.getTextBooks(map)
+            }
             else->{
                 map["area"] = provinceStr
-                map["type"] = if (tabId==1) 2 else 1
+                map["type"] = 1
                 presenter.getTextBooks(map)
             }
         }

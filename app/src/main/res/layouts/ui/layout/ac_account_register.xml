@@ -340,35 +340,7 @@
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_30"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22"
-                    android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/et_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_45"
-                    android:hint="家庭地址"
-                    android:textColorHint="@color/color_text_hint"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/dp_10"
-                    android:paddingEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_20"
-                    android:lines="1"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"/>
-
-            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

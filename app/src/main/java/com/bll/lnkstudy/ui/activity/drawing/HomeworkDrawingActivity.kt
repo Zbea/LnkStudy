@@ -161,29 +161,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         changeExpandView()
         changeContent()
 
-        iv_catalog.setOnClickListener {
-            showCatalog()
-        }
-
-        iv_expand_left.setOnClickListener {
-            if (homeworks.size == 1) {
-                newHomeWorkContent()
-            }
-            onChangeExpandContent()
-        }
-        iv_expand_right.setOnClickListener {
-            if (homeworks.size == 1) {
-                newHomeWorkContent()
-            }
-            onChangeExpandContent()
-        }
-        iv_expand_a.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b.setOnClickListener {
-            onChangeExpandContent()
-        }
-
         iv_btn.setOnClickListener {
             if (NetworkUtil(this).isNetworkConnected()) {
                 commit()
@@ -192,6 +169,26 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
+    }
+
+    override fun onCatalog() {
+        var titleStr = ""
+        val list = mutableListOf<ItemList>()
+        for (item in homeworks) {
+            val itemList = ItemList()
+            itemList.name = item.title
+            itemList.page = item.page
+            if (titleStr != item.title) {
+                titleStr = item.title
+                list.add(itemList)
+            }
+        }
+        DrawingCatalogDialog(this, list).builder()?.setOnDialogClickListener { position ->
+            if (page!=list[position].page){
+                page = list[position].page
+                changeContent()
+            }
+        }
     }
 
     override fun onPageUp() {
@@ -239,34 +236,19 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         changeContent()
     }
 
+    override fun onChangeExpandNewContent() {
+        if (homeworks.size == 1) {
+            newHomeWorkContent()
+        }
+        onChangeExpandContent()
+    }
+
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand = !isExpand
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
-    }
-
-    /**
-     * 弹出目录
-     */
-    private fun showCatalog() {
-        var titleStr = ""
-        val list = mutableListOf<ItemList>()
-        for (item in homeworks) {
-            val itemList = ItemList()
-            itemList.name = item.title
-            itemList.page = item.page
-            if (titleStr != item.title) {
-                titleStr = item.title
-                list.add(itemList)
-            }
-
-        }
-        DrawingCatalogDialog(this, list).builder()?.setOnDialogClickListener { position ->
-            page = list[position].page
-            changeContent()
-        }
     }
 
     //翻页内容更新切换

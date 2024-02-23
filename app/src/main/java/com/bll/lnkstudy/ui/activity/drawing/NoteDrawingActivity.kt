@@ -40,7 +40,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         grade=noteBook?.grade!!
         typeId=if (type==getString(R.string.note_tab_diary)) 1 else 2
 
-
         noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
 
         if (noteContents.size > 0) {
@@ -52,38 +51,36 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         }
     }
 
-
     override fun initView() {
-
+        disMissView(iv_btn)
         v_content_a.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
         v_content_b.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
 
         changeExpandView()
         changeContent()
+    }
 
-        iv_catalog.setOnClickListener {
-            showCatalog()
-        }
-
-        iv_expand_left.setOnClickListener {
-            if (noteContents.size==1){
-                newNoteContent()
+    override fun onCatalog() {
+        var titleStr=""
+        val list= mutableListOf<ItemList>()
+        for (item in noteContents){
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
+            if (titleStr != item.title)
+            {
+                titleStr=item.title
+                list.add(itemList)
             }
-            onChangeExpandContent()
-        }
-        iv_expand_right.setOnClickListener {
-            if (noteContents.size==1){
-                newNoteContent()
-            }
-            onChangeExpandContent()
-        }
-        iv_expand_a.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b.setOnClickListener {
-            onChangeExpandContent()
-        }
 
+        }
+        DrawingCatalogDialog(this,list).builder()?.
+        setOnDialogClickListener { position ->
+            if (page!=noteContents[position].page){
+                page = noteContents[position].page
+                changeContent()
+            }
+        }
     }
 
     override fun onPageDown() {
@@ -133,36 +130,19 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         }
     }
 
+    override fun onChangeExpandNewContent() {
+        if (noteContents.size==1){
+            newNoteContent()
+        }
+        onChangeExpandContent()
+    }
+
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
         changeExpandView()
         changeContent()
-    }
-
-    /**
-     * 弹出目录
-     */
-    private fun showCatalog(){
-        var titleStr=""
-        val list= mutableListOf<ItemList>()
-        for (item in noteContents){
-            val itemList= ItemList()
-            itemList.name=item.title
-            itemList.page=item.page
-            if (titleStr != item.title)
-            {
-                titleStr=item.title
-                list.add(itemList)
-            }
-
-        }
-        DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener { position ->
-            page = noteContents[position].page
-            changeContent()
-        }
     }
 
     //翻页内容更新切换

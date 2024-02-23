@@ -130,28 +130,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         else{
             setPWEnabled(false)
         }
+
         changeExpandView()
-        bindClick()
-    }
-
-    private fun bindClick(){
-
-        iv_expand_left.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_right.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_a.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b.setOnClickListener {
-            onChangeExpandContent()
-        }
-
-        iv_catalog.setOnClickListener {
-            showCatalog()
-        }
 
         iv_btn.setOnClickListener {
             if (paper?.state==3&&paper?.isCommit == true){
@@ -164,6 +144,23 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                             commit()
                         }
                     })
+            }
+        }
+    }
+
+    override fun onCatalog() {
+        val list= mutableListOf<ItemList>()
+        for (item in papers){
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
+            list.add(itemList)
+        }
+        DrawingCatalogDialog(this,list).builder()?.setOnDialogClickListener { position ->
+            if (currentPosition!=position){
+                currentPosition = papers[position].index
+                page = 0
+                changeContent()
             }
         }
     }
@@ -219,25 +216,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     /**
-     * 弹出目录
-     */
-    private fun showCatalog(){
-        val list= mutableListOf<ItemList>()
-        for (item in papers){
-            val itemList= ItemList()
-            itemList.name=item.title
-            itemList.page=item.page
-            list.add(itemList)
-        }
-        DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener { position ->
-            currentPosition = papers[position].index
-            page = 0
-            changeContent()
-        }
-    }
-
-    /**
      * 设置是否可以手写
      */
     private fun setPWEnabled(boolean: Boolean){
@@ -262,8 +240,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         //作业未提交 提示时间 以及关闭手写
         if (paper?.state==3){
             setPWEnabled(true)
-            if (paper?.isCommit==true)
+            if (paper?.isCommit==true){
                 showToast(DateUtils.longToStringWeek(paper?.endTime!!*1000)+getString(R.string.toast_before_commit))
+            }
         }
         else{
             setPWEnabled(false)

@@ -1,13 +1,13 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
+import android.content.Intent
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.base.BaseBookDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
@@ -22,27 +22,19 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
-import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
+class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFileUploadView {
 
     private val mUploadPresenter= FileUploadPresenter(this)
     private var homeworkType: HomeworkTypeBean? = null
     //屏幕当前位置
     private var book: HomeworkBookBean? = null
-    private var catalogMsg: CatalogMsg? = null
-    private var catalogs = mutableListOf<MultiItemEntity>()
-    private var parentItems = mutableListOf<CatalogParent>()
-    private var childItems = mutableListOf<CatalogChild>()
 
-    private var pageCount = 0
-    private var page = 0 //当前页码
     private var messages= mutableListOf<ItemList>()
     private var homeworkCommit: HomeworkCommit?=null
     private val commitItems = mutableListOf<ItemList>()
@@ -167,42 +159,16 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun initView() {
-        setDrawingTitleClick(false)
         pageCount = if (catalogMsg==null)0 else catalogMsg?.totalCount!!
-        tv_title_a.text=book?.bookName
-        tv_title_b.text=book?.bookName
-
-        changeExpandView()
+        pageStart = if (catalogMsg==null)0 else catalogMsg?.startCount!!
 
         changeContent()
-        bindClick()
-    }
 
-
-    private fun bindClick() {
-
-        iv_expand_left.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_right.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_a.setOnClickListener {
-            onChangeExpandContent()
-        }
-        iv_expand_b.setOnClickListener {
-            onChangeExpandContent()
+        iv_draft.setOnClickListener {
+            startActivity(Intent(this,DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
 
-        iv_catalog.setOnClickListener {
-            DrawingCatalogDialog(this, catalogs, 1).builder()
-                ?.setOnDialogClickListener { position ->
-                    page = position - 1
-                    changeContent()
-                }
-        }
-
-        iv_btn.setOnClickListener {
+        iv_commit.setOnClickListener {
             if (messages.size==0)
                 return@setOnClickListener
             if (NetworkUtil(this).isNetworkConnected()){
@@ -212,7 +178,9 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 showNetworkDialog()
             }
         }
+
     }
+
 
     //作业提交
     private fun commit() {
@@ -281,7 +249,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     /**
      * 更新内容
      */
-    private fun changeContent() {
+    override fun changeContent() {
         //如果页码超出 则全屏展示最后两页
         if (page > pageCount - 1) {
             page =  pageCount - 1
@@ -291,10 +259,9 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             page=1
         }
 
-        tv_page_b.text = "${page + 1}/$pageCount"
+        setPage()
         loadPicture(page , elik_b!!, v_content_b)
         if (isExpand) {
-            tv_page_a.text = "${page}/$pageCount"
             loadPicture(page-1, elik_a!!, v_content_a)
         }
 

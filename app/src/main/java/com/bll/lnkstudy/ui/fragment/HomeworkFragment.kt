@@ -206,7 +206,7 @@ class HomeworkFragment : BaseFragment(), IHomeworkView {
         popWindowBeans.add(PopupBean(1, getString(R.string.homework_create_str) ))
 
         iv_manager.setOnClickListener {
-            PopupList(requireActivity(), popWindowBeans, iv_manager, 5).builder()
+            PopupClick(requireActivity(), popWindowBeans, iv_manager, 5).builder()
                 .setOnSelectListener { item ->
                     when (item.id) {
                         0 -> {

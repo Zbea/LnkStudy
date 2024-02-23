@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.view.EinkPWInterface
 import android.view.Gravity
 import android.view.PWDrawObjectHandler
 import android.widget.RadioButton
@@ -17,7 +16,6 @@ import kotlinx.android.synthetic.main.ac_drawing_draft.*
  */
 class DraftDrawingActivity:BaseDrawingActivity(){
 
-    private var eink: EinkPWInterface?=null
     private val paths= mutableListOf<String>()
     private val pos= SPUtil.getInt("draft")
 
@@ -32,21 +30,21 @@ class DraftDrawingActivity:BaseDrawingActivity(){
     }
 
     override fun initView() {
-
         val layoutParams=window?.attributes
         layoutParams?.width= Constants.WIDTH
-        layoutParams?.y= DP2PX.dip2px(this,32f)
+        layoutParams?.y= DP2PX.dip2px(this,38f)
         layoutParams?.gravity = Gravity.BOTTOM
         window?.attributes = layoutParams
 
-        eink=v_content?.pwInterFace
+        elik_b=v_content_b.pwInterFace
+
         onClick(pos)
         (rg_group.getChildAt(pos) as RadioButton).isChecked=true
 
         iv_clear?.setOnClickListener {
-            eink?.clearContent(null,true,true)
-            if (eink?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                eink?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+            elik_b ?.clearContent(null,true,true)
+            if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
+                elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
             }
         }
 
@@ -62,10 +60,6 @@ class DraftDrawingActivity:BaseDrawingActivity(){
                     moveToScreen(1)
                 }
             }
-        }
-
-        iv_cancel?.setOnClickListener {
-            finish()
         }
 
         rg_group?.setOnCheckedChangeListener { p0, id ->
@@ -91,8 +85,12 @@ class DraftDrawingActivity:BaseDrawingActivity(){
     }
 
     private fun onClick(index:Int){
-        eink?.setLoadFilePath(paths[index], true)
+        elik_b?.setLoadFilePath(paths[index], true)
         SPUtil.putObj("draft",index)
+    }
+
+    override fun onElikSava_b() {
+        elik_b?.saveBitmap(true) {}
     }
 
 }

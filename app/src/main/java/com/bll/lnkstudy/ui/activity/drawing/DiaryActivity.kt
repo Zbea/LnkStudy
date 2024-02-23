@@ -33,7 +33,6 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik_b=v_content_b.pwInterFace
         elik_b?.addOnTopView(ll_date)
         elik_b?.addOnTopView(tv_digest)
 
@@ -73,27 +72,26 @@ class DiaryActivity:BaseDrawingActivity() {
                     v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
                 }
         }
+    }
 
-        iv_catalog.setOnClickListener {
-            DiaryListDialog(this,nowLong).builder()?.setOnDialogClickListener(object : DiaryListDialog.OnDialogClickListener {
-                override fun onClick(diaryBean: DiaryBean) {
-                    saveDiary()
-                    nowLong=diaryBean.date
-                    changeContent()
+    override fun onCatalog() {
+        DiaryListDialog(this,nowLong).builder()?.setOnDialogClickListener(object : DiaryListDialog.OnDialogClickListener {
+            override fun onClick(diaryBean: DiaryBean) {
+                saveDiary()
+                nowLong=diaryBean.date
+                changeContent()
+            }
+            override fun onDelete(diaryBean: DiaryBean) {
+                for (i in 0.until(diaryBean.size)){
+                    val path=FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date)) + "/${i + 1}.tch"
+                    elik_b?.freeCachePWBitmapFilePath(path, true)
                 }
-                override fun onDelete(diaryBean: DiaryBean) {
-                    for (i in 0.until(diaryBean.size)){
-                        val path=FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date)) + "/${i + 1}.tch"
-                        elik_b?.freeCachePWBitmapFilePath(path, true)
-                    }
-                    FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date))))
-                    DiaryDaoManager.getInstance().delete(diaryBean)
-                    val id=ToolUtils.getDateId(diaryBean.date)
-                    DataUpdateManager.deleteDateUpdate(9,id,1,id)
-                }
-            })
-        }
-
+                FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date))))
+                DiaryDaoManager.getInstance().delete(diaryBean)
+                val id=ToolUtils.getDateId(diaryBean.date)
+                DataUpdateManager.deleteDateUpdate(9,id,1,id)
+            }
+        })
     }
 
     override fun onPageDown() {

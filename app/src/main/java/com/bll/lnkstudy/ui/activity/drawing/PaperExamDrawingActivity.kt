@@ -108,6 +108,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     }
 
     override fun initView() {
+        disMissView(iv_catalog)
         setDrawingTitleClick(false)
         showView(iv_geometry)
         setViewElikUnable(iv_geometry)

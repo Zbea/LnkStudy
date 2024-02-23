@@ -89,7 +89,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_parent.text = parentName
             tv_parent_name.text = parentNickname
             tv_parent_phone.text = parentTel
-            tv_address.text = parentAddr
             if (grade != 0 && grades.size > 0){
                 tv_grade_str.text = DataBeanManager.getGradeStr(grade)
             }

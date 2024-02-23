@@ -35,6 +35,10 @@ class ProgressDialog(var context: Context, val screenPos: Int,val type:Int) {
         tvName?.text=if (type==0) "加载中..." else "网络连接中..."
     }
 
+    fun setCanceledOutside(boolean: Boolean){
+        mDialog?.setCanceledOnTouchOutside(boolean)
+    }
+
     fun show() {
         val activity = context as Activity
         if (!activity.isFinishing && !activity.isDestroyed && mDialog != null && !mDialog!!.isShowing) {

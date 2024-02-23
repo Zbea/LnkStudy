@@ -99,6 +99,8 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         showView(tv_grade,ll_search)
         disMissView(tv_download)
 
+        setDialogOutside(true)
+
         initRecyclerView()
 
         et_search.addTextChangedListener {

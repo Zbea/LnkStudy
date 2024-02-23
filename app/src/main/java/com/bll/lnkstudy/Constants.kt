@@ -27,7 +27,7 @@ class Constants {
     companion object {
 
         const val WIDTH = 1404
-        const val HEIGHT = 1872
+        const val HEIGHT = 1872 //38->52 50->69
         const val halfYear = 180 * 24 * 60 * 60 * 1000
         const val dayLong = 24 * 60 * 60 * 1000
         const val weekTime = 7 * 24 * 60 * 60 * 1000

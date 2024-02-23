@@ -4,6 +4,7 @@
     <dimen name="width">1021dp</dimen>
     <dimen name="drawing_height">1295dp</dimen>
     <dimen name="drawing_bottom_height">38dp</dimen>
+    <dimen name="drawing_book_height">42dp</dimen>
     <dimen name="navigation_height">90dp</dimen>
     <dimen name="navigation_text">32sp</dimen>
     <dimen name="main_content_title_height">60dp</dimen>

@@ -143,7 +143,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
             val parentName=et_parent_name.text.toString().trim()
             val parent=et_parent.text.toString().trim()
             val parentPhone=et_parent_phone.text.toString().trim()
-            val address=et_address.text.toString().trim()
             val birthdayStr=tv_date.text.toString().trim()
 
             if (psd.isEmpty()) {
@@ -200,10 +199,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                         showToast(R.string.toast_input_parent_phone)
                         return@setOnClickListener
                     }
-                    if (address.isEmpty()) {
-                        showToast(R.string.toast_input_parent_address)
-                        return@setOnClickListener
-                    }
                     if (school==0){
                         showToast(R.string.toast_select_school)
                         return@setOnClickListener
@@ -218,7 +213,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                     map["parentName"]=parentName
                     map["parentNickname"]=parent
                     map["parentTel"]=parentPhone
-                    map["parentAddr"]=address
                     map["birthdayTime"]=brithday
                     map["grade"]=grade
                     map["schoolId"]=school

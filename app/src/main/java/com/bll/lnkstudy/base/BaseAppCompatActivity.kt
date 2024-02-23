@@ -208,6 +208,11 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         return getCurrentScreenPanel()
     }
 
+    fun setDialogOutside(boolean: Boolean){
+        mDialog?.setCanceledOutside(boolean)
+        mNetworkDialog?.setCanceledOutside(boolean)
+    }
+
     fun hideNetworkDialog() {
         mNetworkDialog?.dismiss()
     }
