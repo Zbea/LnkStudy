@@ -96,6 +96,7 @@ class MainRightFragment : BaseFragment(), IContractView.IMainRightView, IContrac
     }
 
     override fun lazyLoad() {
+        fetchCommonData()
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             findMessages()
             fetchExam()
@@ -135,6 +136,10 @@ class MainRightFragment : BaseFragment(), IContractView.IMainRightView, IContrac
                     if (files==null){
                         showLoading()
                         loadPapers()
+                        return@setOnClickListener
+                    }
+                    if (DateUtils.date10ToDate13(exam.endTime)<System.currentTimeMillis()){
+                        showToast(2,"已超时")
                         return@setOnClickListener
                     }
                     if (files.size == exam.paths.size) {
@@ -236,6 +241,11 @@ class MainRightFragment : BaseFragment(), IContractView.IMainRightView, IContrac
 
     override fun onRefreshData() {
         lazyLoad()
+        if (examItem!=null){
+            if (DateUtils.date10ToDate13(examItem?.exam?.endTime!!)<System.currentTimeMillis()){
+                disMissView(rl_exam)
+            }
+        }
     }
 
 }

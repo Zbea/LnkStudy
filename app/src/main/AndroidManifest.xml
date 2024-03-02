@@ -184,7 +184,9 @@
             />
         <activity android:name=".ui.activity.ScreenshotListActivity"/>
         <activity android:name=".ui.activity.PaintingDetailsActivity"/>
-        <activity android:name=".ui.activity.date.DateEventActivity"/>
+        <activity android:name=".ui.activity.date.DateEventActivity"
+            android:theme="@style/activityCustom"
+            />
         <activity android:name=".ui.activity.CalenderMyActivity"/>
         <activity android:name=".ui.activity.drawing.CalligraphyDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"

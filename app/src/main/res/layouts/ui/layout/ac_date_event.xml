@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_page"
-    android:paddingTop="@dimen/statusbar_height"
+    android:layout_width="718dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:paddingTop="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingStart="@dimen/dp_50"
+    android:paddingEnd="@dimen/dp_50"
     >
-
-    <include layout="@layout/common_title"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        android:paddingEnd="38dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv_erasure"
             android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="54dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_erasure" />
 
-        <View
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
@@ -53,6 +54,7 @@
             android:id="@+id/iv_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
             android:src="@mipmap/icon_date_arrow_down"
             />
 
@@ -60,7 +62,7 @@
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/v_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="970dp"
         android:background="@mipmap/icon_freenote_bg_1"
         />
 

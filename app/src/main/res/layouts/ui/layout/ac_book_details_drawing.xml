@@ -23,7 +23,7 @@
             android:visibility="gone"
             android:scaleType="fitCenter" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -31,14 +31,22 @@
             >
             <com.android.internal.widget.PreferenceImageView
                 android:id="@+id/v_content_b"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/drawing_book_height"
                 android:scaleType="fitCenter" />
 
+            <View
+                android:id="@+id/ll_show"
+                android:layout_width="@dimen/drawing_book_height"
+                android:layout_alignParentEnd="true"
+                android:layout_height="match_parent"/>
+
             <LinearLayout
+                android:id="@+id/ll_work"
                 android:layout_width="@dimen/drawing_book_height"
                 android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
                 android:orientation="vertical"
                 >
 
@@ -86,6 +94,7 @@
                     android:src="@mipmap/icon_draw_draft" />
 
                 <View
+                    android:id="@+id/ll_hide"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -97,7 +106,7 @@
                     android:layout_height="@dimen/drawing_book_height"
                     android:layout_marginBottom="60dp"
                     android:scaleType="center"
-                    android:src="@mipmap/icon_draw_tool" />
+                    android:src="@mipmap/icon_draw_commit" />
 
 
                 <ImageView
@@ -128,7 +137,7 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </LinearLayout>

@@ -172,7 +172,7 @@
             android:layout_height="match_parent"
             android:scaleType="center"
             android:layout_marginEnd="44dp"
-            android:src="@mipmap/icon_draw_screen" />
+            android:src="@mipmap/icon_draw_commit" />
 
     <ImageView
         android:id="@+id/btn_page_down"

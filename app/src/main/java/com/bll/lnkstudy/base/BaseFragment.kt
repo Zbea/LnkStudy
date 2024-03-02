@@ -10,16 +10,15 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.IAccountInfoView
@@ -38,11 +37,12 @@ import java.io.File
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContractView.IDataUpdateView, IBaseView,IAccountInfoView{
+abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContractView.ICommonView,IContractView.IDataUpdateView, IBaseView,IAccountInfoView{
 
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
     val mAccountInfoPresenter=AccountInfoPresenter(this)
+    val mCommonPresenter= CommonPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -66,6 +66,16 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
 
+    override fun onList(commonData: CommonData) {
+        if (!commonData.grade.isNullOrEmpty())
+            DataBeanManager.grades=commonData.grade
+        if (!commonData.subject.isNullOrEmpty())
+            DataBeanManager.courses=commonData.subject
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
+        if (!commonData.version.isNullOrEmpty())
+            DataBeanManager.bookVersion=commonData.version
+    }
 
     override fun onLogout() {
     }
@@ -433,6 +443,11 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
                 onEventBusMessage(msgFlag)
             }
         }
+    }
+
+    fun fetchCommonData(){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()&&DataBeanManager.grades.size==0)
+            mCommonPresenter.getCommonData()
     }
 
     /**

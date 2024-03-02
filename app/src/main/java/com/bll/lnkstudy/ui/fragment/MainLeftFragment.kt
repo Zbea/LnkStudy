@@ -3,22 +3,27 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.AppUpdateBean
+import com.bll.lnkstudy.mvp.model.CourseItem
+import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
-import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
@@ -45,7 +50,6 @@ import java.io.File
  */
 class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
 
-    private val mCommonPresenter= CommonPresenter(this)
     private val mMainLeftPresenter=MainLeftPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var correctAdapter: MainHomeworkNoticeAdapter? = null
@@ -57,17 +61,6 @@ class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
     private var dateEvents= mutableListOf<DateEventBean>()
     private var updateDialog:AppUpdateDialog?=null
     private var isChange=false
-
-    override fun onList(commonData: CommonData) {
-        if (!commonData.grade.isNullOrEmpty())
-            DataBeanManager.grades=commonData.grade
-        if (!commonData.subject.isNullOrEmpty())
-            DataBeanManager.courses=commonData.subject
-        if (!commonData.typeGrade.isNullOrEmpty())
-            DataBeanManager.typeGrades=commonData.typeGrade
-        if (!commonData.version.isNullOrEmpty())
-            DataBeanManager.bookVersion=commonData.version
-    }
 
     override fun onAppUpdate(item: AppUpdateBean) {
         if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
@@ -103,8 +96,8 @@ class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
     override fun initView() {
         setTitle(R.string.main_main_title)
 
-        popupDates.add(PopupBean(0,getString(R.string.main_plan)))
-        popupDates.add(PopupBean(1,getString(R.string.date_plan)))
+        popupDates.add(PopupBean(0,getString(R.string.date_plan)))
+        popupDates.add(PopupBean(1,getString(R.string.main_plan)))
         popupDates.add(PopupBean(2,getString(R.string.date_day)))
 
         initPlanView()
@@ -123,10 +116,10 @@ class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
             PopupClick(requireActivity(),popupDates,iv_date_more,-20).builder().setOnSelectListener{
                 when (it.id) {
                     0 -> {
-                        customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
+                        customStartActivity(Intent(activity, DatePlanListActivity::class.java))
                     }
                     1->{
-                        customStartActivity(Intent(activity, DatePlanListActivity::class.java))
+                        customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
                     }
                     else -> {
                         customStartActivity(Intent(activity, DateDayListActivity::class.java))
@@ -296,7 +289,7 @@ class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
 
     //下载应用
     private fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk(bean.versionCode.toString())
+        val targetFileStr= FileAddress().getPathApk("launcher")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

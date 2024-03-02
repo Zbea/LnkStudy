@@ -141,16 +141,24 @@ abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
             onPageDown()
         }
 
-        iv_expand.setOnClickListener {
+        iv_expand?.setOnClickListener {
             onChangeExpandContent()
         }
 
-        iv_catalog.setOnClickListener {
+        iv_catalog?.setOnClickListener {
             DrawingCatalogDialog(this, catalogs, 1, pageStart).builder()
                 ?.setOnDialogClickListener { position ->
                     page = position - 1
                     changeContent()
                 }
+        }
+
+        ll_hide?.setOnClickListener {
+            disMissView(ll_work)
+        }
+
+        ll_show?.setOnClickListener {
+            showView(ll_work)
         }
 
     }

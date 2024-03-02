@@ -86,13 +86,13 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     override fun initData() {
         flags=intent.flags
         if (flags==0){
-            commonPresenter.getCommonData()
+            if (DataBeanManager.grades.size==0)
+                commonPresenter.getCommonData()
             mSchoolPresenter.getCommonSchool()
         }
     }
 
     override fun initView() {
-
         when (flags) {
             2 -> {
                 setPageTitle(R.string.edit_password)

@@ -24,10 +24,12 @@ class CalendarSingleDialog(private val context: Context,private val x:Float,priv
         dialog?.setContentView(R.layout.dialog_calendar_single)
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.TOP or Gravity.END
-        layoutParams.x = DP2PX.dip2px(context, x)
-        layoutParams.y = DP2PX.dip2px(context, y)
+        if(x!=0f&&y!=0f){
+            val layoutParams = window.attributes
+            layoutParams.gravity = Gravity.TOP or Gravity.END
+            layoutParams.x = DP2PX.dip2px(context, x)
+            layoutParams.y = DP2PX.dip2px(context, y)
+        }
         dialog?.show()
 
         val tv_year = dialog?.findViewById<TextView>(R.id.tv_year)

@@ -28,7 +28,6 @@ class DateEventActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        setPageTitle("日程")
         elik_b = v_content.pwInterFace
         setContentView()
 

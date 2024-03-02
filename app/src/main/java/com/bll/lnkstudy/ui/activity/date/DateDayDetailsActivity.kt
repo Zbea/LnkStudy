@@ -5,7 +5,7 @@ import android.view.View
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.DateDialog
+import com.bll.lnkstudy.dialog.CalendarSingleDialog
 import com.bll.lnkstudy.dialog.PopupDateDayRemind
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
@@ -24,7 +24,6 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
     private var dateEventBean: DateEventBean? = null
     private var oldEvent: DateEventBean?=null
     private var popRemind: PopupDateDayRemind? = null
-    private var dateDialog:DateDialog?=null
     private var dayStr=""
 
     override fun layoutId(): Int {
@@ -60,22 +59,17 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
         setPageSetting(R.string.save)
 
         tv_date.setOnClickListener {
-            if (dateDialog==null){
-                dateDialog=DateDialog(this).builder()
-                dateDialog?.setOnDateListener { dateStr, dateTim ->
-                    if (dateTim >= nowDate) {
-                        dateEventBean?.dayLong = dateTim
-                        dateEventBean?.dayLongStr = dateStr
-                        tv_date.text = dateStr
-                        tv_countdown.text = "还有" + DateUtils.sublongToDay(dateTim, nowDate) + "天"
-                    }
-                    else{
-                        showToast("当前时间设置无效")
-                    }
+            CalendarSingleDialog(this,0f,0f).builder().setOnDateListener{
+                if (it >nowDate) {
+                    val dayLong=it+9*60*60*1000
+                    dateEventBean?.dayLong = dayLong
+                    dateEventBean?.dayLongStr = DateUtils.longToStringDataNoHour(dayLong)
+                    tv_date.text = dateEventBean?.dayLongStr
+                    tv_countdown.text = "还有" + DateUtils.sublongToDay(it, nowDate) + "天"
                 }
-            }
-            else{
-                dateDialog?.show()
+                else{
+                    showToast("当前时间设置无效")
+                }
             }
         }
 

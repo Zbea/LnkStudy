@@ -235,7 +235,7 @@ public class CalendarReminderUtils {
             return ;
         }
 
-        int leadTime=day*24*60+3*60; //(上午九点)
+        int leadTime=day*24*60; //(上午九点)
         //事件提醒的设定
         ContentValues values = new ContentValues();
         values.put(CalendarContract.Reminders.EVENT_ID, ContentUris.parseId(newEvent));

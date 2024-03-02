@@ -126,6 +126,20 @@ class PaperFragment : BaseFragment(), IContractView.IPaperView {
         val courses= mutableListOf<String>()
         if (courseItems.size > 0) {
             for (item in courseItems){
+                val typeId=item.userId.toInt()+10000+mUser?.grade!!
+                if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
+                    val typeItem=PaperTypeBean()
+                    typeItem.name="学校考试卷"
+                    typeItem.course=item.subject
+                    typeItem.date=System.currentTimeMillis()
+                    typeItem.grade=mUser?.grade!!
+                    typeItem.typeId=typeId
+                    typeItem.userId=item.userId
+                    PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
+                }
+            }
+
+            for (item in courseItems){
                 if (!courses.contains(item.subject)){
                     courses.add(item.subject)
                 }

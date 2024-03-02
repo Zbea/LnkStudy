@@ -52,6 +52,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         iv_draft.setImageResource(R.mipmap.icon_draw_change)
+        iv_btn.setImageResource(R.mipmap.icon_draw_more)
         changeExpandView()
         changeContent()
 

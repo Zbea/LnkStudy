@@ -68,6 +68,7 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
 
     override fun lazyLoad() {
         pageIndex=1
+        fetchCommonData()
         if(NetworkUtil(requireActivity()).isNetworkConnected()){
             mPresenter.getType()
         }
@@ -124,9 +125,11 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun fetchData() {
-        lists= (map[pageIndex] as MutableList<ItemList>?)!!
-        mAdapter?.setNewData(lists)
-        tv_page_current.text=pageIndex.toString()
+        if (map[pageIndex]!=null){
+            lists= (map[pageIndex] as MutableList<ItemList>?)!!
+            mAdapter?.setNewData(lists)
+            tv_page_current.text=pageIndex.toString()
+        }
     }
 
     override fun onNetworkConnectionSuccess() {
