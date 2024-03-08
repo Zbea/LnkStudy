@@ -63,7 +63,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     override fun initView() {
-        tv_xdmoney.text=getString(R.string.xd)+mUser?.balance
+        tv_xdmoney.text=getString(R.string.xd)+"  "+mUser?.balance
 
         tv_buy.setOnClickListener {
             if (xdList.size>0){

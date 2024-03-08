@@ -28,10 +28,10 @@ public class CalendarReminderUtils {
     private static String CALENDER_EVENT_URL = "content://com.android.calendar/events";
     private static String CALENDER_REMINDER_URL = "content://com.android.calendar/reminders";
 
-    private static String CALENDARS_NAME = "boohee";
-    private static String CALENDARS_ACCOUNT_NAME = "BOOHEE@boohee.com";
-    private static String CALENDARS_ACCOUNT_TYPE = "com.android.boohee";
-    private static String CALENDARS_DISPLAY_NAME = "BOOHEE";
+    private static String CALENDARS_NAME = "LnkCalender";
+    private static String CALENDARS_ACCOUNT_NAME = "lnkstudy";
+    private static String CALENDARS_ACCOUNT_TYPE = "com.bll.lnkstudy";
+    private static String CALENDARS_DISPLAY_NAME = "BLL";
 
     /**
      * 检查是否已经添加了日历账户，如果没有添加先添加一个日历账户再查询
@@ -157,16 +157,6 @@ public class CalendarReminderUtils {
         Uri uriExtended = context.getContentResolver().insert(extendedPropUri, extendedProperties);
         if (uriExtended == null) { //添加事件提醒失败直接返回
             return ;
-        }
-
-        //事件提醒的设定
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Reminders.EVENT_ID, ContentUris.parseId(newEvent));
-        values.put(CalendarContract.Reminders.MINUTES, 0);// 提前多少分钟提醒
-        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-        Uri uri = context.getContentResolver().insert(Uri.parse(CALENDER_REMINDER_URL), values);
-        if (uri == null) { //添加事件提醒失败直接返回
-            return;
         }
 
     }

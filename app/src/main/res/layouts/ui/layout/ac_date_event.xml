@@ -4,8 +4,8 @@
     android:layout_width="718dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingBottom="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_20"
+    android:paddingBottom="@dimen/dp_20"
     android:paddingStart="@dimen/dp_50"
     android:paddingEnd="@dimen/dp_50"
     >
@@ -63,7 +63,7 @@
         android:id="@+id/v_content"
         android:layout_width="match_parent"
         android:layout_height="970dp"
-        android:background="@mipmap/icon_freenote_bg_1"
+        android:background="@mipmap/icon_date_event_bg"
         />
 
 

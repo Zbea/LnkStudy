@@ -52,7 +52,7 @@ public class DateUtils {
         long sub=date-now;
         int day = 0;
         if (sub<0){
-            day=-1;
+            day=0;
         }else {
             day= (int) Math.ceil (sub/daylong);
         }

@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.utils;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;

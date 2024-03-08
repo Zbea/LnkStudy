@@ -10,7 +10,7 @@
         android:id="@+id/et_content"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_30"
         android:gravity="top"
         android:hint="@string/toast_input_message"
         android:padding="@dimen/dp_10"
@@ -19,26 +19,11 @@
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_black_stroke_5dp_corner"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_22"
-        android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_30"
-        android:text="@string/message_teacher_selector"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_50"
         android:layout_marginBottom="@dimen/dp_10"
         android:gravity="center"
         android:orientation="horizontal">
