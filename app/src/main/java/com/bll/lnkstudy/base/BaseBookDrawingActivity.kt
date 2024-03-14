@@ -119,7 +119,7 @@ abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
     fun initCommonTitle() {
 
         iv_tool?.setOnClickListener {
-            showDialogAppTool(2)
+            showDialogAppTool()
         }
 
         iv_erasure?.setOnClickListener {
@@ -500,12 +500,11 @@ abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
             currentDrawObj=type
     }
 
-
     /**
      * 工具栏弹窗
      */
-    private fun showDialogAppTool(location:Int){
-        AppToolDialog(this,1,getCurrentScreenPos(),location).builder()?.setDialogClickListener{
+    private fun showDialogAppTool(){
+        AppToolDialog(this,1,getCurrentScreenPos(),2).builder()?.setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -559,6 +558,12 @@ abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
+     * 单双屏切换
+     */
+    open fun onChangeExpandContent(){
+    }
+
+    /**
      * 设置擦除
      */
     private fun onErasure(){
@@ -600,11 +605,7 @@ abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
         }
     }
 
-    /**
-     * 单双屏切换
-     */
-    open fun onChangeExpandContent(){
-    }
+
 
     /**
      * 显示view

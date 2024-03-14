@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -56,11 +57,21 @@ class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
             bindToRecyclerView(rv_list)
             rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 30f)))
             setOnItemClickListener { _, _, position ->
-                val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
-                val bundle= Bundle()
-                bundle.putSerializable("item", data[position])
-                intent.putExtra("bundle", bundle)
-                customStartActivity(intent)
+                if (MethodManager.getSchoolAllowLook(1)){
+                    showToast(1,"学校该时间暂时不允许查看")
+                }
+                else{
+                    if (MethodManager.getParentAllowLook(1)){
+                        showToast(1,"家长该时间暂时不允许查看")
+                    }
+                    else{
+                        val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
+                        val bundle= Bundle()
+                        bundle.putSerializable("item", data[position])
+                        intent.putExtra("bundle", bundle)
+                        customStartActivity(intent)
+                    }
+                }
             }
         }
 

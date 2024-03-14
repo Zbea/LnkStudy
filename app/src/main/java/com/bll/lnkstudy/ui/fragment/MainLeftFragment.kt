@@ -17,10 +17,7 @@ import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.AppUpdateBean
-import com.bll.lnkstudy.mvp.model.CourseItem
-import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.TeachingVideoType
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
@@ -167,6 +164,28 @@ class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
                 disMissView(iv_calender)
             }
         }
+
+        val permissionTimeBean=PermissionTimeBean()
+        permissionTimeBean.endTime=15*60*60*1000
+        permissionTimeBean.startTime=10*60*60*1000+30*60*1000
+        permissionTimeBean.weeks= arrayListOf(7,8)
+
+        val item =PermissionSettingBean()
+        item.isAllow=false
+        item.permissions= arrayListOf(permissionTimeBean)
+
+        SPUtil.putObj("parentPermissionVideo",item)
+
+        val permissionTimesBean=PermissionTimesBean()
+        permissionTimesBean.startTime= longArrayOf(9*60*60*1000,14*60*60*1000)
+        permissionTimesBean.endTime= longArrayOf(12*60*60*1000,17*60*60*1000)
+        permissionTimesBean.weeks= arrayListOf(2,3,4,5,6)
+
+        val item2 =PermissionSettingBean()
+        item2.isAllow=false
+        item2.permissionTimesBeans= arrayListOf(permissionTimesBean)
+        SPUtil.putObj("schoolPermissionBook",item2)
+        SPUtil.putObj("schoolPermissionVideo",item2)
     }
 
     override fun lazyLoad() {

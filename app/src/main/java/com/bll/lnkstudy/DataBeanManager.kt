@@ -15,6 +15,8 @@ object DataBeanManager {
     var typeGrades= mutableListOf<ItemList>()
     var courses= mutableListOf<ItemList>()
     var bookVersion= mutableListOf<ItemList>()
+    var isParentAllowBook=true
+    var isParentAllowVideo=true
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
@@ -30,9 +32,6 @@ object DataBeanManager {
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
         mContext.getString(R.string.textbook_tab_other),mContext.getString(R.string.textbook_tab_old)
-    )
-    val homeworkBookType = arrayOf(
-        mContext.getString(R.string.homework_my_book),mContext.getString(R.string.homework_other_book)
     )
     val searchType = arrayOf(
         mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),

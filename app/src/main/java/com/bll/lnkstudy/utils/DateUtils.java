@@ -367,6 +367,10 @@ public class DateUtils {
         return String.valueOf(time/(24*60*60*1000));
     }
 
+    public static long getCurrentHourInMillis(){
+        return System.currentTimeMillis()-getStartOfDayInMillis();
+    }
+
     public static long getStartOfDayInMillis() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);

@@ -32,6 +32,9 @@ class Constants {
         const val dayLong = 24 * 60 * 60 * 1000
         const val weekTime = 7 * 24 * 60 * 60 * 1000
         const val DEFAULT_PAGE = -1
+        const val SCREEN_LEFT=1//左屏
+        const val SCREEN_RIGHT=2//右屏
+        const val SCREEN_FULL=3//全屏
 
 //                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
@@ -116,6 +119,8 @@ class Constants {
 
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
+
+            const val INTENT_SCREEN_LABEL="android.intent.extra.LAUNCH_SCREEN"
     }
 
 }

@@ -12,6 +12,9 @@ import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.PermissionSettingBean;
+import com.bll.lnkstudy.mvp.model.PermissionTimeBean;
+import com.bll.lnkstudy.mvp.model.PermissionTimesBean;
 import com.bll.lnkstudy.mvp.model.PrivacyPassword;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
@@ -31,7 +34,9 @@ import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
 import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
+import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.SPUtil;
+import com.bll.lnkstudy.utils.SToast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -77,6 +82,15 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, BookBean bookBean,int screenPos)  {
+        if (MethodManager.getSchoolAllowLook(0)){
+            SToast.showText(1,"家长暂时不允许查看");
+            return;
+        }
+        if (MethodManager.getParentAllowLook(0)){
+            SToast.showText(1,"家长暂时不允许查看");
+            return;
+        }
+
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
         User user=SPUtil.INSTANCE.getObj("user", User.class);
 
@@ -88,6 +102,8 @@ public class MethodManager {
         List<AppBean> toolApps= getAppTools(context,1);
         JSONArray result =new JSONArray();
         for (AppBean item :toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("appName", item.appName);
@@ -321,6 +337,92 @@ public class MethodManager {
      */
     public static PrivacyPassword getPrivacyPassword(){
         return SPUtil.INSTANCE.getObj(user.accountId+"PrivacyPassword", PrivacyPassword.class);
+    }
+
+    /**
+     * 获取家长是否允许学生查看 返回false可以查看 返回true不能查看
+     * @param type 0书架 1义教
+     * @return
+     */
+    public static boolean getParentAllowLook(int type){
+        boolean isAllow = false;
+        long currentTime=DateUtils.getCurrentHourInMillis();
+        PermissionSettingBean permissionSettingBean;
+        if (type==0){
+            permissionSettingBean=SPUtil.INSTANCE.getObj("parentPermissionBook",PermissionSettingBean.class);
+        }
+        else {
+            permissionSettingBean=SPUtil.INSTANCE.getObj("parentPermissionVideo",PermissionSettingBean.class);
+        }
+        if (permissionSettingBean!=null){
+            if (permissionSettingBean.isAllow){
+                return true;
+            }
+            else {
+                if (permissionSettingBean.permissions.isEmpty()){
+                    return false;
+                }
+                else {
+                    for (int i = 0; i < permissionSettingBean.permissions.size(); i++) {
+                        PermissionTimeBean permissionTimeBean= permissionSettingBean.permissions.get(i);
+                        if (permissionTimeBean.weeks.contains(DateUtils.getWeek(System.currentTimeMillis()))){
+                            isAllow= currentTime < permissionTimeBean.endTime && currentTime > permissionTimeBean.startTime;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            return false;
+        }
+        return isAllow;
+    }
+
+
+    /**
+     * 获取学生是否允许学生查看 返回false可以查看 返回true不能查看
+     * @param type 0书架 1义教
+     * @return
+     */
+    public static boolean getSchoolAllowLook(int type){
+        boolean isAllow = false;
+        long currentTime=DateUtils.getCurrentHourInMillis();
+        PermissionSettingBean permissionSettingBean;
+        if (type==0){
+            permissionSettingBean=SPUtil.INSTANCE.getObj("schoolPermissionBook",PermissionSettingBean.class);
+        }
+        else {
+            permissionSettingBean=SPUtil.INSTANCE.getObj("schoolPermissionVideo",PermissionSettingBean.class);
+        }
+        if (permissionSettingBean!=null){
+            if (permissionSettingBean.isAllow){
+                return true;
+            }
+            else {
+                if (permissionSettingBean.permissionTimesBeans.isEmpty()){
+                    return false;
+                }
+                else {
+                    for (int i = 0; i < permissionSettingBean.permissionTimesBeans.size(); i++) {
+                        PermissionTimesBean item= permissionSettingBean.permissionTimesBeans.get(i);
+                        if (item.weeks.contains(DateUtils.getWeek(System.currentTimeMillis()))){
+                            for (int j = 0; j < item.startTime.length; j++) {
+                                long startTime=item.startTime[j];
+                                long endTime=item.endTime[j];
+                                if (currentTime>=startTime&&currentTime<=endTime){
+                                    isAllow=true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            return false;
+        }
+        return isAllow;
     }
 
 }

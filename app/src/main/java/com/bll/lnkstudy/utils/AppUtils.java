@@ -21,6 +21,7 @@ import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
+import com.bll.lnkstudy.Constants;
 import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.mvp.model.AppBean;
 
@@ -312,7 +313,7 @@ public class AppUtils {
         if (isAvailable(context,appPackageName)){
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN",screen);
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL,screen);
             context.startActivity(intent);
         }
     }
