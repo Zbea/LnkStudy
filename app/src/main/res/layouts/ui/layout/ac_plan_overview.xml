@@ -100,7 +100,7 @@
         />
 
     <include
-        layout="@layout/common_drawing_bottom_one"
+        layout="@layout/common_drawing_tool_bottom"
         />
 
 </LinearLayout>

@@ -33,7 +33,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     private var type=0
     private var typeStr = ""//类别
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
-    private val presenter = BookStorePresenter(this,1)
+    private lateinit var presenter : BookStorePresenter
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
     private var grade = 0
@@ -76,6 +76,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     }
 
     override fun initData() {
+        initChangeData()
         pageSize=12
         type = intent.flags
         typeStr=DataBeanManager.bookStoreTypes()[type-1].desc
@@ -93,6 +94,9 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         }
     }
 
+    override fun initChangeData() {
+        presenter = BookStorePresenter(this,getCurrentScreenPos())
+    }
 
     override fun initView() {
         setPageTitle(typeStr)

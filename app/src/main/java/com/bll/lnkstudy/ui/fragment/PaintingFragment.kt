@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Handler
 import com.bll.lnkstudy.*
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.manager.PaintingTypeDaoManager
@@ -24,7 +24,7 @@ import java.io.File
 /**
  * 书画
  */
-class PaintingFragment : BaseFragment(){
+class PaintingFragment : BaseMainFragment(){
 
     private var typeId = 0//类型
     private var isLocalDrawing=false

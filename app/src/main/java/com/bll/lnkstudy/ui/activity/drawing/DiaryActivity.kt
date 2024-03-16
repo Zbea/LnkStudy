@@ -13,7 +13,7 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_diary.*
-import kotlinx.android.synthetic.main.common_drawing_bottom_one.*
+import kotlinx.android.synthetic.main.common_drawing_tool_bottom.*
 import java.io.File
 
 class DiaryActivity:BaseDrawingActivity() {
@@ -36,25 +36,25 @@ class DiaryActivity:BaseDrawingActivity() {
         elik_b?.addOnTopView(ll_date)
         elik_b?.addOnTopView(tv_digest)
 
-        changeContent()
+        onChangeContent()
 
         iv_up.setOnClickListener {
             saveDiary()
             nowLong -= Constants.dayLong
-            changeContent()
+            onChangeContent()
         }
 
         iv_down.setOnClickListener {
             saveDiary()
             nowLong += Constants.dayLong
-            changeContent()
+            onChangeContent()
         }
 
         tv_date.setOnClickListener {
             CalendarSingleDialog(this).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
-                changeContent()
+                onChangeContent()
             }
         }
 
@@ -79,7 +79,7 @@ class DiaryActivity:BaseDrawingActivity() {
             override fun onClick(diaryBean: DiaryBean) {
                 saveDiary()
                 nowLong=diaryBean.date
-                changeContent()
+                onChangeContent()
             }
             override fun onDelete(diaryBean: DiaryBean) {
                 for (i in 0.until(diaryBean.size)){
@@ -106,10 +106,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
     }
 
-    /**
-     * 切换日记
-     */
-    private fun changeContent(){
+    private fun onChangeContent() {
         images.clear()
         posImage=0
         diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)

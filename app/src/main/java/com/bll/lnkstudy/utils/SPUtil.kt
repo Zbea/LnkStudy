@@ -57,18 +57,18 @@ object SPUtil {
     }
 
     fun putString(key: String, value: String) {
-        map[key] = value
+        map[getUserId()+ key] = value
         Schedulers.io().run {
-            editor.putString(key, value).apply()
+            editor.putString(getUserId()+ key, value).apply()
         }
     }
 
     fun getString(key: String): String {
-        var s = map[key]
+        var s = map[getUserId()+ key]
         if (s == null) {
-            s = sharedPreferences.getString(key, "")
+            s = sharedPreferences.getString(getUserId()+ key, "")
             if (s != null) {
-                map[key] = s
+                map[getUserId()+ key] = s
             }
         }
         return s as String
@@ -95,41 +95,45 @@ object SPUtil {
     }
 
     fun putInt(key: String, value: Int) {
-        map[key] = value
+        map[getUserId()+ key] = value
         Schedulers.io().run {
-            editor.putInt(key, value).apply()
+            editor.putInt(getUserId()+ key, value).apply()
         }
     }
 
     fun getInt(key: String): Int {
-        var result = map[key]
+        var result = map[getUserId()+ key]
         if (result == null) {
-            result = sharedPreferences.getInt(key, 0)
-            map[key] = result
+            result = sharedPreferences.getInt(getUserId()+ key, 0)
+            map[getUserId()+ key] = result
         }
         return result as Int
     }
 
     fun putBoolean(key: String, value: Boolean) {
-        map[key] = value
+        map[getUserId()+ key] = value
         Schedulers.io().run {
-            editor.putBoolean(key, value).apply()
+            editor.putBoolean(getUserId()+ key, value).apply()
         }
     }
 
     fun getBoolean(key: String): Boolean {
-        var result = map[key]
+        var result = map[getUserId()+ key]
         if (result == null) {
-            result = sharedPreferences.getBoolean(key, false)
-            map[key] = result
+            result = sharedPreferences.getBoolean(getUserId()+ key, false)
+            map[getUserId()+ key] = result
         }
         return result as Boolean
     }
 
     fun putObj(key: String, any: Any) {
-        map[key] = any
+        var keyStr=key
+        if (key != "user"){
+            keyStr=getUserId()+ key
+        }
+        map[keyStr] = any
         Schedulers.io().run {
-            val file = File(rootFile, key)
+            val file = File(rootFile, keyStr)
             if (file.exists()) {
                 file.delete()
             }
@@ -139,14 +143,18 @@ object SPUtil {
 
 
     fun <T> getObj(key: String, cls: Class<T>): T? {
-        var result = map[key]
+        var keyStr=key
+        if (key != "user"){
+            keyStr=getUserId()+ key
+        }
+        var result = map[keyStr]
         if (result == null) {
-            val file = File(rootFile, key)
+            val file = File(rootFile, keyStr)
             if (file.exists()) {
                 val text = file.readText()
                 result = gson.fromJson(text, cls)
                 if (result != null) {
-                    map[key] = result
+                    map[keyStr] = result
                 }
             }
             else{
@@ -157,14 +165,16 @@ object SPUtil {
     }
 
     fun removeObj(key: String): Any? {
-        val file = File(rootFile, key)
+        var keyStr=key
+        if (key != "user"){
+            keyStr=getUserId()+ key
+        }
+        val file = File(rootFile, keyStr)
         if (file.exists()) {
             file.delete()
         }
-        return map.remove(key)
+        return map.remove(keyStr)
     }
-
-
 
     /**
      * 序列化对象

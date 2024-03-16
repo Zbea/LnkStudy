@@ -15,8 +15,6 @@ object DataBeanManager {
     var typeGrades= mutableListOf<ItemList>()
     var courses= mutableListOf<ItemList>()
     var bookVersion= mutableListOf<ItemList>()
-    var isParentAllowBook=true
-    var isParentAllowVideo=true
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,

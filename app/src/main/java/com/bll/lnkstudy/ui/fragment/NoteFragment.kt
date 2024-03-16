@@ -6,7 +6,7 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
@@ -30,7 +30,7 @@ import java.io.File
 /**
  * 笔记
  */
-class NoteFragment : BaseFragment(){
+class NoteFragment : BaseMainFragment(){
 
     private var popWindowBeans = mutableListOf<PopupBean>()
     private var noteTypes = mutableListOf<Notebook>()

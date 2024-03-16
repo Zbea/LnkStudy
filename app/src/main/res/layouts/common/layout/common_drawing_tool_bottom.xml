@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/drawing_bottom_height"
+    android:layout_height="@dimen/drawing_too_bottom_height"
     android:gravity="center"
     >
 
@@ -21,7 +21,7 @@
             android:src="@mipmap/icon_draw_erasure" />
 
         <ImageView
-            android:id="@+id/btn_page_up"
+            android:id="@+id/iv_page_up"
             android:layout_width="32dp"
             android:layout_height="match_parent"
             android:scaleType="center"
@@ -69,7 +69,7 @@
             android:src="@mipmap/icon_draw_change" />
 
         <ImageView
-            android:id="@+id/btn_page_down"
+            android:id="@+id/iv_page_down"
             android:layout_width="32dp"
             android:layout_height="match_parent"
             android:scaleType="center"

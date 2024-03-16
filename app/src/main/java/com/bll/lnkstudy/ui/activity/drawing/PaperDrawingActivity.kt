@@ -13,7 +13,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 
@@ -51,16 +51,13 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     }
 
     override fun initView() {
-        disMissView(iv_btn)
-        setDrawingTitleClick(false)
+        disMissView(iv_draft,iv_commit)
         setPWEnabled(false)
         if (papers.size>0){
             if (currentPosition==DEFAULT_PAGE)
                 currentPosition=papers.size-1
-            changeContent()
+            onChangeContent()
         }
-        changeExpandView()
-
     }
 
     override fun onCatalog() {
@@ -71,11 +68,11 @@ class PaperDrawingActivity: BaseDrawingActivity(){
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,list).builder()?.setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
             if (currentPosition!=position){
                 currentPosition = papers[position].index
                 page = 0
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -83,17 +80,17 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     override fun onPageUp() {
         if (isExpand&&page>1){
             page-=2
-            changeContent()
+            onChangeContent()
         }
         else if (!isExpand&&page>0){
             page-=1
-            changeContent()
+            onChangeContent()
         }
         else{
             if (currentPosition>0){
                 currentPosition-=1
                 page=0
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -101,17 +98,17 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     override fun onPageDown() {
         if (isExpand&&page+2<paperContentCount){
             page+=2
-            changeContent()
+            onChangeContent()
         }
         else if(!isExpand&&page+1<paperContentCount){
             page+=1
-            changeContent()
+            onChangeContent()
         }
         else{
             //切换目录
             currentPosition+=1
             page=0
-            changeContent()
+            onChangeContent()
         }
     }
 
@@ -125,8 +122,8 @@ class PaperDrawingActivity: BaseDrawingActivity(){
             }
         }
         moveToScreen(isExpand)
-        changeExpandView()
-        changeContent()
+        onChangeExpandView()
+        onChangeContent()
     }
 
     /**
@@ -137,9 +134,7 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         elik_b?.setPWEnabled(boolean)
     }
 
-
-    //内容切换
-    private fun changeContent(){
+    private fun onChangeContent(){
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
@@ -147,26 +142,23 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
         paperContentCount=paperContents.size
 
-        tv_title_a.text=paper?.title
-        tv_title_b.text=paper?.title
-
         if (isExpand){
             setElikLoadPath(page,elik_a!!,v_content_a)
             tv_page_a.text="${paperContents[page].page+1}"
 
             if (page+1<paperContentCount){
                 setElikLoadPath(page+1,elik_b!!,v_content_b)
-                tv_page_b.text="${paperContents[page+1].page+1}"
+                tv_page.text="${paperContents[page+1].page+1}"
             }
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
-                tv_page_b.text=""
+                tv_page.text=""
             }
         }
         else{
             setElikLoadPath(page,elik_b!!,v_content_b)
-            tv_page_b.text="${paperContents[page].page+1}"
+            tv_page.text="${paperContents[page].page+1}"
         }
     }
 

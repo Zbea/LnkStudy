@@ -7,7 +7,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.MessageSendDialog
-import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -20,10 +19,9 @@ import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
-    private var mMessagePresenter= MessagePresenter(this,2)
+    private lateinit var mMessagePresenter:MessagePresenter
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mAdapter:MessageAdapter?=null
-    private var groups= mutableListOf<ClassGroup>()
 
     override fun onList(message: MessageList) {
         setPageNumber(message.total)
@@ -44,6 +42,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
+        initChangeData()
         pageSize=10
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
@@ -51,6 +50,10 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
         else{
             showNetworkDialog()
         }
+    }
+
+    override fun initChangeData() {
+        mMessagePresenter= MessagePresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

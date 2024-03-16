@@ -65,9 +65,9 @@
 
     <include
         android:id="@+id/ll_bottom"
-        layout="@layout/common_drawing_bottom_one"
+        layout="@layout/common_drawing_tool_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_bottom_height"
+        android:layout_height="@dimen/drawing_too_bottom_height"
         android:layout_alignParentBottom="true"
         />
 

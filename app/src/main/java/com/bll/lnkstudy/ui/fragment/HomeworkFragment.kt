@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantLock
  * 作业分为老师作业本、家长作业本（不同的接口处理）
  * （作业分类、作业内容、作业卷目录在创建以及数据更新时候都需要创建、修改增量更新）
  */
-class HomeworkFragment : BaseFragment(), IHomeworkView {
+class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     private val lock = ReentrantLock()
     private var countDownTasks: CountDownLatch?=null //异步完成后操作
     private val mPresenter = HomeworkPresenter(this)

@@ -288,7 +288,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
         fetchData()
     }
 
-    override fun refreshData() {
+    override fun onRefreshData() {
         fetchData()
     }
 

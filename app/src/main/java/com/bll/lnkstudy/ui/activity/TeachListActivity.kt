@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.common_title.*
 
 class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView {
 
-    private val mPresenter=TeachingVideoPresenter(this,1)
+    private lateinit var mPresenter:TeachingVideoPresenter
     private var flags=0
     private var item:ItemList?=null
     private var grade=0//年级
@@ -50,6 +50,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     }
 
     override fun initData() {
+        initChangeData()
         pageSize=20
         flags=intent.flags
         item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
@@ -76,6 +77,10 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         else{
             showNetworkDialog()
         }
+    }
+
+    override fun initChangeData() {
+        mPresenter=TeachingVideoPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

@@ -14,31 +14,23 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.entity.MultiItemEntity
 
 /**
- * type=0绘图目录 type=1书籍目录
+ * type=0单屏 type=1书籍目录
  */
 class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:Int=0,val startCount:Int) {
 
     private var dialog:Dialog?=null
-
     constructor(context: Context, list: List<Any>):this(context, list, 0, 0)
 
-    fun builder(): DrawingCatalogDialog? {
+    fun builder(): DrawingCatalogDialog {
 
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_drawing_catalog)
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        if (type==1){
-            layoutParams.gravity = Gravity.BOTTOM or  Gravity.END
-            layoutParams.y=DP2PX.dip2px(context,5f)
-            layoutParams.x=DP2PX.dip2px(context,42f)
-        }
-        else{
-            layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
-            layoutParams.y=DP2PX.dip2px(context,38f)
-            layoutParams.x=DP2PX.dip2px(context,5f)
-        }
+        layoutParams.gravity = Gravity.BOTTOM or  Gravity.END
+        layoutParams.y=DP2PX.dip2px(context,5f)
+        layoutParams.x=DP2PX.dip2px(context,42f)
         dialog?.show()
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)

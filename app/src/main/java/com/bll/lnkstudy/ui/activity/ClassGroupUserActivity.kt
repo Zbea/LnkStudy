@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.ac_classgroup_user.*
 
 class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
 
-    private var presenter = ClassGroupPresenter(this,2)
+    private lateinit var presenter :ClassGroupPresenter
     private var mAdapter: ClassGroupUserAdapter? = null
     private var mClassGroup: ClassGroup? = null
     private var users= mutableListOf<ClassGroupUser>()
@@ -44,11 +44,16 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
     }
 
     override fun initData() {
+        initChangeData()
         mClassGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
         val map=HashMap<String,Any>()
         map["classId"]=mClassGroup?.classId!!
         map["classGroupId"]=mClassGroup?.classGroupId!!
         presenter.getClassGroupUser(map)
+    }
+
+    override fun initChangeData() {
+        presenter = ClassGroupPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

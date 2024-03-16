@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_teach.*
 /**
  * 教学
  */
-class TeachFragment : BaseFragment(),IContractView.ITeachingVideoView {
+class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     private val mPresenter=TeachingVideoPresenter(this,1)
     private var mAdapter: TeachCourseAdapter? = null

@@ -7,8 +7,9 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.DrawingManageDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
-import com.bll.lnkstudy.dialog.PopupDrawingManage
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -18,19 +19,19 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class PaintingDrawingActivity : BaseDrawingActivity() {
 
     private var grade=0
     private var paintingTypeBean: PaintingTypeBean?=null
-    private var popupDrawingManage: PopupDrawingManage? = null
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
     private var page = 0//页码
     private var resId=0
+    private val pops= mutableListOf<PopupBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -40,6 +41,9 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("painting") as PaintingTypeBean
         grade=paintingTypeBean?.grade!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
+
+        pops.add(PopupBean(0, getString(R.string.delete), false))
+        pops.add(PopupBean(1, getString(R.string.revocation), false))
 
         if (paintingLists.size > 0) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
@@ -52,12 +56,42 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         iv_draft.setImageResource(R.mipmap.icon_draw_change)
-        iv_btn.setImageResource(R.mipmap.icon_draw_more)
-        changeExpandView()
-        changeContent()
+        iv_commit.setImageResource(R.mipmap.icon_draw_more)
+        onChangeContent()
 
-        iv_btn.setOnClickListener {
-            showPopWindowBtn()
+        tv_page_a.setOnClickListener {
+            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder()?.setOnDialogClickListener { string ->
+                paintingDrawingBean_a?.title = string
+                paintingLists[page-1].title = string
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+                DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
+            }
+        }
+
+        tv_page.setOnClickListener {
+            var type=getCurrentScreenPos()
+            if (type==3)
+                type=2
+            InputContentDialog(this,type,paintingDrawingBean?.title!!).builder()?.setOnDialogClickListener { string ->
+                paintingDrawingBean?.title = string
+                paintingLists[page].title = string
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
+                DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+            }
+        }
+
+        iv_commit.setOnClickListener {
+            DrawingManageDialog(this, pops).builder().setOnSelectListener { item ->
+                when(item.id){
+                    0->{
+                        deleteContent()
+                    }
+                    1->{
+                        resId=0
+                        setBg()
+                    }
+                }
+            }
         }
 
         iv_draft.setOnClickListener {
@@ -78,11 +112,10 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
             if (page != position) {
                 page = position
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -91,16 +124,16 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         if(isExpand){
             if (page>2){
                 page-=2
-                changeContent()
+                onChangeContent()
             }
             else if (page==2){//当页面不够翻两页时
                 page=1
-                changeContent()
+                onChangeContent()
             }
         }else{
             if (page>0){
                 page-=1
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -131,42 +164,31 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 page += 1
             }
         }
-        changeContent()
-    }
-
-    override fun onChangeExpandNewContent() {
-        if (paintingLists.size==1){
-            newPaintingContent()
-        }
-        onChangeExpandContent()
+        onChangeContent()
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
+        if (paintingLists.size==1&&isExpand){
+            newPaintingContent()
+        }
         moveToScreen(isExpand)
-        changeExpandView()
-        changeContent()
+        onChangeExpandView()
+        onChangeContent()
     }
 
-    //设置背景图
-    private fun setBg(){
-        v_content_a.setImageResource(resId)
-        v_content_b.setImageResource(resId)
-    }
-
-    //翻页内容更新切换
-    private fun changeContent() {
+    private fun onChangeContent() {
         paintingDrawingBean = paintingLists[page]
 
         if (isExpand) {
             if (page > 0) {
                 paintingDrawingBean_a = paintingLists[page - 1]
             }
-            if (page==0){
-                paintingDrawingBean = paintingLists[page + 1]
-                paintingDrawingBean_a = paintingLists[page]
+            else{
                 page = 1
+                paintingDrawingBean = paintingLists[page]
+                paintingDrawingBean_a = paintingLists[page-1]
             }
         } else {
             paintingDrawingBean_a = null
@@ -177,19 +199,21 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             elik_b?.setPWEnabled(false)
         }
 
-        tv_title_b.text=paintingDrawingBean?.title
         setElikLoadPath(elik_b!!, paintingDrawingBean!!)
-        tv_page_b.text = (page + 1).toString()
+        tv_page.text = (page + 1).toString()
 
         //切换页面内容的一些变化
         if (isExpand) {
-            if (paintingDrawingBean_a != null) {
-                tv_title_a.text=paintingDrawingBean_a?.title
-                v_content_a.setImageResource(resId)
-                setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
-                tv_page_a.text = "$page"
-            }
+            v_content_a.setImageResource(resId)
+            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
+            tv_page_a.text = "$page"
         }
+    }
+
+    //设置背景图
+    private fun setBg(){
+        v_content_a.setImageResource(resId)
+        v_content_b.setImageResource(resId)
     }
 
     //保存绘图以及更新手绘
@@ -236,29 +260,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(paintingDrawingBean),path)
     }
 
-    private fun showPopWindowBtn() {
-        val pops= mutableListOf<PopupBean>()
-        pops.add(PopupBean(0, getString(R.string.delete), false))
-        pops.add(PopupBean(1, getString(R.string.revocation), false))
-        if (popupDrawingManage == null) {
-            popupDrawingManage = PopupDrawingManage(this, iv_btn, pops).builder()
-            popupDrawingManage?.setOnSelectListener { item ->
-                when(item.id){
-                    0->{
-                        deleteContent()
-                    }
-                    1->{
-                        resId=0
-                        setBg()
-                    }
-                }
-            }
-        } else {
-            popupDrawingManage?.show()
-        }
-    }
-
-
     //删除内容
     private fun deleteContent() {
         PaintingDrawingDaoManager.getInstance().deleteBean(paintingDrawingBean)
@@ -272,22 +273,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         else{
             newPaintingContent()
         }
-        changeContent()
-
-    }
-
-    override fun setDrawingTitle_a(title: String) {
-        paintingDrawingBean_a?.title = title
-        paintingLists[page-1].title = title
-        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
-    }
-
-    override fun setDrawingTitle_b(title: String) {
-        paintingDrawingBean?.title = title
-        paintingLists[page].title = title
-        PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-        DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+        onChangeContent()
     }
 
 }

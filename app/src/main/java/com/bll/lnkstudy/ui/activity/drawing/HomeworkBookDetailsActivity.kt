@@ -1,13 +1,13 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.content.Intent
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseBookDrawingActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
@@ -22,22 +22,28 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
+import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_book_details_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFileUploadView {
+class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
 
-    private val mUploadPresenter= FileUploadPresenter(this)
+    private lateinit var mUploadPresenter:FileUploadPresenter
     private var homeworkType: HomeworkTypeBean? = null
-    //屏幕当前位置
-    private var book: HomeworkBookBean? = null
-
     private var messages= mutableListOf<ItemList>()
     private var homeworkCommit: HomeworkCommit?=null
     private val commitItems = mutableListOf<ItemList>()
+    private var book: HomeworkBookBean? = null
+    private var catalogMsg: CatalogMsg? = null
+    private var catalogs = mutableListOf<MultiItemEntity>()
+    private var parentItems = mutableListOf<CatalogParent>()
+    private var childItems = mutableListOf<CatalogChild>()
+    private var pageStart=1
+    private var page = 0 //当前页码
 
     override fun onToken(token: String) {
         showLoading()
@@ -90,10 +96,11 @@ class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFi
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_book_details_drawing
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
+        initChangeData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
 
@@ -158,15 +165,15 @@ class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFi
         }
     }
 
+    override fun initChangeData() {
+        mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
+    }
+
     override fun initView() {
         pageCount = if (catalogMsg==null)0 else catalogMsg?.totalCount!!
         pageStart = if (catalogMsg==null)0 else catalogMsg?.startCount!!
 
-        changeContent()
-
-        iv_draft.setOnClickListener {
-            startActivity(Intent(this,DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        }
+        onChangeContent()
 
         iv_commit.setOnClickListener {
             if (messages.size==0)
@@ -181,75 +188,47 @@ class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFi
 
     }
 
-
-    //作业提交
-    private fun commit() {
-        DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()?.setOnDialogClickListener {
-            homeworkCommit=it
-            showLoading()
-            commitItems.clear()
-            for (i in homeworkCommit?.contents!!){
-                if (i>pageCount)
-                {
-                    showToast(R.string.toast_page_inexistence)
-                    return@setOnDialogClickListener
-                }
-                val imageFile=getIndexFile(i-1)
-                val path=imageFile?.path.toString()
-                val drawPath = book?.bookDrawPath+"/$i/draw.png"
-                Thread{
-                    BitmapUtils.mergeBitmap(path,drawPath)
-                    FileUtils.deleteFile(File(drawPath).parentFile)
-                    commitItems.add(ItemList().apply {
-                        id = i
-                        url = path
-                    })
-                    if (commitItems.size==homeworkCommit?.contents!!.size){
-                        commitItems.sort()
-                        //修手写合图后修改增量更新
-                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
-                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
-                        mUploadPresenter.getToken()
-                    }
-                }.start()
-            }
-        }
-    }
-
     override fun onPageUp() {
         if (isExpand) {
             if (page > 1) {
                 page -= 2
-                changeContent()
+                onChangeContent()
             } else {
                 page = 1
-                changeContent()
+                onChangeContent()
             }
         } else {
             if (page > 0) {
                 page -= 1
-                changeContent()
+                onChangeContent()
             }
         }
     }
 
     override fun onPageDown() {
         page += if (isExpand) 2 else 1
-        changeContent()
+        onChangeContent()
+    }
+
+    override fun onCatalog() {
+        DrawingCatalogDialog(this, catalogs, 1, pageStart).builder().setOnDialogClickListener { position ->
+                page = position - 1
+                onChangeContent()
+            }
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
-        changeExpandView()
-        changeContent()
+        onChangeExpandView()
+        onChangeContent()
     }
 
     /**
      * 更新内容
      */
-    override fun changeContent() {
+    private fun onChangeContent() {
         //如果页码超出 则全屏展示最后两页
         if (page > pageCount - 1) {
             page =  pageCount - 1
@@ -259,10 +238,11 @@ class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFi
             page=1
         }
 
-        setPage()
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
         loadPicture(page , elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
+            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
         }
 
         //设置当前展示页
@@ -299,6 +279,42 @@ class HomeworkBookDetailsActivity : BaseBookDrawingActivity(), IContractView.IFi
             //创建增量更新
             DataUpdateManager.createDataUpdate(8,book?.bookId!!,2,book?.bookId!!
                 ,"",book?.bookDrawPath!!)
+        }
+    }
+
+    /**
+     * 题卷提交
+     */
+    private fun commit() {
+        DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()?.setOnDialogClickListener {
+            homeworkCommit=it
+            showLoading()
+            commitItems.clear()
+            for (i in homeworkCommit?.contents!!){
+                if (i>pageCount)
+                {
+                    showToast(R.string.toast_page_inexistence)
+                    return@setOnDialogClickListener
+                }
+                val imageFile=getIndexFile(i-1)
+                val path=imageFile?.path.toString()
+                val drawPath = book?.bookDrawPath+"/$i/draw.png"
+                Thread{
+                    BitmapUtils.mergeBitmap(path,drawPath)
+                    FileUtils.deleteFile(File(drawPath).parentFile)
+                    commitItems.add(ItemList().apply {
+                        id = i
+                        url = path
+                    })
+                    if (commitItems.size==homeworkCommit?.contents!!.size){
+                        commitItems.sort()
+                        //修手写合图后修改增量更新
+                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
+                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
+                        mUploadPresenter.getToken()
+                    }
+                }.start()
+            }
         }
     }
 

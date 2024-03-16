@@ -39,7 +39,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var tabStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
-    private val presenter = TextbookStorePresenter(this,1)
+    private lateinit var presenter :TextbookStorePresenter
     private var books = mutableListOf<TextbookBean>()
     private var mAdapter: TextbookStoreAdapter? = null
     private var gradeId =0
@@ -77,6 +77,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     }
 
     override fun initData() {
+        initChangeData()
         pageSize=12
         typeList = DataBeanManager.teachingType.toMutableList()
         tabStr = typeList[0]
@@ -105,6 +106,10 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         else{
             showNetworkDialog()
         }
+    }
+
+    override fun initChangeData() {
+        presenter = TextbookStorePresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

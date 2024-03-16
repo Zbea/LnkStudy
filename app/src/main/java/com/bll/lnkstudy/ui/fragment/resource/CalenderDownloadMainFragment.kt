@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CalenderDetailsDialog
 import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
@@ -25,9 +25,9 @@ import kotlinx.android.synthetic.main.ac_list.*
 import java.io.File
 import java.text.DecimalFormat
 
-class CalenderDownloadFragment:BaseFragment(), IContractView.ICalenderView {
+class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderView {
 
-    private val presenter=CalenderPresenter(this)
+    private var presenter=CalenderPresenter(this,getScreenPosition())
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter:CalenderListAdapter?=null
     private var detailsDialog:CalenderDetailsDialog?=null
@@ -81,7 +81,7 @@ class CalenderDownloadFragment:BaseFragment(), IContractView.ICalenderView {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(), 20f)
                 , DP2PX.dip2px(requireActivity(), 50f)))
             setOnItemClickListener { adapter, view, position ->
-                this@CalenderDownloadFragment.position=position
+                this@CalenderDownloadMainFragment.position=position
                 val item=items[position]
                 showDetails(item)
             }
@@ -195,6 +195,11 @@ class CalenderDownloadFragment:BaseFragment(), IContractView.ICalenderView {
         this.supply=supply
         pageIndex=1
         fetchData()
+    }
+
+    override fun changeInitData() {
+        super.changeInitData()
+        presenter=CalenderPresenter(this,getScreenPosition())
     }
 
     override fun fetchData() {

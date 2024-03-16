@@ -10,20 +10,18 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
-import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.CommonData
-import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.User
-import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
-import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
-import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.mvp.view.IContractView.IAccountInfoView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
+import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.utils.*
@@ -33,15 +31,11 @@ import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.io.File
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContractView.ICommonView,IContractView.IDataUpdateView, IBaseView,IAccountInfoView{
+abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
 
-    val mCloudUploadPresenter= CloudUploadPresenter(this)
-    val mDataUploadPresenter=DataUpdatePresenter(this)
-    val mAccountInfoPresenter=AccountInfoPresenter(this)
     val mCommonPresenter= CommonPresenter(this)
     /**
      * 视图是否加载完毕
@@ -77,32 +71,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
             DataBeanManager.bookVersion=commonData.version
     }
 
-    override fun onLogout() {
-    }
-    override fun onEditNameSuccess() {
-    }
-    override fun onEditGradeSuccess() {
-        mUser?.grade=grade+1
-        SPUtil.putObj("user", mUser!!)
-        EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
-    }
-    override fun onEditSchool() {
-    }
-
-    //云端上传回调
-    override fun onSuccess(cloudIds: MutableList<Int>?) {
-        uploadSuccess(cloudIds)
-    }
-    override fun onDeleteSuccess() {
-    }
-
-    //增量更新回调
-    override fun onSuccess() {
-    }
-    override fun onList(list: MutableList<DataUpdateBean>?) {
-    }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
             container?.removeView(container)
@@ -128,9 +96,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         initView()
 
         getScreenPosition()
-
-        mDialog = ProgressDialog(requireActivity(),screenPos,0)
-        mNetworkDialog= ProgressDialog(requireActivity(),screenPos,1)
+        initDialog()
 
         lazyLoadDataIfPrepared()
     }
@@ -141,6 +107,11 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
             lazyLoad()
             hasLoadData = true
         }
+    }
+
+    private fun initDialog(){
+        mDialog = ProgressDialog(requireActivity(),getScreenPosition(),0)
+        mNetworkDialog= ProgressDialog(requireActivity(),getScreenPosition(),1)
     }
 
     /**
@@ -207,7 +178,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         tv_title?.setText(titleId)
     }
 
-
     fun showSearch(isShow:Boolean) {
         if (isShow){
             showView(tv_search)
@@ -216,7 +186,6 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
             disMissView(tv_search)
         }
     }
-
 
     /**
      * 显示view
@@ -262,20 +231,28 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     /**
      * 获取当前屏幕位置
      */
-    fun getScreenPosition():Int{
+    protected fun getScreenPosition():Int{
         if (activity is MainActivity){
             screenPos=(activity as MainActivity).getCurrentScreenPos()
         }
         if (activity is ResourceCenterActivity){
             screenPos=(activity as ResourceCenterActivity).getCurrentScreenPos()
         }
+        if (activity is CloudStorageActivity){
+            screenPos=(activity as CloudStorageActivity).getCurrentScreenPos()
+        }
         return screenPos
+    }
+
+    protected fun fetchCommonData(){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()&&DataBeanManager.grades.size==0)
+            mCommonPresenter.getCommonData()
     }
 
     /**
      * 设置翻页
      */
-    fun setPageNumber(total:Int){
+    protected fun setPageNumber(total:Int){
         if (ll_page_number!=null){
             pageCount = ceil(total.toDouble() / pageSize).toInt()
             if (total == 0) {
@@ -288,7 +265,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         }
     }
 
-    fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
+    protected fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
@@ -304,7 +281,7 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         return radioButton
     }
 
-    fun getRadioButton(i:Int,check:Int,str:String,max:Int):RadioButton{
+    protected fun getRadioButton(i:Int,check:Int,str:String,max:Int):RadioButton{
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
@@ -323,70 +300,22 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     /**
      * 跳转活动(关闭已经打开的)
      */
-    fun customStartActivity(intent: Intent){
+    protected fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
     }
 
     /**
-     * 清空作业本
+     * 重新初始化屏幕位置
      */
-    fun setClearHomework(){
-        //删除所有作业分类
-        HomeworkTypeDaoManager.getInstance().clear()
-        //删除所有作业
-        HomeworkContentDaoManager.getInstance().clear()
-        //删除所有朗读
-        RecordDaoManager.getInstance().clear()
-        //删除所有作业卷内容
-        HomeworkPaperDaoManager.getInstance().clear()
-        HomeworkPaperContentDaoManager.getInstance().clear()
-        //题卷本
-        HomeworkBookDaoManager.getInstance().clear()
-        //提交详情
-        HomeworkDetailsDaoManager.getInstance().clear()
-
-        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
-        //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(2)
-        val map=HashMap<String,Any>()
-        map["type"]=2
-        mDataUploadPresenter.onDeleteData(map)
+    open fun changeInitData(){
+        initDialog()
     }
 
-    /**
-     * 清空考卷
-     */
-    fun setClearExamPaper(){
-        //删除本地考卷分类
-        PaperTypeDaoManager.getInstance().clear()
-        //删除所有考卷内容
-        PaperDaoManager.getInstance().clear()
-        PaperContentDaoManager.getInstance().clear()
-        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
-        //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(3)
-        val map=HashMap<String,Any>()
-        map["type"]=3
-        mDataUploadPresenter.onDeleteData(map)
-    }
-
-    /**
-     * 系统控制（在上传完成后删除作业、考卷，升年级）
-     */
-    fun setSystemControlClear(){
-        val homeworkTypes=HomeworkTypeDaoManager.getInstance().queryAll()
-        val paperTypes=PaperTypeDaoManager.getInstance().queryAll()
-        if (homeworkTypes.isNullOrEmpty()&&paperTypes.isNullOrEmpty()){
-            //考卷上传完之后升年级
-            mAccountInfoPresenter.editGrade(grade+1)
-        }
-    }
-
-    fun hideNetworkDialog() {
+    protected fun hideNetworkDialog() {
         mNetworkDialog?.dismiss()
     }
-    fun showNetworkDialog() {
+    protected fun showNetworkDialog() {
         mNetworkDialog?.show()
         NetworkUtil(requireActivity()).toggleNetwork(true)
     }
@@ -420,6 +349,13 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
         }
     }
 
+    /**
+     * 页面切换刷新数据
+     */
+    open fun onRefreshData(){
+    }
+
+
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
@@ -436,18 +372,10 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
                 hideNetworkDialog()
                 showToast(getScreenPosition(),R.string.net_work_error)
             }
-            Constants.REFRESH_EVENT->{
-                lazyLoad()
-            }
             else->{
                 onEventBusMessage(msgFlag)
             }
         }
-    }
-
-    fun fetchCommonData(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected()&&DataBeanManager.grades.size==0)
-            mCommonPresenter.getCommonData()
     }
 
     /**
@@ -463,22 +391,9 @@ abstract class BaseFragment : Fragment(), IContractView.ICloudUploadView,IContra
     }
 
     /**
-     * 页面切换刷新数据
+     * 主数据请求（翻页）
      */
-    open fun onRefreshData(){
-    }
-
     open fun fetchData(){
-    }
-
-    /**
-     * 上传成功(书籍云id)
-     */
-    open fun uploadSuccess(cloudIds: MutableList<Int>?){
-        if (!cloudIds.isNullOrEmpty())
-        {
-            mCloudUploadPresenter.deleteCloud(cloudIds)
-        }
     }
 
     override fun onDestroy() {

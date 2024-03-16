@@ -8,7 +8,7 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.CourseItem
@@ -32,7 +32,7 @@ import java.io.File
 /**
  * 首页
  */
-class MainRightFragment : BaseFragment(), IContractView.IMainRightView, IContractView.IMessageView{
+class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, IContractView.IMessageView{
 
     private val mMainPresenter = MainRightPresenter(this,2)
     private val mMessagePresenter=MessagePresenter(this,2)

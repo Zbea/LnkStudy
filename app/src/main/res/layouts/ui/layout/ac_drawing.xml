@@ -2,43 +2,80 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/drawing_bottom_height"
         android:orientation="horizontal">
 
-        <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/v_content_a"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/ll_content_a"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:orientation="horizontal"
             android:visibility="gone"
-            android:scaleType="fitCenter" />
+            >
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_a"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitCenter" />
 
-        <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/v_content_b"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            <LinearLayout
+                android:layout_width="@dimen/drawing_tool_width"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tv_page_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="200dp"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_20"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:scaleType="fitCenter" />
+            android:orientation="horizontal"
+            >
+
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_b"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitCenter" />
+
+            <include
+                layout="@layout/common_drawing_tool"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/ll_bottom"
-        layout="@layout/common_drawing_bottom"
+    <View
+        android:id="@+id/iv_top"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_bottom_height"
-        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/statusbar_height"
+        android:background="@color/color_transparent"
         />
 
     <include
         android:id="@+id/ll_geometry"
         layout="@layout/common_drawing_geometry"
+        android:layout_marginTop="@dimen/drawing_tool_width"
+        android:layout_width="@dimen/width"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         />
 
@@ -46,7 +83,8 @@
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_above="@+id/ll_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:visibility="gone"
         android:padding="1dp"
         android:layout_margin="@dimen/dp_10"

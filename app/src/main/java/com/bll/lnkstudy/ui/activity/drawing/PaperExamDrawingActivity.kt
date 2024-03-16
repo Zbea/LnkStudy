@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.view.EinkPWInterface
 import android.view.KeyEvent
-import android.view.View
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
@@ -21,7 +20,7 @@ import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
@@ -39,7 +38,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     private var drawPaths = mutableListOf<String>()
     private val commitItems = mutableListOf<ItemList>()
 
-    private var pageCount = 0
     private var page = 0 //当前页码
     private var alarmManager:AlarmManager?=null
     private var pendingIntent:PendingIntent?=null
@@ -108,19 +106,21 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
     }
 
     override fun initView() {
-        disMissView(iv_catalog)
-        setDrawingTitleClick(false)
+        disMissView(iv_catalog,iv_draft)
         showView(iv_geometry)
         setViewElikUnable(iv_geometry)
 
-        changeExpandView()
+        if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){
+            showView(iv_geometry)
+        }
+        else{
+            disMissView(iv_geometry)
+        }
 
-        tv_title_a.text=exam?.title
-        tv_title_b.text=exam?.title
+        onChangeExpandView()
+        onContentChanged()
 
-        changeContent()
-
-        iv_btn.setOnClickListener {
+        iv_commit.setOnClickListener {
             CommonDialog(this,2).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
@@ -129,13 +129,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                         commit()
                     }
                 })
-        }
-
-        if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){
-            showView(iv_geometry)
-        }
-        else{
-            disMissView(iv_geometry)
         }
     }
 
@@ -170,13 +163,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         )
     }
 
-    //单屏、全屏内容切换
-     override fun changeExpandView(){
-        showView(v_content_a,ll_page_content_a,v_empty)
-        disMissView(iv_expand_left,iv_expand_right)
-        iv_tool_left.visibility= View.INVISIBLE
-        iv_tool_right.visibility=View.INVISIBLE
-    }
 
     override fun onPageDown() {
         if (isExpand){
@@ -189,7 +175,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                 page+=1
             }
         }
-        changeContent()
+        onChangeContent()
     }
 
     override fun onPageUp() {
@@ -203,11 +189,43 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
                 page-=1
             }
         }
-        changeContent()
+        onChangeContent()
     }
 
+    private fun onChangeContent(){
+        setElikLoadPath(page,elik_a!!,v_content_a)
+        tv_page_a.text="${page+1}/$pageCount"
 
-    //提交
+        if (isExpand){
+            if (page+1<pageCount){
+                elik_b?.setPWEnabled(true)
+                setElikLoadPath(page+1,elik_b!!,v_content_b)
+                tv_page.text="${page+1+1}/$pageCount"
+            }
+            else{
+                elik_b?.setPWEnabled(false)
+                v_content_b.setImageResource(0)
+                tv_page.text=""
+            }
+        }
+    }
+
+    //加载图片
+    private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
+        GlideUtils.setImageUrl(this,paths[index],view)
+        elik.setLoadFilePath(drawPaths[index],true)
+    }
+
+    override fun onElikSava_a() {
+        elik_a?.saveBitmap(true) {}
+    }
+    override fun onElikSava_b() {
+        elik_b?.saveBitmap(true) {}
+    }
+
+    /**
+     * 提交
+     */
     private fun commit(){
         if (NetworkUtil(this@PaperExamDrawingActivity).isNetworkConnected()){
             showLoading()
@@ -234,37 +252,6 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
         }
     }
 
-    //内容切换
-    private fun changeContent(){
-        setElikLoadPath(page,elik_a!!,v_content_a)
-        tv_page_a.text="${page+1}/$pageCount"
-
-        if (isExpand){
-            if (page+1<pageCount){
-                elik_b?.setPWEnabled(true)
-                setElikLoadPath(page+1,elik_b!!,v_content_b)
-                tv_page_b.text="${page+1+1}/$pageCount"
-            }
-            else{
-                elik_b?.setPWEnabled(false)
-                v_content_b.setImageResource(0)
-                tv_page_b.text=""
-            }
-        }
-    }
-
-    //加载图片
-    private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
-        GlideUtils.setImageUrl(this,paths[index],view)
-        elik.setLoadFilePath(drawPaths[index],true)
-    }
-
-    override fun onElikSava_a() {
-        elik_a?.saveBitmap(true) {}
-    }
-    override fun onElikSava_b() {
-        elik_b?.saveBitmap(true) {}
-    }
 
     /**
      * 设置考试模式

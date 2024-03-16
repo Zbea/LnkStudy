@@ -21,7 +21,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 
@@ -30,7 +30,7 @@ import java.io.File
  */
 class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
-    private val mUploadPresenter= FileUploadPresenter(this)
+    private lateinit var mUploadPresenter:FileUploadPresenter
     private var homeworkType:HomeworkTypeBean?=null
     private var course=""
     private var typeId=0//分组id
@@ -44,7 +44,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     private var currentPosition=0
     private var page = 0//页码
-    private var pageCount=0
     private val commitItems = mutableListOf<ItemList>()
 
     override fun onToken(token: String) {
@@ -108,6 +107,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initData() {
+        initChangeData()
         homeworkType = intent.getBundleExtra("homeworkBundle")?.getSerializable("homework") as HomeworkTypeBean
         currentPosition=intent.getIntExtra("page",Constants.DEFAULT_PAGE)
         course=homeworkType?.course!!
@@ -120,31 +120,42 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     }
 
+    override fun initChangeData() {
+        mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
+    }
+
     override fun initView() {
-        setDrawingTitleClick(false)
         if(papers.size>0){
             if (currentPosition==Constants.DEFAULT_PAGE)
                 currentPosition=papers.size-1
-            changeContent()
+            onChangeContent()
         }
         else{
             setPWEnabled(false)
         }
 
-        changeExpandView()
-
-        iv_btn.setOnClickListener {
-            if (paper?.state==3&&paper?.isCommit == true){
-                CommonDialog(this).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
-                    object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            showLoading()
-                            commit()
-                        }
-                    })
+        iv_commit.setOnClickListener {
+            if (paper?.state!=3){
+                showToast("作业已提交")
+                return@setOnClickListener
             }
+            if (paper?.isCommit==false){
+                showToast("此作业不需要提交")
+                return@setOnClickListener
+            }
+            if (System.currentTimeMillis()>paper?.endTime!!*1000){
+                showToast("此作业已过提交时间")
+                return@setOnClickListener
+            }
+            CommonDialog(this).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
+                object : CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        showLoading()
+                        commit()
+                    }
+                })
         }
     }
 
@@ -156,11 +167,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,list).builder()?.setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
             if (currentPosition!=position){
                 currentPosition = papers[position].index
                 page = 0
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -168,17 +179,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onPageDown() {
         if (isExpand&&page+2<pageCount){
             page+=2
-            changeContent()
+            onChangeContent()
         }
         else if (!isExpand&&page+1<pageCount){
             page+=1
-            changeContent()
+            onChangeContent()
         }
         else{
             if (currentPosition+1<papers.size){
                 currentPosition+=1
                 page=0
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -186,17 +197,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onPageUp() {
         if (isExpand&&page>1){
             page-=2
-            changeContent()
+            onChangeContent()
         }
         else if (!isExpand&&page>0){
             page-=1
-            changeContent()
+            onChangeContent()
         }
         else{
             if (currentPosition>0){
                 currentPosition-=1
                 page=0
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -211,37 +222,26 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             }
         }
         moveToScreen(isExpand)
-        changeExpandView()
-        changeContent()
+        onChangeExpandView()
+        onChangeContent()
     }
 
-    /**
-     * 设置是否可以手写
-     */
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
-    }
-
-
-    //内容切换
-    private fun changeContent(){
+    private fun onChangeContent() {
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
 
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<HomeworkPaperContentBean>
         pageCount=paperContents.size
-
-        tv_title_a.text=paper?.title
-        tv_title_b.text=paper?.title
+        
         setPWEnabled(!paper?.isPg!!)
 
         //作业未提交 提示时间 以及关闭手写
         if (paper?.state==3){
+            val endTime=paper?.endTime!!*1000
             setPWEnabled(true)
-            if (paper?.isCommit==true){
-                showToast(DateUtils.longToStringWeek(paper?.endTime!!*1000)+getString(R.string.toast_before_commit))
+            if (paper?.isCommit==true&&System.currentTimeMillis()<=endTime){
+                showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
             }
         }
         else{
@@ -261,23 +261,30 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             if (page+1<pageCount){
                 paperContentBean=paperContents[page+1]
                 setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-                tv_page_b.text="${paperContents[page+1].page+1}"
+                tv_page.text="${paperContents[page+1].page+1}"
             }
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
                 elik_b?.setPWEnabled(false)
-                tv_page_b.text=""
+                tv_page.text=""
             }
         }
         else{
             paperContentBean=paperContents[page]
             setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-            tv_page_b.text="${paperContents[page].page+1}"
+            tv_page.text="${paperContents[page].page+1}"
         }
     }
 
-
+    /**
+     * 设置是否可以手写
+     */
+    private fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
+    }
+    
     //加载图片
     private fun setElikLoadPath(paperContentBean: HomeworkPaperContentBean, elik:EinkPWInterface, view:ImageView) {
         GlideUtils.setImageFileNoCache(this,File(paperContentBean.path),view)

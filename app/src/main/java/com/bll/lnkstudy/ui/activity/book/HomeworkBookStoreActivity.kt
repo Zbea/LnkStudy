@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock
 class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookStoreView {
 
     private val lock = ReentrantLock()
-    private val presenter = TextbookStorePresenter(this,2)
+    private lateinit var presenter :TextbookStorePresenter
     private var book:TextbookBean?=null
     private var bookId =0
 
@@ -52,6 +52,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
     }
 
     override fun initData() {
+        initChangeData()
         pageSize=12
         bookId=intent.getIntExtra("bookId",0)
 
@@ -63,6 +64,10 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         else{
             showNetworkDialog()
         }
+    }
+
+    override fun initChangeData() {
+        presenter = TextbookStorePresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

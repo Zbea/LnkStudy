@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.ac_wallet.*
 
 class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
-    private var walletPresenter=WalletPresenter(this,1)
+    private lateinit var walletPresenter:WalletPresenter
     private var xdDialog:WalletBuyXdDialog?=null
     private var xdList= mutableListOf<AccountXDList.ListBean>()
     private var qrCodeDialog:Dialog?=null
@@ -54,12 +54,17 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
+        initChangeData()
         if (NetworkUtil(this).isNetworkConnected()){
             walletPresenter.getXdList(false)
         }
         else{
             showNetworkDialog()
         }
+    }
+
+    override fun initChangeData() {
+        walletPresenter=WalletPresenter(this,1)
     }
 
     override fun initView() {

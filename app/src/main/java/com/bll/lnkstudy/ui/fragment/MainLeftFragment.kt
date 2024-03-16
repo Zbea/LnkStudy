@@ -11,7 +11,7 @@ import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
@@ -45,7 +45,7 @@ import java.io.File
 /**
  * 首页
  */
-class MainLeftFragment : BaseFragment(),ICommonView, IMainLeftView {
+class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
 
     private val mMainLeftPresenter=MainLeftPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null

@@ -10,10 +10,8 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
-import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SchoolBean
-import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -30,12 +28,10 @@ import kotlinx.android.synthetic.main.ac_account_register.*
 //5. 手机号码规则 11 位有效手机号
 //6. 验证码规则数字即可
  */
-class AccountRegisterActivity : BaseAppCompatActivity(),
-    IContractView.IRegisterOrFindPsdView,IContractView.ICommonView,ISchoolView {
+class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView {
 
-    private val mSchoolPresenter=SchoolPresenter(this)
-    private val commonPresenter=CommonPresenter(this)
-    private val presenter= RegisterOrFindPsdPresenter(this)
+    private var mSchoolPresenter:SchoolPresenter?=null
+    private var presenter:RegisterOrFindPsdPresenter?=null
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var brithday=0L
@@ -46,15 +42,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     private var school=0
     private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
-
-    override fun onList(commonData: CommonData) {
-        DataBeanManager.grades=commonData.grade
-        DataBeanManager.courses=commonData.subject
-        DataBeanManager.typeGrades=commonData.typeGrade
-        DataBeanManager.bookVersion=commonData.version
-        grades=DataBeanManager.popupGrades()
-        tv_grade_str.text=grades[0].name
-    }
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
@@ -84,12 +71,27 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
     }
 
     override fun initData() {
+        initChangeData()
         flags=intent.flags
         if (flags==0){
-            if (DataBeanManager.grades.size==0)
-                commonPresenter.getCommonData()
-            mSchoolPresenter.getCommonSchool()
+            if (DataBeanManager.grades.size==0){
+                fetchCommonData()
+            }
+            else{
+                onCommonData()
+            }
+            mSchoolPresenter?.getCommonSchool()
         }
+    }
+
+    override fun initChangeData() {
+        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
+        presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
+    }
+
+    override fun onCommonData() {
+        grades=DataBeanManager.popupGrades()
+        tv_grade_str.text=grades[0].name
     }
 
     override fun initView() {
@@ -122,7 +124,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
-            presenter.sms(phone)
+            presenter?.sms(phone)
         }
 
         tv_grade_str.setOnClickListener {
@@ -216,17 +218,17 @@ class AccountRegisterActivity : BaseAppCompatActivity(),
                     map["birthdayTime"]=brithday
                     map["grade"]=grade
                     map["schoolId"]=school
-                    presenter.register(map)
+                    presenter?.register(map)
                 }
                 1 -> {
                     if (account.isEmpty()) {
                         showToast(R.string.toast_input_account)
                         return@setOnClickListener
                     }
-                    presenter.findPsd("2",account,MD5Utils.digest(psd),phone, code)
+                    presenter?.findPsd("2",account,MD5Utils.digest(psd),phone, code)
                 }
                 else -> {
-                    presenter.editPsd(MD5Utils.digest(psd),code)
+                    presenter?.editPsd(MD5Utils.digest(psd),code)
                 }
             }
 

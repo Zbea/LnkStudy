@@ -9,7 +9,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.*
-import kotlinx.android.synthetic.main.common_drawing_bottom_one.*
+import kotlinx.android.synthetic.main.common_drawing_tool_bottom.*
 import java.io.File
 
 class PlanOverviewActivity:BaseDrawingActivity() {

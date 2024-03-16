@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
@@ -12,7 +12,7 @@ import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.*
 
-class AppFragment:BaseFragment() {
+class AppFragment:BaseMainFragment() {
 
     private var apps= mutableListOf<AppBean>()
     private var mAdapter:AppListAdapter?=null

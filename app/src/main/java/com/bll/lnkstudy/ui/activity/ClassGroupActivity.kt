@@ -24,7 +24,7 @@ import org.greenrobot.eventbus.EventBus
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
 
-    private var presenter = ClassGroupPresenter(this,2)
+    private lateinit var presenter :ClassGroupPresenter
     private var mAdapter: ClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
     private var positionGroup = 0
@@ -49,12 +49,17 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun initData() {
+        initChangeData()
         if (NetworkUtil(this).isNetworkConnected()){
             presenter.getClassGroupList(true)
         }
         else{
             showNetworkDialog()
         }
+    }
+
+    override fun initChangeData() {
+        presenter = ClassGroupPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

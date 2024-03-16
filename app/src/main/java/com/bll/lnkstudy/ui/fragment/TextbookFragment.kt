@@ -6,7 +6,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
@@ -27,7 +27,7 @@ import java.io.File
 /**
  * 课本
  */
-class TextbookFragment : BaseFragment() {
+class TextbookFragment : BaseMainFragment() {
 
     private var mAdapter: TextBookAdapter?=null
     private var books= mutableListOf<TextbookBean>()

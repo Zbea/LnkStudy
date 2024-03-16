@@ -5,14 +5,14 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter<IContractView.IAccountInfoView>(view) {
+class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) : BasePresenter<IContractView.IAccountInfoView>(view) {
 
     fun editName(name: String) {
         val body = RequestUtils.getBody(
             Pair.create("nickName", name)
         )
         val editName = RetrofitManager.service.editName(body)
-        doRequest(editName, object : Callback<Any>(view) {
+        doRequest(editName, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -31,7 +31,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
 
         val editName = RetrofitManager.service.editGrade(body)
 
-        doRequest(editName, object : Callback<Any>(view) {
+        doRequest(editName, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -49,7 +49,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
         val body = RequestUtils.getBody(map)
         val editName = RetrofitManager.service.editSchool(body)
 
-        doRequest(editName, object : Callback<Any>(view) {
+        doRequest(editName, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -62,7 +62,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
 
     fun logout() {
         val logout = RetrofitManager.service.logout()
-        doRequest(logout, object : Callback<Any>(view) {
+        doRequest(logout, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

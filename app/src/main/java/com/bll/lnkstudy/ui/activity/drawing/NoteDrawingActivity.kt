@@ -7,6 +7,7 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.note.Note
@@ -15,7 +16,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
@@ -52,12 +53,32 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_btn)
+        disMissView(iv_commit)
         v_content_a.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
         v_content_b.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
 
-        changeExpandView()
-        changeContent()
+        onChangeContent()
+
+        tv_page_a.setOnClickListener {
+            InputContentDialog(this,1,note_Content_a?.title!!).builder()?.setOnDialogClickListener { string ->
+                note_Content_a?.title = string
+                noteContents[page-1].title = string
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
+                DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,typeId,Gson().toJson(note_Content_a))
+            }
+        }
+
+        tv_page.setOnClickListener {
+            var type=getCurrentScreenPos()
+            if (type==3)
+                type=2
+            InputContentDialog(this,type,noteContent?.title!!).builder()?.setOnDialogClickListener { string ->
+                noteContent?.title = string
+                noteContents[page].title = string
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+                DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
+            }
+        }
     }
 
     override fun onCatalog() {
@@ -74,11 +95,10 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
 
         }
-        DrawingCatalogDialog(this,list).builder()?.
-        setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
             if (page!=noteContents[position].page){
                 page = noteContents[position].page
-                changeContent()
+                onChangeContent()
             }
         }
     }
@@ -109,73 +129,60 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 page += 1
             }
         }
-        changeContent()
+        onChangeContent()
     }
 
     override fun onPageUp() {
         if(isExpand){
             if (page>2){
                 page-=2
-                changeContent()
+                onChangeContent()
             }
             else if (page==2){//当页面不够翻两页时
                 page=1
-                changeContent()
+                onChangeContent()
             }
         }else{
             if (page>0){
                 page-=1
-                changeContent()
+                onChangeContent()
             }
         }
-    }
-
-    override fun onChangeExpandNewContent() {
-        if (noteContents.size==1){
-            newNoteContent()
-        }
-        onChangeExpandContent()
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
+        if (noteContents.size==1&&isExpand){
+            newNoteContent()
+        }
         moveToScreen(isExpand)
-        changeExpandView()
-        changeContent()
+        onChangeExpandView()
+        onChangeContent()
     }
 
-    //翻页内容更新切换
-    private fun changeContent() {
-
+    private fun onChangeContent() {
         noteContent = noteContents[page]
 
         if (isExpand) {
             if (page > 0) {
                 note_Content_a = noteContents[page - 1]
             }
-            if (page==0){
+            else{
                 page=1
                 noteContent = noteContents[page]
-                note_Content_a = noteContents[page-1]
+                note_Content_a = noteContents[0]
             }
         } else {
             note_Content_a = null
         }
 
-        tv_title_b.text=noteContent?.title
-        if (isExpand){
-            tv_title_a.text=note_Content_a?.title
-        }
-
         setElikLoadPath(elik_b!!, noteContent!!)
-        tv_page_b.text = (page + 1).toString()
+        tv_page.text = (page + 1).toString()
 
         if (isExpand) {
-            if (note_Content_a != null) {
-                setElikLoadPath(elik_a!!, note_Content_a!!)
-                tv_page_a.text = "$page"
-            }
+            setElikLoadPath(elik_a!!, note_Content_a!!)
+            tv_page_a.text = "$page"
         }
     }
 
@@ -223,20 +230,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContents.add(noteContent!!)
 
         DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId,Gson().toJson(noteContent),path)
-    }
-
-    override fun setDrawingTitle_a(title: String) {
-        note_Content_a?.title = title
-        noteContents[page-1].title = title
-        NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-        DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,typeId,Gson().toJson(note_Content_a))
-    }
-
-    override fun setDrawingTitle_b(title: String) {
-        noteContent?.title = title
-        noteContents[page].title = title
-        NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-        DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
     }
 
 }

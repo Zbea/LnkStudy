@@ -35,7 +35,7 @@ import java.io.File
 
 class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadView{
 
-    private val mUploadPresenter= FileUploadPresenter(this)
+    private lateinit var mUploadPresenter:FileUploadPresenter
     private var mAdapter: RecordAdapter? = null
     private var course = ""
     private var homeworkType: HomeworkTypeBean? = null
@@ -92,6 +92,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     }
 
     override fun initData() {
+        initChangeData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         course=homeworkType?.course!!
@@ -107,6 +108,10 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
         pops.add(PopupBean(0,getString(R.string.edit),R.mipmap.icon_notebook_edit))
         pops.add(PopupBean(1,getString(R.string.delete),R.mipmap.icon_delete))
+    }
+
+    override fun initChangeData() {
+        mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

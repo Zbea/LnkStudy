@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.AppList
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_resource_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
+class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
 
     private var index=0
     private var presenter= DownloadAppPresenter(this,getScreenPosition())
@@ -54,8 +54,8 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
     /**
      * 实例 传送数据
      */
-    fun newInstance(index:Int): AppDownloadFragment {
-        val fragment= AppDownloadFragment()
+    fun newInstance(index:Int): AppDownloadMainFragment {
+        val fragment= AppDownloadMainFragment()
         val bundle= Bundle()
         bundle.putInt("index",index)
         fragment.arguments=bundle
@@ -97,7 +97,7 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                this@AppDownloadFragment.position=position
+                this@AppDownloadMainFragment.position=position
                 val app=apps[position]
                 if (app.buyStatus==0){
                     val map = HashMap<String, Any>()
@@ -172,6 +172,11 @@ class AppDownloadFragment :BaseFragment(), IContractView.IAPPView{
         this.supply=supply
         pageIndex=1
         fetchData()
+    }
+
+    override fun changeInitData() {
+        super.changeInitData()
+        presenter= DownloadAppPresenter(this,getScreenPosition())
     }
 
     override fun fetchData() {

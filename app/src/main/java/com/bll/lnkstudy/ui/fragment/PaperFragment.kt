@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
@@ -31,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
  */
-class PaperFragment : BaseFragment(), IContractView.IPaperView {
+class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private val lock = ReentrantLock()
     private val mPresenter = TestPaperPresenter(this)
     private var mAdapter: PaperTypeAdapter? = null

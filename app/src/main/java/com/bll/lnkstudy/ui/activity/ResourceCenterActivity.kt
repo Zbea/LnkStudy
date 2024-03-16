@@ -6,21 +6,21 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.ui.fragment.resource.AppDownloadFragment
-import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadFragment
-import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
-import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
+import com.bll.lnkstudy.ui.fragment.resource.AppDownloadMainFragment
+import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadMainFragment
+import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadMainFragment
+import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadMainFragment
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.common_title.*
 
 class ResourceCenterActivity:BaseAppCompatActivity() {
 
     private var lastFragment: Fragment? = null
-    private var appFragment: AppDownloadFragment? = null
-    private var toolFragment: AppDownloadFragment? = null
-    private var wallpaperFragment: WallpaperDownloadFragment? = null
-    private var paintingFragment: PaintingDownloadFragment? = null
-    private var calenderFragment: CalenderDownloadFragment? = null
+    private var appFragment: AppDownloadMainFragment? = null
+    private var toolFragment: AppDownloadMainFragment? = null
+    private var wallpaperFragment: WallpaperDownloadMainFragment? = null
+    private var paintingFragment: PaintingDownloadMainFragment? = null
+    private var calenderFragment: CalenderDownloadMainFragment? = null
 
     private var popSupplys= mutableListOf<PopupBean>()
     private var popTimes= mutableListOf<PopupBean>()
@@ -53,11 +53,11 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         setPageTitle(R.string.resource_center_str)
         showView(tv_province)
 
-        appFragment = AppDownloadFragment().newInstance(1)
-        toolFragment=AppDownloadFragment().newInstance(2)
-        wallpaperFragment = WallpaperDownloadFragment()
-        paintingFragment = PaintingDownloadFragment()
-        calenderFragment = CalenderDownloadFragment()
+        appFragment = AppDownloadMainFragment().newInstance(1)
+        toolFragment=AppDownloadMainFragment().newInstance(2)
+        wallpaperFragment = WallpaperDownloadMainFragment()
+        paintingFragment = PaintingDownloadMainFragment()
+        calenderFragment = CalenderDownloadMainFragment()
 
         switchFragment(lastFragment, appFragment)
         initTab()
@@ -151,6 +151,14 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
                 ft.show(to).commit()
             }
         }
+    }
+
+    override fun onCommonData() {
+        appFragment?.changeInitData()
+        toolFragment?.changeInitData()
+        wallpaperFragment?.changeInitData()
+        paintingFragment?.changeInitData()
+        calenderFragment?.changeInitData()
     }
 
     override fun onDestroy() {

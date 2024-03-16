@@ -6,14 +6,14 @@ import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
-class TestPaperPresenter(view: IContractView.IPaperView): BasePresenter<IContractView.IPaperView>(view) {
+class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BasePresenter<IContractView.IPaperView>(view) {
 
     /**
      * 获取作业本列表
      */
     fun getTypeList(map :HashMap<String,Any>) {
         val type = RetrofitManager.service.getPaperType(map)
-        doRequest(type, object : Callback<PaperType>(view) {
+        doRequest(type, object : Callback<PaperType>(view,screen) {
             override fun failed(tBaseResult: BaseResult<PaperType>): Boolean {
                 return false
             }
@@ -26,7 +26,7 @@ class TestPaperPresenter(view: IContractView.IPaperView): BasePresenter<IContrac
 
     fun getList(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getPapersList(map)
-        doRequest(type, object : Callback<PaperList>(view) {
+        doRequest(type, object : Callback<PaperList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<PaperList>): Boolean {
                 return false
             }
@@ -42,7 +42,7 @@ class TestPaperPresenter(view: IContractView.IPaperView): BasePresenter<IContrac
             Pair("studentTaskId",id)
         )
         val commit = RetrofitManager.service.deletePaper(body)
-        doRequest(commit, object : Callback<Any>(view) {
+        doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

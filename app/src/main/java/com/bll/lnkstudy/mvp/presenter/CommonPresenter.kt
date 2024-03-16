@@ -8,13 +8,13 @@ import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RetrofitManager
 
 
-class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContractView.ICommonView>(view) {
+class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePresenter<IContractView.ICommonView>(view) {
 
     fun getCommonData() {
 
         val grade = RetrofitManager.service.getCommonData()
 
-        doRequest(grade, object : Callback<CommonData>(view,1) {
+        doRequest(grade, object : Callback<CommonData>(view,screen) {
             override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
                 return false
             }

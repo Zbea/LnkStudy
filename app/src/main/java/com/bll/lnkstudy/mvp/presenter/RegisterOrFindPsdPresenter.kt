@@ -5,7 +5,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : BasePresenter<IContractView.IRegisterOrFindPsdView>(view) {
+class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView,val screen:Int) : BasePresenter<IContractView.IRegisterOrFindPsdView>(view) {
 
     fun register(map:HashMap<String,Any>) {
 
@@ -13,7 +13,7 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
         val register = RetrofitManager.service.register(body)
 
-        doRequest(register, object : Callback<Any>(view) {
+        doRequest(register, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -40,7 +40,7 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
         val findpsd = RetrofitManager.service.findPassword(body)
 
-        doRequest(findpsd, object : Callback<Any>(view) {
+        doRequest(findpsd, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -64,7 +64,7 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
         val findpsd = RetrofitManager.service.editPassword(body)
 
-        doRequest(findpsd, object : Callback<Any>(view) {
+        doRequest(findpsd, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -80,7 +80,7 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
         val sms = RetrofitManager.service.getSms(phone)
 
-        doRequest(sms, object : Callback<Any>(view) {
+        doRequest(sms, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.base
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,10 +19,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
@@ -38,8 +43,9 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView, IContractView.ICommonView {
 
+    private var mCommonPresenter=CommonPresenter(this)
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mNetworkDialog: ProgressDialog?=null
@@ -66,13 +72,18 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         fragmentManager.popBackStack()
     }
 
+    override fun onList(commonData: CommonData?) {
+        onCommonData()
+    }
+
+    open fun onCommonData(){
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         mSaveState=savedInstanceState
         setContentView(layoutId())
-        initCommonTitle()
 
         if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -92,17 +103,23 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
         EventBus.getDefault().register(this)
         screenPos=getCurrentScreenPos()
-//        showLog(localClassName+"当前屏幕：$screenPos")
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
         }
 
-        mDialog = ProgressDialog(this,getCurrentScreenPos(),0)
-        mNetworkDialog= ProgressDialog(this,getCurrentScreenPos(),1)
+        fetchCommonData()
+        initCreate()
+        initDialog()
         initData()
         initView()
+        initCommonTitle()
+    }
 
+    /**
+     * 初始化onCreate
+     */
+    open fun initCreate(){
     }
 
     /**
@@ -138,7 +155,17 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
     }
 
-    fun showSearchView(isShow:Boolean) {
+    private fun initDialog(){
+        mDialog = ProgressDialog(this,getCurrentScreenPos(),0)
+        mNetworkDialog= ProgressDialog(this,getCurrentScreenPos(),1)
+    }
+
+    protected fun fetchCommonData(){
+        if (NetworkUtil(this).isNetworkConnected()&&DataBeanManager.grades.size==0)
+            mCommonPresenter.getCommonData()
+    }
+
+    protected fun showSearchView(isShow:Boolean) {
         if (isShow){
             showView(ll_search)
         }
@@ -148,15 +175,15 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
 
-    fun setPageTitle(pageTitle: String) {
+    protected fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }
 
-    fun setPageTitle(titleId: Int) {
+    protected fun setPageTitle(titleId: Int) {
         tv_title?.setText(titleId)
     }
 
-    fun setPageSetting(setId:Int){
+    protected fun setPageSetting(setId:Int){
         showView(tv_setting)
         tv_setting?.setText(setId)
     }
@@ -209,20 +236,24 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         return getCurrentScreenPanel()
     }
 
-    fun setDialogOutside(boolean: Boolean){
+    /**
+     * 设置dialog可以点击消失
+     */
+    protected fun setDialogOutside(boolean: Boolean){
         mDialog?.setCanceledOutside(boolean)
         mNetworkDialog?.setCanceledOutside(boolean)
     }
 
-    fun hideNetworkDialog() {
+    protected fun hideNetworkDialog() {
         mNetworkDialog?.dismiss()
     }
-    fun showNetworkDialog() {
+
+    protected fun showNetworkDialog() {
         mNetworkDialog?.show()
         NetworkUtil(this).toggleNetwork(true)
     }
 
-    fun gotoBookStore(type: Int){
+    protected fun gotoBookStore(type: Int){
         val intent=Intent(this, BookStoreActivity::class.java)
         intent.flags=type
         customStartActivity(intent)
@@ -231,7 +262,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 设置翻页
      */
-    fun setPageNumber(total:Int){
+    protected fun setPageNumber(total:Int){
         if (ll_page_number!=null){
             pageCount = ceil(total.toDouble() / pageSize).toInt()
             if (total == 0) {
@@ -267,47 +298,38 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     /**
      * 关闭软键盘
      */
-    fun hideKeyboard(){
+    protected fun hideKeyboard(){
         KeyboardUtils.hideSoftKeyboard(this)
     }
 
-    fun showToast(s:String){
+    protected fun showToast(s:String){
         SToast.showText(getCurrentScreenPos(),s)
     }
 
-    fun showToast(sId:Int){
+    protected fun showToast(sId:Int){
         SToast.showText(getCurrentScreenPos(),sId)
     }
 
-    fun showLog(s:String){
+    protected fun showLog(s:String){
         Log.d("debug",s)
     }
-    fun showLog(sId:Int){
+    protected fun showLog(sId:Int){
         Log.d("debug",getString(sId))
     }
 
     /**
      * 跳转活动(关闭已经打开的)
      */
-    fun customStartActivity(intent: Intent){
+    protected fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
     }
 
-//    /**
-//     * 获取网络智启状态
-//     * @return
-//     */
-//    fun getNetworkIntelligence(): Boolean {
-//        val value = Settings.System.getInt(contentResolver, Settings.System.DUAL_NETWORK_AUTOCONNECT,1)
-//        return value == 1
-//    }
-
-    fun closeNetwork(){
+    protected fun closeNetwork(){
         NetworkUtil(this).toggleNetwork(false)
     }
 
-    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+    protected fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
@@ -323,7 +345,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         return radioButton
     }
 
-    fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
+    protected fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
@@ -456,6 +478,18 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         EventBus.getDefault().unregister(this)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        screenPos=getCurrentScreenPos()
+        initDialog()
+        initChangeData()
+    }
+
+    /**
+     * 切屏后，重新初始化数据（用于数据请求弹框显示正确的位置）
+     */
+    open fun initChangeData(){
+    }
 }
 
 

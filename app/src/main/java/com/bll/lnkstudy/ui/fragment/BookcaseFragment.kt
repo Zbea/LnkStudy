@@ -8,7 +8,7 @@ import com.bll.lnkstudy.Constants.Companion.halfYear
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseFragment
+import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
@@ -27,7 +27,7 @@ import java.io.File
 /**
  * 书架
  */
-class BookcaseFragment: BaseFragment() {
+class BookcaseFragment: BaseMainFragment() {
 
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<BookBean>()//所有数据

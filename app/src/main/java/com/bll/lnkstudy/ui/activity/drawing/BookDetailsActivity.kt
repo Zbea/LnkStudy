@@ -7,7 +7,8 @@ import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.base.BaseBookDrawingActivity
+import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
@@ -17,19 +18,26 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_book_details_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity : BaseBookDrawingActivity() {
+class BookDetailsActivity : BaseDrawingActivity() {
 
-    //屏幕当前位置
     private var book: TextbookBean? = null
+    private var catalogMsg: CatalogMsg? = null
+    private var catalogs = mutableListOf<MultiItemEntity>()
+    private var parentItems = mutableListOf<CatalogParent>()
+    private var childItems = mutableListOf<CatalogChild>()
+    private var pageStart=1
+    private var page = 0 //当前页码
 
     override fun layoutId(): Int {
-        return R.layout.ac_book_details_drawing
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -68,49 +76,54 @@ class BookDetailsActivity : BaseBookDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_draft,iv_commit)
-        elik_a?.addOnTopView(iv_top)
-        elik_b?.addOnTopView(iv_top)
         if (catalogMsg!=null){
             pageCount =catalogMsg?.totalCount!!
             pageStart =catalogMsg?.startCount!!
         }
-        changeContent()
+        onChangeContent()
     }
 
     override fun onPageUp() {
         if (isExpand) {
             if (page > 1) {
                 page -= 2
-                changeContent()
+                onChangeContent()
             } else {
                 page = 1
-                changeContent()
+                onChangeContent()
             }
         } else {
             if (page > 0) {
                 page -= 1
-                changeContent()
+                onChangeContent()
             }
         }
     }
 
     override fun onPageDown() {
         page += if (isExpand) 2 else 1
-        changeContent()
+        onChangeContent()
+    }
+
+    override fun onCatalog() {
+        DrawingCatalogDialog(this, catalogs, 1, pageStart).builder().setOnDialogClickListener { position ->
+                page = position - 1
+                onChangeContent()
+            }
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
         isExpand=!isExpand
         moveToScreen(isExpand)
-        changeExpandView()
-        changeContent()
+        onChangeExpandView()
+        onChangeContent()
     }
 
     /**
      * 更新内容
      */
-    override fun changeContent() {
+    private fun onChangeContent() {
         //如果页码超出 则全屏展示最后两页
         if (page > pageCount - 1) {
             page =  pageCount - 1
@@ -120,10 +133,11 @@ class BookDetailsActivity : BaseBookDrawingActivity() {
             page=1
         }
 
-        setPage()
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
         loadPicture(page, elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
+            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
         }
 
         //设置当前展示页

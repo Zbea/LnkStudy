@@ -163,6 +163,15 @@ class CloudStorageActivity: BaseAppCompatActivity(){
         }
     }
 
+    override fun initChangeData() {
+        bookcaseFragment?.changeInitData()
+        textbookFragment?.changeInitData()
+        homeworkFragment?.changeInitData()
+        paperFragment?.changeInitData()
+        noteFragment?.changeInitData()
+        paintingFragment?.changeInitData()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         FileDownloader.getImpl().pauseAll()

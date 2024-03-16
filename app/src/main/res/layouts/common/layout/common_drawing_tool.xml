@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/drawing_tool_width"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        />
+
+
+    <ImageView
+        android:id="@+id/iv_page_up"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginTop="150dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_page_up" />
+
+    <ImageView
+        android:id="@+id/iv_page_down"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginTop="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_page_down" />
+
+    <ImageView
+        android:id="@+id/iv_erasure"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginTop="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_erasure" />
+
+    <ImageView
+        android:id="@+id/iv_draft"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginTop="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_draft" />
+
+    <View
+        android:id="@+id/ll_hide"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <ImageView
+        android:id="@+id/iv_commit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginBottom="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_commit" />
+
+
+    <ImageView
+        android:id="@+id/iv_tool"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginBottom="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_tool" />
+
+    <ImageView
+        android:id="@+id/iv_catalog"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginBottom="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_catalog" />
+
+
+    <ImageView
+        android:id="@+id/iv_expand"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginBottom="150dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_expand" />
+</LinearLayout>

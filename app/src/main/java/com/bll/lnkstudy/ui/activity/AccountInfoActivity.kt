@@ -20,8 +20,8 @@ import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
 
-    private val mSchoolPresenter=SchoolPresenter(this)
-    private val presenter = AccountInfoPresenter(this)
+    private var mSchoolPresenter:SchoolPresenter?=null
+    private var presenter:AccountInfoPresenter?=null
     private var nickname = ""
 
     private var grades = mutableListOf<PopupBean>()
@@ -69,10 +69,16 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
 
     override fun initData() {
+        initChangeData()
         grades = DataBeanManager.popupGrades(grade)
         school=mUser?.schoolId!!
         if (NetworkUtil(this).isNetworkConnected())
-            mSchoolPresenter.getCommonSchool()
+            mSchoolPresenter?.getCommonSchool()
+    }
+
+    override fun initChangeData() {
+        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
+        presenter = AccountInfoPresenter(this,getCurrentScreenPos())
     }
 
     @SuppressLint("WrongConstant")
@@ -172,7 +178,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         PopupList(this, grades, btn_edit_grade, 15).builder().setOnSelectListener { item ->
             tv_grade_str.text = item.name
             grade = item.id
-            presenter.editGrade(grade)
+            presenter?.editGrade(grade)
         }
     }
 
@@ -186,7 +192,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                 school=it.id
                 if (school==mUser?.schoolId)
                     return@setOnDialogClickListener
-                presenter.editSchool(it.id)
+                presenter?.editSchool(it.id)
                 for (item in schools){
                     if (item.id==school)
                         schoolBean=item
@@ -205,7 +211,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         InputContentDialog(this, screenPos, tv_name.text.toString()).builder()
             ?.setOnDialogClickListener { string ->
                 nickname = string
-                presenter.editName(nickname)
+                presenter?.editName(nickname)
             }
     }
 

@@ -8,14 +8,14 @@ import com.bll.lnkstudy.net.*
 /**
  * 作业
  */
-class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<IContractView.IHomeworkView>(view) {
+class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : BasePresenter<IContractView.IHomeworkView>(view) {
 
     /**
      * 获取作业本列表
      */
     fun getTypeList(map :HashMap<String,Any>) {
         val type = RetrofitManager.service.getHomeworkType(map)
-        doRequest(type, object : Callback<HomeworkType>(view) {
+        doRequest(type, object : Callback<HomeworkType>(view,screen) {
             override fun failed(tBaseResult: BaseResult<HomeworkType>): Boolean {
                 return false
             }
@@ -35,7 +35,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
      */
     fun getTypeParentList(map :HashMap<String,Any>) {
         val type = RetrofitManager.service.getParentsHomeworkType(map)
-        doRequest(type, object : Callback<MutableList<ParentTypeBean>>(view) {
+        doRequest(type, object : Callback<MutableList<ParentTypeBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<ParentTypeBean>>): Boolean {
                 return false
             }
@@ -52,7 +52,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     fun getParentMessage(map :HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.getParentMessage(body)
-        doRequest(type, object : Callback<Map<String,ParentHomeworkMessage>>(view) {
+        doRequest(type, object : Callback<Map<String,ParentHomeworkMessage>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Map<String,ParentHomeworkMessage>>): Boolean {
                 return false
             }
@@ -69,7 +69,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     fun getParentReel(map :HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.getParentReel(body)
-        doRequest(type, object : Callback<Map<String,MutableList<ParentHomeworkBean>>>(view) {
+        doRequest(type, object : Callback<Map<String,MutableList<ParentHomeworkBean>>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Map<String,MutableList<ParentHomeworkBean>>>): Boolean {
                 return false
             }
@@ -86,7 +86,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     fun getList(map: HashMap<String, Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.getHomeworkMessage(body)
-        doRequest(type, object : Callback<Map<String, HomeworkMessage>>(view) {
+        doRequest(type, object : Callback<Map<String, HomeworkMessage>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Map<String,HomeworkMessage>>): Boolean {
                 return false
             }
@@ -103,7 +103,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     fun getReelList(map: HashMap<String, Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.getHomeworkReel(body)
-        doRequest(type, object : Callback<Map<String, HomeworkPaperList>>(view) {
+        doRequest(type, object : Callback<Map<String, HomeworkPaperList>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Map<String, HomeworkPaperList>>): Boolean {
                 return false
             }
@@ -120,7 +120,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     fun downloadParent(id:Int) {
         val body=RequestUtils.getBody(Pair.create("id",id))
         val type = RetrofitManager.service.commitParentLoad(body)
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -136,7 +136,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
     fun commitDownload(id:Int) {
         val body=RequestUtils.getBody(Pair.create("studentTaskId",id))
         val type = RetrofitManager.service.commitHomeworkLoad(body)
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

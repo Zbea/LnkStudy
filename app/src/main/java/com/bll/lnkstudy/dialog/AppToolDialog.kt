@@ -21,11 +21,11 @@ import com.chad.library.adapter.base.BaseViewHolder
  * type=1 书籍 type=2其他
  * 1左 2 右
  */
-class AppToolDialog(val context: Context,val type:Int, val screenPos:Int, val location:Int) {
+class AppToolDialog(val context: Context,val type:Int, val screenPos:Int) {
 
     private var dialog:Dialog?=null
 
-    fun builder(): AppToolDialog? {
+    fun builder(): AppToolDialog {
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_app_tool)
         val window=dialog?.window!!
@@ -34,15 +34,12 @@ class AppToolDialog(val context: Context,val type:Int, val screenPos:Int, val lo
         if (type==1){
             layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
             layoutParams?.x=DP2PX.dip2px(context,42f)
-            layoutParams?.y=DP2PX.dip2px(context,5f)
+            layoutParams?.y=DP2PX.dip2px(context,354f)
         }
         else{
-            layoutParams?.gravity = Gravity.BOTTOM or Gravity.LEFT
+            layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
             layoutParams?.x=DP2PX.dip2px(context,5f)
             layoutParams?.y=DP2PX.dip2px(context,38f)
-            if (location==2){
-                layoutParams?.gravity = Gravity.BOTTOM or Gravity.RIGHT
-            }
         }
         dialog?.show()
 
@@ -66,19 +63,11 @@ class AppToolDialog(val context: Context,val type:Int, val screenPos:Int, val lo
             }
             else{
                 when(screenPos){
-                    1->{
-                        AppUtils.startAPP(context,packageName,2)
+                    Constants.SCREEN_LEFT->{
+                        AppUtils.startAPP(context,packageName,Constants.SCREEN_RIGHT)
                     }
-                    2->{
-                        AppUtils.startAPP(context,packageName,1)
-                    }
-                    3->{
-                        if (location==1){
-                            AppUtils.startAPP(context,packageName,2)
-                        }
-                        else{
-                            AppUtils.startAPP(context,packageName,1)
-                        }
+                    else->{
+                        AppUtils.startAPP(context,packageName,Constants.SCREEN_LEFT)
                     }
                 }
             }
