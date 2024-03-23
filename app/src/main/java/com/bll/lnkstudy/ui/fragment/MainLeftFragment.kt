@@ -186,6 +186,8 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
         item2.permissionTimesBeans= arrayListOf(permissionTimesBean)
         SPUtil.putObj("schoolPermissionBook",item2)
         SPUtil.putObj("schoolPermissionVideo",item2)
+
+        initDialog(1)
     }
 
     override fun lazyLoad() {

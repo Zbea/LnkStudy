@@ -43,7 +43,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     override fun initData() {
         initChangeData()
-        pageSize=10
+        pageSize=12
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
         }
@@ -71,8 +71,8 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
             val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             layoutParams.setMargins(
                 DP2PX.dip2px(this@MessageListActivity,50f),
-                DP2PX.dip2px(this@MessageListActivity,20f),
-                DP2PX.dip2px(this@MessageListActivity,50f),20)
+                DP2PX.dip2px(this@MessageListActivity,50f),
+                DP2PX.dip2px(this@MessageListActivity,50f),0)
             layoutParams.weight=1f
             rv_list.layoutParams= layoutParams
             rv_list.adapter = this

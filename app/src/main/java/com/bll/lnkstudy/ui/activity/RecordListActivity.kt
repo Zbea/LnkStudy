@@ -284,7 +284,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 name=item.title
             })
         }
-        HomeworkMessageSelectorDialog(this, screenPos, items).builder()
+        HomeworkMessageSelectorDialog(this, getCurrentScreenPos(), items).builder()
             ?.setOnDialogClickListener {position,it->
                 messageId=it.id
                 messageIndex=position

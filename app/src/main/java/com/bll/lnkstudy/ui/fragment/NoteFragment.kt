@@ -236,7 +236,7 @@ class NoteFragment : BaseMainFragment(){
 
     //新建笔记分类
     private fun addNotebook() {
-        InputContentDialog(requireContext(), screenPos,getString(R.string.notebook_create_hint)).builder()
+        InputContentDialog(requireContext(), 2,getString(R.string.notebook_create_hint)).builder()
             ?.setOnDialogClickListener { string ->
                 if (NotebookDaoManager.getInstance().isExist(string)){
                     showToast(screenPos,R.string.toast_existed)

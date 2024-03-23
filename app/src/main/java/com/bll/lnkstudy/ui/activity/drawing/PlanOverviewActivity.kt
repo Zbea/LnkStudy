@@ -31,7 +31,6 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
         setPageTitle(R.string.main_plan)
-        elik_b=v_content.pwInterFace
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

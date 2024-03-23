@@ -44,6 +44,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     }
 
     override fun initData() {
+        initDialog(1)
     }
 
     @SuppressLint("WrongConstant")

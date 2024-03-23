@@ -206,8 +206,22 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onPageDown() {
-        page += if (isExpand) 2 else 1
-        onChangeContent()
+        if (isExpand){
+            if (page<pageCount-2){
+                page+=2
+                onChangeContent()
+            }
+            else if (page==pageCount-2){
+                page=pageCount-1
+                onChangeContent()
+            }
+        }
+        else{
+            if (page<pageCount-1){
+                page+=1
+                onChangeContent()
+            }
+        }
     }
 
     override fun onCatalog() {
@@ -229,11 +243,12 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      * 更新内容
      */
     private fun onChangeContent() {
-        //如果页码超出 则全屏展示最后两页
-        if (page > pageCount - 1) {
-            page =  pageCount - 1
+        if (pageCount==0)
+            return
+        if (page>=pageCount){
+            page=pageCount-1
+            return
         }
-
         if (page==0&&isExpand){
             page=1
         }

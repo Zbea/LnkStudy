@@ -75,6 +75,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             }
         }
 
+        initDialog(1)
     }
 
     override fun lazyLoad() {

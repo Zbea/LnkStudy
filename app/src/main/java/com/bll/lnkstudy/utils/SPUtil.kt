@@ -33,7 +33,13 @@ object SPUtil {
     }
 
     fun getUserId():String{
-        return getObj("user", User::class.java)?.accountId!!.toString()
+        val userStr=if (getObj("user", User::class.java)==null){
+            ""
+        }
+        else{
+            getObj("user", User::class.java)?.accountId!!.toString()
+        }
+        return userStr
     }
 
     fun putList(key: String,list: MutableList<ItemList>){
@@ -57,18 +63,26 @@ object SPUtil {
     }
 
     fun putString(key: String, value: String) {
-        map[getUserId()+ key] = value
+        var keyStr=key
+        if (key != "token"){
+            keyStr=getUserId()+ key
+        }
+        map[keyStr] = value
         Schedulers.io().run {
-            editor.putString(getUserId()+ key, value).apply()
+            editor.putString(keyStr, value).apply()
         }
     }
 
     fun getString(key: String): String {
-        var s = map[getUserId()+ key]
+        var keyStr=key
+        if (key != "token"){
+            keyStr=getUserId()+ key
+        }
+        var s = map[keyStr]
         if (s == null) {
-            s = sharedPreferences.getString(getUserId()+ key, "")
+            s = sharedPreferences.getString(keyStr, "")
             if (s != null) {
-                map[getUserId()+ key] = s
+                map[keyStr] = s
             }
         }
         return s as String

@@ -114,6 +114,11 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         mNetworkDialog= ProgressDialog(requireActivity(),getScreenPosition(),1)
     }
 
+    fun initDialog(screen:Int){
+        mDialog = ProgressDialog(requireActivity(),screen,0)
+        mNetworkDialog= ProgressDialog(requireActivity(),screen,1)
+    }
+
     /**
      * 关闭软键盘
      */

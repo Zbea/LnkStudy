@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -9,7 +8,6 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingManageDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -43,7 +41,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
 
         pops.add(PopupBean(0, getString(R.string.delete), false))
-        pops.add(PopupBean(1, getString(R.string.revocation), false))
+//        pops.add(PopupBean(1, getString(R.string.revocation), false))
 
         if (paintingLists.size > 0) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
@@ -55,7 +53,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        iv_draft.setImageResource(R.mipmap.icon_draw_change)
+        disMissView(iv_draft)
         iv_commit.setImageResource(R.mipmap.icon_draw_more)
         onChangeContent()
 
@@ -94,13 +92,13 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             }
         }
 
-        iv_draft.setOnClickListener {
-            ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.painting_module_str), DataBeanManager.sfModule).builder()
-                ?.setOnDialogClickListener { moduleBean ->
-                    resId=moduleBean.resContentId
-                    setBg()
-                }
-        }
+//        iv_draft.setOnClickListener {
+//            ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.painting_module_str), DataBeanManager.sfModule).builder()
+//                ?.setOnDialogClickListener { moduleBean ->
+//                    resId=moduleBean.resContentId
+//                    setBg()
+//                }
+//        }
 
     }
 

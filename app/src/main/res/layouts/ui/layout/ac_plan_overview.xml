@@ -92,7 +92,7 @@
     </RelativeLayout>
 
     <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/v_content"
+        android:id="@+id/v_content_b"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:src="@mipmap/icon_freenote_bg_1"

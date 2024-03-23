@@ -60,7 +60,7 @@
 
     </LinearLayout>
     <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/v_content"
+        android:id="@+id/v_content_b"
         android:layout_width="match_parent"
         android:layout_height="970dp"
         android:background="@mipmap/icon_date_event_bg"

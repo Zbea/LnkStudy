@@ -28,7 +28,6 @@ class DateEventActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik_b = v_content.pwInterFace
         setContentView()
 
         iv_up.setOnClickListener {

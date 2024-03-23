@@ -23,10 +23,10 @@ class ProgressDialog(var context: Context, val screenPos: Int,val type:Int) {
         val window = mDialog!!.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        if (screenPos == 2) {
-            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        if (screenPos == 1) {
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.START
         } else {
-            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
         }
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,120f))/2
         window.attributes = layoutParams

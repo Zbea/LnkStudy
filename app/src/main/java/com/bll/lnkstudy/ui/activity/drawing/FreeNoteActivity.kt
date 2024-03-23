@@ -41,7 +41,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
         disMissView(iv_catalog,iv_btn)
         setPageTitle(R.string.freenote_title_str)
         tv_name.text = freeNoteBean?.title
-        elik_b=v_content_b.pwInterFace
 
         tv_name.setOnClickListener {
             InputContentDialog(this, tv_name.text.toString()).builder()?.setOnDialogClickListener {

@@ -55,6 +55,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+    var isClickExpend=false //是否是单双屏切换
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -158,6 +159,11 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     private fun initDialog(){
         mDialog = ProgressDialog(this,getCurrentScreenPos(),0)
         mNetworkDialog= ProgressDialog(this,getCurrentScreenPos(),1)
+    }
+
+    fun initDialog(screen:Int){
+        mDialog = ProgressDialog(this,screen,0)
+        mNetworkDialog= ProgressDialog(this,screen,1)
     }
 
     protected fun fetchCommonData(){
@@ -480,9 +486,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        screenPos=getCurrentScreenPos()
+        if (!isClickExpend){
+            screenPos=getCurrentScreenPos()
+        }
         initDialog()
         initChangeData()
+        isClickExpend=false
     }
 
     /**

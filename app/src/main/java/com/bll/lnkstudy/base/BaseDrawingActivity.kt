@@ -38,6 +38,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     override fun initCreate() {
         if (v_content_a!=null && v_content_b!=null){
             elik_a = v_content_a?.pwInterFace
+        }
+        if (v_content_b!=null){
             elik_b = v_content_b?.pwInterFace
         }
 
@@ -82,6 +84,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         iv_expand?.setOnClickListener {
+            isClickExpend=true
             onChangeExpandContent()
         }
     }
@@ -261,6 +264,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(1)
+                if (revocationList.size>2)
+                    revocationList.remove(0)
                 if (elik_a?.curDrawObjStatus == true){
                     reDrawGeometry(elik_a!!,1)
                 }
@@ -276,6 +281,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(2)
+                if (revocationList.size>2)
+                    revocationList.remove(0)
                 if (elik_b?.curDrawObjStatus == true){
                     reDrawGeometry(elik_b!!,2)
                 }
@@ -294,15 +301,15 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     private fun reDrawGeometry(elik:EinkPWInterface,location: Int){
         if (isErasure)
             return
-        if (location==1){
-            v_content_a.invalidate()
-        }
-        else{
-            v_content_b.invalidate()
-        }
         if (isScale){
             if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
                 Handler().postDelayed({
+                    if (location==1){
+                        v_content_a.invalidate()
+                    }
+                    else{
+                        v_content_b.invalidate()
+                    }
                     GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
                         ?.setOnDialogClickListener{
                                 width, height ->
