@@ -197,8 +197,8 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
         fetchData()
     }
 
-    override fun changeInitData() {
-        super.changeInitData()
+    override fun initChangeScreenData() {
+        super.initChangeScreenData()
         presenter=CalenderPresenter(this,getScreenPosition())
     }
 

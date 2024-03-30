@@ -30,8 +30,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     private var dateEventBean: DateEventBean?=null
     private var weeks= mutableListOf<DateWeek>()
     private var times= mutableListOf<Long>()
-    private var startStr=""
-    private var endStr=""
+    private var startStr="开始"
+    private var endStr="结束"
     private var calendarDialog:CalendarMultiDialog?=null
     private var isWeek=false //是否是编辑星期
     private var isDate=false //是否是编辑日期
@@ -45,9 +45,6 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
     override fun initData() {
         flags=intent.flags
         weeks= DataBeanManager.weeks
-
-        startStr=getString(R.string.start)
-        endStr=getString(R.string.end)
 
         if (flags==0){
             dateEventBean= DateEventBean()
@@ -226,6 +223,11 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty() && !item.endTimeStr.isNullOrEmpty()) {
                 plans.add(item)
             }
+        }
+
+        if (plans.size==0){
+            showToast("未添加计划")
+            return
         }
 
         dateEventBean?.plans=plans

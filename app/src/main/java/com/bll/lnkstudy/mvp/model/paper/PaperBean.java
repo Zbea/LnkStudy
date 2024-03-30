@@ -19,26 +19,22 @@ public class PaperBean {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    @Unique
     public int contentId;//这次考卷id
     public String course;//科目
     public int typeId;//考卷分组id
     public String type;//考卷分组标题
-    public int index;//（位置下标）
     public String title;
     public String path;//文件路径
     public int page;
-
-    @Generated(hash = 358579836)
-    public PaperBean(Long id, long userId, int contentId, String course, int typeId,
-            String type, int index, String title, String path, int page) {
+    @Generated(hash = 1942965366)
+    public PaperBean(Long id, long userId, int contentId, String course, int typeId, String type,
+            String title, String path, int page) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
         this.course = course;
         this.typeId = typeId;
         this.type = type;
-        this.index = index;
         this.title = title;
         this.path = path;
         this.page = page;
@@ -82,12 +78,6 @@ public class PaperBean {
     public void setType(String type) {
         this.type = type;
     }
-    public int getIndex() {
-        return this.index;
-    }
-    public void setIndex(int index) {
-        this.index = index;
-    }
     public String getTitle() {
         return this.title;
     }
@@ -106,5 +96,4 @@ public class PaperBean {
     public void setPage(int page) {
         this.page = page;
     }
-
 }

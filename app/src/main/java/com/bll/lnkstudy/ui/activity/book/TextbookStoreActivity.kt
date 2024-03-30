@@ -77,7 +77,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         pageSize=12
         typeList = DataBeanManager.teachingType.toMutableList()
         tabStr = typeList[0]
@@ -108,7 +108,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         presenter = TextbookStorePresenter(this,getCurrentScreenPos())
     }
 

@@ -100,7 +100,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
 
@@ -165,7 +165,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     }
 

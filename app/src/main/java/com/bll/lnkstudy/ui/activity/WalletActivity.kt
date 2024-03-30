@@ -54,7 +54,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         if (NetworkUtil(this).isNetworkConnected()){
             walletPresenter.getXdList(false)
         }
@@ -63,7 +63,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         walletPresenter=WalletPresenter(this,1)
     }
 

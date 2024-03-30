@@ -14,7 +14,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.mvp.model.ExamItem.ExamBean
+import com.bll.lnkstudy.mvp.model.paper.ExamItem.ExamBean
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -28,9 +28,9 @@ import java.util.*
 /**
  * 考卷考试页面
  */
-class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView{
+class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView{
     private var flags=0
-    private val mUploadPresenter=FileUploadPresenter(this)
+    private val mUploadPresenter=FileUploadPresenter(this,3)
     private var commonTypeId=0
     private var pathStr=""
     private var exam: ExamBean?=null
@@ -166,12 +166,12 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
 
     override fun onPageDown() {
         if (isExpand){
-            if (page+2<pageCount){
+            if (page<pageCount-2){
                 page+=2
             }
         }
         else{
-            if (page+1<pageCount){
+            if (page<pageCount-1){
                 page+=1
             }
         }
@@ -227,7 +227,7 @@ class PaperExamDrawingActivity : BaseDrawingActivity(),IContractView.IFileUpload
      * 提交
      */
     private fun commit(){
-        if (NetworkUtil(this@PaperExamDrawingActivity).isNetworkConnected()){
+        if (NetworkUtil(this@ExamCommitDrawingActivity).isNetworkConnected()){
             showLoading()
             for (i in paths.indices) {
                 Thread{

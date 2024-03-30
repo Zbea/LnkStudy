@@ -29,8 +29,8 @@ abstract class BaseCloudFragment : BaseFragment(), IContractView.ICloudView  {
         fetchData()
     }
 
-    override fun changeInitData() {
-        super.changeInitData()
+    override fun initChangeScreenData() {
+        super.initChangeScreenData()
         mCloudPresenter= CloudPresenter(this,getScreenPosition())
     }
 

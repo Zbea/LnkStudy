@@ -50,7 +50,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         pageSize=20
         flags=intent.flags
         item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
@@ -79,7 +79,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mPresenter=TeachingVideoPresenter(this,getCurrentScreenPos())
     }
 

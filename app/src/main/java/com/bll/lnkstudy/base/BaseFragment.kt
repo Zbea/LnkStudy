@@ -313,7 +313,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     /**
      * 重新初始化屏幕位置
      */
-    open fun changeInitData(){
+    open fun initChangeScreenData(){
         initDialog()
     }
 

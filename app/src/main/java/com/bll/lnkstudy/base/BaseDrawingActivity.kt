@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import com.bll.lnkstudy.R
@@ -244,7 +243,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         tv_out?.setOnClickListener {
-            if (this is PaperExamDrawingActivity){
+            if (this is ExamCommitDrawingActivity){
                 tv_reduce?.callOnClick()
                 return@setOnClickListener
             }
@@ -488,7 +487,13 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     open fun onElikSava_b(){
     }
 
-
+    /**
+     * 设置是否可以手写
+     */
+    public fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
+    }
     /**
      * 设置擦除
      */

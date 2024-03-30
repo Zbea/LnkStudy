@@ -44,7 +44,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         mClassGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
         val map=HashMap<String,Any>()
         map["classId"]=mClassGroup?.classId!!
@@ -52,7 +52,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
         presenter.getClassGroupUser(map)
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         presenter = ClassGroupPresenter(this,getCurrentScreenPos())
     }
 

@@ -76,7 +76,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         pageSize=12
         type = intent.flags
         typeStr=DataBeanManager.bookStoreTypes()[type-1].desc
@@ -94,7 +94,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         presenter = BookStorePresenter(this,getCurrentScreenPos())
     }
 

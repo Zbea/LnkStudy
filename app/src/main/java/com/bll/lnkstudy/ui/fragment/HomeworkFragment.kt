@@ -465,7 +465,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadParentHomeworkImage(beans: MutableList<ParentHomeworkBean>) {
         for (item in beans) {
-            lock.lock()
             //拿到对应作业的所有本地图片地址
             val paths = mutableListOf<String>()
             val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id)
@@ -483,6 +482,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.downloadParent(item.id)
+                            lock.lock()
                             //更新增量数据
                             for (homework in homeworkContents) {
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homework.homeworkTypeId)
@@ -497,13 +497,13 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
+                            lock.unlock()
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }
                     })
-            lock.unlock()
         }
     }
 
@@ -512,7 +512,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadParentHomeworkBook(beans: MutableList<ParentHomeworkBean>) {
         for (item in beans) {
-            lock.lock()
             val typeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.parentHomeworkId)
             val homeworkBookBean = HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId) ?: continue
             //拿到对应作业的所有本地图片地址
@@ -529,6 +528,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun completed(task: BaseDownloadTask?) {
+                            lock.lock()
                             //下载完成后 请求
                             mPresenter.downloadParent(item.id)
                             //更新增量数据
@@ -542,13 +542,13 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
+                            lock.unlock()
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }
                     })
-            lock.unlock()
         }
     }
 
@@ -558,7 +558,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadHomeworkBook(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            lock.lock()
             val typeBean = HomeworkTypeDaoManager.getInstance().queryByTypeId(item.typeId)
             val homeworkBookBean = HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId) ?: continue
             //拿到对应作业的所有本地图片地址
@@ -577,6 +576,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.commitDownload(item.id)
+                            lock.lock()
                             //更新增量数据
                             DataUpdateManager.editDataUpdate(8, homeworkBookBean.bookId, 2, homeworkBookBean.bookId)
                             //添加批改详情
@@ -588,13 +588,13 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 course=typeBean.course
                                 time=System.currentTimeMillis()
                             })
+                            lock.unlock()
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }
                     })
-            lock.unlock()
         }
     }
 
@@ -612,7 +612,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadHomeworkImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            lock.lock()
             val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id)
             if (homeworkContents.isNullOrEmpty()) continue
             //拿到对应作业的所有本地图片地址
@@ -630,6 +629,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.commitDownload(item.id)
+                            lock.lock()
                             //更新增量数据
                             for (homework in homeworkContents) {
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homework.homeworkTypeId)
@@ -644,13 +644,13 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 course=homework.course
                                 time=System.currentTimeMillis()
                             })
+                            lock.unlock()
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int ) {
                         }
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }
                     })
-            lock.unlock()
         }
     }
 
@@ -659,7 +659,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadHomeworkPaperImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            lock.lock()
             //设置路径 作业卷路径
             val pathStr = FileAddress().getPathHomework(mCourse, item.typeId, item.id)
             //学生未提交
@@ -680,6 +679,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         }
                         override fun completed(task: BaseDownloadTask?) {
                             mPresenter.commitDownload(item.id)
+                            lock.lock()
                             val paperDaoManager = HomeworkPaperDaoManager.getInstance()
                             val paperContentDaoManager = HomeworkPaperContentDaoManager.getInstance()
                             if (item.sendStatus == 2) {
@@ -746,13 +746,13 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                     DataUpdateManager.createDataUpdate(2, id.toInt(), 3, item.typeId, 1, Gson().toJson(paperContent), pathStr)
                                 }
                             }
+                            lock.unlock()
                         }
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }
                     })
-            lock.unlock()
         }
     }
 

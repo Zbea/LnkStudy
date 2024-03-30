@@ -357,7 +357,12 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
         dateBean.week=DateUtils.getWeek(nowDate)
 
         dateEvents=DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean)
-        mPlanAdapter?.setNewData(if (dateEvents.size>0)dateEvents[0].plans else null)
+        if (dateEvents.size>0){
+            mPlanAdapter?.setNewData(dateEvents[0].plans)
+        }
+         else{
+             mPlanAdapter?.setNewData(null)
+         }
     }
 
 

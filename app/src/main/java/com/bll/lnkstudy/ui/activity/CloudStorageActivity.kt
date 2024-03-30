@@ -163,13 +163,13 @@ class CloudStorageActivity: BaseAppCompatActivity(){
         }
     }
 
-    override fun initChangeData() {
-        bookcaseFragment?.changeInitData()
-        textbookFragment?.changeInitData()
-        homeworkFragment?.changeInitData()
-        paperFragment?.changeInitData()
-        noteFragment?.changeInitData()
-        paintingFragment?.changeInitData()
+    override fun initChangeScreenData() {
+        bookcaseFragment?.initChangeScreenData()
+        textbookFragment?.initChangeScreenData()
+        homeworkFragment?.initChangeScreenData()
+        paperFragment?.initChangeScreenData()
+        noteFragment?.initChangeScreenData()
+        paintingFragment?.initChangeScreenData()
     }
 
     override fun onDestroy() {

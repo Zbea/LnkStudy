@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
+import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -42,6 +43,34 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
             Pair("studentTaskId",id)
         )
         val commit = RetrofitManager.service.deletePaper(body)
+        doRequest(commit, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onDeleteSuccess()
+            }
+        }, false)
+    }
+
+    fun getExamList() {
+        val type = RetrofitManager.service.getExamCorrectList()
+        doRequest(type, object : Callback<Map<Int,MutableList<ExamCorrectBean>>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Map<Int,MutableList<ExamCorrectBean>>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Map<Int,MutableList<ExamCorrectBean>>>) {
+                if (tBaseResult.data!=null)
+                    view.onExamList(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    fun deleteExam(id:Int){
+        val body= RequestUtils.getBody(
+            Pair("id",id)
+        )
+        val commit = RetrofitManager.service.onDeleteExamCorrect(body)
         doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false

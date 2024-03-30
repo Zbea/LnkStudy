@@ -42,7 +42,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         pageSize=12
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
@@ -52,7 +52,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mMessagePresenter= MessagePresenter(this,getCurrentScreenPos())
     }
 

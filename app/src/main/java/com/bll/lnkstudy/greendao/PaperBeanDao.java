@@ -30,10 +30,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         public final static Property Course = new Property(3, String.class, "course", false, "COURSE");
         public final static Property TypeId = new Property(4, int.class, "typeId", false, "TYPE_ID");
         public final static Property Type = new Property(5, String.class, "type", false, "TYPE");
-        public final static Property Index = new Property(6, int.class, "index", false, "INDEX");
-        public final static Property Title = new Property(7, String.class, "title", false, "TITLE");
-        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
-        public final static Property Page = new Property(9, int.class, "page", false, "PAGE");
+        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
+        public final static Property Path = new Property(7, String.class, "path", false, "PATH");
+        public final static Property Page = new Property(8, int.class, "page", false, "PAGE");
     }
 
 
@@ -51,14 +50,13 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"PAPER_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"CONTENT_ID\" INTEGER NOT NULL UNIQUE ," + // 2: contentId
+                "\"CONTENT_ID\" INTEGER NOT NULL ," + // 2: contentId
                 "\"COURSE\" TEXT," + // 3: course
                 "\"TYPE_ID\" INTEGER NOT NULL ," + // 4: typeId
                 "\"TYPE\" TEXT," + // 5: type
-                "\"INDEX\" INTEGER NOT NULL ," + // 6: index
-                "\"TITLE\" TEXT," + // 7: title
-                "\"PATH\" TEXT," + // 8: path
-                "\"PAGE\" INTEGER NOT NULL );"); // 9: page
+                "\"TITLE\" TEXT," + // 6: title
+                "\"PATH\" TEXT," + // 7: path
+                "\"PAGE\" INTEGER NOT NULL );"); // 8: page
     }
 
     /** Drops the underlying database table. */
@@ -88,18 +86,17 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         if (type != null) {
             stmt.bindString(6, type);
         }
-        stmt.bindLong(7, entity.getIndex());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(8, title);
+            stmt.bindString(7, title);
         }
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(9, path);
+            stmt.bindString(8, path);
         }
-        stmt.bindLong(10, entity.getPage());
+        stmt.bindLong(9, entity.getPage());
     }
 
     @Override
@@ -123,18 +120,17 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         if (type != null) {
             stmt.bindString(6, type);
         }
-        stmt.bindLong(7, entity.getIndex());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(8, title);
+            stmt.bindString(7, title);
         }
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(9, path);
+            stmt.bindString(8, path);
         }
-        stmt.bindLong(10, entity.getPage());
+        stmt.bindLong(9, entity.getPage());
     }
 
     @Override
@@ -151,10 +147,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // course
             cursor.getInt(offset + 4), // typeId
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // type
-            cursor.getInt(offset + 6), // index
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // title
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // path
-            cursor.getInt(offset + 9) // page
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // path
+            cursor.getInt(offset + 8) // page
         );
         return entity;
     }
@@ -167,10 +162,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         entity.setCourse(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setTypeId(cursor.getInt(offset + 4));
         entity.setType(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setIndex(cursor.getInt(offset + 6));
-        entity.setTitle(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setPage(cursor.getInt(offset + 9));
+        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setPage(cursor.getInt(offset + 8));
      }
     
     @Override

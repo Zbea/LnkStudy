@@ -53,6 +53,7 @@
         android:textColor="@color/black"
         android:background="@color/color_transparent"
         android:hint="@string/subject"
+        android:lines="1"
         android:textColorHint="@color/color_text_hint"/>
 
 

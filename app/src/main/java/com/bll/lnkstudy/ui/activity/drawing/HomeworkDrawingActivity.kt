@@ -90,11 +90,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
             DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homeworkTypeId, Gson().toJson(homework))
         }
-        //设置不能手写
-        if (homeworkCommit?.contents!!.contains(page + 1)) {
-            elik_a?.setPWEnabled(false)
-            elik_b?.setPWEnabled(false)
-        }
+
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
             type=1
@@ -104,6 +100,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             course=homeworkType?.course
             time=System.currentTimeMillis()
         })
+
+        onChangeContent()
     }
 
     override fun layoutId(): Int {
@@ -111,7 +109,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         page = intent.getIntExtra("page", DEFAULT_PAGE)
@@ -159,7 +157,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     }
 
@@ -417,9 +415,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         commit()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        closeNetwork()
+//    }
 
 }

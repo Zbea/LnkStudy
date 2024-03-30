@@ -490,14 +490,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             screenPos=getCurrentScreenPos()
         }
         initDialog()
-        initChangeData()
+        initChangeScreenData()
         isClickExpend=false
     }
 
     /**
      * 切屏后，重新初始化数据（用于数据请求弹框显示正确的位置）
      */
-    open fun initChangeData(){
+    open fun initChangeScreenData(){
     }
 }
 

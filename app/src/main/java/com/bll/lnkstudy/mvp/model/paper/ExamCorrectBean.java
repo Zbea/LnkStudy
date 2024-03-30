@@ -1,0 +1,16 @@
+package com.bll.lnkstudy.mvp.model.paper;
+
+/**
+ * 考试下载
+ */
+public class ExamCorrectBean {
+    public int id;
+    public int schoolExamJobId;
+    public String examUrl;
+    public String studentUrl;
+    public String teacherUrl;
+    public int score;
+    public String question;
+    public String examName;
+    public int typeId;
+}

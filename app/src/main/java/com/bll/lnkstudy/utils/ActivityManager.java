@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.utils;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
@@ -10,7 +9,7 @@ import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
-import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.TestpaperDrawingActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -243,7 +242,7 @@ public class ActivityManager {
         while (it.hasNext()) {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
-            if (activity.getClass().getName().equals(PaperDrawingActivity.class.getName())) {
+            if (activity.getClass().getName().equals(TestpaperDrawingActivity.class.getName())) {
                 String course= activity.getIntent().getStringExtra("course");
                 int categoryId= activity.getIntent().getIntExtra("typeId",0);
                 if (Objects.equals(course, mCourse) && categoryId==mTypeId){

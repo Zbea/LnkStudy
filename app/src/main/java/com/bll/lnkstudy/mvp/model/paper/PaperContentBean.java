@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 考卷试卷
@@ -18,7 +19,7 @@ public class PaperContentBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String course;
     public int typeId;//考卷分组id
     public int contentId;//考卷id

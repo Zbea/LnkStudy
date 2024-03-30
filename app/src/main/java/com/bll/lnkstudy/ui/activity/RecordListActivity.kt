@@ -92,7 +92,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         course=homeworkType?.course!!
@@ -110,7 +110,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         pops.add(PopupBean(1,getString(R.string.delete),R.mipmap.icon_delete))
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     }
 

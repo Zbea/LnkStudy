@@ -49,7 +49,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         if (NetworkUtil(this).isNetworkConnected()){
             presenter.getClassGroupList(true)
         }
@@ -58,7 +58,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         presenter = ClassGroupPresenter(this,getCurrentScreenPos())
     }
 

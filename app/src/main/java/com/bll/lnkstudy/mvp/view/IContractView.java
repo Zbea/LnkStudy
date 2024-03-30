@@ -9,7 +9,8 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
-import com.bll.lnkstudy.mvp.model.ExamItem;
+import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
+import com.bll.lnkstudy.mvp.model.paper.ExamItem;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
@@ -32,6 +33,7 @@ import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
 import com.bll.lnkstudy.mvp.model.CourseItem;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -147,7 +149,7 @@ public interface IContractView {
         void onTypeList(List<PaperTypeBean> list);
         void onList(PaperList paper);
         void onDeleteSuccess();
-
+        void onExamList(Map<Integer,List<ExamCorrectBean>> map);
     }
 
     //作业

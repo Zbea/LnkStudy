@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
@@ -31,7 +30,7 @@ import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
-import com.bll.lnkstudy.ui.activity.drawing.PaperDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.TestpaperDrawingActivity;
 import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
 import com.bll.lnkstudy.utils.DateUtils;
@@ -204,7 +203,7 @@ public class MethodManager {
      */
     public static void gotoPaperDrawing(Context context, String course,int typeId, int page){
         ActivityManager.getInstance().checkPaperDrawingIsExist(course,typeId);
-        Intent intent= new Intent(context, PaperDrawingActivity.class);
+        Intent intent= new Intent(context, TestpaperDrawingActivity.class);
         intent.putExtra("course",course);
         intent.putExtra("typeId",typeId);
         intent.putExtra("page",page);
@@ -423,6 +422,16 @@ public class MethodManager {
             return false;
         }
         return isAllow;
+    }
+
+    /**
+     * 获取对应科目的考试分类id
+     * @param subject
+     * @return
+     */
+    public static int getExamTypeId(String subject){
+        int subjectId=DataBeanManager.INSTANCE.getCourseId(subject);
+        return subjectId+10000000+user.grade;
     }
 
 }

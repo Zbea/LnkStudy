@@ -1,12 +1,8 @@
 package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
-import com.bll.lnkstudy.greendao.PaperBeanDao;
 import com.bll.lnkstudy.greendao.PaperContentBeanDao;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
-import com.bll.lnkstudy.mvp.model.paper.PaperBean;
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
@@ -67,19 +63,14 @@ public class PaperContentDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
-    /**
-     * @param course //科目id
-     * @param categoryId //分组id
-     * @return
-     */
-    public List<PaperContentBean> queryAll( String course, int categoryId) {
+    public List<PaperContentBean> queryAllByType(String course, int categoryId) {
         WhereCondition whereCondition1= PaperContentBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition2= PaperContentBeanDao.Properties.TypeId.eq(categoryId);
         return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
     }
 
     public void delete(String course, int categoryId){
-        List<PaperContentBean> paperContentBeans=queryAll(course,categoryId);
+        List<PaperContentBean> paperContentBeans= queryAllByType(course,categoryId);
         dao.deleteInTx(paperContentBeans);
     }
 

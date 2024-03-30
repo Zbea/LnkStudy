@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.model.CourseItem
-import com.bll.lnkstudy.mvp.model.ExamItem
+import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult

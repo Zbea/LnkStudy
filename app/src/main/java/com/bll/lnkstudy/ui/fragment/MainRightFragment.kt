@@ -12,7 +12,7 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.CourseItem
-import com.bll.lnkstudy.mvp.model.ExamItem
+import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
@@ -20,7 +20,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
-import com.bll.lnkstudy.ui.activity.drawing.PaperExamDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.ExamCommitDrawingActivity
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -39,7 +39,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
     private var privacyPassword=MethodManager.getPrivacyPassword()
-    private var examItem:ExamItem?=null
+    private var examItem: ExamItem?=null
 
     override fun onList(message: MessageList) {
         if (message.list.isNotEmpty()){
@@ -145,7 +145,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     if (files.size == exam.paths.size) {
                         val bundle = Bundle()
                         bundle.putSerializable("exam", exam)
-                        val intent = Intent(activity, PaperExamDrawingActivity::class.java)
+                        val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
                         intent.flags = type
                         intent.putExtra("bundle", bundle)
                         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)

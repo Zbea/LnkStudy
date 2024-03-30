@@ -6,6 +6,8 @@ import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
+import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
+import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
@@ -375,4 +377,15 @@ interface APIService{
      */
     @GET("class/group/courseInfo")
     fun getTeacherCourse(): Observable<BaseResult<String>>
+
+    /**
+     * 获取考试批改
+     */
+    @GET("school/exam/allStudentJob")
+    fun getExamCorrectList(): Observable<BaseResult<Map<Int,MutableList<ExamCorrectBean>>>>
+    /**
+     * 删除下载
+     */
+    @POST("school/exam/updateDownloadStatus")
+    fun onDeleteExamCorrect(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 }

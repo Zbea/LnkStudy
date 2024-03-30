@@ -20,7 +20,7 @@ import java.io.File
 /**
  * 考卷（考完提交后保存的考卷）
  */
-class PaperDrawingActivity: BaseDrawingActivity(){
+class TestpaperDrawingActivity: BaseDrawingActivity(){
 
     private var course=""
     private var typeId=0//分组id
@@ -70,7 +70,7 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         }
         DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
             if (currentPosition!=position){
-                currentPosition = papers[position].index
+                currentPosition = papers[position].page
                 page = 0
                 onChangeContent()
             }
@@ -126,14 +126,6 @@ class PaperDrawingActivity: BaseDrawingActivity(){
         onChangeContent()
     }
 
-    /**
-     * 设置是否可以手写
-     */
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
-    }
-
     private fun onChangeContent(){
         if(papers.size==0||currentPosition>=papers.size)
             return
@@ -166,8 +158,8 @@ class PaperDrawingActivity: BaseDrawingActivity(){
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
         val testPaperContent=paperContents[index]
-        GlideUtils.setImageFileNoCache(this,File(testPaperContent.path),view)
-        elik.setLoadFilePath(testPaperContent.drawPath,true)
+        GlideUtils.setImageFile(this,File(testPaperContent.path),view)
+//        elik.setLoadFilePath(testPaperContent.drawPath,true)
     }
 
 

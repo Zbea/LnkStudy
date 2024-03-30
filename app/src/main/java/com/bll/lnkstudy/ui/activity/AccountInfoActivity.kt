@@ -69,14 +69,14 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         grades = DataBeanManager.popupGrades(grade)
         school=mUser?.schoolId!!
         if (NetworkUtil(this).isNetworkConnected())
             mSchoolPresenter?.getCommonSchool()
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter = AccountInfoPresenter(this,getCurrentScreenPos())
     }

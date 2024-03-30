@@ -107,7 +107,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         homeworkType = intent.getBundleExtra("homeworkBundle")?.getSerializable("homework") as HomeworkTypeBean
         currentPosition=intent.getIntExtra("page",Constants.DEFAULT_PAGE)
         course=homeworkType?.course!!
@@ -120,7 +120,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     }
 
@@ -275,14 +275,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
             tv_page.text="${paperContents[page].page+1}"
         }
-    }
-
-    /**
-     * 设置是否可以手写
-     */
-    private fun setPWEnabled(boolean: Boolean){
-        elik_a?.setPWEnabled(boolean)
-        elik_b?.setPWEnabled(boolean)
     }
     
     //加载图片

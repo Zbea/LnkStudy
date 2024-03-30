@@ -66,7 +66,6 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
             layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
         }
-
         dialog?.show()
 
         val titleTv = dialog!!.findViewById<TextView>(R.id.tv_dialog_title)

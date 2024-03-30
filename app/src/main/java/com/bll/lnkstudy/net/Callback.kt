@@ -1,8 +1,6 @@
 package com.bll.lnkstudy.net
 
 
-import com.bll.lnkstudy.MyApplication
-import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.SToast
 import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
@@ -62,23 +60,20 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
         e.printStackTrace()
 
         when (ExceptionHandle.handleException(e).code) {
-            ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION -> {
-                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_error))
-            }
             ExceptionHandle.ERROR.NETWORD_ERROR-> {
-                SToast.showText(screen,MyApplication.mContext.getString(R.string.net_work_error))
+                SToast.showText(screen,"网络连接失败")
             }
-            ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR -> {
-                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_server_timeout))
+            ExceptionHandle.ERROR.SERVER_TIMEOUT_ERROR -> {
+                SToast.showText(screen,"请求超时")
             }
             ExceptionHandle.ERROR.PARSE_ERROR -> {
-                SToast.showText(screen,MyApplication.mContext.getString(R.string.parse_data_error))
+                SToast.showText(screen,"数据解析错误")
             }
             ExceptionHandle.ERROR.HTTP_ERROR -> {
-                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_error))
+                SToast.showText(screen,"服务器连接失败")
             }
             else -> {
-                SToast.showText(screen,MyApplication.mContext.getString(R.string.on_server_error))
+                SToast.showText(screen,"服务器开小差，请重试")
             }
         }
         IBaseView.hideLoading()

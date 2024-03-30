@@ -84,18 +84,32 @@ class FileAddress {
     }
 
     /**
-     * 考卷下载地址
+     * 测试卷下载地址
      * categoryId分类id contentId内容id
      */
     fun getPathTestPaper(categoryId:Int,contentId:Int):String{
+        return "$TESTPAPER_PATH/$mUserId/testPaperType$categoryId/$contentId"
+    }
+
+    /**
+     * 测试卷分类路径
+     * categoryId分类id
+     */
+    fun getPathTestPaper(categoryId:Int):String{
+        return "$TESTPAPER_PATH/$mUserId/testPaperType$categoryId"
+    }
+
+    /**
+     * 考试卷下载地址
+     */
+    fun getPathExam(categoryId:Int,contentId:Int):String{
         return "$TESTPAPER_PATH/$mUserId/examType$categoryId/$contentId"
     }
 
     /**
-     * 考卷分类路径
-     * categoryId分类id
+     * 考试卷下载路径
      */
-    fun getPathTestPaper(categoryId:Int):String{
+    fun getPathExam(categoryId:Int):String{
         return "$TESTPAPER_PATH/$mUserId/examType$categoryId"
     }
 

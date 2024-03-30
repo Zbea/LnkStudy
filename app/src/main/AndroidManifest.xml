@@ -126,7 +126,7 @@
             android:name=".ui.activity.drawing.NoteDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity android:name=".ui.activity.NotebookManagerActivity" />
-        <activity android:name=".ui.activity.drawing.PaperExamDrawingActivity" />
+        <activity android:name=".ui.activity.drawing.ExamCommitDrawingActivity" />
         <activity
             android:name=".ui.activity.drawing.HomeworkDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
@@ -143,7 +143,7 @@
             android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".ui.activity.drawing.PaperDrawingActivity"
+            android:name=".ui.activity.drawing.TestpaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
         <activity
             android:name=".ui.activity.WalletActivity"

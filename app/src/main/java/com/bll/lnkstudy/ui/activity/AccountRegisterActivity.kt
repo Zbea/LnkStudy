@@ -71,7 +71,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         flags=intent.flags
         if (flags==0){
             if (DataBeanManager.grades.size==0){
@@ -84,7 +84,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
     }

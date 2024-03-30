@@ -9,12 +9,10 @@ class MainDatePlanAdapter(layoutResId: Int, data: List<DatePlan>?) : BaseQuickAd
 
     override fun convert(helper: BaseViewHolder, item: DatePlan) {
         helper.apply {
-            item.apply {
-                setText(R.id.tv_start_time, startTimeStr)
-                setText(R.id.tv_end_time, endTimeStr)
-                setText(R.id.tv_course,course)
-                setText(R.id.tv_content, content)
-            }
+            setText(R.id.tv_start_time, item.startTimeStr)
+            setText(R.id.tv_end_time, item.endTimeStr)
+            setText(R.id.tv_course,item.course)
+            setText(R.id.tv_content, item.content)
         }
     }
 }

@@ -154,11 +154,11 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     }
 
     override fun onCommonData() {
-        appFragment?.changeInitData()
-        toolFragment?.changeInitData()
-        wallpaperFragment?.changeInitData()
-        paintingFragment?.changeInitData()
-        calenderFragment?.changeInitData()
+        appFragment?.initChangeScreenData()
+        toolFragment?.initChangeScreenData()
+        wallpaperFragment?.initChangeScreenData()
+        paintingFragment?.initChangeScreenData()
+        calenderFragment?.initChangeScreenData()
     }
 
     override fun onDestroy() {

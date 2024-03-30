@@ -52,7 +52,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
     }
 
     override fun initData() {
-        initChangeData()
+        initChangeScreenData()
         pageSize=12
         bookId=intent.getIntExtra("bookId",0)
 
@@ -66,7 +66,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         }
     }
 
-    override fun initChangeData() {
+    override fun initChangeScreenData() {
         presenter = TextbookStorePresenter(this,getCurrentScreenPos())
     }
 

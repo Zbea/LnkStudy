@@ -150,8 +150,8 @@ class WallpaperDownloadMainFragment :BaseMainFragment(), IContractView.IPainting
         fetchData()
     }
 
-    open override fun changeInitData() {
-        super.changeInitData()
+    open override fun initChangeScreenData() {
+        super.initChangeScreenData()
         presenter= DownloadPaintingPresenter(this,getScreenPosition())
     }
 

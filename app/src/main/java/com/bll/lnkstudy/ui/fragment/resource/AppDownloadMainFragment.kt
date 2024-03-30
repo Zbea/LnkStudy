@@ -174,8 +174,8 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
         fetchData()
     }
 
-    override fun changeInitData() {
-        super.changeInitData()
+    override fun initChangeScreenData() {
+        super.initChangeScreenData()
         presenter= DownloadAppPresenter(this,getScreenPosition())
     }
 
