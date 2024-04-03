@@ -12,8 +12,8 @@ import com.bll.lnkstudy.net.RetrofitManager
 class MainRightPresenter(view: IContractView.IMainRightView, val screen: Int=0) : BasePresenter<IContractView.IMainRightView>(view) {
 
     //获取老师下发考试卷
-    fun getExam(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getExams(map)
+    fun getExam() {
+        val type = RetrofitManager.service.getExams()
         doRequest(type, object : Callback<ExamItem>(view,screen) {
             override fun failed(tBaseResult: BaseResult<ExamItem>): Boolean {
                 return false

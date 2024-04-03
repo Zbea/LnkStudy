@@ -415,9 +415,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         commit()
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        closeNetwork()
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        closeNetwork()
+    }
 
 }

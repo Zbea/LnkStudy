@@ -230,7 +230,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -264,7 +264,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -297,7 +297,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -334,7 +334,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -380,7 +380,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -395,7 +395,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun clearData() {
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        SPUtil.removeObj(mUser?.accountId.toString() + "PrivacyPassword")
+        SPUtil.removeObj("PrivacyPassword")
         SPUtil.putListInt("week", mutableListOf())
         SPUtil.putListLong("date", mutableListOf())
 

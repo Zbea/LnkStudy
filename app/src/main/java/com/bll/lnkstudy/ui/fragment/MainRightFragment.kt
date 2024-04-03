@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
@@ -12,15 +11,15 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.CourseItem
-import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.model.MessageList
+import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
-import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.activity.drawing.ExamCommitDrawingActivity
+import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -72,7 +71,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
 
     override fun initView() {
         initMessageView()
-        initExamView()
 
         ll_message.setOnClickListener {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
@@ -119,39 +117,36 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
 
     //作业相关
     private fun initExamView() {
-        if (examItem==null)
-        {
+        if (examItem?.examUrl.isNullOrEmpty()){
             disMissView(rl_exam)
+            return
         }
-        else{
-            examItem?.apply {
-                rl_exam.visibility=if (exam.id==0) View.GONE else View.VISIBLE
-                tv_exam_course.text= exam.subject
-                tv_exam_type.text=exam.examName
-                tv_exam_title.text=exam.title
-                tv_exam_time.text=DateUtils.longToHour(exam.endTime)+"之前提交"
-                rl_exam.setOnClickListener {
-                    val pathStr = FileAddress().getPathTestPaper(exam.commonTypeId, exam.id)
-                    val files = FileUtils.getFiles(pathStr)
-                    if (files==null){
-                        showLoading()
-                        loadPapers()
-                        return@setOnClickListener
-                    }
-                    if (DateUtils.date10ToDate13(exam.endTime)<System.currentTimeMillis()){
-                        showToast(2,"已超时")
-                        return@setOnClickListener
-                    }
-                    if (files.size == exam.paths.size) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("exam", exam)
-                        val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
-                        intent.flags = type
-                        intent.putExtra("bundle", bundle)
-                        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-                        intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
-                        customStartActivity(intent)
-                    }
+        showView(rl_exam)
+        examItem?.apply {
+            tv_exam_course.text= subject
+            tv_exam_title.text=name
+            tv_exam_time.text=DateUtils.longToHour(time)+"之前提交"
+            rl_exam.setOnClickListener {
+                val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
+                val files = FileUtils.getFiles(pathStr)
+                if (files==null){
+                    showLoading()
+                    loadPapers()
+                    return@setOnClickListener
+                }
+                if (DateUtils.date10ToDate13(time)<System.currentTimeMillis()){
+                    showToast(2,"已超时")
+                    disMissView(rl_exam)
+                    return@setOnClickListener
+                }
+                if (files.size == paths.size) {
+                    val bundle = Bundle()
+                    bundle.putSerializable("exam", this)
+                    val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
+                    intent.putExtra("bundle", bundle)
+                    intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                    intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
+                    customStartActivity(intent)
                 }
             }
         }
@@ -161,9 +156,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
      * 获取当前考试
      */
     private fun fetchExam() {
-        val map= HashMap<String, Any>()
-        map["type"] = 2
-        mMainPresenter.getExam(map)
+        mMainPresenter.getExam()
     }
 
     private fun findMessages(){
@@ -176,18 +169,19 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
 
     //下载收到的图片
     private fun loadPapers() {
-        if (examItem==null||examItem?.exam?.id==0)
+        if (examItem?.examUrl.isNullOrEmpty()){
             return
+        }
         examItem?.apply {
             //设置路径
-            val pathStr = FileAddress().getPathTestPaper(exam.commonTypeId, exam.id)
+            val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
             val files = FileUtils.getFiles(pathStr)
-            val images=exam.imageUrl.split(",").toMutableList()
+            val images=examUrl.split(",").toMutableList()
             val paths= mutableListOf<String>()
             for (i in images.indices){
                 paths.add("$pathStr/${i+1}.png")
             }
-            exam.paths=paths
+            this.paths=paths
             if (files == null || files.size != images.size) {
                 FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                     object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -242,7 +236,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     override fun onRefreshData() {
         lazyLoad()
         if (examItem!=null){
-            if (DateUtils.date10ToDate13(examItem?.exam?.endTime!!)<System.currentTimeMillis()){
+            if (DateUtils.date10ToDate13(examItem?.time!!)<System.currentTimeMillis()){
                 disMissView(rl_exam)
             }
         }

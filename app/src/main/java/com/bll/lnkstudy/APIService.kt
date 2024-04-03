@@ -229,7 +229,7 @@ interface APIService{
      * 学生获取考卷
      */
     @GET("student/task/studentExam")
-    fun getExams(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamItem>>
+    fun getExams(): Observable<BaseResult<ExamItem>>
     /**
      * 学生提交测试卷
      */

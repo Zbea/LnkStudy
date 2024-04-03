@@ -206,7 +206,12 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private fun loadExams(map: Map<Int,MutableList<ExamCorrectBean>>) {
         for (courseId in map.keys){
             for (item in map[courseId]!!) {
-                val images = item.teacherUrl.split(",").toMutableList()
+                val images=if (item.teacherUrl.isNotEmpty()){
+                    item.teacherUrl.split(",").toMutableList()
+                }
+                else{
+                    item.examUrl.split(",").toMutableList()
+                }
                 val typeId=MethodManager.getExamTypeId(DataBeanManager.getCourseStr(courseId))
                 item.typeId=typeId
                 //刷新考试分类成绩

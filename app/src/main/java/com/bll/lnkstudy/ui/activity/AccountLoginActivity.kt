@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.ac_account_login_user.*
 
 class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
-    private val presenter=LoginPresenter(this)
+    private val presenter=LoginPresenter(this,1)
     private var token=""
 
     override fun getLogin(user: User?) {

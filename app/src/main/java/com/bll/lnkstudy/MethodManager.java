@@ -327,7 +327,7 @@ public class MethodManager {
      * @param privacyPassword
      */
     public static void savePrivacyPassword(PrivacyPassword privacyPassword){
-        SPUtil.INSTANCE.putObj(user.accountId+"PrivacyPassword",privacyPassword);
+        SPUtil.INSTANCE.putObj("PrivacyPassword",privacyPassword);
     }
 
     /**
@@ -335,7 +335,7 @@ public class MethodManager {
      * @return
      */
     public static PrivacyPassword getPrivacyPassword(){
-        return SPUtil.INSTANCE.getObj(user.accountId+"PrivacyPassword", PrivacyPassword.class);
+        return SPUtil.INSTANCE.getObj("PrivacyPassword", PrivacyPassword.class);
     }
 
     /**

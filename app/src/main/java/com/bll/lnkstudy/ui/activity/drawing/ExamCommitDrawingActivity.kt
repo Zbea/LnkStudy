@@ -14,8 +14,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.mvp.model.paper.ExamItem.ExamBean
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
@@ -33,7 +33,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private var commonTypeId=0
     private var pathStr=""
-    private var exam: ExamBean?=null
+    private var exam: ExamItem?=null
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
     private val commitItems = mutableListOf<ItemList>()
@@ -91,8 +91,8 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     override fun initData() {
         setExamMode(true)
         isExpand=true
-        flags=intent.flags
-        exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamBean
+        exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem
+        flags=exam?.type!!
         paths = exam?.paths!!
         pageCount = paths.size
         pathStr = FileAddress().getPathTestPaper(exam!!.commonTypeId, exam!!.id)
@@ -118,7 +118,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         }
 
         onChangeExpandView()
-        onContentChanged()
+        onChangeContent()
 
         iv_commit.setOnClickListener {
             CommonDialog(this,2).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
@@ -136,7 +136,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      * 开启定时任务
      */
     private fun startAlarmManager(){
-        val date=Date(exam?.endTime!!)
+        val date=Date(exam?.time!!)
         val mCalendar = Calendar.getInstance()
         val currentTimeMillisLong = System.currentTimeMillis()
         mCalendar.timeInMillis = currentTimeMillisLong
