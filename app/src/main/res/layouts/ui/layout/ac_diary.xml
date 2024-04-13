@@ -15,13 +15,13 @@
         />
 
     <TextView
-        android:id="@+id/tv_digest"
+        android:id="@+id/tv_theme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_40"
-        android:text="@string/digest"
+        android:text="@string/freenote_theme_str"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="@dimen/sp_24"

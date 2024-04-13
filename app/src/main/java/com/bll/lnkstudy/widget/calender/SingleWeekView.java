@@ -100,7 +100,12 @@ public class SingleWeekView extends WeekView {
 
         //日期是否可用？拦截
         if (onCalendarIntercept(calendar)) {
-            canvas.drawLine(x + mH, mH, x + mItemWidth - mH, mItemHeight - mH, mDisablePaint);
+            canvas.drawText(calendar.isCurrentDay() ? "今" : String.valueOf(calendar.getDay()),
+                    cx,
+                    baselineY,
+                    mOtherMonthTextPaint);
+
+//            canvas.drawLine(x + mH, mH, x + mItemWidth - mH, mItemHeight - mH, mDisablePaint);
         }
     }
 

@@ -251,7 +251,7 @@ public class DateUtils {
      * @return
      */
     public static long date10ToDate13(long date){
-        String dateStr=""+date;
+        String dateStr=String.valueOf(date);
         if (dateStr.length()==10)
         {
             date=date*1000;
@@ -381,8 +381,6 @@ public class DateUtils {
     }
 
     public static long getEndOfDayInMillis() {
-        // Add one day's time to the beginning of the day.
-        // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds = 1 day
         return getStartOfDayInMillis() + (24 * 60 * 60 * 1000);
     }
 

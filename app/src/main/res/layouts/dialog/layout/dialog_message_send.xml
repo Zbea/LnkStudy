@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/et_content"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         android:layout_marginTop="@dimen/dp_30"
         android:gravity="top"
         android:hint="@string/toast_input_message"

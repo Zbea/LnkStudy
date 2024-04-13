@@ -17,10 +17,14 @@ import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.AppUpdateBean
+import com.bll.lnkstudy.mvp.model.CourseItem
+import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
+import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
@@ -71,7 +75,11 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
     }
 
     override fun onType(type: TeachingVideoType) {
-        SPUtil.putObj("${accountId}videoType",type)
+        SPUtil.putObj("videoType",type)
+    }
+
+    override fun onParentPermission(permissionParentBean: PermissionParentBean) {
+        SPUtil.putObj("parentPermission",permissionParentBean)
     }
 
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
@@ -165,28 +173,6 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
             }
         }
 
-        val permissionTimeBean=PermissionTimeBean()
-        permissionTimeBean.endTime=15*60*60*1000
-        permissionTimeBean.startTime=10*60*60*1000+30*60*1000
-        permissionTimeBean.weeks= arrayListOf(7,8)
-
-        val item =PermissionSettingBean()
-        item.isAllow=false
-        item.permissions= arrayListOf(permissionTimeBean)
-
-        SPUtil.putObj("parentPermissionVideo",item)
-
-        val permissionTimesBean=PermissionTimesBean()
-        permissionTimesBean.startTime= longArrayOf(9*60*60*1000,14*60*60*1000)
-        permissionTimesBean.endTime= longArrayOf(12*60*60*1000,17*60*60*1000)
-        permissionTimesBean.weeks= arrayListOf(2,3,4,5,6)
-
-        val item2 =PermissionSettingBean()
-        item2.isAllow=false
-        item2.permissionTimesBeans= arrayListOf(permissionTimesBean)
-        SPUtil.putObj("schoolPermissionBook",item2)
-        SPUtil.putObj("schoolPermissionVideo",item2)
-
         initDialog(1)
     }
 
@@ -207,6 +193,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
             mMainLeftPresenter.active()
             mMainLeftPresenter.getCorrectNotice()
             mMainLeftPresenter.getTeachingType()
+            mMainLeftPresenter.getParentPermission()
         }
     }
 

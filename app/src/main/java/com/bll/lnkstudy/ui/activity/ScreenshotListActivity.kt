@@ -65,7 +65,7 @@ class ScreenshotListActivity : BaseAppCompatActivity() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = ScreenshotAdapter(R.layout.item_bookstore, null).apply {
+        mAdapter = ScreenshotAdapter(R.layout.item_screenshot, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

@@ -6,20 +6,22 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
-import com.bll.lnkstudy.mvp.model.PermissionSettingBean;
-import com.bll.lnkstudy.mvp.model.PermissionTimeBean;
-import com.bll.lnkstudy.mvp.model.PermissionTimesBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionTimeBean;
 import com.bll.lnkstudy.mvp.model.PrivacyPassword;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionTimesBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
 import com.bll.lnkstudy.mvp.model.CourseItem;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
@@ -36,12 +38,15 @@ import com.bll.lnkstudy.utils.AppUtils;
 import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -81,12 +86,14 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, BookBean bookBean,int screenPos)  {
-        if (MethodManager.getSchoolAllowLook(0)){
-            SToast.showText(1,"家长暂时不允许查看");
+
+        if (!MethodManager.getSchoolPermissionAllow(0)){
+            SToast.showText(1,"学校该时间不允许查看书籍");
             return;
         }
-        if (MethodManager.getParentAllowLook(0)){
-            SToast.showText(1,"家长暂时不允许查看");
+
+        if (!MethodManager.getParentPermissionAllow(0)){
+            SToast.showText(1,"家长该时间不允许查看书籍");
             return;
         }
 
@@ -339,77 +346,101 @@ public class MethodManager {
     }
 
     /**
-     * 获取家长是否允许学生查看 返回false可以查看 返回true不能查看
+     * 获取家长是否允许学生查看 返回true可以查看 返回false不能查看
      * @param type 0书架 1义教
      * @return
      */
-    public static boolean getParentAllowLook(int type){
-        boolean isAllow = false;
+    public static boolean getParentPermissionAllow(int type){
+        boolean isAllow = true;
         long currentTime=DateUtils.getCurrentHourInMillis();
-        PermissionSettingBean permissionSettingBean;
+        int week=DateUtils.getWeek(System.currentTimeMillis());
+        PermissionParentBean permissionParentBean=SPUtil.INSTANCE.getObj("parentPermission", PermissionParentBean.class);
+        if (permissionParentBean==null)
+        {
+            return true;
+        }
         if (type==0){
-            permissionSettingBean=SPUtil.INSTANCE.getObj("parentPermissionBook",PermissionSettingBean.class);
-        }
-        else {
-            permissionSettingBean=SPUtil.INSTANCE.getObj("parentPermissionVideo",PermissionSettingBean.class);
-        }
-        if (permissionSettingBean!=null){
-            if (permissionSettingBean.isAllow){
-                return true;
-            }
-            else {
-                if (permissionSettingBean.permissions.isEmpty()){
-                    return false;
+            if (permissionParentBean.isAllowBook){
+                if (permissionParentBean.bookList.isEmpty()){
+                    return true;
                 }
                 else {
-                    for (int i = 0; i < permissionSettingBean.permissions.size(); i++) {
-                        PermissionTimeBean permissionTimeBean= permissionSettingBean.permissions.get(i);
-                        if (permissionTimeBean.weeks.contains(DateUtils.getWeek(System.currentTimeMillis()))){
-                            isAllow= currentTime < permissionTimeBean.endTime && currentTime > permissionTimeBean.startTime;
+                    for (int i = 0; i < permissionParentBean.bookList.size(); i++) {
+                        PermissionTimeBean permissionTimeBean= permissionParentBean.bookList.get(i);
+                        List<Integer> weeks=getStringArrayToIntArray(permissionTimeBean.weeks.split(","));
+                        if (weeks.contains(week)){
+                            isAllow= currentTime >= permissionTimeBean.endTime || currentTime <= permissionTimeBean.startTime;
                         }
                     }
                 }
             }
+            else {
+                return false;
+            }
         }
         else {
-            return false;
+            if (permissionParentBean.isAllowVideo){
+                if (permissionParentBean.videoList.isEmpty()){
+                    return true;
+                }
+                else {
+                    for (int i = 0; i < permissionParentBean.videoList.size(); i++) {
+                        PermissionTimeBean permissionTimeBean= permissionParentBean.videoList.get(i);
+                        List<Integer> weeks=getStringArrayToIntArray(permissionTimeBean.weeks.split(","));
+                        if (weeks.contains(week)){
+                            isAllow= currentTime >= permissionTimeBean.endTime || currentTime <= permissionTimeBean.startTime;
+                        }
+                    }
+                }
+            }
+            else {
+                return false;
+            }
         }
         return isAllow;
     }
 
+    /**
+     * 字符串数组 转 list数字集合
+     * @param strings
+     * @return
+     */
+    private static List<Integer> getStringArrayToIntArray(String[] strings){
+        List<Integer> weeks= new ArrayList();
+        for (String str:strings) {
+            weeks.add(Integer.valueOf(str));
+        }
+        return weeks;
+    }
 
     /**
      * 获取学生是否允许学生查看 返回false可以查看 返回true不能查看
      * @param type 0书架 1义教
      * @return
      */
-    public static boolean getSchoolAllowLook(int type){
-        boolean isAllow = false;
+    public static boolean getSchoolPermissionAllow(int type){
+        boolean isAllow = true;
         long currentTime=DateUtils.getCurrentHourInMillis();
-        PermissionSettingBean permissionSettingBean;
+        int week=DateUtils.getWeek(System.currentTimeMillis());
+        PermissionSchoolBean item =SPUtil.INSTANCE.getObj("schoolPermission", PermissionSchoolBean.class);
+        if (item==null){
+            return true;
+        }
+
         if (type==0){
-            permissionSettingBean=SPUtil.INSTANCE.getObj("schoolPermissionBook",PermissionSettingBean.class);
-        }
-        else {
-            permissionSettingBean=SPUtil.INSTANCE.getObj("schoolPermissionVideo",PermissionSettingBean.class);
-        }
-        if (permissionSettingBean!=null){
-            if (permissionSettingBean.isAllow){
-                return true;
-            }
-            else {
-                if (permissionSettingBean.permissionTimesBeans.isEmpty()){
-                    return false;
+            if (item.isAllowBook){
+                if (item.bookList.isEmpty()){
+                    return true;
                 }
                 else {
-                    for (int i = 0; i < permissionSettingBean.permissionTimesBeans.size(); i++) {
-                        PermissionTimesBean item= permissionSettingBean.permissionTimesBeans.get(i);
-                        if (item.weeks.contains(DateUtils.getWeek(System.currentTimeMillis()))){
-                            for (int j = 0; j < item.startTime.length; j++) {
-                                long startTime=item.startTime[j];
-                                long endTime=item.endTime[j];
+                    for (int i = 0; i < item.bookList.size(); i++) {
+                        PermissionTimesBean bean= item.bookList.get(i);
+                        if (bean.weeks.contains(week)){
+                            for (int j = 0; j < bean.startTime.length; j++) {
+                                long startTime=bean.startTime[j];
+                                long endTime=bean.endTime[j];
                                 if (currentTime>=startTime&&currentTime<=endTime){
-                                    isAllow=true;
+                                    isAllow=false;
                                     break;
                                 }
                             }
@@ -417,9 +448,34 @@ public class MethodManager {
                     }
                 }
             }
+            else {
+               return false;
+            }
         }
         else {
-            return false;
+            if (item.isAllowVideo){
+                if (item.videoList.isEmpty()){
+                    return true;
+                }
+                else {
+                    for (int i = 0; i < item.videoList.size(); i++) {
+                        PermissionTimesBean bean= item.videoList.get(i);
+                        if (bean.weeks.contains(week)){
+                            for (int j = 0; j < bean.startTime.length; j++) {
+                                long startTime=bean.startTime[j];
+                                long endTime=bean.endTime[j];
+                                if (currentTime>=startTime&&currentTime<=endTime){
+                                    isAllow=false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                return false;
+            }
         }
         return isAllow;
     }

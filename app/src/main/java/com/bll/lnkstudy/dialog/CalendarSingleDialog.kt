@@ -16,7 +16,7 @@ import com.haibin.calendarview.CalendarView
 class CalendarSingleDialog(private val context: Context,private val x:Float,private val y:Float) {
 
     private var dialog: Dialog? = null
-    constructor(context: Context):this(context,50f,150f)
+    constructor(context: Context):this(context,0f,0f)
 
     @SuppressLint("SetTextI18n")
     fun builder(): CalendarSingleDialog {

@@ -34,6 +34,19 @@ public class SToast {
         handler = new Handler(ctx.getMainLooper());
     }
 
+    public static void showText(@StringRes int res) {
+        showText(1,ctx.getString(res));
+    }
+
+    public static void showText( final CharSequence str) {
+        if (Thread.currentThread().getId() != 1) {
+            // 在子线程
+            handler.post(() -> finalShow(1,str));
+        } else {
+            finalShow(1,str);
+        }
+    }
+
     public static void showText(int screen,@StringRes int res) {
         showText(screen,ctx.getString(res));
     }

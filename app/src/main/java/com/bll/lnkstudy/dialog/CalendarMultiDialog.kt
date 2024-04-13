@@ -91,8 +91,7 @@ class CalendarMultiDialog(private val context: Context,private var times:Mutable
         val years = calendar.year
         val months = calendar.month
         val days = calendar.day
-        val dateToStamp = "${years}-${months}-${days}"
-        return DateUtils.dateToStamp(dateToStamp)
+        return DateUtils.dateToStamp(years,months,days)
     }
 
     private fun initCalendar(){

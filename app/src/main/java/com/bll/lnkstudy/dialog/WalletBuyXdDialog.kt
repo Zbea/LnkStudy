@@ -7,11 +7,11 @@ import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.AccountXDList
+import com.bll.lnkstudy.mvp.model.AccountQdBean
 import com.bll.lnkstudy.ui.adapter.AccountXdAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 
-class WalletBuyXdDialog(val context: Context, val list: List<AccountXDList.ListBean>) {
+class WalletBuyXdDialog(val context: Context, val list: List<AccountQdBean>) {
 
     private var dialog:Dialog?=null
     private var id=0

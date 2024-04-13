@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.mvp.view;
 
 import com.bll.lnkstudy.mvp.model.AccountOrder;
-import com.bll.lnkstudy.mvp.model.AccountXDList;
+import com.bll.lnkstudy.mvp.model.AccountQdBean;
 import com.bll.lnkstudy.mvp.model.AppList;
 import com.bll.lnkstudy.mvp.model.AppUpdateBean;
 import com.bll.lnkstudy.mvp.model.CalenderList;
@@ -29,11 +29,11 @@ import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
 import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
 import com.bll.lnkstudy.mvp.model.CourseItem;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,9 +83,10 @@ public interface IContractView {
 
     //钱包页面回调
     interface IWalletView extends IBaseView {
-        void onXdList(AccountXDList list);
+        void onXdList(List<AccountQdBean> list);
         void onXdOrder(AccountOrder order);
         void checkOrder(AccountOrder order);
+        void getAccount(User user);
     }
 
     //书城
@@ -133,6 +134,7 @@ public interface IContractView {
         void onAppUpdate(AppUpdateBean item);
         void onCorrect(HomeworkNoticeList list);
         void onType(TeachingVideoType type);
+        void onParentPermission(PermissionParentBean permissionParentBean);
     }
 
     interface IMainRightView extends IBaseView {

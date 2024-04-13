@@ -108,7 +108,11 @@ public class SingleMonthView extends MonthView {
 
         //日期是否可用？拦截
         if (onCalendarIntercept(calendar)) {
-            canvas.drawLine(x + mH, y + mH, x + mItemWidth - mH, y + mItemHeight - mH, mDisablePaint);
+            canvas.drawText(calendar.isCurrentDay() ? "今" : String.valueOf(calendar.getDay()),
+                    cx,
+                    baselineY,
+                    mOtherMonthTextPaint);
+//            canvas.drawLine(x + mH, y + mH, x + mItemWidth - mH, y + mItemHeight - mH, mDisablePaint);
         }
 
     }

@@ -11,6 +11,7 @@ import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,13 +58,35 @@ public class DiaryDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().unique();
     }
 
-    public List<DiaryBean> queryList() {
-        return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    /**
+     * 查找除开当前时间最近的日期
+     * @param time
+     * @param type 0小于当前时间 1大于当前时间
+     * @return
+     */
+    public DiaryBean queryBean(long time,int type){
+        WhereCondition whereCondition;
+        DiaryBean diaryBean;
+        if (type==0){
+            whereCondition= DiaryBeanDao.Properties.Date.lt(time);
+            diaryBean=dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).limit(1).build().unique();
+        }
+        else {
+            whereCondition= DiaryBeanDao.Properties.Date.gt(time);
+            diaryBean=dao.queryBuilder().where(whereUser,whereCondition).orderAsc(DiaryBeanDao.Properties.Date).limit(1).build().unique();
+        }
+        return diaryBean;
     }
 
-    public List<DiaryBean> queryList(long time) {
-        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.lt(time);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    public List<Long> queryLongList(int year,int month) {
+        List<Long> times=new ArrayList<>();
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Year.eq(year);
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.Month.eq(month);
+        List<DiaryBean> beans=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+        for (DiaryBean item :beans) {
+            times.add(item.date);
+        }
+        return times;
     }
 
     public void delete(DiaryBean item){

@@ -39,7 +39,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
     override fun onType(type: TeachingVideoType) {
         videoType=type
-        SPUtil.putObj("${accountId}videoType",type)
+        SPUtil.putObj("videoType",type)
         initTab()
     }
 
@@ -57,19 +57,19 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             bindToRecyclerView(rv_list)
             rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 30f)))
             setOnItemClickListener { _, _, position ->
-                if (MethodManager.getSchoolAllowLook(1)){
-                    showToast(1,"学校该时间暂时不允许查看")
+                if (!MethodManager.getSchoolPermissionAllow(1)){
+                    showToast(1,"学校该时间不允许查看义教视频")
                 }
                 else{
-                    if (MethodManager.getParentAllowLook(1)){
-                        showToast(1,"家长该时间暂时不允许查看")
-                    }
-                    else{
+                    if (MethodManager.getParentPermissionAllow(1)){
                         val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
                         val bundle= Bundle()
                         bundle.putSerializable("item", data[position])
                         intent.putExtra("bundle", bundle)
                         customStartActivity(intent)
+                    }
+                    else{
+                        showToast(1,"家长该时间不允许查看义教视频")
                     }
                 }
             }
@@ -85,8 +85,8 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             mPresenter.getType()
         }
         else{
-            if (videoType==null&&SPUtil.getObj("${accountId}videoType",TeachingVideoType::class.java)!=null){
-                videoType=SPUtil.getObj("${accountId}videoType",TeachingVideoType::class.java)
+            if (videoType==null&&SPUtil.getObj("videoType",TeachingVideoType::class.java)!=null){
+                videoType=SPUtil.getObj("videoType",TeachingVideoType::class.java)
                 initTab()
             }
         }
@@ -121,6 +121,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     //翻页处理
     private fun pageNumberView(){
+        map.clear()
         val pageTotal= lists.size
         setPageNumber(pageTotal)
         pageCount= kotlin.math.ceil(pageTotal.toDouble() / pageSize).toInt()
@@ -139,9 +140,9 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     override fun fetchData() {
         if (map[pageIndex]!=null){
             lists= (map[pageIndex] as MutableList<ItemList>?)!!
-            mAdapter?.setNewData(lists)
             tv_page_current.text=pageIndex.toString()
         }
+        mAdapter?.setNewData(lists)
     }
 
     override fun onNetworkConnectionSuccess() {

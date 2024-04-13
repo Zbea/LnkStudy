@@ -8,7 +8,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.WalletBuyXdDialog
 import com.bll.lnkstudy.mvp.model.AccountOrder
-import com.bll.lnkstudy.mvp.model.AccountXDList
+import com.bll.lnkstudy.mvp.model.AccountQdBean
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.WalletPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -20,13 +21,13 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
     private lateinit var walletPresenter:WalletPresenter
     private var xdDialog:WalletBuyXdDialog?=null
-    private var xdList= mutableListOf<AccountXDList.ListBean>()
+    private var xdList= mutableListOf<AccountQdBean>()
     private var qrCodeDialog:Dialog?=null
     private var orderThread: OrderThread?=null//定时器
     private val handlerThread = Handler(Looper.myLooper()!!)
 
-    override fun onXdList(list: AccountXDList?) {
-        xdList= list?.list as MutableList<AccountXDList.ListBean>
+    override fun onXdList(list: MutableList<AccountQdBean>) {
+        xdList= list
     }
 
     override fun onXdOrder(order: AccountOrder?) {
@@ -48,6 +49,12 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         }
     }
 
+    override fun getAccount(user: User) {
+        mUser=user
+        tv_xdmoney.text="青豆:  "+mUser?.balance
+        SPUtil.putObj("user",mUser!!)
+    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_wallet
@@ -57,6 +64,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         initChangeScreenData()
         if (NetworkUtil(this).isNetworkConnected()){
             walletPresenter.getXdList(false)
+            walletPresenter.accounts()
         }
         else{
             showNetworkDialog()
@@ -133,6 +141,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
     override fun onNetworkConnectionSuccess() {
         walletPresenter.getXdList(false)
+        walletPresenter.accounts()
     }
 
 }

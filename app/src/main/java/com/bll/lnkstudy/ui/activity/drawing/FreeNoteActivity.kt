@@ -39,7 +39,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
-        setPageTitle(R.string.freenote_title_str)
         tv_name.text = freeNoteBean?.title
 
         tv_name.setOnClickListener {
@@ -50,7 +49,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
         }
 
         tv_theme.setOnClickListener {
-            ModuleAddDialog(this, screenPos, getString(R.string.freenote_module_str), DataBeanManager.noteModuleBook).builder()
+            ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.noteModuleBook).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes = ToolUtils.getImageResStr(this, moduleBean.resFreeNoteBg)
                     v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
@@ -74,7 +73,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
                 freeNotePopWindow?.show()
             }
         }
-
 
         if (posImage >= bgResList.size) {
             bgResList.add(bgRes)

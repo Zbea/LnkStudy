@@ -16,6 +16,7 @@ public class MessageList {
         public String content;
         public long date;
         public int sendType;
+        public int msgId;
 
     }
 }

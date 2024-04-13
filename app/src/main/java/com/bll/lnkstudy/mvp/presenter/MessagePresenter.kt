@@ -14,7 +14,7 @@ class MessagePresenter(view: IContractView.IMessageView,var screen:Int=0): BaseP
                 return false
             }
             override fun success(tBaseResult: BaseResult<MessageList>) {
-                if (tBaseResult?.data!=null)
+                if (tBaseResult.data!=null)
                     view.onList(tBaseResult.data)
             }
         },boolean)

@@ -30,7 +30,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     }
 
     override fun onCommitSuccess() {
-        showToast(R.string.toast_commit_success)
+        showToast("发送成功")
         pageIndex=1
         fetchData()
         EventBus.getDefault().post(Constants.MESSAGE_COMMIT_EVENT)
@@ -62,7 +62,9 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
         tv_setting.setOnClickListener {
             MessageSendDialog(this).builder()?.setOnClickListener{
-
+                val map=HashMap<String,Any>()
+                map["title"]=it
+                mMessagePresenter?.commitMessage(map)
             }
         }
 

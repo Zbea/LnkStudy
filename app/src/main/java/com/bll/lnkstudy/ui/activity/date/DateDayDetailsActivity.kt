@@ -59,7 +59,7 @@ class DateDayDetailsActivity : BaseAppCompatActivity() {
         setPageSetting(R.string.save)
 
         tv_date.setOnClickListener {
-            CalendarSingleDialog(this,0f,0f).builder().setOnDateListener{
+            CalendarSingleDialog(this).builder().setOnDateListener{
                 if (it >nowDate) {
                     val dayLong=it+9*60*60*1000
                     dateEventBean?.dayLong = dayLong

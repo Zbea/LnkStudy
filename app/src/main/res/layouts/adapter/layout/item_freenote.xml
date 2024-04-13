@@ -2,10 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dp_40"
     android:gravity="center_vertical"
-    android:paddingTop="3dp"
-    android:paddingBottom="3dp"
     >
 
     <TextView
@@ -19,26 +17,10 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"/>
 
-
-    <ImageView
-        android:id="@+id/iv_record"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:visibility="gone"
-        android:src="@mipmap/icon_record_play"/>
-
-    <ImageView
-        android:id="@+id/iv_edit"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:src="@mipmap/icon_notebook_edit"/>
-
     <ImageView
         android:id="@+id/iv_delete"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_30"
         android:src="@mipmap/icon_delete"/>
 
 </LinearLayout>

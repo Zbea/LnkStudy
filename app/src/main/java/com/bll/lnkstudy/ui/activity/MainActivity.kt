@@ -1178,7 +1178,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
-                mainRightFragment?.deleteDiary()
                 eventType = Constants.AUTO_UPLOAD_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()

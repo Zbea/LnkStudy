@@ -83,7 +83,7 @@ class PlanOverviewActivity:BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            CalendarSingleDialog(this,45f,190f).builder().setOnDateListener{
+            CalendarSingleDialog(this,45f,200f).builder().setOnDateListener{
                 if (type==1){
                     val dateStr=DateUtils.longToStringDataNoHour(it).split("-")
                     nowYear=dateStr[0].toInt()

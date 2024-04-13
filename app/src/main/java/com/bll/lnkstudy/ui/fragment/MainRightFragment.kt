@@ -3,13 +3,15 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
-import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
@@ -25,7 +27,6 @@ import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_right.*
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 
 /**
@@ -197,20 +198,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                         }
                     })
             }
-        }
-    }
-
-    /**
-     * 半年删除日记
-     */
-    fun deleteDiary(){
-        val time=System.currentTimeMillis()-Constants.halfYear
-        val diarys=DiaryDaoManager.getInstance().queryList(time)
-        for (item in diarys){
-            DiaryDaoManager.getInstance().delete(item)
-            FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(item.date))))
-            val id=item.date.div(1000).toInt()
-            DataUpdateManager.deleteDateUpdate(9,id,1,id)
         }
     }
 

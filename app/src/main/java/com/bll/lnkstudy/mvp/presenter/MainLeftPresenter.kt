@@ -4,6 +4,7 @@ import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
+import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult
@@ -120,6 +121,19 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
             }
             override fun success(tBaseResult: BaseResult<TeachingVideoType>) {
                 view.onType(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    fun getParentPermission() {
+        val type = RetrofitManager.service.getPermissionParentAllow()
+        doRequest(type, object : Callback<PermissionParentBean>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<PermissionParentBean>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<PermissionParentBean>) {
+                if (tBaseResult.data!=null)
+                    view.onParentPermission(tBaseResult.data)
             }
         }, false)
     }

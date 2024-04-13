@@ -5,7 +5,7 @@ import com.bll.lnkstudy.Constants.Companion.dayLong
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.DateDialog
+import com.bll.lnkstudy.dialog.CalendarSingleDialog
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
@@ -41,7 +41,7 @@ class DateEventActivity:BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            DateDialog(this).builder().setOnDateListener { dateStr, dateTim ->
+            CalendarSingleDialog(this,45f,190f).builder().setOnDateListener() { dateTim ->
                 nowLong=dateTim
                 setContentView()
             }

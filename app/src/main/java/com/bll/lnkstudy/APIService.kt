@@ -10,6 +10,7 @@ import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
+import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
@@ -126,7 +127,7 @@ interface APIService{
      * //获取学豆列表
      */
     @GET("wallets/list")
-    fun getSMoneyList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountXDList>>
+    fun getSMoneyList(): Observable<BaseResult<MutableList<AccountQdBean>>>
     /**
      * 提交学豆订单
      */
@@ -292,7 +293,7 @@ interface APIService{
     /**
      * 发送消息
      */
-    @POST("message/inform/insertStudent")
+    @POST("message/inform/studentToParent")
     fun commitMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取家长作业本
@@ -388,4 +389,10 @@ interface APIService{
      */
     @POST("school/exam/updateDownloadStatus")
     fun onDeleteExamCorrect(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 获取家长的权限控制
+     */
+    @GET("student/permission/info")
+    fun getPermissionParentAllow(): Observable<BaseResult<PermissionParentBean>>
 }

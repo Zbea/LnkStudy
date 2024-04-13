@@ -1,11 +1,10 @@
-package com.bll.lnkstudy.mvp.model;
+package com.bll.lnkstudy.mvp.model.permission;
 
 import java.util.List;
 
 public class PermissionTimeBean {
 
-    public List<Integer> weeks;
-    public String timeStr;
+    public String weeks;
     public long startTime;
     public long endTime;
 
