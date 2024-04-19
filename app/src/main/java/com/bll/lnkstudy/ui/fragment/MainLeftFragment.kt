@@ -17,10 +17,9 @@ import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.AppUpdateBean
-import com.bll.lnkstudy.mvp.model.CourseItem
-import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.TeachingVideoType
+import com.bll.lnkstudy.manager.DiaryDaoManager
+import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
@@ -40,6 +39,7 @@ import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.date.CalenderUtils
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
+import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import org.greenrobot.eventbus.EventBus
@@ -350,6 +350,50 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
          else{
              mPlanAdapter?.setNewData(null)
          }
+    }
+
+    /**
+     * 每年上传日记
+     */
+    fun uploadDiary(token:String){
+        val cloudList= mutableListOf<CloudListBean>()
+        val nullItems= mutableListOf<DiaryBean>()
+        val diarys= DiaryDaoManager.getInstance().queryList()
+        for (diaryBean in diarys){
+            val fileName=DateUtils.longToString(diaryBean.date)
+            val path=FileAddress().getPathDiary(fileName)
+            if (FileUtils.isExistContent(path)){
+                FileUploadManager(token).apply {
+                    startUpload(path,fileName)
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=7
+                            subType=-1
+                            subTypeStr="日记"
+                            year=diaryBean.year
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(diaryBean)
+                            downloadUrl=it
+                        })
+                        //当加入上传的内容等于全部需要上传时候，则上传
+                        if (cloudList.size== diarys.size-nullItems.size){
+                            mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+            }
+            else{
+                //没有内容不上传
+                nullItems.add(diaryBean)
+            }
+        }
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        val path=FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
+        FileUtils.deleteFile(File(path).parentFile)
+        DiaryDaoManager.getInstance().clear()
     }
 
 

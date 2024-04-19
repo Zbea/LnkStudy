@@ -78,6 +78,11 @@ public class DiaryDaoManager {
         return diaryBean;
     }
 
+    public List<DiaryBean> queryList() {
+        return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
+
     public List<Long> queryLongList(int year,int month) {
         List<Long> times=new ArrayList<>();
         WhereCondition whereCondition= DiaryBeanDao.Properties.Year.eq(year);

@@ -26,6 +26,7 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     private var homeworkFragment: CloudHomeworkFragment? = null
     private var noteFragment: CloudNoteFragment? = null
     private var paintingFragment: CloudPaintingFragment? = null
+    private var diaryFragment: CloudDiaryFragment? = null
 
     var grade=mUser?.grade!!
     private var popWindowDynasty:PopupList?=null
@@ -49,6 +50,7 @@ class CloudStorageActivity: BaseAppCompatActivity(){
         paperFragment = CloudExamFragment()
         noteFragment= CloudNoteFragment()
         paintingFragment = CloudPaintingFragment()
+        diaryFragment= CloudDiaryFragment()
 
         switchFragment(lastFragment, bookcaseFragment)
 
@@ -77,6 +79,10 @@ class CloudStorageActivity: BaseAppCompatActivity(){
                             closeDynastyView()
                         }
                         switchFragment(lastFragment, paintingFragment)//书画
+                    }
+                    6->{
+                        closeGradeView()
+                        switchFragment(lastFragment, diaryFragment)//书画
                     }
                 }
                 lastPosition=position

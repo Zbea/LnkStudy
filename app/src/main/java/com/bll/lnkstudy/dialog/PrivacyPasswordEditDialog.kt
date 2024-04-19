@@ -16,21 +16,19 @@ import com.bll.lnkstudy.utils.SToast
 import com.google.gson.Gson
 
 
-class PrivacyPasswordEditDialog(private val context: Context, private val screenPos:Int) {
+class PrivacyPasswordEditDialog(private val context: Context,private val type:Int=0) {
 
-    fun builder(): PrivacyPasswordEditDialog? {
+    fun builder(): PrivacyPasswordEditDialog {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_privacy_password_edit)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        if (screenPos==3){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
-        }
+        layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
-        val privacyPassword=MethodManager.getPrivacyPassword()
+        val privacyPassword=MethodManager.getPrivacyPassword(type)
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -47,28 +45,28 @@ class PrivacyPasswordEditDialog(private val context: Context, private val screen
             val passwordOldStr=etPasswordOld?.text.toString()
 
             if (MD5Utils.digest(passwordOldStr)!=privacyPassword?.password){
-                SToast.showText(screenPos,R.string.password_old_error)
+                SToast.showText(2,R.string.password_old_error)
                 return@setOnClickListener
             }
 
             if (passwordStr.isEmpty()){
-                SToast.showText(screenPos,R.string.login_input_password_hint)
+                SToast.showText(2,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
             if (passwordAgainStr.isEmpty()){
-                SToast.showText(screenPos,R.string.password_again_error)
+                SToast.showText(2,R.string.password_again_error)
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(screenPos,R.string.password_different)
+                SToast.showText(2,R.string.password_different)
                 return@setOnClickListener
             }
 
             privacyPassword?.password= MD5Utils.digest(privacyPassword?.password)
-            MethodManager.savePrivacyPassword(privacyPassword)
+            MethodManager.savePrivacyPassword(type,privacyPassword)
             //更新增量更新
-            DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
+            DataUpdateManager.editDataUpdate(10,type,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()
             listener?.onClick()
 

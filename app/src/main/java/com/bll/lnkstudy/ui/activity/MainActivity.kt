@@ -85,6 +85,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 textbookFragment?.uploadTextBook(token)
             }
+            Constants.AUTO_UPLOAD_YEAR_EVENT->{
+                mainLeftFragment?.uploadDiary(token)
+            }
         }
 
     }
@@ -168,6 +171,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         startRemind18()
         startRemind1Month()
         startRemind9Month()
+        startRemind1Year()
 
         iv_user_a.setOnClickListener {
             customStartActivity(Intent(this, AccountInfoActivity::class.java))
@@ -391,6 +395,45 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
+     * 每年1月1 3点执行
+     */
+    private fun startRemind1Year() {
+        val allDay = if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
+        val date = allDay * 24 * 60 * 60 * 1000L
+
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.MONTH, 0)
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            var selectLong = timeInMillis
+            if (System.currentTimeMillis() > selectLong) {
+                set(Calendar.YEAR, DateUtils.getYear() + 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_UPLOAD_YEAR
+            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            else
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                date, pendingIntent
+            )
+        }
+
+    }
+
+    /**
      * 一键清除
      */
     private fun clearData() {
@@ -578,10 +621,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }
                 10 -> {
                     val privacyPassword = Gson().fromJson(item.listJson, PrivacyPassword::class.java)
-                    MethodManager.savePrivacyPassword(privacyPassword)
+                    MethodManager.savePrivacyPassword(item.uid,privacyPassword)
                     //创建增量数据(日记密码)
                     DataUpdateManager.createDataUpdate(10, 1, 1, 1, Gson().toJson(privacyPassword))
-                    EventBus.getDefault().post(Constants.PASSWORD_EVENT)
                 }
             }
         }
@@ -1148,7 +1190,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 map["typeId"] = item.typeId
                 mDataUpdatePresenter.onDeleteData(map)
                 //上传删除本地增量更新
-                DataUpdateDaoManager.getInstance().deleteBean(item.type, item.contentType, item.uid, item.typeId)
+                DataUpdateDaoManager.getInstance().deleteBean(item.type, item.uid, item.contentType, item.typeId)
                 continue
             }
             val map = HashMap<String, Any>()
@@ -1197,6 +1239,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     mQiniuPresenter.getToken()
                     //清除作业通知（每学期上学开始）
                     EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                }, 60 * 1000)
+            }
+            Constants.ACTION_UPLOAD_YEAR -> {
+                eventType = Constants.ACTION_UPLOAD_YEAR
+                Handler().postDelayed({
+                    mQiniuPresenter.getToken()
                 }, 60 * 1000)
             }
             Constants.USER_CHANGE_EVENT -> {

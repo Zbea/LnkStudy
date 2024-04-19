@@ -51,7 +51,7 @@ class ScreenshotListActivity : BaseAppCompatActivity() {
 
     override fun initView() {
         pageSize = 12
-        setPageTitle(R.string.screenshot_listNo_str)
+        setPageTitle(R.string.screenshot_list_str)
 
         initRecycleView()
         getFetchFiles()

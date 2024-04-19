@@ -97,8 +97,8 @@ class BookcaseFragment: BaseMainFragment() {
             tv_name.text=bookTopBean?.bookName
         }
         else{
-            iv_content_up.setImageBitmap(null)
-            iv_content_down.setImageBitmap(null)
+            iv_content_up.setImageResource(0)
+            iv_content_down.setImageResource(0)
             tv_name.text=""
         }
     }

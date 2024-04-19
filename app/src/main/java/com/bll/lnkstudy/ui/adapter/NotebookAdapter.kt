@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.utils.DateUtils
@@ -28,9 +29,9 @@ class NotebookAdapter(private var type:Int,layoutResId: Int, data: List<Note>?) 
             }
             setText(R.id.tv_title,title)
             setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date) )
-            setGone(R.id.iv_password,item.isSet&&item.typeStr==mContext.getString(R.string.note_tab_diary))
-            if (item.isSet)
-                helper.setImageResource(R.id.iv_password,if (item.isCancelPassword) R.mipmap.icon_encrypt else R.mipmap.icon_encrypt_check)
+            setVisible(R.id.iv_password,item.typeStr==mContext.getString(R.string.note_tab_diary))
+            if (MethodManager.getPrivacyPassword(1)!=null)
+                setImageResource(R.id.iv_password,if (item.isCancelPassword) R.mipmap.icon_encrypt_cancel else R.mipmap.icon_encrypt_check)
 
             addOnClickListener(R.id.iv_password,R.id.iv_delete,R.id.iv_edit)
         }

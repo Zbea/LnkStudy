@@ -5,7 +5,6 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.PrivacyPassword
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
@@ -14,7 +13,6 @@ import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
 import org.greenrobot.eventbus.EventBus
 
@@ -29,7 +27,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
-    private var privacyPassword: PrivacyPassword?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onLogout() {
@@ -85,8 +82,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initView() {
         setPageTitle(R.string.my_account)
 
-        privacyPassword=MethodManager.getPrivacyPassword()
-
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
@@ -104,16 +99,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_area.text = schoolArea
         }
 
-        if (privacyPassword!=null){
-            showView(tv_check_pad)
-            if (privacyPassword?.isSet == true){
-                btn_psd_check.text=getString(R.string.cancel_password)
-            }
-            else{
-                btn_psd_check.text=getString(R.string.set_password)
-            }
-        }
-
         btn_edit_name.setOnClickListener {
             editName()
         }
@@ -124,10 +109,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         btn_edit_school.setOnClickListener {
             editSchool()
-        }
-
-        btn_psd_check.setOnClickListener {
-            setPassword()
         }
 
         btn_logout.setOnClickListener {
@@ -144,32 +125,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     }
 
-    /**
-     * 设置查看密码
-     */
-    private fun setPassword(){
-        if (privacyPassword==null){
-            PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
-                privacyPassword=it
-                showView(tv_check_pad)
-                btn_psd_check.text=getString(R.string.cancel_password)
-                MethodManager.savePrivacyPassword(privacyPassword)
-                EventBus.getDefault().post(Constants.PASSWORD_EVENT)
-            }
-        }
-        else{
-            PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
-                privacyPassword?.isSet=!privacyPassword?.isSet!!
-                btn_psd_check.text=if (privacyPassword?.isSet==true) getString(R.string.cancel_password)
-                                   else getString(R.string.set_password)
-                MethodManager.savePrivacyPassword(privacyPassword)
-                //更新增量更新
-                DataUpdateManager.editDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
-                EventBus.getDefault().post(Constants.PASSWORD_EVENT)
-            }
-        }
-
-    }
 
     /**
      * 年级选择

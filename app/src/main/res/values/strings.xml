@@ -299,9 +299,9 @@
     <string name="password_different">密码输入不一致</string>
     <string name="password_question_str">输入密保</string>
     <string name="password_question_select_str">选择问题</string>
-    <string name="password_father_name">爸爸姓名？</string>
-    <string name="password_mother_name">妈妈姓名？</string>
-    <string name="password_grandfather_name">我的生日？</string>
+    <string name="password_father_name">父亲姓名？</string>
+    <string name="password_mother_name">好友姓名？</string>
+    <string name="password_grandfather_name">最爱电影？</string>
     <string name="password_grandmother_name">我的爱好？</string>
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
@@ -407,9 +407,8 @@
     <string name="item_type_create_str">创建分类</string>
     <string name="item_type_delete_str">删除分类</string>
 
-    <string name="screenshot_manager_str">截图管理</string>
-    <string name="screenshot_list_str">截图列表</string>
-    <string name="screenshot_listNo_str">截图列表(未分类)</string>
+    <string name="screenshot_manager_str">图库管理</string>
+    <string name="screenshot_list_str">图库列表</string>
 
     <string name="sf_module_str">书法模板</string>
     <string name="painting_module_str">画本规矩图</string>

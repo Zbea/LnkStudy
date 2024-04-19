@@ -331,18 +331,30 @@ public class MethodManager {
 
     /**
      * 保存私密密码
+     * type 0日记1密本
      * @param privacyPassword
      */
-    public static void savePrivacyPassword(PrivacyPassword privacyPassword){
-        SPUtil.INSTANCE.putObj("PrivacyPassword",privacyPassword);
+    public static void savePrivacyPassword(int type,PrivacyPassword privacyPassword){
+        if (type==0){
+            SPUtil.INSTANCE.putObj("privacyPasswordDiary",privacyPassword);
+        }
+        else{
+            SPUtil.INSTANCE.putObj("privacyPasswordNote",privacyPassword);
+        }
     }
 
     /**
      * 获取私密密码
+     * type 0日记1密本
      * @return
      */
-    public static PrivacyPassword getPrivacyPassword(){
-        return SPUtil.INSTANCE.getObj("PrivacyPassword", PrivacyPassword.class);
+    public static PrivacyPassword getPrivacyPassword(int type){
+        if (type==0){
+            return SPUtil.INSTANCE.getObj("privacyPasswordDiary", PrivacyPassword.class);
+        }
+        else{
+            return SPUtil.INSTANCE.getObj("privacyPasswordNote", PrivacyPassword.class);
+        }
     }
 
     /**

@@ -104,10 +104,10 @@ class SearchActivity : BaseAppCompatActivity() {
             }
             4->{
                 val note= NoteDaoManager.getInstance().queryBean(item.typeStr,item.noteStr)
-                val privacyPassword=MethodManager.getPrivacyPassword()
-                if (item.typeStr==getString(R.string.note_tab_diary)&&privacyPassword!=null&&privacyPassword.isSet&&!note.isCancelPassword)
+                val privacyPassword=MethodManager.getPrivacyPassword(1)
+                if (item.typeStr==getString(R.string.note_tab_diary)&&privacyPassword!=null&&!note.isCancelPassword)
                 {
-                    PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
+                    PrivacyPasswordDialog(this).builder().setOnDialogClickListener{
                         MethodManager.gotoNoteDrawing(this,note,0,item.page)
                         finish()
                     }

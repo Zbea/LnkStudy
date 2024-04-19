@@ -33,7 +33,7 @@ object DataBeanManager {
     )
     val searchType = arrayOf(
         mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),
-        mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str)
+        mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str),mContext.getString(R.string.diary_title_str)
     )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
     val bookType = arrayOf(
@@ -236,12 +236,19 @@ object DataBeanManager {
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_sh_check)
             name = mContext.getString(listTitle[6])
         }
+
+        val h7 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_diary)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_diary_check)
+            name = mContext.getString(listTitle[7])
+        }
         list.add(h1)
         list.add(h2)
         list.add(h3)
         list.add(h4)
         list.add(h5)
         list.add(h6)
+        list.add(h7)
         return list
     }
 

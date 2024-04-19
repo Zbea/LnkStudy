@@ -15,15 +15,15 @@ import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.SToast
 
 
-class PrivacyPasswordDialog(private val context: Context) {
+class PrivacyPasswordDialog(private val context: Context,private val type:Int=0) {
 
-    fun builder(): PrivacyPasswordDialog? {
+    fun builder(): PrivacyPasswordDialog {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_privacy_password)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
@@ -34,25 +34,25 @@ class PrivacyPasswordDialog(private val context: Context) {
 
         tvFind.setOnClickListener {
             dialog.dismiss()
-            PrivacyPasswordFindDialog(context,3).builder()
+            PrivacyPasswordFindDialog(context,type).builder()
         }
 
         val tvEdit = dialog.findViewById<TextView>(R.id.tv_edit_password)
         tvEdit.setOnClickListener {
             dialog.dismiss()
-            PrivacyPasswordEditDialog(context,3).builder()
+            PrivacyPasswordEditDialog(context,type).builder()
         }
 
         btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
             if (passwordStr.isEmpty()){
-                SToast.showText(3,R.string.login_input_password_hint)
+                SToast.showText(2,R.string.login_input_password_hint)
                 return@setOnClickListener
             }
-            val privacyPassword=MethodManager.getPrivacyPassword()
+            val privacyPassword=MethodManager.getPrivacyPassword(type)
             if (MD5Utils.digest(passwordStr) != privacyPassword?.password){
-                SToast.showText(3,R.string.toast_password_error)
+                SToast.showText(2,R.string.toast_password_error)
                 return@setOnClickListener
             }
             listener?.onClick()

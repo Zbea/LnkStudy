@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
-import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.NoteContentDaoManager
@@ -40,7 +39,7 @@ class NoteFragment : BaseMainFragment(){
     private var mAdapter: NotebookAdapter? = null
     private var position = 0 //当前笔记标记
     private var resId = ""
-    private var privacyPassword=MethodManager.getPrivacyPassword()
+    private var privacyPassword=MethodManager.getPrivacyPassword(1)
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -83,8 +82,8 @@ class NoteFragment : BaseMainFragment(){
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 val note=notes[position]
-                if (positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true&&!note.isCancelPassword){
-                    PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                if (positionType==0&&privacyPassword!=null&&!note.isCancelPassword){
+                    PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
                         MethodManager.gotoNoteDrawing(requireActivity(),note,0, Constants.DEFAULT_PAGE)
                     }
                 }
@@ -97,11 +96,27 @@ class NoteFragment : BaseMainFragment(){
                 val note=notes[position]
                 when(view.id){
                     R.id.iv_password->{
-                        PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                            note.isCancelPassword=!note.isCancelPassword
-                            mAdapter?.notifyItemChanged(position)
-                            NoteDaoManager.getInstance().insertOrReplace(note)
-                            editDataUpdate(note.id.toInt(),note)
+                        if (privacyPassword==null){
+                            PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                                privacyPassword=it
+                                mAdapter?.notifyDataSetChanged()
+                                showToast(2,"密本密码设置成功")
+                            }
+                        }
+                        else{
+                            val titleStr=if (note.isCancelPassword) "确定设置密码？" else "确定取消密码？"
+                            CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                                override fun cancel() {
+                                }
+                                override fun ok() {
+                                    PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                                        note.isCancelPassword=!note.isCancelPassword
+                                        NoteDaoManager.getInstance().insertOrReplace(note)
+                                        mAdapter?.notifyItemChanged(position)
+                                        editDataUpdate(note.id.toInt(),note)
+                                    }
+                                }
+                            })
                         }
                     }
                     R.id.iv_edit->{
@@ -312,9 +327,6 @@ class NoteFragment : BaseMainFragment(){
         notes = NoteDaoManager.getInstance().queryAll(typeStr,pageIndex,pageSize)
         val total= NoteDaoManager.getInstance().queryAll(typeStr)
         setPageNumber(total.size)
-        for (item in notes){
-            item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
-        }
         mAdapter?.setNewData(notes)
     }
 
@@ -352,10 +364,6 @@ class NoteFragment : BaseMainFragment(){
                 lazyLoad()
             }
             NOTE_EVENT -> {
-                fetchData()
-            }
-            PASSWORD_EVENT -> {
-                privacyPassword=MethodManager.getPrivacyPassword()
                 fetchData()
             }
         }

@@ -50,6 +50,14 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 }
                 EventBus.getDefault().post(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
             }
+            Constants.ACTION_UPLOAD_YEAR->{
+                Log.d("debug","每年上传")
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
+                EventBus.getDefault().post(Constants.AUTO_UPLOAD_YEAR_EVENT)
+            }
             Constants.ACTION_UPLOAD_LAST_SEMESTER->{
                 Log.d("debug","9月1日升年级、清空")
                 MethodManager.wakeUpScreen(context)

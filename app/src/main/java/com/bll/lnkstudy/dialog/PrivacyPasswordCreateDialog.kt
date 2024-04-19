@@ -19,7 +19,7 @@ import com.bll.lnkstudy.utils.SToast
 import com.google.gson.Gson
 
 
-class PrivacyPasswordCreateDialog(private val context: Context) {
+class PrivacyPasswordCreateDialog(private val context: Context,private val type:Int=0) {
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
@@ -29,7 +29,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
@@ -109,9 +109,9 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             privacyPassword.answer=answerStr
             privacyPassword.password=MD5Utils.digest(passwordStr)
             privacyPassword.isSet=true
-            MethodManager.savePrivacyPassword(privacyPassword)
+            MethodManager.savePrivacyPassword(type,privacyPassword)
             //创建增量数据(日记密码)
-            DataUpdateManager.createDataUpdate(10,1,1,1, Gson().toJson(privacyPassword))
+            DataUpdateManager.createDataUpdate(10,type,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()
             listener?.onClick(privacyPassword)
 

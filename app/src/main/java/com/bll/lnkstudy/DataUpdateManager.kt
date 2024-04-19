@@ -14,7 +14,7 @@ object DataUpdateManager {
      * 创建增量更新
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,json:String){
-        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
+        DataUpdateDaoManager.getInstance().deleteBean(type,id,contentType, typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -30,7 +30,7 @@ object DataUpdateManager {
      * 创建增量更新
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,state:Int,json:String){
-        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
+        DataUpdateDaoManager.getInstance().deleteBean(type,id,contentType, typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -47,7 +47,7 @@ object DataUpdateManager {
      * 创建增量更新(带有源文件地址)
      */
     fun createDataUpdateSource(type:Int,id:Int,contentType:Int,typeId:Int,json:String,sourceUrl:String){
-        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
+        DataUpdateDaoManager.getInstance().deleteBean(type,id,contentType, typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -64,7 +64,7 @@ object DataUpdateManager {
      * 创建增量更新（有内容）
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,json:String,path:String){
-        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
+        DataUpdateDaoManager.getInstance().deleteBean(type,id,contentType, typeId)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -80,7 +80,7 @@ object DataUpdateManager {
      * 创建增量更新（有内容）
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,typeId:Int,state: Int,json:String,path:String){
-        DataUpdateDaoManager.getInstance().deleteBean(type,contentType,id, typeId)
+        DataUpdateDaoManager.getInstance().deleteBean(type,id,contentType, typeId)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -98,7 +98,7 @@ object DataUpdateManager {
      * 删除增量更新
      */
     fun deleteDateUpdate(type:Int,id:Int,contentType:Int,typeId: Int){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId)?.apply {
             date=System.currentTimeMillis()
             isDelete=true
         })
@@ -109,7 +109,7 @@ object DataUpdateManager {
      * 修改增量更新（图片内容变化，地址不变）
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,typeId: Int){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId)?.apply {
             date=System.currentTimeMillis()
         })
     }
@@ -118,7 +118,7 @@ object DataUpdateManager {
      * 修改增量更新
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,typeId: Int,json: String){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId)?.apply {
             date=System.currentTimeMillis()
             listJson=json
         })
@@ -128,7 +128,7 @@ object DataUpdateManager {
      * 修改增量更新(有手写内容,保存路径)
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,typeId: Int,json: String,path: String){
-        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,contentType,id,typeId)?.apply {
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId)?.apply {
             date=System.currentTimeMillis()
             listJson=json
             this.path=path

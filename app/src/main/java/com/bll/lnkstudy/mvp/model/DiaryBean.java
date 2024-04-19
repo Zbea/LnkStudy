@@ -6,6 +6,7 @@ import com.bll.lnkstudy.utils.greendao.StringConverter;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.ArrayList;
@@ -27,6 +28,10 @@ public class DiaryBean {
     public String bgRes;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths=new ArrayList<>();
+    @Transient
+    public int cloudId;
+    @Transient
+    public String downloadUrl;
 
     @Generated(hash = 199989628)
     public DiaryBean(Long id, long userId, String title, long date, int year, int month, String bgRes,

@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
-import com.bll.lnkstudy.Constants.Companion.PASSWORD_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.MessageList
@@ -38,7 +39,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     private val mMessagePresenter=MessagePresenter(this,2)
     private var messages= mutableListOf<MessageList.MessageBean>()
     private var mMessageAdapter:MessageAdapter?=null
-    private var privacyPassword=MethodManager.getPrivacyPassword()
+    private var privacyPassword=MethodManager.getPrivacyPassword(0)
     private var examItem: ExamItem?=null
 
     override fun onList(message: MessageList) {
@@ -81,15 +82,38 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
         }
 
-        tv_diarl.setOnClickListener {
+        tv_diray.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
                     customStartActivity(Intent(activity,DiaryActivity::class.java))
                 }
             }
             else{
                 customStartActivity(Intent(activity,DiaryActivity::class.java))
             }
+        }
+
+        tv_diray.setOnLongClickListener {
+            if (privacyPassword==null){
+                PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                    privacyPassword=it
+                    showToast(2,"日记密码设置成功")
+                }
+            }
+            else{
+                val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                            privacyPassword!!.isSet=!privacyPassword!!.isSet
+                            MethodManager.savePrivacyPassword(0,privacyPassword)
+                        }
+                    }
+                })
+            }
+            return@setOnLongClickListener true
         }
 
     }
@@ -173,31 +197,28 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (examItem?.examUrl.isNullOrEmpty()){
             return
         }
-        examItem?.apply {
-            //设置路径
-            val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
-            val files = FileUtils.getFiles(pathStr)
-            val images=examUrl.split(",").toMutableList()
-            val paths= mutableListOf<String>()
-            for (i in images.indices){
-                paths.add("$pathStr/${i+1}.png")
-            }
-            this.paths=paths
-            if (files == null || files.size != images.size) {
-                FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
-                    object : FileMultitaskDownManager.MultiTaskCallBack {
-                        override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
-                        }
-                        override fun completed(task: BaseDownloadTask?) {
-                            hideLoading()
-                        }
-                        override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        }
-                        override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                            hideLoading()
-                        }
-                    })
-            }
+        val pathStr = FileAddress().getPathTestPaper(examItem?.commonTypeId!!, id)
+        val files = FileUtils.getFiles(pathStr)
+        val images=examItem?.examUrl!!.split(",").toMutableList()
+        val paths= mutableListOf<String>()
+        for (i in images.indices){
+            paths.add("$pathStr/${i+1}.png")
+        }
+        examItem?.paths=paths
+        if (files == null || files.size != images.size) {
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        hideLoading()
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                        hideLoading()
+                    }
+                })
         }
     }
 
@@ -209,9 +230,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             MESSAGE_COMMIT_EVENT -> {
                 findMessages()
-            }
-            PASSWORD_EVENT->{
-                privacyPassword=MethodManager.getPrivacyPassword()
             }
         }
     }

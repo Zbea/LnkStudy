@@ -75,6 +75,7 @@ class Constants {
         const val REFRESH_EVENT = "RefreshEvent" //刷新页面
         const val AUTO_UPLOAD_LAST_SEMESTER_EVENT = "AutoUploadEventLastSemester" //上学期开学
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
+        const val AUTO_UPLOAD_YEAR_EVENT = "AutoUploadEventYEAR" //每年上传
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"//每天三点自动上传
         const val DATE_DAY_EVENT = "DateDayEvent"//重要日子刷新
         const val DATE_EVENT = "DateEvent"
@@ -93,7 +94,6 @@ class Constants {
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
         const val EXAM_TIME_EVENT = "ExamTime"//考试到时自动提交广播
         const val MAIN_HOMEWORK_NOTICE_EVENT = "MainHomeworkNoticeEvent"//作业通知清除广播
-        const val PASSWORD_EVENT = "PrivacyPasswordEvent"//设置隐私密码广播
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
@@ -110,6 +110,7 @@ class Constants {
         const val ACTION_UPLOAD_18 = "com.bll.lnkstudy.upload_18"
         const val ACTION_UPLOAD_NEXT_SEMESTER = "com.bll.lnkstudy.upload.next.semester"
         const val ACTION_UPLOAD_LAST_SEMESTER = "com.bll.lnkstudy.upload.last.semester"
+        const val ACTION_UPLOAD_YEAR = "com.bll.lnkstudy.upload.year"
         const val ACTION_EXAM_TIME = "com.bll.lnkstudy.exam.time"
 
         //广播
