@@ -6,21 +6,21 @@
     android:gravity="center_vertical"
     >
 
+    <ImageView
+        android:id="@+id/iv_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_bookstore_arrow_right"/>
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_15"
         android:layout_weight="1"
         android:lines="1"
         android:ellipsize="end"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"/>
-
-    <ImageView
-        android:id="@+id/iv_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_30"
-        android:src="@mipmap/icon_delete"/>
 
 </LinearLayout>

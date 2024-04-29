@@ -30,6 +30,7 @@ public class ItemTypeBeanDao extends AbstractDao<ItemTypeBean, Long> {
         public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property Path = new Property(5, String.class, "path", false, "PATH");
+        public final static Property Grade = new Property(6, int.class, "grade", false, "GRADE");
     }
 
 
@@ -50,7 +51,8 @@ public class ItemTypeBeanDao extends AbstractDao<ItemTypeBean, Long> {
                 "\"TITLE\" TEXT," + // 2: title
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
-                "\"PATH\" TEXT);"); // 5: path
+                "\"PATH\" TEXT," + // 5: path
+                "\"GRADE\" INTEGER NOT NULL );"); // 6: grade
     }
 
     /** Drops the underlying database table. */
@@ -80,6 +82,7 @@ public class ItemTypeBeanDao extends AbstractDao<ItemTypeBean, Long> {
         if (path != null) {
             stmt.bindString(6, path);
         }
+        stmt.bindLong(7, entity.getGrade());
     }
 
     @Override
@@ -103,6 +106,7 @@ public class ItemTypeBeanDao extends AbstractDao<ItemTypeBean, Long> {
         if (path != null) {
             stmt.bindString(6, path);
         }
+        stmt.bindLong(7, entity.getGrade());
     }
 
     @Override
@@ -118,7 +122,8 @@ public class ItemTypeBeanDao extends AbstractDao<ItemTypeBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
             cursor.getInt(offset + 3), // type
             cursor.getLong(offset + 4), // date
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // path
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // path
+            cursor.getInt(offset + 6) // grade
         );
         return entity;
     }
@@ -131,6 +136,7 @@ public class ItemTypeBeanDao extends AbstractDao<ItemTypeBean, Long> {
         entity.setType(cursor.getInt(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
         entity.setPath(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setGrade(cursor.getInt(offset + 6));
      }
     
     @Override

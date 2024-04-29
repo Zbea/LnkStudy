@@ -34,7 +34,8 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
         public final static Property Year = new Property(4, int.class, "year", false, "YEAR");
         public final static Property Month = new Property(5, int.class, "month", false, "MONTH");
         public final static Property BgRes = new Property(6, String.class, "bgRes", false, "BG_RES");
-        public final static Property Paths = new Property(7, String.class, "paths", false, "PATHS");
+        public final static Property Page = new Property(7, int.class, "page", false, "PAGE");
+        public final static Property Paths = new Property(8, String.class, "paths", false, "PATHS");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -58,7 +59,8 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
                 "\"YEAR\" INTEGER NOT NULL ," + // 4: year
                 "\"MONTH\" INTEGER NOT NULL ," + // 5: month
                 "\"BG_RES\" TEXT," + // 6: bgRes
-                "\"PATHS\" TEXT);"); // 7: paths
+                "\"PAGE\" INTEGER NOT NULL ," + // 7: page
+                "\"PATHS\" TEXT);"); // 8: paths
     }
 
     /** Drops the underlying database table. */
@@ -89,10 +91,11 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
         if (bgRes != null) {
             stmt.bindString(7, bgRes);
         }
+        stmt.bindLong(8, entity.getPage());
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(8, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(9, pathsConverter.convertToDatabaseValue(paths));
         }
     }
 
@@ -118,10 +121,11 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
         if (bgRes != null) {
             stmt.bindString(7, bgRes);
         }
+        stmt.bindLong(8, entity.getPage());
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(8, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(9, pathsConverter.convertToDatabaseValue(paths));
         }
     }
 
@@ -140,7 +144,8 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
             cursor.getInt(offset + 4), // year
             cursor.getInt(offset + 5), // month
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bgRes
-            cursor.isNull(offset + 7) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 7)) // paths
+            cursor.getInt(offset + 7), // page
+            cursor.isNull(offset + 8) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 8)) // paths
         );
         return entity;
     }
@@ -154,7 +159,8 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
         entity.setYear(cursor.getInt(offset + 4));
         entity.setMonth(cursor.getInt(offset + 5));
         entity.setBgRes(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setPaths(cursor.isNull(offset + 7) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 7)));
+        entity.setPage(cursor.getInt(offset + 7));
+        entity.setPaths(cursor.isNull(offset + 8) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 8)));
      }
     
     @Override

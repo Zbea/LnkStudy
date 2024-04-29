@@ -5,12 +5,14 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.dialog.PopupFreeNoteList
 import com.bll.lnkstudy.manager.FreeNoteDaoManager
 import com.bll.lnkstudy.mvp.model.FreeNoteBean
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.*
 import kotlinx.android.synthetic.main.common_drawing_tool_bottom.*
@@ -23,26 +25,33 @@ class FreeNoteActivity : BaseDrawingActivity() {
     private var posImage = 0
     private var images = mutableListOf<String>()//手写地址
     private var bgResList = mutableListOf<String>()//背景地址
-    private var freeNotePopWindow: PopupFreeNoteList? = null
 
     override fun layoutId(): Int {
         return R.layout.ac_freenote
     }
 
     override fun initData() {
-        bgRes = ToolUtils.getImageResStr(this, R.mipmap.icon_freenote_bg_1)
-        freeNoteBean = FreeNoteBean()
-        freeNoteBean?.date = System.currentTimeMillis()
-        freeNoteBean?.title = DateUtils.longToStringNoYear(freeNoteBean?.date!!)
-
+        freeNoteBean=FreeNoteDaoManager.getInstance().queryBean()
+        if (freeNoteBean==null){
+            createFreeNote()
+        }
+        posImage=freeNoteBean?.page!!
     }
 
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
-        tv_name.text = freeNoteBean?.title
+
+        iv_save.setOnClickListener {
+            freeNoteBean?.isSave=true
+            saveFreeNote()
+            createFreeNote()
+            posImage=0
+            initFreeNote()
+            setContentImage()
+        }
 
         tv_name.setOnClickListener {
-            InputContentDialog(this, tv_name.text.toString()).builder()?.setOnDialogClickListener {
+            InputContentDialog(this, tv_name.text.toString()).builder().setOnDialogClickListener {
                 tv_name.text = it
                 freeNoteBean?.title = it
             }
@@ -57,26 +66,45 @@ class FreeNoteActivity : BaseDrawingActivity() {
                 }
         }
 
-        tv_free_list.setOnClickListener {
-            if (freeNotePopWindow == null) {
-                freeNotePopWindow = PopupFreeNoteList(this, tv_free_list).builder()
-                freeNotePopWindow?.setOnSelectListener {
-                    saveFreeNote()
-                    posImage = 0
-                    freeNoteBean = it
-                    bgResList = freeNoteBean?.bgRes as MutableList<String>
-                    images = freeNoteBean?.paths as MutableList<String>
-                    tv_name.text = freeNoteBean?.title
+        tv_delete.setOnClickListener {
+            CommonDialog(this).setContent("确定删除当前随笔？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    FreeNoteDaoManager.getInstance().deleteBean(freeNoteBean)
+                    FileUtils.deleteFile(File(FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))))
+                    if (freeNoteBean?.isSave==true){
+                        freeNoteBean=FreeNoteDaoManager.getInstance().queryBean()
+                        posImage=freeNoteBean?.page!!
+                    }
+                    else{
+                        createFreeNote()
+                        posImage=0
+                    }
+                    showView(iv_save)
+                    initFreeNote()
                     setContentImage()
                 }
-            } else {
-                freeNotePopWindow?.show()
+            })
+        }
+
+        tv_free_list.setOnClickListener {
+            PopupFreeNoteList(this, tv_free_list,freeNoteBean!!.date).builder().setOnSelectListener {
+                saveFreeNote()
+                freeNoteBean=it
+                posImage=freeNoteBean?.page!!
+                initFreeNote()
+                if (freeNoteBean?.isSave==true){
+                    disMissView(iv_save)
+                }
+                else{
+                    showView(iv_save)
+                }
+                setContentImage()
             }
         }
 
-        if (posImage >= bgResList.size) {
-            bgResList.add(bgRes)
-        }
+        initFreeNote()
         setContentImage()
     }
 
@@ -94,6 +122,25 @@ class FreeNoteActivity : BaseDrawingActivity() {
             posImage -= 1
             setContentImage()
         }
+    }
+
+    private fun initFreeNote(){
+        bgResList= freeNoteBean?.bgRes as MutableList<String>
+        images= freeNoteBean?.paths as MutableList<String>
+        tv_name.text=freeNoteBean?.title
+    }
+
+    /**
+     * 创建新随笔
+     */
+    private fun createFreeNote(){
+        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
+        freeNoteBean= FreeNoteBean()
+        freeNoteBean?.date=System.currentTimeMillis()
+        freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
+        freeNoteBean?.bgRes= arrayListOf(bgRes)
+        freeNoteBean?.paths= arrayListOf()
+        FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
     /**
@@ -121,6 +168,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
         if (!File(path).list().isNullOrEmpty()){
             freeNoteBean?.paths = images
             freeNoteBean?.bgRes = bgResList
+            freeNoteBean?.page=posImage
             FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
         }
     }

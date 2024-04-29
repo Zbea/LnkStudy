@@ -33,6 +33,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         public final static Property Date = new Property(3, long.class, "date", false, "DATE");
         public final static Property Paths = new Property(4, String.class, "paths", false, "PATHS");
         public final static Property BgRes = new Property(5, String.class, "bgRes", false, "BG_RES");
+        public final static Property Page = new Property(6, int.class, "page", false, "PAGE");
+        public final static Property IsSave = new Property(7, boolean.class, "isSave", false, "IS_SAVE");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -55,7 +57,9 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
                 "\"TITLE\" TEXT," + // 2: title
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
                 "\"PATHS\" TEXT," + // 4: paths
-                "\"BG_RES\" TEXT);"); // 5: bgRes
+                "\"BG_RES\" TEXT," + // 5: bgRes
+                "\"PAGE\" INTEGER NOT NULL ," + // 6: page
+                "\"IS_SAVE\" INTEGER NOT NULL );"); // 7: isSave
     }
 
     /** Drops the underlying database table. */
@@ -89,6 +93,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         if (bgRes != null) {
             stmt.bindString(6, bgResConverter.convertToDatabaseValue(bgRes));
         }
+        stmt.bindLong(7, entity.getPage());
+        stmt.bindLong(8, entity.getIsSave() ? 1L: 0L);
     }
 
     @Override
@@ -116,6 +122,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         if (bgRes != null) {
             stmt.bindString(6, bgResConverter.convertToDatabaseValue(bgRes));
         }
+        stmt.bindLong(7, entity.getPage());
+        stmt.bindLong(8, entity.getIsSave() ? 1L: 0L);
     }
 
     @Override
@@ -131,7 +139,9 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
             cursor.getLong(offset + 3), // date
             cursor.isNull(offset + 4) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 4)), // paths
-            cursor.isNull(offset + 5) ? null : bgResConverter.convertToEntityProperty(cursor.getString(offset + 5)) // bgRes
+            cursor.isNull(offset + 5) ? null : bgResConverter.convertToEntityProperty(cursor.getString(offset + 5)), // bgRes
+            cursor.getInt(offset + 6), // page
+            cursor.getShort(offset + 7) != 0 // isSave
         );
         return entity;
     }
@@ -144,6 +154,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         entity.setDate(cursor.getLong(offset + 3));
         entity.setPaths(cursor.isNull(offset + 4) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 4)));
         entity.setBgRes(cursor.isNull(offset + 5) ? null : bgResConverter.convertToEntityProperty(cursor.getString(offset + 5)));
+        entity.setPage(cursor.getInt(offset + 6));
+        entity.setIsSave(cursor.getShort(offset + 7) != 0);
      }
     
     @Override

@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.manager.PaintingTypeDaoManager
-import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.ui.adapter.PaintingTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -18,7 +18,7 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
 
     private var mAdapter: PaintingTypeAdapter? = null
     private var type = 0//0画本1书法
-    private var types= mutableListOf<PaintingTypeBean>()
+    private var types= mutableListOf<ItemTypeBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_list
@@ -27,7 +27,7 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
     override fun initData() {
         pageSize=9
         type = intent.flags
-        types=PaintingTypeDaoManager.getInstance().queryAllByType(type)
+        types=ItemTypeDaoManager.getInstance().queryAll(type)
     }
 
     override fun initView() {

@@ -12,9 +12,9 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
@@ -26,7 +26,7 @@ import java.io.File
 class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
     private var grade=0
-    private var paintingTypeBean: PaintingTypeBean?=null
+    private var paintingTypeBean: ItemTypeBean?=null
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
@@ -40,7 +40,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("calligraphy") as PaintingTypeBean
+        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("calligraphy") as ItemTypeBean
         grade=paintingTypeBean?.grade!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,grade)
 
@@ -61,7 +61,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         onChangeContent()
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder()?.setOnDialogClickListener { string ->
+            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
                 paintingDrawingBean_a?.title = string
                 paintingLists[page-1].title = string
                 PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
@@ -73,7 +73,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
             var type=getCurrentScreenPos()
             if (type==3)
                 type=2
-            InputContentDialog(this,type,paintingDrawingBean?.title!!).builder()?.setOnDialogClickListener { string ->
+            InputContentDialog(this,type,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
                 paintingDrawingBean?.title = string
                 paintingLists[page].title = string
                 PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
@@ -208,11 +208,6 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
             paintingDrawingBean_a = null
         }
 
-        if (paintingTypeBean?.isCloud==true){
-            elik_a?.setPWEnabled(false)
-            elik_b?.setPWEnabled(false)
-        }
-
         resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
         setBg_b()
 
@@ -223,7 +218,6 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()
-            v_content_a.setImageResource(resId_a)
             setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
             tv_page_a.text = "$page"
         }
@@ -264,7 +258,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$fileName.tch"
         paintingDrawingBean?.grade=grade
-        paintingDrawingBean?.bgRes="0"
+        paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_painting_bg_sf)
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)

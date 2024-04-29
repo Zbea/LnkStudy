@@ -17,10 +17,8 @@ import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
-import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
@@ -71,7 +69,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     override fun onToken(token: String) {
         when (eventType) {
             Constants.AUTO_UPLOAD_EVENT -> {
-                paintingFragment?.uploadPainting()
                 bookcaseFragment?.upload(token)
                 uploadDataUpdate(token)
             }
@@ -466,11 +463,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         PaperDaoManager.getInstance().clear()
         PaperContentDaoManager.getInstance().clear()
 
-        NotebookDaoManager.getInstance().clear()
         NoteDaoManager.getInstance().clear()
         NoteContentDaoManager.getInstance().clear()
 
-        PaintingTypeDaoManager.getInstance().clear()
         PaintingDrawingDaoManager.getInstance().clear()
         PaintingBeanDaoManager.getInstance().clear()
 
@@ -566,12 +561,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 4 -> {
                     when (item.contentType) {
                         1 -> {
-                            val notebook = Gson().fromJson(item.listJson, Notebook::class.java)
-                            NotebookDaoManager.getInstance().insertOrReplace(notebook)
+                            val itemTypeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
+                            ItemTypeDaoManager.getInstance().insertOrReplace(itemTypeBean)
                             //创建笔记分类增量更新
                             DataUpdateManager.createDataUpdate(
-                                4, notebook.id.toInt(), 1, 2,
-                                Gson().toJson(notebook)
+                                4, itemTypeBean.id.toInt(), 1, 2,
+                                Gson().toJson(itemTypeBean)
                             )
                         }
                         2 -> {
@@ -592,8 +587,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 5 -> {
                     when (item.contentType) {
                         1 -> {
-                            val typeBean = Gson().fromJson(item.listJson, PaintingTypeBean::class.java)
-                            PaintingTypeDaoManager.getInstance().insertOrReplace(typeBean)
+                            val typeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
+                            ItemTypeDaoManager.getInstance().insertOrReplace(typeBean)
                             //创建本地画本增量更新
                             DataUpdateManager.createDataUpdate(5, typeBean.id.toInt(), 1, 1, Gson().toJson(item))
                         }

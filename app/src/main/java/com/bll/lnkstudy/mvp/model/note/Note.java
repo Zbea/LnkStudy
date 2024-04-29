@@ -25,6 +25,7 @@ public class Note implements Serializable {
     public long date; //创建时间
     public String contentResId; //笔记内容背景id
     public boolean isCancelPassword;//取消加密
+    public int page;
     public int grade;//年级
     public boolean isCloud;
     public int cloudId;//云id
@@ -33,9 +34,9 @@ public class Note implements Serializable {
     @Transient
     public String contentJson;
 
-    @Generated(hash = 1977792127)
+    @Generated(hash = 565551709)
     public Note(Long id, long userId, String title, String typeStr, long date,
-            String contentResId, boolean isCancelPassword, int grade,
+            String contentResId, boolean isCancelPassword, int page, int grade,
             boolean isCloud, int cloudId) {
         this.id = id;
         this.userId = userId;
@@ -44,6 +45,7 @@ public class Note implements Serializable {
         this.date = date;
         this.contentResId = contentResId;
         this.isCancelPassword = isCancelPassword;
+        this.page = page;
         this.grade = grade;
         this.isCloud = isCloud;
         this.cloudId = cloudId;
@@ -93,6 +95,12 @@ public class Note implements Serializable {
     public void setIsCancelPassword(boolean isCancelPassword) {
         this.isCancelPassword = isCancelPassword;
     }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
+    }
     public int getGrade() {
         return this.grade;
     }
@@ -111,5 +119,7 @@ public class Note implements Serializable {
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
+
+
 
 }

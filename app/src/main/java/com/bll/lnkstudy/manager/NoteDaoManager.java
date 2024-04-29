@@ -57,6 +57,11 @@ public class NoteDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
+    public Note queryBean(long id) {
+        WhereCondition whereCondition=NoteDao.Properties.Id.eq(id);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date).build().unique();
+    }
+
     /**
      * 是否存在笔记
      * @return
@@ -73,16 +78,6 @@ public class NoteDaoManager {
      */
     public List<Note> queryNotes() {
         return dao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Date).build().list();
-    }
-
-    /**
-     * 查询所有笔记 除开日记
-     * @return
-     */
-    public List<Note> queryNotesExceptDiary(int size) {
-        WhereCondition whereCondition=NoteDao.Properties.TypeStr.notEq(DataBeanManager.INSTANCE.getNoteBook().get(0).name);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date)
-                .limit(size).build().list();
     }
 
 

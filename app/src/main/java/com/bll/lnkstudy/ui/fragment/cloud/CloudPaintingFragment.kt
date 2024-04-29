@@ -4,24 +4,23 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.PaintingBeanDaoManager
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
-import com.bll.lnkstudy.manager.PaintingTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
-import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
-import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -35,11 +34,10 @@ import java.io.File
 
 class CloudPaintingFragment : BaseCloudFragment() {
 
-    var typeId = 1
-    private var dynasty = 1
+    private var typeStr=""
+    private var tabId=3
     private var position=0
     private var cloudLists= mutableListOf<CloudListBean>()
-    private var mAdapter:MyPaintingAdapter?=null
     private var mLocalAdapter: CloudPaintingLocalAdapter?=null
     private var paintings= mutableListOf<PaintingBean>()//线上数据
 
@@ -50,8 +48,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     override fun initView() {
         pageSize=9
         initTab()
-        initRecyclerPaintingView()
-        initRecyclerLocalView()
+        initRecyclerView()
     }
 
     override fun lazyLoad() {
@@ -65,71 +62,24 @@ class CloudPaintingFragment : BaseCloudFragment() {
 
     private fun initTab() {
         val types = mutableListOf<String>()
-        types.addAll(DataBeanManager.PAINTING.toList())
         types.add(getString(R.string.my_drawing_str))
         types.add(getString(R.string.my_calligraphy_str))
+        typeStr=types[0]
         for (i in types.indices) {
             rg_group.addView(getRadioButton(i, types[i], types.size - 1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            typeId = id+1
-            when (typeId) {
-                1, 2, 3, 4, 5,6 -> {
-                    pageSize=6
-                    showView(rv_list)
-                    disMissView(rv_local)
-                    (activity as CloudStorageActivity).showDynastyView()
-                }
-                else -> {
-                    pageSize=9
-                    showView(rv_local)
-                    disMissView(rv_list)
-                    (activity as CloudStorageActivity).closeDynastyView()
-                }
-            }
             pageIndex = 1
+            tabId=if (id==0) 3 else 4
+            typeStr=types[id]
             fetchData()
-        }
-    }
-
-    /**
-     * 线上书画
-     */
-    private fun initRecyclerPaintingView() {
-        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(
-            DP2PX.dip2px(activity,20f),
-            DP2PX.dip2px(activity,20f),
-            DP2PX.dip2px(activity,20f),0)
-        layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
-        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
-        mAdapter = MyPaintingAdapter(R.layout.item_textbook,null).apply {
-            rv_list.adapter = this
-            bindToRecyclerView(rv_list)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(3, 25))
-            setOnItemClickListener { adapter, view, position ->
-                val item=paintings[position]
-                val paintingBean=PaintingBeanDaoManager.getInstance().queryBean(item.contentId)
-                if (paintingBean==null){
-                    downloadPainting(item)
-                }
-                else{
-                    showToast(getScreenPosition(),R.string.toast_downloaded)
-                }
-            }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                this@CloudPaintingFragment.position=position
-                deleteCloud(position)
-                true
-            }
         }
     }
 
     /**
      * 本地画本、书法
      */
-    private fun initRecyclerLocalView() {
+    private fun initRecyclerView() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(activity, 20f),
@@ -137,20 +87,18 @@ class CloudPaintingFragment : BaseCloudFragment() {
             DP2PX.dip2px(activity, 20f), 0
         )
         layoutParams.weight = 1f
-        rv_local.layoutParams = layoutParams
-        rv_local.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
+        rv_list.layoutParams = layoutParams
+        rv_list.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mLocalAdapter = CloudPaintingLocalAdapter(R.layout.item_painting_type, null).apply {
-            rv_local.adapter = this
-            bindToRecyclerView(rv_local)
-            rv_local.addItemDecoration(SpaceGridItemDeco(3, 60))
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            rv_list.addItemDecoration(SpaceGridItemDeco(3, 60))
             setOnItemClickListener { adapter, view, position ->
+                this@CloudPaintingFragment.position=position
                 val item=cloudLists[position]
-                val paintType=PaintingTypeDaoManager.getInstance().queryAllByGrade(getType(),item.grade)
+                val paintType=ItemTypeDaoManager.getInstance().queryBean(tabId,item.grade)
                 if (paintType==null){
                     downloadLocal(item)
-                }
-                else{
-                    showToast(getScreenPosition(),R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -162,40 +110,12 @@ class CloudPaintingFragment : BaseCloudFragment() {
     }
 
     /**
-     * 下载线上书画
-     */
-    private fun downloadPainting(item: PaintingBean){
-        showLoading()
-        val pathStr= FileAddress().getPathImage("painting" ,item.contentId)
-        val images = mutableListOf(item.bodyUrl)
-        val savePaths= arrayListOf("$pathStr/1.png")
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
-            object : FileMultitaskDownManager.MultiTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    hideLoading()
-                    val id=PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(item)
-                    //新建增量更新
-                    DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,item.contentId, Gson().toJson(item),item.bodyUrl)
-                    showToast(1,R.string.book_download_success)
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    showToast(1,R.string.book_download_fail)
-                }
-            })
-    }
-
-    /**
      * 下载本地画本、书法
      */
     private fun downloadLocal(item:CloudListBean){
         showLoading()
+        val typeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val fileTargetPath=FileAddress().getPathPainting(getType(),item.grade)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -204,26 +124,17 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                    ZipUtils.unzip(zipPath, typeBean.path, object : IZipCallback {
                         override fun onFinish() {
-                            //存储画本分类
-                            val date=System.currentTimeMillis()
-                            val beanType =
-                                PaintingTypeBean()
-                            beanType.type = getType()
-                            beanType.grade = item.grade
-                            beanType.date = date
-                            beanType.isCloud=true
-                            beanType.cloudId=item.id
-                            val id=PaintingTypeDaoManager.getInstance().insertOrReplaceGetId(beanType)
+                            typeBean.id=null
+                            val id=ItemTypeDaoManager.getInstance().insertOrReplaceGetId(typeBean)
                             //创建本地画本增量更新
-                            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(beanType))
+                            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(typeBean))
 
                             //存储画本内容
                             val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
                             for (json in jsonArray){
-                                val drawingBean=Gson().fromJson(json,
-                                    PaintingDrawingBean::class.java)
+                                val drawingBean=Gson().fromJson(json, PaintingDrawingBean::class.java)
                                 drawingBean.id=null
                                 val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                 //创建本地画本增量更新
@@ -233,6 +144,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
+                                deleteCloud(position)
                                 showToast(getScreenPosition(),R.string.book_download_success)
                                 hideLoading()
                             },500)
@@ -273,20 +185,6 @@ class CloudPaintingFragment : BaseCloudFragment() {
             })
     }
 
-    /**
-     * 根据typeId 得到画本、书法type类型
-     */
-    private fun getType():Int{
-        return if (typeId==7) 0 else 1
-    }
-
-    /**
-     * 主activity切换朝代
-     */
-    fun changeDynasty(dynasty: Int) {
-        this.dynasty = dynasty
-        fetchData()
-    }
 
     override fun onRefreshData() {
         fetchData()
@@ -297,47 +195,18 @@ class CloudPaintingFragment : BaseCloudFragment() {
         map["page"]=pageIndex
         map["size"] = pageSize
         map["type"] = 5
-        map["subType"] = typeId
-        if (typeId!=7&&typeId!=8)
-            map["dynasty"] = dynasty
+        map["subTypeStr"] = typeStr
         mCloudPresenter.getList(map)
     }
 
     override fun onCloudList(cloudList: CloudList) {
         setPageNumber(cloudList.total)
         cloudLists=cloudList.list
-
-        when(typeId){
-            7,8->{
-                mLocalAdapter?.setNewData(cloudLists)
-            }
-            else->{
-                paintings.clear()
-                for (item in cloudLists){
-                    if (item.listJson.isNotEmpty()){
-                        val paintingBean=Gson().fromJson(item.listJson,
-                            PaintingBean::class.java)
-                        paintingBean.id=null //设置数据库id为null用于重新加入
-                        paintingBean.cloudId=item.id
-                        paintingBean.isCloud=true
-                        paintings.add(paintingBean)
-                    }
-                }
-                mAdapter?.setNewData(paintings)
-            }
-        }
-
+        mLocalAdapter?.setNewData(cloudLists)
     }
 
     override fun onCloudDelete() {
-        when(typeId){
-            7,8->{
-                mLocalAdapter?.remove(position)
-            }
-            else->{
-                mAdapter?.remove(position)
-            }
-        }
+        mLocalAdapter?.remove(position)
     }
 
     override fun onNetworkConnectionSuccess() {

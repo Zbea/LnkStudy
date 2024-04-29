@@ -4,7 +4,6 @@ import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
-import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
@@ -240,7 +239,7 @@ object DataBeanManager {
         val h7 = ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_diary)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_diary_check)
-            name = mContext.getString(listTitle[7])
+            name = "日记"
         }
         list.add(h1)
         list.add(h2)
@@ -560,17 +559,6 @@ object DataBeanManager {
                 name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_module_other_lxb
                 resContentId = R.mipmap.icon_homework_content_other_xxlxb
-            })
-            return list
-        }
-
-    //基础笔记分类
-    val noteBook: MutableList<Notebook>
-        get() {
-            val list= mutableListOf<Notebook>()
-            list.add(Notebook().apply {
-                name = mContext.getString(R.string.note_tab_diary)
-                typeId = 0
             })
             return list
         }

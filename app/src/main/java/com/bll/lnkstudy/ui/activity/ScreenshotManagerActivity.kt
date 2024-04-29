@@ -1,10 +1,9 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -18,8 +17,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_book_type_list.rv_list
-import kotlinx.android.synthetic.main.ac_list_radiogroup.*
+import kotlinx.android.synthetic.main.ac_book_type_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
@@ -41,113 +39,89 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         pageSize = 12
-        popupBeans.add(PopupBean(0, getString(R.string.item_type_create_str), false))
-        popupBeans.add(PopupBean(1, getString(R.string.item_type_delete_str), false))
-
-        longBeans.add(ItemList().apply {
-            name=getString(R.string.delete)
-            resId=R.mipmap.icon_setting_delete
-        })
-        longBeans.add(ItemList().apply {
-            name=getString(R.string.shiftOut)
-            resId=R.mipmap.icon_setting_out
-        })
-
+        popupBeans.add(PopupBean(0, "创建分类", false))
+        popupBeans.add(PopupBean(1, "删除分类", false))
     }
 
     override fun initView() {
-        setPageTitle(R.string.screenshot_manager_str)
-        showView(tv_btn,tv_province)
+        setPageTitle("图库列表")
+        showView(iv_manager)
 
-        tv_btn.text=getString(R.string.screenshot_list_str)
-        tv_province.text=getString(R.string.item_type_str)
-
-        tv_province.setOnClickListener {
-            setTopSelectView()
-        }
-        tv_btn.setOnClickListener {
-            customStartActivity(Intent(this, ScreenshotListActivity::class.java))
-        }
-
-        initRecycleView()
-        initTab()
-
-    }
-
-    //顶部弹出选择
-    private fun setTopSelectView() {
-        PopupClick(this, popupBeans, tv_province, 5).builder().setOnSelectListener { item ->
-            when (item.id) {
-                0 -> {
-                    InputContentDialog(this,"创建分类").builder()?.setOnDialogClickListener{
-                        if (ItemTypeDaoManager.getInstance().isExist(it,1)){
-                            showToast("已存在")
-                            return@setOnDialogClickListener
-                        }
-                        val path=FileAddress().getPathScreen(it)
-                        //创建文件夹
-                        if (!File(path).exists()){
-                            File(path).parentFile.mkdir()
-                            File(path).mkdirs()
-                        }
-                        val bean= ItemTypeBean()
-                        bean.type=1
-                        bean.title=it
-                        bean.path=path
-                        bean.date=System.currentTimeMillis()
-                        ItemTypeDaoManager.getInstance().insertOrReplace(bean)
-
-                        rg_group.addView(getRadioButton(screenTypes.size, it,screenTypes.size==0))
-                        screenTypes.add(bean)
-                        //更新tab
-                        if (screenTypes.isEmpty()){
-                            getFetchFiles()
-                        }
-                    }
-                }
-                1 -> {
-                    val lists= mutableListOf<ItemList>()
-                    for (ite in screenTypes){
-                        lists.add(ItemList(screenTypes.indexOf(ite),ite.title))
-                    }
-                    ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
-                        val screenTypeBean=screenTypes[it]
-                        if (FileUtils.getFiles(screenTypeBean.path).size>0){
-                            showToast("分类存在截图，无法删除")
-                            return@setOnDialogClickListener
-                        }
-                        FileUtils.deleteFile(File(screenTypeBean.path))
-                        ItemTypeDaoManager.getInstance().deleteBean(screenTypeBean)
-                        rg_group.removeViewAt(it)
-                        if (tabPos==it){
-                            if (screenTypes.size>0){
-                                rg_group.check(0)
+        iv_manager.setOnClickListener {
+            PopupClick(this, popupBeans, iv_manager, 5).builder().setOnSelectListener { item ->
+                when (item.id) {
+                    0 -> {
+                        InputContentDialog(this,"创建分类").builder().setOnDialogClickListener{
+                            if (ItemTypeDaoManager.getInstance().isExist(it,1)){
+                                //创建文件夹
+                                showToast("已存在")
+                                return@setOnDialogClickListener
                             }
-                            else{
-                                screenTypes.clear()
-                                mAdapter?.notifyDataSetChanged()
+                            val path=FileAddress().getPathScreen(it)
+                            if (!File(path).exists()){
+                                File(path).parentFile?.mkdir()
+                                File(path).mkdirs()
+                            }
+                            val bean= ItemTypeBean()
+                            bean.type=3
+                            bean.title=it
+                            bean.path=path
+                            bean.date=System.currentTimeMillis()
+                            ItemTypeDaoManager.getInstance().insertOrReplace(bean)
+                            mTabTypeAdapter?.addData(screenTypes.size-1,bean)
+                        }
+                    }
+                    1 -> {
+                        val types= ItemTypeDaoManager.getInstance().queryAll(1)
+                        val lists= mutableListOf<ItemList>()
+                        for (ite in types){
+                            lists.add(ItemList(types.indexOf(ite),ite.title))
+                        }
+                        ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
+                            val screenTypeBean=types[it]
+                            if (FileUtils.getFiles(screenTypeBean.path).size>0){
+                                showToast("分类存在截图，无法删除")
+                                return@setOnDialogClickListener
+                            }
+                            FileUtils.deleteFile(File(screenTypeBean.path))
+                            ItemTypeDaoManager.getInstance().deleteBean(screenTypeBean)
+
+                            var index=0
+                            for (i in screenTypes.indices){
+                                if (screenTypes[i].title == screenTypeBean.title){
+                                    index=i
+                                }
+                            }
+                            mTabTypeAdapter?.remove(index)
+                            if (index==tabPos){
+                                screenTypes[0].isCheck=true
+                                tabPos=0
+                                mTabTypeAdapter?.notifyItemChanged(0)
+                                getFetchFiles()
                             }
                         }
                     }
                 }
             }
         }
+
+        initRecycleView()
+        initTab()
     }
 
     private fun initTab() {
-        screenTypes=ItemTypeDaoManager.getInstance().queryAll(1)
-        rg_group.removeAllViews()
-        if (screenTypes.isEmpty()){
-            return
-        }
-        for (i in screenTypes.indices) {
-            rg_group.addView(getRadioButton(i, screenTypes[i].title, i==0))
-        }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            pageIndex = 1
-            tabPos=id
-            getFetchFiles()
-        }
+        screenTypes=ItemTypeDaoManager.getInstance().queryAll(3)
+        screenTypes.add(ItemTypeBean().apply {
+            path=FileAddress().getPathScreen("未分类")
+            title="未分类"
+        })
+        screenTypes[tabPos].isCheck=true
+        mTabTypeAdapter?.setNewData(screenTypes)
+        getFetchFiles()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        tabPos=position
         getFetchFiles()
     }
 
@@ -155,7 +129,7 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,28f), DP2PX.dip2px(this,60f),
+            DP2PX.dip2px(this,28f), DP2PX.dip2px(this,40f),
             DP2PX.dip2px(this,28f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
@@ -168,7 +142,7 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@ScreenshotManagerActivity, 22f), DP2PX.dip2px(this@ScreenshotManagerActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
                 val file=mAdapter?.getItem(position)
-                ImageDialog(this@ScreenshotManagerActivity, arrayListOf(file?.path!!) ).builder()
+                ImageDialog(this@ScreenshotManagerActivity, arrayListOf(file?.path!!)).builder()
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos=position
@@ -180,18 +154,49 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
     }
 
     private fun onLongClick() {
+        longBeans.clear()
+        longBeans.add(ItemList().apply {
+            name=getString(R.string.delete)
+            resId=R.mipmap.icon_setting_delete
+        })
+        if (tabPos==0){
+            longBeans.add(ItemList().apply {
+                name="分类"
+                resId=R.mipmap.icon_setting_set
+            })
+        }
+        else{
+            longBeans.add(ItemList().apply {
+                name=getString(R.string.shiftOut)
+                resId=R.mipmap.icon_setting_out
+            })
+        }
         val file= mAdapter?.data?.get(pos)!!
-        LongClickManageDialog(this, getCurrentScreenPos(),file.name,longBeans).builder()
+        LongClickManageDialog(this,getCurrentScreenPos(), file.name,longBeans).builder()
             .setOnDialogClickListener {
                 if (it==0){
                     mAdapter?.remove(pos)
                     FileUtils.deleteFile(file)
                 }
                 else{
-                    val path=FileAddress().getPathScreen("未分类")
-                    FileUtils.copyFile(file.path,path+"/"+file.name)
-                    FileUtils.deleteFile(file)
-                    mAdapter?.remove(pos)
+                    if (tabPos==0){
+                        val types= ItemTypeDaoManager.getInstance().queryAll(1)
+                        val lists= mutableListOf<ItemList>()
+                        for (ite in types){
+                            lists.add(ItemList(types.indexOf(ite),ite.title))
+                        }
+                        ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{
+                            FileUtils.copyFile(file.path,types[it].path+"/"+file.name)
+                            FileUtils.deleteFile(file)
+                            mAdapter?.remove(pos)
+                        }
+                    }
+                    else{
+                        val path=FileAddress().getPathScreen("未分类")
+                        FileUtils.copyFile(file.path,path+"/"+file.name)
+                        FileUtils.deleteFile(file)
+                        mAdapter?.remove(pos)
+                    }
                 }
             }
     }
@@ -201,9 +206,10 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
      */
     private fun getFetchFiles(){
         listMap.clear()
+        mAdapter?.setNewData(null)
         pageIndex=1
         val path=screenTypes[tabPos].path
-        val files=FileUtils.getFiles(path)
+        val files= FileUtils.getFiles(path)
         setPageNumber(files.size)
 
         val pageTotal=files.size //全部数量
@@ -225,11 +231,5 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
     override fun fetchData() {
         mAdapter?.setNewData(listMap[pageIndex]!!)
         tv_page_current.text=pageIndex.toString()
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.SCREENSHOT_MANAGER_EVENT){
-            getFetchFiles()
-        }
     }
 }

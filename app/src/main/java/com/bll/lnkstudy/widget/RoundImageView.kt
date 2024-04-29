@@ -19,7 +19,7 @@ class RoundImageView: AppCompatImageView {
     constructor(context: Context, attributeSet: AttributeSet?): this(context, attributeSet, 0)
     constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int)
             :super(context, attributeSet, defStyleAttr) {
-        var typeArray = context.obtainStyledAttributes(attributeSet, R.styleable.RoundImageView)
+        val typeArray = context.obtainStyledAttributes(attributeSet, R.styleable.RoundImageView)
         val defaultRadius = 0
         radius = typeArray.getDimensionPixelOffset(R.styleable.RoundImageView_radius, defaultRadius)
         leftTopRadius = typeArray.getDimensionPixelOffset(

@@ -13,6 +13,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
@@ -28,17 +29,12 @@ import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
 import com.bll.lnkstudy.ui.activity.CalenderMyActivity
-import com.bll.lnkstudy.ui.activity.date.DateActivity
-import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
-import com.bll.lnkstudy.ui.activity.date.DatePlanDetailsActivity
-import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
+import com.bll.lnkstudy.ui.activity.date.*
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.date.CalenderUtils
-import com.bll.lnkstudy.utils.date.LunarSolarConverter
-import com.bll.lnkstudy.utils.date.Solar
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
@@ -62,6 +58,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
     private var dateEvents= mutableListOf<DateEventBean>()
     private var updateDialog:AppUpdateDialog?=null
     private var isChange=false
+    private var isShow=false//是否存在台历
 
     override fun onAppUpdate(item: AppUpdateBean) {
         if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
@@ -113,6 +110,12 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
             customStartActivity(Intent(activity, DateActivity::class.java))
         }
 
+        iv_date.setOnClickListener {
+            val intent = Intent(requireActivity(), DateEventActivity::class.java)
+            intent.putExtra("date",nowDate)
+            customStartActivity(intent)
+        }
+
         iv_calender_more.setOnClickListener {
             customStartActivity(Intent(activity, CalenderMyActivity::class.java))
         }
@@ -148,7 +151,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
         v_up.setOnClickListener{
             nowDate-= Constants.dayLong
             setDateView()
-            if (nowDayPos>1){
+            if (isShow&&nowDayPos>1){
                 nowDayPos-=1
                 setCalenderBg()
             }
@@ -157,7 +160,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
         v_down.setOnClickListener {
             nowDate+=Constants.dayLong
             setDateView()
-            if (nowDayPos<=366){
+            if (isShow&&nowDayPos<=366){
                 nowDayPos+=1
                 setCalenderBg()
             }
@@ -173,13 +176,33 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
             }
         }
 
+        iv_change.setOnLongClickListener {
+            val boolean=SPUtil.getBoolean("isShowCalender")
+            val titleStr=if (boolean) "默认显示日程？" else "默认显示台历？"
+            CommonDialog(requireActivity(),1).setContent(titleStr).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    if (boolean){
+                        SPUtil.putBoolean("isShowCalender",false)
+                        disMissView(iv_calender)
+                    }
+                    else{
+                        SPUtil.putBoolean("isShowCalender",true)
+                        showView(iv_calender)
+                    }
+                }
+            }
+            return@setOnLongClickListener true
+        }
+
         initDialog(1)
     }
 
     override fun lazyLoad() {
         nowDate=DateUtils.getStartOfDayInMillis()
         setDateView()
-        setCalenderView()
+        showCalenderView()
         findDataPlan()
         fetchData()
     }
@@ -201,32 +224,31 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
      * 设置当天时间日历
      */
     private fun setDateView(){
-
-        val solar= Solar()
-        solar.solarYear= DateUtils.getYear()
-        solar.solarMonth=DateUtils.getMonth()
-        solar.solarDay=DateUtils.getDay()
-        val lunar= LunarSolarConverter.SolarToLunar(solar)
-
-        val str = if (!solar.solar24Term.isNullOrEmpty()) {
-            "24节气   "+solar.solar24Term
-        } else {
-            if (!solar.solarFestivalName.isNullOrEmpty()) {
-                "节日  "+solar.solarFestivalName
-            } else {
-                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
-                    "节日   "+lunar.lunarFestivalName
-                }
-                else{
-                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
-                }
-            }
-        }
+//        val solar= Solar()
+//        solar.solarYear= DateUtils.getYear()
+//        solar.solarMonth=DateUtils.getMonth()
+//        solar.solarDay=DateUtils.getDay()
+//        val lunar= LunarSolarConverter.SolarToLunar(solar)
+//
+//        val str = if (!solar.solar24Term.isNullOrEmpty()) {
+//            "24节气   "+solar.solar24Term
+//        } else {
+//            if (!solar.solarFestivalName.isNullOrEmpty()) {
+//                "节日  "+solar.solarFestivalName
+//            } else {
+//                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
+//                    "节日   "+lunar.lunarFestivalName
+//                }
+//                else{
+//                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
+//                }
+//            }
+//        }
         tv_date_today.text=DateUtils.longToStringWeek(nowDate)
 
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate))+"/draw.png"
         if (File(path).exists()){
-            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
         }
         else{
             iv_date.setImageResource(0)
@@ -234,23 +256,45 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
     }
 
     /**
-     * 设置台历
+     * 是否显示台历
      */
-    private fun setCalenderView(){
-        val calenderUtils= CalenderUtils(DateUtils.longToStringDataNoHour(nowDate))
-        nowDayPos=calenderUtils.elapsedTime()
-        val item= CalenderDaoManager.getInstance().queryCalenderBean()
-        if (item!=null){
-            showView(iv_change)
+    private fun showCalenderView(){
+        val item=CalenderDaoManager.getInstance().queryCalenderBean()
+        isShow=item!=null
+        if (isShow){
             calenderPath=item.path
-            setCalenderBg()
+            showView(iv_change,iv_calender)
+            setCalenderView()
         }
         else{
-            calenderPath=""
-            disMissView(iv_change)
+            isChange=false
+            disMissView(iv_change,iv_calender)
         }
     }
 
+    /**
+     * 设置台历内容
+     */
+    private fun setCalenderView(){
+        if (isShow){
+            val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(nowDate))
+            nowDayPos=calenderUtils.elapsedTime()
+            setCalenderBg()
+            if (SPUtil.getBoolean("isShowCalender"))
+            {
+                isChange=true
+                showView(iv_calender)
+            }
+            else{
+                isChange=false
+                disMissView(iv_calender)
+            }
+        }
+    }
+
+    /**
+     * 设置台历图片
+     */
     private fun setCalenderBg(){
         val listFiles= FileUtils.getFiles(calenderPath) ?: return
         val file=if (listFiles.size>nowDayPos-1){
@@ -259,9 +303,8 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
         else{
             listFiles[listFiles.size-1]
         }
-        GlideUtils.setImageFile(requireActivity(),file,iv_calender)
+        GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
     }
-
     //今日计划
     private fun initPlanView() {
         mPlanAdapter = MainDatePlanAdapter(R.layout.item_main_date_plan, null).apply {
@@ -297,7 +340,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
 
     //下载应用
     private fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk("launcher")
+        val targetFileStr= FileAddress().getPathApk("lnkstudy")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -407,7 +450,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
                 mMainLeftPresenter.deleteCorrectNotice()
             }
             CALENDER_SET_EVENT->{
-                setCalenderView()
+                showCalenderView()
             }
             DATE_DRAWING_EVENT->{
                 setDateView()

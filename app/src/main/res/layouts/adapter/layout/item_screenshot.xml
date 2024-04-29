@@ -18,9 +18,10 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_18"
         android:maxLines="1"
         android:layout_marginTop="@dimen/dp_10"
+        android:ellipsize="end"
         android:textColor="@color/black"/>
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.NoteContentDaoManager
+import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
@@ -34,9 +35,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        val bundle = intent.getBundleExtra("noteBundle")
-        noteBook = bundle?.getSerializable("note") as Note
+        val id = intent.getLongExtra("noteId",0)
         page=intent.getIntExtra("page",DEFAULT_PAGE)
+        noteBook = NoteDaoManager.getInstance().queryBean(id)
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
         typeId=if (type==getString(R.string.note_tab_diary)) 1 else 2
@@ -45,7 +46,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
         if (noteContents.size > 0) {
             if (page==DEFAULT_PAGE)
-                page = noteContents.size - 1
+                page = noteBook!!.page
             noteContent = noteContents[page]
         } else {
             newNoteContent()
@@ -60,7 +61,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         onChangeContent()
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this,1,note_Content_a?.title!!).builder()?.setOnDialogClickListener { string ->
+            InputContentDialog(this,1,note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
                 note_Content_a?.title = string
                 noteContents[page-1].title = string
                 NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
@@ -230,6 +231,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContents.add(noteContent!!)
 
         DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId,Gson().toJson(noteContent),path)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        noteBook?.page=page
+        NoteDaoManager.getInstance().insertOrReplace(noteBook)
     }
 
 }

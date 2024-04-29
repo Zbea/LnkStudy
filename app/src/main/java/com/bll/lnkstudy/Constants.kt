@@ -94,7 +94,6 @@ class Constants {
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
         const val EXAM_TIME_EVENT = "ExamTime"//考试到时自动提交广播
         const val MAIN_HOMEWORK_NOTICE_EVENT = "MainHomeworkNoticeEvent"//作业通知清除广播
-        const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
         const val DATE_DRAWING_EVENT="DateDrawingEvent"//日程手写结束

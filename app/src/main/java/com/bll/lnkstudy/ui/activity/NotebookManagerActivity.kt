@@ -8,10 +8,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
-import com.bll.lnkstudy.manager.NotebookDaoManager
-import com.bll.lnkstudy.mvp.model.note.Notebook
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -22,7 +22,7 @@ import java.util.*
 
 class NotebookManagerActivity : BaseAppCompatActivity() {
 
-    private var notebooks= mutableListOf<Notebook>()
+    private var notebooks= mutableListOf<ItemTypeBean>()
     private var mAdapter: NoteBookManagerAdapter? = null
     private var position=0
 
@@ -31,7 +31,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        notebooks= NotebookDaoManager.getInstance().queryAll()
+        notebooks= ItemTypeDaoManager.getInstance().queryAll(2)
     }
 
     override fun initView() {
@@ -51,7 +51,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 val notebook=notebooks[position]
                 this@NotebookManagerActivity.position=position
                 if (view.id==R.id.iv_edit){
-                    editNotebook(notebook.name)
+                    editNotebook(notebook.title)
                 }
                 if (view.id==R.id.iv_delete){
                     deleteNotebook()
@@ -59,7 +59,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 if (view.id==R.id.iv_top){
                     val date=notebooks[0].date
                     notebook.date=date-1000
-                    NotebookDaoManager.getInstance().insertOrReplace(notebook)
+                    ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
                     Collections.swap(notebooks,position,0)
                     setNotify()
                     DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,2,Gson().toJson(notebook))
@@ -85,9 +85,9 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 val noteBook=notebooks[position]
                 notebooks.removeAt(position)
                 //删除笔记本
-                NotebookDaoManager.getInstance().deleteBean(noteBook)
+                ItemTypeDaoManager.getInstance().deleteBean(noteBook)
                 DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1,2)
-                val notes= NoteDaoManager.getInstance().queryAll(noteBook.name)
+                val notes= NoteDaoManager.getInstance().queryAll(noteBook.title)
                 //删除该笔记分类中的所有笔记本及其内容
                 for (note in notes){
                     //删除当前笔记本增量更新
@@ -113,14 +113,14 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
 
     //修改笔记本
     private fun editNotebook(name: String){
-        InputContentDialog(this,getCurrentScreenPos(),name).builder()?.setOnDialogClickListener { string ->
-            if (NotebookDaoManager.getInstance().isExist(string)){
+        InputContentDialog(this,getCurrentScreenPos(),name).builder().setOnDialogClickListener { string ->
+            if (ItemTypeDaoManager.getInstance().isExist(string,2)){
                 showToast(R.string.toast_existed)
                 return@setOnDialogClickListener
             }
             val notebook=notebooks[position]
             //修改笔记本所有笔记以及内容
-            val notes=NoteDaoManager.getInstance().queryAll(notebook.name)
+            val notes=NoteDaoManager.getInstance().queryAll(notebook.title)
             for (note in notes){
                 val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
                 for (noteContent in noteContents){
@@ -134,8 +134,8 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 //修改增量更新
                 DataUpdateManager.editDataUpdate(4,note.id.toInt(),2,2,Gson().toJson(note))
             }
-            notebook.name = string
-            NotebookDaoManager.getInstance().insertOrReplace(notebook)
+            notebook.title = string
+            ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
             setNotify()
             //修改增量更新
             DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,2,Gson().toJson(notebook))

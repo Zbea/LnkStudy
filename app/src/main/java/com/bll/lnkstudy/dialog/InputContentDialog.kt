@@ -14,7 +14,7 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
 
     constructor(context: Context ,string: String) :this(context,1,string)
 
-    fun builder(): InputContentDialog? {
+    fun builder(): InputContentDialog {
 
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_input_name)

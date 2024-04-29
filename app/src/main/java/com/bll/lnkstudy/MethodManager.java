@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.ItemTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionTimeBean;
@@ -19,7 +19,6 @@ import com.bll.lnkstudy.mvp.model.PrivacyPassword;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
-import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionTimesBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
@@ -38,7 +37,6 @@ import com.bll.lnkstudy.utils.AppUtils;
 import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
-import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -46,7 +44,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -230,9 +227,7 @@ public class MethodManager {
         EventBus.getDefault().post(Constants.NOTE_EVENT);
 
         Intent intent= new Intent(context, NoteDrawingActivity.class);
-        Bundle bundle= new Bundle();
-        bundle.putSerializable("note",note);
-        intent.putExtra("noteBundle",bundle);
+        intent.putExtra("noteId",note.id);
         intent.putExtra("page",page);
         intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
         if (screen!=0)
@@ -244,8 +239,8 @@ public class MethodManager {
     /**
      * 转跳本地画本、书法
      */
-    public static void gotoPaintingDrawing(Context context, PaintingTypeBean item, int type){
-        if (type==0){
+    public static void gotoPaintingDrawing(Context context, ItemTypeBean item, int type){
+        if (type==3){
             ActivityManager.getInstance().checkPaintingDrawingIsExist();
             Intent intent=new Intent(context, PaintingDrawingActivity.class);
             Bundle bundle=new Bundle();

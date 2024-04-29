@@ -50,6 +50,18 @@ public class ItemTypeDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public long insertOrReplaceGetId(ItemTypeBean bean) {
+        dao.insertOrReplace(bean);
+        List<ItemTypeBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
+    }
+
+    public ItemTypeBean queryBean(int type,int grade) {
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(type);
+        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Grade.eq(grade);
+        return dao.queryBuilder().where(whereUser,whereUser1,whereUser2).orderAsc(ItemTypeBeanDao.Properties.Date).build().unique();
+    }
+
     public List<ItemTypeBean> queryAll(int type) {
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(type);
         return dao.queryBuilder().where(whereUser,whereUser1).orderAsc(ItemTypeBeanDao.Properties.Date).build().list();
@@ -63,6 +75,10 @@ public class ItemTypeDaoManager {
 
     public void deleteBean(ItemTypeBean bean){
         dao.delete(bean);
+    }
+
+    public void clear(int type){
+        dao.deleteInTx(queryAll(type));
     }
 
     public void clear(){

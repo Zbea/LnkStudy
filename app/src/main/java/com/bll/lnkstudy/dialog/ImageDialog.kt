@@ -8,13 +8,17 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.ToolUtils
 
-class ImageDialog(val context: Context, private val images:List<String>){
+class ImageDialog(val context: Context, private val images:List<String>,private val bgRes:List<String>){
 
     private var page=0
     private val total=images.size-1
-    private var tvPage: TextView?=null
+    private var tvPage:TextView?=null
     private var ivImage:ImageView?=null
+    private var ivBgImage:ImageView?=null
+
+    constructor(context: Context,images:List<String>) : this(context,images, mutableListOf())
 
     fun builder(): ImageDialog {
         val dialog = Dialog(context)
@@ -23,6 +27,7 @@ class ImageDialog(val context: Context, private val images:List<String>){
         dialog.show()
 
         ivImage=dialog.findViewById(R.id.iv_image)
+        ivBgImage=dialog.findViewById(R.id.iv_bgres)
         val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
         val rlPage=dialog.findViewById<RelativeLayout>(R.id.rl_page)
         val ivUp=dialog.findViewById<ImageView>(R.id.iv_up)
@@ -31,7 +36,7 @@ class ImageDialog(val context: Context, private val images:List<String>){
         ivClose.setOnClickListener { dialog.dismiss() }
 
         if (images.isNotEmpty()){
-            rlPage.visibility= View.VISIBLE
+            rlPage.visibility=View.VISIBLE
             setChange()
         }
         ivUp.setOnClickListener {
@@ -51,6 +56,8 @@ class ImageDialog(val context: Context, private val images:List<String>){
     }
 
     private fun setChange(){
+        if (bgRes.isNotEmpty())
+            ivBgImage?.setBackgroundResource(ToolUtils.getImageResId(context,bgRes[page]))
         GlideUtils.setImageUrl(context,images[page],ivImage)
         tvPage?.text="${page+1}/${total+1}"
     }

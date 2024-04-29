@@ -30,9 +30,12 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
+import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_list_radiogroup.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -56,6 +59,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var isClickExpend=false //是否是单双屏切换
+    var mTabTypeAdapter: TabTypeAdapter?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -107,6 +111,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
+        }
+
+        if (rv_tab!=null){
+            initTabView()
         }
 
         fetchCommonData()
@@ -233,6 +241,31 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 view.visibility = View.GONE
             }
         }
+    }
+
+    private fun initTabView(){
+        rv_tab.layoutManager = FlowLayoutManager()//创建布局管理
+        mTabTypeAdapter = TabTypeAdapter(R.layout.item_tab_type, null).apply {
+            rv_tab.adapter = this
+            bindToRecyclerView(rv_tab)
+            setOnItemClickListener { adapter, view, position ->
+                for (item in mTabTypeAdapter?.data!!){
+                    item.isCheck=false
+                }
+                val item=mTabTypeAdapter?.data!![position]
+                item.isCheck=true
+                mTabTypeAdapter?.notifyDataSetChanged()
+
+                onTabClickListener(view,position)
+            }
+        }
+    }
+
+    /**
+     * tab点击监听
+     */
+    open fun onTabClickListener(view:View, position:Int){
+
     }
 
     /**

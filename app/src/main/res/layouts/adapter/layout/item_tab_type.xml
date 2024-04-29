@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="44dp"
+    android:paddingBottom="@dimen/dp_10"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textSize="@dimen/sp_24"
+        android:text="唐诗宋词"
+        android:lines="1"
+        android:textStyle="bold"
+        android:textColor="@drawable/color_black_gray_selector"
+        android:background="@drawable/bg_rb_line_selector"
+        />
+
+</LinearLayout>

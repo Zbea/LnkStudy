@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity.date
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
@@ -89,9 +88,7 @@ class DateActivity:BaseAppCompatActivity() {
             val dateBean=dateBeans[position]
             if (dateBean.year!=0){
                 val intent = Intent(this, DateEventActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("dateBean", dateBean)
-                intent.putExtra("bundle", bundle)
+                intent.putExtra("date",dateBean?.time)
                 customStartActivity(intent)
             }
         }

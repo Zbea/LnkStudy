@@ -24,8 +24,11 @@ import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
+import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_list_radiogroup.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
@@ -59,6 +62,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+    var mTabTypeAdapter: TabTypeAdapter?=null
 
     override fun onList(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
@@ -93,6 +97,11 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         isViewPrepare = true
         grade=mUser?.grade!!
         initCommonTitle()
+
+        if (rv_tab!=null){
+            initTabView()
+        }
+
         initView()
 
         getScreenPosition()
@@ -252,6 +261,31 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     protected fun fetchCommonData(){
         if (NetworkUtil(requireActivity()).isNetworkConnected()&&DataBeanManager.grades.size==0)
             mCommonPresenter.getCommonData()
+    }
+
+    private fun initTabView(){
+        rv_tab.layoutManager = FlowLayoutManager()//创建布局管理
+        mTabTypeAdapter = TabTypeAdapter(R.layout.item_tab_type, null).apply {
+            rv_tab.adapter = this
+            bindToRecyclerView(rv_tab)
+            setOnItemClickListener { adapter, view, position ->
+                for (item in mTabTypeAdapter?.data!!){
+                    item.isCheck=false
+                }
+                val item=mTabTypeAdapter?.data!![position]
+                item.isCheck=true
+                mTabTypeAdapter?.notifyDataSetChanged()
+
+                onTabClickListener(view,position)
+            }
+        }
+    }
+
+    /**
+     * tab点击监听
+     */
+    open fun onTabClickListener(view:View, position:Int){
+
     }
 
     /**

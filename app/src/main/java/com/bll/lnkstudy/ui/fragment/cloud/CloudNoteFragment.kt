@@ -10,13 +10,13 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
-import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
-import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.zip.IZipCallback
@@ -173,14 +173,15 @@ class CloudNoteFragment: BaseCloudFragment() {
     private fun addNote(item: Note){
         item.id=null//设置数据库id为null用于重新加入
         val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
-        if (!NotebookDaoManager.getInstance().isExist(item.typeStr)){
-            val noteBook = Notebook().apply {
-                name = item.typeStr
-                this.typeId = System.currentTimeMillis().toInt()
+        if (!ItemTypeDaoManager.getInstance().isExist(item.typeStr,2)){
+            val noteType = ItemTypeBean().apply {
+                title = item.typeStr
+                type=2
+                date=System.currentTimeMillis()
             }
-            val id= NotebookDaoManager.getInstance().insertOrReplaceGetId(noteBook)
+            val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteType)
             //创建笔记分类增量更新
-            DataUpdateManager.createDataUpdate(4,id.toInt(),1,noteBook.typeId,Gson().toJson(noteBook))
+            DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(noteType))
         }
         val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
         //新建笔记本增量更新

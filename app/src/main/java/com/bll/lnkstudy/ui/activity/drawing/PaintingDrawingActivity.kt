@@ -10,9 +10,9 @@ import com.bll.lnkstudy.dialog.DrawingManageDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
-import com.bll.lnkstudy.mvp.model.painting.PaintingTypeBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -23,7 +23,7 @@ import java.io.File
 class PaintingDrawingActivity : BaseDrawingActivity() {
 
     private var grade=0
-    private var paintingTypeBean: PaintingTypeBean?=null
+    private var paintingTypeBean: ItemTypeBean?=null
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
@@ -36,7 +36,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("painting") as PaintingTypeBean
+        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("painting") as ItemTypeBean
         grade=paintingTypeBean?.grade!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
 
@@ -190,11 +190,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             }
         } else {
             paintingDrawingBean_a = null
-        }
-
-        if (paintingTypeBean?.isCloud==true){
-            elik_a?.setPWEnabled(false)
-            elik_b?.setPWEnabled(false)
         }
 
         setElikLoadPath(elik_b!!, paintingDrawingBean!!)

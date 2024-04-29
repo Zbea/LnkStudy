@@ -12,9 +12,10 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
-import com.bll.lnkstudy.ui.adapter.BookCaseTypeAdapter
+import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -89,18 +90,18 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
     //设置tab
     @SuppressLint("NotifyDataSetChanged")
     private fun initTab() {
-        val types = mutableListOf<ItemList>()
+        val types = mutableListOf<ItemTypeBean>()
         val strings = DataBeanManager.bookType
         for (i in strings.indices) {
-            val item = ItemList()
-            item.name = strings[i]
+            val item = ItemTypeBean()
+            item.title = strings[i]
             item.isCheck = i == 0
             types.add(item)
         }
-        typeStr = types[0].name
+        typeStr = types[0].title
 
         rv_type.layoutManager = GridLayoutManager(this, 7)//创建布局管理
-        BookCaseTypeAdapter(R.layout.item_bookcase_type, types).apply {
+        TabTypeAdapter(R.layout.item_bookcase_type, types).apply {
             rv_type.adapter = this
             bindToRecyclerView(rv_type)
             rv_type.addItemDecoration(SpaceGridItemDeco1(7, DP2PX.dip2px(this@BookcaseTypeActivity, 14f)
@@ -109,7 +110,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
                 getItem(typePos)?.isCheck = false
                 typePos = position
                 getItem(typePos)?.isCheck = true
-                typeStr = types[typePos].name
+                typeStr = types[typePos].title
                 notifyDataSetChanged()
                 bookNameStr = ""//清除搜索标记
                 pageIndex = 1

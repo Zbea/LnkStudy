@@ -1,19 +1,20 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
-import com.bll.lnkstudy.manager.NotebookDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.note.Note
-import com.bll.lnkstudy.mvp.model.note.Notebook
 import com.bll.lnkstudy.ui.activity.NotebookManagerActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
 import com.bll.lnkstudy.utils.FileUploadManager
@@ -21,7 +22,6 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -32,7 +32,7 @@ import java.io.File
 class NoteFragment : BaseMainFragment(){
 
     private var popWindowBeans = mutableListOf<PopupBean>()
-    private var noteTypes = mutableListOf<Notebook>()
+    private var noteTypes = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
     private var positionType = 0//当前笔记本标记
     private var typeStr = "" //当前笔记本类型
@@ -68,11 +68,11 @@ class NoteFragment : BaseMainFragment(){
                 }
             }
         }
+
+        initTabs()
     }
 
     override fun lazyLoad() {
-        pageIndex=1
-        findTabs()
     }
 
     private fun initRecyclerView() {
@@ -140,31 +140,31 @@ class NoteFragment : BaseMainFragment(){
 
     }
 
-    //设置头部索引
-    private fun initTab() {
-        rg_group.removeAllViews()
-        for (i in noteTypes.indices) {
-            rg_group.addView(getRadioButton(i,positionType, noteTypes[i].name, noteTypes.size - 1))
-        }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            positionType=id
-            typeStr=noteTypes[positionType].name
-            pageIndex=1
-            fetchData()
-        }
-    }
-
     /**
      * tab数据设置
      */
-    private fun findTabs() {
-        noteTypes = DataBeanManager.noteBook
-        noteTypes.addAll(NotebookDaoManager.getInstance().queryAll())
+    private fun initTabs() {
+        pageIndex=1
+        noteTypes= ItemTypeDaoManager.getInstance().queryAll(2)
+        noteTypes.add(0,ItemTypeBean().apply {
+            title = getString(R.string.note_tab_diary)
+        })
         if (positionType>=noteTypes.size){
             positionType=0
         }
-        typeStr = noteTypes[positionType].name
-        initTab()
+        for (item in noteTypes){
+            item.isCheck=false
+        }
+        noteTypes[positionType].isCheck=true
+        typeStr = noteTypes[positionType].title
+        fetchData()
+        mTabTypeAdapter?.setNewData(noteTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        positionType=position
+        typeStr=noteTypes[position].title
+        pageIndex=1
         fetchData()
     }
 
@@ -173,7 +173,7 @@ class NoteFragment : BaseMainFragment(){
         val note = Note()
         note.grade=grade
         InputContentDialog(requireContext(), screenPos, getString(R.string.note_create_hint)).builder()
-            ?.setOnDialogClickListener { string ->
+            .setOnDialogClickListener { string ->
                 if (NoteDaoManager.getInstance().isExist(typeStr,string)){
                     showToast(screenPos,R.string.toast_existed)
                     return@setOnDialogClickListener
@@ -195,7 +195,7 @@ class NoteFragment : BaseMainFragment(){
     //修改笔记
     private fun editNote(content: String) {
         InputContentDialog(requireContext(), screenPos, content).builder()
-            ?.setOnDialogClickListener { string ->
+            .setOnDialogClickListener { string ->
                 if (NoteDaoManager.getInstance().isExist(typeStr,string)){
                     showToast(screenPos,R.string.toast_existed)
                     return@setOnDialogClickListener
@@ -252,21 +252,20 @@ class NoteFragment : BaseMainFragment(){
     //新建笔记分类
     private fun addNotebook() {
         InputContentDialog(requireContext(), 2,getString(R.string.notebook_create_hint)).builder()
-            ?.setOnDialogClickListener { string ->
-                if (NotebookDaoManager.getInstance().isExist(string)){
+            .setOnDialogClickListener { string ->
+                if (ItemTypeDaoManager.getInstance().isExist(string,2)){
                     showToast(screenPos,R.string.toast_existed)
                 }
                 else{
-                    val noteBook = Notebook().apply {
-                        name = string
-                        typeId = ToolUtils.getDateId()
+                    val noteBook = ItemTypeBean().apply {
+                        title = string
+                        type = 2
                         date=System.currentTimeMillis()
                     }
-                    noteTypes.add(noteBook)
-                    val id= NotebookDaoManager.getInstance().insertOrReplaceGetId(noteBook)
+                    val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteBook)
                     //创建笔记分类增量更新
                     DataUpdateManager.createDataUpdate(4,id.toInt(),1,2,Gson().toJson(noteBook))
-                    initTab()
+                    mTabTypeAdapter?.addData(noteBook)
                 }
             }
     }
@@ -287,9 +286,9 @@ class NoteFragment : BaseMainFragment(){
         val nullItems= mutableListOf<Note>()
         for (noteType in noteTypes){
             //查找到这个分类的所有内容，然后遍历上传所有内容
-            val notes= NoteDaoManager.getInstance().queryAll(noteType.name)
+            val notes= NoteDaoManager.getInstance().queryAll(noteType.title)
             for (item in notes){
-                val path=FileAddress().getPathNote(item.grade,noteType.name,item.title)
+                val path=FileAddress().getPathNote(item.grade,noteType.title,item.title)
                 val fileName=item.title
                 //获取笔记所有内容
                 val noteContents = NoteContentDaoManager.getInstance().queryAll(item.typeStr,item.title,item.grade)
@@ -307,6 +306,7 @@ class NoteFragment : BaseMainFragment(){
                                 listJson=Gson().toJson(item)
                                 contentJson= Gson().toJson(noteContents)
                                 downloadUrl=it
+                                skip=1
                             })
                             //当加入上传的内容等于全部需要上传时候，则上传
                             if (cloudList.size== NoteDaoManager.getInstance().queryNotes().size-nullItems.size)
@@ -335,7 +335,7 @@ class NoteFragment : BaseMainFragment(){
         //将已经上传过的笔记从云书库删除
         val ids= mutableListOf<Int>()
         for (i in 0 until noteTypes.size){
-            val notes= NoteDaoManager.getInstance().queryAll(noteTypes[i].name)
+            val notes= NoteDaoManager.getInstance().queryAll(noteTypes[i].title)
             //删除该笔记分类中的所有笔记本及其内容
             for (note in notes){
                 if (note.isCloud){
@@ -347,7 +347,7 @@ class NoteFragment : BaseMainFragment(){
                 FileUtils.deleteFile(File(path))
             }
         }
-        NotebookDaoManager.getInstance().clear()
+        ItemTypeDaoManager.getInstance().clear(2)
         //清除本地增量数据
         DataUpdateManager.clearDataUpdate(4,2)
         val map=HashMap<String,Any>()
@@ -361,7 +361,7 @@ class NoteFragment : BaseMainFragment(){
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             NOTE_BOOK_MANAGER_EVENT -> {
-                lazyLoad()
+                initTabs()
             }
             NOTE_EVENT -> {
                 fetchData()

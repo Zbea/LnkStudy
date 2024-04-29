@@ -149,11 +149,11 @@ public class FileUtils {
     public static List<File> getFiles(String path){
         List<File> files = new ArrayList<>();
         if(path.isEmpty()){
-            return null;
+            return files;
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return null;
+        if (tempList==null) return files;
         for (int i = 0; i < tempList.length; i++) {
             if (tempList[i].isFile()) {
                 files.add(tempList[i]);
@@ -172,11 +172,11 @@ public class FileUtils {
     public static List<File> getDirectorys(String path){
         List<File> files = new ArrayList<>();
         if(path==null||path.isEmpty()){
-            return null;
+            return files;
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return null;
+        if (tempList==null) return files;
         for (int i = 0; i < tempList.length; i++) {
             if (tempList[i].isDirectory()) {
                 files.add(tempList[i]);
@@ -195,11 +195,11 @@ public class FileUtils {
     public static List<File> getFiles(String path,String suffix){
         List<File> files = new ArrayList<>();
         if("".equals(path)){
-            return null;
+            return files;
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return null;
+        if (tempList==null) return files;
         for (int i = 0; i < tempList.length; i++) {
             File childFile=tempList[i];
             if (childFile.isFile()&&childFile.getName().endsWith(suffix)) {

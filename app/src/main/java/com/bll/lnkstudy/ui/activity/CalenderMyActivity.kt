@@ -91,6 +91,7 @@ class CalenderMyActivity:BaseAppCompatActivity(){
                     CalenderDaoManager.getInstance().setSetFalse()
                     item.isSet=true
                     CalenderDaoManager.getInstance().insertOrReplace(item)
+                    showToast("设置成功")
                 }
                 EventBus.getDefault().post(Constants.CALENDER_SET_EVENT)
             }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="718dp"
+    android:layout_width="408dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:paddingTop="@dimen/dp_20"
-    android:paddingBottom="@dimen/dp_20"
-    android:paddingStart="@dimen/dp_50"
-    android:paddingEnd="@dimen/dp_50"
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingStart="@dimen/dp_20"
+    android:paddingEnd="@dimen/dp_20"
     >
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:id="@+id/iv_erasure"
             android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="@dimen/dp_20"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_erasure" />
 
@@ -44,11 +44,11 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_15"
-            android:layout_marginEnd="@dimen/dp_15"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="25sp" />
+            android:textSize="22sp" />
 
         <ImageView
             android:id="@+id/iv_down"
@@ -62,7 +62,8 @@
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/v_content_b"
         android:layout_width="match_parent"
-        android:layout_height="970dp"
+        android:layout_height="485dp"
+        android:scaleType="fitCenter"
         android:background="@mipmap/icon_date_event_bg"
         />
 

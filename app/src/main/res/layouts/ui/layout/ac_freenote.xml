@@ -6,12 +6,10 @@
     android:background="@color/bg_page"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         >
 
         <ImageView
@@ -19,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_60"
             android:layout_marginStart="52dp"
+            android:layout_centerVertical="true"
             android:paddingEnd="@dimen/dp_15"
             android:src="@mipmap/icon_back" />
 
@@ -26,6 +25,8 @@
             android:id="@+id/tv_name"
             android:layout_width="180dp"
             android:layout_height="50dp"
+            android:layout_toRightOf="@id/iv_back"
+            android:layout_centerVertical="true"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:ellipsize="end"
             android:gravity="center"
@@ -33,9 +34,18 @@
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="26sp" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:src="@mipmap/icon_save" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_function"
@@ -58,6 +68,15 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
             android:text="格式"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:text="删除"
             android:textColor="@color/black"
             android:textSize="22sp" />
 

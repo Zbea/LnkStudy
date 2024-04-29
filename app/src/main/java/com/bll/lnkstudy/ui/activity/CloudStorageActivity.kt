@@ -29,7 +29,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     private var diaryFragment: CloudDiaryFragment? = null
 
     var grade=mUser?.grade!!
-    private var popWindowDynasty:PopupList?=null
     private var popWindowGrade:PopupList?=null
 
     override fun layoutId(): Int {
@@ -38,7 +37,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
 
     override fun initData() {
         tv_grade.text=DataBeanManager.getGradeStr(grade)
-        tv_course.text=DataBeanManager.popupDynasty()[0].name
     }
 
     override fun initView() {
@@ -62,7 +60,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
                 updateItem(lastPosition, false)//原来的位置去掉勾选
                 updateItem(position, true)//更新新的位置
                 showGradeView()
-                closeDynastyView()
                 when (position) {
                     0 -> {
                         closeGradeView()
@@ -73,11 +70,7 @@ class CloudStorageActivity: BaseAppCompatActivity(){
                     3 -> switchFragment(lastFragment, paperFragment)//考卷
                     4 -> switchFragment(lastFragment, noteFragment)//笔记
                     5 -> {
-                        showDynastyView()
                         closeGradeView()
-                        if (paintingFragment?.typeId==7||paintingFragment?.typeId==8){
-                            closeDynastyView()
-                        }
                         switchFragment(lastFragment, paintingFragment)//书画
                     }
                     6->{
@@ -104,24 +97,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
             }
         }
 
-        tv_course.setOnClickListener {
-            if (popWindowDynasty==null)
-            {
-                popWindowDynasty= PopupList(this,DataBeanManager.popupDynasty(),tv_course,tv_course.width,5).builder()
-                popWindowDynasty?.setOnSelectListener { item ->
-                    tv_course.text=item.name
-                    paintingFragment?.changeDynasty(item.id)
-                }
-            }
-            else{
-                popWindowDynasty?.show()
-            }
-        }
-
-    }
-
-    fun closeDynastyView(){
-        disMissView(tv_course)
     }
 
     private fun closeGradeView(){
@@ -130,10 +105,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
 
     private fun showGradeView(){
         showView(tv_grade)
-    }
-
-    fun showDynastyView(){
-        showView(tv_course)
     }
 
     /**

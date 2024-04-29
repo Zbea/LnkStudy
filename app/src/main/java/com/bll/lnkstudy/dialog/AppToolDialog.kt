@@ -34,11 +34,11 @@ class AppToolDialog(val context: Context,val type:Int, val screenPos:Int) {
         if (type==1){
             layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
             layoutParams?.x=DP2PX.dip2px(context,42f)
-            layoutParams?.y=DP2PX.dip2px(context,354f)
+            layoutParams?.y=DP2PX.dip2px(context,10f)
         }
         else{
             layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
-            layoutParams?.x=DP2PX.dip2px(context,5f)
+            layoutParams?.x=DP2PX.dip2px(context,10f)
             layoutParams?.y=DP2PX.dip2px(context,38f)
         }
         dialog?.show()

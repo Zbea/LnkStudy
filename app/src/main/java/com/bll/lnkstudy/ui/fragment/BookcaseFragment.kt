@@ -63,7 +63,7 @@ class BookcaseFragment: BaseMainFragment() {
             rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,22f),28))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,22f),30))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
                 MethodManager.gotoBookDetails(requireActivity(),bookBean,screenPos)
