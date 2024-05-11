@@ -90,7 +90,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     private fun gotoMainActivity(){
         val intent=Intent(this,MainActivity::class.java)
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent)
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
@@ -103,6 +103,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         } else {
             showView(tv_tips)
         }
+        fetchCommonData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

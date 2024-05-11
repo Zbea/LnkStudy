@@ -164,7 +164,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     override fun initView() {
         onChangeContent()
 
-        iv_commit.setOnClickListener {
+        iv_btn.setOnClickListener {
             if (NetworkUtil(this).isNetworkConnected()) {
                 commit()
             } else {
@@ -173,7 +173,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this,1,homeworkContent_a?.title!!).builder()?.setOnDialogClickListener { string ->
+            InputContentDialog(this,1,homeworkContent_a?.title!!).builder().setOnDialogClickListener { string ->
                 homeworkContent_a?.title = string
                 homeworks[page - 1].title = string
                 HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
@@ -185,7 +185,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             var type=getCurrentScreenPos()
             if (type==3)
                 type=2
-            InputContentDialog(this,type,homeworkContent?.title!!).builder()?.setOnDialogClickListener { string ->
+            InputContentDialog(this,type,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
                 homeworkContent?.title = string
                 homeworks[page].title = string
                 HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
@@ -283,12 +283,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
-        if (homeworkType?.isCloud == true) {
-            elik_b?.setPWEnabled(false)
-        } else {
-            //已提交后不能手写，显示合图后的图片
-            elik_b?.setPWEnabled(homeworkContent?.state == 0)
-        }
+        //已提交后不能手写，显示合图后的图片
+        elik_b?.setPWEnabled(homeworkContent?.state == 0)
 
         if (homeworkContent?.state == 0) {
             setElikLoadPath(elik_b!!, homeworkContent!!)
@@ -299,14 +295,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         tv_page.text = "${page + 1}"
 
         if (isExpand) {
-            elik_a?.setPWEnabled(homeworkContent?.state == 0&&!homeworkType?.isCloud!!)
+            elik_a?.setPWEnabled(homeworkContent?.state == 0)
             if (homeworkContent_a?.state == 0) {
                 setElikLoadPath(elik_a!!, homeworkContent_a!!)
                 v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
             } else {
                 GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
             }
-            tv_page_a.text = "$page"
+            tv_page.text = "$page"
+            tv_page_a.text = "${page + 1}"
         }
     }
 

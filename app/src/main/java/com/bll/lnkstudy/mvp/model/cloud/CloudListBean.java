@@ -3,7 +3,6 @@ package com.bll.lnkstudy.mvp.model.cloud;
 public class CloudListBean {
     public int id;
     public int type;//1教材2作业3考卷4笔记5书画6书籍7日记
-    public int subType;
     public String subTypeStr;
     public long date;//上传时间
     public int grade;
@@ -14,5 +13,4 @@ public class CloudListBean {
     public String listJson;//封面列表json
     public String contentJson;//内容json
     public String contentSubtypeJson;//子内容json
-    public int skip;//为1时可以重复
 }

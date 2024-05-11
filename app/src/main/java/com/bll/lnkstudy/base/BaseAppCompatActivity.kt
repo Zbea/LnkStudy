@@ -19,11 +19,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -35,7 +35,7 @@ import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_list_radiogroup.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -60,6 +60,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var pageSize=0 //一页数据
     var isClickExpend=false //是否是单双屏切换
     var mTabTypeAdapter: TabTypeAdapter?=null
+    var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -77,7 +78,15 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         fragmentManager.popBackStack()
     }
 
-    override fun onList(commonData: CommonData?) {
+    override fun onList(commonData: CommonData) {
+        if (!commonData.grade.isNullOrEmpty())
+            MethodManager.saveItemLists("grades",commonData.grade)
+        if (!commonData.subject.isNullOrEmpty())
+            MethodManager.saveItemLists("courses",commonData.subject)
+        if (!commonData.typeGrade.isNullOrEmpty())
+            MethodManager.saveItemLists("typeGrades",commonData.typeGrade)
+        if (!commonData.version.isNullOrEmpty())
+            MethodManager.saveItemLists("bookVersions",commonData.version)
         onCommonData()
     }
 
@@ -175,8 +184,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(this).isNetworkConnected()&&DataBeanManager.grades.size==0)
-            mCommonPresenter.getCommonData()
+        if (NetworkUtil(this).isNetworkConnected()&&MethodManager.getItemLists("grades").size==0)
+            mCommonPresenter.getCommon()
     }
 
     protected fun showSearchView(isShow:Boolean) {
@@ -187,7 +196,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             disMissView(ll_search)
         }
     }
-
 
     protected fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
@@ -200,6 +208,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     protected fun setPageSetting(setId:Int){
         showView(tv_setting)
         tv_setting?.setText(setId)
+    }
+    protected fun setImageManager(setId:Int){
+        showView(iv_manager)
+        iv_manager.setImageResource(setId)
     }
 
     /**
@@ -349,6 +361,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         SToast.showText(getCurrentScreenPos(),sId)
     }
 
+    fun showToast(screen: Int,s:String){
+        SToast.showText(screen,s)
+    }
+
+    fun showToast(screen: Int,sId:Int){
+        SToast.showText(screen,sId)
+    }
+
     protected fun showLog(s:String){
         Log.d("debug",s)
     }
@@ -366,38 +386,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     protected fun closeNetwork(){
         NetworkUtil(this).toggleNetwork(false)
-    }
-
-    protected fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == 0
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(this, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
-    }
-
-    protected fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = isCheck
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(this, 45f))
-
-        layoutParams.marginEnd = DP2PX.dip2px(this, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
     }
 
     /**

@@ -15,8 +15,6 @@ import com.bll.lnkstudy.utils.CalendarReminderUtils
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_date_day_list.*
-import kotlinx.android.synthetic.main.ac_date_day_list.rv_list
-import kotlinx.android.synthetic.main.ac_date_plan_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,9 +34,9 @@ class DateDayListActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(R.string.date_day)
-        setPageSetting(R.string.add)
+        setImageManager(R.mipmap.icon_add)
 
-        tv_setting.setOnClickListener {
+        iv_manager.setOnClickListener {
             customStartActivity(Intent(this,DateDayDetailsActivity::class.java).addFlags(0))
         }
 

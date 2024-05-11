@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
@@ -21,20 +20,6 @@ class MainRightPresenter(view: IContractView.IMainRightView, val screen: Int=0) 
             override fun success(tBaseResult: BaseResult<ExamItem>) {
                 if (tBaseResult.data!=null)
                     view.onExam(tBaseResult.data)
-            }
-        }, false)
-    }
-
-    //获取学生科目列表
-    fun getCourseItems() {
-        val list= RetrofitManager.service.getCourseItems()
-        doRequest(list, object : Callback<List<CourseItem>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<CourseItem>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<List<CourseItem>>) {
-                if (tBaseResult.data!=null)
-                    view.onCourseItems(tBaseResult.data)
             }
         }, false)
     }

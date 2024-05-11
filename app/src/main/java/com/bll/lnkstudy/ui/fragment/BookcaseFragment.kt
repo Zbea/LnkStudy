@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -10,6 +11,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.book.BookcaseTypeActivity
@@ -76,6 +78,8 @@ class BookcaseFragment: BaseMainFragment() {
      * 查找本地书籍
      */
     private fun findBook(){
+        iv_tips.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
+
         books=BookGreenDaoManager.getInstance().queryAllBook(true,13)
         if (books.size==0){
             bookTopBean=null
@@ -139,7 +143,6 @@ class BookcaseFragment: BaseMainFragment() {
                             type=6
                             zipUrl=item.downloadUrl
                             downloadUrl=it
-                            subType=-1
                             subTypeStr=item.subtypeStr
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(item)
@@ -154,7 +157,6 @@ class BookcaseFragment: BaseMainFragment() {
                 cloudList.add(CloudListBean().apply {
                     type=6
                     zipUrl=item.downloadUrl
-                    subType=-1
                     subTypeStr=item.subtypeStr
                     date=System.currentTimeMillis()
                     listJson= Gson().toJson(item)
@@ -167,7 +169,6 @@ class BookcaseFragment: BaseMainFragment() {
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
         for (item in cloudList){
             val bookBean=BookGreenDaoManager.getInstance().queryBookByID(item.bookId)
             //删除书籍

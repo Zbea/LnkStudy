@@ -13,6 +13,19 @@
         android:gravity="bottom|right">
 
         <TextView
+            android:id="@+id/tv_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:drawableStart="@mipmap/icon_plan_overview"
+            android:drawablePadding="@dimen/dp_10"
+            android:gravity="center"
+            android:text="总览"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+
+        <TextView
             android:id="@+id/tv_diray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

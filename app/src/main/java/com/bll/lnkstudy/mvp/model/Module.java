@@ -6,5 +6,4 @@ public class Module {
     public String name;
     public int resContentId;
     public int resId;
-    public int resFreeNoteBg;//随笔背景
 }

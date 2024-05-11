@@ -19,7 +19,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_resource_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -46,7 +46,7 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
             currentDownLoadTask = downLoadStart(apps[position])
         } else {
-            showToast(getScreenPosition(),R.string.toast_download_install)
+            showToast(R.string.toast_download_install)
         }
     }
 
@@ -63,7 +63,7 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_resource_content
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -111,7 +111,7 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
                         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
                             currentDownLoadTask = downLoadStart(app)
                         } else {
-                            showToast(getScreenPosition(),R.string.toast_download_install)
+                            showToast(R.string.toast_download_install)
                         }
                     }
                 }
@@ -138,7 +138,7 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
             override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 hideLoading()
                 currentDownLoadTask = null//完成了废弃线程
-                showToast(getScreenPosition(),R.string.book_download_fail)
+                showToast(R.string.book_download_fail)
             }
         })
         return download

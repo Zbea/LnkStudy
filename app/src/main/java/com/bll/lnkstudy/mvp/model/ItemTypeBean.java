@@ -22,16 +22,16 @@ public class ItemTypeBean implements Serializable {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
-    public int type;//1截图2笔记3画本4书法
+    public int type;//1截图2笔记3画本4书法5书库分类
     public long date;
     public String path;
     public int grade;
+    public boolean isNew;
     @Transient
     public boolean isCheck;
-
-    @Generated(hash = 516443006)
-    public ItemTypeBean(Long id, long userId, String title, int type, long date, String path,
-            int grade) {
+    @Generated(hash = 851936574)
+    public ItemTypeBean(Long id, long userId, String title, int type, long date, String path, int grade,
+            boolean isNew) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -39,6 +39,7 @@ public class ItemTypeBean implements Serializable {
         this.date = date;
         this.path = path;
         this.grade = grade;
+        this.isNew = isNew;
     }
     @Generated(hash = 2077540725)
     public ItemTypeBean() {
@@ -85,6 +86,11 @@ public class ItemTypeBean implements Serializable {
     public void setGrade(int grade) {
         this.grade = grade;
     }
-
-
+    public boolean getIsNew() {
+        return this.isNew;
+    }
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+    
 }

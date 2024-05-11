@@ -74,15 +74,6 @@ public class HomeworkTypeDaoManager {
     }
 
     /**
-     * 获取所有科目未上传作业
-     * @return
-     */
-    public List<HomeworkTypeBean> queryAllNoisCloud() {
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-    }
-
-    /**
      * 查找当前科目、所有作业本
      * @param course
      * @return

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.view.View
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
@@ -14,7 +15,6 @@ import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import com.qiniu.android.storage.*
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_painting.*
 import java.io.File
 
@@ -81,18 +81,23 @@ class PaintingFragment : BaseMainFragment(){
     private fun initTab() {
         val tabStrs = DataBeanManager.PAINTING
         for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=tabStrs[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            typeId = id
-            if (typeId==4||typeId==5){
-                showView(ll_content2)
-                disMissView(ll_content1)
-            }
-            else{
-                showView(ll_content1)
-                disMissView(ll_content2)
-            }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        typeId = position
+        if (typeId==4||typeId==5){
+            showView(ll_content2)
+            disMissView(ll_content1)
+        }
+        else{
+            showView(ll_content1)
+            disMissView(ll_content2)
         }
     }
 
@@ -117,12 +122,11 @@ class PaintingFragment : BaseMainFragment(){
         //当前年级 画本、书法分类为null则创建
         var item=ItemTypeDaoManager.getInstance().queryBean(type,grade)
         if (item==null) {
-            val date=System.currentTimeMillis()
             item= ItemTypeBean()
             item.title=if (type==3) "我的画本" else "我的书法"
             item.type = type
             item.grade = grade
-            item.date = date
+            item.date = System.currentTimeMillis()
             item.path=FileAddress().getPathPainting(type,grade)
             val id=ItemTypeDaoManager.getInstance().insertOrReplaceGetId(item)
             //创建本地画本增量更新
@@ -162,14 +166,12 @@ class PaintingFragment : BaseMainFragment(){
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=5
-                            subType=if (item.type==3) 7 else 8
                             subTypeStr=if (item.type==3) "我的画本" else "我的书法"
                             date=System.currentTimeMillis()
                             grade=this@PaintingFragment.grade
                             listJson=Gson().toJson(item)
                             contentJson=Gson().toJson(paintingContents)
                             downloadUrl=it
-                            skip=1
                         })
                         if (cloudList.size==uploadList.size){
                             mCloudUploadPresenter.upload(cloudList)
@@ -181,7 +183,6 @@ class PaintingFragment : BaseMainFragment(){
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
         //删除所有本地画本、书法分类
         ItemTypeDaoManager.getInstance().clear(3)
         ItemTypeDaoManager.getInstance().clear(4)

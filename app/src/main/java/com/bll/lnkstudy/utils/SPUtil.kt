@@ -3,6 +3,7 @@ package com.bll.lnkstudy.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
+import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.User
@@ -51,6 +52,15 @@ object SPUtil {
         val listStr= gson.toJson(list)
         putString(getUserId()+key,listStr)
     }
+    fun putClassGroupItems(key: String,list: MutableList<ClassGroup>){
+        val listStr= gson.toJson(list)
+        putString(getUserId()+key,listStr)
+    }
+
+    fun putListItems(key: String,list: MutableList<ItemList>){
+        val listStr= gson.toJson(list)
+        putString(getUserId()+key,listStr)
+    }
 
     fun putListInt(key: String,list: MutableList<Int>){
         val listStr= gson.toJson(list)
@@ -95,6 +105,16 @@ object SPUtil {
 
     fun getCourseItems(key: String): MutableList<CourseItem> {
         return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<CourseItem>>() {}.type)
+            ?: return mutableListOf()
+    }
+
+    fun getClassGroupItems(key: String): MutableList<ClassGroup> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ClassGroup>>() {}.type)
+            ?: return mutableListOf()
+    }
+
+    fun getListItems(key: String): MutableList<ItemList> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ItemList>>() {}.type)
             ?: return mutableListOf()
     }
 

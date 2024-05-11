@@ -11,6 +11,8 @@ import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.ClassGroup;
+import com.bll.lnkstudy.mvp.model.ItemList;
 import com.bll.lnkstudy.mvp.model.ItemTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
@@ -56,6 +58,53 @@ public class MethodManager {
         user=SPUtil.INSTANCE.getObj("user", User.class);
     }
 
+
+    /**
+     * 保存公用数据
+     */
+    public static void saveItemLists(String key,List<ItemList> items){
+        SPUtil.INSTANCE.putListItems(key, items);
+    }
+
+    /**
+     * 获取公用数据
+     */
+    public static List<ItemList> getItemLists(String key){
+        return SPUtil.INSTANCE.getListItems(key);
+    }
+
+
+    /**
+     * 保存学生科目
+     */
+    public static void saveCourses(List<CourseItem> courseItems){
+        SPUtil.INSTANCE.putCourseItems("courseItems", courseItems);
+        EventBus.getDefault().post(Constants.COURSEITEM_EVENT);
+    }
+
+    /**
+     * 获取学生科目
+     */
+    public static List<CourseItem> getCourses(){
+        return SPUtil.INSTANCE.getCourseItems("courseItems");
+    }
+
+    /**
+     * 保存班群列表
+     */
+    public static void saveClassGroups(List<ClassGroup> classGroups){
+        SPUtil.INSTANCE.putClassGroupItems("classGroups", classGroups);
+        EventBus.getDefault().post(Constants.COURSEITEM_EVENT);
+    }
+
+    /**
+     * 获取班群列表
+     */
+    public static List<ClassGroup> getClassGroups(){
+        return SPUtil.INSTANCE.getClassGroupItems("classGroups");
+    }
+
+
     /**
      * 退出登录
      * @param context
@@ -65,7 +114,7 @@ public class MethodManager {
         SPUtil.INSTANCE.removeObj("user");
 
         Intent i=new Intent(context, AccountLoginActivity.class);
-        i.putExtra("android.intent.extra.LAUNCH_SCREEN", 3);
+        i.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL);
         context.startActivity(i);
         ActivityManager.getInstance().finishOthers(AccountLoginActivity.class);
 
@@ -126,7 +175,7 @@ public class MethodManager {
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", screenPos==3? 1 : screenPos);
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, screenPos==3? 1 : screenPos);
         context.startActivity(intent);
     }
 
@@ -231,7 +280,7 @@ public class MethodManager {
         intent.putExtra("page",page);
         intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
         if (screen!=0)
-            intent.putExtra("android.intent.extra.LAUNCH_SCREEN", screen);
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL, screen);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }
@@ -287,20 +336,6 @@ public class MethodManager {
         return apps;
     }
 
-    /**
-     * 保存学生科目
-     */
-    public static void saveCourses(List<CourseItem> courseItems){
-        SPUtil.INSTANCE.putCourseItems("courses", courseItems);
-        EventBus.getDefault().post(Constants.COURSEITEM_EVENT);
-    }
-
-    /**
-     * 获取学生科目
-     */
-    public static List<CourseItem> getCourses(){
-        return SPUtil.INSTANCE.getCourseItems("courses");
-    }
 
     /**
      * 打开屏幕

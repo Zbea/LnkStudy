@@ -2,9 +2,6 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.TimePicker
 import com.bll.lnkstudy.R
@@ -16,18 +13,12 @@ import java.util.*
 
 class DateTimeSelectorDialog(private val context: Context, private val item: DatePlan, private val type:Int) {
     private var dialog:Dialog?=null
-    private var isRemindStart=false
-    private var isRemindEnd=false
 
     fun builder(): DateTimeSelectorDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_date_time_selector)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-
-        isRemindStart=item.isRemindStart
-        isRemindEnd=item.isRemindEnd
-
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val yearMonth=simpleDateFormat.format(Date())
@@ -44,30 +35,6 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
         if (!item.endTimeStr.isNullOrEmpty()){
             tp_end_time?.hour=item.endTimeStr.split(":")[0].toInt()
             tp_end_time?.minute=item.endTimeStr.split(":")[1].toInt()
-        }
-
-        val ll_remind_start = dialog?.findViewById<LinearLayout>(R.id.ll_remind_start)
-        ll_remind_start?.visibility= if (type==0) View.GONE else View.VISIBLE
-        val ll_remind_end = dialog?.findViewById<LinearLayout>(R.id.ll_remind_end)
-        ll_remind_end?.visibility=  if (type==0) View.GONE else View.VISIBLE
-
-        val ll_bell_start = dialog?.findViewById<LinearLayout>(R.id.ll_bell_start)
-        ll_bell_start?.visibility= if (isRemindStart) View.VISIBLE else View.INVISIBLE
-        val ll_bell_end = dialog?.findViewById<LinearLayout>(R.id.ll_bell_end)
-        ll_bell_end?.visibility= if (isRemindEnd) View.VISIBLE else View.INVISIBLE
-
-
-        val sh_remind_start = dialog?.findViewById<Switch>(R.id.sh_remind_start)
-        sh_remind_start?.isChecked=isRemindStart
-        sh_remind_start?.setOnClickListener {
-            isRemindStart=!isRemindStart
-            ll_bell_start?.visibility= if (isRemindStart) View.VISIBLE else View.INVISIBLE
-        }
-        val sh_remind_end = dialog?.findViewById<Switch>(R.id.sh_remind_end)
-        sh_remind_end?.isChecked=isRemindEnd
-        sh_remind_end?.setOnClickListener {
-            isRemindEnd=!isRemindEnd
-            ll_bell_end?.visibility= if (isRemindEnd) View.VISIBLE else View.INVISIBLE
         }
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
@@ -89,7 +56,7 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
             val endLong=DateUtils.date3Stamp("$yearMonth $endStr")
 
             if (endLong>startLong){
-                dateListener?.getDate(startStr,endStr,isRemindStart,isRemindEnd)
+                dateListener?.getDate(startStr,endStr)
                 dismiss()
             }
         }
@@ -114,7 +81,7 @@ class DateTimeSelectorDialog(private val context: Context, private val item: Dat
     private var dateListener: OnDateListener? = null
 
     fun interface OnDateListener {
-        fun getDate(startStr: String?,endStr: String?,isRemindStart:Boolean,isRemindEnd:Boolean)
+        fun getDate(startStr: String,endStr: String)
     }
 
     fun setOnDateListener(dateListener:OnDateListener) {

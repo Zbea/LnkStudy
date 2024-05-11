@@ -17,7 +17,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_book_type_list.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
@@ -34,7 +34,7 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
     private var pos=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_radiogroup
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {
@@ -110,10 +110,10 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
     }
 
     private fun initTab() {
-        screenTypes=ItemTypeDaoManager.getInstance().queryAll(3)
+        screenTypes=ItemTypeDaoManager.getInstance().queryAll(1)
         screenTypes.add(ItemTypeBean().apply {
             path=FileAddress().getPathScreen("未分类")
-            title="未分类"
+            title="全部"
         })
         screenTypes[tabPos].isCheck=true
         mTabTypeAdapter?.setNewData(screenTypes)
@@ -126,7 +126,6 @@ class ScreenshotManagerActivity:BaseAppCompatActivity() {
     }
 
     private fun initRecycleView(){
-
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this,28f), DP2PX.dip2px(this,40f),

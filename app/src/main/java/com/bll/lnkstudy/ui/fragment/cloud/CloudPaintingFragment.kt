@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,7 +29,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
 import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import java.io.File
 
@@ -60,20 +60,24 @@ class CloudPaintingFragment : BaseCloudFragment() {
         }
     }
 
-    private fun initTab() {
-        val types = mutableListOf<String>()
+    private fun initTab(){
         types.add(getString(R.string.my_drawing_str))
         types.add(getString(R.string.my_calligraphy_str))
         typeStr=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i, types[i], types.size - 1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            pageIndex = 1
-            tabId=if (id==0) 3 else 4
-            typeStr=types[id]
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        pageIndex = 1
+        tabId=if (position==0) 3 else 4
+        typeStr=itemTabTypes[position].title
+        fetchData()
     }
 
     /**
@@ -88,6 +92,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
         )
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mLocalAdapter = CloudPaintingLocalAdapter(R.layout.item_painting_type, null).apply {
             rv_list.adapter = this
@@ -138,14 +143,13 @@ class CloudPaintingFragment : BaseCloudFragment() {
                                 drawingBean.id=null
                                 val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                 //创建本地画本增量更新
-                                DataUpdateManager.createDataUpdate(5,id.toInt(),2,1
-                                    , Gson().toJson(drawingBean),drawingBean.path)
+                                DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(drawingBean),drawingBean.path)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 deleteCloud(position)
-                                showToast(getScreenPosition(),R.string.book_download_success)
+                                showToast(R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -154,7 +158,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(getScreenPosition(),msg!!)
+                            showToast(msg!!)
                             hideLoading()
                         }
 
@@ -164,7 +168,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(getScreenPosition(), R.string.book_download_fail)
+                    showToast( R.string.book_download_fail)
                 }
             })
     }

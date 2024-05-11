@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,6 +11,8 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
@@ -20,8 +23,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
-import kotlinx.android.synthetic.main.fragment_textbook.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -56,13 +58,18 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         val books= DataBeanManager.bookType
         bookTypeStr=books[0]
         for (i in books.indices) {
-            rg_group.addView(getRadioButton(i ,books[i],books.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=books[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            bookTypeStr=books[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        bookTypeStr=itemTabTypes[position].title
+        pageIndex=1
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -73,6 +80,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
             DP2PX.dip2px(activity,28f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
@@ -94,7 +102,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     }
                     downloadSuccess(book)
                 } else {
-                    showToast(getScreenPosition(),R.string.toast_downloaded)
+                    showToast(R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -104,9 +112,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(books[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem()
                         }
                     })
                 true
@@ -125,7 +131,8 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 hideLoading()
                 val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookId)
                 if (localBook!=null){
-                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
+                    deleteItem()
+                    showToast(book.bookName+getString(R.string.book_download_success))
                 }
                 else{
                     if (FileUtils.isExistContent(book.bookDrawPath)){
@@ -134,27 +141,32 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     if (FileUtils.isExistContent(book.bookPath)){
                         FileUtils.deleteFile(File(book.bookPath))
                     }
-                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
+                    showToast(book.bookName+getString(R.string.book_download_fail))
                 }
             }
             countDownTasks=null
         }.start()
     }
 
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(books[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
+    }
+
     /**
      * 下载书籍
      */
     private fun downloadBook(book: BookBean) {
-        val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
-        FileDownManager.with(activity).create(book.downloadUrl).setPath(targetFileStr)
+        FileDownManager.with(activity).create(book.downloadUrl).setPath(book.bookPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
+                    //修改书库分类状态
+                    ItemTypeDaoManager.getInstance().saveBookBean(5,book.subtypeStr,true)
                     book.time=System.currentTimeMillis()
                     book.isLook=false
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)

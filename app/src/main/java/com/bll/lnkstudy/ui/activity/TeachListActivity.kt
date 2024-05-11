@@ -55,22 +55,8 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         flags=intent.flags
         item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
 
-        if (flags==0){
-            grade=mUser?.grade!!
-            grades=DataBeanManager.popupGrades(grade)
-        }
-        else{
-            grades=DataBeanManager.popupTypeGrades
-            grade=grades[0].id
-        }
+        onCommonData()
 
-        tv_grade.text = grades[grade-1].name
-
-        if (flags==0){
-            semesters=DataBeanManager.popupSemesters()
-            semester=semesters[0].id
-            tv_semester.text = semesters[0].name
-        }
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
         }
@@ -83,10 +69,36 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         mPresenter=TeachingVideoPresenter(this,getCurrentScreenPos())
     }
 
+    override fun onCommonData() {
+        if (flags==0){
+            grade=mUser?.grade!!
+            grades=DataBeanManager.popupGrades(grade)
+        }
+        else{
+            grades=DataBeanManager.popupTypeGrades
+            grade=grades[0].id
+        }
+
+        if (grades.size>0){
+            tv_grade.text = grades[grade-1].name
+            if (flags==0){
+                semesters=DataBeanManager.popupSemesters()
+                semester=semesters[0].id
+                tv_semester.text = semesters[0].name
+            }
+            initSelectorView()
+        }
+
+    }
+
     override fun initView() {
         setPageTitle(item?.desc!!)
         if (flags==0) showView(tv_grade,tv_semester) else showView(tv_grade)
 
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView(){
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this, 20f),
@@ -95,6 +107,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         )
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
+
         rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
         mAdapter = TeachListAdapter(R.layout.item_teach_content, null).apply {
             rv_list.adapter = mAdapter
@@ -108,8 +121,6 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
                 customStartActivity(intent)
             }
         }
-
-        initSelectorView()
     }
 
     /**

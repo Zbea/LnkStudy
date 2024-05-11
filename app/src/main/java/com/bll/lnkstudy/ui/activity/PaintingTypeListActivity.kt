@@ -31,7 +31,7 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle(if (type==0) R.string.my_drawing_str else R.string.my_calligraphy_str)
+        setPageTitle(if (type==3) R.string.my_drawing_str else R.string.my_calligraphy_str)
         initRecyclerView()
         disMissView(ll_page_number)
     }
@@ -48,6 +48,7 @@ class PaintingTypeListActivity : BaseAppCompatActivity() {
         )
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
+
         rv_list.layoutManager = GridLayoutManager(this, 3)//创建布局管理
         mAdapter = PaintingTypeAdapter(R.layout.item_painting_type, types).apply {
             rv_list.adapter = this

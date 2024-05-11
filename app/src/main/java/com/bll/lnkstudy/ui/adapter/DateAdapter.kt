@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
 import android.view.View
@@ -11,7 +12,6 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.io.File
@@ -56,7 +56,10 @@ class DateAdapter(layoutResId: Int, data: List<DateBean>?) :
                 if (item.year!=0){
                     val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
                     if (File(path).exists()){
-                        GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
+                        try {
+                            ivImage.setImageBitmap(BitmapFactory.decodeFile(path))
+                        } catch (e: Exception) {
+                        }
                         rlImage.visibility= View.VISIBLE
                     }
                     else{

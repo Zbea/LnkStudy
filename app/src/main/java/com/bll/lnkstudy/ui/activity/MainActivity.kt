@@ -32,6 +32,7 @@ import com.bll.lnkstudy.utils.date.Lunar
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -53,8 +54,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     var appFragment: AppFragment? = null
 
     var mainRightFragment: MainRightFragment? = null
-    var paperFragment: PaperFragment? = null
-    var homeworkFragment: HomeworkFragment? = null
+    var paperFragment: TestPaperManageFragment? = null
+    var homeworkFragment: HomeworkManageFragment? = null
     var noteFragment: NoteFragment? = null
     var paintingFragment: PaintingFragment? = null
 
@@ -110,14 +111,26 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
         val type = object : TypeToken<List<Area>>() {}.type
         DataBeanManager.provinces = Gson().fromJson(areaJson, type)
+
+        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
+            val strings = DataBeanManager.bookType
+            for (i in strings.indices) {
+                val item = ItemTypeBean()
+                item.type=5
+                item.title = strings[i]
+                item.date=System.currentTimeMillis()
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
+        }
+
     }
 
     override fun initView() {
         mainLeftFragment = MainLeftFragment()
         bookcaseFragment = BookcaseFragment()
         textbookFragment = TextbookFragment()
-        paperFragment = PaperFragment()
-        homeworkFragment = HomeworkFragment()
+        paperFragment = TestPaperManageFragment()
+        homeworkFragment = HomeworkManageFragment()
         noteFragment = NoteFragment()
         paintingFragment = PaintingFragment()
         teachFragment = TeachFragment()
@@ -163,6 +176,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
         }
 
+        startRemind()
         startRemind8()
         startRemind15()
         startRemind18()
@@ -204,6 +218,42 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }
                 ft.show(to).commit()
             }
+        }
+    }
+
+    /**
+     * 开始每天定时自动刷新
+     */
+    private fun startRemind() {
+
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 1)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            var selectLong = timeInMillis
+
+            if (currentTimeMillisLong > selectLong) {
+                add(Calendar.DAY_OF_MONTH, 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_DAY_REFRESH
+            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            else
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.INTERVAL_DAY, pendingIntent
+            )
         }
     }
 
@@ -434,10 +484,15 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 一键清除
      */
     private fun clearData() {
+
+        Glide.get(this).clearDiskCache()
+        Glide.get(this).clearMemory()
+
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        SPUtil.removeObj("PrivacyPassword")
-        SPUtil.putListInt("week", mutableListOf())
-        SPUtil.putListLong("date", mutableListOf())
+        SPUtil.removeObj("privacyPasswordDiary")
+        SPUtil.removeObj("privacyPasswordNote")
+        SPUtil.putListInt("weekDateEvent", mutableListOf())
+        SPUtil.putListLong("dateDateEvent", mutableListOf())
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()

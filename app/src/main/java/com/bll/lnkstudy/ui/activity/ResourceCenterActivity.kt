@@ -1,16 +1,17 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.fragment.resource.AppDownloadMainFragment
 import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadMainFragment
 import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadMainFragment
 import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadMainFragment
-import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.common_title.*
 
 class ResourceCenterActivity:BaseAppCompatActivity() {
@@ -26,7 +27,6 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     private var popTimes= mutableListOf<PopupBean>()
     private var popPaintings= mutableListOf<PopupBean>()
 
-    private var positionTab=0
     private var supply=0
     private var dynasty=0
     private var paintingType=0
@@ -100,33 +100,37 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     }
 
     private fun initTab(){
-        val tabs=DataBeanManager.resources
-        for (i in tabs.indices) {
-            rg_group.addView(getRadioButton(i, tabs[i], tabs.size - 1))
+        for (i in DataBeanManager.resources.indices) {
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=DataBeanManager.resources[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            positionTab=id
-            when(id){
-                0->{
-                    disMissView(tv_course,tv_grade)
-                    switchFragment(lastFragment, appFragment)
-                }
-                1->{
-                    disMissView(tv_course,tv_grade)
-                    switchFragment(lastFragment, toolFragment)
-                }
-                2->{
-                    disMissView(tv_course,tv_grade)
-                    switchFragment(lastFragment, wallpaperFragment)
-                }
-                3->{
-                    showView(tv_course,tv_grade)
-                    switchFragment(lastFragment, paintingFragment)
-                }
-                4->{
-                    disMissView(tv_course,tv_grade)
-                    switchFragment(lastFragment, calenderFragment)
-                }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        when(position){
+            0->{
+                disMissView(tv_course,tv_grade)
+                switchFragment(lastFragment, appFragment)
+            }
+            1->{
+                disMissView(tv_course,tv_grade)
+                switchFragment(lastFragment, toolFragment)
+            }
+            2->{
+                disMissView(tv_course,tv_grade)
+                switchFragment(lastFragment, wallpaperFragment)
+            }
+            3->{
+                showView(tv_course,tv_grade)
+                switchFragment(lastFragment, paintingFragment)
+            }
+            4->{
+                disMissView(tv_course,tv_grade)
+                switchFragment(lastFragment, calenderFragment)
             }
         }
     }

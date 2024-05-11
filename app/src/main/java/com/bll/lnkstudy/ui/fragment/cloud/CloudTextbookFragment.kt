@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,6 +11,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
@@ -23,8 +25,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
-import kotlinx.android.synthetic.main.fragment_textbook.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.CountDownLatch
@@ -56,16 +57,22 @@ class CloudTextbookFragment:BaseCloudFragment() {
     }
 
     private fun initTab(){
-        val texts= arrayListOf("往期课本","参考课本")
-        textBook=texts[0]
-        for (i in texts.indices) {
-            rg_group.addView(getRadioButton(i ,texts[i],texts.size-1))
+        types.add("往期课本")
+        types.add("参考课本")
+        textBook=types[0]
+        for (i in types.indices) {
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            textBook=texts[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        textBook=itemTabTypes[position].title
+        pageIndex=1
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -73,6 +80,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
         layoutParams.setMargins(DP2PX.dip2px(activity,20f),DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = TextBookAdapter(R.layout.item_textbook, null).apply {
             rv_list.adapter = this
@@ -95,7 +103,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     }
                     downloadSuccess(book)
                 } else {
-                    showToast(getScreenPosition(),R.string.toast_downloaded)
+                    showToast(R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -105,9 +113,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(books[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem()
                         }
                     })
                 true
@@ -126,7 +132,8 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 hideLoading()
                 val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                 if (localBook!=null){
-                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
+                    deleteItem()
+                    showToast(book.bookName+getString(R.string.book_download_success))
                     EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
                 }
                 else{
@@ -136,18 +143,24 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     if (FileUtils.isExistContent(book.bookPath)){
                         FileUtils.deleteFile(File(book.bookPath))
                     }
-                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
+                    showToast(book.bookName+getString(R.string.book_download_fail))
                 }
             }
             countDownTasks=null
         }.start()
     }
 
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(books[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
+    }
+
     /**
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: TextbookBean){
-        val fileName = book.bookId.toString()//文件名
+        val fileName = book.bookId.toString()+"draw"//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {

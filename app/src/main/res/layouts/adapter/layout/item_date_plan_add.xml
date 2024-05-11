@@ -7,7 +7,6 @@
     android:gravity="center_vertical">
 
     <LinearLayout
-        android:id="@+id/ll_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -44,13 +43,14 @@
 
 
 
-    <EditText
-        android:id="@+id/et_course"
-        android:layout_width="80dp"
+    <TextView
+        android:id="@+id/tv_course"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_22"
-        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_30"
         android:textColor="@color/black"
+        android:gravity="center"
         android:background="@color/color_transparent"
         android:hint="@string/subject"
         android:lines="1"
@@ -59,11 +59,10 @@
 
     <EditText
         android:id="@+id/et_content"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_30"
         android:lines="1"
         android:background="@color/color_transparent"
         android:gravity="center_vertical"
@@ -71,15 +70,5 @@
         android:textSize="@dimen/sp_22"
         android:hint="@string/content"
         android:textColorHint="@color/color_text_hint"/>
-
-    <TextView
-        android:id="@+id/tv_remind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:visibility="gone"
-        android:text="@string/date_day_remind_str"/>
 
 </LinearLayout>

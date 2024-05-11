@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -8,6 +9,7 @@ import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
@@ -24,8 +26,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
-import kotlinx.android.synthetic.main.fragment_homework.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -57,13 +58,18 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private fun initTab(){
         course=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            course=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        course=types[position]
+        pageIndex=1
         fetchData()
     }
 
@@ -73,6 +79,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity, 3)
+
         mAdapter = CloudHomeworkAdapter(R.layout.item_homework, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
@@ -84,9 +91,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(homeworkTypes[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem()
                         }
                     })
                 true
@@ -99,7 +104,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         startDownload(homeworkTypeBean)
                     }
                     else{
-                        showToast(getScreenPosition(),R.string.toast_downloaded)
+                        showToast(R.string.toast_downloaded)
                     }
                 }
                 else{
@@ -107,11 +112,17 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         download(homeworkTypeBean)
                     }
                     else{
-                        showToast(getScreenPosition(),R.string.toast_downloaded)
+                        showToast(R.string.toast_downloaded)
                     }
                 }
             }
         }
+    }
+
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(homeworkTypes[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -185,7 +196,8 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                showToast(getScreenPosition(),R.string.book_download_success)
+                                showToast(R.string.book_download_success)
+                                deleteItem()
                                 EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
                                 hideLoading()
                             },500)
@@ -195,7 +207,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(getScreenPosition(),msg!!)
+                            showToast(msg!!)
                             hideLoading()
                         }
 
@@ -205,7 +217,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(getScreenPosition(), R.string.book_download_fail)
+                    showToast( R.string.book_download_fail)
                 }
             })
 
@@ -260,8 +272,9 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 hideLoading()
+                                deleteItem()
                                 EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
-                                showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_success))
+                                showToast(book.bookName+getString(R.string.book_download_success))
                             },500)
                         }
                         override fun onProgress(percentDone: Int) {
@@ -270,7 +283,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             hideLoading()
                             //下载失败删掉已下载手写内容
                             FileUtils.deleteFile(File(book.bookDrawPath))
-                            showToast(getScreenPosition(),msg!!)
+                            showToast(msg!!)
                         }
                         override fun onStart() {
                         }
@@ -281,7 +294,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                     hideLoading()
                     //下载失败删掉已下载手写内容
                     FileUtils.deleteFile(File(book.bookDrawPath))
-                    showToast(getScreenPosition(),book.bookName+getString(R.string.book_download_fail))
+                    showToast(book.bookName+getString(R.string.book_download_fail))
                 }
             })
     }

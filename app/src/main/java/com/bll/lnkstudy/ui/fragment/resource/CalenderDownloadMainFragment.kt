@@ -48,7 +48,7 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_resource_content
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -106,7 +106,7 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
                     downLoadStart(item.downloadUrl,item)
                 } else {
                     item.loadSate =2
-                    showToast(getScreenPosition(),"已下载")
+                    showToast("已下载")
                     mAdapter?.notifyItemChanged(position)
                     detailsDialog?.setDissBtn()
                 }
@@ -145,7 +145,7 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     hideLoading()
-                    showToast(getScreenPosition(),"${item.title}下载失败")
+                    showToast("${item.title}下载失败")
                     detailsDialog?.setChangeStatus()
                 }
             })
@@ -167,14 +167,14 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
                 FileUtils.deleteFile(File(zipPath))
                 Handler().postDelayed({
                     hideLoading()
-                    showToast(getScreenPosition(),item.title+"下载成功")
+                    showToast(item.title+"下载成功")
                 },500)
             }
             override fun onProgress(percentDone: Int) {
             }
             override fun onError(msg: String?) {
                 hideLoading()
-                showToast(getScreenPosition(),item.title+msg!!)
+                showToast(item.title+msg!!)
                 detailsDialog?.setChangeStatus()
             }
             override fun onStart() {

@@ -20,7 +20,7 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_resource_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class WallpaperDownloadMainFragment :BaseMainFragment(), IContractView.IPaintingView{
 
@@ -43,7 +43,7 @@ class WallpaperDownloadMainFragment :BaseMainFragment(), IContractView.IPainting
 
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_resource_content
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -88,7 +88,7 @@ class WallpaperDownloadMainFragment :BaseMainFragment(), IContractView.IPainting
                         onDownload()
                     }
                     else{
-                        showToast(getScreenPosition(),R.string.toast_downloaded)
+                        showToast(R.string.toast_downloaded)
                     }
                 }
                 else{
@@ -131,13 +131,13 @@ class WallpaperDownloadMainFragment :BaseMainFragment(), IContractView.IPainting
                     val id= PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
                     //新建增量更新
                     DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
-                    showToast(getScreenPosition(),R.string.book_download_success)
+                    showToast(R.string.book_download_success)
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(getScreenPosition(),R.string.book_download_fail)
+                    showToast(R.string.book_download_fail)
                 }
             })
     }

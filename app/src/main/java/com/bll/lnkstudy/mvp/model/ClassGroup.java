@@ -18,5 +18,6 @@ public class ClassGroup implements Serializable {
     public boolean isCheck;
     public int teacherId;
     public String subject;
+    public int studentCount;
 
 }

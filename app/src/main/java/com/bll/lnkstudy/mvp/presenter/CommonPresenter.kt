@@ -10,7 +10,7 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePresenter<IContractView.ICommonView>(view) {
 
-    fun getCommonData() {
+    fun getCommon() {
 
         val grade = RetrofitManager.service.getCommonData()
 

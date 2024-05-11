@@ -10,10 +10,10 @@ import java.util.*
 object DataBeanManager {
 
     var provinces= mutableListOf<Area>()
-    var grades= mutableListOf<ItemList>()
-    var typeGrades= mutableListOf<ItemList>()
-    var courses= mutableListOf<ItemList>()
-    var bookVersion= mutableListOf<ItemList>()
+//    var grades= mutableListOf<ItemList>()
+//    var typeGrades= mutableListOf<ItemList>()
+//    var courses= mutableListOf<ItemList>()
+//    var bookVersion= mutableListOf<ItemList>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,R.string.main_bookcase_title,
@@ -68,6 +68,7 @@ object DataBeanManager {
 
     fun popupGrades(): MutableList<PopupBean>
        {
+           val grades=MethodManager.getItemLists("grades")
             val list= mutableListOf<PopupBean>()
             for (i in grades.indices){
                 list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
@@ -76,6 +77,7 @@ object DataBeanManager {
         }
 
     fun popupGrades(grade: Int): MutableList<PopupBean> {
+        val grades=MethodManager.getItemLists("grades")
         val list = mutableListOf<PopupBean>()
         for (item in grades) {
             list.add(PopupBean(item.type, item.desc, item.type == grade))
@@ -104,6 +106,7 @@ object DataBeanManager {
      * 获取当前选中年级
      */
     fun getGradeStr(grade: Int): String {
+        val grades=MethodManager.getItemLists("grades")
         var cls=""
         for (item in grades) {
             if (item.type == grade){
@@ -113,9 +116,21 @@ object DataBeanManager {
         return cls
     }
 
+    fun getBookVersionStr(version: Int): String {
+        val versions=MethodManager.getItemLists("bookVersions")
+        var cls=""
+        for (item in versions) {
+            if (item.type == version){
+                cls=item.desc
+            }
+        }
+        return cls
+    }
+
 
     val popupTypeGrades: MutableList<PopupBean>
         get() {
+            val typeGrades=MethodManager.getItemLists("typeGrades")
             val list= mutableListOf<PopupBean>()
             for (i in typeGrades.indices){
                 list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
@@ -125,6 +140,7 @@ object DataBeanManager {
 
     val popupCourses: MutableList<PopupBean>
         get() {
+            val courses=MethodManager.getItemLists("courses")
             val list= mutableListOf<PopupBean>()
             for (i in courses.indices){
                 list.add(PopupBean(courses[i].type, courses[i].desc, i == 0))
@@ -133,6 +149,7 @@ object DataBeanManager {
         }
 
     fun popupCourses(course:Int): MutableList<PopupBean>{
+        val courses=MethodManager.getItemLists("courses")
         val list= mutableListOf<PopupBean>()
         for (item in courses){
             list.add(PopupBean(item.type, item.desc, item.type == course))
@@ -144,6 +161,7 @@ object DataBeanManager {
      * 获取选中科目
      */
     fun getCourseStr(course:Int):String{
+        val courses=MethodManager.getItemLists("courses")
         var courseStr=""
         for (item in courses){
             if (course==item.type){
@@ -157,6 +175,7 @@ object DataBeanManager {
      * 获取科目id
      */
     fun getCourseId(course:String):Int{
+        val courses=MethodManager.getItemLists("courses")
         var courseId=0
         for (item in courses){
             if (course==item.desc){
@@ -424,14 +443,14 @@ object DataBeanManager {
                 if (grade < 7) {
                     R.mipmap.icon_homework_content_other_lxb
                 } else {
-                    R.mipmap.icon_homework_content_other_xxlxb
+                    R.mipmap.icon_homework_content_other_zxlxb
                 }
             }
             "数学" -> {
                 if (grade < 7) {
                     R.mipmap.icon_homework_content_sx_sxb
                 } else {
-                    R.mipmap.icon_homework_content_other_xxlxb
+                    R.mipmap.icon_homework_content_other_zxlxb
                 }
             }
             "英语" -> {
@@ -442,7 +461,7 @@ object DataBeanManager {
                 }
             }
             else -> {
-                R.mipmap.icon_homework_content_other_xxlxb
+                R.mipmap.icon_homework_content_other_lxb
             }
         }
 
@@ -500,7 +519,7 @@ object DataBeanManager {
             val module = Module().apply {
                 name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_xxlxb
+                resContentId = R.mipmap.icon_homework_content_other_zxlxb
             }
             val module1 = Module().apply {
                 name = mContext.getString(R.string.homework_type_zwb)
@@ -526,7 +545,7 @@ object DataBeanManager {
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_sxb)
                 resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_xxlxb
+                resContentId = R.mipmap.icon_homework_content_other_zxlxb
             })
         }
         return list
@@ -558,7 +577,7 @@ object DataBeanManager {
             list.add(Module().apply {
                 name = mContext.getString(R.string.homework_type_lxb)
                 resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_xxlxb
+                resContentId = R.mipmap.icon_homework_content_other_lxb
             })
             return list
         }
@@ -580,6 +599,22 @@ object DataBeanManager {
             return list
         }
 
+    val freenoteModules: MutableList<Module>
+        get() {
+            val list= mutableListOf<Module>()
+            list.add(Module().apply {
+                name = mContext.getString(R.string.note_type_kbb)
+                resId = R.drawable.bg_gray_stroke_10dp_corner
+                resContentId = 0
+            })
+            list.add(Module().apply {
+                name = mContext.getString(R.string.note_type_hgb)
+                resId = R.mipmap.icon_note_module_bg_1
+                resContentId = R.mipmap.icon_freenote_bg_1
+            })
+            return list
+        }
+
     //笔记本内容选择
     val noteModuleBook: MutableList<Module>
         get() {
@@ -588,37 +623,31 @@ object DataBeanManager {
                 name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
-                resFreeNoteBg=0
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_1
-                resFreeNoteBg=R.mipmap.icon_freenote_bg_1
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_2
-                resFreeNoteBg=R.mipmap.icon_freenote_bg_2
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_yyb)
                 resId = R.mipmap.icon_note_module_bg_3
                 resContentId = R.mipmap.icon_note_details_bg_3
-                resFreeNoteBg=R.mipmap.icon_freenote_bg_3
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_tzb)
                 resId = R.mipmap.icon_note_module_bg_4
                 resContentId = R.mipmap.icon_note_details_bg_4
-                resFreeNoteBg=R.mipmap.icon_freenote_bg_4
             })
             list.add(Module().apply {
                 name = mContext.getString(R.string.note_type_wxp)
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
-                resFreeNoteBg=R.mipmap.icon_freenote_bg_5
             })
             return list
         }

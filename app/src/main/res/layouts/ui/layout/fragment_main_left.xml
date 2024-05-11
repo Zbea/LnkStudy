@@ -47,12 +47,6 @@
                     android:textSize="@dimen/sp_24"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/iv_calender_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_more"
-                    />
 
             </LinearLayout>
 
@@ -81,7 +75,6 @@
                     android:id="@+id/iv_date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
                     />
                 <ImageView
                     android:id="@+id/iv_calender"
@@ -164,7 +157,7 @@
                     android:id="@+id/iv_date_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_more"
+                    android:src="@mipmap/icon_date_day"
                     />
 
             </LinearLayout>

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.drawable.Drawable
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
@@ -15,9 +14,7 @@ import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
 import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.utils.FileUtils
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -75,7 +72,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_draft,iv_commit)
+        disMissView(iv_draft,iv_btn)
         if (catalogMsg!=null){
             pageCount =catalogMsg?.totalCount!!
             pageStart =catalogMsg?.startCount!!
@@ -152,7 +149,8 @@ class BookDetailsActivity : BaseDrawingActivity() {
         loadPicture(page, elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
         }
 
         //设置当前展示页
@@ -163,21 +161,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
         val showFile = getIndexFile(index)
         if (showFile != null) {
-            val simpleTarget = object : CustomTarget<Drawable>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    view.background = resource
-                }
-            }
-            Glide.with(this)
-                .load(showFile)
-                .skipMemoryCache(false)
-                .fitCenter().into(simpleTarget)
-
+            GlideUtils.setImageFile(this, showFile, view)
             val drawPath = book?.bookDrawPath+"/${index+1}.tch"
             elik.setLoadFilePath(drawPath, true)
         }
@@ -210,7 +194,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return if (listFiles!=null) listFiles[index] else null
+        return if (listFiles.size>0) listFiles[index] else null
     }
 
     override fun onDestroy() {

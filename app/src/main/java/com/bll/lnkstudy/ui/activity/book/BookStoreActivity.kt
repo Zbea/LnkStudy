@@ -1,15 +1,21 @@
 package com.bll.lnkstudy.ui.activity.book
 
-import android.annotation.SuppressLint
 import android.os.Handler
+import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.BookDetailsDialog
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.BookGreenDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
@@ -22,7 +28,6 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 
 /**
@@ -81,16 +86,21 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         type = intent.flags
         typeStr=DataBeanManager.bookStoreTypes()[type-1].desc
 
-        gradeList=DataBeanManager.popupTypeGrades
-        if (gradeList.size>0){
-            grade=gradeList[0].id
-            initSelectorView()
-        }
+        onCommonData()
+
         if (NetworkUtil(this).isNetworkConnected()){
             presenter.getBookType()
         }
         else{
             showNetworkDialog()
+        }
+    }
+
+    override fun onCommonData() {
+        if (DataBeanManager.popupTypeGrades.size>0){
+            gradeList=DataBeanManager.popupTypeGrades
+            grade=gradeList[0].id
+            initSelectorView()
         }
     }
 
@@ -129,7 +139,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                 typeFindData()
             }
         }
-
     }
 
     /**
@@ -141,21 +150,22 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         fetchData()
     }
 
-
-    //设置tab分类
-    @SuppressLint("InflateParams")
-    private fun initTab() {
-        rg_group.removeAllViews()
+    private fun initTab(){
         for (i in subTypeList.indices) {
-            rg_group.addView(getRadioButton(i,subTypeList[i].desc,subTypeList.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=subTypeList[i].desc
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            subTypeStr = subTypeList[i].desc
-            subtype=subTypeList[i].type
-            typeFindData()
-        }
-
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        subTypeStr = subTypeList[position].desc
+        subtype=subTypeList[position].type
+        typeFindData()
+    }
+
 
     private fun initRecyclerView() {
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
@@ -243,6 +253,8 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
+                    //修改书库分类状态
+                    ItemTypeDaoManager.getInstance().saveBookBean(5,book.subtypeStr,true)
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新

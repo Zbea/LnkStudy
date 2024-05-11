@@ -51,7 +51,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     }
 
     override fun initView() {
-        disMissView(iv_draft,iv_commit)
+        disMissView(iv_draft,iv_btn)
         setPWEnabled(false)
         if (papers.size>0){
             if (currentPosition==DEFAULT_PAGE)
@@ -136,16 +136,16 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
 
         if (isExpand){
             setElikLoadPath(page,elik_a!!,v_content_a)
-            tv_page_a.text="${paperContents[page].page+1}"
+            tv_page.text="${paperContents[page].page+1}"
 
             if (page+1<paperContentCount){
                 setElikLoadPath(page+1,elik_b!!,v_content_b)
-                tv_page.text="${paperContents[page+1].page+1}"
+                tv_page_a.text="${paperContents[page+1].page+1}"
             }
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
-                tv_page.text=""
+                tv_page_a.text=""
             }
         }
         else{

@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -13,7 +15,7 @@ import com.bll.lnkstudy.ui.adapter.MyWallpaperAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import kotlinx.android.synthetic.main.ac_my_wallpaper_list.*
+import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
@@ -29,7 +31,7 @@ class WallpaperListActivity:BaseAppCompatActivity() {
     private var position=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_my_wallpaper_list
+        return R.layout.ac_list
     }
 
     override fun initData() {
@@ -40,6 +42,33 @@ class WallpaperListActivity:BaseAppCompatActivity() {
     override fun initView() {
         setPageTitle(R.string.download_wallpaper)
         setPageSetting(R.string.ok)
+
+        initRecyclerView()
+
+        pageNumberView()
+
+        tv_setting.setOnClickListener {
+            if (leftPath.isEmpty()&&rightPath.isEmpty())
+                return@setOnClickListener
+            if(File(leftPath).exists()){
+                android.os.SystemProperties.set("xsys.eink.standby",leftPath)
+//                android.os.SystemProperties.set("xsys.eink.poweroff",leftPath)
+            }
+            if(File(rightPath).exists()){
+                android.os.SystemProperties.set("xsys.eink.standby1",rightPath)
+//                android.os.SystemProperties.set("xsys.eink.poweroff1",rightPath)
+            }
+        }
+
+    }
+
+    private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this,20f), DP2PX.dip2px(this,50f),
+            DP2PX.dip2px(this,20f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
 
         mAdapter = MyWallpaperAdapter(R.layout.item_my_wallpaper, null).apply {
             rv_list.layoutManager = GridLayoutManager(this@WallpaperListActivity,4)//创建布局管理
@@ -89,22 +118,6 @@ class WallpaperListActivity:BaseAppCompatActivity() {
             delete()
             true
         }
-
-        pageNumberView()
-
-        tv_setting.setOnClickListener {
-            if (leftPath.isEmpty()&&rightPath.isEmpty())
-                return@setOnClickListener
-            if(File(leftPath).exists()){
-                android.os.SystemProperties.set("xsys.eink.standby",leftPath)
-//                android.os.SystemProperties.set("xsys.eink.poweroff",leftPath)
-            }
-            if(File(rightPath).exists()){
-                android.os.SystemProperties.set("xsys.eink.standby1",rightPath)
-//                android.os.SystemProperties.set("xsys.eink.poweroff1",rightPath)
-            }
-        }
-
     }
 
     private fun delete(){

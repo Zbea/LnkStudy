@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity.book
 
 import android.os.Handler
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -9,6 +10,7 @@ import com.bll.lnkstudy.dialog.TextbookDetailsDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -91,15 +93,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
         }
         gradeId = mUser?.grade!!
-        selectGradeId=gradeId
-        gradeList=DataBeanManager.popupGrades(gradeId)
-        subjectList=DataBeanManager.popupCourses
-
-        if (subjectList.size>0){
-            courseId=subjectList[0].id
-        }
-        initSelectorView()
-
+        onCommonData()
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
         }
@@ -110,6 +104,16 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     override fun initChangeScreenData() {
         presenter = TextbookStorePresenter(this,getCurrentScreenPos())
+    }
+
+    override fun onCommonData() {
+        selectGradeId=gradeId
+        gradeList=DataBeanManager.popupGrades(gradeId)
+        subjectList=DataBeanManager.popupCourses
+        if (subjectList.size>0){
+            courseId=subjectList[0].id
+            initSelectorView()
+        }
     }
 
     override fun initView() {
@@ -145,33 +149,37 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     }
 
-    //设置tab分类
-    private fun initTab() {
+    private fun initTab(){
         for (i in typeList.indices) {
-            rg_group.addView(getRadioButton(i, typeList[i], typeList.size - 1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=typeList[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when (i) {
-                0 -> {
-                    showView(tv_download)
-                    disMissView(tv_course,tv_grade,tv_semester)
-                    gradeId = mUser?.grade!!
-                    getSemester()
-                    tv_semester.text = DataBeanManager.popupSemesters()[semester-1].name
-                }
-                else -> {
-                    showView(tv_grade,tv_course,tv_semester)
-                    disMissView(tv_download)
-                    gradeId = selectGradeId
-                }
-            }
-            tabId=i
-            tabStr=typeList[i]
-            pageIndex = 1
-            fetchData()
-        }
-
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        when (position) {
+            0 -> {
+                showView(tv_download)
+                disMissView(tv_course,tv_grade,tv_semester)
+                gradeId = mUser?.grade!!
+                getSemester()
+                tv_semester.text = DataBeanManager.popupSemesters()[semester-1].name
+            }
+            else -> {
+                showView(tv_grade,tv_course,tv_semester)
+                disMissView(tv_download)
+                gradeId = selectGradeId
+            }
+        }
+        tabId=position
+        tabStr=typeList[position]
+        pageIndex = 1
+        fetchData()
+    }
+
 
     private fun initRecyclerView() {
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理

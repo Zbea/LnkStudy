@@ -2,12 +2,15 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
@@ -19,8 +22,7 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
-import kotlinx.android.synthetic.main.fragment_teach.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 
 /**
  * 教学
@@ -31,7 +33,6 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     private var mAdapter: TeachCourseAdapter? = null
     private var videoType:TeachingVideoType?=null
     private var lists = mutableListOf<ItemList>()//列表数据
-    private var tabs= mutableListOf<ItemList>()//tab分类
     private var flags=0//0课程 1其他
     private val map= mutableMapOf<Int,List<ItemList>>()
 
@@ -44,12 +45,69 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teach
+        return R.layout.fragment_list_tab
     }
 
     override fun initView() {
         setTitle(R.string.main_teach_title)
         pageSize=8
+
+        initRecyclerView()
+
+        initDialog(1)
+    }
+
+    override fun lazyLoad() {
+        pageIndex=1
+        fetchCommonData()
+        if(NetworkUtil(requireActivity()).isNetworkConnected()){
+            mPresenter.getType()
+        }
+        else{
+            if (videoType==null&&SPUtil.getObj("videoType",TeachingVideoType::class.java)!=null){
+                videoType=SPUtil.getObj("videoType",TeachingVideoType::class.java)
+                initTab()
+            }
+        }
+    }
+
+    //设置头部索引
+    private fun initTab() {
+        itemTabTypes.add(ItemTypeBean().apply {
+            title="课程"
+            isCheck=true
+        })
+        for (i in videoType?.types!!.indices) {
+            itemTabTypes.add(ItemTypeBean().apply {
+                title= videoType?.types!![i].desc
+            })
+        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+
+        lists= MethodManager.getItemLists("courses")
+        pageNumberView()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        pageIndex=1
+        lists = if (position==0){
+            flags=0
+            MethodManager.getItemLists("courses")
+        } else{
+            flags=1
+            videoType?.subType?.get(position.toString()) as MutableList<ItemList>
+        }
+        pageNumberView()
+    }
+
+    private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),30f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
 
         mAdapter = TeachCourseAdapter(R.layout.item_teach_course, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
@@ -74,49 +132,6 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
                 }
             }
         }
-
-        initDialog(1)
-    }
-
-    override fun lazyLoad() {
-        pageIndex=1
-        fetchCommonData()
-        if(NetworkUtil(requireActivity()).isNetworkConnected()){
-            mPresenter.getType()
-        }
-        else{
-            if (videoType==null&&SPUtil.getObj("videoType",TeachingVideoType::class.java)!=null){
-                videoType=SPUtil.getObj("videoType",TeachingVideoType::class.java)
-                initTab()
-            }
-        }
-    }
-
-    //设置头部索引
-    private fun initTab() {
-        rg_group.removeAllViews()
-
-        tabs.clear()
-        tabs.add(ItemList(0,0,getString(R.string.course)))
-        tabs.addAll(videoType?.types!!)
-
-        for (i in tabs.indices) {
-            rg_group.addView(getRadioButton(i ,tabs[i].desc,tabs.size-1))
-        }
-        rg_group.setOnCheckedChangeListener { _, i ->
-            pageIndex=1
-            lists = if (i==0){
-                flags=0
-                DataBeanManager.courses
-            } else{
-                flags=1
-                videoType?.subType?.get(i.toString()) as MutableList<ItemList>
-            }
-            pageNumberView()
-        }
-
-        lists= DataBeanManager.courses
-        pageNumberView()
     }
 
     //翻页处理

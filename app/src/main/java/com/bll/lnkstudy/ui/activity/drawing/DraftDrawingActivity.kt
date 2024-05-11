@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.view.Gravity
 import android.view.PWDrawObjectHandler
 import android.widget.RadioButton
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -18,6 +17,7 @@ class DraftDrawingActivity:BaseDrawingActivity(){
 
     private val paths= mutableListOf<String>()
     private val pos= SPUtil.getInt("draft")
+    private var isTop=false
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing_draft
@@ -31,24 +31,32 @@ class DraftDrawingActivity:BaseDrawingActivity(){
 
     override fun initView() {
         val layoutParams=window?.attributes
-        layoutParams?.width= Constants.WIDTH
-        layoutParams?.y= DP2PX.dip2px(this,38f)
         layoutParams?.gravity = Gravity.BOTTOM
         window?.attributes = layoutParams
-
-        elik_b=v_content_b.pwInterFace
 
         onClick(pos)
         (rg_group.getChildAt(pos) as RadioButton).isChecked=true
 
-        iv_clear?.setOnClickListener {
+        iv_clear.setOnClickListener {
             elik_b ?.clearContent(null,true,true)
             if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
                 elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
             }
         }
 
-        iv_change?.setOnClickListener {
+        iv_top.setOnClickListener {
+            isTop=!isTop
+            if (isTop){
+                layoutParams?.y= DP2PX.dip2px(this,38f)
+                layoutParams?.gravity = Gravity.TOP
+                window?.attributes = layoutParams
+            }else{
+                layoutParams?.gravity = Gravity.BOTTOM
+                window?.attributes = layoutParams
+            }
+        }
+
+        iv_change.setOnClickListener {
             when(getCurrentScreenPos()){
                 0->{
                     moveToScreen(2)
@@ -62,7 +70,7 @@ class DraftDrawingActivity:BaseDrawingActivity(){
             }
         }
 
-        rg_group?.setOnCheckedChangeListener { p0, id ->
+        rg_group.setOnCheckedChangeListener { p0, id ->
             when(id){
                 R.id.rb_1->{
                     onClick(0)

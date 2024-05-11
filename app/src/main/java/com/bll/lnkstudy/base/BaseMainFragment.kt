@@ -113,10 +113,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
      * 上传成功(书籍云id)
      */
     open fun uploadSuccess(cloudIds: MutableList<Int>?){
-        if (!cloudIds.isNullOrEmpty())
-        {
-            mCloudUploadPresenter.deleteCloud(cloudIds)
-        }
     }
 
 }

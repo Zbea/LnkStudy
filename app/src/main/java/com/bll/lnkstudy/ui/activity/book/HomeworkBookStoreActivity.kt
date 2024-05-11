@@ -95,7 +95,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         GlideUtils.setImageUrl(this@HomeworkBookStoreActivity,book?.imageUrl,iv_book)
         tv_book_name?.text = book?.bookName+if (book?.semester==0) "" else "-"+ DataBeanManager.popupSemesters()[book!!.semester-1].name
         tv_price?.text = getString(R.string.price)+"： " + if (book?.price==0) getString(R.string.free) else book!!.price
-        tv_version?.text =getString(R.string.press)+"： " + DataBeanManager.bookVersion[book!!.version-1].desc
+        tv_version?.text =getString(R.string.press)+"： " + DataBeanManager.getBookVersionStr(book!!.version)
         tv_info?.text = getString(R.string.introduction)+"： " + book?.bookDesc
         tv_course?.text = getString(R.string.subject)+"： " + DataBeanManager.getCourseStr(book!!.subject)
         if (book?.buyStatus == 1) {

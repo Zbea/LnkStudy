@@ -21,7 +21,7 @@ import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
 
 class CloudDiaryFragment: BaseCloudFragment() {
@@ -30,7 +30,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -47,6 +47,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
         layoutParams.setMargins(DP2PX.dip2px(activity,50f), DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         mAdapter = CloudDiaryAdapter(R.layout.item_cloud_diary, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
@@ -59,7 +60,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
                     download(item)
                 }
                 else{
-                    showToast(getScreenPosition(),"已存在")
+                    showToast("已存在")
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -69,14 +70,18 @@ class CloudDiaryFragment: BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(items[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem()
                         }
                     })
                 true
             }
         }
+    }
+
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(items[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     private fun download(item:DiaryBean){
@@ -99,14 +104,15 @@ class CloudDiaryFragment: BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                showToast(getScreenPosition(),"下载成功")
+                                deleteItem()
+                                showToast("下载成功")
                                 hideLoading()
                             },500)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
                         override fun onError(msg: String?) {
-                            showToast(getScreenPosition(),msg!!)
+                            showToast(msg!!)
                             hideLoading()
                         }
                         override fun onStart() {
@@ -115,7 +121,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(getScreenPosition(),"下载失败")
+                    showToast("下载失败")
                 }
             })
     }

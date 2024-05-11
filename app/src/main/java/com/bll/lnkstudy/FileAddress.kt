@@ -7,7 +7,6 @@ import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
 import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.PAINTING_PATH
-import com.bll.lnkstudy.Constants.Companion.RECORDER_PATH
 import com.bll.lnkstudy.Constants.Companion.SCREEN_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CATALOG_TXT
@@ -179,13 +178,6 @@ class FileAddress {
      */
     fun getPathDraft():String{
         return "$IMAGE_PATH/$mUserId/draft"
-    }
-
-    /**
-     * 文件夹路径
-     */
-    fun getPathFreeRecord():String{
-        return "$RECORDER_PATH/${mUserId}"
     }
 
     /**

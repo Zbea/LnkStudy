@@ -5,26 +5,16 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/statusbar_height"
     >
+    <include
+        layout="@layout/common_drawing_tool"
+        />
 
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/v_content_b"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@mipmap/icon_diary_details_bg_1"
-        android:layout_above="@+id/ll_bottom"
-        />
-
-    <TextView
-        android:id="@+id/tv_theme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:text="@string/freenote_theme_str"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="@dimen/sp_24"
+        android:layout_marginStart="@dimen/drawing_tool_width"
         />
 
     <LinearLayout
@@ -64,14 +54,6 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/ll_bottom"
-        layout="@layout/common_drawing_tool_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_too_bottom_height"
-        android:layout_alignParentBottom="true"
-        />
-
-    <include
         android:id="@+id/ll_geometry"
         layout="@layout/common_drawing_geometry"
         android:layout_width="match_parent"
@@ -84,8 +66,9 @@
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_margin="@dimen/dp_10"
-        android:layout_above="@+id/ll_bottom"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_alignParentBottom="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

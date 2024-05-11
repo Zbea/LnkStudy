@@ -20,9 +20,9 @@ class DrawingManageDialog(val context:Context, var list:MutableList<PopupBean>) 
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window = dialog.window
         val layoutParams = window?.attributes
-        layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
+        layoutParams?.gravity = Gravity.BOTTOM or Gravity.START
         layoutParams?.x = DP2PX.dip2px(context, 42f)
-        layoutParams?.y=DP2PX.dip2px(context, 456f)
+        layoutParams?.y=DP2PX.dip2px(context, 516f)
         dialog.show()
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)

@@ -49,7 +49,6 @@ class DatePlanListAdapter(layoutResId: Int, data: List<DateEventBean>?) : BaseQu
                     setText(R.id.tv_end_time, endTimeStr)
                     setText(R.id.tv_course,course)
                     setText(R.id.tv_content, content)
-                    setVisible(R.id.tv_remind,isRemindStart||isRemindEnd)
                 }
             }
         }

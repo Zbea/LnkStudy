@@ -45,6 +45,7 @@ public class HomeworkTypeBean implements Serializable {
     public int createStatus;//自建作业本0老师创建1家长创建2
     public int messageTotal;//作业消息数目
     public boolean isCloud;
+    @Transient
     public int cloudId;
     @Transient
     public String downloadUrl;
@@ -61,10 +62,9 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public List<ParentHomeworkBean> parents;
 
-    @Generated(hash = 1119670562)
-    public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId,
-            int parentTypeId, int state, long date, String contentResId, String bgResId, String course,
-            int bookId, int createStatus, int messageTotal, boolean isCloud, int cloudId) {
+    @Generated(hash = 430859059)
+    public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId, int parentTypeId, int state, long date,
+            String contentResId, String bgResId, String course, int bookId, int createStatus, int messageTotal, boolean isCloud) {
         this.id = id;
         this.studentId = studentId;
         this.userId = userId;
@@ -81,112 +81,10 @@ public class HomeworkTypeBean implements Serializable {
         this.createStatus = createStatus;
         this.messageTotal = messageTotal;
         this.isCloud = isCloud;
-        this.cloudId = cloudId;
     }
+
     @Generated(hash = 1652492346)
     public HomeworkTypeBean() {
-    }
-    public Long getId() {
-        return this.id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public long getStudentId() {
-        return this.studentId;
-    }
-    public void setStudentId(long studentId) {
-        this.studentId = studentId;
-    }
-    public long getUserId() {
-        return this.userId;
-    }
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public int getGrade() {
-        return this.grade;
-    }
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-    public int getTypeId() {
-        return this.typeId;
-    }
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-    public int getParentTypeId() {
-        return this.parentTypeId;
-    }
-    public void setParentTypeId(int parentTypeId) {
-        this.parentTypeId = parentTypeId;
-    }
-    public int getState() {
-        return this.state;
-    }
-    public void setState(int state) {
-        this.state = state;
-    }
-    public long getDate() {
-        return this.date;
-    }
-    public void setDate(long date) {
-        this.date = date;
-    }
-    public String getContentResId() {
-        return this.contentResId;
-    }
-    public void setContentResId(String contentResId) {
-        this.contentResId = contentResId;
-    }
-    public String getBgResId() {
-        return this.bgResId;
-    }
-    public void setBgResId(String bgResId) {
-        this.bgResId = bgResId;
-    }
-    public String getCourse() {
-        return this.course;
-    }
-    public void setCourse(String course) {
-        this.course = course;
-    }
-    public int getBookId() {
-        return this.bookId;
-    }
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-    public int getCreateStatus() {
-        return this.createStatus;
-    }
-    public void setCreateStatus(int createStatus) {
-        this.createStatus = createStatus;
-    }
-    public int getMessageTotal() {
-        return this.messageTotal;
-    }
-    public void setMessageTotal(int messageTotal) {
-        this.messageTotal = messageTotal;
-    }
-    public boolean getIsCloud() {
-        return this.isCloud;
-    }
-    public void setIsCloud(boolean isCloud) {
-        this.isCloud = isCloud;
-    }
-    public int getCloudId() {
-        return this.cloudId;
-    }
-    public void setCloudId(int cloudId) {
-        this.cloudId = cloudId;
     }
 
     @Override
@@ -201,5 +99,135 @@ public class HomeworkTypeBean implements Serializable {
         return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.userId==item.userId
                 &&this.grade==item.grade&&this.typeId==item.typeId&&this.state==item.state;
     }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public long getStudentId() {
+        return this.studentId;
+    }
+
+    public void setStudentId(long studentId) {
+        this.studentId = studentId;
+    }
+
+    public long getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getGrade() {
+        return this.grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
+    public int getTypeId() {
+        return this.typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public int getParentTypeId() {
+        return this.parentTypeId;
+    }
+
+    public void setParentTypeId(int parentTypeId) {
+        this.parentTypeId = parentTypeId;
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public long getDate() {
+        return this.date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public String getContentResId() {
+        return this.contentResId;
+    }
+
+    public void setContentResId(String contentResId) {
+        this.contentResId = contentResId;
+    }
+
+    public String getBgResId() {
+        return this.bgResId;
+    }
+
+    public void setBgResId(String bgResId) {
+        this.bgResId = bgResId;
+    }
+
+    public String getCourse() {
+        return this.course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public int getBookId() {
+        return this.bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public int getCreateStatus() {
+        return this.createStatus;
+    }
+
+    public void setCreateStatus(int createStatus) {
+        this.createStatus = createStatus;
+    }
+
+    public int getMessageTotal() {
+        return this.messageTotal;
+    }
+
+    public void setMessageTotal(int messageTotal) {
+        this.messageTotal = messageTotal;
+    }
+
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
+    }
+
+   
     
 }

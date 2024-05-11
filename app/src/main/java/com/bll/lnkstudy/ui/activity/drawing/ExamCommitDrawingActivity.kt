@@ -106,7 +106,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_draft)
+        disMissView(iv_catalog,iv_draft,iv_expand,iv_tool)
         showView(iv_geometry)
         setViewElikUnable(iv_geometry)
 
@@ -120,7 +120,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         onChangeExpandView()
         onChangeContent()
 
-        iv_commit.setOnClickListener {
+        iv_btn.setOnClickListener {
             CommonDialog(this,2).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
@@ -194,19 +194,17 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     private fun onChangeContent(){
         setElikLoadPath(page,elik_a!!,v_content_a)
-        tv_page_a.text="${page+1}/$pageCount"
+        tv_page.text="${page+1}/$pageCount"
 
-        if (isExpand){
-            if (page+1<pageCount){
-                elik_b?.setPWEnabled(true)
-                setElikLoadPath(page+1,elik_b!!,v_content_b)
-                tv_page.text="${page+1+1}/$pageCount"
-            }
-            else{
-                elik_b?.setPWEnabled(false)
-                v_content_b.setImageResource(0)
-                tv_page.text=""
-            }
+        if (page+1<pageCount){
+            elik_b?.setPWEnabled(true)
+            setElikLoadPath(page+1,elik_b!!,v_content_b)
+            tv_page_a.text="${page+1+1}/$pageCount"
+        }
+        else{
+            elik_b?.setPWEnabled(false)
+            v_content_b.setImageResource(0)
+            tv_page_a.text=""
         }
     }
 

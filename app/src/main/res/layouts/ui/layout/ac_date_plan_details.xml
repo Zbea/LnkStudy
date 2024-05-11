@@ -1,73 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
     android:paddingTop="@dimen/statusbar_height"
-    android:orientation="vertical">
-
-    <include layout="@layout/common_title" />
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
+        <include layout="@layout/common_title" />
 
-        <EditText
-            android:id="@+id/et_title"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_margin="50dp"
-            android:textSize="@dimen/sp_24"
-            android:textColor="@color/black"
-            android:hint="@string/date_plan_title_str"
-            android:textColorHint="@color/color_text_hint"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:lines="1"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list"
-            android:layout_width="match_parent"
-            android:layout_height="520dp"
-            android:layout_marginTop="@dimen/dp_20"
-            />
-
-        <ImageView
-            android:id="@+id/iv_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_50"
-            android:src="@mipmap/icon_add" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_week"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableRight="@mipmap/icon_arrow_right"
-            android:text="添加日期   "
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
-            android:layout_marginTop="@dimen/dp_50"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_date"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_20"
-            />
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_margin="50dp"
+                android:textSize="@dimen/sp_24"
+                android:textColor="@color/black"
+                android:hint="@string/date_plan_title_str"
+                android:textColorHint="@color/color_text_hint"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:lines="1"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_height="520dp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_50"
+                android:src="@mipmap/icon_add" />
+
+
+            <RadioGroup
+                android:id="@+id/rg_group"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_45"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:button="@null"
+                    android:text="日期多选"
+                    android:textSize="@dimen/sp_24"
+                    android:textColor="@drawable/color_black_gray_selector"
+                    android:textStyle="bold"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:background="@drawable/bg_rb_line_selector"/>
+
+                <RadioButton
+                    android:id="@+id/rb_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="44dp"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="星期循环"
+                    android:textSize="@dimen/sp_24"
+                    android:textStyle="bold"
+                    android:textColor="@drawable/color_black_gray_selector"
+                    android:background="@drawable/bg_rb_line_selector"/>
+
+            </RadioGroup>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_week"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_50"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="点击添加日期"
+                android:gravity="center"
+                android:textColor="@color/black_90"
+                android:textSize="@dimen/sp_22"
+                android:layout_marginTop="@dimen/dp_30"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_30"
+                />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
+
+        <RadioGroup
+            android:id="@+id/rg_group_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_marginStart="100dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_am"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:button="@null"
+                android:text="上午  AM"
+                android:textSize="@dimen/sp_24"
+                android:textColor="@drawable/color_black_gray_selector"
+                android:textStyle="bold"
+                android:checked="true"
+                android:gravity="center"
+                android:background="@drawable/bg_rb_black_gray_selector"/>
+
+            <RadioButton
+                android:id="@+id/rb_pm"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/dp_20"
+                android:button="@null"
+                android:gravity="center"
+                android:text="下午  PM"
+                android:textSize="@dimen/sp_24"
+                android:textStyle="bold"
+                android:textColor="@drawable/color_black_gray_selector"
+                android:background="@drawable/bg_rb_black_gray_selector"/>
+
+        </RadioGroup>
+
+        <com.bll.lnkstudy.widget.CircleClockView
+            android:id="@+id/iv_clock"
+            android:layout_width="800dp"
+            android:layout_height="800dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:src="@mipmap/icon_clock"
+            tools:ignore="DuplicateIds" />
 
 
     </LinearLayout>

@@ -14,30 +14,35 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
-            setVisible(R.id.ll_info, item.createStatus!=0||item.isCloud)
+            setVisible(R.id.ll_info, item.createStatus!=0 && !item.isCloud)
+            if (item.isCloud)
+                setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})")
+            setText(R.id.tv_name, item.name)
             val ivImage=getView<ImageView>(R.id.iv_image)
-            if (item.state==4){
-                setText(R.id.tv_name, "")
-                setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
-                GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
-            }
-            else{
-                setText(R.id.tv_name, item.name)
-                if (item.isCloud)
-                    setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})")
-                val bg=when(item.state){
-                    1->{
-                        R.mipmap.icon_homework_cover_3
-                    }
-                    3->{
-                        R.mipmap.icon_homework_cover_2
-                    }
-                    else->{
-                        R.mipmap.icon_homework_cover_1
-                    }
+            when(item.state){
+                1->{
+                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_reel))
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_3)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
-                setImageResource(R.id.iv_image,bg)
-                setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                2->{
+                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                }
+                3->{
+                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_2)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                }
+                4->{
+                    if (item.isCloud)
+                        setText(R.id.tv_grade,"")
+                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
+                    setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
+                    setText(R.id.tv_name, "")
+                    GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
+                }
             }
 
             if (item.isPg) {
@@ -54,12 +59,6 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
             } else {
                 setTextColor(R.id.tv_message, mContext.getColor(R.color.gray))
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-            }
-
-            if (item.state == 1) {
-                setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_reel))
-            } else {
-                setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
             }
 
             addOnClickListener(R.id.ll_message)

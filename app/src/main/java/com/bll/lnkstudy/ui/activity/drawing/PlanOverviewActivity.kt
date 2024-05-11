@@ -9,7 +9,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.*
-import kotlinx.android.synthetic.main.common_drawing_tool_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class PlanOverviewActivity:BaseDrawingActivity() {
@@ -29,7 +29,7 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     override fun initData() {
     }
     override fun initView() {
-        disMissView(iv_catalog,iv_btn)
+        disMissView(iv_catalog,iv_btn,iv_expand,iv_draft)
         setPageTitle(R.string.main_plan)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->

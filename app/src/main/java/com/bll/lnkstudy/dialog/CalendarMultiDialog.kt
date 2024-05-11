@@ -28,7 +28,7 @@ class CalendarMultiDialog(private val context: Context,private var times:Mutable
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or Gravity.LEFT
-        layoutParams.y = DP2PX.dip2px(context, 280f)
+        layoutParams.y = DP2PX.dip2px(context, 320f)
         layoutParams.x = DP2PX.dip2px(context, 100f)
         dialog?.show()
 

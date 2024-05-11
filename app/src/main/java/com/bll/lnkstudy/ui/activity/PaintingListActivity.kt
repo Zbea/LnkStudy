@@ -39,6 +39,12 @@ class PaintingListActivity:BaseAppCompatActivity() {
     override fun initView() {
         setPageTitle(intent.getStringExtra("title").toString())
 
+        initRecyclerView()
+
+        fetchData()
+    }
+
+    private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this,20f),
@@ -52,7 +58,7 @@ class PaintingListActivity:BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@PaintingListActivity,12f),70))
+            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@PaintingListActivity,12f),70))
             setOnItemClickListener { adapter, view, position ->
                 val item =lists[position]
                 customStartActivity(Intent(this@PaintingListActivity,PaintingDetailsActivity::class.java).setFlags(item.contentId))
@@ -63,10 +69,7 @@ class PaintingListActivity:BaseAppCompatActivity() {
                 true
             }
         }
-
-        fetchData()
     }
-
 
     private fun delete(){
         CommonDialog(this).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object :

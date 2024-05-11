@@ -3,7 +3,6 @@
     <dimen name="height">1363dp</dimen>
     <dimen name="width">1021dp</dimen>
     <dimen name="drawing_height">1295dp</dimen>
-    <dimen name="drawing_too_bottom_height">38dp</dimen>
     <dimen name="drawing_tool_width">42dp</dimen>
     <dimen name="navigation_height">90dp</dimen>
     <dimen name="navigation_text">32sp</dimen>

@@ -15,7 +15,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.*
-import kotlinx.android.synthetic.main.common_drawing_tool_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class FreeNoteActivity : BaseDrawingActivity() {
@@ -39,7 +39,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_btn)
+        disMissView(iv_catalog,iv_btn,iv_expand,iv_draft)
 
         iv_save.setOnClickListener {
             freeNoteBean?.isSave=true
@@ -58,9 +58,9 @@ class FreeNoteActivity : BaseDrawingActivity() {
         }
 
         tv_theme.setOnClickListener {
-            ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.noteModuleBook).builder()
+            ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    bgRes = ToolUtils.getImageResStr(this, moduleBean.resFreeNoteBg)
+                    bgRes = ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
                     bgResList[posImage] = bgRes
                 }

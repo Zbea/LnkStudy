@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,8 +26,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
-import kotlinx.android.synthetic.main.fragment_note.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -63,14 +63,19 @@ class CloudNoteFragment: BaseCloudFragment() {
     private fun initTab(){
         noteTypeStr=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            noteType=id
-            noteTypeStr=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        noteType=position
+        noteTypeStr=types[position]
+        pageIndex=1
         fetchData()
     }
 
@@ -79,18 +84,19 @@ class CloudNoteFragment: BaseCloudFragment() {
         layoutParams.setMargins(0, DP2PX.dip2px(activity,25f), 0,0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         mAdapter = NotebookAdapter(0,R.layout.item_note, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 val notebook=notes[position]
-                val item= NoteDaoManager.getInstance().queryNote(notebook.cloudId)
+                val item= NoteDaoManager.getInstance().isExistCloud(notebook.typeStr,notebook.title,notebook.date)
                 if (item==null){
                     downloadNote(notebook)
                 }
                 else{
-                    showToast(getScreenPosition(),R.string.toast_downloaded)
+                    showToast(R.string.toast_downloaded)
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -100,9 +106,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(notes[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem()
                         }
                     })
                 true
@@ -110,13 +114,20 @@ class CloudNoteFragment: BaseCloudFragment() {
         }
     }
 
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(notes[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
+    }
+
     /**
      * 下载笔记
      */
     private fun downloadNote(item: Note){
         showLoading()
+        val titleStr=item.title+"副本"
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val fileTargetPath=FileAddress().getPathNote(item.grade,item.typeStr,item.title)
+        val fileTargetPath=FileAddress().getPathNote(item.grade,item.typeStr,titleStr)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -128,22 +139,40 @@ class CloudNoteFragment: BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
                             val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
-                            addNote(item)
+                            if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(item.typeStr,2)){
+                                val noteType = ItemTypeBean().apply {
+                                    title = item.typeStr
+                                    type=2
+                                    date=System.currentTimeMillis()
+                                }
+                                val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteType)
+                                //创建笔记分类增量更新
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(noteType))
+                            }
+                            //添加笔记
+                            item.id=null//设置数据库id为null用于重新加入
+                            item.title=titleStr
+                            val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
+                            //新建笔记本增量更新
+                            DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(item))
+
                             //添加笔记内容
                             val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                             for (json in jsonArray){
                                 val contentBean=Gson().fromJson(json, NoteContentBean::class.java)
                                 contentBean.id=null//设置数据库id为null用于重新加入
+                                contentBean.filePath=contentBean.filePath.replace(contentBean.noteTitle,titleStr)
+                                contentBean.noteTitle=titleStr
                                 val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                 //新建笔记内容增量更新
-                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId
-                                    ,Gson().toJson(contentBean),File(contentBean.filePath).parent)
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId,Gson().toJson(contentBean),File(contentBean.filePath).parent)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 EventBus.getDefault().post(Constants.NOTE_EVENT)
-                                showToast(getScreenPosition(),R.string.book_download_success)
+                                deleteItem()
+                                showToast(R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -152,7 +181,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(getScreenPosition(),msg!!)
+                            showToast(msg!!)
                             hideLoading()
                         }
 
@@ -162,30 +191,9 @@ class CloudNoteFragment: BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(getScreenPosition(), R.string.book_download_fail)
+                    showToast( R.string.book_download_fail)
                 }
             })
-    }
-
-    /**
-     * 添加笔记（如果下载的笔记分类本地不存在则添加）
-     */
-    private fun addNote(item: Note){
-        item.id=null//设置数据库id为null用于重新加入
-        val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
-        if (!ItemTypeDaoManager.getInstance().isExist(item.typeStr,2)){
-            val noteType = ItemTypeBean().apply {
-                title = item.typeStr
-                type=2
-                date=System.currentTimeMillis()
-            }
-            val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteType)
-            //创建笔记分类增量更新
-            DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(noteType))
-        }
-        val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
-        //新建笔记本增量更新
-        DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(item))
     }
 
     override fun fetchData() {
@@ -211,7 +219,6 @@ class CloudNoteFragment: BaseCloudFragment() {
             if (item.listJson.isNotEmpty()){
                 val note= Gson().fromJson(item.listJson, Note::class.java)
                 note.cloudId=item.id
-                note.isCloud=true
                 note.downloadUrl=item.downloadUrl
                 note.contentJson=item.contentJson
                 notes.add(note)

@@ -13,7 +13,6 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
-import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
@@ -23,11 +22,11 @@ import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.ExamCommitDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
+import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_right.*
-import org.greenrobot.eventbus.EventBus
 
 
 /**
@@ -55,15 +54,9 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         loadPapers()
         initExamView()
     }
-    override fun onCourseItems(courseItems: MutableList<CourseItem>) {
-        if (courseItems!=MethodManager.getCourses()){
-            MethodManager.saveCourses(courseItems)
-            EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
-        }
-    }
 
     override fun onCourse(url: String) {
-        SPUtil.putString("${mUser?.accountId}courseUrl",url)
+        SPUtil.putString("courseUrl",url)
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
 
@@ -82,6 +75,10 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
         }
 
+        tv_plan.setOnClickListener {
+            customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
+        }
+
         tv_diray.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
                 PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
@@ -97,7 +94,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             if (privacyPassword==null){
                 PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
                     privacyPassword=it
-                    showToast(2,"日记密码设置成功")
+                    showToast("日记密码设置成功")
                 }
             }
             else{
@@ -123,16 +120,15 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             findMessages()
             fetchExam()
-            mMainPresenter.getCourseItems()
             mMainPresenter.getTeacherCourse()
         }
-        val url=SPUtil.getString("${mUser?.accountId}courseUrl")
+        val url=SPUtil.getString("courseUrl")
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
 
     //消息相关处理
     private fun initMessageView() {
-        mMessageAdapter=MessageAdapter(0,R.layout.item_main_message, null).apply {
+        mMessageAdapter=MessageAdapter(R.layout.item_main_message, null).apply {
             rv_list_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list_message.adapter = this
             bindToRecyclerView(rv_list_message)
@@ -160,7 +156,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     return@setOnClickListener
                 }
                 if (DateUtils.date10ToDate13(time)<System.currentTimeMillis()){
-                    showToast(2,"已超时")
+                    showToast("已超时")
                     disMissView(rl_exam)
                     return@setOnClickListener
                 }
@@ -169,7 +165,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     bundle.putSerializable("exam", this)
                     val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
                     intent.putExtra("bundle", bundle)
-                    intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
                     intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
                     customStartActivity(intent)
                 }

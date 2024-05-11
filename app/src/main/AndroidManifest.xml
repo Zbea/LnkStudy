@@ -75,6 +75,7 @@
                 <action android:name="com.android.settings.cleardata"/>
                 <action android:name="ACTION_GLOBAL_SEARCH"/>
                 <action android:name="com.geniatech.knote.reader.save.note.broadcast"/>
+                <action android:name="com.bll.lnkstudy.refresh" />
                 <action android:name="com.bll.lnkstudy.exam.time"/>
                 <action android:name="com.bll.lnkstudy.upload"/>
                 <action android:name="com.bll.lnkstudy.upload.1month"/>

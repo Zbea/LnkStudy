@@ -175,7 +175,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
         onChangeContent()
 
-        iv_commit.setOnClickListener {
+        iv_btn.setOnClickListener {
             if (messages.size==0)
                 return@setOnClickListener
             if (NetworkUtil(this).isNetworkConnected()){
@@ -257,7 +257,8 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         loadPicture(page , elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
         }
 
         //设置当前展示页
@@ -337,7 +338,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return if (listFiles!=null) listFiles[index] else null
+        return if (listFiles.size>0) listFiles[index] else null
     }
 
     override fun onDestroy() {

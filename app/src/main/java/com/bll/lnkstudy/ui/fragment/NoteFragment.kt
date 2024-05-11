@@ -2,6 +2,8 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
@@ -17,12 +19,13 @@ import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.ui.activity.NotebookManagerActivity
 import com.bll.lnkstudy.ui.adapter.NotebookAdapter
+import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_note.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -42,7 +45,7 @@ class NoteFragment : BaseMainFragment(){
     private var privacyPassword=MethodManager.getPrivacyPassword(1)
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_note
+        return R.layout.fragment_list_tab
     }
 
     override fun initView() {
@@ -76,6 +79,11 @@ class NoteFragment : BaseMainFragment(){
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(0, DP2PX.dip2px(requireActivity(),25f), 0,0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         mAdapter = NotebookAdapter(1,R.layout.item_note, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
@@ -100,7 +108,7 @@ class NoteFragment : BaseMainFragment(){
                             PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener{
                                 privacyPassword=it
                                 mAdapter?.notifyDataSetChanged()
-                                showToast(2,"密本密码设置成功")
+                                showToast("密本密码设置成功")
                             }
                         }
                         else{
@@ -175,7 +183,7 @@ class NoteFragment : BaseMainFragment(){
         InputContentDialog(requireContext(), screenPos, getString(R.string.note_create_hint)).builder()
             .setOnDialogClickListener { string ->
                 if (NoteDaoManager.getInstance().isExist(typeStr,string)){
-                    showToast(screenPos,R.string.toast_existed)
+                    showToast(R.string.toast_existed)
                     return@setOnDialogClickListener
                 }
                 note.title = string
@@ -197,7 +205,7 @@ class NoteFragment : BaseMainFragment(){
         InputContentDialog(requireContext(), screenPos, content).builder()
             .setOnDialogClickListener { string ->
                 if (NoteDaoManager.getInstance().isExist(typeStr,string)){
-                    showToast(screenPos,R.string.toast_existed)
+                    showToast(R.string.toast_existed)
                     return@setOnDialogClickListener
                 }
                 val note=notes[position]
@@ -254,7 +262,7 @@ class NoteFragment : BaseMainFragment(){
         InputContentDialog(requireContext(), 2,getString(R.string.notebook_create_hint)).builder()
             .setOnDialogClickListener { string ->
                 if (ItemTypeDaoManager.getInstance().isExist(string,2)){
-                    showToast(screenPos,R.string.toast_existed)
+                    showToast(R.string.toast_existed)
                 }
                 else{
                     val noteBook = ItemTypeBean().apply {
@@ -299,14 +307,12 @@ class NoteFragment : BaseMainFragment(){
                         setCallBack{
                             cloudList.add(CloudListBean().apply {
                                 type=4
-                                subType=-1
                                 subTypeStr=item.typeStr
                                 date=System.currentTimeMillis()
                                 grade=item.grade
                                 listJson=Gson().toJson(item)
                                 contentJson= Gson().toJson(noteContents)
                                 downloadUrl=it
-                                skip=1
                             })
                             //当加入上传的内容等于全部需要上传时候，则上传
                             if (cloudList.size== NoteDaoManager.getInstance().queryNotes().size-nullItems.size)
@@ -331,16 +337,10 @@ class NoteFragment : BaseMainFragment(){
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
-        //将已经上传过的笔记从云书库删除
-        val ids= mutableListOf<Int>()
         for (i in 0 until noteTypes.size){
             val notes= NoteDaoManager.getInstance().queryAll(noteTypes[i].title)
             //删除该笔记分类中的所有笔记本及其内容
             for (note in notes){
-                if (note.isCloud){
-                    ids.add(note.cloudId)
-                }
                 NoteDaoManager.getInstance().deleteBean(note)
                 NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
                 val path= FileAddress().getPathNote(note.grade,note.typeStr,note.title)
@@ -353,8 +353,6 @@ class NoteFragment : BaseMainFragment(){
         val map=HashMap<String,Any>()
         map["type"]=4
         mDataUploadPresenter.onDeleteData(map)
-        if (ids.size>0)
-            mCloudUploadPresenter.deleteCloud(ids)
         EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
     }
 

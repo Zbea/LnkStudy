@@ -6,16 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -28,9 +26,9 @@ import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_list_radiogroup.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -63,16 +61,17 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var mTabTypeAdapter: TabTypeAdapter?=null
+    var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     override fun onList(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
-            DataBeanManager.grades=commonData.grade
+            MethodManager.saveItemLists("grades",commonData.grade)
         if (!commonData.subject.isNullOrEmpty())
-            DataBeanManager.courses=commonData.subject
+            MethodManager.saveItemLists("courses",commonData.subject)
         if (!commonData.typeGrade.isNullOrEmpty())
-            DataBeanManager.typeGrades=commonData.typeGrade
+            MethodManager.saveItemLists("typeGrades",commonData.typeGrade)
         if (!commonData.version.isNullOrEmpty())
-            DataBeanManager.bookVersion=commonData.version
+            MethodManager.saveItemLists("bookVersions",commonData.version)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -135,11 +134,19 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         KeyboardUtils.hideSoftKeyboard(activity)
     }
 
-    fun showToast(screen:Int ,s:String){
+    fun showToast(s:String){
+        SToast.showText(getScreenPosition(),s)
+    }
+
+    fun showToast(sId:Int){
+        SToast.showText(getScreenPosition(),sId)
+    }
+
+    fun showToast(screen: Int,s:String){
         SToast.showText(screen,s)
     }
 
-    fun showToast(screen:Int ,sId:Int){
+    fun showToast(screen: Int,sId:Int){
         SToast.showText(screen,sId)
     }
 
@@ -259,8 +266,8 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected()&&DataBeanManager.grades.size==0)
-            mCommonPresenter.getCommonData()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()&&MethodManager.getItemLists("grades").size==0)
+            mCommonPresenter.getCommon()
     }
 
     private fun initTabView(){
@@ -304,38 +311,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         }
     }
 
-    protected fun getRadioButton(i:Int,str:String,max:Int):RadioButton{
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == 0
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(activity, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
-    }
-
-    protected fun getRadioButton(i:Int,check:Int,str:String,max:Int):RadioButton{
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == check
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(activity, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
-    }
-
     /**
      * 跳转活动(关闭已经打开的)
      */
@@ -363,7 +338,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     }
     override fun login() {
         if (mView==null||activity==null)return
-        showToast(screenPos,R.string.login_timeout)
+        showToast(R.string.login_timeout)
         MethodManager.logout(requireActivity())
     }
     override fun hideLoading() {
@@ -374,7 +349,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     }
     override fun fail(msg: String) {
         if (mView==null||activity==null)return
-        showToast(screenPos,msg)
+        showToast(msg)
     }
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
     }
@@ -409,7 +384,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
             }
             Constants.NETWORK_CONNECTION_FAIL_EVENT->{
                 hideNetworkDialog()
-                showToast(getScreenPosition(),R.string.net_work_error)
+                showToast(R.string.net_work_error)
             }
             else->{
                 onEventBusMessage(msgFlag)

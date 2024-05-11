@@ -134,7 +134,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             setPWEnabled(false)
         }
 
-        iv_commit.setOnClickListener {
+        iv_btn.setOnClickListener {
             if (paper?.state!=3){
                 showToast("作业已提交")
                 return@setOnClickListener
@@ -248,26 +248,21 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             setPWEnabled(false)
         }
 
-        if (homeworkType?.isCloud==true)
-        {
-            setPWEnabled(false)
-        }
-
         if (isExpand){
             paperContentBean_a=paperContents[page]
             setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a)
-            tv_page_a.text="${paperContents[page].page+1}"
+            tv_page.text="${paperContents[page].page+1}"
 
             if (page+1<pageCount){
                 paperContentBean=paperContents[page+1]
                 setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-                tv_page.text="${paperContents[page+1].page+1}"
+                tv_page_a.text="${paperContents[page+1].page+1}"
             }
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
                 elik_b?.setPWEnabled(false)
-                tv_page.text=""
+                tv_page_a.text=""
             }
         }
         else{

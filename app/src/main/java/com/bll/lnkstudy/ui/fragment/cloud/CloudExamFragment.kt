@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +13,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
@@ -28,8 +30,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
-import kotlinx.android.synthetic.main.fragment_testpaper.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.*
 import java.io.File
 
 class CloudExamFragment:BaseCloudFragment() {
@@ -60,15 +61,21 @@ class CloudExamFragment:BaseCloudFragment() {
     private fun initTab(){
         course=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            course=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        course=types[position]
+        pageIndex=1
+        fetchData()
+    }
+
 
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -78,6 +85,7 @@ class CloudExamFragment:BaseCloudFragment() {
             DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity, 2)
         mAdapter = PaperTypeAdapter(R.layout.item_testpaper_type,null).apply {
             rv_list.adapter = this
@@ -90,9 +98,7 @@ class CloudExamFragment:BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(paperTypes[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem()
                         }
                     })
                 true
@@ -104,10 +110,16 @@ class CloudExamFragment:BaseCloudFragment() {
                     download(paperTypeBean)
                 }
                 else{
-                    showToast(getScreenPosition(),R.string.toast_downloaded)
+                    showToast(R.string.toast_downloaded)
                 }
             }
         }
+    }
+
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(paperTypes[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -154,7 +166,8 @@ class CloudExamFragment:BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                showToast(getScreenPosition(),R.string.book_download_success)
+                                deleteItem()
+                                showToast(R.string.book_download_success)
                                 hideLoading()
                             },500)
                         }
@@ -163,7 +176,7 @@ class CloudExamFragment:BaseCloudFragment() {
                         }
 
                         override fun onError(msg: String?) {
-                            showToast(getScreenPosition(),msg!!)
+                            showToast(msg!!)
                             hideLoading()
                         }
 
@@ -173,7 +186,7 @@ class CloudExamFragment:BaseCloudFragment() {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast(getScreenPosition(), R.string.book_download_fail)
+                    showToast(R.string.book_download_fail)
                 }
             })
 

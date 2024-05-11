@@ -70,26 +70,6 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
-    /**
-     * 获取考试卷
-     * @param course
-     * @return
-     */
-    public PaperTypeBean queryExamByCourse(String course){
-        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition2= PaperTypeBeanDao.Properties.Name.eq("学校考试卷");
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().unique();
-    }
-
-    /**
-     * 获取所有未上传过的本地试卷
-     * @return
-     */
-    public List<PaperTypeBean> queryAllByNoIsCloud(){
-        WhereCondition whereCondition2= PaperTypeBeanDao.Properties.IsCloud.eq(false);
-        return dao.queryBuilder().where(whereUser,whereCondition2).build().list();
-    }
-
     public void deleteBean(PaperTypeBean bean){
         dao.delete(bean);
     }

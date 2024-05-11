@@ -438,11 +438,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        var type=1
-        if (this is PlanOverviewActivity || this is DiaryActivity || this is FreeNoteActivity){
-            type=0
-        }
-        AppToolDialog(this,type,getCurrentScreenPos()).builder().setDialogClickListener{
+        AppToolDialog(this,getCurrentScreenPos()).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

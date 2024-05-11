@@ -1,5 +1,8 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
@@ -11,6 +14,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
@@ -20,8 +24,7 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_radiogroup_fragment.*
-import kotlinx.android.synthetic.main.fragment_textbook.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 import java.io.File
 
 /**
@@ -37,7 +40,7 @@ class TextbookFragment : BaseMainFragment() {
     private val bookGreenDaoManager=TextbookGreenDaoManager.getInstance()
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_textbook
+        return R.layout.fragment_list_tab
     }
 
     override fun initView() {
@@ -53,22 +56,35 @@ class TextbookFragment : BaseMainFragment() {
         fetchData()
     }
 
-    //设置头部索引
     private fun initTab(){
         val tabStrs= DataBeanManager.textbookType
         textBook=tabStrs[typeId]
         for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i ,tabStrs[i],tabStrs.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=tabStrs[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            typeId=id
-            textBook=tabStrs[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
 
+    override fun onTabClickListener(view: View, position: Int) {
+        typeId=position
+        textBook=itemTabTypes[position].title
+        pageIndex=1
+        fetchData()
+    }
+
+
     private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),20f),
+            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         mAdapter = TextBookAdapter(R.layout.item_textbook, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
             rv_list.adapter = this
@@ -178,7 +194,6 @@ class TextbookFragment : BaseMainFragment() {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=1
-                            subType=book.type
                             subTypeStr=book.typeStr
                             grade=book.grade
                             date=System.currentTimeMillis()
@@ -196,7 +211,6 @@ class TextbookFragment : BaseMainFragment() {
             else{
                 cloudList.add(CloudListBean().apply {
                     type=1
-                    subType=book.type
                     grade=book.grade
                     subTypeStr=book.typeStr
                     date=System.currentTimeMillis()
@@ -243,7 +257,6 @@ class TextbookFragment : BaseMainFragment() {
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
         val oldBooks=getTextbooksUnLock()
         //删除现在所有所有往期教材
         bookGreenDaoManager.deleteBooks(oldBooks)

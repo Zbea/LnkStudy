@@ -54,7 +54,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_commit)
+        disMissView(iv_btn)
         v_content_a.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
         v_content_b.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
 
@@ -73,7 +73,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             var type=getCurrentScreenPos()
             if (type==3)
                 type=2
-            InputContentDialog(this,type,noteContent?.title!!).builder()?.setOnDialogClickListener { string ->
+            InputContentDialog(this,type,noteContent?.title!!).builder().setOnDialogClickListener { string ->
                 noteContent?.title = string
                 noteContents[page].title = string
                 NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
@@ -179,11 +179,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         }
 
         setElikLoadPath(elik_b!!, noteContent!!)
-        tv_page.text = (page + 1).toString()
+        tv_page.text = "${page+1}/${noteContents.size}"
 
         if (isExpand) {
             setElikLoadPath(elik_a!!, note_Content_a!!)
-            tv_page_a.text = "$page"
+            tv_page.text = "${page}/${noteContents.size}"
+            tv_page_a.text="${page+1}/${noteContents.size}"
         }
     }
 

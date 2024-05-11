@@ -20,6 +20,10 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
     @SuppressLint("InvalidWakeLockTag")
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action){
+            Constants.ACTION_DAY_REFRESH->{
+                Log.d("debug","每天刷新")
+                EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
+            }
             Constants.ACTION_UPLOAD_8->{
                 Log.d("debug","8点全局刷新")
                 MethodManager.wakeUpScreen(context)
@@ -91,14 +95,12 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                     ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
                     val intent = Intent(context,SearchActivity::class.java)
                     intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2)
+                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_RIGHT)
                     context.startActivity(intent)
                 }
             }
             //阅读器回传
             "com.geniatech.knote.reader.save.note.broadcast"->{
-                Log.d("debug",intent.getStringExtra("key_book_id")!!)
-                Log.d("debug",intent.getStringExtra("note_path")!!)
                 val bookId=intent.getStringExtra("key_book_id")
                 val path=intent.getStringExtra("note_path")
                 if (!bookId.isNullOrEmpty()){

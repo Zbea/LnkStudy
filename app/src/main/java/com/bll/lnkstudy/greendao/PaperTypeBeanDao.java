@@ -33,7 +33,6 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         public final static Property Date = new Property(6, long.class, "date", false, "DATE");
         public final static Property Grade = new Property(7, int.class, "grade", false, "GRADE");
         public final static Property IsCloud = new Property(8, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CloudId = new Property(9, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -57,8 +56,7 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
                 "\"COURSE\" TEXT," + // 5: course
                 "\"DATE\" INTEGER NOT NULL ," + // 6: date
                 "\"GRADE\" INTEGER NOT NULL ," + // 7: grade
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 8: isCloud
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 9: cloudId
+                "\"IS_CLOUD\" INTEGER NOT NULL );"); // 8: isCloud
     }
 
     /** Drops the underlying database table. */
@@ -91,7 +89,6 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         stmt.bindLong(7, entity.getDate());
         stmt.bindLong(8, entity.getGrade());
         stmt.bindLong(9, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(10, entity.getCloudId());
     }
 
     @Override
@@ -118,7 +115,6 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         stmt.bindLong(7, entity.getDate());
         stmt.bindLong(8, entity.getGrade());
         stmt.bindLong(9, entity.getIsCloud() ? 1L: 0L);
-        stmt.bindLong(10, entity.getCloudId());
     }
 
     @Override
@@ -137,8 +133,7 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // course
             cursor.getLong(offset + 6), // date
             cursor.getInt(offset + 7), // grade
-            cursor.getShort(offset + 8) != 0, // isCloud
-            cursor.getInt(offset + 9) // cloudId
+            cursor.getShort(offset + 8) != 0 // isCloud
         );
         return entity;
     }
@@ -154,7 +149,6 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         entity.setDate(cursor.getLong(offset + 6));
         entity.setGrade(cursor.getInt(offset + 7));
         entity.setIsCloud(cursor.getShort(offset + 8) != 0);
-        entity.setCloudId(cursor.getInt(offset + 9));
      }
     
     @Override

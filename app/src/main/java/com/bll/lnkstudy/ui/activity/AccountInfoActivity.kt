@@ -67,7 +67,8 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     override fun initData() {
         initChangeScreenData()
-        grades = DataBeanManager.popupGrades(grade)
+        grade=mUser?.grade!!
+        onCommonData()
         school=mUser?.schoolId!!
         if (NetworkUtil(this).isNetworkConnected())
             mSchoolPresenter?.getCommonSchool()
@@ -76,6 +77,10 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initChangeScreenData() {
         mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter = AccountInfoPresenter(this,getCurrentScreenPos())
+    }
+
+    override fun onCommonData() {
+        grades = DataBeanManager.popupGrades(grade)
     }
 
     @SuppressLint("WrongConstant")

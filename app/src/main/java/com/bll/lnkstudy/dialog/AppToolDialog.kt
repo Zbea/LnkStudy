@@ -17,11 +17,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-/**
- * type=1 书籍 type=2其他
- * 1左 2 右
- */
-class AppToolDialog(val context: Context,val type:Int, val screenPos:Int) {
+class AppToolDialog(val context: Context, val screenPos:Int) {
 
     private var dialog:Dialog?=null
 
@@ -31,16 +27,9 @@ class AppToolDialog(val context: Context,val type:Int, val screenPos:Int) {
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
-        if (type==1){
-            layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
-            layoutParams?.x=DP2PX.dip2px(context,42f)
-            layoutParams?.y=DP2PX.dip2px(context,10f)
-        }
-        else{
-            layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
-            layoutParams?.x=DP2PX.dip2px(context,10f)
-            layoutParams?.y=DP2PX.dip2px(context,38f)
-        }
+        layoutParams?.gravity = Gravity.BOTTOM or Gravity.START
+        layoutParams?.x=DP2PX.dip2px(context,42f)
+        layoutParams?.y= DP2PX.dip2px(context,5f)
         dialog?.show()
 
         val toolApps=MethodManager.getAppTools(context,1)

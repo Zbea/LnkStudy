@@ -64,12 +64,16 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
             MessageSendDialog(this).builder()?.setOnClickListener{
                 val map=HashMap<String,Any>()
                 map["title"]=it
-                mMessagePresenter?.commitMessage(map)
+                mMessagePresenter.commitMessage(map)
             }
         }
 
+        initRecyclerView()
+
+    }
+    private fun initRecyclerView(){
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = MessageAdapter(1,R.layout.item_message, null).apply {
+        mAdapter = MessageAdapter(R.layout.item_message, null).apply {
             val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             layoutParams.setMargins(
                 DP2PX.dip2px(this@MessageListActivity,50f),

@@ -1,9 +1,9 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
@@ -15,7 +15,6 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
-import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.DiaryDaoManager
@@ -26,11 +25,11 @@ import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
-import com.bll.lnkstudy.mvp.view.IContractView.ICommonView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
-import com.bll.lnkstudy.ui.activity.CalenderMyActivity
-import com.bll.lnkstudy.ui.activity.date.*
-import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
+import com.bll.lnkstudy.ui.activity.date.DateActivity
+import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
+import com.bll.lnkstudy.ui.activity.date.DateEventActivity
+import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.*
@@ -45,7 +44,7 @@ import java.io.File
 /**
  * 首页
  */
-class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
+class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 
     private val mMainLeftPresenter=MainLeftPresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
@@ -99,8 +98,7 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
         setTitle(R.string.main_main_title)
 
         popupDates.add(PopupBean(0,getString(R.string.date_plan)))
-        popupDates.add(PopupBean(1,getString(R.string.main_plan)))
-        popupDates.add(PopupBean(2,getString(R.string.date_day)))
+        popupDates.add(PopupBean(1,getString(R.string.date_day)))
 
         initPlanView()
         initNoticeView()
@@ -116,37 +114,25 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
             customStartActivity(intent)
         }
 
-        iv_calender_more.setOnClickListener {
-            customStartActivity(Intent(activity, CalenderMyActivity::class.java))
-        }
-
         iv_date_more.setOnClickListener {
-            PopupClick(requireActivity(),popupDates,iv_date_more,-20).builder().setOnSelectListener{
-                when (it.id) {
-                    0 -> {
-                        customStartActivity(Intent(activity, DatePlanListActivity::class.java))
-                    }
-                    1->{
-                        customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
-                    }
-                    else -> {
-                        customStartActivity(Intent(activity, DateDayListActivity::class.java))
-                    }
-                }
-            }
+            customStartActivity(Intent(activity, DateDayListActivity::class.java))
         }
 
         tv_plan.setOnClickListener {
-            if (dateEvents.isEmpty())
-                return@setOnClickListener
-            val item =dateEvents[0]
-            val intent=Intent(requireActivity(), DatePlanDetailsActivity::class.java)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val bundle = Bundle()
-            bundle.putSerializable("dateEvent", item)
-            intent.putExtra("bundle", bundle)
-            customStartActivity(intent)
+            customStartActivity(Intent(activity, DatePlanListActivity::class.java))
         }
+
+//        tv_plan.setOnClickListener {
+//            if (dateEvents.isEmpty())
+//                return@setOnClickListener
+//            val item =dateEvents[0]
+//            val intent=Intent(requireActivity(), DatePlanDetailsActivity::class.java)
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//            val bundle = Bundle()
+//            bundle.putSerializable("dateEvent", item)
+//            intent.putExtra("bundle", bundle)
+//            customStartActivity(intent)
+//        }
 
         v_up.setOnClickListener{
             nowDate-= Constants.dayLong
@@ -208,8 +194,8 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
     }
 
     override fun fetchData(){
+        fetchCommonData()
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mCommonPresenter.getCommonData()
             mMainLeftPresenter.getHomeworkNotice()
             mMainLeftPresenter.getCourseItems()
             mMainLeftPresenter.getAppUpdate()
@@ -368,15 +354,15 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
      * 查找学习计划
      */
     private fun findDataPlan() {
-        val dates=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1)
-        for (item in dates){
-            if (item.maxLong<nowDate){
-                val selectDate=SPUtil.getListLong("date")
-                selectDate.removeAll(item.dates)
-                SPUtil.putListLong("date",selectDate)
-                DateEventGreenDaoManager.getInstance().deleteDateEvent(item)
-            }
-        }
+//        val dates=DateEventGreenDaoManager.getInstance().queryAllDateEvent(1)
+//        for (item in dates){
+//            if (item.maxLong<nowDate){
+//                val selectDate=SPUtil.getListLong("dateDateEvent")
+//                selectDate.removeAll(item.dates)
+//                SPUtil.putListLong("dateDateEvent",selectDate)
+//                DateEventGreenDaoManager.getInstance().deleteDateEvent(item)
+//            }
+//        }
 
         val years=DateUtils.longToStringDataNoHour(nowDate)
         val dateBean= DateBean()
@@ -411,7 +397,6 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=7
-                            subType=-1
                             subTypeStr="日记"
                             year=diaryBean.year
                             date=System.currentTimeMillis()
@@ -433,7 +418,6 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
         val path=FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
         FileUtils.deleteFile(File(path).parentFile)
         DiaryDaoManager.getInstance().clear()
@@ -442,6 +426,9 @@ class MainLeftFragment : BaseMainFragment(),ICommonView, IMainLeftView {
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
+            AUTO_REFRESH_EVENT->{
+                lazyLoad()
+            }
             DATE_EVENT -> {
                 findDataPlan()
             }

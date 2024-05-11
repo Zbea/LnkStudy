@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +8,15 @@
     >
 
     <include
+        android:id="@+id/ll_title"
         layout="@layout/common_title"
         />
 
     <RelativeLayout
+        android:id="@+id/ll_function"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_title"
         android:layout_marginTop="@dimen/dp_15"
         >
 
@@ -29,7 +32,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="105dp"
                 android:button="@null"
-                android:text="@string/plan_month_str"
+                android:text="月计划"
                 android:textSize="@dimen/sp_24"
                 android:textColor="@drawable/color_black_gray_selector"
                 android:textStyle="bold"
@@ -44,7 +47,7 @@
                 android:layout_marginStart="44dp"
                 android:button="@null"
                 android:gravity="center"
-                android:text="@string/plan_week_str"
+                android:text="周计划"
                 android:textSize="@dimen/sp_24"
                 android:textStyle="bold"
                 android:textColor="@drawable/color_black_gray_selector"
@@ -94,13 +97,14 @@
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/v_content_b"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_function"
         android:src="@mipmap/icon_freenote_bg_1"
-        android:layout_weight="1"
+        android:layout_marginStart="@dimen/drawing_tool_width"
         />
 
     <include
-        layout="@layout/common_drawing_tool_bottom"
+        layout="@layout/common_drawing_tool"
         />
 
-</LinearLayout>
+</RelativeLayout>

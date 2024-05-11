@@ -44,7 +44,6 @@ class CalendarDiaryDialog(private val context: Context,private val screen:Int) {
         if (!diaryTimes.contains(currentDay)){
             diaryTimes.add(currentDay)
         }
-//        initCalendar()
 
         iv_left?.setOnClickListener {
             calendarView?.scrollToPre()
@@ -56,13 +55,12 @@ class CalendarDiaryDialog(private val context: Context,private val screen:Int) {
 
         calendarView?.setOnMonthChangeListener { year, month ->
             tv_year?.text="$year 年  $month 月"
-            diaryTimes=DiaryDaoManager.getInstance().queryLongList(calendarView!!.curYear, calendarView!!.curMonth)
+            diaryTimes=DiaryDaoManager.getInstance().queryLongList(year, month)
             if (month==DateUtils.getMonth()){
                 if (!diaryTimes.contains(currentDay)){
                     diaryTimes.add(currentDay)
                 }
             }
-//            initCalendar()
         }
 
         calendarView?.setOnCalendarSelectListener(object : CalendarView.OnCalendarSelectListener {
@@ -98,19 +96,6 @@ class CalendarDiaryDialog(private val context: Context,private val screen:Int) {
 
         return this
     }
-
-    private fun initCalendar(){
-        for (date in diaryTimes){
-            val years=DateUtils.longToStringDataNoHour(date).split("-")
-            val calendar=Calendar()
-            calendar.year=years[0].toInt()
-            calendar.month=years[1].toInt()
-            calendar.day=years[2].toInt()
-            calendarView!!.putMultiSelect(calendar)
-        }
-    }
-
-
 
     fun show() {
         dialog?.show()

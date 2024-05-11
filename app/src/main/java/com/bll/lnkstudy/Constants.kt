@@ -72,7 +72,8 @@ class Constants {
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
 
         //eventbus通知标志
-        const val REFRESH_EVENT = "RefreshEvent" //刷新页面
+        const val AUTO_REFRESH_EVENT = "AutoRefreshEvent" //每天刷新
+        const val REFRESH_EVENT = "RefreshEvent" //刷新全部页面
         const val AUTO_UPLOAD_LAST_SEMESTER_EVENT = "AutoUploadEventLastSemester" //上学期开学
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
         const val AUTO_UPLOAD_YEAR_EVENT = "AutoUploadEventYEAR" //每年上传
@@ -104,6 +105,7 @@ class Constants {
         const val SETTING_CLEAT_EVENT = "DataClear"
 
         //定时任务标识
+        const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新
         const val ACTION_UPLOAD_8 = "com.bll.lnkstudy.upload_8"
         const val ACTION_UPLOAD_15 = "com.bll.lnkstudy.upload_15"
         const val ACTION_UPLOAD_18 = "com.bll.lnkstudy.upload_18"
@@ -120,7 +122,7 @@ class Constants {
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
 
-            const val INTENT_SCREEN_LABEL="android.intent.extra.LAUNCH_SCREEN"
+        const val INTENT_SCREEN_LABEL="android.intent.extra.LAUNCH_SCREEN"
     }
 
 }

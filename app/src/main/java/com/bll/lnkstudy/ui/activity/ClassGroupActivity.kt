@@ -2,8 +2,10 @@ package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ClassGroupAddDialog
@@ -17,9 +19,8 @@ import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_classgroup.*
+import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -34,9 +35,9 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         presenter.getClassGroupList(true)
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
+        MethodManager.saveClassGroups(classGroups)
         groups = classGroups
         mAdapter?.setNewData(groups)
-        EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
     }
     override fun onQuit() {
         presenter.getClassGroupList(false)
@@ -45,7 +46,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_classgroup
+        return R.layout.ac_list
     }
 
     override fun initData() {
@@ -54,7 +55,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
             presenter.getClassGroupList(true)
         }
         else{
-            showNetworkDialog()
+            groups=MethodManager.getClassGroups()
         }
     }
 
@@ -64,9 +65,22 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
 
     override fun initView() {
         setPageTitle(R.string.classGroup)
+        setImageManager(R.mipmap.icon_add)
 
-        showView(iv_manager)
-        iv_manager.setImageResource(R.mipmap.icon_group_add)
+        iv_manager?.setOnClickListener {
+            addGroup()
+        }
+
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this,100f), DP2PX.dip2px(this,40f),
+            DP2PX.dip2px(this,100f), DP2PX.dip2px(this,20f))
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
 
         mAdapter = ClassGroupAdapter(R.layout.item_classgroup, groups).apply {
             rv_list.layoutManager = LinearLayoutManager(this@ClassGroupActivity)//创建布局管理
@@ -100,11 +114,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                 }
             }
         }
-
-        iv_manager?.setOnClickListener {
-            addGroup()
-        }
-
     }
 
     //加入班群
@@ -114,12 +123,4 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         }
     }
 
-    override fun onNetworkConnectionSuccess() {
-        presenter.getClassGroupList(false)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
-    }
 }

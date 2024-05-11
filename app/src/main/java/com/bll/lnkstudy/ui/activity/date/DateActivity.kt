@@ -45,7 +45,9 @@ class DateActivity:BaseAppCompatActivity() {
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
-                    getDates()
+                    Thread{
+                        getDates()
+                    }.start()
                 }
                 yearPop?.show()
             }
@@ -65,7 +67,9 @@ class DateActivity:BaseAppCompatActivity() {
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
-                    getDates()
+                    Thread {
+                        getDates()
+                    }.start()
                 }
                 monthPop?.show()
             }
@@ -73,6 +77,7 @@ class DateActivity:BaseAppCompatActivity() {
                 monthPop?.show()
             }
         }
+
         Thread {
             getDates()
         }.start()
@@ -88,7 +93,7 @@ class DateActivity:BaseAppCompatActivity() {
             val dateBean=dateBeans[position]
             if (dateBean.year!=0){
                 val intent = Intent(this, DateEventActivity::class.java)
-                intent.putExtra("date",dateBean?.time)
+                intent.putExtra("date",dateBean.time)
                 customStartActivity(intent)
             }
         }
@@ -160,7 +165,6 @@ class DateActivity:BaseAppCompatActivity() {
                 dateBeans.add(DateBean())
             }
         }
-
         runOnUiThread {
             mAdapter?.setNewData(dateBeans)
         }

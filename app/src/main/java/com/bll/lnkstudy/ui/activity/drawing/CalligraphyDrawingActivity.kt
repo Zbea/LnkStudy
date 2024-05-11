@@ -7,7 +7,6 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.DrawingManageDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
@@ -56,8 +55,8 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        iv_draft.setImageResource(R.mipmap.icon_draw_change)
-        iv_commit.setImageResource(R.mipmap.icon_draw_more)
+        disMissView(iv_draft)
+        iv_btn.setImageResource(R.mipmap.icon_draw_change)
         onChangeContent()
 
         tv_page_a.setOnClickListener {
@@ -81,17 +80,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
             }
         }
 
-        iv_commit.setOnClickListener {
-            DrawingManageDialog(this, pops).builder().setOnSelectListener { item ->
-                when(item.id){
-                    0->{
-                        deleteContent()
-                    }
-                }
-            }
-        }
-
-        iv_draft.setOnClickListener {
+        iv_btn.setOnClickListener {
             ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     paintingDrawingBean?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
@@ -212,14 +201,15 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         setBg_b()
 
         setElikLoadPath(elik_b!!, paintingDrawingBean!!)
-        tv_page.text = (page + 1).toString()
+        tv_page.text = "${page+1}/${paintingLists.size}"
 
         //切换页面内容的一些变化
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()
             setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
-            tv_page_a.text = "$page"
+            tv_page.text = "${page}/${paintingLists.size}"
+            tv_page_a.text = "${page+1}/${paintingLists.size}"
         }
     }
 

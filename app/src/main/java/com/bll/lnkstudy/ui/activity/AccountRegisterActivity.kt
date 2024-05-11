@@ -74,12 +74,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){
-            if (DataBeanManager.grades.size==0){
-                fetchCommonData()
-            }
-            else{
-                onCommonData()
-            }
             mSchoolPresenter?.getCommonSchool()
         }
     }
@@ -91,7 +85,8 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
 
     override fun onCommonData() {
         grades=DataBeanManager.popupGrades()
-        tv_grade_str.text=grades[0].name
+        if (grades.size>0)
+            tv_grade_str.text=grades[0].name
     }
 
     override fun initView() {
@@ -126,6 +121,8 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
             }
             presenter?.sms(phone)
         }
+
+        onCommonData()
 
         tv_grade_str.setOnClickListener {
             selectorGrade()
