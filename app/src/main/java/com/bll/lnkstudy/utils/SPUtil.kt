@@ -25,6 +25,7 @@ object SPUtil {
     private lateinit var map: ArrayMap<String, Any>
     private val gson = Gson()
     private lateinit var rootFile: File
+    private val strs= mutableListOf("token","password","account")
 
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -74,7 +75,7 @@ object SPUtil {
 
     fun putString(key: String, value: String) {
         var keyStr=key
-        if (key != "token"){
+        if (!strs.contains(key)){
             keyStr=getUserId()+ key
         }
         map[keyStr] = value
@@ -85,7 +86,7 @@ object SPUtil {
 
     fun getString(key: String): String {
         var keyStr=key
-        if (key != "token"){
+        if (!strs.contains(key)){
             keyStr=getUserId()+ key
         }
         var s = map[keyStr]

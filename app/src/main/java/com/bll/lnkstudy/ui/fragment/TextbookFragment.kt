@@ -52,7 +52,6 @@ class TextbookFragment : BaseMainFragment() {
     }
 
     override fun lazyLoad() {
-        pageIndex=1
         fetchData()
     }
 

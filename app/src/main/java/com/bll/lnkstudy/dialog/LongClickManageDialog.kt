@@ -2,7 +2,7 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
+import android.view.Gravity.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,12 +24,12 @@ class LongClickManageDialog(val context: Context, val screenPos:Int,val name:Str
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = dialog.window?.attributes
         if (screenPos==1){
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+            layoutParams?.gravity =CENTER_VERTICAL or START
         }
         else{
-            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams?.gravity = CENTER_VERTICAL or END
         }
-        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,430F))/2
+        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,460F))/2
         dialog.show()
 
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)

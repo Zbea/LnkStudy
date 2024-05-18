@@ -49,23 +49,29 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         onChangeContent()
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
-                paintingDrawingBean_a?.title = string
-                paintingLists[page-1].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-                DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
-            }
-        }
-
-        tv_page.setOnClickListener {
-            var type=getCurrentScreenPos()
-            if (type==3)
-                type=2
-            InputContentDialog(this,type,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
+            InputContentDialog(this,2,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
                 paintingDrawingBean?.title = string
                 paintingLists[page].title = string
                 PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
                 DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+            }
+        }
+
+        tv_page.setOnClickListener {
+            if (isExpand){
+                InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
+                    paintingDrawingBean_a?.title = string
+                    paintingLists[page-1].title = string
+                    PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+                    DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
+                }
+            }else{
+                InputContentDialog(this,1,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
+                    paintingDrawingBean?.title = string
+                    paintingLists[page].title = string
+                    PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
+                    DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+                }
             }
         }
 

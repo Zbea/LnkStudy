@@ -22,6 +22,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
@@ -81,8 +82,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
         messages.removeAt(homeworkCommit?.index!!)
-        for (i in homeworkCommit?.contents!!) {
-            val homework = homeworks[i - 1]
+        for (index in homeworkCommit?.contents!!) {
+            val homework = homeworks[index]
             homework.state = 1
             homework.title = homeworkCommit?.title
             homework.contentId = homeworkCommit?.messageId!!
@@ -173,23 +174,30 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this,1,homeworkContent_a?.title!!).builder().setOnDialogClickListener { string ->
-                homeworkContent_a?.title = string
-                homeworks[page - 1].title = string
-                HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
-                DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent_a))
-            }
-        }
-
-        tv_page.setOnClickListener {
-            var type=getCurrentScreenPos()
-            if (type==3)
-                type=2
-            InputContentDialog(this,type,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
+            InputContentDialog(this,2,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
                 homeworkContent?.title = string
                 homeworks[page].title = string
                 HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
                 DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent))
+            }
+        }
+
+        tv_page.setOnClickListener {
+            if (isExpand){
+                InputContentDialog(this,1,homeworkContent_a?.title!!).builder().setOnDialogClickListener { string ->
+                    homeworkContent_a?.title = string
+                    homeworks[page-1].title = string
+                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
+                    DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent_a))
+                }
+            }
+            else{
+                InputContentDialog(this,1,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
+                    homeworkContent?.title = string
+                    homeworks[page].title = string
+                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
+                    DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent))
+                }
             }
         }
 
@@ -285,25 +293,56 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
         //已提交后不能手写，显示合图后的图片
         elik_b?.setPWEnabled(homeworkContent?.state == 0)
-
-        if (homeworkContent?.state == 0) {
-            setElikLoadPath(elik_b!!, homeworkContent!!)
-            v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
-        } else {
-            GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
+        when(homeworkContent?.state){
+            1->{
+                GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
+            }
+            2->{
+                GlideUtils.setImageFile(this, File(homeworkContent?.path), v_content_b)
+            }
+            else->{
+                setElikLoadPath(elik_b!!, homeworkContent!!)
+                v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+            }
         }
-        tv_page.text = "${page + 1}"
+        tv_page.text = "${page + 1}/${homeworks.size}"
 
         if (isExpand) {
             elik_a?.setPWEnabled(homeworkContent?.state == 0)
-            if (homeworkContent_a?.state == 0) {
-                setElikLoadPath(elik_a!!, homeworkContent_a!!)
-                v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
-            } else {
-                GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
+            when(homeworkContent_a?.state){
+                1->{
+                    GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
+                }
+                2->{
+                    GlideUtils.setImageFile(this, File(homeworkContent_a?.path), v_content_a)
+                }
+                else->{
+                    setElikLoadPath(elik_a!!, homeworkContent_a!!)
+                    v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+                }
             }
-            tv_page.text = "$page"
-            tv_page_a.text = "${page + 1}"
+            tv_page.text = "$page/${homeworks.size}"
+            tv_page_a.text = "${page + 1}/${homeworks.size}"
+        }
+
+        setScoreDetails(homeworkContent!!)
+    }
+
+    /**
+     * 设置批改详情
+     */
+    private fun setScoreDetails(item:HomeworkContentBean){
+        if (item.state==2){
+            showView(iv_score)
+            correctMode=item.correctMode
+            tv_correct_title.text=item.title
+            tv_total_score.text=item.score
+            if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
+                setScoreListDetails(item.correctJson)
+            }
+        }
+        else{
+            disMissView(iv_score,ll_score)
         }
     }
 
@@ -361,22 +400,22 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (messages.size == 0 || homeworkContent?.state != 0)
             return
         DrawingCommitDialog(this, getCurrentScreenPos(), messages).builder()
-            ?.setOnDialogClickListener {
+            .setOnDialogClickListener {
                 homeworkCommit = it
                 showLoading()
                 commitItems.clear()
-                for (i in homeworkCommit?.contents!!) {
-                    if (i > homeworks.size) {
+                for (index in homeworkCommit?.contents!!) {
+                    if (index > homeworks.size) {
                         hideLoading()
                         showToast(R.string.toast_page_inexistence)
                         return@setOnDialogClickListener
                     }
-                    val homework = homeworks[i - 1]
+                    val homework = homeworks[index]
                     //异步合图后排序
                     Thread {
                         val path = saveImage(homework)
                         commitItems.add(ItemList().apply {
-                            id = i
+                            id = index
                             url = path
                         })
                         if (commitItems.size == homeworkCommit?.contents!!.size) {

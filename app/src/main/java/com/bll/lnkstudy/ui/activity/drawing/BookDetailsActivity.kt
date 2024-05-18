@@ -145,12 +145,12 @@ class BookDetailsActivity : BaseDrawingActivity() {
             page=1
         }
 
-        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
         loadPicture(page, elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
-            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}/${pageCount-pageStart}" else ""
+            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
         }
 
         //设置当前展示页
@@ -194,7 +194,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return if (listFiles.size>0) listFiles[index] else null
+        return if (listFiles.size>index) listFiles[index] else null
     }
 
     override fun onDestroy() {

@@ -9,6 +9,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
+import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -25,6 +26,7 @@ import com.bll.lnkstudy.utils.*
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -44,6 +46,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var childItems = mutableListOf<CatalogChild>()
     private var pageStart=1
     private var page = 0 //当前页码
+    private var bookId=0
 
     override fun onToken(token: String) {
         showLoading()
@@ -103,7 +106,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         initChangeScreenData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
-
+        bookId=homeworkType?.bookId!!
         when(homeworkType?.createStatus){
             1->{
                 val list = homeworkType?.messages
@@ -133,7 +136,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             }
         }
 
-        book = HomeworkBookDaoManager.getInstance().queryBookByID(homeworkType?.bookId!!)
+        book = HomeworkBookDaoManager.getInstance().queryBookByID(bookId)
         if (book == null) return
         page = book?.pageIndex!!
         val catalogFilePath = FileAddress().getPathTextbookCatalog(book?.bookPath!!)
@@ -253,16 +256,37 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             page=1
         }
 
-        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
         loadPicture(page , elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
-            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}/${pageCount-pageStart}" else ""
+            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
         }
+
+        setScoreDetails(page)
 
         //设置当前展示页
         book?.pageUrl = getIndexFile(page)?.path
+    }
+
+    /**
+     * 设置批改详情
+     */
+    private fun setScoreDetails(page:Int){
+        if (HomeworkBookCorrectDaoManager.getInstance().isExistCorrect(bookId,page.toString())){
+            showView(iv_score)
+            val item=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page.toString())
+            correctMode=item.correctMode
+            tv_correct_title.text=item.homeworkTitle
+            tv_total_score.text=item.score
+            if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
+                setScoreListDetails(item.correctJson)
+            }
+        }
+        else{
+            disMissView(iv_score,ll_score)
+        }
     }
 
     //加载图片
@@ -289,11 +313,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun saveElik(elik: EinkPWInterface){
         elik.saveBitmap(true) {}
         if (File(elik.pwBitmapFilePath).exists()){
-            DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
+            DataUpdateManager.editDataUpdate(8,bookId,2,bookId)
         }
         else{
             //创建增量更新
-            DataUpdateManager.createDataUpdate(8,book?.bookId!!,2,book?.bookId!!
+            DataUpdateManager.createDataUpdate(8,bookId,2,bookId
                 ,"",book?.bookDrawPath!!)
         }
     }
@@ -302,31 +326,32 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      * 题卷提交
      */
     private fun commit() {
-        DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder()?.setOnDialogClickListener {
+        DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder().setOnDialogClickListener {
             homeworkCommit=it
             showLoading()
             commitItems.clear()
-            for (i in homeworkCommit?.contents!!){
-                if (i>pageCount)
+            for (index in homeworkCommit?.contents!!){
+                if (index>pageCount)
                 {
                     showToast(R.string.toast_page_inexistence)
                     return@setOnDialogClickListener
                 }
-                val imageFile=getIndexFile(i-1)
+                //查找页码需要加上开始页面的初始下标
+                val imageFile=getIndexFile(index)
                 val path=imageFile?.path.toString()
-                val drawPath = book?.bookDrawPath+"/$i/draw.png"
+                val drawPath = book?.bookDrawPath+"/${index+1}/draw.png"
                 Thread{
                     BitmapUtils.mergeBitmap(path,drawPath)
                     FileUtils.deleteFile(File(drawPath).parentFile)
                     commitItems.add(ItemList().apply {
-                        id = i
+                        id = index
                         url = path
                     })
                     if (commitItems.size==homeworkCommit?.contents!!.size){
                         commitItems.sort()
                         //修手写合图后修改增量更新
-                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,1,book?.bookId!!)
-                        DataUpdateManager.editDataUpdate(8,book?.bookId!!,2,book?.bookId!!)
+                        DataUpdateManager.editDataUpdate(8,bookId,1,bookId)
+                        DataUpdateManager.editDataUpdate(8,bookId,2,bookId)
                         mUploadPresenter.getToken()
                     }
                 }.start()
@@ -338,7 +363,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return if (listFiles.size>0) listFiles[index] else null
+        return if (listFiles.size>index) listFiles[index] else null
     }
 
     override fun onDestroy() {

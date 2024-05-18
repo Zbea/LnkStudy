@@ -29,14 +29,16 @@ public class HomeworkPaperBean {
     public long endTime;//老师需要学生提交时间
     public String path;//文件路径
     public int page;
-    public boolean isPg=false;
+    public boolean isPg;
     public boolean isCommit;//作业是否需要提交
     public int state;//提交状态3学生未提交1已提交未批改2已批改
-
-    @Generated(hash = 527678266)
+    public int correctMode;//批改模式
+    public String score;//成绩
+    public String correctJson;//批改详情
+    @Generated(hash = 2024602864)
     public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
             String type, int index, String title, long endTime, String path, int page, boolean isPg,
-            boolean isCommit, int state) {
+            boolean isCommit, int state, int correctMode, String score, String correctJson) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -51,6 +53,9 @@ public class HomeworkPaperBean {
         this.isPg = isPg;
         this.isCommit = isCommit;
         this.state = state;
+        this.correctMode = correctMode;
+        this.score = score;
+        this.correctJson = correctJson;
     }
     @Generated(hash = 1573712411)
     public HomeworkPaperBean() {
@@ -139,5 +144,22 @@ public class HomeworkPaperBean {
     public void setState(int state) {
         this.state = state;
     }
-    
+    public int getCorrectMode() {
+        return this.correctMode;
+    }
+    public void setCorrectMode(int correctMode) {
+        this.correctMode = correctMode;
+    }
+    public String getScore() {
+        return this.score;
+    }
+    public void setScore(String score) {
+        this.score = score;
+    }
+    public String getCorrectJson() {
+        return this.correctJson;
+    }
+    public void setCorrectJson(String correctJson) {
+        this.correctJson = correctJson;
+    }
 }

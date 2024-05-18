@@ -309,12 +309,9 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
             //加入已选的星期
             for (item in getSelectWeeks()){
-                selectWeekInt.add(item.week)
+                if (!selectWeekInt.contains(item.week))
+                    selectWeekInt.add(item.week)
             }
-            //存储已选星期
-            SPUtil.putListInt("weekDateEvent",selectWeekInt)
-            //清除原来的日期
-            SPUtil.putListLong("dateDateEvent",selectDateLong)
         }
         else{
             dateEventBean?.dates=currentTimes
@@ -323,15 +320,18 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             dateEventBean?.weeks=null
 
             //加入已选日期
-            selectDateLong.addAll(currentTimes)
-            //存储已选日期
-            SPUtil.putListLong("dateDateEvent",selectDateLong)
-            SPUtil.putListInt("weekDateEvent",selectWeekInt)
+            for (lon in currentTimes){
+                if (!selectDateLong.contains(lon))
+                    selectDateLong.add(lon)
+            }
         }
 
+        //存储已选日期
+        SPUtil.putListLong("dateDateEvent",selectDateLong)
+        SPUtil.putListInt("weekDateEvent",selectWeekInt)
+
         val plans = mutableListOf<DatePlan>()
-        val items = mAdapter?.data!!
-        for (item in items) {
+        for (item in mAdapter?.data!!) {
             if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty()&& !item.startTimeStr.isNullOrEmpty() && !item.endTimeStr.isNullOrEmpty()) {
                 item.isEndSelect=false
                 item.isEndSelect=false

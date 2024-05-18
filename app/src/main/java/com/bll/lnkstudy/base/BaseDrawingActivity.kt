@@ -6,12 +6,20 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
 import android.view.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
 import com.bll.lnkstudy.ui.activity.drawing.*
+import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
 import com.bll.lnkstudy.utils.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -33,6 +41,10 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     private var revocationList= mutableListOf<Int>()
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
+    var correctMode=0
+    var currentScores= mutableListOf<ExamScoreItem>()
+    var mTopicScoreAdapter:TopicScoreAdapter?=null
+    var mTopicMultiAdapter:TopicMultiScoreAdapter?=null
 
     override fun initCreate() {
         if (v_content_a!=null && v_content_b!=null){
@@ -48,6 +60,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
         initClick()
         initGeometryView()
+        initScoreView()
     }
 
     private fun initClick(){
@@ -85,6 +98,62 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         iv_expand?.setOnClickListener {
             isClickExpend=true
             onChangeExpandContent()
+        }
+    }
+
+    private fun initScoreView(){
+        setViewElikUnable(iv_score)
+        setViewElikUnable(ll_score)
+        iv_correct_close?.setOnClickListener {
+            disMissView(ll_score)
+            showView(iv_score)
+        }
+
+        iv_score.setOnClickListener {
+            disMissView(iv_score)
+            showView(ll_score)
+        }
+    }
+
+    /**
+     * 设置批改详情小题列表
+     */
+    fun setScoreListDetails(correctJson:String){
+        if (correctMode<3){
+            rv_list_score?.layoutManager = GridLayoutManager(this,5)
+            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,null).apply {
+                rv_list_score?.adapter = this
+                bindToRecyclerView(rv_list_score)
+            }
+        }
+        else{
+            rv_list_score?.layoutManager = LinearLayoutManager(this)
+            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
+                rv_list_score?.adapter = this
+                bindToRecyclerView(rv_list_score)
+            }
+        }
+
+        if (correctMode<3){
+            currentScores= Gson().fromJson(correctJson, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+            mTopicScoreAdapter?.setNewData(currentScores)
+        }
+        else{
+            val scores= Gson().fromJson(correctJson, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
+            for (i in scores.indices){
+                currentScores.add(ExamScoreItem().apply {
+                    sort=i+1
+                    var totalItem=0
+                    for (ite in scores[i]){
+                        if (!ite.score.isNullOrEmpty()){
+                            totalItem+=ite.score.toInt()
+                        }
+                    }
+                    score=totalItem.toString()
+                    childScores=scores[i]
+                })
+            }
+            mTopicMultiAdapter?.setNewData(currentScores)
         }
     }
 
@@ -486,7 +555,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     /**
      * 设置是否可以手写
      */
-    public fun setPWEnabled(boolean: Boolean){
+    fun setPWEnabled(boolean: Boolean){
         elik_a?.setPWEnabled(boolean)
         elik_b?.setPWEnabled(boolean)
     }

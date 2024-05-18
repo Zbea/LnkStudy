@@ -511,6 +511,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         HomeworkPaperContentDaoManager.getInstance().clear()
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
+        HomeworkBookCorrectDaoManager.getInstance().clear()
 
         //删除本地考卷分类
         PaperTypeDaoManager.getInstance().clear()

@@ -19,7 +19,6 @@ public class PaperList implements Serializable {
         @SerializedName("taskId")
         public int examId;//收到考卷 分类id
         public String examName;//收到考卷 分类名称
-        public int score;
         public String submitUrl;
         public String studentUrl;
         @SerializedName("taskImageId")
@@ -28,6 +27,10 @@ public class PaperList implements Serializable {
         public List<String> paths;//图片路径
         public long date;
         public long endTime;
+
+        public int score;
+        public int questionType;//批改模型
+        public String question;//批改详情
     }
 
 }

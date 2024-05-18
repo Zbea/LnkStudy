@@ -61,23 +61,30 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         onChangeContent()
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this,1,note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
-                note_Content_a?.title = string
-                noteContents[page-1].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-                DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,typeId,Gson().toJson(note_Content_a))
-            }
-        }
-
-        tv_page.setOnClickListener {
-            var type=getCurrentScreenPos()
-            if (type==3)
-                type=2
-            InputContentDialog(this,type,noteContent?.title!!).builder().setOnDialogClickListener { string ->
+            InputContentDialog(this,2,noteContent?.title!!).builder().setOnDialogClickListener { string ->
                 noteContent?.title = string
                 noteContents[page].title = string
                 NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
                 DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
+            }
+        }
+
+        tv_page.setOnClickListener {
+            if (isExpand){
+                InputContentDialog(this,1,note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
+                    note_Content_a?.title = string
+                    noteContents[page-1].title = string
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
+                    DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,typeId,Gson().toJson(note_Content_a))
+                }
+            }
+            else{
+                InputContentDialog(this,1,noteContent?.title!!).builder().setOnDialogClickListener { string ->
+                    noteContent?.title = string
+                    noteContents[page].title = string
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+                    DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
+                }
             }
         }
     }

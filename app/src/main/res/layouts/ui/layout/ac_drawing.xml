@@ -37,9 +37,10 @@
                 <TextView
                     android:id="@+id/tv_page_a"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="190dp"
+                    android:paddingTop="@dimen/dp_50"
                     android:gravity="center_horizontal"
-                    android:textSize="@dimen/sp_18"
+                    android:textSize="@dimen/sp_16"
                     android:textColor="@color/black"
                     />
             </LinearLayout>
@@ -70,6 +71,17 @@
         android:visibility="gone"
         />
 
+    <include
+        android:id="@+id/ll_score"
+        layout="@layout/common_correct_score"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:layout_margin="5dp"
+        />
+
     <ImageView
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"
@@ -80,6 +92,18 @@
         android:padding="1dp"
         android:layout_margin="@dimen/dp_10"
         android:src="@mipmap/icon_app_geometry"
+        android:background="@drawable/bg_black_stroke_0dp_corner"
+        />
+
+    <ImageView
+        android:id="@+id/iv_score"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:padding="1dp"
+        android:layout_margin="@dimen/dp_10"
+        android:src="@mipmap/icon_app_correct_score"
         android:background="@drawable/bg_black_stroke_0dp_corner"
         />
 

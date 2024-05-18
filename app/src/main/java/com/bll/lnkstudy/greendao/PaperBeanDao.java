@@ -33,6 +33,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
         public final static Property Path = new Property(7, String.class, "path", false, "PATH");
         public final static Property Page = new Property(8, int.class, "page", false, "PAGE");
+        public final static Property CorrectMode = new Property(9, int.class, "correctMode", false, "CORRECT_MODE");
+        public final static Property Score = new Property(10, String.class, "score", false, "SCORE");
+        public final static Property CorrectJson = new Property(11, String.class, "correctJson", false, "CORRECT_JSON");
     }
 
 
@@ -56,7 +59,10 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
                 "\"TYPE\" TEXT," + // 5: type
                 "\"TITLE\" TEXT," + // 6: title
                 "\"PATH\" TEXT," + // 7: path
-                "\"PAGE\" INTEGER NOT NULL );"); // 8: page
+                "\"PAGE\" INTEGER NOT NULL ," + // 8: page
+                "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 9: correctMode
+                "\"SCORE\" TEXT," + // 10: score
+                "\"CORRECT_JSON\" TEXT);"); // 11: correctJson
     }
 
     /** Drops the underlying database table. */
@@ -97,6 +103,17 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             stmt.bindString(8, path);
         }
         stmt.bindLong(9, entity.getPage());
+        stmt.bindLong(10, entity.getCorrectMode());
+ 
+        String score = entity.getScore();
+        if (score != null) {
+            stmt.bindString(11, score);
+        }
+ 
+        String correctJson = entity.getCorrectJson();
+        if (correctJson != null) {
+            stmt.bindString(12, correctJson);
+        }
     }
 
     @Override
@@ -131,6 +148,17 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             stmt.bindString(8, path);
         }
         stmt.bindLong(9, entity.getPage());
+        stmt.bindLong(10, entity.getCorrectMode());
+ 
+        String score = entity.getScore();
+        if (score != null) {
+            stmt.bindString(11, score);
+        }
+ 
+        String correctJson = entity.getCorrectJson();
+        if (correctJson != null) {
+            stmt.bindString(12, correctJson);
+        }
     }
 
     @Override
@@ -149,7 +177,10 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // type
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // path
-            cursor.getInt(offset + 8) // page
+            cursor.getInt(offset + 8), // page
+            cursor.getInt(offset + 9), // correctMode
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // score
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // correctJson
         );
         return entity;
     }
@@ -165,6 +196,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setPage(cursor.getInt(offset + 8));
+        entity.setCorrectMode(cursor.getInt(offset + 9));
+        entity.setScore(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setCorrectJson(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     @Override

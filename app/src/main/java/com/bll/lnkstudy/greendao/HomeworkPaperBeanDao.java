@@ -38,6 +38,9 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         public final static Property IsPg = new Property(11, boolean.class, "isPg", false, "IS_PG");
         public final static Property IsCommit = new Property(12, boolean.class, "isCommit", false, "IS_COMMIT");
         public final static Property State = new Property(13, int.class, "state", false, "STATE");
+        public final static Property CorrectMode = new Property(14, int.class, "correctMode", false, "CORRECT_MODE");
+        public final static Property Score = new Property(15, String.class, "score", false, "SCORE");
+        public final static Property CorrectJson = new Property(16, String.class, "correctJson", false, "CORRECT_JSON");
     }
 
 
@@ -66,7 +69,10 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
                 "\"PAGE\" INTEGER NOT NULL ," + // 10: page
                 "\"IS_PG\" INTEGER NOT NULL ," + // 11: isPg
                 "\"IS_COMMIT\" INTEGER NOT NULL ," + // 12: isCommit
-                "\"STATE\" INTEGER NOT NULL );"); // 13: state
+                "\"STATE\" INTEGER NOT NULL ," + // 13: state
+                "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 14: correctMode
+                "\"SCORE\" TEXT," + // 15: score
+                "\"CORRECT_JSON\" TEXT);"); // 16: correctJson
     }
 
     /** Drops the underlying database table. */
@@ -112,6 +118,17 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         stmt.bindLong(12, entity.getIsPg() ? 1L: 0L);
         stmt.bindLong(13, entity.getIsCommit() ? 1L: 0L);
         stmt.bindLong(14, entity.getState());
+        stmt.bindLong(15, entity.getCorrectMode());
+ 
+        String score = entity.getScore();
+        if (score != null) {
+            stmt.bindString(16, score);
+        }
+ 
+        String correctJson = entity.getCorrectJson();
+        if (correctJson != null) {
+            stmt.bindString(17, correctJson);
+        }
     }
 
     @Override
@@ -151,6 +168,17 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         stmt.bindLong(12, entity.getIsPg() ? 1L: 0L);
         stmt.bindLong(13, entity.getIsCommit() ? 1L: 0L);
         stmt.bindLong(14, entity.getState());
+        stmt.bindLong(15, entity.getCorrectMode());
+ 
+        String score = entity.getScore();
+        if (score != null) {
+            stmt.bindString(16, score);
+        }
+ 
+        String correctJson = entity.getCorrectJson();
+        if (correctJson != null) {
+            stmt.bindString(17, correctJson);
+        }
     }
 
     @Override
@@ -174,7 +202,10 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
             cursor.getInt(offset + 10), // page
             cursor.getShort(offset + 11) != 0, // isPg
             cursor.getShort(offset + 12) != 0, // isCommit
-            cursor.getInt(offset + 13) // state
+            cursor.getInt(offset + 13), // state
+            cursor.getInt(offset + 14), // correctMode
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // score
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16) // correctJson
         );
         return entity;
     }
@@ -195,6 +226,9 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         entity.setIsPg(cursor.getShort(offset + 11) != 0);
         entity.setIsCommit(cursor.getShort(offset + 12) != 0);
         entity.setState(cursor.getInt(offset + 13));
+        entity.setCorrectMode(cursor.getInt(offset + 14));
+        entity.setScore(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setCorrectJson(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
      }
     
     @Override

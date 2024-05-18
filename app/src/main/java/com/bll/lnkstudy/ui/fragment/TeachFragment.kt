@@ -39,9 +39,11 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     override fun onList(list: TeachingVideoList?) {
     }
     override fun onType(type: TeachingVideoType) {
-        videoType=type
-        SPUtil.putObj("videoType",type)
-        initTab()
+        if (videoType!=type){
+            videoType=type
+            SPUtil.putObj("videoType",type)
+            initTab()
+        }
     }
 
     override fun getLayoutId(): Int {
@@ -73,6 +75,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     //设置头部索引
     private fun initTab() {
+        itemTabTypes.clear()
         itemTabTypes.add(ItemTypeBean().apply {
             title="课程"
             isCheck=true

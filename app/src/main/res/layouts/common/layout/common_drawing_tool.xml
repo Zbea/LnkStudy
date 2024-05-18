@@ -9,7 +9,7 @@
         android:id="@+id/iv_page_up"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginTop="350dp"
+        android:layout_marginTop="250dp"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_page_up" />
 
@@ -29,6 +29,14 @@
         android:scaleType="center"
         android:src="@mipmap/icon_draw_erasure" />
 
+    <ImageView
+        android:id="@+id/iv_draft"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_marginTop="60dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_draft" />
+
 
     <View
         android:id="@+id/ll_hide"
@@ -36,15 +44,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         />
-
-
-    <ImageView
-        android:id="@+id/iv_draft"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginBottom="60dp"
-        android:scaleType="center"
-        android:src="@mipmap/icon_draw_draft" />
 
 
 
@@ -86,9 +85,10 @@
     <TextView
         android:id="@+id/tv_page"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="190dp"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/sp_18"
+        android:paddingTop="@dimen/dp_50"
+        android:textSize="@dimen/sp_16"
         android:textColor="@color/black"
         />
 </LinearLayout>

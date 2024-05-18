@@ -2,10 +2,11 @@ package com.bll.lnkstudy.ui.adapter
 
 
 import android.graphics.Typeface
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.widget.doOnTextChanged
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.date.DatePlan
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -27,9 +28,28 @@ class DatePlanEventAddAdapter(layoutResId: Int, data: List<DatePlan>?) :
         helper.setText(R.id.tv_course,item.course)
         val et_content=helper.getView<EditText>(R.id.et_content)
         et_content.setText(item.content)
-        et_content.doOnTextChanged { text, start, before, count ->
-            item.content = text.toString().trim()
+        val textWatcher=object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun afterTextChanged(p0: Editable?) {
+                item.content = p0.toString().trim()
+            }
+
         }
+//        et_content.doOnTextChanged { text, start, before, count ->
+//            item.content = text.toString().trim()
+//        }
+
+        et_content.setOnFocusChangeListener{_,hasFocus->
+            if (hasFocus){
+                et_content.addTextChangedListener(textWatcher)
+            }else{
+                et_content.removeTextChangedListener(textWatcher)
+            }
+        }
+
 
 //        ll_time.setOnClickListener{
 //            DateTimeSelectorDialog(mContext,item,0).builder()

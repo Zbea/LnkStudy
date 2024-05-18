@@ -21,6 +21,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
@@ -235,40 +236,53 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         pageCount=paperContents.size
         
         setPWEnabled(!paper?.isPg!!)
+        setScoreDetails(paper!!)
 
         //作业未提交 提示时间 以及关闭手写
         if (paper?.state==3){
             val endTime=paper?.endTime!!*1000
-            setPWEnabled(true)
             if (paper?.isCommit==true&&System.currentTimeMillis()<=endTime){
                 showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
             }
-        }
-        else{
-            setPWEnabled(false)
         }
 
         if (isExpand){
             paperContentBean_a=paperContents[page]
             setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a)
-            tv_page.text="${paperContents[page].page+1}"
-
             if (page+1<pageCount){
                 paperContentBean=paperContents[page+1]
                 setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-                tv_page_a.text="${paperContents[page+1].page+1}"
             }
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
                 elik_b?.setPWEnabled(false)
-                tv_page_a.text=""
             }
+            tv_page.text="${paperContents[page].page+1}/${paperContents.size}"
+            tv_page_a.text=if (page+1<pageCount)"${paperContents[page+1].page+1}/${paperContents.size}" else ""
         }
         else{
             paperContentBean=paperContents[page]
             setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-            tv_page.text="${paperContents[page].page+1}"
+            tv_page.text="${paperContents[page].page+1}/${paperContents.size}"
+        }
+    }
+
+    /**
+     * 设置批改详情
+     */
+    private fun setScoreDetails(item: HomeworkPaperBean){
+        if (item.state==2){
+            showView(iv_score)
+            correctMode=item.correctMode
+            tv_correct_title.text=item.title
+            tv_total_score.text=item.score
+            if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
+                setScoreListDetails(item.correctJson)
+            }
+        }
+        else{
+            disMissView(iv_score,ll_score)
         }
     }
     

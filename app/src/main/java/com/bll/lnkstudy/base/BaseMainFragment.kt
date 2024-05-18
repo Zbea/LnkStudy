@@ -61,6 +61,8 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         HomeworkPaperContentDaoManager.getInstance().clear()
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
+        //题卷本批改详情
+        HomeworkBookCorrectDaoManager.getInstance().clear()
         //提交详情
         HomeworkDetailsDaoManager.getInstance().clear()
 

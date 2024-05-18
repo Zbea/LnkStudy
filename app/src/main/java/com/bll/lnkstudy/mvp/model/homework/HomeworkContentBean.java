@@ -28,11 +28,14 @@ public class HomeworkContentBean {
     public long commitDate;
     public String path;//文件路径
     public int page;//页码
+    public int correctMode;//批改模式
+    public String score;//成绩
+    public String correctJson;//批改详情
 
-    @Generated(hash = 4859767)
+    @Generated(hash = 1353007954)
     public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
             String typeStr, int contentId, String title, int state, long date, long commitDate,
-            String path, int page) {
+            String path, int page, int correctMode, String score, String correctJson) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
@@ -46,6 +49,9 @@ public class HomeworkContentBean {
         this.commitDate = commitDate;
         this.path = path;
         this.page = page;
+        this.correctMode = correctMode;
+        this.score = score;
+        this.correctJson = correctJson;
     }
     @Generated(hash = 1693358578)
     public HomeworkContentBean() {
@@ -79,6 +85,12 @@ public class HomeworkContentBean {
     }
     public void setHomeworkTypeId(int homeworkTypeId) {
         this.homeworkTypeId = homeworkTypeId;
+    }
+    public String getTypeStr() {
+        return this.typeStr;
+    }
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
     public int getContentId() {
         return this.contentId;
@@ -122,12 +134,23 @@ public class HomeworkContentBean {
     public void setPage(int page) {
         this.page = page;
     }
-    public String getTypeStr() {
-        return this.typeStr;
+    public int getCorrectMode() {
+        return this.correctMode;
     }
-    public void setTypeStr(String typeStr) {
-        this.typeStr = typeStr;
+    public void setCorrectMode(int correctMode) {
+        this.correctMode = correctMode;
     }
-
-
+    public String getScore() {
+        return this.score;
+    }
+    public void setScore(String score) {
+        this.score = score;
+    }
+    public String getCorrectJson() {
+        return this.correctJson;
+    }
+    public void setCorrectJson(String correctJson) {
+        this.correctJson = correctJson;
+    }
+    
 }

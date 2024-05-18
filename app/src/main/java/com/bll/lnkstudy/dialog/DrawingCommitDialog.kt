@@ -20,16 +20,20 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class DrawingCommitDialog(val context: Context, val screenPos: Int, var items:MutableList<ItemList>) {
+/**
+ * pageStart 为课辅作业的 页码开始值
+ */
+class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart:Int, var items:MutableList<ItemList>) {
+
+    constructor(context: Context,screenPos: Int,items: MutableList<ItemList>):this(context, screenPos, 0, items)
 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
     private var messageId=0
     private var messageTitle=""
     private var postion=0
-    private var tv_selector:TextView?=null
 
-    fun builder(): DrawingCommitDialog? {
+    fun builder(): DrawingCommitDialog {
 
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_drawing_commit)
@@ -46,16 +50,24 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, var items:Mu
             KeyboardUtils.hideSoftKeyboard(context)
         }
 
-        tv_selector = dialog?.findViewById(R.id.tv_selector)
+        val tv_selector = dialog?.findViewById<TextView>(R.id.tv_selector)
         tv_selector?.setOnClickListener {
-            HomeworkMessageSelectorDialog(context, screenPos,items).builder()
-                ?.setOnDialogClickListener {postion,it->
-                    this.postion=postion
-                    messageId = it.id
-                    messageTitle=it.name
-                    tv_selector?.text=messageTitle
-                }
+            if (items.size>1){
+                HomeworkMessageSelectorDialog(context, screenPos,items).builder()
+                    ?.setOnDialogClickListener {postion,it->
+                        this.postion=postion
+                        messageId = it.id
+                        messageTitle=it.name
+                        tv_selector?.text=messageTitle
+                    }
+            }
         }
+        if (items.size==1){
+            messageId = items[0].id
+            messageTitle=items[0].name
+            tv_selector?.text=messageTitle
+        }
+
         val et_page1 = dialog?.findViewById<EditText>(R.id.et_page1)
         val et_page2 = dialog?.findViewById<EditText>(R.id.et_page2)
 
@@ -109,16 +121,22 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, var items:Mu
                     }
                 }
                 pages.sort()
+
                 if (pages.size==0){
                     SToast.showText(if (screenPos == 3) 2 else screenPos, R.string.toast_homework_page)
                     return@setOnClickListener
+                }
+
+                val realPageIndexs= mutableListOf<Int>()
+                for (i in pages){
+                    realPageIndexs.add(i+pageStart-1)
                 }
 
                 val item = HomeworkCommit()
                 item.index=postion
                 item.messageId = messageId
                 item.title = messageTitle
-                item.contents = pages
+                item.contents = realPageIndexs
                 listener?.onClick(item)
                 dismiss()
             } else {
@@ -157,17 +175,25 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, var items:Mu
             helper.setVisible(R.id.et_name,!item.isAdd)
             helper.setVisible(R.id.iv_add,item.isAdd)
             val etName=helper.getView<EditText>(R.id.et_name)
-            etName.addTextChangedListener(object : TextWatcher {
+            val textWatcher=object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+                override fun afterTextChanged(p0: Editable?) {
                     val str=p0.toString()
                     if (str.isNotEmpty())
                         item.page=str.toInt()
                 }
-                override fun afterTextChanged(p0: Editable?) {
+            }
+            etName.setOnFocusChangeListener{_,hasFocus->
+                if (hasFocus){
+                    etName.addTextChangedListener(textWatcher)
+                }else{
+                    etName.removeTextChangedListener(textWatcher)
                 }
-            })
+            }
+
         }
 
     }

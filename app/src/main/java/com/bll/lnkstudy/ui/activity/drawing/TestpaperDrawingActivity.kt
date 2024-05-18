@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.R
@@ -13,6 +12,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
@@ -134,13 +134,14 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
         paperContentCount=paperContents.size
 
-        if (isExpand){
-            setElikLoadPath(page,elik_a!!,v_content_a)
-            tv_page.text="${paperContents[page].page+1}"
+        setScoreDetails(paper!!)
 
+        tv_page.text="${paperContents[page].page+1}/${paperContentCount}"
+        if (isExpand){
+            setElikLoadPath(page,v_content_a)
             if (page+1<paperContentCount){
-                setElikLoadPath(page+1,elik_b!!,v_content_b)
-                tv_page_a.text="${paperContents[page+1].page+1}"
+                setElikLoadPath(page+1,v_content_b)
+                tv_page_a.text="${paperContents[page+1].page+1}/${paperContentCount}"
             }
             else{
                 //不显示 ，不能手写
@@ -149,14 +150,25 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
             }
         }
         else{
-            setElikLoadPath(page,elik_b!!,v_content_b)
-            tv_page.text="${paperContents[page].page+1}"
+            setElikLoadPath(page,v_content_b)
         }
     }
 
+    /**
+     * 设置批改详情
+     */
+    private fun setScoreDetails(item: PaperBean){
+        showView(iv_score)
+        correctMode=item.correctMode
+        tv_correct_title.text=item.title
+        tv_total_score.text=item.score
+        if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
+            setScoreListDetails(item.correctJson)
+        }
+    }
 
     //加载图片
-    private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
+    private fun setElikLoadPath(index: Int, view:ImageView) {
         val testPaperContent=paperContents[index]
         GlideUtils.setImageFile(this,File(testPaperContent.path),view)
 //        elik.setLoadFilePath(testPaperContent.drawPath,true)

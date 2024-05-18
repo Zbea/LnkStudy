@@ -239,6 +239,9 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             title=item.title
             path=FileAddress().getPathTestPaper(item.examId, item.id)
             page=papers.size
+            score=item.score.toString()
+            correctJson=item.question
+            correctMode=item.questionType
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,item.id,2,item.commonTypeId,Gson().toJson(paper))
@@ -274,6 +277,9 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             title=item.examName
             path=FileAddress().getPathExam(item.typeId, item.id)
             page=papers.size
+            score=item.score.toString()
+            correctJson=item.question
+            correctMode=item.questionType
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,item.id,2,item.typeId,Gson().toJson(paper))
