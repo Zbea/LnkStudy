@@ -74,7 +74,7 @@
     <include
         android:id="@+id/ll_score"
         layout="@layout/common_correct_score"
-        android:layout_width="600dp"
+        android:layout_width="700dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
@@ -103,6 +103,7 @@
         android:layout_alignParentEnd="true"
         android:padding="1dp"
         android:layout_margin="@dimen/dp_10"
+        android:visibility="gone"
         android:src="@mipmap/icon_app_correct_score"
         android:background="@drawable/bg_black_stroke_0dp_corner"
         />

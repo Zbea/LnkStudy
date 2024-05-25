@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.graphics.BitmapFactory
 import android.view.EinkPWInterface
+import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -89,7 +90,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             homework.contentId = homeworkCommit?.messageId!!
             homework.commitDate = System.currentTimeMillis()
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-            DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homeworkTypeId, Gson().toJson(homework))
+            DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, Gson().toJson(homework))
         }
 
         //添加提交详情
@@ -178,7 +179,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 homeworkContent?.title = string
                 homeworks[page].title = string
                 HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-                DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent))
+                DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, Gson().toJson(homeworkContent))
             }
         }
 
@@ -188,7 +189,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     homeworkContent_a?.title = string
                     homeworks[page-1].title = string
                     HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
-                    DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent_a))
+                    DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, Gson().toJson(homeworkContent_a))
                 }
             }
             else{
@@ -196,7 +197,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     homeworkContent?.title = string
                     homeworks[page].title = string
                     HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-                    DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, homeworkTypeId, Gson().toJson(homeworkContent))
+                    DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, Gson().toJson(homeworkContent))
                 }
             }
         }
@@ -333,12 +334,16 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private fun setScoreDetails(item:HomeworkContentBean){
         if (item.state==2){
-            showView(iv_score)
+            if (!ll_score.isVisible)
+                showView(iv_score)
             correctMode=item.correctMode
             tv_correct_title.text=item.title
             tv_total_score.text=item.score
             if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
                 setScoreListDetails(item.correctJson)
+            }
+            else{
+                disMissView(rv_list_multi,rv_list_score)
             }
         }
         else{
@@ -364,7 +369,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private fun saveElik(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
         elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(2, homeworkContent.id.toInt(), 2, homeworkTypeId)
+        DataUpdateManager.editDataUpdate(2, homeworkContent.id.toInt(), 2,homeworkTypeId)
     }
 
 
@@ -391,7 +396,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.id = id
         homeworks.add(homeworkContent!!)
 
-        DataUpdateManager.createDataUpdate(2, id.toInt(), 2, homeworkTypeId, 2, Gson().toJson(homeworkContent), path)
+        DataUpdateManager.createDataUpdateTypeId(2, id.toInt(), 2,homeworkTypeId , Gson().toJson(homeworkContent), path)
     }
 
 

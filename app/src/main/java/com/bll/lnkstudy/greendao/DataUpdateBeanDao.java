@@ -36,6 +36,7 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         public final static Property DownloadUrl = new Property(9, String.class, "downloadUrl", false, "DOWNLOAD_URL");
         public final static Property Path = new Property(10, String.class, "path", false, "PATH");
         public final static Property IsDelete = new Property(11, boolean.class, "isDelete", false, "IS_DELETE");
+        public final static Property IsUpload = new Property(12, boolean.class, "isUpload", false, "IS_UPLOAD");
     }
 
 
@@ -62,7 +63,8 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
                 "\"DATE\" INTEGER NOT NULL ," + // 8: date
                 "\"DOWNLOAD_URL\" TEXT," + // 9: downloadUrl
                 "\"PATH\" TEXT," + // 10: path
-                "\"IS_DELETE\" INTEGER NOT NULL );"); // 11: isDelete
+                "\"IS_DELETE\" INTEGER NOT NULL ," + // 11: isDelete
+                "\"IS_UPLOAD\" INTEGER NOT NULL );"); // 12: isUpload
     }
 
     /** Drops the underlying database table. */
@@ -102,6 +104,7 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             stmt.bindString(11, path);
         }
         stmt.bindLong(12, entity.getIsDelete() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsUpload() ? 1L: 0L);
     }
 
     @Override
@@ -135,6 +138,7 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             stmt.bindString(11, path);
         }
         stmt.bindLong(12, entity.getIsDelete() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsUpload() ? 1L: 0L);
     }
 
     @Override
@@ -156,7 +160,8 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
             cursor.getLong(offset + 8), // date
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // downloadUrl
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // path
-            cursor.getShort(offset + 11) != 0 // isDelete
+            cursor.getShort(offset + 11) != 0, // isDelete
+            cursor.getShort(offset + 12) != 0 // isUpload
         );
         return entity;
     }
@@ -175,6 +180,7 @@ public class DataUpdateBeanDao extends AbstractDao<DataUpdateBean, Long> {
         entity.setDownloadUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setPath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setIsDelete(cursor.getShort(offset + 11) != 0);
+        entity.setIsUpload(cursor.getShort(offset + 12) != 0);
      }
     
     @Override

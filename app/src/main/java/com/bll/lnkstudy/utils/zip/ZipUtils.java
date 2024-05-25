@@ -1,8 +1,6 @@
 package com.bll.lnkstudy.utils.zip;
 
 import com.bll.lnkstudy.FileAddress;
-import com.bll.lnkstudy.utils.zip.IZipCallback;
-import com.bll.lnkstudy.utils.zip.ZipManager;
 
 import net.lingala.zip4j.util.Zip4jUtil;
 
@@ -50,7 +48,7 @@ public class ZipUtils {
         if(unZipFile.exists()){
             unZipFile.delete();
         }else {
-            unZipFile.mkdir();
+            unZipFile.mkdirs();
         }
         //开始解压
         ZipManager.unzip(targetZipFilePath,fileTargetPath,callback);

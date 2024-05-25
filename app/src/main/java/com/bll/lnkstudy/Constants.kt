@@ -67,9 +67,8 @@ class Constants {
         val PAINTING_PATH = MyApplication.mContext.getExternalFilesDir("Painting")!!.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")!!.path
 
-        //断点记录文件保存的文件夹
-        val RECORDER_PATH = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
+        val DIARY_PATH = MyApplication.mContext.getExternalFilesDir("Diary")?.path
 
         //eventbus通知标志
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent" //每天刷新
@@ -87,7 +86,7 @@ class Constants {
         const val APP_UNINSTALL_EVENT = "AppUninstallEvent"//应用卸载安装通知
         const val APP_INSERT_EVENT = "AppInsertEvent"//工具保存通知
         const val COURSEITEM_EVENT = "ClassItemEvent" //学生科目刷新
-        const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
+        const val NOTE_TAB_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val RECORD_EVENT = "RecordEvent"//语音作业本录音通知
         const val MESSAGE_COMMIT_EVENT = "MessageCommitEvent"//发送消息提交通知刷新

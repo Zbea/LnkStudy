@@ -347,6 +347,6 @@ public class FileUtils {
             return false;
         }
         List<File> files=getFiles(path);
-        return files!=null&&files.size()>0;
+        return files.size()>0;
     }
 }

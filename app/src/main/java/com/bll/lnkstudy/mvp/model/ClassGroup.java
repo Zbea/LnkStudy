@@ -1,9 +1,6 @@
 package com.bll.lnkstudy.mvp.model;
 
-import androidx.annotation.Nullable;
-
 import java.io.Serializable;
-import java.util.Objects;
 
 //班群
 public class ClassGroup implements Serializable {

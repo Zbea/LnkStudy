@@ -70,7 +70,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                     ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
                     Collections.swap(notebooks,position,0)
                     setNotify()
-                    DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,2,Gson().toJson(notebook))
+                    DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
                 }
             }
         }
@@ -80,7 +80,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
     //设置刷新通知
     private fun setNotify(){
         mAdapter?.notifyDataSetChanged()
-        EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
+        EventBus.getDefault().post(Constants.NOTE_TAB_MANAGER_EVENT)
     }
 
     //删除
@@ -94,17 +94,17 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 notebooks.removeAt(position)
                 //删除笔记本
                 ItemTypeDaoManager.getInstance().deleteBean(noteBook)
-                DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1,2)
+                DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1)
                 val notes= NoteDaoManager.getInstance().queryAll(noteBook.title)
                 //删除该笔记分类中的所有笔记本及其内容
                 for (note in notes){
                     //删除当前笔记本增量更新
-                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2,2)
+                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2)
                     //获取所有内容
                     val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
                     //删除当前笔记本内容增量更新
                     for (item in noteContents){
-                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3,2)
+                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3)
                     }
                     //本地笔记本以及笔记内容数据
                     NoteDaoManager.getInstance().deleteBean(note)
@@ -135,18 +135,18 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                     noteContent.typeStr=string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
                     //修改增量更新
-                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,2,Gson().toJson(noteContent))
+                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,Gson().toJson(noteContent))
                 }
                 note.typeStr=string
                 NoteDaoManager.getInstance().insertOrReplace(note)
                 //修改增量更新
-                DataUpdateManager.editDataUpdate(4,note.id.toInt(),2,2,Gson().toJson(note))
+                DataUpdateManager.editDataUpdate(4,note.id.toInt(),2,Gson().toJson(note))
             }
             notebook.title = string
             ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
             setNotify()
             //修改增量更新
-            DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,2,Gson().toJson(notebook))
+            DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
         }
     }
 

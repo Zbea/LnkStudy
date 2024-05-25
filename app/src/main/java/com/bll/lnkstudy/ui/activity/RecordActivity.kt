@@ -66,8 +66,7 @@ class RecordActivity : BaseAppCompatActivity() {
             recordBean?.path = pathFile
             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
             //创建增量数据
-            DataUpdateManager.createDataUpdate(2,id.toInt(),2,recordBean?.typeId!!,3
-                ,Gson().toJson(recordBean),pathFile!!)
+            DataUpdateManager.createDataUpdateTypeId(2,id.toInt(),2,recordBean?.typeId!!,Gson().toJson(recordBean),pathFile!!)
 
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()

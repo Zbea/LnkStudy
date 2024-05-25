@@ -29,6 +29,7 @@ public class ItemTypeBean implements Serializable {
     public boolean isNew;
     @Transient
     public boolean isCheck;
+
     @Generated(hash = 851936574)
     public ItemTypeBean(Long id, long userId, String title, int type, long date, String path, int grade,
             boolean isNew) {

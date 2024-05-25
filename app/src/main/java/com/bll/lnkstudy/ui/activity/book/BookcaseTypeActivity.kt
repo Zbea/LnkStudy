@@ -114,7 +114,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
                 mAdapter?.remove(pos)
                 EventBus.getDefault().post(BOOK_EVENT)
                 //删除增量更新
-                DataUpdateManager.deleteDateUpdate(6,book.bookId,1,book.bookId)
+                DataUpdateManager.deleteDateUpdate(6,book.bookId,1)
             }
     }
 

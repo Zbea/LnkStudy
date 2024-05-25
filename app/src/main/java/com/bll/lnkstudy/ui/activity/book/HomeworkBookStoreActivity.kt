@@ -1,7 +1,10 @@
 package com.bll.lnkstudy.ui.activity.book
 
 import android.os.Handler
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
@@ -15,7 +18,6 @@ import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.dialog_book_detail.*
@@ -178,10 +180,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                     time=System.currentTimeMillis()
                 }
                 HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)
-                //创建增量更新
-                DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId
-                    ,Gson().toJson(homeworkBookBean),book.downloadUrl)
-
                 book.loadSate=2
                 disMissView(btn_ok)
 

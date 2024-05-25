@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.utils
 
 import android.util.Log
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.google.gson.Gson
 import com.qiniu.android.storage.Configuration
@@ -25,8 +25,7 @@ class FileImageUploadManager(private val uploadToken:String,private val paths:Li
 
     private fun upload(index:Int) {
         val path=paths[index]
-        val dirPath = Constants.RECORDER_PATH
-        val recorder = FileRecorder(dirPath)
+        val recorder = FileRecorder(FileAddress().getPathRecorder())
         //默认使用 key 的 url_safe_base64 编码字符串作为断点记录文件的文件名
         //避免记录文件冲突（特别是 key 指定为 null 时），也可自定义文件名(下方为默认实现)：
         val keyGen = object : KeyGenerator {

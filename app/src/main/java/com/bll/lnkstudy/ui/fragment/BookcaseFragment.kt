@@ -176,8 +176,8 @@ class BookcaseFragment: BaseMainFragment() {
             FileUtils.deleteFile(File(bookBean.bookDrawPath))
             BookGreenDaoManager.getInstance().deleteBook(bookBean)
             //删除增量数据
-            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1,bookBean.bookId)
-            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,2,bookBean.bookId)
+            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1)
+            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,2)
         }
         lazyLoad()
     }

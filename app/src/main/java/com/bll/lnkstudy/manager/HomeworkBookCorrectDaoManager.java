@@ -60,6 +60,12 @@ public class HomeworkBookCorrectDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public long insertOrReplaceGetId(HomeworkBookCorrectBean bean) {
+        dao.insertOrReplace(bean);
+        List<HomeworkBookCorrectBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
+    }
+
     public List<HomeworkBookCorrectBean> queryCorrectBeanID(int bookID) {
         WhereCondition whereCondition= HomeworkBookCorrectBeanDao.Properties.BookId.eq(bookID);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();

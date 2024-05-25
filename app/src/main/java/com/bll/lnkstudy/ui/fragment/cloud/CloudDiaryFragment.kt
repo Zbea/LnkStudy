@@ -4,6 +4,7 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
@@ -87,7 +88,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
     private fun download(item:DiaryBean){
         item.id=null//设置数据库id为null用于重新加入
         showLoading()
-        val fileName=DateUtils.longToString(item.date)
+        val fileName=DateUtils.longToStringCalender(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
         val fileTargetPath= FileAddress().getPathDiary(fileName)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
@@ -100,7 +101,8 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
-                            DiaryDaoManager.getInstance().insertOrReplace(item)
+                            val id=DiaryDaoManager.getInstance().insertOrReplaceGetId(item)
+                            DataUpdateManager.createDataUpdate(8,id.toInt(),1,Gson().toJson(item),fileTargetPath)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({

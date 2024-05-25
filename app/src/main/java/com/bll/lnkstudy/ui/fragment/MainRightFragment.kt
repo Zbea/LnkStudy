@@ -193,7 +193,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (examItem?.examUrl.isNullOrEmpty()){
             return
         }
-        val pathStr = FileAddress().getPathTestPaper(examItem?.commonTypeId!!, id)
+        val pathStr = FileAddress().getPathTestPaper(examItem?.commonTypeId!!, examItem?.id!!)
         val files = FileUtils.getFiles(pathStr)
         val images=examItem?.examUrl!!.split(",").toMutableList()
         val paths= mutableListOf<String>()

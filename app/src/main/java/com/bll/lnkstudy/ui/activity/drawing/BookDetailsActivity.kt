@@ -181,12 +181,11 @@ class BookDetailsActivity : BaseDrawingActivity() {
     private fun saveElik(elik: EinkPWInterface){
         elik.saveBitmap(true) {}
         if (File(elik.pwBitmapFilePath).exists()){
-            DataUpdateManager.editDataUpdate(1,book?.bookId!!,2,book?.bookId!!)
+            DataUpdateManager.editDataUpdate(1,book?.bookId!!,2)
         }
         else{
             //创建增量更新
-            DataUpdateManager.createDataUpdate(1,book?.bookId!!,2,book?.bookId!!
-                ,"",book?.bookDrawPath!!)
+            DataUpdateManager.createDataUpdate(1,book?.bookId!!,2,"",book?.bookDrawPath!!)
         }
     }
 

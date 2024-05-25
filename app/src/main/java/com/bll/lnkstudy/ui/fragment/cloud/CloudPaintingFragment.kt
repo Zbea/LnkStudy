@@ -15,7 +15,6 @@ import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.ui.adapter.CloudPaintingLocalAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -39,7 +38,6 @@ class CloudPaintingFragment : BaseCloudFragment() {
     private var position=0
     private var cloudLists= mutableListOf<CloudListBean>()
     private var mLocalAdapter: CloudPaintingLocalAdapter?=null
-    private var paintings= mutableListOf<PaintingBean>()//线上数据
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_cloud_content
@@ -134,7 +132,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                             typeBean.id=null
                             val id=ItemTypeDaoManager.getInstance().insertOrReplaceGetId(typeBean)
                             //创建本地画本增量更新
-                            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(typeBean))
+                            DataUpdateManager.createDataUpdate(5,id.toInt(),1, Gson().toJson(typeBean))
 
                             //存储画本内容
                             val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
@@ -143,7 +141,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                                 drawingBean.id=null
                                 val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                 //创建本地画本增量更新
-                                DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(drawingBean),drawingBean.path)
+                                DataUpdateManager.createDataUpdate(5,id.toInt(),2, Gson().toJson(drawingBean),File(drawingBean.path).parent)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
@@ -183,7 +181,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 }
                 override fun ok() {
                     val ids= mutableListOf<Int>()
-                    ids.add(paintings[position].cloudId)
+                    ids.add(cloudLists[position].id)
                     mCloudPresenter.deleteCloud(ids)
                 }
             })

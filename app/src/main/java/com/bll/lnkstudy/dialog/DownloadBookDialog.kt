@@ -11,7 +11,7 @@ import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.utils.GlideUtils
 
 
-class BookDetailsDialog(private val context: Context, private val book: BookBean) {
+class DownloadBookDialog(private val context: Context, private val book: BookBean) {
 
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null

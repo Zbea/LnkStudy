@@ -12,15 +12,12 @@ import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
-import java.io.File
 
 class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
@@ -32,7 +29,6 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     private var page = 0//页码
     private var resId_b=0
     private var resId_a=0
-    private val pops= mutableListOf<PopupBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -42,8 +38,6 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("calligraphy") as ItemTypeBean
         grade=paintingTypeBean?.grade!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,grade)
-
-        pops.add(PopupBean(0, getString(R.string.delete), false))
 
         if (paintingLists.size > 0) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
@@ -64,7 +58,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                 paintingDrawingBean?.title = string
                 paintingLists[page].title = string
                 PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+                editDataUpdate(paintingDrawingBean!!)
             }
         }
 
@@ -74,7 +68,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                     paintingDrawingBean_a?.title = string
                     paintingLists[page-1].title = string
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-                    DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
+                    editDataUpdate(paintingDrawingBean_a!!)
                 }
             }
             else{
@@ -82,7 +76,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                     paintingDrawingBean?.title = string
                     paintingLists[page].title = string
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                    DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+                    editDataUpdate(paintingDrawingBean!!)
                 }
             }
         }
@@ -92,11 +86,13 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                 ?.setOnDialogClickListener { moduleBean ->
                     paintingDrawingBean?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
+                    editDataUpdate(paintingDrawingBean!!)
                     resId_b=moduleBean.resContentId
                     setBg_b()
                     if (isExpand){
                         paintingDrawingBean_a?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                         PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+                        editDataUpdate(paintingDrawingBean_a!!)
                         resId_a=moduleBean.resContentId
                         setBg_a()
                     }
@@ -239,7 +235,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
      */
     private fun saveElik(elik: EinkPWInterface,item: PaintingDrawingBean){
         elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2,1)
+        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2)
     }
 
 
@@ -262,22 +258,14 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
         val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)
         //创建本地画本增量更新
-        DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(paintingDrawingBean),path)
+        DataUpdateManager.createDataUpdate(5,id.toInt(),2,Gson().toJson(paintingDrawingBean),path)
     }
 
-    //删除内容
-    private fun deleteContent() {
-        PaintingDrawingDaoManager.getInstance().deleteBean(paintingDrawingBean)
-        paintingLists.remove(paintingDrawingBean)
-        FileUtils.deleteFile(File(paintingDrawingBean?.path).parentFile)//删除文件
-        //删除本地画本增量更新
-        DataUpdateManager.deleteDateUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1)
-        if (page>0){
-            page -= 1
-        }
-        else{
-            newPaintingContent()
-        }
-        onChangeContent()
+    /**
+     * 修改增量更新
+     */
+    private fun editDataUpdate(item: PaintingDrawingBean){
+        DataUpdateManager.editDataUpdate(5,item.id!!.toInt(),2, Gson().toJson(item))
     }
+
 }

@@ -68,7 +68,7 @@ interface APIService{
      * 清空增量更新
      */
     @POST("student/data/deleteAll")
-    fun onClearDataUpdate(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun onClearDataUpdate(): Observable<BaseResult<Any>>
     /**
      * 用户登录 "/login"
      */
@@ -278,7 +278,6 @@ interface APIService{
      */
     @POST("task/group/studentListPlus")
     fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
-
 
 //    /**
 //     * 获取学生提交详情

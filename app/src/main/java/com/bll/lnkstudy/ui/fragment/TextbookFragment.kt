@@ -105,8 +105,8 @@ class TextbookFragment : BaseMainFragment() {
                                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                                     FileUtils.deleteFile(File(book.bookDrawPath))
                                     //删除增量更新
-                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
-                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2,book.bookId)
+                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1)
+                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2)
                                 }
                                 books.clear()
                                 mAdapter?.notifyDataSetChanged()
@@ -151,16 +151,15 @@ class TextbookFragment : BaseMainFragment() {
                     FileUtils.deleteFile(File(book.bookDrawPath))
                     mAdapter?.remove(position)
                     //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1,book.bookId)
-                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2,book.bookId)
+                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1)
+                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2)
                 }
                 else{
                     book.isLock=!book.isLock
                     mAdapter?.notifyItemChanged(position)
                     bookGreenDaoManager.insertOrReplaceBook(book)
                     //修改增量更新
-                    DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId
-                        ,Gson().toJson(book))
+                    DataUpdateManager.editDataUpdate(1,book.bookId,1,Gson().toJson(book))
                 }
             }
     }
@@ -232,7 +231,7 @@ class TextbookFragment : BaseMainFragment() {
         for (item in items){
             item.typeStr=getString(R.string.textbook_tab_old)
             //修改增量更新
-            DataUpdateManager.editDataUpdate(1,item.bookId,1,item.bookId,Gson().toJson(item))
+            DataUpdateManager.editDataUpdate(1,item.bookId,1,Gson().toJson(item))
         }
         bookGreenDaoManager.insertOrReplaceBooks(items)
 
@@ -264,7 +263,7 @@ class TextbookFragment : BaseMainFragment() {
             FileUtils.deleteFile(File(item.bookPath))
             FileUtils.deleteFile(File(item.bookDrawPath))
             //删除增量更新
-            DataUpdateManager.deleteDateUpdate(1,item.bookId,1,item.bookId)
+            DataUpdateManager.deleteDateUpdate(1,item.bookId,1)
         }
         lazyLoad()
     }

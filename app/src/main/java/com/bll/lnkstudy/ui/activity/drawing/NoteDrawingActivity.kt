@@ -65,7 +65,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 noteContent?.title = string
                 noteContents[page].title = string
                 NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-                DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
+                DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,Gson().toJson(noteContent))
             }
         }
 
@@ -75,7 +75,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                     note_Content_a?.title = string
                     noteContents[page-1].title = string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-                    DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,typeId,Gson().toJson(note_Content_a))
+                    DataUpdateManager.editDataUpdate(4,note_Content_a?.id!!.toInt(),3,Gson().toJson(note_Content_a))
                 }
             }
             else{
@@ -83,7 +83,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                     noteContent?.title = string
                     noteContents[page].title = string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-                    DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,typeId,Gson().toJson(noteContent))
+                    DataUpdateManager.editDataUpdate(4,noteContent?.id!!.toInt(),3,Gson().toJson(noteContent))
                 }
             }
         }
@@ -213,7 +213,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
      */
     private fun saveElik(elik: EinkPWInterface,item: NoteContentBean){
         elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(4,item.id.toInt(),3,typeId)
+        DataUpdateManager.editDataUpdate(4,item.id.toInt(),3)
     }
 
     //创建新的作业内容

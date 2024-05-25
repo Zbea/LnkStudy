@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -275,13 +276,17 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      */
     private fun setScoreDetails(page:Int){
         if (HomeworkBookCorrectDaoManager.getInstance().isExistCorrect(bookId,page.toString())){
-            showView(iv_score)
+            if (!ll_score.isVisible)
+                showView(iv_score)
             val item=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page.toString())
             correctMode=item.correctMode
             tv_correct_title.text=item.homeworkTitle
             tv_total_score.text=item.score
             if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
                 setScoreListDetails(item.correctJson)
+            }
+            else{
+                disMissView(rv_list_multi,rv_list_score)
             }
         }
         else{
@@ -313,12 +318,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun saveElik(elik: EinkPWInterface){
         elik.saveBitmap(true) {}
         if (File(elik.pwBitmapFilePath).exists()){
-            DataUpdateManager.editDataUpdate(8,bookId,2,bookId)
+            DataUpdateManager.editDataUpdate(7,bookId,1)
         }
         else{
             //创建增量更新
-            DataUpdateManager.createDataUpdate(8,bookId,2,bookId
-                ,"",book?.bookDrawPath!!)
+            DataUpdateManager.createDataUpdateBook(7,bookId,1,book?.bookDrawPath!!)
         }
     }
 
@@ -349,9 +353,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     })
                     if (commitItems.size==homeworkCommit?.contents!!.size){
                         commitItems.sort()
-                        //修手写合图后修改增量更新
-                        DataUpdateManager.editDataUpdate(8,bookId,1,bookId)
-                        DataUpdateManager.editDataUpdate(8,bookId,2,bookId)
                         mUploadPresenter.getToken()
                     }
                 }.start()

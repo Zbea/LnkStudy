@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -10,6 +11,7 @@ import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.DiaryBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
@@ -151,7 +153,8 @@ class DiaryActivity:BaseDrawingActivity() {
         if (!File(path).list().isNullOrEmpty()){
             diaryBean?.paths = images
             diaryBean?.page=posImage
-            DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
+            val id=DiaryDaoManager.getInstance().insertOrReplaceGetId(diaryBean)
+            DataUpdateManager.createDataUpdate(8,id.toInt(),1,Gson().toJson(diaryBean),path)
         }
     }
 

@@ -347,6 +347,8 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                             createStatus=0
                         }
                         HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                        //创建增量数据
+                        DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
                     }
                     val homeworkBookBean= HomeworkBookBean().apply {
                         bookId=book.bookId
@@ -366,9 +368,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                         time=System.currentTimeMillis()
                     }
                     HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)
-                    //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(8,book.bookId,1,book.bookId
-                        ,Gson().toJson(homeworkBookBean),book.downloadUrl)
                     book.loadSate=2
                 }
                 else{
@@ -382,8 +381,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                     //下载解压完成后更新存储的book
                     TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
-                        ,Gson().toJson(book),book.downloadUrl)
+                    DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
                 }
                 //更新列表
                 mAdapter?.notifyItemChanged(books.indexOf(book))

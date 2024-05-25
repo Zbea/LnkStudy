@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
-import com.bll.lnkstudy.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
+import com.bll.lnkstudy.Constants.Companion.NOTE_TAB_MANAGER_EVENT
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
@@ -38,6 +38,7 @@ class NoteFragment : BaseMainFragment(){
     private var noteTypes = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
     private var positionType = 0//当前笔记本标记
+    private var typeId=1
     private var typeStr = "" //当前笔记本类型
     private var mAdapter: NotebookAdapter? = null
     private var position = 0 //当前笔记标记
@@ -121,7 +122,6 @@ class NoteFragment : BaseMainFragment(){
                                         note.isCancelPassword=!note.isCancelPassword
                                         NoteDaoManager.getInstance().insertOrReplace(note)
                                         mAdapter?.notifyItemChanged(position)
-                                        editDataUpdate(note.id.toInt(),note)
                                     }
                                 }
                             })
@@ -165,13 +165,15 @@ class NoteFragment : BaseMainFragment(){
         }
         noteTypes[positionType].isCheck=true
         typeStr = noteTypes[positionType].title
-        fetchData()
         mTabTypeAdapter?.setNewData(noteTypes)
+
+        fetchData()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
         positionType=position
         typeStr=noteTypes[position].title
+        typeId=if (positionType==0) 1 else 2
         pageIndex=1
         fetchData()
     }
@@ -196,7 +198,7 @@ class NoteFragment : BaseMainFragment(){
                 }
                 EventBus.getDefault().post(NOTE_EVENT)
                 //新建笔记本增量更新
-                DataUpdateManager.createDataUpdate(4,id.toInt(),2,positionType,Gson().toJson(note))
+                DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(note))
             }
     }
 
@@ -215,7 +217,7 @@ class NoteFragment : BaseMainFragment(){
                     noteContent.noteTitle=string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
                     //修改增量更新
-                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,2,Gson().toJson(noteContent))
+                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,Gson().toJson(noteContent))
                 }
                 note.title = string
                 NoteDaoManager.getInstance().insertOrReplace(note)
@@ -243,10 +245,10 @@ class NoteFragment : BaseMainFragment(){
                     FileUtils.deleteFile(File(path))
 
                     //删除当前笔记本增量更新
-                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2,positionType)
+                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2)
                     //删除当前笔记本内容增量更新
                     for (item in noteContents){
-                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3,positionType)
+                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3)
                     }
                     notes.remove(note)
                     if (pageIndex>1&&notes.size==0){
@@ -282,7 +284,7 @@ class NoteFragment : BaseMainFragment(){
      * 修改增量更新数据
      */
     private fun editDataUpdate(id:Int,item: Note){
-        DataUpdateManager.editDataUpdate(4,id,2,positionType,Gson().toJson(item))
+        DataUpdateManager.editDataUpdate(4,id,2,Gson().toJson(item))
     }
 
     /**
@@ -337,28 +339,21 @@ class NoteFragment : BaseMainFragment(){
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        for (i in 0 until noteTypes.size){
-            val notes= NoteDaoManager.getInstance().queryAll(noteTypes[i].title)
-            //删除该笔记分类中的所有笔记本及其内容
-            for (note in notes){
-                NoteDaoManager.getInstance().deleteBean(note)
-                NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
-                val path= FileAddress().getPathNote(note.grade,note.typeStr,note.title)
-                FileUtils.deleteFile(File(path))
-            }
-        }
         ItemTypeDaoManager.getInstance().clear(2)
+        NoteDaoManager.getInstance().clear()
+        NoteContentDaoManager.getInstance().clear()
+        FileUtils.deleteFile(File(Constants.NOTE_PATH))
         //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(4,2)
+        DataUpdateManager.clearDataUpdate(4)
         val map=HashMap<String,Any>()
         map["type"]=4
         mDataUploadPresenter.onDeleteData(map)
-        EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
+        EventBus.getDefault().post(NOTE_TAB_MANAGER_EVENT)
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
-            NOTE_BOOK_MANAGER_EVENT -> {
+            NOTE_TAB_MANAGER_EVENT -> {
                 initTabs()
             }
             NOTE_EVENT -> {

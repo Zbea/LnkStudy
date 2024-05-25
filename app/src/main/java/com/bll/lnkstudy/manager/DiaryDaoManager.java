@@ -7,6 +7,7 @@ import com.bll.lnkstudy.greendao.FreeNoteBeanDao;
 import com.bll.lnkstudy.mvp.model.DiaryBean;
 import com.bll.lnkstudy.mvp.model.FreeNoteBean;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
@@ -51,6 +52,12 @@ public class DiaryDaoManager {
 
     public void insertOrReplace(DiaryBean bean) {
         dao.insertOrReplace(bean);
+    }
+
+    public long insertOrReplaceGetId(DiaryBean bean) {
+        dao.insertOrReplace(bean);
+        List<DiaryBean> queryList = dao.queryBuilder().build().list();
+        return queryList.get(queryList.size()-1).id;
     }
 
     public DiaryBean queryBean(long time) {

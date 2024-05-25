@@ -59,4 +59,17 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
         }, false)
     }
 
+    fun clearData() {
+        val type = RetrofitManager.service.onClearDataUpdate()
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSuccess()
+            }
+        }, false)
+    }
+
+
 }

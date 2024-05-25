@@ -242,12 +242,12 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     //修改笔记
     private fun edit(){
         val recordBean=recordBeans[position]
-        InputContentDialog(this,getCurrentScreenPos(),recordBean.title).builder()?.setOnDialogClickListener { string ->
+        InputContentDialog(this,getCurrentScreenPos(),recordBean.title).builder().setOnDialogClickListener { string ->
             recordBean.title=string
             mAdapter?.notifyDataSetChanged()
             RecordDaoManager.getInstance().insertOrReplace(recordBean)
             //修改本地增量更新
-            DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,recordBean.typeId,Gson().toJson(recordBean))
+            DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,homeworkType?.typeId!!,Gson().toJson(recordBean))
         }
     }
 
@@ -263,7 +263,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                     RecordDaoManager.getInstance().deleteBean(recordBean)
                     FileUtils.deleteFile(File(recordBean.path))
                     //修改本地增量更新
-                    DataUpdateManager.deleteDateUpdate(2,recordBean.id.toInt(),2,recordBean.typeId)
+                    DataUpdateManager.deleteDateUpdate(2,recordBean.id.toInt(),2,homeworkType?.typeId!!)
                 }
             })
     }

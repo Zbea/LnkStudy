@@ -208,8 +208,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                         override fun onFinish() {
                             TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量更新
-                            DataUpdateManager.createDataUpdateSource(1,book.bookId,1,book.bookId
-                                ,Gson().toJson(book),book.downloadUrl)
+                            DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }

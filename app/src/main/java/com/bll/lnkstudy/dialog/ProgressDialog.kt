@@ -19,7 +19,8 @@ class ProgressDialog(var context: Context, val screenPos: Int,val type:Int) {
     private fun createDialog() {
         mDialog = Dialog(context)
         mDialog!!.setContentView(R.layout.dialog_progress)
-        mDialog!!.setCanceledOnTouchOutside(false)
+//        if (type!=1)
+//            mDialog!!.setCanceledOnTouchOutside(false)
         val window = mDialog!!.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes

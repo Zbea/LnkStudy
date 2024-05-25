@@ -2,10 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
@@ -46,6 +43,8 @@ class TestPaperManageFragment: BaseMainFragment() {
                 typeItem.typeId=typeId
                 typeItem.userId=item.userId
                 PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
+                //创建增量数据
+                DataUpdateManager.createDataUpdate(3, typeItem.typeId, 1, typeItem.typeId, Gson().toJson(item))
             }
         }
         initTab()

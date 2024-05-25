@@ -10,6 +10,11 @@ import java.util.Objects;
 
 /**
  * 数据增量更新
+ *  type为2时：1作业分类2作业内容3本次作业卷内容；
+ *  type为3时：1考卷分类2考试3本次考试内容；
+ *  type为4时：1笔记分类2主题3笔记内容
+ *  type为5时：1分类2内容
+ *  type为7时：1手写 2题卷批改信息
  */
 @Entity
 public class DataUpdateBean {
@@ -18,18 +23,21 @@ public class DataUpdateBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int uid;
-    public int type;//类型1课本2作业3考卷4笔记5画本6书架7线上书画8作业课本9日记10密码
-    public int typeId;//分类id
+    public int type;//类型1课本2作业3考卷4笔记5画本6书架7题卷本8日记
+    public int typeId;//用来防止重复
     public int contentType;//内容分类
-    public int state;//作业分类
+    public int state;//type==2时：1作业卷 2普通作业本 3听读本
     public String listJson;
     public long date;
     public String downloadUrl;//上传文件下载地址
     public String path;//本地上传文件路径
     public boolean isDelete;//是否清除后台数据
-    @Generated(hash = 667802191)
+    public boolean isUpload;//是否已经上传
+
+    @Generated(hash = 41731880)
     public DataUpdateBean(Long id, long userId, int uid, int type, int typeId, int contentType,
-            int state, String listJson, long date, String downloadUrl, String path, boolean isDelete) {
+            int state, String listJson, long date, String downloadUrl, String path, boolean isDelete,
+            boolean isUpload) {
         this.id = id;
         this.userId = userId;
         this.uid = uid;
@@ -42,6 +50,7 @@ public class DataUpdateBean {
         this.downloadUrl = downloadUrl;
         this.path = path;
         this.isDelete = isDelete;
+        this.isUpload = isUpload;
     }
     @Generated(hash = 170642699)
     public DataUpdateBean() {
@@ -118,7 +127,12 @@ public class DataUpdateBean {
     public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
-
+    public boolean getIsUpload() {
+        return this.isUpload;
+    }
+    public void setIsUpload(boolean isUpload) {
+        this.isUpload = isUpload;
+    }
 
 
 }

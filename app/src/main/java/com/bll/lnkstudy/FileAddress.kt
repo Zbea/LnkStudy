@@ -2,6 +2,7 @@ package com.bll.lnkstudy
 
 import com.bll.lnkstudy.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
+import com.bll.lnkstudy.Constants.Companion.DIARY_PATH
 import com.bll.lnkstudy.Constants.Companion.FREE_NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkstudy.Constants.Companion.IMAGE_PATH
@@ -106,13 +107,6 @@ class FileAddress {
     }
 
     /**
-     * 考试卷下载路径
-     */
-    fun getPathExam(categoryId:Int):String{
-        return "$TESTPAPER_PATH/$mUserId/examType$categoryId"
-    }
-
-    /**
      * 作业文件夹路径
      */
     fun getPathHomework(course:String, typeId:Int):String{
@@ -204,14 +198,7 @@ class FileAddress {
      * 日记路径
      */
     fun getPathDiary(time:String):String{
-        return "$IMAGE_PATH/${mUserId}/diary/$time"
-    }
-
-    /**
-     * 课程表路径
-     */
-    fun getPathCourse():String{
-        return "$IMAGE_PATH/${mUserId}/course.png"
+        return "$DIARY_PATH/${mUserId}/$time"
     }
 
     /**
@@ -226,5 +213,12 @@ class FileAddress {
      */
     fun getPathCalender(fileName: String):String{
         return "$IMAGE_PATH/${mUserId}/calender/$fileName"
+    }
+
+    /**
+     * 七牛上传记录地址
+     */
+    fun getPathRecorder():String{
+        return "$IMAGE_PATH/${mUserId}/recorder"
     }
 }

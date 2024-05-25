@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -16,7 +15,6 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.SToast
-import com.google.gson.Gson
 
 
 class PrivacyPasswordCreateDialog(private val context: Context,private val type:Int=0) {
@@ -110,8 +108,6 @@ class PrivacyPasswordCreateDialog(private val context: Context,private val type:
             privacyPassword.password=MD5Utils.digest(passwordStr)
             privacyPassword.isSet=true
             MethodManager.savePrivacyPassword(type,privacyPassword)
-            //创建增量数据(日记密码)
-            DataUpdateManager.createDataUpdate(10,type,1,1, Gson().toJson(privacyPassword))
             dialog.dismiss()
             listener?.onClick(privacyPassword)
 

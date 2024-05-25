@@ -31,6 +31,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     private var paper: PaperBean?=null
 
     private var currentPosition=0
+    private var oldPosition=-1
     private var page = 0//页码
     private var paperContentCount=0//这次考卷所有内容大小
 
@@ -134,14 +135,18 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
         paperContentCount=paperContents.size
 
-        setScoreDetails(paper!!)
+        if (currentPosition!=oldPosition){
+            setScoreDetails(paper!!)
+            page=0
+        }
 
-        tv_page.text="${paperContents[page].page+1}/${paperContentCount}"
+        oldPosition=currentPosition
+        tv_page.text="${page+1}/${paperContentCount}"
         if (isExpand){
             setElikLoadPath(page,v_content_a)
             if (page+1<paperContentCount){
                 setElikLoadPath(page+1,v_content_b)
-                tv_page_a.text="${paperContents[page+1].page+1}/${paperContentCount}"
+                tv_page_a.text="${page+1+1}/${paperContentCount}"
             }
             else{
                 //不显示 ，不能手写
@@ -164,6 +169,9 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         tv_total_score.text=item.score
         if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
             setScoreListDetails(item.correctJson)
+        }
+        else{
+            disMissView(rv_list_multi,rv_list_score)
         }
     }
 

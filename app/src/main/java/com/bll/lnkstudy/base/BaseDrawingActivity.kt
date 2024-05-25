@@ -60,7 +60,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
         initClick()
         initGeometryView()
-        initScoreView()
+        if (iv_score!=null && ll_score!=null)
+            initScoreView()
     }
 
     private fun initClick(){
@@ -113,6 +114,18 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             disMissView(iv_score)
             showView(ll_score)
         }
+
+        rv_list_score?.layoutManager = GridLayoutManager(this,5)
+        mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,null).apply {
+            rv_list_score?.adapter = this
+            bindToRecyclerView(rv_list_score)
+        }
+
+        rv_list_multi?.layoutManager = LinearLayoutManager(this)
+        mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
+            rv_list_multi?.adapter = this
+            bindToRecyclerView(rv_list_multi)
+        }
     }
 
     /**
@@ -120,25 +133,16 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      */
     fun setScoreListDetails(correctJson:String){
         if (correctMode<3){
-            rv_list_score?.layoutManager = GridLayoutManager(this,5)
-            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,null).apply {
-                rv_list_score?.adapter = this
-                bindToRecyclerView(rv_list_score)
-            }
-        }
-        else{
-            rv_list_score?.layoutManager = LinearLayoutManager(this)
-            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
-                rv_list_score?.adapter = this
-                bindToRecyclerView(rv_list_score)
-            }
-        }
-
-        if (correctMode<3){
+            showView(rv_list_score)
+            disMissView(rv_list_multi)
             currentScores= Gson().fromJson(correctJson, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
             mTopicScoreAdapter?.setNewData(currentScores)
+            mTopicScoreAdapter?.setChangeModule(correctMode)
         }
         else{
+            currentScores.clear()
+            showView(rv_list_multi)
+            disMissView(rv_list_score)
             val scores= Gson().fromJson(correctJson, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
             for (i in scores.indices){
                 currentScores.add(ExamScoreItem().apply {
@@ -161,7 +165,6 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      * 几何绘图
      */
     private fun initGeometryView(){
-
         val popsCircle= mutableListOf<PopupBean>()
         popsCircle.add(PopupBean(0,getString(R.string.circle_1),R.mipmap.icon_geometry_circle_1))
         popsCircle.add(PopupBean(1,getString(R.string.circle_2),R.mipmap.icon_geometry_circle_2))
@@ -433,9 +436,23 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      */
     private fun setEilkAxis(){
         setCheckView(ll_axis)
-        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
-        elik_a?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
-        elik_b?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
+        when(axisPos){
+            0->{
+                setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
+                elik_a?.setDrawAxisProperty(1, 10, 5,isScale)
+                elik_b?.setDrawAxisProperty(1, 10, 5,isScale)
+            }
+            1->{
+                setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS2)
+                elik_a?.setDrawAxisProperty(2, 10, 5,isScale)
+                elik_b?.setDrawAxisProperty(2, 10, 5,isScale)
+            }
+            2->{
+                setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS3)
+                elik_a?.setDrawAxisProperty(3, 10, 5,isScale)
+                elik_b?.setDrawAxisProperty(3, 10, 5,isScale)
+            }
+        }
         currentGeometry=9
     }
 

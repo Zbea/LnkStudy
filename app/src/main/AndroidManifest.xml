@@ -4,7 +4,7 @@
     package="com.bll.lnkstudy">
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.INTERNET" />F
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
@@ -39,7 +39,8 @@
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ReservedSystemPermission" />
     <permission
-        android:name="android.permission.WRITE_SETTINGS" />
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ReservedSystemPermission" />
     <uses-permission
         android:name="android.permission.GET_PACKAGE_SIZE" />
     <uses-permission

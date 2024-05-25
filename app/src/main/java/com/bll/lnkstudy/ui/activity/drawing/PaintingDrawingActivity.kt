@@ -53,7 +53,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 paintingDrawingBean?.title = string
                 paintingLists[page].title = string
                 PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+                editDataUpdate(paintingDrawingBean!!)
             }
         }
 
@@ -63,14 +63,14 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                     paintingDrawingBean_a?.title = string
                     paintingLists[page-1].title = string
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-                    DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean_a))
+                    editDataUpdate(paintingDrawingBean_a!!)
                 }
             }else{
                 InputContentDialog(this,1,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
                     paintingDrawingBean?.title = string
                     paintingLists[page].title = string
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                    DataUpdateManager.editDataUpdate(5,paintingDrawingBean?.id!!.toInt(),2,1, Gson().toJson(paintingDrawingBean))
+                    editDataUpdate(paintingDrawingBean!!)
                 }
             }
         }
@@ -197,7 +197,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
      */
     private fun saveElik(elik: EinkPWInterface,item: PaintingDrawingBean){
         elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2,1)
+        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2)
     }
 
 
@@ -220,7 +220,15 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
         val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)
         //创建本地画本增量更新
-        DataUpdateManager.createDataUpdate(5,id.toInt(),2,1, Gson().toJson(paintingDrawingBean),path)
+        DataUpdateManager.createDataUpdate(5,id.toInt(),2, Gson().toJson(paintingDrawingBean),path)
     }
+
+    /**
+     * 修改增量更新
+     */
+    private fun editDataUpdate(item: PaintingDrawingBean){
+        DataUpdateManager.editDataUpdate(5,item.id!!.toInt(),2, Gson().toJson(item))
+    }
+
 
 }

@@ -130,7 +130,7 @@ class PaintingFragment : BaseMainFragment(){
             item.path=FileAddress().getPathPainting(type,grade)
             val id=ItemTypeDaoManager.getInstance().insertOrReplaceGetId(item)
             //创建本地画本增量更新
-            DataUpdateManager.createDataUpdate(5,id.toInt(),1, 1, Gson().toJson(item))
+            DataUpdateManager.createDataUpdate(5,id.toInt(),1, Gson().toJson(item))
         }
 
         //当本地画本或者书法分类不止一个时候，进去列表
@@ -190,10 +190,9 @@ class PaintingFragment : BaseMainFragment(){
         PaintingDrawingDaoManager.getInstance().clear()
         FileUtils.deleteFile(File(Constants.PAINTING_PATH))
         //清除增量数据
-        DataUpdateManager.clearDataUpdate(5,1)
+        DataUpdateManager.clearDataUpdate(5)
         val map=HashMap<String,Any>()
         map["type"]=5
-        map["typeId"]=1
         mDataUploadPresenter.onDeleteData(map)
     }
 

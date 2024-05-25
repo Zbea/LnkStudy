@@ -2,15 +2,12 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -421,6 +418,11 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
         val path=FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
         FileUtils.deleteFile(File(path).parentFile)
         DiaryDaoManager.getInstance().clear()
+        //清除本地增量数据
+        DataUpdateManager.clearDataUpdate(8)
+        val map=HashMap<String,Any>()
+        map["type"]=8
+        mDataUploadPresenter.onDeleteData(map)
     }
 
 

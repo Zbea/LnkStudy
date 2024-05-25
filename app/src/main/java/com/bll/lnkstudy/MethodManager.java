@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
@@ -528,8 +529,9 @@ public class MethodManager {
      * @return
      */
     public static int getExamTypeId(String subject){
-        int subjectId=DataBeanManager.INSTANCE.getCourseId(subject);
-        return subjectId+10000000+user.grade;
+        int i=DataBeanManager.INSTANCE.getCourseId(subject)+ user.grade;
+        String idStr= i +String.valueOf(user.accountId);
+        return Integer.parseInt(idStr);
     }
 
 }

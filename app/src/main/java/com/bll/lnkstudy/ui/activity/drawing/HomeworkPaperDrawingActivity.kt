@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
@@ -44,6 +45,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var paperContentBean_a:HomeworkPaperContentBean?=null
 
     private var currentPosition=0
+    private var oldPosition=-1
     private var page = 0//页码
     private val commitItems = mutableListOf<ItemList>()
 
@@ -83,12 +85,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         papers[currentPosition]=paper!!
         daoManager?.insertOrReplace(paper)
         //更新增量数据
-        DataUpdateManager.editDataUpdate(2,paper?.contentId!!,2,typeId,Gson().toJson(paper))
+        DataUpdateManager.editDataUpdate(2,paper?.contentId!!,2,Gson().toJson(paper))
 
         //提交成功后循环遍历删除手写
         for (contentBean in paperContents){
             //更新增量作业卷内容(作业提交后合图后不存在手写内容)
-            DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
+            DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3)
         }
 
         //添加提交详情
@@ -236,8 +238,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         pageCount=paperContents.size
         
         setPWEnabled(!paper?.isPg!!)
-        setScoreDetails(paper!!)
-
+        if (currentPosition!=oldPosition)
+            setScoreDetails(paper!!)
+        //用来判断重复加载
+        oldPosition=currentPosition
         //作业未提交 提示时间 以及关闭手写
         if (paper?.state==3){
             val endTime=paper?.endTime!!*1000
@@ -258,13 +262,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 v_content_b.setImageResource(0)
                 elik_b?.setPWEnabled(false)
             }
-            tv_page.text="${paperContents[page].page+1}/${paperContents.size}"
-            tv_page_a.text=if (page+1<pageCount)"${paperContents[page+1].page+1}/${paperContents.size}" else ""
+            tv_page.text="${page+1}/${paperContents.size}"
+            tv_page_a.text=if (page+1<pageCount)"${page+1+1}/${paperContents.size}" else ""
         }
         else{
             paperContentBean=paperContents[page]
             setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-            tv_page.text="${paperContents[page].page+1}/${paperContents.size}"
+            tv_page.text="${page+1}/${paperContents.size}"
         }
     }
 
@@ -273,12 +277,16 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      */
     private fun setScoreDetails(item: HomeworkPaperBean){
         if (item.state==2){
-            showView(iv_score)
+            if (!ll_score.isVisible)
+                showView(iv_score)
             correctMode=item.correctMode
             tv_correct_title.text=item.title
             tv_total_score.text=item.score
             if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
                 setScoreListDetails(item.correctJson)
+            }
+            else{
+                disMissView(rv_list_multi,rv_list_score)
             }
         }
         else{
@@ -306,7 +314,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private fun saveElik(elik: EinkPWInterface,contentBean:HomeworkPaperContentBean){
         elik.saveBitmap(true) {}
         //更新增量作业卷内容(未提交原图和手写图)
-        DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3,typeId)
+        DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3)
     }
 
     /**

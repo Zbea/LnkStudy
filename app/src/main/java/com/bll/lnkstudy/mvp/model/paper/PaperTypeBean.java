@@ -43,9 +43,9 @@ public class PaperTypeBean {
     public String contentJson;
     @Transient
     public String contentSubtypeJson;
-
     @Generated(hash = 825260906)
-    public PaperTypeBean(Long id, long studentId, long userId, String name, int typeId, String course, long date, int grade, boolean isCloud) {
+    public PaperTypeBean(Long id, long studentId, long userId, String name, int typeId, String course, long date,
+            int grade, boolean isCloud) {
         this.id = id;
         this.studentId = studentId;
         this.userId = userId;
@@ -56,94 +56,62 @@ public class PaperTypeBean {
         this.grade = grade;
         this.isCloud = isCloud;
     }
-
     @Generated(hash = 26624406)
     public PaperTypeBean() {
     }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj==null)
-            return false;
-        if (!(obj instanceof PaperTypeBean))
-            return false;
-        if (this==obj)
-            return true;
-        PaperTypeBean item=(PaperTypeBean) obj;
-        return Objects.equals(this.id, item.id)&&this.typeId==item.typeId && Objects.equals(this.name, item.name) &&this.userId==item.userId
-                &&this.grade==item.grade&&this.date==item.date;
-    }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public long getStudentId() {
         return this.studentId;
     }
-
     public void setStudentId(long studentId) {
         this.studentId = studentId;
     }
-
     public long getUserId() {
         return this.userId;
     }
-
     public void setUserId(long userId) {
         this.userId = userId;
     }
-
     public String getName() {
         return this.name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public int getTypeId() {
         return this.typeId;
     }
-
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
-
     public String getCourse() {
         return this.course;
     }
-
     public void setCourse(String course) {
         this.course = course;
     }
-
     public long getDate() {
         return this.date;
     }
-
     public void setDate(long date) {
         this.date = date;
     }
-
     public int getGrade() {
         return this.grade;
     }
-
     public void setGrade(int grade) {
         this.grade = grade;
     }
-
     public boolean getIsCloud() {
         return this.isCloud;
     }
-
     public void setIsCloud(boolean isCloud) {
         this.isCloud = isCloud;
     }
-    
+   
 }

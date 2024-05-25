@@ -171,7 +171,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     book.isLook=false
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1,book.bookId, Gson().toJson(book),book.downloadUrl)
+                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
                     countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {

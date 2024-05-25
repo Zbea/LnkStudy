@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.dialog.CalenderDetailsDialog
+import com.bll.lnkstudy.dialog.DownloadCalenderDialog
 import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.mvp.model.CalenderItemBean
@@ -30,7 +30,7 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
     private var presenter=CalenderPresenter(this,getScreenPosition())
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter:CalenderListAdapter?=null
-    private var detailsDialog:CalenderDetailsDialog?=null
+    private var detailsDialog:DownloadCalenderDialog?=null
     private var position=0
     private var supply=1
 
@@ -98,7 +98,7 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
 
 
     private fun showDetails(item: CalenderItemBean) {
-        detailsDialog = CalenderDetailsDialog(requireActivity(), item)
+        detailsDialog = DownloadCalenderDialog(requireActivity(), item)
         detailsDialog?.builder()
         detailsDialog?.setOnClickListener {
             if (item.buyStatus==1){

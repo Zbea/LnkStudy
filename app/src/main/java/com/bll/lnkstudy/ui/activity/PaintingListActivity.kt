@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -81,8 +80,6 @@ class PaintingListActivity:BaseAppCompatActivity() {
                 PaintingBeanDaoManager.getInstance().deleteBean(item)
                 val path= FileAddress().getPathImage("painting" ,item.contentId)
                 FileUtils.deleteFile(File(path))
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(7,item.id.toInt(),1,item.contentId)
                 mAdapter?.remove(position)
             }
         })

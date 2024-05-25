@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.fragment.resource
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
@@ -18,7 +17,6 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
@@ -128,9 +126,7 @@ class WallpaperDownloadMainFragment :BaseMainFragment(), IContractView.IPainting
                     bean.imageUrl=item.bodyUrl
                     bean.bodyUrl=item.bodyUrl
                     bean.supply=item.supply
-                    val id= PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
-                    //新建增量更新
-                    DataUpdateManager.createDataUpdateSource(7,id.toInt(),1,bean.contentId, Gson().toJson(bean),item.bodyUrl)
+                    PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
                     showToast(R.string.book_download_success)
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
