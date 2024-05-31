@@ -207,6 +207,18 @@ class FileAddress {
     fun getPathScreen(typeStr: String):String{
         return "$SCREEN_PATH/${mUserId}/$typeStr"
     }
+    /**
+     * 截图手写
+     */
+    fun getPathScreenDrawing(typeStr: String,index:Int):String{
+        return "$SCREEN_PATH/${mUserId}/$typeStr/drawing/$index.tch"
+    }
+    /**
+     * 截图
+     */
+    fun getPathScreenHomework(typeStr: String,grade:Int):String{
+        return "$SCREEN_PATH/${mUserId}/$typeStr(${DataBeanManager.getGradeStr(grade)})"
+    }
 
     /**
      * 日历背景下载地址

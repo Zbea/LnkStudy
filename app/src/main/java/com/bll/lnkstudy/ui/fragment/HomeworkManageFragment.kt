@@ -218,6 +218,25 @@ class HomeworkManageFragment: BaseMainFragment() {
                         }
                     }
                 }
+                5->{
+                    val path=FileAddress().getPathScreenHomework(typeBean.name,typeBean.grade)
+                    if (FileUtils.isExistContent(path)) {
+                        FileUploadManager(token).apply {
+                            startUpload(path, typeBean.name+typeBean.grade)
+                            setCallBack {
+                                cloudList.add(CloudListBean().apply {
+                                    this.type = 2
+                                    subTypeStr = typeBean.course
+                                    date = typeBean.date
+                                    grade = typeBean.grade
+                                    listJson = Gson().toJson(typeBean)
+                                    downloadUrl = it
+                                })
+                                startUpload(cloudList, nullItems)
+                            }
+                        }
+                    }
+                }
             }
         }
 

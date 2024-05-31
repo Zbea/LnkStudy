@@ -38,7 +38,6 @@ class NoteFragment : BaseMainFragment(){
     private var noteTypes = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
     private var positionType = 0//当前笔记本标记
-    private var typeId=1
     private var typeStr = "" //当前笔记本类型
     private var mAdapter: NotebookAdapter? = null
     private var position = 0 //当前笔记标记
@@ -173,7 +172,6 @@ class NoteFragment : BaseMainFragment(){
     override fun onTabClickListener(view: View, position: Int) {
         positionType=position
         typeStr=noteTypes[position].title
-        typeId=if (positionType==0) 1 else 2
         pageIndex=1
         fetchData()
     }
@@ -198,7 +196,7 @@ class NoteFragment : BaseMainFragment(){
                 }
                 EventBus.getDefault().post(NOTE_EVENT)
                 //新建笔记本增量更新
-                DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(note))
+                DataUpdateManager.createDataUpdate(4,id.toInt(),2,Gson().toJson(note))
             }
     }
 
@@ -274,7 +272,7 @@ class NoteFragment : BaseMainFragment(){
                     }
                     val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteBook)
                     //创建笔记分类增量更新
-                    DataUpdateManager.createDataUpdate(4,id.toInt(),1,2,Gson().toJson(noteBook))
+                    DataUpdateManager.createDataUpdate(4,id.toInt(),1,Gson().toJson(noteBook))
                     mTabTypeAdapter?.addData(noteBook)
                 }
             }

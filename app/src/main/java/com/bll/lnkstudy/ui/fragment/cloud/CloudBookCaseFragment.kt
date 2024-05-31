@@ -133,6 +133,10 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 if (localBook!=null){
                     deleteItem()
                     showToast(book.bookName+getString(R.string.book_download_success))
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
+                    val fileName = MD5Utils.digest(book.bookId.toString())//文件名
+                    DataUpdateManager.createDataUpdate(6,book.bookId,2,FileAddress().getPathBookDraw(fileName))
                 }
                 else{
                     if (FileUtils.isExistContent(book.bookDrawPath)){
@@ -170,8 +174,6 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     book.time=System.currentTimeMillis()
                     book.isLook=false
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                    //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
                     countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -197,7 +199,6 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                         override fun onFinish() {
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            DataUpdateManager.createDataUpdate(6,book.bookId,2,book.bookId,"",FileAddress().getPathBookDraw(fileName))
                         }
                         override fun onProgress(percentDone: Int) {
                         }

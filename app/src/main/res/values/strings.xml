@@ -128,7 +128,7 @@
     <string name="lengthen">延长</string>
     <string name="excision">切除</string>
     <string name="revocation">撤销</string>
-    <string name="parallel">平行</string>
+    <string name="parallel">正交</string>
     <string name="grayLine">灰线</string>
     <string name="reduce">托盘</string>
     <string name="circle_1">圆心</string>
@@ -282,8 +282,8 @@
     <string name="book_buy_str">点击购买</string>
     <string name="book_is_delete_all_textbook">确定删除全部课本？</string>
 
-    <string name="note_manage_str">笔记本管理</string>
-    <string name="notebook_create_str">新建笔记本</string>
+    <string name="note_manage_str">管理笔记本</string>
+    <string name="notebook_create_str">创建笔记本</string>
     <string name="note_create_str">新建主题</string>
     <string name="note_create_hint">输入主题</string>
     <string name="notebook_create_hint">输入笔记本</string>

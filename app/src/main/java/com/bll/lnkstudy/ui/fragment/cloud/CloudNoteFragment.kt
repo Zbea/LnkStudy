@@ -138,7 +138,6 @@ class CloudNoteFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
-                            val typeId=if(item.typeStr==getString(R.string.note_tab_diary)) 1 else 2
                             if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(item.typeStr,2)){
                                 val noteType = ItemTypeBean().apply {
                                     title = item.typeStr
@@ -147,14 +146,14 @@ class CloudNoteFragment: BaseCloudFragment() {
                                 }
                                 val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteType)
                                 //创建笔记分类增量更新
-                                DataUpdateManager.createDataUpdate(4,id.toInt(),1,typeId,Gson().toJson(noteType))
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),1,Gson().toJson(noteType))
                             }
                             //添加笔记
                             item.id=null//设置数据库id为null用于重新加入
                             item.title=titleStr
                             val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
                             //新建笔记本增量更新
-                            DataUpdateManager.createDataUpdate(4,id.toInt(),2,typeId,Gson().toJson(item))
+                            DataUpdateManager.createDataUpdate(4,id.toInt(),2,Gson().toJson(item))
 
                             //添加笔记内容
                             val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
@@ -165,7 +164,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                                 contentBean.noteTitle=titleStr
                                 val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                 //新建笔记内容增量更新
-                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId,Gson().toJson(contentBean),File(contentBean.filePath).parent)
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(contentBean),File(contentBean.filePath).parent)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))

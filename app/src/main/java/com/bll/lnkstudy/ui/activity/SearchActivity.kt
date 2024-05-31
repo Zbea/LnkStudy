@@ -1,11 +1,10 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.content.Intent
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
@@ -13,6 +12,7 @@ import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
@@ -94,6 +94,13 @@ class SearchActivity : BaseAppCompatActivity() {
                     4->{
                         val typeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(item.type)
                         MethodManager.gotoHomeworkBookDetails(this,typeBean)
+                    }
+                    5->{
+                        customStartActivity(
+                            Intent(this, FileDrawingActivity::class.java)
+                            .putExtra("pageIndex", Constants.DEFAULT_PAGE)
+                            .putExtra("pagePath", FileAddress().getPathScreenHomework(typeItem.name,typeItem.grade))
+                        )
                     }
                 }
                 finish()

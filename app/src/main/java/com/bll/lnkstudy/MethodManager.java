@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
+import android.provider.Settings;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
@@ -532,6 +532,23 @@ public class MethodManager {
         int i=DataBeanManager.INSTANCE.getCourseId(subject)+ user.grade;
         String idStr= i +String.valueOf(user.accountId);
         return Integer.parseInt(idStr);
+    }
+
+    /**
+     * 获取状态栏的值
+     * @return
+     */
+    public static int getStatusBarValue(){
+        return Settings.System.getInt(MyApplication.Companion.getMContext().getContentResolver(), "statusbar_hide_time", 0);
+    }
+
+    /**
+     * 设置状态栏的值
+     *
+     * @return
+     */
+    public static void setStatusBarValue(int value){
+        Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
     }
 
 }

@@ -17,6 +17,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     private val presenter=LoginPresenter(this,1)
     private var token=""
+    private var statusBarValue=0
 
     override fun getLogin(user: User?) {
         token= user?.token.toString()
@@ -51,6 +52,9 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     override fun initView() {
         val account=SPUtil.getString("account")
         val password=SPUtil.getString("password")
+
+        statusBarValue=MethodManager.getStatusBarValue()
+        MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
 
         ed_user.setText(account)
         ed_psw.setText(password)
@@ -89,6 +93,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     }
 
     private fun gotoMainActivity(){
+        MethodManager.setStatusBarValue(statusBarValue)
         val intent=Intent(this,MainActivity::class.java)
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
@@ -99,11 +104,12 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     override fun onResume() {
         super.onResume()
         if (NetworkUtil(this).isNetworkConnected()) {
-            disMissView(tv_tips)
-        } else {
-            showView(tv_tips)
+            fetchCommonData()
+            disMissView(ll_tips)
         }
-        fetchCommonData()
+        else{
+            showView(ll_tips)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

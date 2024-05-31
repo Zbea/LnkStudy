@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -142,7 +145,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取目录下文件对象  不包含文件目录下的子文件目录
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）
      * @param path
      * @return
      */
@@ -159,8 +162,60 @@ public class FileUtils {
                 files.add(tempList[i]);
             }
         }
-//        //文件排序
-        sortFiles(files);
+        sortAscFiles(files);
+        return files;
+    }
+
+    /**
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 （降序）
+     * @param path
+     * @return
+     */
+    public static List<File> getDescFiles(String path,int pageIndex,int pageSize){
+        List<File> files = new ArrayList<>();
+        if(path.isEmpty()){
+            return files;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return files;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
+            }
+        }
+        sortDescFiles(files);
+        if (files.size()<pageSize){
+            return files;
+        }
+        else {
+            List<File> pageFiles = new ArrayList<>();
+            for (int i = (pageIndex-1)*pageIndex; i < files.size() ; i++) {
+                pageFiles.add(files.get(i));
+            }
+            return pageFiles;
+        }
+    }
+
+    /**
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 (降序)
+     * @param path
+     * @return
+     */
+    public static List<File> getDescFiles(String path){
+        List<File> files = new ArrayList<>();
+        if(path.isEmpty()){
+            return files;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return files;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
+            }
+        }
+        sortDescFiles(files);
         return files;
     }
 
@@ -187,7 +242,7 @@ public class FileUtils {
 
 
     /**
-     * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录
+     * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录（降序）
      * @param path
      * @param suffix
      * @return
@@ -207,7 +262,7 @@ public class FileUtils {
             }
         }
         //文件排序
-        sortFiles(files);
+        sortAscFiles(files);
         return files;
     }
 
@@ -228,6 +283,10 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 删除文件夹
+     * @param file
+     */
     public static void deleteFile(File file){
         if (file == null || !file.exists() )
             return;
@@ -252,34 +311,80 @@ public class FileUtils {
             file.delete();
         }
     }
+
     /**
-     * 文件夹排序
+     * 删除子文件夹 不包括自身
+     * @param file
+     */
+    public static void deleteFile1(File file){
+        if (file == null || !file.exists() )
+            return;
+        // 判断传递进来的是文件还是文件夹,如果是文件,直接删除,如果是文件夹,则判断文件夹里面有没有东西
+        if (file.isDirectory()) {
+            // 如果是目录,就删除目录下所有的文件和文件夹
+            File[] files = file.listFiles();
+            // 遍历目录下的文件和文件夹
+            for (File f : files) {
+                // 如果是文件,就删除
+                if (f.isFile()) {
+                    // 删除文件
+                    f.delete();
+                } else{
+                    // 如果是文件夹,就递归调用文件夹的方法
+                    deleteFile(f);
+                }
+            }
+        }
+    }
+
+    /**
+     * 删除本地提错本
+     * @param path
+     */
+    public static void deleteHomework(String path){
+        File[] files = new File(path).listFiles();
+        for (File f :files){
+            if (f.isDirectory()&&f.getName().contains("错题本")){
+                deleteFile(f);
+            }
+        }
+    }
+
+    /**
+     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
      * @param files
      */
-    public static void sortFiles(List<File> files) {
-        Collections.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File lhs,File rhs) {
-                //返回负数表示o1 小于o2，返回0 表示o1和o2相等，返回正数表示o1大于o2。
-                boolean l1 = lhs.isDirectory();
-                boolean l2 = rhs.isDirectory();
-                if (l1 && !l2)
-                    return -1;
-                else if (!l1 && l2)
-                    return 1;
-                else {
-                    return lhs.getName().compareTo(rhs.getName());
-                }
+    public static void sortAscFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort((file1, file2) -> {
+            long diff = file1.lastModified() - file2.lastModified();
+            if (diff > 0)
+                return 1;
+            else if (diff == 0)
+                return 0;
+            else
+                return -1;
+        });
+    }
 
-//                if (lhs.lastModified() < rhs.lastModified()) {
-//                    return -1;
-//                } else if (lhs.lastModified() == rhs.lastModified()) {
-//                    return 0;
-//                } else {
-//                    return 1;
-//                }
-
-            }
+    /**
+     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最前面
+     * @param files
+     */
+    public static void sortDescFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort((file1, file2) -> {
+            long diff = file1.lastModified() - file2.lastModified();
+            if (diff > 0)
+                return -1;
+            else if (diff == 0)
+                return 0;
+            else
+                return 1;
         });
     }
 
@@ -302,21 +407,22 @@ public class FileUtils {
                 Log.d("debug", "copyFile:  oldFile cannot read.");
                 return false;
             }
-            File newFile = new File(newPathName);
-            if (!newFile.exists()){
-                newFile.getParentFile().mkdirs();
-                newFile.createNewFile();
-            }
-            FileInputStream fileInputStream = new FileInputStream(oldPathName);
-            FileOutputStream fileOutputStream = new FileOutputStream(newPathName);
-            byte[] buffer = new byte[1024];
-            int byteRead;
-            while (-1 != (byteRead = fileInputStream.read(buffer))) {
-                fileOutputStream.write(buffer, 0, byteRead);
-            }
-            fileInputStream.close();
-            fileOutputStream.flush();
-            fileOutputStream.close();
+            Files.copy(Paths.get(oldPathName) ,Paths.get(newPathName) , StandardCopyOption.REPLACE_EXISTING);
+//            File newFile = new File(newPathName);
+//            if (!newFile.exists()){
+//                newFile.getParentFile().mkdirs();
+//                newFile.createNewFile();
+//            }
+//            FileInputStream fileInputStream = new FileInputStream(oldPathName);
+//            FileOutputStream fileOutputStream = new FileOutputStream(newPathName);
+//            byte[] buffer = new byte[1024];
+//            int byteRead;
+//            while (-1 != (byteRead = fileInputStream.read(buffer))) {
+//                fileOutputStream.write(buffer, 0, byteRead);
+//            }
+//            fileInputStream.close();
+//            fileOutputStream.flush();
+//            fileOutputStream.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -349,4 +455,5 @@ public class FileUtils {
         List<File> files=getFiles(path);
         return files.size()>0;
     }
+
 }

@@ -34,8 +34,6 @@ public class GlideUtils {
     public static final void setImageFile(Context mContext, File file, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
-        requestOptions.fitCenter();
-
         Glide.with(mContext)
                 .load(file)
                 .apply(requestOptions)
@@ -57,7 +55,6 @@ public class GlideUtils {
     public static void setImageFileNoCache(Context mContext, File file, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
-        requestOptions.fitCenter();
         requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 

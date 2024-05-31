@@ -47,12 +47,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     var mTopicMultiAdapter:TopicMultiScoreAdapter?=null
 
     override fun initCreate() {
-        if (v_content_a!=null && v_content_b!=null){
-            elik_a = v_content_a?.pwInterFace
-        }
-        if (v_content_b!=null){
-            elik_b = v_content_b?.pwInterFace
-        }
+        onInStanceElik()
 
         if (iv_top!=null){
             elik_a?.addOnTopView(iv_top)
@@ -62,6 +57,15 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         initGeometryView()
         if (iv_score!=null && ll_score!=null)
             initScoreView()
+    }
+
+    open fun onInStanceElik(){
+        if (v_content_a!=null && v_content_b!=null){
+            elik_a = v_content_a?.pwInterFace
+        }
+        if (v_content_b!=null){
+            elik_b = v_content_b?.pwInterFace
+        }
     }
 
     private fun initClick(){
@@ -507,7 +511,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         ll_angle?.setBackgroundResource(R.color.color_transparent)
         ll_axis?.setBackgroundResource(R.color.color_transparent)
         ll_pen?.setBackgroundResource(R.color.color_transparent)
-        view.setBackgroundResource(R.drawable.bg_black_stroke_0dp_corner)
+        view.setBackgroundResource(R.drawable.bg_geometry_select)
     }
 
     /**

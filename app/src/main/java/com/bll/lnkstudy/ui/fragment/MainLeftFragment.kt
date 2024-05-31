@@ -15,18 +15,22 @@ import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.DiaryDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
+import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
+import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.*
@@ -81,6 +85,30 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
         }
     }
     override fun onCourseItems(courseItems: MutableList<CourseItem>) {
+        for (item in courseItems){
+            var path=""
+            val typeId=MethodManager.getExamTypeId(item.subject)
+            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)){
+                val typeItem= HomeworkTypeBean()
+                typeItem.name="${item.subject}错题本"
+                typeItem.course=item.subject
+                typeItem.date=System.currentTimeMillis()
+                typeItem.grade=mUser?.grade!!
+                typeItem.typeId=typeId
+                typeItem.userId=item.userId
+                typeItem.createStatus = 0
+                typeItem.state = 5
+                HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
+               path=FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
+            }
+            else{
+                path=FileAddress().getPathScreenHomework("${item.subject}错题本", mUser?.grade!!)
+            }
+            if (!File(path).exists()) {
+                File(path).parentFile?.mkdir()
+                File(path).mkdirs()
+            }
+        }
         if (courseItems!=MethodManager.getCourses()){
             MethodManager.saveCourses(courseItems)
             EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
@@ -177,6 +205,14 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
                 }
             }
             return@setOnLongClickListener true
+        }
+
+        tv_screenshot.setOnClickListener {
+            customStartActivity(Intent(activity, ScreenshotListActivity::class.java))
+        }
+
+        tv_planover.setOnClickListener {
+            customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
         }
 
         initDialog(1)
@@ -393,7 +429,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
                     startUpload(path,fileName)
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
-                            type=7
+                            type=8
                             subTypeStr="日记"
                             year=diaryBean.year
                             date=System.currentTimeMillis()

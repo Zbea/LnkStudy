@@ -9,11 +9,13 @@ import org.greenrobot.greendao.annotation.Generated;
 import java.util.Objects;
 
 /**
- * 数据增量更新
+ * 数据增量更新 1课本2作业3考卷4笔记5画本6书架7题卷本8日记
+ *  type为1时：1内容2手写
  *  type为2时：1作业分类2作业内容3本次作业卷内容；
  *  type为3时：1考卷分类2考试3本次考试内容；
  *  type为4时：1笔记分类2主题3笔记内容
  *  type为5时：1分类2内容
+ *  type为6时：1内容2手写
  *  type为7时：1手写 2题卷批改信息
  */
 @Entity
@@ -22,7 +24,7 @@ public class DataUpdateBean {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public int uid;
+    public int uid;//标识
     public int type;//类型1课本2作业3考卷4笔记5画本6书架7题卷本8日记
     public int typeId;//用来防止重复
     public int contentType;//内容分类

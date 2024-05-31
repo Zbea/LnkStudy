@@ -396,7 +396,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.id = id
         homeworks.add(homeworkContent!!)
 
-        DataUpdateManager.createDataUpdateTypeId(2, id.toInt(), 2,homeworkTypeId , Gson().toJson(homeworkContent), path)
+        DataUpdateManager.createDataUpdate(2, id.toInt(), 2,homeworkTypeId , Gson().toJson(homeworkContent), path)
     }
 
 

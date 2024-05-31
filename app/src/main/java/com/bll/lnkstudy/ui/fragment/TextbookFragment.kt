@@ -264,6 +264,7 @@ class TextbookFragment : BaseMainFragment() {
             FileUtils.deleteFile(File(item.bookDrawPath))
             //删除增量更新
             DataUpdateManager.deleteDateUpdate(1,item.bookId,1)
+            DataUpdateManager.deleteDateUpdate(1,item.bookId,2)
         }
         lazyLoad()
     }

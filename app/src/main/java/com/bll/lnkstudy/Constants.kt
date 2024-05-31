@@ -35,6 +35,7 @@ class Constants {
         const val SCREEN_LEFT=1//左屏
         const val SCREEN_RIGHT=2//右屏
         const val SCREEN_FULL=3//全屏
+        const val STATUS_BAR_SHOW=2147483647//永不消失
 
 //                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
@@ -98,7 +99,7 @@ class Constants {
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
         const val DATE_DRAWING_EVENT="DateDrawingEvent"//日程手写结束
         const val CALENDER_SET_EVENT = "CalenderSetEvent"//台历设置
-
+        const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"//截图管理刷新
         const val SETTING_DOWNLOAD_EVENT = "DataDownload"
         const val SETTING_RENT_EVENT = "DataRent"
         const val SETTING_CLEAT_EVENT = "DataClear"

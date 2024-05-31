@@ -22,7 +22,6 @@ import com.bll.lnkstudy.ui.activity.MessageListActivity
 import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.ExamCommitDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
-import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -73,10 +72,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
 
         tv_free_note.setOnClickListener {
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
-        }
-
-        tv_plan.setOnClickListener {
-            customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
         }
 
         tv_diray.setOnClickListener {

@@ -134,6 +134,10 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 if (localBook!=null){
                     deleteItem()
                     showToast(book.bookName+getString(R.string.book_download_success))
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdate(1,book.bookId,2,book.bookDrawPath)
                     EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
                 }
                 else{
@@ -171,8 +175,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
                         override fun onFinish() {
-                            //创建增量更新
-                            DataUpdateManager.createDataUpdate(1,book.bookId,2,book.bookId,"",book.bookDrawPath)
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }
@@ -207,8 +209,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
                             TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                            //创建增量更新
-                            DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }

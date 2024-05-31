@@ -322,7 +322,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         }
         else{
             //创建增量更新
-            DataUpdateManager.createDataUpdateBook(7,bookId,1,book?.bookDrawPath!!)
+            DataUpdateManager.createDataUpdateDrawing(7,bookId,1,book?.bookDrawPath!!)
         }
     }
 

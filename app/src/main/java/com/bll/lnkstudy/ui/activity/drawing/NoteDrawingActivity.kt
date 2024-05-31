@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.common_drawing_tool.*
 class NoteDrawingActivity : BaseDrawingActivity() {
 
     private var type =""
-    private var typeId=0
     private var noteBook: Note? = null
     private var noteContent: NoteContentBean? = null//当前内容
     private var note_Content_a: NoteContentBean? = null//a屏内容
@@ -40,7 +39,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteBook = NoteDaoManager.getInstance().queryBean(id)
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
-        typeId=if (type==getString(R.string.note_tab_diary)) 1 else 2
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
 
@@ -238,7 +236,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.id=id
         noteContents.add(noteContent!!)
 
-        DataUpdateManager.createDataUpdate(4,id.toInt(),3,typeId,Gson().toJson(noteContent),path)
+        DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(noteContent),path)
     }
 
     override fun onDestroy() {

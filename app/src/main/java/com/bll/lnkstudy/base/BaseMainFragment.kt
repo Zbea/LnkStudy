@@ -2,6 +2,7 @@ package com.bll.lnkstudy.base
 
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
@@ -67,6 +68,8 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         HomeworkDetailsDaoManager.getInstance().clear()
 
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
+        //清空本地题错本
+        FileUtils.deleteHomework(File(FileAddress().getPathScreen("未分类")).parent)
         //清除本地增量数据
         DataUpdateManager.clearDataUpdate(2)
         val map=HashMap<String,Any>()

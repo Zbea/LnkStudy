@@ -7,9 +7,38 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/common_fragment_title"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        android:layout_marginEnd="50dp"
+        android:gravity="bottom|right">
+
+        <TextView
+            android:id="@+id/tv_screenshot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:drawableStart="@mipmap/icon_main_screen"
+            android:drawablePadding="@dimen/dp_10"
+            android:gravity="center"
+            android:text="图库"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+
+        <TextView
+            android:id="@+id/tv_planover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@mipmap/icon_plan_overview"
+            android:drawablePadding="@dimen/dp_10"
+            android:gravity="center"
+            android:text="总览"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="800dp"

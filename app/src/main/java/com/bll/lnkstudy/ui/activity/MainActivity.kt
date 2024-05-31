@@ -122,9 +122,21 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
         }
 
+        //创建截屏默认文件夹
+        val path = FileAddress().getPathScreen("未分类")
+        if (!File(path).exists()) {
+            File(path).parentFile?.mkdir()
+            File(path).mkdirs()
+        }
+
     }
 
     override fun initView() {
+        val isTips=SPUtil.getBoolean("SpecificationTips")
+        if (!isTips){
+            showView(ll_tips)
+        }
+
         mainLeftFragment = MainLeftFragment()
         bookcaseFragment = BookcaseFragment()
         textbookFragment = TextbookFragment()
@@ -188,6 +200,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
         iv_classgroup.setOnClickListener {
             customStartActivity(Intent(this, ClassGroupActivity::class.java))
+        }
+
+        ll_tips.setOnClickListener {
+            disMissView(ll_tips)
+            SPUtil.putBoolean("SpecificationTips",true)
         }
     }
 
@@ -595,8 +612,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     when (item.contentType) {
                         1 -> {
                             val homeworkType = Gson().fromJson(item.listJson, HomeworkTypeBean::class.java)
-                            if (HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkType.typeId))
+                            if (HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkType.typeId)){
                                 HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkType)
+                                //创建增量数据
+                                DataUpdateManager.createDataUpdateState(2, homeworkType.typeId, 1, homeworkType.state, item.listJson)
+                                DataUpdateManager.editDataUpdateUpload(2,homeworkType.typeId,1)
+                            }
                         }
                         2 -> {
                             when (item.state) {
@@ -604,6 +625,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                                     //本次作业卷
                                     val homeworkPaperBean = Gson().fromJson(item.listJson, HomeworkPaperBean::class.java)
                                     HomeworkPaperDaoManager.getInstance().insertOrReplace(homeworkPaperBean)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(2, item.uid, 2,item.typeId,item.listJson,"")
+                                    DataUpdateManager.editDataUpdateUpload(2,item.uid,2,item.typeId)
                                 }
                                 2 -> {//作业本内容
                                     downloadHomework(item)
@@ -624,12 +648,18 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     when (item.contentType) {
                         1 -> {
                             val paperType = Gson().fromJson(item.listJson, PaperTypeBean::class.java)
-                            if (PaperTypeDaoManager.getInstance().queryById(paperType.typeId)==null)
+                            if (PaperTypeDaoManager.getInstance().queryById(paperType.typeId)==null){
                                 PaperTypeDaoManager.getInstance().insertOrReplace(paperType)
+                                //创建增量数据
+                                DataUpdateManager.createDataUpdate(3, item.uid, 1, item.listJson)
+                                DataUpdateManager.editDataUpdateUpload(3,item.uid,1)
+                            }
                         }
                         2 -> {
                             val paperBean = Gson().fromJson(item.listJson, PaperBean::class.java)
                             PaperDaoManager.getInstance().insertOrReplace(paperBean)
+                            DataUpdateManager.createDataUpdate(3,item.uid,2,item.typeId,item.listJson,"")
+                            DataUpdateManager.editDataUpdateUpload(3,item.uid,2,item.typeId)
                         }
                         else -> {
                             downloadPaper(item)
@@ -642,11 +672,17 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             val itemTypeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
                             ItemTypeDaoManager.getInstance().insertOrReplace(itemTypeBean)
                             EventBus.getDefault().post(Constants.NOTE_TAB_MANAGER_EVENT)
+                            //创建笔记分类增量更新
+                            DataUpdateManager.createDataUpdate(4,item.uid,1,item.listJson)
+                            DataUpdateManager.editDataUpdateUpload(4,item.uid,1)
                         }
                         2 -> {
                             val note = Gson().fromJson(item.listJson, Note::class.java)
                             NoteDaoManager.getInstance().insertOrReplace(note)
                             EventBus.getDefault().post(Constants.NOTE_EVENT)
+                            //新建笔记本增量更新
+                            DataUpdateManager.createDataUpdate(4,item.uid,2,item.listJson)
+                            DataUpdateManager.editDataUpdateUpload(4,item.uid,2)
                         }
                         3 -> {
                             downloadNote(item)
@@ -658,6 +694,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         1 -> {
                             val typeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
                             ItemTypeDaoManager.getInstance().insertOrReplace(typeBean)
+                            //创建本地画本增量更新
+                            DataUpdateManager.createDataUpdate(5,item.uid,1, item.listJson)
+                            DataUpdateManager.editDataUpdateUpload(5,item.uid,1)
                         }
                         2 -> {
                             downloadPaintingLocal(item)
@@ -678,6 +717,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     else{
                         val correctBean = Gson().fromJson(item.listJson, HomeworkBookCorrectBean::class.java)
                         HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(correctBean)
+
+                        DataUpdateManager.createDataUpdate(7,item.uid,2,item.typeId,item.listJson,"")
+                        DataUpdateManager.editDataUpdateUpload(7,item.uid,2,item.typeId)
                     }
                 }
                 8 -> {
@@ -695,7 +737,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         val formatStr = item.downloadUrl.substring(item.downloadUrl.lastIndexOf("."))
         val fileName = MD5Utils.digest(item.uid.toString()) + formatStr//文件名
         val targetFileStr = FileAddress().getPathBook(fileName)
-
         FileDownManager.with(this).create(item.downloadUrl).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -707,6 +748,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
                 override fun completed(task: BaseDownloadTask?) {
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(bean)
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(6,item.uid,1, item.listJson,item.downloadUrl)
+                    DataUpdateManager.editDataUpdateUpload(6,item.uid,1)
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -733,12 +777,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     val path = item.path
                     ZipUtils.unzip(zipPath, path, object : IZipCallback {
                         override fun onFinish() {
-                            //创建增量更新
-                            DataUpdateManager.createDataUpdate(
-                                6, item.uid, 2, item.uid, "", item.path
-                            )
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdateDrawing(6,item.uid,2,item.downloadUrl)
+                            DataUpdateManager.editDataUpdateUpload(6,item.uid,2)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -779,7 +822,15 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             if (item.contentType == 1) {
                                 val bean = Gson().fromJson(item.listJson, BookBean::class.java)
                                 BookGreenDaoManager.getInstance().insertOrReplaceBook(bean)
+                                //创建增量更新
+                                DataUpdateManager.createDataUpdateSource(1,item.uid,1,Gson().toJson(bean),bean.downloadUrl)
                             }
+                            else{
+                                //创建增量更新
+                                DataUpdateManager.createDataUpdateDrawing(1,item.uid,2,item.path)
+                            }
+                            //更改为已上传
+                            DataUpdateManager.editDataUpdateUpload(1,item.uid, item.contentType)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }
@@ -820,6 +871,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         override fun onFinish() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+
+                            DataUpdateManager.createDataUpdateDrawing(7,item.uid,1,item.path)
+                            DataUpdateManager.editDataUpdateUpload(7,item.uid,1)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -859,6 +913,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             HomeworkPaperContentDaoManager.getInstance().insertOrReplace(bean)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+                            //创建增量数据
+                            DataUpdateManager.createDataUpdate(2, item.uid, 3, item.listJson, item.path)
+                            DataUpdateManager.editDataUpdateUpload(2,item.uid,3)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -898,6 +955,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             HomeworkContentDaoManager.getInstance().insertOrReplace(bean)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+                            DataUpdateManager.createDataUpdate(2, item.uid, 2,item.typeId , item.listJson, item.path)
+                            DataUpdateManager.editDataUpdateUpload(2,item.uid,2,item.typeId)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -935,6 +994,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         override fun onFinish() {
                             val bean = Gson().fromJson(item.listJson, RecordBean::class.java)
                             RecordDaoManager.getInstance().insertOrReplace(bean)
+                            //创建增量数据
+                            DataUpdateManager.createDataUpdate(2, item.uid, 2,item.typeId , item.listJson, item.path)
+                            DataUpdateManager.editDataUpdateUpload(2,item.uid,2,item.typeId)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }
@@ -976,6 +1038,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             PaperContentDaoManager.getInstance().insertOrReplace(paperContent)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+
+                            DataUpdateManager.createDataUpdate(3,item.uid,3,item.typeId,item.listJson,item.path)
+                            DataUpdateManager.editDataUpdateUpload(3,item.uid,3,item.typeId)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -1016,6 +1081,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             EventBus.getDefault().post(Constants.NOTE_TAB_MANAGER_EVENT)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+
+                            //新建笔记本增量更新
+                            DataUpdateManager.createDataUpdate(4,item.uid,3,item.listJson,item.path)
+                            DataUpdateManager.editDataUpdateUpload(4,item.uid,3)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -1056,6 +1125,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             PaintingDrawingDaoManager.getInstance().insertOrReplace(drawingBean)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+
+                            //创建本地画本增量更新
+                            DataUpdateManager.createDataUpdate(5,item.uid,2, item.listJson,item.path)
+                            DataUpdateManager.editDataUpdateUpload(5,item.uid,2)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -1095,6 +1168,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             DiaryDaoManager.getInstance().insertOrReplace(contentBean)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
+                            DataUpdateManager.createDataUpdate(8,item.uid,1,item.listJson,item.path)
+                            DataUpdateManager.editDataUpdateUpload(8,item.uid,1)
                         }
 
                         override fun onProgress(percentDone: Int) {
@@ -1127,7 +1202,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 map["typeId"] = item.typeId
                 mDataUpdatePresenter.onDeleteData(map)
                 //上传删除本地增量更新
-                DataUpdateDaoManager.getInstance().deleteBean(item.type, item.uid, item.contentType)
+                DataUpdateDaoManager.getInstance().deleteBean(item.type, item.uid, item.contentType,item.typeId)
                 continue
             }
             val map = HashMap<String, Any>()
@@ -1196,7 +1271,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
             Constants.SETTING_RENT_EVENT -> {
                 val map = HashMap<String, Any>()
-                map["type"] = arrayOf(1, 2, 3, 8)
+                map["type"] = arrayOf(1, 2, 3, 7)
                 mDataUpdatePresenter.onList(map)
             }
             Constants.SETTING_CLEAT_EVENT -> {

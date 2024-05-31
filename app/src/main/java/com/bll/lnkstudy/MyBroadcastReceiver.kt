@@ -104,7 +104,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 val bookId=intent.getStringExtra("key_book_id")
                 val path=intent.getStringExtra("note_path")
                 if (!bookId.isNullOrEmpty()){
-                    DataUpdateManager.createDataUpdate(6,bookId.toInt(),2,bookId.toInt(),"",path!!)
+                    DataUpdateManager.createDataUpdateDrawing(6,bookId.toInt(),2,path!!)
                 }
             }
             "android.intent.action.PACKAGE_ADDED"->{

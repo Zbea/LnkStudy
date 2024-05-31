@@ -348,7 +348,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                         }
                         HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                         //创建增量数据
-                        DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
+                        DataUpdateManager.createDataUpdateState(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
                     }
                     val homeworkBookBean= HomeworkBookBean().apply {
                         bookId=book.bookId

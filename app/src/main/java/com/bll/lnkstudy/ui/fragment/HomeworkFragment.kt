@@ -17,6 +17,7 @@ import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
+import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -66,7 +67,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         item.createStatus = 1
                         HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                         //创建增量数据
-                        DataUpdateManager.createDataUpdate(2, item.typeId, 1,  item.state, Gson().toJson(item))
+                        DataUpdateManager.createDataUpdateState(2, item.typeId, 1,  item.state, Gson().toJson(item))
                     }
                 } else {
                     item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!)
@@ -76,7 +77,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         item.id = null
                         HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                         //创建增量数据
-                        DataUpdateManager.createDataUpdate(2, item.typeId, 1, item.state, Gson().toJson(item))
+                        DataUpdateManager.createDataUpdateState(2, item.typeId, 1, item.state, Gson().toJson(item))
                     }
                 }
             }
@@ -106,7 +107,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     }
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                     //创建增量数据
-                    DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1, homeworkTypeBean.state, Gson().toJson(homeworkTypeBean))
+                    DataUpdateManager.createDataUpdateState(2, homeworkTypeBean.typeId, 1, homeworkTypeBean.state, Gson().toJson(homeworkTypeBean))
                 }
             }
         }
@@ -269,6 +270,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             customStartActivity(intent)
                         }
                     }
+                    5->{
+                        customStartActivity(Intent(requireActivity(), FileDrawingActivity::class.java)
+                            .putExtra("pageIndex",Constants.DEFAULT_PAGE)
+                            .putExtra("pagePath",FileAddress().getPathScreenHomework(item.name, item.grade))
+                        )
+                    }
                 }
             }
             setOnItemChildClickListener { adapter, view, position ->
@@ -296,7 +303,13 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     }
 
                     override fun ok() {
-                        deleteHomework()
+                        val item = homeworkTypes[position]
+                        if (item.state==5){
+                            FileUtils.deleteFile1(File(FileAddress().getPathScreenHomework(item.name,item.grade)))
+                        }
+                        else{
+                            deleteHomework()
+                        }
                     }
                 })
                 true
@@ -323,8 +336,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun deleteHomework() {
         val item = homeworkTypes[position]
-        //删除本地当前作业本
         HomeworkTypeDaoManager.getInstance().deleteBean(item)
+        //删除增量更新
+        DataUpdateManager.deleteDateUpdate(2, item.typeId, 1)
         when (item.state) {
             1 -> {
                 val homePapers = HomeworkPaperDaoManager.getInstance().queryAll(mCourse, item.typeId)
@@ -333,14 +347,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
                 for (paper in homePapers) {
                     val contentPapers = HomeworkPaperContentDaoManager.getInstance().queryByID(paper.contentId)
-                    DataUpdateManager.deleteDateUpdate(2, paper.contentId,paper.typeId, 2)
+                    DataUpdateManager.deleteDateUpdate(2, paper.contentId,2,paper.typeId)
                     for (content in contentPapers) {
                         //创建增量数据
                         DataUpdateManager.deleteDateUpdate(2, content.id.toInt(), 3)
                     }
                 }
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(2, item.typeId, 1)
             }
             2 -> {
                 //删除作本内容
@@ -350,12 +362,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 val path = FileAddress().getPathHomework(mCourse, item.typeId)
                 FileUtils.deleteFile(File(path))
 
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(2, item.typeId, 1)
                 //删除增量内容（普通作业本）
                 for (homeContent in items) {
                     //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(2, homeContent.id.toInt(),item.typeId, 2)
+                    DataUpdateManager.deleteDateUpdate(2, homeContent.id.toInt(),2,item.typeId)
                 }
             }
             3 -> {
@@ -365,10 +375,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 for (bean in recordBeans) {
                     RecordDaoManager.getInstance().deleteBean(bean)
                     //修改本地增量更新
-                    DataUpdateManager.deleteDateUpdate(2, bean.id.toInt(),item.typeId, 2)
+                    DataUpdateManager.deleteDateUpdate(2, bean.id.toInt(),2,item.typeId,)
                 }
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(2, item.typeId, 1)
             }
             4 -> {
                 val homeworkBook = HomeworkBookDaoManager.getInstance().queryBookByID(item.bookId)
@@ -432,7 +440,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 }
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                 //创建增量数据
-                DataUpdateManager.createDataUpdate(2, item.typeId, 1,  item.state, Gson().toJson(item))
+                DataUpdateManager.createDataUpdateState(2, item.typeId, 1,  item.state, Gson().toJson(item))
                 if (homeworkTypes.size == 9) {
                     pageIndex += 1
                 }
@@ -587,7 +595,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             bookCorrectBean.correctJson = item.question
                             val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
                             //更新增量数据
-                            DataUpdateManager.createDataUpdate(7, id.toInt(),2,homeworkBookBean.bookId ,Gson().toJson(bookCorrectBean))
+                            DataUpdateManager.createDataUpdate(7, id.toInt(),2,homeworkBookBean.bookId ,Gson().toJson(bookCorrectBean),"")
                             //添加批改详情
                             HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
                                 type = 2
@@ -653,7 +661,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 homework.correctJson = item.question
                                 homework.correctMode = item.questionType
                                 HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-                                DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2)
+                                DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,item.typeId)
                             }
                             val homework = homeworkContents[0]
                             //添加批改详情
@@ -717,7 +725,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                     paper.correctMode = item.questionType
                                     paperDaoManager.insertOrReplace(paper)
                                     //更新目录增量数据
-                                    DataUpdateManager.editDataUpdate(2, item.id, 2,  Gson().toJson(paper))
+                                    DataUpdateManager.editDataUpdate(2, item.id, 2, item.typeId, Gson().toJson(paper))
                                     //获取本次作业的所有作业卷内容
                                     val contentPapers = paperContentDaoManager.queryByID(item.id)
                                     //更新作业卷内容增量数据
@@ -758,7 +766,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 }
                                 paperDaoManager.insertOrReplace(paper)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(2, item.id, 2, Gson().toJson(item))
+                                DataUpdateManager.createDataUpdate(2, item.id, 2,item.typeId, Gson().toJson(item),"")
 
                                 for (i in paths.indices) {
                                     //创建作业卷内容

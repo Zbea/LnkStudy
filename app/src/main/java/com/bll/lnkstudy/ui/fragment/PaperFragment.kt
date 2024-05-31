@@ -50,7 +50,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     item.course = mCourse
                     PaperTypeDaoManager.getInstance().insertOrReplace(item)
                     //创建增量数据
-                    DataUpdateManager.createDataUpdate(3, item.typeId, 1, item.typeId, Gson().toJson(item))
+                    DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
                 }
             }
             setData()
@@ -130,6 +130,8 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                             PaperTypeDaoManager.getInstance().deleteBean(item)
                             PaperDaoManager.getInstance().delete(item.course, item.typeId)
                             PaperContentDaoManager.getInstance().delete(item.course, item.typeId)
+                            //删除增量更新
+                            DataUpdateManager.deleteDateUpdate(3,item.typeId)
                             val path = FileAddress().getPathTestPaper(item.typeId)
                             FileUtils.deleteFile(File(path))
                             remove(position)
@@ -244,7 +246,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             correctMode=item.questionType
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,item.id,2,item.commonTypeId,Gson().toJson(paper))
+        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),"")
 
         val paperContents=PaperContentDaoManager.getInstance().queryAllByType(mCourse,item.commonTypeId)
         for (i in paths.indices){
@@ -258,7 +260,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     page=paperContents.size+i
                 }
             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,item.commonTypeId,Gson().toJson(paperContent),paperContent.path)
+            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),paperContent.path)
         }
     }
 
@@ -282,7 +284,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             correctMode=item.questionType
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,item.id,2,item.typeId,Gson().toJson(paper))
+        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),"")
 
         val paperContents=PaperContentDaoManager.getInstance().queryAllByType(subject,item.typeId)
         for (i in paths.indices){
@@ -295,7 +297,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     page=paperContents.size+i
                 }
             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,item.typeId,Gson().toJson(paperContent),paperContent.path)
+            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),paperContent.path)
         }
     }
 

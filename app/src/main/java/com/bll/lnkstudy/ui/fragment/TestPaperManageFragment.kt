@@ -44,7 +44,7 @@ class TestPaperManageFragment: BaseMainFragment() {
                 typeItem.userId=item.userId
                 PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
                 //创建增量数据
-                DataUpdateManager.createDataUpdate(3, typeItem.typeId, 1, typeItem.typeId, Gson().toJson(item))
+                DataUpdateManager.createDataUpdate(3, typeItem.typeId, 1, Gson().toJson(item))
             }
         }
         initTab()

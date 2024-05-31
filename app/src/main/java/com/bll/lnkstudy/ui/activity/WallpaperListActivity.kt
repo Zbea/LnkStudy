@@ -15,16 +15,13 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
-import kotlin.math.ceil
 
 class WallpaperListActivity:BaseAppCompatActivity() {
 
     private var lists= mutableListOf<PaintingBean>()
     private var mAdapter:MyWallpaperAdapter?=null
-    private var listMap=HashMap<Int,MutableList<PaintingBean>>()
     private var leftPath=""
     private var rightPath=""
     private var position=0
@@ -35,18 +32,16 @@ class WallpaperListActivity:BaseAppCompatActivity() {
 
     override fun initData() {
         pageSize=12
-        lists= PaintingBeanDaoManager.getInstance().queryWallpapers()
     }
 
     override fun initView() {
-        setPageTitle(R.string.download_wallpaper)
-        setPageSetting(R.string.ok)
+        setPageTitle("我的壁纸")
+        showView(tv_btn)
+        tv_btn.text = "设为壁纸"
 
         initRecyclerView()
 
-        pageNumberView()
-
-        tv_setting.setOnClickListener {
+        tv_btn.setOnClickListener {
             if (leftPath.isEmpty()&&rightPath.isEmpty())
                 return@setOnClickListener
             if(File(leftPath).exists()){
@@ -59,6 +54,7 @@ class WallpaperListActivity:BaseAppCompatActivity() {
             }
         }
 
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -81,8 +77,7 @@ class WallpaperListActivity:BaseAppCompatActivity() {
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             //用来确定翻页后选中的位置
-            val index=(pageIndex-1)* pageSize+position
-            val wallpaperItem=lists[index]
+            val wallpaperItem=lists[position]
             if (view.id==R.id.cb_left){
                 if(wallpaperItem.isLeft){
                     wallpaperItem.isLeft=false
@@ -112,8 +107,7 @@ class WallpaperListActivity:BaseAppCompatActivity() {
             mAdapter?.notifyDataSetChanged()
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
-            val index=(pageIndex-1)* pageSize+position
-            this.position=index
+            this.position=position
             delete()
             true
         }
@@ -134,27 +128,11 @@ class WallpaperListActivity:BaseAppCompatActivity() {
         })
     }
 
-    //翻页处理
-    private fun pageNumberView(){
-        val pageTotal=lists.size //全部数量
-        val count = ceil(pageTotal.toDouble()/pageSize).toInt()//总共页码
-        var toIndex=pageSize
-        for(i in 0 until count){
-            val index=i*pageSize
-            if(index+pageSize>pageTotal){        //作用为toIndex最后没有12条数据则剩余几条newList中就装几条
-                toIndex=pageTotal-index
-            }
-            val newList = lists.subList(index,index+toIndex)
-            listMap[i+1]=newList
-        }
-        setPageNumber(lists.size)
-        if (lists.size>0)
-            fetchData()
-    }
-
     override fun fetchData() {
-        mAdapter?.setNewData(listMap[pageIndex]!!)
-        tv_page_current.text=pageIndex.toString()
+        val totals= PaintingBeanDaoManager.getInstance().queryWallpapers()
+        setPageNumber(totals.size)
+        lists=PaintingBeanDaoManager.getInstance().queryWallpapers(pageIndex,pageSize)
+        mAdapter?.setNewData(lists)
     }
 
 }

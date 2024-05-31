@@ -132,6 +132,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
         val fileTargetPath=when(item.state){
+            5->FileAddress().getPathScreenHomework(item.name,item.grade)
             3-> FileAddress().getPathRecord(item.course,item.typeId)
             else->FileAddress().getPathHomework(item.course,item.typeId)
         }
@@ -147,45 +148,47 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         override fun onFinish() {
                             item.id=null//设置数据库id为null用于重新加入
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                            //创建增量数据
-                            DataUpdateManager.createDataUpdate(2,item.typeId,1,  item.state,Gson().toJson(item))
-                            when(item.state){
-                                1->{
-                                    val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                    for (json in jsonArray){
-                                        val paperBean=Gson().fromJson(json, PaperBean::class.java)
-                                        paperBean.id=null//设置数据库id为null用于重新加入
-                                        PaperDaoManager.getInstance().insertOrReplace(paperBean)
-                                        //创建增量数据
-                                        DataUpdateManager.createDataUpdateTypeId(2,paperBean.contentId,2,item.typeId,Gson().toJson(paperBean),"")
+                            if (item.state!=5){
+                                //创建增量数据
+                                DataUpdateManager.createDataUpdateState(2,item.typeId,1,  item.state,Gson().toJson(item))
+                                when(item.state){
+                                    1->{
+                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                                        for (json in jsonArray){
+                                            val paperBean=Gson().fromJson(json, PaperBean::class.java)
+                                            paperBean.id=null//设置数据库id为null用于重新加入
+                                            PaperDaoManager.getInstance().insertOrReplace(paperBean)
+                                            //创建增量数据
+                                            DataUpdateManager.createDataUpdate(2,paperBean.contentId,2,item.typeId,Gson().toJson(paperBean),"")
+                                        }
+                                        val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
+                                        for (json in jsonSubtypeArray){
+                                            val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
+                                            contentBean.id=null//设置数据库id为null用于重新加入
+                                            val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
+                                            //创建增量数据
+                                            DataUpdateManager.createDataUpdate(2,id.toInt(),3,Gson().toJson(contentBean),contentBean.path)
+                                        }
                                     }
-                                    val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
-                                    for (json in jsonSubtypeArray){
-                                        val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
-                                        contentBean.id=null//设置数据库id为null用于重新加入
-                                        val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
-                                        //创建增量数据
-                                        DataUpdateManager.createDataUpdate(2,id.toInt(),3,Gson().toJson(contentBean),contentBean.path)
+                                    2->{
+                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                                        for (json in jsonArray){
+                                            val homeworkContentBean=Gson().fromJson(json, HomeworkContentBean::class.java)
+                                            homeworkContentBean.id=null//设置数据库id为null用于重新加入
+                                            val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
+                                            //创建增量数据
+                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2,item.typeId,Gson().toJson(homeworkContentBean),File(homeworkContentBean.path).parent)
+                                        }
                                     }
-                                }
-                                2->{
-                                    val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                    for (json in jsonArray){
-                                        val homeworkContentBean=Gson().fromJson(json, HomeworkContentBean::class.java)
-                                        homeworkContentBean.id=null//设置数据库id为null用于重新加入
-                                        val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
-                                        //创建增量数据
-                                        DataUpdateManager.createDataUpdateTypeId(2,id.toInt(),2,item.typeId,Gson().toJson(homeworkContentBean),File(homeworkContentBean.path).parent)
-                                    }
-                                }
-                                3->{
-                                    val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                    for (json in jsonArray){
-                                        val recordBean=Gson().fromJson(json, RecordBean::class.java)
-                                        recordBean.id=null//设置数据库id为null用于重新加入
-                                        val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
-                                        //创建增量数据
-                                        DataUpdateManager.createDataUpdateTypeId(2,id.toInt(),2,item.typeId,Gson().toJson(recordBean),recordBean.path)
+                                    3->{
+                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
+                                        for (json in jsonArray){
+                                            val recordBean=Gson().fromJson(json, RecordBean::class.java)
+                                            recordBean.id=null//设置数据库id为null用于重新加入
+                                            val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+                                            //创建增量数据
+                                            DataUpdateManager.createDataUpdate(2,id.toInt(),2,item.typeId,Gson().toJson(recordBean),recordBean.path)
+                                        }
                                     }
                                 }
                             }
@@ -259,9 +262,9 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             book.id=null
                             HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量数据
-                            DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
+                            DataUpdateManager.createDataUpdateState(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
                             if (isDraw){
-                                DataUpdateManager.createDataUpdateBook(7,book.bookId,1,book.bookDrawPath)
+                                DataUpdateManager.createDataUpdateDrawing(7,book.bookId,1,book.bookDrawPath)
                             }
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))

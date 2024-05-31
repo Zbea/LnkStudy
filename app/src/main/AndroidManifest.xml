@@ -28,7 +28,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-
+    <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <permission
         android:name="android.permission.INSTALL_PACKAGES"
         tools:ignore="ReservedSystemPermission" />
@@ -180,6 +182,10 @@
         <activity android:name=".ui.activity.ResourceCenterActivity"
             android:launchMode="singleTask"
             />
+        <activity android:name=".ui.activity.ScreenshotListActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.ScreenshotManagerActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
@@ -190,6 +196,9 @@
             />
         <activity android:name=".ui.activity.CalenderMyActivity"/>
         <activity android:name=".ui.activity.drawing.CalligraphyDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
+        <activity android:name=".ui.activity.drawing.FileDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
 

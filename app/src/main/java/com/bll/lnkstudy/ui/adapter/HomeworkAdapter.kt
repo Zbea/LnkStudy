@@ -5,17 +5,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.SPUtil.getObj
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import java.util.*
 
 class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
+
+    var grade = Objects.requireNonNull(getObj("user", User::class.java))?.grade
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setVisible(R.id.ll_info, item.createStatus!=0 && !item.isCloud)
-            if (item.isCloud)
+            if (grade!=item.grade)
                 setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})")
             setText(R.id.tv_name, item.name)
             val ivImage=getView<ImageView>(R.id.iv_image)
@@ -42,6 +47,10 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
                     setText(R.id.tv_name, "")
                     GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
+                }
+                5->{
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
             }
 

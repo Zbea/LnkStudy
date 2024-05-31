@@ -185,7 +185,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
         }
         else{
             //创建增量更新
-            DataUpdateManager.createDataUpdate(1,book?.bookId!!,2,"",book?.bookDrawPath!!)
+            DataUpdateManager.createDataUpdateDrawing(1,book?.bookId!!,2,book?.bookDrawPath!!)
         }
     }
 

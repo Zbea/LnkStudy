@@ -14,7 +14,7 @@ import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
-import com.bll.lnkstudy.ui.adapter.NoteBookManagerAdapter
+import com.bll.lnkstudy.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -26,7 +26,7 @@ import java.util.*
 class NotebookManagerActivity : BaseAppCompatActivity() {
 
     private var notebooks= mutableListOf<ItemTypeBean>()
-    private var mAdapter: NoteBookManagerAdapter? = null
+    private var mAdapter: ItemTypeManagerAdapter? = null
     private var position=0
 
     override fun layoutId(): Int {
@@ -52,25 +52,27 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, notebooks).apply {
+        mAdapter = ItemTypeManagerAdapter(R.layout.item_notebook_manager, notebooks).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemChildClickListener { adapter, view, position ->
-                val notebook=notebooks[position]
                 this@NotebookManagerActivity.position=position
-                if (view.id==R.id.iv_edit){
-                    editNotebook(notebook.title)
-                }
-                if (view.id==R.id.iv_delete){
-                    deleteNotebook()
-                }
-                if (view.id==R.id.iv_top){
-                    val date=notebooks[0].date
-                    notebook.date=date-1000
-                    ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
-                    Collections.swap(notebooks,position,0)
-                    setNotify()
-                    DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
+                val notebook=notebooks[position]
+                when(view.id){
+                    R.id.iv_edit->{
+                        editNotebook(notebook.title)
+                    }
+                    R.id.iv_delete->{
+                        deleteNotebook()
+                    }
+                    R.id.iv_top->{
+                        val date=notebooks[0].date
+                        notebook.date=date-1000
+                        ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
+                        Collections.swap(notebooks,position,0)
+                        setNotify()
+                        DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
+                    }
                 }
             }
         }

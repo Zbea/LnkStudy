@@ -25,9 +25,38 @@ object DataUpdateManager {
     }
 
     /**
-     * 创建增量更新（有内容）
+     * 创建增量更新（有内容，有手写）
      */
-    fun createDataUpdateBook(type:Int,id:Int,contentType:Int,path:String){
+    fun createDataUpdate(type:Int,id:Int,contentType:Int,json:String,path:String){
+        mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
+            this.type=type
+            uid=id
+            this.contentType=contentType
+            date=System.currentTimeMillis()
+            listJson= json
+            this.path=path
+        })
+    }
+
+    /**
+     * 创建增量更新（有内容，有手写）
+     */
+    fun createDataUpdate(type:Int, id:Int, contentType:Int, typeId:Int, json:String, path:String){
+        mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
+            this.type=type
+            uid=id
+            this.contentType=contentType
+            this.typeId=typeId
+            date=System.currentTimeMillis()
+            listJson= json
+            this.path=path
+        })
+    }
+
+    /**
+     * 创建增量更新（线上资源手写）
+     */
+    fun createDataUpdateDrawing(type:Int, id:Int, contentType:Int, path:String){
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -38,9 +67,9 @@ object DataUpdateManager {
     }
 
     /**
-     * 创建增量更新
+     * 创建增量更新(state 作业本状态)
      */
-    fun createDataUpdate(type:Int,id:Int,contentType:Int,state:Int,json:String){
+    fun createDataUpdateState(type:Int, id:Int, contentType:Int, state:Int, json:String){
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -68,51 +97,6 @@ object DataUpdateManager {
     }
 
     /**
-     * 创建增量更新（有内容）
-     */
-    fun createDataUpdate(type:Int,id:Int,contentType:Int,json:String,path:String){
-        mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
-            this.type=type
-            uid=id
-            this.contentType=contentType
-            date=System.currentTimeMillis()
-            listJson= json
-            this.path=path
-        })
-    }
-
-    /**
-     * 创建增量更新（有内容）
-     */
-    fun createDataUpdateTypeId(type:Int,id:Int,contentType:Int,typeId:Int,json:String,path:String){
-        mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
-            this.type=type
-            uid=id
-            this.contentType=contentType
-            this.typeId=typeId
-            date=System.currentTimeMillis()
-            listJson= json
-            this.path=path
-        })
-    }
-
-    /**
-     * 创建增量更新（有内容）
-     */
-    fun createDataUpdate(type:Int,id:Int,contentType:Int,state: Int,json:String,path:String){
-        mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
-            this.type=type
-            uid=id
-            this.contentType=contentType
-            this.state=state
-            date=System.currentTimeMillis()
-            listJson= json
-            this.path=path
-            downloadUrl=""
-        })
-    }
-
-    /**
      * 删除增量更新
      */
     fun deleteDateUpdate(type:Int,id:Int,contentType:Int){
@@ -125,6 +109,20 @@ object DataUpdateManager {
     /**
      * 删除增量更新
      */
+    fun deleteDateUpdate(type:Int,typeId: Int){
+        val list= mDataUpdateDaoManager.queryList(type,typeId)
+        for (item in list){
+            mDataUpdateDaoManager.insertOrReplace(item.apply {
+                isDelete=true
+                isUpload=false
+            })
+        }
+    }
+
+
+    /**
+     * 删除增量更新
+     */
     fun deleteDateUpdate(type:Int,id:Int,contentType:Int,typeId: Int){
         mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId)?.apply {
             isDelete=true
@@ -132,6 +130,23 @@ object DataUpdateManager {
         })
     }
 
+    /**
+     * 修改增量更新（将状态变为已上传）
+     */
+    fun editDataUpdateUpload(type:Int,id:Int,contentType:Int){
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType)?.apply {
+            isUpload=true
+        })
+    }
+
+    /**
+     * 修改增量更新（将状态变为已上传）
+     */
+    fun editDataUpdateUpload(type:Int,id:Int,contentType:Int,typeId: Int){
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId)?.apply {
+            isUpload=true
+        })
+    }
 
     /**
      * 修改增量更新（图片内容变化，地址不变）

@@ -72,10 +72,9 @@ public class PaintingBeanDaoManager {
      */
     public List<PaintingBean> queryWallpapers() {
         WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(1);
-        List<PaintingBean> list = dao.queryBuilder().where(whereUser,whereCondition1)
+        return dao.queryBuilder().where(whereUser,whereCondition1)
                 .orderDesc(PaintingBeanDao.Properties.Date)
                 .build().list();
-        return list;
     }
 
     /**
@@ -86,11 +85,10 @@ public class PaintingBeanDaoManager {
      */
     public List<PaintingBean> queryWallpapers(int page, int pageSize) {
         WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(1);
-        List<PaintingBean> list = dao.queryBuilder().where(whereUser,whereCondition1)
+        return dao.queryBuilder().where(whereUser,whereCondition1)
                 .orderDesc(PaintingBeanDao.Properties.Date)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
-        return list;
     }
     public List<PaintingBean> queryPaintings() {
         WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);

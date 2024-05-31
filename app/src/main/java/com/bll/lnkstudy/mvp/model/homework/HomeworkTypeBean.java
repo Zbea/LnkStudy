@@ -36,7 +36,7 @@ public class HomeworkTypeBean implements Serializable {
     public int typeId;//作业本分类id
     public int parentTypeId;//家长作业本id（防止和老师作业本重复）
     @SerializedName("subType")
-    public int state;//1作业卷 2普通作业本 3听读本4题卷本
+    public int state;//1作业卷 2普通作业本 3听读本4题卷本 5错题本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
