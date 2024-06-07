@@ -49,7 +49,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
                 }
                 5->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_4)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
             }

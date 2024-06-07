@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.ac_list.*
 import java.io.File
 import java.text.DecimalFormat
 
-class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderView {
+class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
 
     private var presenter=CalenderPresenter(this,getScreenPosition())
     private var items= mutableListOf<CalenderItemBean>()
@@ -81,7 +81,7 @@ class CalenderDownloadMainFragment:BaseMainFragment(), IContractView.ICalenderVi
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(), 20f)
                 , DP2PX.dip2px(requireActivity(), 50f)))
             setOnItemClickListener { adapter, view, position ->
-                this@CalenderDownloadMainFragment.position=position
+                this@CalenderDownloadFragment.position=position
                 val item=items[position]
                 showDetails(item)
             }

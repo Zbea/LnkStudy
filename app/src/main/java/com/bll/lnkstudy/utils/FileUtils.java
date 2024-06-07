@@ -16,8 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FileUtils {
@@ -316,7 +314,7 @@ public class FileUtils {
      * 删除子文件夹 不包括自身
      * @param file
      */
-    public static void deleteFile1(File file){
+    public static void deleteFileSkipTop(File file){
         if (file == null || !file.exists() )
             return;
         // 判断传递进来的是文件还是文件夹,如果是文件,直接删除,如果是文件夹,则判断文件夹里面有没有东西
@@ -408,6 +406,7 @@ public class FileUtils {
                 return false;
             }
             Files.copy(Paths.get(oldPathName) ,Paths.get(newPathName) , StandardCopyOption.REPLACE_EXISTING);
+            oldFile.delete();
 //            File newFile = new File(newPathName);
 //            if (!newFile.exists()){
 //                newFile.getParentFile().mkdirs();

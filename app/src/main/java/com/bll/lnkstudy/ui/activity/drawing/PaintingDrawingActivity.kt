@@ -7,6 +7,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.PaintingLinerSelectDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
@@ -25,6 +26,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
     private var page = 0//页码
     private var resId=0
+    private var linerDialog:PaintingLinerSelectDialog?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -72,6 +74,19 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
                     editDataUpdate(paintingDrawingBean!!)
                 }
+            }
+        }
+
+        iv_tool.setOnClickListener {
+            if (linerDialog==null){
+                linerDialog=PaintingLinerSelectDialog(this).builder()
+                linerDialog!!.setOnSelectListener{
+                    elik_a?.penSettingWidth=it
+                    elik_b?.penSettingWidth=it
+                }
+            }
+            else{
+                linerDialog?.show()
             }
         }
 

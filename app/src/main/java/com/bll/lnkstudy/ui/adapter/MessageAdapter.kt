@@ -28,6 +28,9 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList.MessageBean
                         "来自："+item.teacherName
                     }
                 }
+                5->{
+                    typeNameStr="年级通知"
+                }
             }
             setText(R.id.tv_message_name, typeNameStr)
             setText(R.id.tv_message_content,item.content)

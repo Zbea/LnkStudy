@@ -371,6 +371,17 @@ public class DateUtils {
         return 0;
     }
 
+    public static long date4StampToHour(String s) {
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date date = simpleDateFormat.parse(s);
+            return date.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     /**
      *
      * 把时间long 的格式转为天

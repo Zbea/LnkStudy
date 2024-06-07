@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_list_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
+class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
 
     private var index=0
     private var presenter= DownloadAppPresenter(this,getScreenPosition())
@@ -54,8 +54,8 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
     /**
      * 实例 传送数据
      */
-    fun newInstance(index:Int): AppDownloadMainFragment {
-        val fragment= AppDownloadMainFragment()
+    fun newInstance(index:Int): AppDownloadFragment {
+        val fragment= AppDownloadFragment()
         val bundle= Bundle()
         bundle.putInt("index",index)
         fragment.arguments=bundle
@@ -97,7 +97,7 @@ class AppDownloadMainFragment :BaseMainFragment(), IContractView.IAPPView{
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                this@AppDownloadMainFragment.position=position
+                this@AppDownloadFragment.position=position
                 val app=apps[position]
                 if (app.buyStatus==0){
                     val map = HashMap<String, Any>()

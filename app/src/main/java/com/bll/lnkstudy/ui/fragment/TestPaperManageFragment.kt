@@ -27,7 +27,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle(R.string.main_testpaper_title)
+        setTitle(DataBeanManager.listTitle[4])
 
     }
 

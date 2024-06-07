@@ -174,14 +174,12 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
                         }
                         ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{ pos->
                             FileUtils.copyFile(file.path,types[pos].path+"/"+file.name)
-                            FileUtils.deleteFile(file)
                             mAdapter?.remove(position)
                         }
                     }
                     else{
                         val path=FileAddress().getPathScreen("未分类")
                         FileUtils.copyFile(file.path,path+"/"+file.name)
-                        FileUtils.deleteFile(file)
                         mAdapter?.remove(position)
                     }
                 }

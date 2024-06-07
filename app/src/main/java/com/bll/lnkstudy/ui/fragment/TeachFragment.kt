@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
@@ -51,7 +52,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun initView() {
-        setTitle(R.string.main_teach_title)
+        setTitle(DataBeanManager.listTitle[7])
         pageSize=8
 
         initRecyclerView()

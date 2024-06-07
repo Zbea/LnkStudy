@@ -21,7 +21,6 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_list.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.*
 
 class NotebookManagerActivity : BaseAppCompatActivity() {
 
@@ -69,7 +68,9 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                         val date=notebooks[0].date
                         notebook.date=date-1000
                         ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
-                        Collections.swap(notebooks,position,0)
+                        notebooks.sortWith(Comparator { item1, item2 ->
+                            return@Comparator item1.date.compareTo(item2.date)
+                        })
                         setNotify()
                         DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
                     }

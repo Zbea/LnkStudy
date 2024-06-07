@@ -49,12 +49,12 @@ class NoteFragment : BaseMainFragment(){
     }
 
     override fun initView() {
+        setTitle(DataBeanManager.listTitle[5])
         pageSize=10
 
         popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str)))
         popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str)))
 
-        setTitle(R.string.main_note_title)
         showView(iv_manager)
 
         initRecyclerView()

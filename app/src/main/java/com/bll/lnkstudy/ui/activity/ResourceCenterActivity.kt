@@ -8,20 +8,19 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.ui.fragment.resource.AppDownloadMainFragment
-import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadMainFragment
-import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadMainFragment
-import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadMainFragment
+import com.bll.lnkstudy.ui.fragment.resource.AppDownloadFragment
+import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadFragment
+import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
+import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
 import kotlinx.android.synthetic.main.common_title.*
 
 class ResourceCenterActivity:BaseAppCompatActivity() {
 
     private var lastFragment: Fragment? = null
-    private var appFragment: AppDownloadMainFragment? = null
-    private var toolFragment: AppDownloadMainFragment? = null
-    private var wallpaperFragment: WallpaperDownloadMainFragment? = null
-    private var paintingFragment: PaintingDownloadMainFragment? = null
-    private var calenderFragment: CalenderDownloadMainFragment? = null
+    private var toolFragment: AppDownloadFragment? = null
+    private var wallpaperFragment: WallpaperDownloadFragment? = null
+    private var paintingFragment: PaintingDownloadFragment? = null
+    private var calenderFragment: CalenderDownloadFragment? = null
 
     private var popSupplys= mutableListOf<PopupBean>()
     private var popTimes= mutableListOf<PopupBean>()
@@ -53,19 +52,17 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         setPageTitle(R.string.resource_center_str)
         showView(tv_province)
 
-        appFragment = AppDownloadMainFragment().newInstance(1)
-        toolFragment=AppDownloadMainFragment().newInstance(2)
-        wallpaperFragment = WallpaperDownloadMainFragment()
-        paintingFragment = PaintingDownloadMainFragment()
-        calenderFragment = CalenderDownloadMainFragment()
+        toolFragment=AppDownloadFragment().newInstance(2)
+        wallpaperFragment = WallpaperDownloadFragment()
+        paintingFragment = PaintingDownloadFragment()
+        calenderFragment = CalenderDownloadFragment()
 
-        switchFragment(lastFragment, appFragment)
+        switchFragment(lastFragment, toolFragment)
         initTab()
 
         tv_province.setOnClickListener {
             PopupList(this,popSupplys,tv_province,tv_province.width,0).builder().setOnSelectListener {
                 tv_province.text = it.name
-                appFragment?.changeSupply(it.id)
                 toolFragment?.changeSupply(it.id)
                 wallpaperFragment?.changeSupply(it.id)
                 paintingFragment?.changeSupply(it.id)
@@ -114,21 +111,17 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         when(position){
             0->{
                 disMissView(tv_course,tv_grade)
-                switchFragment(lastFragment, appFragment)
+                switchFragment(lastFragment, toolFragment)
             }
             1->{
                 disMissView(tv_course,tv_grade)
-                switchFragment(lastFragment, toolFragment)
-            }
-            2->{
-                disMissView(tv_course,tv_grade)
                 switchFragment(lastFragment, wallpaperFragment)
             }
-            3->{
+            2->{
                 showView(tv_course,tv_grade)
                 switchFragment(lastFragment, paintingFragment)
             }
-            4->{
+            3->{
                 disMissView(tv_course,tv_grade)
                 switchFragment(lastFragment, calenderFragment)
             }
@@ -158,7 +151,6 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     }
 
     override fun onCommonData() {
-        appFragment?.initChangeScreenData()
         toolFragment?.initChangeScreenData()
         wallpaperFragment?.initChangeScreenData()
         paintingFragment?.initChangeScreenData()

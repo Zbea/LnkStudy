@@ -31,7 +31,7 @@ class PaintingFragment : BaseMainFragment(){
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-        setTitle(R.string.main_painting_title)
+        setTitle(DataBeanManager.listTitle[6])
         initTab()
 
         iv_han.setOnClickListener {

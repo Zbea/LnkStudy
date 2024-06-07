@@ -16,7 +16,10 @@ import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.AppUpdateBean
+import com.bll.lnkstudy.mvp.model.CourseItem
+import com.bll.lnkstudy.mvp.model.DiaryBean
+import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
@@ -54,7 +57,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     private var nowDate = 0L
     private var nowDayPos=1
     private var calenderPath=""
-    private var popupDates= mutableListOf<PopupBean>()
     private var dateEvents= mutableListOf<DateEventBean>()
     private var updateDialog:AppUpdateDialog?=null
     private var isChange=false
@@ -120,10 +122,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     }
 
     override fun initView() {
-        setTitle(R.string.main_main_title)
-
-        popupDates.add(PopupBean(0,getString(R.string.date_plan)))
-        popupDates.add(PopupBean(1,getString(R.string.date_day)))
+        setTitle(DataBeanManager.listTitle[0])
 
         initPlanView()
         initNoticeView()

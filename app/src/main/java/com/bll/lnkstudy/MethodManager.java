@@ -290,6 +290,11 @@ public class MethodManager {
      * 转跳本地画本、书法
      */
     public static void gotoPaintingDrawing(Context context, ItemTypeBean item, int type){
+        if (!MethodManager.getSchoolPermissionAllow(2)) {
+            SToast.showText(2, "学校该时间不允许手绘");
+            return;
+        }
+
         if (type==3){
             ActivityManager.getInstance().checkPaintingDrawingIsExist();
             Intent intent=new Intent(context, PaintingDrawingActivity.class);
@@ -457,67 +462,53 @@ public class MethodManager {
     }
 
     /**
-     * 获取学生是否允许学生查看 返回false可以查看 返回true不能查看
-     * @param type 0书架 1义教
+     * 获取学生是否允许学生查看 返回false不可以查看 返回true可以查看
+     * @param type 0书架 1义教 2书画
      * @return
      */
     public static boolean getSchoolPermissionAllow(int type){
-        boolean isAllow = true;
-        long currentTime=DateUtils.getCurrentHourInMillis();
-        int week=DateUtils.getWeek(System.currentTimeMillis());
         PermissionSchoolBean item =SPUtil.INSTANCE.getObj("schoolPermission", PermissionSchoolBean.class);
         if (item==null){
             return true;
         }
-
         if (type==0){
             if (item.isAllowBook){
-                if (item.bookList.isEmpty()){
-                    return true;
-                }
-                else {
-                    for (int i = 0; i < item.bookList.size(); i++) {
-                        PermissionTimesBean bean= item.bookList.get(i);
-                        if (bean.weeks.contains(week)){
-                            for (int j = 0; j < bean.startTime.length; j++) {
-                                long startTime=bean.startTime[j];
-                                long endTime=bean.endTime[j];
-                                if (currentTime>=startTime&&currentTime<=endTime){
-                                    isAllow=false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                return isExistCurrentTime(item);
             }
             else {
-               return false;
+                return true;
+            }
+        }
+        else if (type==1){
+            if (item.isAllowVideo){
+                return isExistCurrentTime(item);
+            }
+            else {
+                return true;
             }
         }
         else {
-            if (item.isAllowVideo){
-                if (item.videoList.isEmpty()){
-                    return true;
-                }
-                else {
-                    for (int i = 0; i < item.videoList.size(); i++) {
-                        PermissionTimesBean bean= item.videoList.get(i);
-                        if (bean.weeks.contains(week)){
-                            for (int j = 0; j < bean.startTime.length; j++) {
-                                long startTime=bean.startTime[j];
-                                long endTime=bean.endTime[j];
-                                if (currentTime>=startTime&&currentTime<=endTime){
-                                    isAllow=false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+            if (item.isAllowPainting){
+                return isExistCurrentTime(item);
             }
             else {
-                return false;
+                return true;
+            }
+        }
+    }
+
+    private static boolean isExistCurrentTime(PermissionSchoolBean item){
+        boolean isAllow = true;
+        long currentTime=DateUtils.getCurrentHourInMillis();
+        int week=DateUtils.getWeek(System.currentTimeMillis());
+        if (item.weeks.contains(week)){
+            for (int j = 0; j < item.startTime.length; j++) {
+                long startTime=DateUtils.date4StampToHour(item.startTime[j]);
+                long endTime=DateUtils.date4StampToHour(item.endTime[j]);
+                if (currentTime>=startTime&&currentTime<=endTime){
+                    isAllow=false;
+                    break;
+                }
             }
         }
         return isAllow;

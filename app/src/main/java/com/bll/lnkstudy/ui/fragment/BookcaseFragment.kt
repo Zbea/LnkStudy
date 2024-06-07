@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.Constants.Companion.halfYear
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -41,7 +42,7 @@ class BookcaseFragment: BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle(R.string.main_bookcase_title)
+        setTitle(DataBeanManager.listTitle[1])
 
         initRecyclerView()
 

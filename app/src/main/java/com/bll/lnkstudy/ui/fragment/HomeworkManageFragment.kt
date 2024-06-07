@@ -2,10 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.HomeworkCommitDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
@@ -34,7 +31,7 @@ class HomeworkManageFragment: BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle(R.string.main_homework_title)
+        setTitle(DataBeanManager.listTitle[3])
         showView(iv_manager)
 
         popWindowBeans.add(PopupBean(0, getString(R.string.homework_commit_details_str) ))

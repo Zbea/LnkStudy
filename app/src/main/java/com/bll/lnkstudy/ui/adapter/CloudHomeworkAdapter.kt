@@ -25,6 +25,9 @@ class CloudHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
                     3->{
                         R.mipmap.icon_homework_cover_2
                     }
+                    5->{
+                        R.mipmap.icon_homework_cover_4
+                    }
                     else->{
                         R.mipmap.icon_homework_cover_1
                     }

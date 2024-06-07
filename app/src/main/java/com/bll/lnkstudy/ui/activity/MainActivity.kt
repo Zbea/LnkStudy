@@ -50,7 +50,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     var bookcaseFragment: BookcaseFragment? = null
     var textbookFragment: TextbookFragment? = null
     var teachFragment: TeachFragment? = null
-    var appFragment: AppFragment? = null
+    var learningConditionFragment: LearningConditionFragment? = null
 
     var mainRightFragment: MainRightFragment? = null
     var paperFragment: TestPaperManageFragment? = null
@@ -146,7 +146,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         paintingFragment = PaintingFragment()
         teachFragment = TeachFragment()
         mainRightFragment = MainRightFragment()
-        appFragment = AppFragment()
+        learningConditionFragment = LearningConditionFragment()
 
         switchFragment(1, mainLeftFragment)
         switchFragment(2, mainRightFragment)
@@ -163,7 +163,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     1 -> switchFragment(1,bookcaseFragment)//书架
                     2 -> switchFragment(1,textbookFragment)//课本
                     3 -> switchFragment(1,teachFragment)//义教
-                    4 -> switchFragment(1,appFragment)//应用
+                    4 -> switchFragment(1,learningConditionFragment)//应用
                 }
                 leftPosition = position
             }

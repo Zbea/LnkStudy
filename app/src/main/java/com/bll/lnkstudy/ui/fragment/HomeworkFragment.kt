@@ -305,7 +305,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     override fun ok() {
                         val item = homeworkTypes[position]
                         if (item.state==5){
-                            FileUtils.deleteFile1(File(FileAddress().getPathScreenHomework(item.name,item.grade)))
+                            FileUtils.deleteFileSkipTop(File(FileAddress().getPathScreenHomework(item.name,item.grade)))
                         }
                         else{
                             deleteHomework()
