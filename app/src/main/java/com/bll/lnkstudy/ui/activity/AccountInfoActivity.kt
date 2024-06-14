@@ -57,6 +57,12 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         tv_area.text = schoolBean?.area
     }
 
+    override fun onEditParent() {
+        mUser?.parentName=tv_parent.text.toString()
+        mUser?.parentNickname=tv_parent_name.text.toString()
+        mUser?.parentTel=tv_parent_phone.text.toString()
+    }
+
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
     }
@@ -128,6 +134,16 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                 })
         }
 
+        btn_edit_parent.setOnClickListener {
+            AccountEditParentDialog(this,mUser!!.parentName,mUser!!.parentNickname,mUser!!.parentTel).builder().setOnDialogClickListener{
+                name,nickname,phone->
+                tv_parent.text = name
+                tv_parent_name.text = nickname
+                tv_parent_phone.text = phone
+                presenter?.editParent(name, nickname, phone)
+            }
+        }
+
     }
 
 
@@ -169,7 +185,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      */
     private fun editName() {
         InputContentDialog(this, screenPos, tv_name.text.toString()).builder()
-            ?.setOnDialogClickListener { string ->
+            .setOnDialogClickListener { string ->
                 nickname = string
                 presenter?.editName(nickname)
             }

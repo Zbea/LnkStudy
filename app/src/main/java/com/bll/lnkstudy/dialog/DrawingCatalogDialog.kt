@@ -16,10 +16,10 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 /**
  * type=0单屏 type=1书籍目录
  */
-class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:Int=0,val startCount:Int) {
+class DrawingCatalogDialog(val context: Context, val screenPos:Int, val list: List<Any> ,val type:Int=0,val startCount:Int) {
 
     private var dialog:Dialog?=null
-    constructor(context: Context, list: List<Any>):this(context, list, 0, 0)
+    constructor(context: Context,screenPos:Int, list: List<Any>):this(context, screenPos,list, 0, 0)
 
     fun builder(): DrawingCatalogDialog {
 
@@ -29,7 +29,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
-        layoutParams.x=DP2PX.dip2px(context,42f)
+        layoutParams?.x=if (screenPos==3) DP2PX.dip2px(context,1021f+42f)else DP2PX.dip2px(context,42f)
         layoutParams.y= DP2PX.dip2px(context,5f)
         dialog?.show()
 

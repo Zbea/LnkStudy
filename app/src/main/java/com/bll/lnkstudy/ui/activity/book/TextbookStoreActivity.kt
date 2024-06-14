@@ -283,12 +283,12 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
         showLoading()
         val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        val targetFile = File(zipPath)
-        if (targetFile.exists()) {
-            targetFile.delete()
+        val path = if (tabId>2){
+            FileAddress().getPathZip(fileName)
+        } else{
+            FileAddress().getPathBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
-        val download = FileDownManager.with(this).create(url).setPath(zipPath)
+        val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
 
@@ -309,10 +309,24 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    val fileTargetPath = FileAddress().getPathTextBook(fileName)
-                    unzip(book, zipPath, fileTargetPath)
-                    //删除zip文件
-                    FileUtils.deleteFile(File(zipPath))
+                    if (tabId>2){
+                        val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
+                        unzip(book, path, fileTargetPath)
+                    }
+                    else{
+                        book.apply {
+                            typeStr = tabStr
+                            loadSate = 2
+                            time = System.currentTimeMillis()//下载时间用于排序
+                            bookPath = path
+                            bookDrawPath=FileAddress().getPathBookDraw(fileName)
+                        }
+                        //下载解压完成后更新存储的book
+                        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                        //创建增量更新
+                        DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
+                    }
+                    refreshView(book, path)
                     lock.unlock()
                 }
 
@@ -332,68 +346,43 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private fun unzip(book: TextbookBean, zipPath: String, fileTargetPath: String) {
         ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
-                if (tabId==3||tabId==4){
-                    //题卷本不存在，创建题卷本
-                    if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkTypeBook(book.bookId)){
-                        val homeworkTypeBean= HomeworkTypeBean().apply {
-                            name=book.bookName
-                            grade=book.grade
-                            typeId=ToolUtils.getDateId()
-                            state=4
-                            date=System.currentTimeMillis()
-                            course=DataBeanManager.getCourseStr(book.subject)
-                            bookId=book.bookId
-                            bgResId=book.imageUrl
-                            createStatus=0
-                        }
-                        HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-                        //创建增量数据
-                        DataUpdateManager.createDataUpdateState(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
-                    }
-                    val homeworkBookBean= HomeworkBookBean().apply {
-                        bookId=book.bookId
-                        imageUrl=book.imageUrl
-                        bookName=book.bookName
-                        bookDesc=book.bookDesc
-                        price=book.price
-                        type=book.type
-                        semester=book.semester
-                        area=book.area
+                //题卷本不存在，创建题卷本
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkTypeBook(book.bookId)){
+                    val homeworkTypeBean= HomeworkTypeBean().apply {
+                        name=book.bookName
                         grade=book.grade
-                        subject=book.subject
-                        supply=book.supply
-                        downloadUrl=book.downloadUrl
-                        bookPath=fileTargetPath
-                        bookDrawPath=FileAddress().getPathHomeworkBookDraw(File(fileTargetPath).name)
-                        time=System.currentTimeMillis()
+                        typeId=ToolUtils.getDateId()
+                        state=4
+                        date=System.currentTimeMillis()
+                        course=DataBeanManager.getCourseStr(book.subject)
+                        bookId=book.bookId
+                        bgResId=book.imageUrl
+                        createStatus=0
                     }
-                    HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)
-                    book.loadSate=2
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                    //创建增量数据
+                    DataUpdateManager.createDataUpdateState(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
                 }
-                else{
-                    book.apply {
-                        typeStr = tabStr
-                        loadSate = 2
-                        time = System.currentTimeMillis()//下载时间用于排序
-                        bookPath = fileTargetPath
-                        bookDrawPath=FileAddress().getPathTextBookDraw(File(fileTargetPath).name)
-                    }
-                    //下载解压完成后更新存储的book
-                    TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                    //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
+                val homeworkBookBean= HomeworkBookBean().apply {
+                    bookId=book.bookId
+                    imageUrl=book.imageUrl
+                    bookName=book.bookName
+                    bookDesc=book.bookDesc
+                    price=book.price
+                    type=book.type
+                    semester=book.semester
+                    area=book.area
+                    grade=book.grade
+                    subject=book.subject
+                    supply=book.supply
+                    downloadUrl=book.downloadUrl
+                    bookPath=fileTargetPath
+                    bookDrawPath=FileAddress().getPathHomeworkBookDraw(File(fileTargetPath).name)
+                    time=System.currentTimeMillis()
                 }
-                //更新列表
-                mAdapter?.notifyItemChanged(books.indexOf(book))
-                bookDetailsDialog?.dismiss()
-                Handler().postDelayed({
-                    EventBus.getDefault().post(if (tabId==3||tabId==4)Constants.HOMEWORK_BOOK_EVENT else Constants.TEXT_BOOK_EVENT)
-                    showToast(book.bookName+getString(R.string.book_download_success))
-                },500)
-
-                if (mDownMapPool.entries.size == 0) {
-                    hideLoading()
-                }
+                HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)
+                book.loadSate=2
+                refreshView(book, zipPath)
             }
 
             override fun onProgress(percentDone: Int) {
@@ -410,6 +399,26 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             }
 
         })
+    }
+
+    private fun refreshView(book: TextbookBean, zipPath: String){
+        //更新列表
+        mAdapter?.notifyItemChanged(books.indexOf(book))
+        bookDetailsDialog?.dismiss()
+        Handler().postDelayed({
+            if (tabId>2){
+                //删除zip文件
+                FileUtils.deleteFile(File(zipPath))
+                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
+            }
+            else{
+                EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
+            }
+            showToast(book.bookName+getString(R.string.book_download_success))
+        },500)
+        if (mDownMapPool.entries.size == 0) {
+            hideLoading()
+        }
     }
 
     /**

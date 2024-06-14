@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.activity.date
 
+import android.os.Handler
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.dayLong
 import com.bll.lnkstudy.FileAddress
@@ -14,7 +15,6 @@ import java.util.*
 
 class DateEventActivity:BaseDrawingActivity() {
     private var nowLong=0L
-    private var isDraw=false
 
     override fun layoutId(): Int {
         return R.layout.ac_date_event
@@ -55,13 +55,14 @@ class DateEventActivity:BaseDrawingActivity() {
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}
-        isDraw=true
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isDraw)
+        stopErasure()
+        Handler().postDelayed(Runnable {
             EventBus.getDefault().post(Constants.DATE_DRAWING_EVENT)
+        },500)
     }
 
 }

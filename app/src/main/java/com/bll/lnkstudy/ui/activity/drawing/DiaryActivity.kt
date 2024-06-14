@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
+import android.view.EinkPWInterface
+import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -38,7 +40,7 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_expand,iv_draft)
+        disMissView(iv_catalog,iv_draft)
         iv_btn.setImageResource(R.mipmap.icon_draw_change)
         elik_b?.addOnTopView(ll_date)
 
@@ -82,7 +84,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_btn.setOnClickListener {
-            ModuleAddDialog(this,screenPos,getString(R.string.diary_module_str), DataBeanManager.noteModuleDiary).builder()
+            ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.diary_module_str), DataBeanManager.noteModuleDiary).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
@@ -106,14 +108,26 @@ class DiaryActivity:BaseDrawingActivity() {
         diaryBean?.bgRes=bgRes
     }
 
+    override fun onChangeExpandContent() {
+        changeErasure()
+        isExpand = !isExpand
+        moveToScreen(isExpand)
+        onChangeExpandView()
+        setContentImage()
+    }
+
+
     override fun onPageDown() {
-        posImage += 1
+        posImage += if (isExpand)2 else 1
         setContentImage()
     }
 
     override fun onPageUp() {
         if (posImage > 0) {
-            posImage -= 1
+            posImage -= if (isExpand)2 else 1
+            if (posImage<0){
+                posImage=0
+            }
             setContentImage()
         }
     }
@@ -133,16 +147,35 @@ class DiaryActivity:BaseDrawingActivity() {
      */
     private fun setContentImage() {
         tv_date.text=DateUtils.longToStringWeek(nowLong)
+
         v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+        v_content_a.setImageResource(ToolUtils.getImageResId(this, bgRes))
+
+        if (isExpand){
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+            setEinkImage(elik_a!!,tv_page_a,posImage,path)
+
+            val path_b = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1+1}.tch"
+            setEinkImage(elik_b!!,tv_page,posImage+1,path_b)
+        }
+        else{
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+            setEinkImage(elik_b!!,tv_page,posImage,path)
+        }
+
+    }
+
+    private fun setEinkImage(eink:EinkPWInterface,tv:TextView,page:Int,path:String){
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)
         }
-        tv_page.text = "${posImage + 1}/${images.size}"
-
-        elik_b?.setLoadFilePath(path, true)
+        tv.text = "${page + 1}"
+        tv_page_total.text="${images.size}"
+        tv_page_total_a.text="${images.size}"
+        eink.setLoadFilePath(path, true)
     }
+
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}

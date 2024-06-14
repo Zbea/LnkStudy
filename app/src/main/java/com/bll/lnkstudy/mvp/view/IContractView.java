@@ -30,6 +30,7 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
 import com.bll.lnkstudy.mvp.model.CourseItem;
@@ -79,6 +80,7 @@ public interface IContractView {
         void onEditNameSuccess();
         void onEditGradeSuccess();
         void onEditSchool();
+        void onEditParent();
     }
 
     //钱包页面回调
@@ -135,6 +137,7 @@ public interface IContractView {
         void onCorrect(HomeworkNoticeList list);
         void onType(TeachingVideoType type);
         void onParentPermission(PermissionParentBean permissionParentBean);
+        void onSchoolPermission(PermissionSchoolBean permissionSchoolBean);
     }
 
     interface IMainRightView extends IBaseView {

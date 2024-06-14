@@ -75,8 +75,8 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
             grades=DataBeanManager.popupGrades(grade)
         }
         else{
-            grades=DataBeanManager.popupTypeGrades
-            grade=grades[0].id
+            grades=DataBeanManager.popupTypeGrades()
+            grade=grades[DataBeanManager.popupTypePos()].id
         }
 
         if (grades.size>0){

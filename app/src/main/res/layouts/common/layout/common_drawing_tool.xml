@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/iv_page_up"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
+        android:layout_height="@dimen/drawing_tool_height"
         android:layout_marginTop="250dp"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_page_up" />
@@ -16,24 +16,24 @@
     <ImageView
         android:id="@+id/iv_page_down"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginTop="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginTop="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_page_down" />
 
     <ImageView
         android:id="@+id/iv_erasure"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginTop="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginTop="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_erasure" />
 
     <ImageView
         android:id="@+id/iv_draft"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginTop="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginTop="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_draft" />
 
@@ -50,8 +50,8 @@
     <ImageView
         android:id="@+id/iv_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginBottom="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginBottom="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_commit" />
 
@@ -59,16 +59,16 @@
     <ImageView
         android:id="@+id/iv_tool"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginBottom="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginBottom="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_tool" />
 
     <ImageView
         android:id="@+id/iv_catalog"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginBottom="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginBottom="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_catalog" />
 
@@ -76,19 +76,45 @@
     <ImageView
         android:id="@+id/iv_expand"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_width"
-        android:layout_marginBottom="60dp"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginBottom="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_expand" />
 
 
-    <TextView
-        android:id="@+id/tv_page"
+    <LinearLayout
+        android:id="@+id/ll_page"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:gravity="center_horizontal"
-        android:paddingTop="@dimen/dp_50"
-        android:textSize="@dimen/sp_16"
-        android:textColor="@color/black"
-        />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_margin="5dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_page_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"
+            />
+    </LinearLayout>
+
 </LinearLayout>

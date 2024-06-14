@@ -165,46 +165,40 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
 
     override fun onPageDown() {
-        if (isExpand){
-            if (page<pageCount-2){
-                page+=2
-            }
-        }
-        else{
-            if (page<pageCount-1){
-                page+=1
-            }
+        if (page<pageCount-1){
+            page+=2
         }
         onChangeContent()
     }
 
     override fun onPageUp() {
-        if (isExpand){
-            if (page>1){
-                page-=2
-            }
-        }
-        else{
-            if (page>0){
-                page-=1
-            }
+        if (page>0){
+            page-=2
         }
         onChangeContent()
     }
 
     private fun onChangeContent(){
+        if (page>pageCount-2&&pageCount>1)
+            page=pageCount-2
+        if (page<0)
+            page=0
+
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
+
         setElikLoadPath(page,elik_a!!,v_content_a)
-        tv_page.text="${page+1}/$pageCount"
+        tv_page_a.text="${page+1}"
 
         if (page+1<pageCount){
             elik_b?.setPWEnabled(true)
             setElikLoadPath(page+1,elik_b!!,v_content_b)
-            tv_page_a.text="${page+1+1}/$pageCount"
+            tv_page.text="${page+1+1}"
         }
         else{
             elik_b?.setPWEnabled(false)
             v_content_b.setImageResource(0)
-            tv_page_a.text=""
+            tv_page.text=""
         }
     }
 

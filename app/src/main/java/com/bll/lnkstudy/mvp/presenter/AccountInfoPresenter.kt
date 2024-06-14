@@ -59,6 +59,22 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) 
         }, true)
     }
 
+    fun editParent(name: String,nickname:String,phone:String) {
+        val map=HashMap<String,Any>()
+        map["parentName"]=name
+        map["parentNickname"]=nickname
+        map["parentTel"]=phone
+        val body = RequestUtils.getBody(map)
+        val editName = RetrofitManager.service.editParent(body)
+        doRequest(editName, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditParent()
+            }
+        }, true)
+    }
 
     fun logout() {
         val logout = RetrofitManager.service.logout()

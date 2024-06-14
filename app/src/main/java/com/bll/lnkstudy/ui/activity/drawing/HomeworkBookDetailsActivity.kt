@@ -229,7 +229,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onCatalog() {
-        DrawingCatalogDialog(this, catalogs, 1, pageStart).builder().setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this, getCurrentScreenPos() ,catalogs, 1, pageStart).builder().setOnDialogClickListener { position ->
                 page = position - 1
                 onChangeContent()
             }
@@ -257,12 +257,14 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             page=1
         }
 
-        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
+        tv_page_total.text="${pageCount-pageStart}"
+        tv_page_total_a.text="${pageCount-pageStart}"
+
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
         loadPicture(page , elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}/${pageCount-pageStart}" else ""
-            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
+            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
         }
 
         setScoreDetails(page)

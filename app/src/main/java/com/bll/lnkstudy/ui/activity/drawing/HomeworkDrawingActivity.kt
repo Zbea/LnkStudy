@@ -174,7 +174,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
-        tv_page_a.setOnClickListener {
+        ll_page.setOnClickListener {
             InputContentDialog(this,2,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
                 homeworkContent?.title = string
                 homeworks[page].title = string
@@ -183,22 +183,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
-        tv_page.setOnClickListener {
-            if (isExpand){
-                InputContentDialog(this,1,homeworkContent_a?.title!!).builder().setOnDialogClickListener { string ->
-                    homeworkContent_a?.title = string
-                    homeworks[page-1].title = string
-                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
-                    DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, Gson().toJson(homeworkContent_a))
-                }
-            }
-            else{
-                InputContentDialog(this,1,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
-                    homeworkContent?.title = string
-                    homeworks[page].title = string
-                    HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-                    DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, Gson().toJson(homeworkContent))
-                }
+        ll_page_a.setOnClickListener {
+            InputContentDialog(this,1,homeworkContent_a?.title!!).builder().setOnDialogClickListener { string ->
+                homeworkContent_a?.title = string
+                homeworks[page-1].title = string
+                HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
+                DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, Gson().toJson(homeworkContent_a))
             }
         }
 
@@ -216,7 +206,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 list.add(itemList)
             }
         }
-        DrawingCatalogDialog(this, list).builder().setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this, getCurrentScreenPos(), list).builder().setOnDialogClickListener { position ->
             if (page!=list[position].page){
                 page = list[position].page
                 onChangeContent()
@@ -292,6 +282,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
+        tv_page_total.text="${homeworks.size}"
+        tv_page_total_a.text="${homeworks.size}"
+
         //已提交后不能手写，显示合图后的图片
         elik_b?.setPWEnabled(homeworkContent?.state == 0)
         when(homeworkContent?.state){
@@ -306,7 +299,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
             }
         }
-        tv_page.text = "${page + 1}/${homeworks.size}"
+        tv_page.text = "${page + 1}"
 
         if (isExpand) {
             elik_a?.setPWEnabled(homeworkContent?.state == 0)
@@ -322,8 +315,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
                 }
             }
-            tv_page.text = "$page/${homeworks.size}"
-            tv_page_a.text = "${page + 1}/${homeworks.size}"
+            tv_page_a.text = "$page"
         }
 
         setScoreDetails(homeworkContent!!)

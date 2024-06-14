@@ -4,10 +4,7 @@ import android.os.Handler
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DownloadBookDialog
 import com.bll.lnkstudy.dialog.PopupList
@@ -22,7 +19,10 @@ import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -97,9 +97,9 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     }
 
     override fun onCommonData() {
-        if (DataBeanManager.popupTypeGrades.size>0){
-            gradeList=DataBeanManager.popupTypeGrades
-            grade=gradeList[0].id
+        if (DataBeanManager.popupTypeGrades().size>0){
+            gradeList=DataBeanManager.popupTypeGrades()
+            grade=gradeList[DataBeanManager.popupTypePos()].id
             initSelectorView()
         }
     }
@@ -130,7 +130,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
      * 设置分类选择
      */
     private fun initSelectorView() {
-        tv_grade.text = gradeList[0].name
+        tv_grade.text = gradeList[DataBeanManager.popupTypePos()].name
         tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, 5).builder()
             .setOnSelectListener { item ->
@@ -212,9 +212,8 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     //下载book
     private fun downLoadStart(url: String,book: BookBean): BaseDownloadTask? {
         showLoading()
-        val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
+        val fileName = book.bookId.toString()//文件名
+        val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.downloadUrl))
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {

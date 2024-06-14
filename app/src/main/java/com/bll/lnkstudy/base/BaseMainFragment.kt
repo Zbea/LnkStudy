@@ -33,6 +33,8 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     }
     override fun onEditSchool() {
     }
+    override fun onEditParent() {
+    }
 
     //云端上传回调
     override fun onSuccess(cloudIds: MutableList<Int>?) {

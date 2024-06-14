@@ -170,7 +170,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this, getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
             if (currentPosition!=position){
                 currentPosition = papers[position].index
                 page = 0
@@ -250,6 +250,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             }
         }
 
+        tv_page_total.text="${paperContents.size}"
+        tv_page_total_a.text="${paperContents.size}"
+
         if (isExpand){
             paperContentBean_a=paperContents[page]
             setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a)
@@ -262,13 +265,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 v_content_b.setImageResource(0)
                 elik_b?.setPWEnabled(false)
             }
-            tv_page.text="${page+1}/${paperContents.size}"
-            tv_page_a.text=if (page+1<pageCount)"${page+1+1}/${paperContents.size}" else ""
+            tv_page_a.text="${page+1}"
+            tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
         }
         else{
             paperContentBean=paperContents[page]
             setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-            tv_page.text="${page+1}/${paperContents.size}"
+            tv_page.text="${page+1}"
         }
     }
 

@@ -5,17 +5,94 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/statusbar_height"
     >
-    <include
-        layout="@layout/common_drawing_tool"
-        />
-
-    <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/v_content_b"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/icon_diary_details_bg_1"
-        android:layout_marginStart="@dimen/drawing_tool_width"
-        />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_content_a"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            >
+            <LinearLayout
+                android:layout_width="@dimen/drawing_tool_width"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                >
+                <LinearLayout
+                    android:id="@+id/ll_page_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="80dp"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tv_page_a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/black"
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"
+                        android:layout_margin="5dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_page_total_a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sp_20"
+                        android:textColor="@color/black"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_a"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:background="@mipmap/icon_diary_details_bg_1"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+            <include
+                layout="@layout/common_drawing_tool"
+                android:layout_marginTop="@dimen/statusbar_height"
+                android:layout_width="@dimen/drawing_tool_width"
+                android:layout_height="match_parent"/>
+
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_b"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:background="@mipmap/icon_diary_details_bg_1"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_date"
@@ -56,9 +133,9 @@
     <include
         android:id="@+id/ll_geometry"
         layout="@layout/common_drawing_geometry"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         />
 
@@ -68,6 +145,7 @@
         android:layout_height="60dp"
         android:layout_margin="@dimen/dp_10"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

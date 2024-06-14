@@ -90,7 +90,7 @@ class TextbookFragment : BaseMainFragment() {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
-                MethodManager.gotoTextBookDetails(requireActivity(),books[position].bookId)
+                MethodManager.gotoTextBookDetails(requireActivity(),books[position])
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position

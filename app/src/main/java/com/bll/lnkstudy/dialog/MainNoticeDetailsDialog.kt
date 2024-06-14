@@ -20,6 +20,7 @@ class MainNoticeDetailsDialog(private val context: Context, private val item: Ho
     fun builder(): Dialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_main_notice_details)
+        dialog?.setCanceledOnTouchOutside(false)
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes

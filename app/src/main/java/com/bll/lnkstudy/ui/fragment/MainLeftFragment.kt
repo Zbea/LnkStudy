@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
@@ -26,6 +27,8 @@ import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
+import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
+import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
 import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
@@ -79,6 +82,16 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 
     override fun onParentPermission(permissionParentBean: PermissionParentBean) {
         SPUtil.putObj("parentPermission",permissionParentBean)
+    }
+
+    override fun onSchoolPermission(permissionSchoolBean: PermissionSchoolBean) {
+        if (permissionSchoolBean.config.isNotEmpty()){
+            val item=Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
+            SPUtil.putObj("schoolPermission",item)
+        }
+        else{
+            SPUtil.removeObj("schoolPermission")
+        }
     }
 
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
@@ -235,6 +248,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
             mMainLeftPresenter.getCorrectNotice()
             mMainLeftPresenter.getTeachingType()
             mMainLeftPresenter.getParentPermission()
+            mMainLeftPresenter.getSchoolPermission()
         }
     }
 
@@ -266,7 +280,9 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate))+"/draw.png"
         if (File(path).exists()){
-            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
+//            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
+            val myBitmap= BitmapFactory.decodeFile(path)
+            iv_date.setImageBitmap(myBitmap)
         }
         else{
             iv_date.setImageResource(0)

@@ -591,7 +591,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      * 结束擦除
      * （在展平、收屏时候都结束擦除）
      */
-    private fun stopErasure(){
+    fun stopErasure(){
         isErasure=false
         //关闭橡皮擦
         iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)

@@ -47,10 +47,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_draft,iv_btn)
+        disMissView(iv_draft)
         onChangeContent()
+        iv_btn.setImageResource(R.mipmap.icon_draw_setting)
 
-        tv_page_a.setOnClickListener {
+        ll_page.setOnClickListener {
             InputContentDialog(this,2,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
                 paintingDrawingBean?.title = string
                 paintingLists[page].title = string
@@ -59,25 +60,16 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             }
         }
 
-        tv_page.setOnClickListener {
-            if (isExpand){
-                InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
-                    paintingDrawingBean_a?.title = string
-                    paintingLists[page-1].title = string
-                    PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-                    editDataUpdate(paintingDrawingBean_a!!)
-                }
-            }else{
-                InputContentDialog(this,1,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
-                    paintingDrawingBean?.title = string
-                    paintingLists[page].title = string
-                    PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                    editDataUpdate(paintingDrawingBean!!)
-                }
+        ll_page_a.setOnClickListener {
+            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
+                paintingDrawingBean_a?.title = string
+                paintingLists[page-1].title = string
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
+                editDataUpdate(paintingDrawingBean_a!!)
             }
         }
 
-        iv_tool.setOnClickListener {
+        iv_btn.setOnClickListener {
             if (linerDialog==null){
                 linerDialog=PaintingLinerSelectDialog(this).builder()
                 linerDialog!!.setOnSelectListener{
@@ -100,7 +92,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this, getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
             if (page != position) {
                 page = position
                 onChangeContent()
@@ -182,15 +174,17 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             paintingDrawingBean_a = null
         }
 
+        tv_page_total.text="${paintingLists.size}"
+        tv_page_total_a.text="${paintingLists.size}"
+
         setElikLoadPath(elik_b!!, paintingDrawingBean!!)
-        tv_page.text = "${page+1}/${paintingLists.size}"
+        tv_page.text = "${page+1}"
 
         //切换页面内容的一些变化
         if (isExpand) {
             v_content_a.setImageResource(resId)
             setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
-            tv_page.text = "${page}/${paintingLists.size}"
-            tv_page_a.text = "${page+1}/${paintingLists.size}"
+            tv_page_a.text = "$page"
         }
     }
 

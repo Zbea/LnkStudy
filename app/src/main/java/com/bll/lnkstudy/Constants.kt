@@ -49,9 +49,6 @@ class Constants {
         val BOOK_DRAW_PATH = Environment.getExternalStoragePublicDirectory("Notes").absolutePath
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
-        //解压的目录
-        ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
-        val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
 

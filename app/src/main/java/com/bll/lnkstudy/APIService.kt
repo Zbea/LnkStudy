@@ -11,6 +11,7 @@ import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperType
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
+import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
@@ -116,6 +117,11 @@ interface APIService{
      */
     @POST("accounts/changeAddress")
     fun editSchool(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 修改家长个人信息
+     */
+    @POST("user/updateParentInfo")
+    fun editParent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 退出登录 "/accounts/logout"
@@ -394,4 +400,9 @@ interface APIService{
      */
     @GET("student/permission/info")
     fun getPermissionParentAllow(): Observable<BaseResult<PermissionParentBean>>
+    /**
+     * 获取学校的权限控制
+     */
+    @GET("student/data/rule")
+    fun getPermissionSchoolAllow(): Observable<BaseResult<PermissionSchoolBean>>
 }

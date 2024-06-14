@@ -17,17 +17,17 @@ import com.bll.lnkstudy.mvp.model.ItemList;
 import com.bll.lnkstudy.mvp.model.ItemTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
+import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionTimeBean;
 import com.bll.lnkstudy.mvp.model.PrivacyPassword;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
-import com.bll.lnkstudy.mvp.model.permission.PermissionTimesBean;
+import com.bll.lnkstudy.mvp.model.textbook.TextbookBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
 import com.bll.lnkstudy.mvp.model.CourseItem;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
-import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
@@ -173,6 +173,7 @@ public class MethodManager {
         intent.putExtra("path", bookBean.bookPath);
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
+        intent.putExtra("type",1);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -183,11 +184,36 @@ public class MethodManager {
     /**
      * 跳转课本详情
      */
-    public static void gotoTextBookDetails(Context context,int bookId){
-        ActivityManager.getInstance().checkBookIDisExist(bookId);
-        Intent intent=new Intent(context, BookDetailsActivity.class);
-        intent.putExtra("book_id",bookId);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
+    public static void gotoTextBookDetails(Context context, TextbookBean textbookBean){
+
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
+
+        List<AppBean> toolApps= getAppTools(context,1);
+        JSONArray result =new JSONArray();
+        for (AppBean item :toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("appName", item.appName);
+                jsonObject.put("packageName", item.packageName);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            result.put(jsonObject);
+        }
+
+        Intent intent = new Intent();
+        intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
+        intent.setPackage(Constants.PACKAGE_READER);
+        intent.putExtra("path", textbookBean.bookPath);
+        intent.putExtra("key_book_id",textbookBean.bookId+"");
+        intent.putExtra("bookName", textbookBean.bookName);
+        intent.putExtra("type", 2);
+        intent.putExtra("tool",result.toString());
+        intent.putExtra("userId",user.accountId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -467,7 +493,7 @@ public class MethodManager {
      * @return
      */
     public static boolean getSchoolPermissionAllow(int type){
-        PermissionSchoolBean item =SPUtil.INSTANCE.getObj("schoolPermission", PermissionSchoolBean.class);
+        PermissionSchoolItemBean item =SPUtil.INSTANCE.getObj("schoolPermission", PermissionSchoolItemBean.class);
         if (item==null){
             return true;
         }
@@ -497,14 +523,15 @@ public class MethodManager {
         }
     }
 
-    private static boolean isExistCurrentTime(PermissionSchoolBean item){
+    private static boolean isExistCurrentTime(PermissionSchoolItemBean item){
         boolean isAllow = true;
         long currentTime=DateUtils.getCurrentHourInMillis();
         int week=DateUtils.getWeek(System.currentTimeMillis());
         if (item.weeks.contains(week)){
-            for (int j = 0; j < item.startTime.length; j++) {
-                long startTime=DateUtils.date4StampToHour(item.startTime[j]);
-                long endTime=DateUtils.date4StampToHour(item.endTime[j]);
+            for (int j = 0; j < item.limitTime.size(); j++) {
+                PermissionSchoolItemBean.TimeBean timeBean=item.limitTime.get(j);
+                long startTime=DateUtils.date4StampToHour(timeBean.startTime);
+                long endTime=DateUtils.date4StampToHour(timeBean.endTime);
                 if (currentTime>=startTime&&currentTime<=endTime){
                     isAllow=false;
                     break;
@@ -540,6 +567,15 @@ public class MethodManager {
      */
     public static void setStatusBarValue(int value){
         Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
+    }
+
+    /**
+     * 获取url的格式后缀
+     * @param url
+     * @return
+     */
+    public static String getUrlFormat(String url){
+        return url.substring(url.lastIndexOf("."));
     }
 
 }

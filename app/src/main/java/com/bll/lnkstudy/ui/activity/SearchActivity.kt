@@ -12,6 +12,7 @@ import com.bll.lnkstudy.manager.*
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
+import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -76,7 +77,8 @@ class SearchActivity : BaseAppCompatActivity() {
                 finish()
             }
             1->{
-                MethodManager.gotoTextBookDetails(this,item.id)
+                val bookBean=Gson().fromJson(item.listJson, TextbookBean::class.java)
+                MethodManager.gotoTextBookDetails(this,bookBean)
                 finish()
             }
             2->{
@@ -175,6 +177,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         title=book.bookName
                         imageUrl=book.imageUrl
                         path=book.bookPath
+                        listJson= Gson().toJson(book)
                     })
                 }
             }

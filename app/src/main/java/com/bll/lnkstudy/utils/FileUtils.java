@@ -188,7 +188,7 @@ public class FileUtils {
         }
         else {
             List<File> pageFiles = new ArrayList<>();
-            for (int i = (pageIndex-1)*pageIndex; i < files.size() ; i++) {
+            for (int i = (pageIndex-1)*pageSize; i < files.size() ; i++) {
                 pageFiles.add(files.get(i));
             }
             return pageFiles;

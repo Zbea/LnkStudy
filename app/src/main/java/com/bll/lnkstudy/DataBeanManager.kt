@@ -4,6 +4,7 @@ import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
@@ -128,15 +129,36 @@ object DataBeanManager {
     }
 
 
-    val popupTypeGrades: MutableList<PopupBean>
-        get() {
+    fun popupTypeGrades(): MutableList<PopupBean>
+       {
             val typeGrades=MethodManager.getItemLists("typeGrades")
             val list= mutableListOf<PopupBean>()
             for (i in typeGrades.indices){
-                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == popupTypePos()))
             }
             return list
         }
+
+    /**
+     * 获取位置
+     */
+    fun popupTypePos(): Int
+    {
+        val grade=SPUtil.getObj("user",User::class.java)?.grade!!
+        val type=if (grade<4){
+            0
+        }
+        else if (grade in 4..6){
+            1
+        }
+        else if (grade in 7..9){
+            2
+        }
+        else{
+            3
+        }
+        return type
+    }
 
     val popupCourses: MutableList<PopupBean>
         get() {

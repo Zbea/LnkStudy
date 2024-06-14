@@ -9,49 +9,83 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <include
-            layout="@layout/common_drawing_tool"
-            />
-
         <LinearLayout
             android:id="@+id/ll_content_a"
-            android:layout_width="@dimen/width"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:visibility="gone"
             android:orientation="horizontal"
             >
-
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_a"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitCenter" />
-
             <LinearLayout
                 android:layout_width="@dimen/drawing_tool_width"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="bottom"
                 >
-                <TextView
-                    android:id="@+id/tv_page_a"
+                <LinearLayout
+                    android:id="@+id/ll_page_a"
                     android:layout_width="match_parent"
-                    android:layout_height="190dp"
-                    android:paddingTop="@dimen/dp_50"
-                    android:gravity="center_horizontal"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/black"
-                    />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="80dp"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tv_page_a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/black"
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"
+                        android:layout_margin="5dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_page_total_a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sp_20"
+                        android:textColor="@color/black"
+                        />
+                </LinearLayout>
             </LinearLayout>
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_a"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter" />
 
         </LinearLayout>
 
-        <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/v_content_b"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+            <include
+                layout="@layout/common_drawing_tool"
+                android:layout_marginTop="@dimen/statusbar_height"
+                android:layout_width="@dimen/drawing_tool_width"
+                android:layout_height="match_parent"/>
+
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/v_content_b"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -65,10 +99,24 @@
     <include
         android:id="@+id/ll_geometry"
         layout="@layout/common_drawing_geometry"
-        android:layout_marginTop="@dimen/drawing_tool_width"
+        android:layout_marginTop="@dimen/statusbar_height"
+        android:layout_alignParentEnd="true"
         android:layout_width="@dimen/width"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/iv_geometry"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="gone"
+        android:padding="1dp"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@mipmap/icon_app_geometry"
+        android:background="@drawable/bg_black_stroke_0dp_corner"
         />
 
     <include
@@ -83,26 +131,14 @@
         />
 
     <ImageView
-        android:id="@+id/iv_geometry"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:visibility="gone"
-        android:padding="1dp"
-        android:layout_margin="@dimen/dp_10"
-        android:src="@mipmap/icon_app_geometry"
-        android:background="@drawable/bg_black_stroke_0dp_corner"
-        />
-
-    <ImageView
         android:id="@+id/iv_score"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:padding="1dp"
-        android:layout_margin="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="80dp"
         android:visibility="gone"
         android:src="@mipmap/icon_app_correct_score"
         android:background="@drawable/bg_black_stroke_0dp_corner"

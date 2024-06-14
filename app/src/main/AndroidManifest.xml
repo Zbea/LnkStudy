@@ -147,8 +147,7 @@
             android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".ui.activity.drawing.TestpaperDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
+            android:name=".ui.activity.drawing.TestpaperDrawingActivity" />
         <activity
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
@@ -178,7 +177,9 @@
             />
         <activity android:name=".ui.activity.drawing.FreeNoteActivity" />
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
-        <activity android:name=".ui.activity.drawing.DiaryActivity"/>
+        <activity android:name=".ui.activity.drawing.DiaryActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
         <activity android:name=".ui.activity.ResourceCenterActivity"
             android:launchMode="singleTask"
             />

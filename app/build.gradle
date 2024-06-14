@@ -15,7 +15,7 @@ android {
         applicationId "com.bll.lnkstudy"
         minSdk 26
         targetSdk 32
-        versionCode 6
+        versionCode 7
         versionName "V 1.0.1"
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -56,6 +56,14 @@ android {
                     ]
         }
     }
+
+    // 自定义输出配置
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "LnkStudy${variant.versionName}_${variant.name}.apk"
+        }
+    }
+
 
 //    signingConfigs {
 //        release {

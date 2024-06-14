@@ -28,7 +28,7 @@ class AppToolDialog(val context: Context, val screenPos:Int) {
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
         layoutParams?.gravity = Gravity.BOTTOM or Gravity.START
-        layoutParams?.x=DP2PX.dip2px(context,42f)
+        layoutParams?.x=if (screenPos==3) DP2PX.dip2px(context,1021f+42f)else DP2PX.dip2px(context,42f)
         layoutParams?.y= DP2PX.dip2px(context,5f)
         dialog?.show()
 

@@ -114,6 +114,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="@dimen/dp_10"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

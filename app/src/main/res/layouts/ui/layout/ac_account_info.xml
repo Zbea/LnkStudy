@@ -298,6 +298,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_20"
+                android:layout_weight="1"
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
@@ -307,6 +308,17 @@
                 android:lines="1"
                 android:inputType="phone"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+
+            <TextView
+                android:id="@+id/btn_edit_parent"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="@dimen/dp_20"
+                android:gravity="center"
+                android:text="修改信息"
+                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 

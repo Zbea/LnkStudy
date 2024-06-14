@@ -7,8 +7,10 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
 import com.bll.lnkstudy.utils.FileUtils
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.ac_drawing.tv_page_a
 import kotlinx.android.synthetic.main.ac_drawing_file.*
+import kotlinx.android.synthetic.main.ac_drawing_file.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 
@@ -94,12 +96,14 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             pageIndex=1
         }
 
-        tv_page.text = "${pageIndex+1}/$pageCount"
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
+
+        tv_page.text = "${pageIndex+1}"
         loadPicture(pageIndex, elik_b!!, iv_content_b)
         if (isExpand) {
             loadPicture(pageIndex-1, elik_a!!, iv_content_a)
-            tv_page.text = "${pageIndex}/$pageCount"
-            tv_page_a.text = "${pageIndex+1}/$pageCount"
+            tv_page_a.text = "$pageIndex"
         }
 
     }

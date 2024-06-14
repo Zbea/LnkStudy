@@ -69,7 +69,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,list).builder().setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this, getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
             if (currentPosition!=position){
                 currentPosition = papers[position].page
                 page = 0
@@ -141,21 +141,26 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         }
 
         oldPosition=currentPosition
-        tv_page.text="${page+1}/${paperContentCount}"
+
+        tv_page_total.text="$paperContentCount"
+        tv_page_total_a.text="$paperContentCount"
+
         if (isExpand){
             setElikLoadPath(page,v_content_a)
+            tv_page_a.text="${page+1}"
             if (page+1<paperContentCount){
                 setElikLoadPath(page+1,v_content_b)
-                tv_page_a.text="${page+1+1}/${paperContentCount}"
+                tv_page.text="${page+1+1}"
             }
             else{
                 //不显示 ，不能手写
                 v_content_b.setImageResource(0)
-                tv_page_a.text=""
+                tv_page.text=""
             }
         }
         else{
             setElikLoadPath(page,v_content_b)
+            tv_page.text="${page+1}"
         }
     }
 

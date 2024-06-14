@@ -21,6 +21,7 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
+import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -535,7 +536,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         FileUtils.deleteFile(File(Constants.NOTE_PATH))
         FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
-        FileUtils.deleteFile(File(Constants.TEXTBOOK_PATH))
         FileUtils.deleteFile(File(Constants.DIARY_PATH))
     }
 
@@ -606,7 +606,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         for (item in list) {
             when (item.type) {
                 1 -> {
-                    downloadTextBook(item)
+                    if (item.contentType==1){
+                        downloadTextBook(item)
+                    }
+                    else{
+                        downloadTextBookDrawing(item)
+                    }
                 }
                 2 -> {
                     when (item.contentType) {
@@ -804,6 +809,33 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载课本(课本item.path为null，手写item.path不为null)
      */
     private fun downloadTextBook(item: DataUpdateBean) {
+        val bookBean = Gson().fromJson(item.listJson, TextbookBean::class.java)
+        FileDownManager.with(this).create(item.downloadUrl).setPath(bookBean.bookPath)
+            .startSingleTaskDownLoad(object :
+                FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+
+                override fun completed(task: BaseDownloadTask?) {
+                    TextbookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
+                    //创建增量更新
+                    DataUpdateManager.createDataUpdateSource(1,item.uid,1,Gson().toJson(bookBean),bookBean.downloadUrl)
+                    //更改为已上传
+                    DataUpdateManager.editDataUpdateUpload(1,item.uid, item.contentType)
+                }
+
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                }
+            })
+    }
+
+    /**
+     * 下载课本(课本item.path为null，手写item.path不为null)
+     */
+    private fun downloadTextBookDrawing(item: DataUpdateBean) {
         val fileName = item.uid.toString()
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
@@ -816,19 +848,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    val path = if (item.contentType == 1) FileAddress().getPathTextBook(fileName) else item.path
-                    ZipUtils.unzip(zipPath, path, object : IZipCallback {
+                    ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
-                            if (item.contentType == 1) {
-                                val bean = Gson().fromJson(item.listJson, BookBean::class.java)
-                                BookGreenDaoManager.getInstance().insertOrReplaceBook(bean)
-                                //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(1,item.uid,1,Gson().toJson(bean),bean.downloadUrl)
-                            }
-                            else{
-                                //创建增量更新
-                                DataUpdateManager.createDataUpdateDrawing(1,item.uid,2,item.path)
-                            }
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdateDrawing(1,item.uid,2,item.path)
                             //更改为已上传
                             DataUpdateManager.editDataUpdateUpload(1,item.uid, item.contentType)
                             //删掉本地zip文件
@@ -850,6 +873,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }
             })
     }
+
 
     /**
      * 下载题卷本

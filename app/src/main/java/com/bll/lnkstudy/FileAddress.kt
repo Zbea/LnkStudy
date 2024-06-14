@@ -12,7 +12,6 @@ import com.bll.lnkstudy.Constants.Companion.SCREEN_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CONTENTS
-import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.ZIP_PATH
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.SPUtil
@@ -22,16 +21,6 @@ class FileAddress {
 
     private val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
 
-    /**
-     * 教材地址
-     * ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/mUserId/fileName
-     */
-    fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/$fileName"
-    }
-    fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/${fileName}/drawContent"
-    }
 
     fun getPathHomeworkBook(fileName: String):String{
         return "$HOMEWORK_PATH/$mUserId/homeworkBook/$fileName"
