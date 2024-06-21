@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -40,7 +41,7 @@ class AppToolActivity:BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        setPageTitle(R.string.tool)
+        setPageTitle(DataBeanManager.resources[0])
 
         initRecyclerView()
         initRecyclerTool()

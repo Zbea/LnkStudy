@@ -249,7 +249,6 @@ class HomeworkManageFragment: BaseMainFragment() {
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         setClearHomework()
-        setSystemControlClear()
         for (fragment in fragments){
             fragment.clearData()
         }

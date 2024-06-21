@@ -234,7 +234,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:layout_marginTop="@dimen/dp_50"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -249,11 +249,9 @@
 
                 <TextView
                     android:id="@+id/tv_school"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_45"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/dp_20"
                     android:paddingEnd="@dimen/dp_5"
                     android:paddingStart="@dimen/dp_10"
                     android:textColor="@color/black"
@@ -263,27 +261,13 @@
                     android:background="@drawable/bg_gray_stroke_5dp_corner"
                     app:drawableRightCompat="@mipmap/icon_arrow_down" />
 
-                <TextView
-                    android:id="@+id/tv_grade_str"
-                    android:layout_width="140dp"
-                    android:layout_height="@dimen/dp_45"
-                    android:gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:drawableRight="@mipmap/icon_arrow_down"
-                    android:paddingEnd="@dimen/dp_5"
-                    android:paddingStart="@dimen/dp_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_20"
-                    android:hint="@string/grade"
-                    android:textColorHint="@color/color_text_hint"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"
-                    />
+
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:layout_marginTop="@dimen/dp_50"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -299,7 +283,7 @@
                 <EditText
                     android:id="@+id/et_parent_name"
                     android:layout_width="200dp"
-                    android:layout_height="@dimen/dp_45"
+                    android:layout_height="match_parent"
                     android:hint="家长姓名"
                     android:textColorHint="@color/color_text_hint"
                     android:textColor="@color/black"
@@ -312,7 +296,7 @@
                 <EditText
                     android:id="@+id/et_parent"
                     android:layout_width="120dp"
-                    android:layout_height="@dimen/dp_45"
+                    android:layout_height="match_parent"
                     android:hint="家长称谓"
                     android:layout_marginStart="@dimen/dp_20"
                     android:textColorHint="@color/color_text_hint"
@@ -326,7 +310,7 @@
                 <EditText
                     android:id="@+id/et_parent_phone"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_45"
+                    android:layout_height="match_parent"
                     android:hint="家长电话"
                     android:layout_marginStart="@dimen/dp_20"
                     android:textColorHint="@color/color_text_hint"
@@ -352,9 +336,9 @@
         android:layout_marginStart="150dp"
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="120dp"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:background="@drawable/bg_btn_black_solid"
         android:text="注册"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_24" />
 
 

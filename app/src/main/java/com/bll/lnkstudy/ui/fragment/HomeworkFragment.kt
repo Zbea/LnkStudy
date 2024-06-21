@@ -280,11 +280,11 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
             setOnItemChildClickListener { adapter, view, position ->
                 val item = homeworkTypes[position]
-                if (item.isMessage) {
-                    item.isMessage = false
-                    notifyItemChanged(position)
-                }
                 if (view.id == R.id.ll_message) {
+                    if (item.isMessage) {
+                        item.isMessage = false
+                        notifyItemChanged(position)
+                    }
                     if (item.createStatus == 1) {
                         if (!item.messages.isNullOrEmpty()) {
                             HomeworkMessageDialog(requireActivity(), screenPos, item.name, item.createStatus, item.messages).builder()
@@ -305,7 +305,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     override fun ok() {
                         val item = homeworkTypes[position]
                         if (item.state==5){
-                            FileUtils.deleteFileSkipTop(File(FileAddress().getPathScreenHomework(item.name,item.grade)))
+                            FileUtils.deleteFileSkipMy(File(FileAddress().getPathScreenHomework(item.name,item.grade)))
                         }
                         else{
                             deleteHomework()
@@ -622,7 +622,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun getIndexFile(bookBean: HomeworkBookBean, index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(bookBean.bookPath)
-        val listFiles = FileUtils.getFiles(path)
+        val listFiles = FileUtils.getAscFiles(path)
         return if (listFiles.size > index) listFiles[index] else null
     }
 

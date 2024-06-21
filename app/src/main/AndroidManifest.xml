@@ -85,6 +85,7 @@
                 <action android:name="com.bll.lnkstudy.upload.9month"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="com.htfyun.blackwhitebar.refresh"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -98,6 +99,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.AccountLoginActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -106,82 +108,150 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.AccountRegisterActivity" />
-        <activity android:name=".ui.activity.AccountInfoActivity" />
-        <activity android:name=".ui.activity.book.BookStoreActivity" />
+        <activity android:name=".ui.activity.AccountRegisterActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.AccountInfoActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.book.BookStoreActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.drawing.BookDetailsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.AppToolActivity"
-            android:launchMode="singleTask" />
-        <activity android:name=".ui.activity.TeachListActivity" />
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.TeachListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.TeachActivity"
             android:turnScreenOn="true"
+            android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.book.TextbookStoreActivity" />
+        <activity android:name=".ui.activity.book.TextbookStoreActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PaintingListActivity" />
-        <activity android:name=".ui.activity.MessageListActivity" />
+        <activity android:name=".ui.activity.PaintingListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.MessageListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.drawing.NoteDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
-        <activity android:name=".ui.activity.NotebookManagerActivity" />
-        <activity android:name=".ui.activity.drawing.ExamCommitDrawingActivity" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.NotebookManagerActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.ExamCommitDrawingActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.drawing.HomeworkDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
-        <activity android:name=".ui.activity.RecordActivity" />
-        <activity android:name=".ui.activity.RecordListActivity" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.RecordActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.RecordListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.drawing.PaintingDrawingActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" />
-        <activity android:name=".ui.activity.book.BookcaseTypeActivity" />
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.book.BookcaseTypeActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.CloudStorageActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
-            android:name=".ui.activity.drawing.TestpaperDrawingActivity" />
+            android:name=".ui.activity.drawing.TestpaperDrawingActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.WalletActivity"
-            android:theme="@style/activityCustom" />
+            android:theme="@style/activityCustom"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.SearchActivity"
-            android:theme="@style/activityCustom" />
-        <activity android:name=".ui.activity.WallpaperListActivity" />
+            android:theme="@style/activityCustom"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.WallpaperListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.drawing.DraftDrawingActivity"
             android:theme="@style/activityCustom" />
-        <activity android:name=".ui.activity.date.DateActivity" />
-        <activity android:name=".ui.activity.date.DatePlanListActivity" />
-        <activity android:name=".ui.activity.date.DateDayListActivity" />
-        <activity android:name=".ui.activity.date.DateDayDetailsActivity" />
+        <activity android:name=".ui.activity.date.DateActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.date.DatePlanListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.date.DateDayListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.date.DateDayDetailsActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.date.DatePlanDetailsActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.ClassGroupActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.ClassGroupUserActivity" />
-        <activity android:name=".ui.activity.PaintingTypeListActivity" />
+        <activity android:name=".ui.activity.ClassGroupUserActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.PaintingTypeListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity"
             android:theme="@style/activityCustom"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.drawing.HomeworkBookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.FreeNoteActivity" />
-        <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
+        <activity android:name=".ui.activity.drawing.FreeNoteActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.PlanOverviewActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.drawing.DiaryActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ResourceCenterActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ScreenshotListActivity"
             android:launchMode="singleTask"
@@ -191,16 +261,21 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PaintingDetailsActivity"/>
+        <activity android:name=".ui.activity.PaintingDetailsActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.date.DateEventActivity"
             android:theme="@style/activityCustom"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.CalenderMyActivity"/>
         <activity android:name=".ui.activity.drawing.CalligraphyDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.drawing.FileDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
             />
 
         <provider

@@ -89,9 +89,10 @@ class Constants {
         const val RECORD_EVENT = "RecordEvent"//语音作业本录音通知
         const val MESSAGE_COMMIT_EVENT = "MessageCommitEvent"//发送消息提交通知刷新
         const val USER_CHANGE_EVENT = "UserChangeEvent" //个人信息变化
+        const val USER_CHANGE_GRADE_EVENT = "UserChangeGradeEvent" //年级变化
         const val EXAM_COMMIT_EVENT = "ExamPaperCommit"//考试提交通知
         const val EXAM_TIME_EVENT = "ExamTime"//考试到时自动提交广播
-        const val MAIN_HOMEWORK_NOTICE_EVENT = "MainHomeworkNoticeEvent"//作业通知清除广播
+        const val MAIN_HOMEWORK_NOTICE_CLEAR_EVENT = "MainHomeworkNoticeClearEvent"//作业通知清除广播
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
         const val DATE_DRAWING_EVENT="DateDrawingEvent"//日程手写结束
@@ -115,6 +116,7 @@ class Constants {
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkstudy.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkstudy.account.logout"
         const val EXAM_MODE_BROADCAST_EVENT = "com.bll.lnkstudy.exam.mode"
+        const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
 
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"

@@ -43,7 +43,7 @@ class CalenderMyActivity:BaseAppCompatActivity(){
         })
     }
     override fun initView() {
-        setPageTitle("我的台历")
+        setPageTitle("我的日历")
 
         initRecycleView()
         fetchData()

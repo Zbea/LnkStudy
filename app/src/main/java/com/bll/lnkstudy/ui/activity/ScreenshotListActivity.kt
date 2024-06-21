@@ -25,7 +25,6 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
-import java.io.File
 
 class ScreenshotListActivity:BaseAppCompatActivity() {
 
@@ -66,10 +65,8 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
                                 return@setOnDialogClickListener
                             }
                             val path = FileAddress().getPathScreen(it)
-                            if (!File(path).exists()) {
-                                File(path).parentFile?.mkdir()
-                                File(path).mkdirs()
-                            }
+                            FileUtils.mkdirs(path)
+
                             val bean = ItemTypeBean()
                             bean.type = 1
                             bean.title = it

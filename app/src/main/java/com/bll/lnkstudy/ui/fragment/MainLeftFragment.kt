@@ -8,7 +8,7 @@ import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
-import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_EVENT
+import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -119,10 +119,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
             else{
                 path=FileAddress().getPathScreenHomework("${item.subject}错题本", mUser?.grade!!)
             }
-            if (!File(path).exists()) {
-                File(path).parentFile?.mkdir()
-                File(path).mkdirs()
-            }
+            FileUtils.mkdirs(path)
         }
         if (courseItems!=MethodManager.getCourses()){
             MethodManager.saveCourses(courseItems)
@@ -330,14 +327,16 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
      * 设置台历图片
      */
     private fun setCalenderBg(){
-        val listFiles= FileUtils.getFiles(calenderPath) ?: return
-        val file=if (listFiles.size>nowDayPos-1){
-            listFiles[nowDayPos-1]
+        val listFiles= FileUtils.getFiles(calenderPath)
+        if (listFiles.size>0){
+            val file=if (listFiles.size>nowDayPos-1){
+                listFiles[nowDayPos-1]
+            }
+            else{
+                listFiles[listFiles.size-1]
+            }
+            GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
         }
-        else{
-            listFiles[listFiles.size-1]
-        }
-        GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
     }
     //今日计划
     private fun initPlanView() {
@@ -485,7 +484,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
             DATE_EVENT -> {
                 findDataPlan()
             }
-            MAIN_HOMEWORK_NOTICE_EVENT->{
+            MAIN_HOMEWORK_NOTICE_CLEAR_EVENT->{
                 mMainLeftPresenter.deleteHomeworkNotice()
                 mMainLeftPresenter.deleteCorrectNotice()
             }

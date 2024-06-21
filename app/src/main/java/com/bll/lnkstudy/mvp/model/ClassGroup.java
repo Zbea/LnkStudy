@@ -16,5 +16,6 @@ public class ClassGroup implements Serializable {
     public int teacherId;
     public String subject;
     public int studentCount;
+    public int grade;
 
 }

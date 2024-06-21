@@ -122,7 +122,6 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         setClearExamPaper()
-        setSystemControlClear()
         for (fragment in fragments){
             fragment.clearData()
         }

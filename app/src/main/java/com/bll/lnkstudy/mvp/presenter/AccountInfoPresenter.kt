@@ -23,26 +23,6 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) 
         }, true)
     }
 
-    fun editGrade(grade: Int) {
-
-        val body = RequestUtils.getBody(
-            Pair.create("grade", grade)
-        )
-
-        val editName = RetrofitManager.service.editGrade(body)
-
-        doRequest(editName, object : Callback<Any>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onEditGradeSuccess()
-            }
-
-        }, true)
-
-    }
-
     fun editSchool(id: Int) {
         val map=HashMap<String,Any>()
         map["schoolId"]=id

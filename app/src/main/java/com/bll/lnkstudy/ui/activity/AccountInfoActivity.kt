@@ -14,7 +14,6 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
-import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
 
@@ -23,7 +22,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var nickname = ""
 
     private var grades = mutableListOf<PopupBean>()
-    private var grade = 1
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
@@ -36,13 +34,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         showToast(R.string.toast_edit_success)
         mUser?.nickname = nickname
         tv_name.text = nickname
-    }
-
-    override fun onEditGradeSuccess() {
-        showToast(R.string.toast_edit_success)
-        mUser?.grade = grade
-        tv_grade_str.text = DataBeanManager.getGradeStr(grade)
-        EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
     }
 
     override fun onEditSchool() {
@@ -73,8 +64,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     override fun initData() {
         initChangeScreenData()
-        grade=mUser?.grade!!
-        onCommonData()
         school=mUser?.schoolId!!
         if (NetworkUtil(this).isNetworkConnected())
             mSchoolPresenter?.getCommonSchool()
@@ -83,10 +72,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initChangeScreenData() {
         mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter = AccountInfoPresenter(this,getCurrentScreenPos())
-    }
-
-    override fun onCommonData() {
-        grades = DataBeanManager.popupGrades(grade)
     }
 
     @SuppressLint("WrongConstant")
@@ -101,9 +86,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_parent.text = parentName
             tv_parent_name.text = parentNickname
             tv_parent_phone.text = parentTel
-            if (grade != 0 && grades.size > 0){
-                tv_grade_str.text = DataBeanManager.getGradeStr(grade)
-            }
             tv_provinces.text = schoolProvince
             tv_city.text = schoolCity
             tv_school_name.text = schoolName
@@ -112,10 +94,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         btn_edit_name.setOnClickListener {
             editName()
-        }
-
-        btn_edit_grade.setOnClickListener {
-            selectorGrade()
         }
 
         btn_edit_school.setOnClickListener {
@@ -144,18 +122,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             }
         }
 
-    }
-
-
-    /**
-     * 年级选择
-     */
-    private fun selectorGrade() {
-        PopupList(this, grades, btn_edit_grade, 15).builder().setOnSelectListener { item ->
-            tv_grade_str.text = item.name
-            grade = item.id
-            presenter?.editGrade(grade)
-        }
     }
 
     /**

@@ -13,6 +13,7 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
+import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
@@ -26,6 +27,7 @@ import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_right.*
+import org.greenrobot.eventbus.EventBus
 
 
 /**
@@ -57,6 +59,23 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     override fun onCourse(url: String) {
         SPUtil.putString("courseUrl",url)
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+    }
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
+        var currentGrade=0
+        val oldGrade=mUser?.grade!!
+        for (item in classGroups){
+            if (item.state==1){
+                currentGrade=item.grade
+            }
+        }
+        if (currentGrade!=oldGrade){
+            mUser?.grade=currentGrade
+            SPUtil.putObj("user", mUser!!)
+            EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
+            if (oldGrade>0){
+                EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
+            }
+        }
     }
 
     override fun getLayoutId(): Int {
@@ -116,6 +135,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             findMessages()
             fetchExam()
             mMainPresenter.getTeacherCourse()
+            mMainPresenter.getClassGroupList(false)
         }
         val url=SPUtil.getString("courseUrl")
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
@@ -144,7 +164,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             tv_exam_time.text=DateUtils.longToHour(time)+"之前提交"
             rl_exam.setOnClickListener {
                 val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
-                val files = FileUtils.getFiles(pathStr)
+                val files = FileUtils.getAscFiles(pathStr)
                 if (files==null){
                     showLoading()
                     loadPapers()
@@ -189,7 +209,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             return
         }
         val pathStr = FileAddress().getPathTestPaper(examItem?.commonTypeId!!, examItem?.id!!)
-        val files = FileUtils.getFiles(pathStr)
+        val files = FileUtils.getAscFiles(pathStr)
         val images=examItem?.examUrl!!.split(",").toMutableList()
         val paths= mutableListOf<String>()
         for (i in images.indices){

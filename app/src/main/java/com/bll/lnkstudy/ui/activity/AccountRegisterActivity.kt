@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
-import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
@@ -35,10 +32,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var brithday=0L
-
-    private var popupGradeWindow:PopupList?=null
-    private var grades= mutableListOf<PopupBean>()
-    private var grade=1
     private var school=0
     private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
@@ -83,12 +76,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
     }
 
-    override fun onCommonData() {
-        grades=DataBeanManager.popupGrades()
-        if (grades.size>0)
-            tv_grade_str.text=grades[0].name
-    }
-
     override fun initView() {
         when (flags) {
             2 -> {
@@ -120,12 +107,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
                 return@setOnClickListener
             }
             presenter?.sms(phone)
-        }
-
-        onCommonData()
-
-        tv_grade_str.setOnClickListener {
-            selectorGrade()
         }
 
         tv_school.setOnClickListener {
@@ -213,7 +194,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
                     map["parentNickname"]=parent
                     map["parentTel"]=parentPhone
                     map["birthdayTime"]=brithday
-                    map["grade"]=grade
                     map["schoolId"]=school
                     presenter?.register(map)
                 }
@@ -254,23 +234,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
             }
         }.start()
 
-    }
-
-    /**
-     * 年级选择
-     */
-    private fun selectorGrade(){
-        if (popupGradeWindow==null)
-        {
-            popupGradeWindow= PopupList(this,grades,tv_grade_str,5).builder()
-            popupGradeWindow?.setOnSelectListener { item ->
-                tv_grade_str.text=item.name
-                grade=item.id
-            }
-        }
-        else{
-            popupGradeWindow?.show()
-        }
     }
 
     /**

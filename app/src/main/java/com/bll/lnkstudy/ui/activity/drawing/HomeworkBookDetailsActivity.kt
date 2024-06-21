@@ -365,7 +365,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
         val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
-        val listFiles = FileUtils.getFiles(path)
+        val listFiles = FileUtils.getAscFiles(path)
         return if (listFiles.size>index) listFiles[index] else null
     }
 

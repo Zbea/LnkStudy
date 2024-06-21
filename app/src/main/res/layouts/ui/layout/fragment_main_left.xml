@@ -43,7 +43,7 @@
             android:drawableStart="@mipmap/icon_plan_overview"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_60"
             android:drawablePadding="@dimen/dp_10"
             android:gravity="center"
             android:text="总览"

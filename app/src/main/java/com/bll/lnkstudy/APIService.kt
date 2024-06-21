@@ -107,11 +107,7 @@ interface APIService{
      */
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 修改姓名 "/accounts/changeGrade"
-     */
-    @POST("accounts/changeGrade")
-    fun editGrade(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
     /**
      * 修改学校信息
      */

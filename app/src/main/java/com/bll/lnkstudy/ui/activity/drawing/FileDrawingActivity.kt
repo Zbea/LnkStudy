@@ -7,7 +7,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
 import com.bll.lnkstudy.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.ac_drawing.tv_page_a
 import kotlinx.android.synthetic.main.ac_drawing_file.*
 import kotlinx.android.synthetic.main.ac_drawing_file.tv_page_total_a
@@ -25,7 +24,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     override fun initData() {
         pageIndex = intent.getIntExtra("pageIndex", 0)
         path= intent.getStringExtra("pagePath").toString()
-        pageCount=FileUtils.getFiles(path).size
+        pageCount=FileUtils.getAscFiles(path).size
         if (pageIndex==Constants.DEFAULT_PAGE)
             pageIndex=pageCount-1
     }
@@ -110,7 +109,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
 
     //加载图片
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
-        val files = FileUtils.getFiles(path)
+        val files = FileUtils.getAscFiles(path)
         if (index<files.size){
             val showFile=files[index]
             if (showFile != null) {

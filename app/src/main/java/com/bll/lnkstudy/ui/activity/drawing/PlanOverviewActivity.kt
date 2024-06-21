@@ -122,7 +122,7 @@ class PlanOverviewActivity:BaseDrawingActivity() {
         }
         images.clear()
         if (File(path).exists()){
-            for (file in FileUtils.getFiles(path,"tch")){
+            for (file in FileUtils.getAscFiles(path,"tch")){
                 images.add(file.path)
             }
         }

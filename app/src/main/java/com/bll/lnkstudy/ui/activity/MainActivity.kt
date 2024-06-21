@@ -86,6 +86,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.AUTO_UPLOAD_YEAR_EVENT->{
                 mainLeftFragment?.uploadDiary(token)
             }
+            Constants.USER_CHANGE_GRADE_EVENT->{
+                homeworkFragment?.upload(token)
+                paperFragment?.uploadPaper(token)
+            }
         }
 
     }
@@ -1270,7 +1274,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
                     //清除作业通知（每学期上学开始）
-                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
                 }, 30 * 1000)
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
@@ -1278,7 +1282,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
                     //清除作业通知（每学期上学开始）
-                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_EVENT)
+                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
+                }, 30 * 1000)
+            }
+            Constants.USER_CHANGE_GRADE_EVENT -> {
+                eventType = Constants.USER_CHANGE_GRADE_EVENT
+                Handler().postDelayed({
+                    mQiniuPresenter.getToken()
                 }, 30 * 1000)
             }
             Constants.ACTION_UPLOAD_YEAR -> {

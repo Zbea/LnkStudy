@@ -78,7 +78,6 @@ public interface IContractView {
     interface IAccountInfoView extends IBaseView {
         void onLogout();
         void onEditNameSuccess();
-        void onEditGradeSuccess();
         void onEditSchool();
         void onEditParent();
     }
@@ -143,6 +142,7 @@ public interface IContractView {
     interface IMainRightView extends IBaseView {
         void onExam(ExamItem exam);
         void onCourse(String url);
+        void onClassGroupList(List<ClassGroup> classGroups);
     }
 
     //公共接口

@@ -137,6 +137,11 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                     EventBus.getDefault().post(if (isNet) Constants.NETWORK_CONNECTION_COMPLETE_EVENT else Constants.NETWORK_CONNECTION_FAIL_EVENT)
                 }
             }
+            Constants.NET_REFRESH->{
+                if (NetworkUtil(context).isNetworkConnected()){
+                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
+                }
+            }
         }
     }
 }
