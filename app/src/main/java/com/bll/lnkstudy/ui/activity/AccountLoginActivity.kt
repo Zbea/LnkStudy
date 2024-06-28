@@ -36,7 +36,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         sendBroadcast(intent)
         //刷新公共方法中的登录信息
         MethodManager.getUser()
-
         gotoMainActivity()
     }
 
@@ -93,7 +92,9 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     }
 
     private fun gotoMainActivity(){
+
         MethodManager.setStatusBarValue(statusBarValue)
+
         val intent=Intent(this,MainActivity::class.java)
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME

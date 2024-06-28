@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
+      "versionCode": 7,
       "versionName": "V 1.0.1",
-      "outputFile": "app-release.apk"
+      "outputFile": "LnkStudyV 1.0.1_release.apk"
     }
   ],
   "elementType": "File"

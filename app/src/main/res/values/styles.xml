@@ -11,6 +11,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textSize">@dimen/sp_22</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
 <!--        <item name="android:windowFullscreen">true</item>-->
     </style>
 

@@ -382,7 +382,8 @@ public class MethodManager {
                     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                     PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP),"Loneworker - FULL WAKE LOCK");
                     fullWakeLock.acquire(5*60*1000L);
-                    fullWakeLock.release();
+                    if (fullWakeLock.isHeld())
+                        fullWakeLock.release();
                 } catch (Exception e) {
                     return e;
                 }
@@ -577,5 +578,6 @@ public class MethodManager {
     public static String getUrlFormat(String url){
         return url.substring(url.lastIndexOf("."));
     }
+
 
 }

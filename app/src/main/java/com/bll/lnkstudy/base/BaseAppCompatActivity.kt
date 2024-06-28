@@ -103,16 +103,16 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_CALENDAR,
                 Manifest.permission.READ_CALENDAR,
-                Manifest.permission.RECORD_AUDIO
-//                Manifest.permission.WRITE_SETTINGS
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_PHONE_STATE
             )){
             EasyPermissions.requestPermissions(this,"请求权限",1,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_CALENDAR,
                 Manifest.permission.READ_CALENDAR,
-                Manifest.permission.RECORD_AUDIO
-//                Manifest.permission.WRITE_SETTINGS
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_PHONE_STATE
             )
         }
         EventBus.getDefault().register(this)

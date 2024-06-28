@@ -39,6 +39,7 @@ class Constants {
 
 //                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
+        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 //
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")!!.path
@@ -122,6 +123,14 @@ class Constants {
         const val PACKAGE_GEOMETRY = "com.geometry"
 
         const val INTENT_SCREEN_LABEL="android.intent.extra.LAUNCH_SCREEN"
+
+
+        //OTA SN前缀
+        const val PERSIST_OTA_SN_PREFIX = "persist.ota.sn.prefix"
+        const val SN = "SN"
+        const val KEY = "Key"
+        const val VERSION_NO = "VersionNO"
+
     }
 
 }

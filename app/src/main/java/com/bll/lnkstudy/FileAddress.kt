@@ -222,4 +222,11 @@ class FileAddress {
     fun getPathRecorder():String{
         return "$IMAGE_PATH/${mUserId}/recorder"
     }
+
+    /**
+     * 系统更新地址
+     */
+    fun getPathSystemUpdate(fileName: String):String{
+        return "/data/media/0/update${fileName}.zip"
+    }
 }

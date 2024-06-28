@@ -14,6 +14,7 @@ import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
+import com.bll.lnkstudy.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -21,6 +22,19 @@ import retrofit2.http.*
 
 
 interface APIService{
+
+    /**
+     * 检查系统更新
+     */
+    @POST("Device/CheckUpdate")
+    fun RELEASE_CHECK_UPDATE(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
+
+    /**
+     * 检查系统更新
+     */
+    @POST("Device/UpdateInfo")
+    fun RELEASE_UPDATE_INFO(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
+
 
     /**
      * 文件上传

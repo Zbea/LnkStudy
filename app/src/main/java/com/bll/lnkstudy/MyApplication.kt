@@ -37,6 +37,7 @@ class MyApplication : Application(){
         FileDownloader.setup(this)
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks)
         setDatabase()
+
     }
 
     /**

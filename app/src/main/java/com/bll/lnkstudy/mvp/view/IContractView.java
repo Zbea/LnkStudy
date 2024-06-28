@@ -9,6 +9,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
+import com.bll.lnkstudy.mvp.model.SystemUpdateInfo;
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamItem;
 import com.bll.lnkstudy.mvp.model.MessageList;
@@ -39,6 +40,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface IContractView {
+
+    interface ISystemView extends IBaseView{
+        void onUpdateInfo(SystemUpdateInfo item);
+    }
 
     //文件上传
     interface IFileUploadView extends IBaseView{

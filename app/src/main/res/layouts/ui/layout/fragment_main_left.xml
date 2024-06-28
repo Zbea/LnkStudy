@@ -1,313 +1,377 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="33dp"
-            android:textColor="@color/black"
-            android:textSize="36sp"
-            />
-
-        <TextView
-            android:id="@+id/tv_screenshot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/tv_planover"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="30dp"
-            android:drawableStart="@mipmap/icon_main_screen"
-            android:drawablePadding="@dimen/dp_10"
-            android:gravity="center"
-            android:text="图库"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-
-        <TextView
-            android:id="@+id/tv_planover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@mipmap/icon_plan_overview"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_60"
-            android:drawablePadding="@dimen/dp_10"
-            android:gravity="center"
-            android:text="总览"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-
-    </RelativeLayout>
-
     <LinearLayout
-        android:layout_width="800dp"
-        android:layout_height="552dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_30"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/navigation_height">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="33dp"
+                android:textColor="@color/black"
+                android:textSize="36sp" />
+
+            <TextView
+                android:id="@+id/tv_screenshot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="30dp"
+                android:layout_toStartOf="@+id/tv_planover"
+                android:drawableStart="@mipmap/icon_main_screen"
+                android:drawablePadding="@dimen/dp_10"
+                android:gravity="center"
+                android:text="图库"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+
+            <TextView
+                android:id="@+id/tv_planover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="@dimen/dp_60"
+                android:drawableStart="@mipmap/icon_plan_overview"
+                android:drawablePadding="@dimen/dp_10"
+                android:gravity="center"
+                android:text="总览"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+
+        </RelativeLayout>
+
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingEnd="7dp"
-            android:paddingBottom="7dp"
-            android:background="@mipmap/icon_main_content_left_bg"
-            >
+            android:layout_width="800dp"
+            android:layout_height="552dp"
+            android:layout_marginTop="@dimen/dp_30"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/main_content_title_height"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginEnd="@dimen/dp_15"
-                >
-                <TextView
-                    android:id="@+id/tv_date_today"
-                    android:layout_width="0dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@mipmap/icon_main_content_left_bg"
+                android:orientation="vertical"
+                android:paddingEnd="7dp"
+                android:paddingBottom="7dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/main_content_title_height"
-                    android:layout_weight="1"
-                    android:drawableLeft="@mipmap/icon_main_celender"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:layout_marginEnd="@dimen/dp_15"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_date_today"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/main_content_title_height"
+                        android:layout_weight="1"
+                        android:drawableLeft="@mipmap/icon_main_celender"
+                        android:drawablePadding="@dimen/dp_15"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_24"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="1dp">
+
+                    <com.bll.lnkstudy.widget.RoundImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/icon_date_event_bg"
+                        app:leftBottomRadius="@dimen/dp_20"
+                        app:rightBottomRadius="@dimen/dp_20" />
+
+                    <ImageView
+                        android:id="@+id/iv_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/iv_calender"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/v_up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="5dp"
+                        android:src="@mipmap/icon_main_up" />
+
+                    <ImageView
+                        android:id="@+id/v_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:src="@mipmap/icon_main_down" />
+
+                    <ImageView
+                        android:id="@+id/iv_change"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="@dimen/dp_10"
+                        android:src="@mipmap/icon_main_change" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_main_plan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@mipmap/icon_main_content_left_bg"
+                android:orientation="vertical"
+                android:paddingEnd="7dp"
+                android:paddingBottom="7dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_content_title_height"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:layout_marginEnd="@dimen/dp_15"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_plan"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/main_content_title_height"
+                        android:layout_weight="1"
+                        android:drawableLeft="@mipmap/icon_main_date"
+                        android:drawablePadding="@dimen/dp_15"
+                        android:gravity="center_vertical"
+                        android:text="@string/main_date_plan"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_24"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_date_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/icon_date_day" />
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_main_plan"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="800dp"
+            android:layout_height="552dp"
+            android:layout_marginTop="50dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@mipmap/icon_main_content_left_bg"
+                android:orientation="vertical"
+                android:paddingEnd="7dp"
+                android:paddingBottom="7dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_content_title_height"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:layout_marginEnd="@dimen/dp_15"
+                    android:drawableLeft="@mipmap/icon_main_message"
                     android:drawablePadding="@dimen/dp_15"
                     android:gravity="center_vertical"
+                    android:text="@string/main_homework_message"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_24"
                     android:textStyle="bold" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_main_notice"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="1dp" />
 
             </LinearLayout>
 
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black"
-                />
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@mipmap/icon_main_content_left_bg"
+                android:orientation="vertical"
+                android:paddingEnd="7dp"
+                android:paddingBottom="7dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_content_title_height"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:layout_marginEnd="@dimen/dp_15"
+                    android:drawableLeft="@mipmap/icon_main_correct"
+                    android:drawablePadding="@dimen/dp_15"
+                    android:gravity="center_vertical"
+                    android:text="@string/homework_correct_details_str"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_24"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_main_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="1dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_notice"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_bg"
+            android:padding="@dimen/dialog_padding">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="1dp">
+                android:layout_height="wrap_content"
+                >
 
-                <com.bll.lnkstudy.widget.RoundImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/icon_date_event_bg"
-                    app:leftBottomRadius="@dimen/dp_20"
-                    app:rightBottomRadius="@dimen/dp_20"
-                    />
-
-                <ImageView
-                    android:id="@+id/iv_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
-                <ImageView
-                    android:id="@+id/iv_calender"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
-                    android:visibility="gone"
-                    />
-
-                <ImageView
-                    android:id="@+id/v_up"
+                <TextView
+                    android:id="@+id/tv_notice_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="5dp"
-                    android:src="@mipmap/icon_main_up"/>
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="26sp" />
 
                 <ImageView
-                    android:id="@+id/v_down"
+                    android:id="@+id/iv_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:src="@mipmap/icon_main_down"/>
-
-                <ImageView
-                    android:id="@+id/iv_change"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="@dimen/dp_10"
-                    android:src="@mipmap/icon_main_change"
-                    />
+                    android:src="@mipmap/icon_close" />
 
 
             </RelativeLayout>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/tv_notice_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/black_20"/>
 
-        <View
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="match_parent"
-            />
+            <TextView
+                android:id="@+id/tv_notice_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:visibility="gone"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/black_20"/>
 
-        <LinearLayout
-            android:id="@+id/ll_main_plan"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingEnd="7dp"
-            android:paddingBottom="7dp"
-            android:background="@mipmap/icon_main_content_left_bg"
-            >
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tv_notice_content"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/main_content_title_height"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginEnd="@dimen/dp_15"
-                >
-                <TextView
-                    android:id="@+id/tv_plan"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/main_content_title_height"
-                    android:layout_weight="1"
-                    android:drawableLeft="@mipmap/icon_main_date"
-                    android:drawablePadding="@dimen/dp_15"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/black"
-                    android:text="@string/main_date_plan"
-                    android:textSize="@dimen/sp_24"
-                    android:textStyle="bold" />
+                android:layout_height="180dp"
+                android:layout_marginTop="@dimen/dp_20"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/black"/>
 
-                <ImageView
-                    android:id="@+id/iv_date_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_date_day"
-                    />
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main_plan"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="800dp"
-        android:layout_height="552dp"
-        android:layout_marginTop="50dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingEnd="7dp"
-            android:paddingBottom="7dp"
-            android:background="@mipmap/icon_main_content_left_bg"
-            >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/main_content_title_height"
-                android:drawableLeft="@mipmap/icon_main_message"
-                android:drawablePadding="@dimen/dp_15"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginEnd="@dimen/dp_15"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
-                android:text="@string/main_homework_message"
-                android:textSize="@dimen/sp_24"
-                android:textStyle="bold" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main_notice"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="1dp"/>
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="match_parent"
-            />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingEnd="7dp"
-            android:paddingBottom="7dp"
-            android:background="@mipmap/icon_main_content_left_bg"
-            >
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/main_content_title_height"
-                android:drawableLeft="@mipmap/icon_main_correct"
-                android:drawablePadding="@dimen/dp_15"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginEnd="@dimen/dp_15"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
-                android:text="@string/homework_correct_details_str"
-                android:textSize="@dimen/sp_24"
-                android:textStyle="bold" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main_note"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="1dp"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

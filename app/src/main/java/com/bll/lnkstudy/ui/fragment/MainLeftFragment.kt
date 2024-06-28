@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.RecoverySystem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
@@ -12,15 +13,11 @@ import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.MainNoticeDetailsDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.mvp.model.AppUpdateBean
-import com.bll.lnkstudy.mvp.model.CourseItem
-import com.bll.lnkstudy.mvp.model.DiaryBean
-import com.bll.lnkstudy.mvp.model.TeachingVideoType
+import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
@@ -30,7 +27,9 @@ import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
+import com.bll.lnkstudy.mvp.presenter.SystemManagerPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
+import com.bll.lnkstudy.mvp.view.IContractView.ISystemView
 import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
@@ -42,6 +41,7 @@ import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.date.CalenderUtils
 import com.google.gson.Gson
+import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import org.greenrobot.eventbus.EventBus
@@ -51,23 +51,29 @@ import java.io.File
 /**
  * 首页
  */
-class MainLeftFragment : BaseMainFragment(), IMainLeftView {
-
-    private val mMainLeftPresenter=MainLeftPresenter(this,1)
+class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
+    private val mSystemPresenter = SystemManagerPresenter(this, 1)
+    private val mMainLeftPresenter = MainLeftPresenter(this, 1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var correctAdapter: MainHomeworkNoticeAdapter? = null
-    private var mNoticeAdapter:MainHomeworkNoticeAdapter?=null
+    private var mNoticeAdapter: MainHomeworkNoticeAdapter? = null
     private var nowDate = 0L
-    private var nowDayPos=1
-    private var calenderPath=""
-    private var dateEvents= mutableListOf<DateEventBean>()
-    private var updateDialog:AppUpdateDialog?=null
-    private var isChange=false
-    private var isShow=false//是否存在台历
+    private var nowDayPos = 1
+    private var calenderPath = ""
+    private var dateEvents = mutableListOf<DateEventBean>()
+    private var updateDialog: AppUpdateDialog? = null
+    private var isChange = false
+    private var isShow = false//是否存在台历
+    private var noticeItems = mutableListOf<HomeworkNoticeList.HomeworkNoticeBean>()
+
+    override fun onUpdateInfo(item: SystemUpdateInfo) {
+//        updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
+//        downLoadStartSystem(item)
+    }
 
     override fun onAppUpdate(item: AppUpdateBean) {
-        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
-            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
+        if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
+            updateDialog = AppUpdateDialog(requireActivity(), 1, item).builder()
             downLoadStart(item)
         }
     }
@@ -77,51 +83,51 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     }
 
     override fun onType(type: TeachingVideoType) {
-        SPUtil.putObj("videoType",type)
+        SPUtil.putObj("videoType", type)
     }
 
     override fun onParentPermission(permissionParentBean: PermissionParentBean) {
-        SPUtil.putObj("parentPermission",permissionParentBean)
+        SPUtil.putObj("parentPermission", permissionParentBean)
     }
 
     override fun onSchoolPermission(permissionSchoolBean: PermissionSchoolBean) {
-        if (permissionSchoolBean.config.isNotEmpty()){
-            val item=Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
-            SPUtil.putObj("schoolPermission",item)
-        }
-        else{
+        if (permissionSchoolBean.config.isNotEmpty()) {
+            val item = Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
+            SPUtil.putObj("schoolPermission", item)
+        } else {
             SPUtil.removeObj("schoolPermission")
         }
     }
 
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
-        if (list.list.isNotEmpty()){
-            mNoticeAdapter?.setNewData(list.list)
+        if (list.list.isNotEmpty()) {
+            noticeItems = list.list
+            mNoticeAdapter?.setNewData(noticeItems)
         }
     }
+
     override fun onCourseItems(courseItems: MutableList<CourseItem>) {
-        for (item in courseItems){
-            var path=""
-            val typeId=MethodManager.getExamTypeId(item.subject)
-            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)){
-                val typeItem= HomeworkTypeBean()
-                typeItem.name="${item.subject}错题本"
-                typeItem.course=item.subject
-                typeItem.date=System.currentTimeMillis()
-                typeItem.grade=mUser?.grade!!
-                typeItem.typeId=typeId
-                typeItem.userId=item.userId
+        for (item in courseItems) {
+            var path = ""
+            val typeId = MethodManager.getExamTypeId(item.subject)
+            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
+                val typeItem = HomeworkTypeBean()
+                typeItem.name = "${item.subject}错题本"
+                typeItem.course = item.subject
+                typeItem.date = System.currentTimeMillis()
+                typeItem.grade = mUser?.grade!!
+                typeItem.typeId = typeId
+                typeItem.userId = item.userId
                 typeItem.createStatus = 0
                 typeItem.state = 5
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
-               path=FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
-            }
-            else{
-                path=FileAddress().getPathScreenHomework("${item.subject}错题本", mUser?.grade!!)
+                path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
+            } else {
+                path = FileAddress().getPathScreenHomework("${item.subject}错题本", mUser?.grade!!)
             }
             FileUtils.mkdirs(path)
         }
-        if (courseItems!=MethodManager.getCourses()){
+        if (courseItems != MethodManager.getCourses()) {
             MethodManager.saveCourses(courseItems)
             EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
         }
@@ -144,7 +150,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 
         iv_date.setOnClickListener {
             val intent = Intent(requireActivity(), DateEventActivity::class.java)
-            intent.putExtra("date",nowDate)
+            intent.putExtra("date", nowDate)
             customStartActivity(intent)
         }
 
@@ -168,47 +174,46 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 //            customStartActivity(intent)
 //        }
 
-        v_up.setOnClickListener{
-            nowDate-= Constants.dayLong
+        v_up.setOnClickListener {
+            nowDate -= Constants.dayLong
             setDateView()
-            if (isShow&&nowDayPos>1){
-                nowDayPos-=1
+            if (isShow && nowDayPos > 1) {
+                nowDayPos -= 1
                 setCalenderBg()
             }
         }
 
         v_down.setOnClickListener {
-            nowDate+=Constants.dayLong
+            nowDate += Constants.dayLong
             setDateView()
-            if (isShow&&nowDayPos<=366){
-                nowDayPos+=1
+            if (isShow && nowDayPos <= 366) {
+                nowDayPos += 1
                 setCalenderBg()
             }
         }
 
         iv_change.setOnClickListener {
-            isChange=!isChange
-            if (isChange){
+            isChange = !isChange
+            if (isChange) {
                 showView(iv_calender)
-            }
-            else{
+            } else {
                 disMissView(iv_calender)
             }
         }
 
         iv_change.setOnLongClickListener {
-            val boolean=SPUtil.getBoolean("isShowCalender")
-            val titleStr=if (boolean) "默认显示日程？" else "默认显示台历？"
-            CommonDialog(requireActivity(),1).setContent(titleStr).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+            val boolean = SPUtil.getBoolean("isShowCalender")
+            val titleStr = if (boolean) "默认显示日程？" else "默认显示台历？"
+            CommonDialog(requireActivity(), 1).setContent(titleStr).builder().onDialogClickListener = object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
+
                 override fun ok() {
-                    if (boolean){
-                        SPUtil.putBoolean("isShowCalender",false)
+                    if (boolean) {
+                        SPUtil.putBoolean("isShowCalender", false)
                         disMissView(iv_calender)
-                    }
-                    else{
-                        SPUtil.putBoolean("isShowCalender",true)
+                    } else {
+                        SPUtil.putBoolean("isShowCalender", true)
                         showView(iv_calender)
                     }
                 }
@@ -228,16 +233,29 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     }
 
     override fun lazyLoad() {
-        nowDate=DateUtils.getStartOfDayInMillis()
+        //删除系统更新文件
+        val path=FileAddress().getPathSystemUpdate(DeviceUtil.getOtaProductVersion())
+        if (File(path).exists()){
+            File(path).delete()
+        }
+
+        nowDate = DateUtils.getStartOfDayInMillis()
         setDateView()
         showCalenderView()
         findDataPlan()
         fetchData()
     }
 
-    override fun fetchData(){
+    override fun fetchData() {
         fetchCommonData()
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+
+            val systemUpdateMap = HashMap<String, String>()
+            systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
+            systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
+            systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
+            mSystemPresenter.checkSystemUpdate(systemUpdateMap)
+
             mMainLeftPresenter.getHomeworkNotice()
             mMainLeftPresenter.getCourseItems()
             mMainLeftPresenter.getAppUpdate()
@@ -252,7 +270,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     /**
      * 设置当天时间日历
      */
-    private fun setDateView(){
+    private fun setDateView() {
 //        val solar= Solar()
 //        solar.solarYear= DateUtils.getYear()
 //        solar.solarMonth=DateUtils.getMonth()
@@ -273,15 +291,14 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 //                }
 //            }
 //        }
-        tv_date_today.text=DateUtils.longToStringWeek(nowDate)
+        tv_date_today.text = DateUtils.longToStringWeek(nowDate)
 
-        val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate))+"/draw.png"
-        if (File(path).exists()){
+        val path = FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate)) + "/draw.png"
+        if (File(path).exists()) {
 //            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
-            val myBitmap= BitmapFactory.decodeFile(path)
+            val myBitmap = BitmapFactory.decodeFile(path)
             iv_date.setImageBitmap(myBitmap)
-        }
-        else{
+        } else {
             iv_date.setImageResource(0)
         }
     }
@@ -289,35 +306,32 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     /**
      * 是否显示台历
      */
-    private fun showCalenderView(){
-        val item=CalenderDaoManager.getInstance().queryCalenderBean()
-        isShow=item!=null
-        if (isShow){
-            calenderPath=item.path
-            showView(iv_change,iv_calender)
+    private fun showCalenderView() {
+        val item = CalenderDaoManager.getInstance().queryCalenderBean()
+        isShow = item != null
+        if (isShow) {
+            calenderPath = item.path
+            showView(iv_change, iv_calender)
             setCalenderView()
-        }
-        else{
-            isChange=false
-            disMissView(iv_change,iv_calender)
+        } else {
+            isChange = false
+            disMissView(iv_change, iv_calender)
         }
     }
 
     /**
      * 设置台历内容
      */
-    private fun setCalenderView(){
-        if (isShow){
-            val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(nowDate))
-            nowDayPos=calenderUtils.elapsedTime()
+    private fun setCalenderView() {
+        if (isShow) {
+            val calenderUtils = CalenderUtils(DateUtils.longToStringDataNoHour(nowDate))
+            nowDayPos = calenderUtils.elapsedTime()
             setCalenderBg()
-            if (SPUtil.getBoolean("isShowCalender"))
-            {
-                isChange=true
+            if (SPUtil.getBoolean("isShowCalender")) {
+                isChange = true
                 showView(iv_calender)
-            }
-            else{
-                isChange=false
+            } else {
+                isChange = false
                 disMissView(iv_calender)
             }
         }
@@ -326,18 +340,18 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     /**
      * 设置台历图片
      */
-    private fun setCalenderBg(){
-        val listFiles= FileUtils.getFiles(calenderPath)
-        if (listFiles.size>0){
-            val file=if (listFiles.size>nowDayPos-1){
-                listFiles[nowDayPos-1]
+    private fun setCalenderBg() {
+        val listFiles = FileUtils.getFiles(calenderPath)
+        if (listFiles.size > 0) {
+            val file = if (listFiles.size > nowDayPos - 1) {
+                listFiles[nowDayPos - 1]
+            } else {
+                listFiles[listFiles.size - 1]
             }
-            else{
-                listFiles[listFiles.size-1]
-            }
-            GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
+            GlideUtils.setImageFileRound(requireActivity(), file, iv_calender, 15)
         }
     }
+
     //今日计划
     private fun initPlanView() {
         mPlanAdapter = MainDatePlanAdapter(R.layout.item_main_date_plan, null).apply {
@@ -350,14 +364,34 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     /**
      * 作业通知
      */
-    private fun initNoticeView(){
+    private fun initNoticeView() {
         mNoticeAdapter = MainHomeworkNoticeAdapter(R.layout.item_main_homework_notice, null).apply {
             rv_main_notice.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_notice.adapter = this
             bindToRecyclerView(rv_main_notice)
-            setOnItemClickListener { adapter, view, position ->
-                MainNoticeDetailsDialog(requireActivity(),data[position]).builder()
-            }
+        }
+        mNoticeAdapter?.setOnItemClickListener { adapter, view, position ->
+            showView(ll_notice)
+            setNoticeShow(position)
+        }
+    }
+
+    /**
+     * 展示作业详情
+     */
+    private fun setNoticeShow(position: Int) {
+        val item = noticeItems[position]
+
+        tv_notice_name?.text = item.name + " (${item.typeName})"
+        tv_notice_time?.text = "发送时间：" + DateUtils.longToStringDataNoYear(item.time)
+        if (item.endTime > 0) {
+            showView(tv_notice_end_time)
+            tv_notice_end_time?.text = "提交时间：" + DateUtils.longToStringWeek(item.endTime)
+        }
+        tv_notice_content?.text = "通知内容：${item.title}"
+
+        iv_close.setOnClickListener {
+            disMissView(ll_notice)
         }
     }
 
@@ -372,29 +406,83 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     }
 
     //下载应用
-    private fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk("lnkstudy")
+    private fun downLoadStart(bean: AppUpdateBean) {
+        val targetFileStr = FileAddress().getPathApk("lnkstudy")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 if (task != null && task.isRunning) {
                     requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
                                 ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                         updateDialog?.setUpdateBtn(s)
                     }
                 }
             }
+
             override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
             }
+
             override fun completed(task: BaseDownloadTask?) {
                 updateDialog?.dismiss()
                 AppUtils.installApp(requireActivity(), targetFileStr)
             }
+
             override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 updateDialog?.dismiss()
             }
         })
+    }
+
+    //下载系统
+    private fun downLoadStartSystem(bean: SystemUpdateInfo) {
+        val path=FileAddress().getPathSystemUpdate(bean.version)
+        if (File(path).exists()){
+            setSystemUpdate(path)
+            return
+        }
+        FileBigDownManager.with(requireActivity()).create(bean.otaUrl).setPath(path).startSingleTaskDownLoad(object :
+            FileBigDownManager.SingleTaskCallBack {
+            override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                if (task != null && task.isRunning) {
+                    requireActivity().runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
+                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                        updateDialog?.setUpdateBtn(s)
+                    }
+                }
+            }
+
+            override fun completed(task: BaseDownloadTask?) {
+                setSystemUpdate(path)
+            }
+
+            override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+            }
+
+            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                updateDialog?.dismiss()
+            }
+        })
+    }
+
+    /**
+     * 下载完毕开始系统更新
+     */
+    private fun setSystemUpdate(path:String){
+        updateDialog?.setUpdateInfo()
+        Thread {
+            try {
+                RecoverySystem.verifyPackage(File(path), {
+                    if (it == 100) {
+                        HtRecoverySystem.installPackage(requireActivity(), File(path))
+                    }
+                }, null)
+            }
+            catch (e:java.lang.Exception){
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     /**
@@ -411,53 +499,51 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
 //            }
 //        }
 
-        val years=DateUtils.longToStringDataNoHour(nowDate)
-        val dateBean= DateBean()
-        dateBean.year=years[0].toInt()
-        dateBean.month=years[1].toInt()
-        dateBean.day=years[2].toInt()
-        dateBean.time=nowDate
-        dateBean.week=DateUtils.getWeek(nowDate)
+        val years = DateUtils.longToStringDataNoHour(nowDate)
+        val dateBean = DateBean()
+        dateBean.year = years[0].toInt()
+        dateBean.month = years[1].toInt()
+        dateBean.day = years[2].toInt()
+        dateBean.time = nowDate
+        dateBean.week = DateUtils.getWeek(nowDate)
 
-        dateEvents=DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean)
-        if (dateEvents.size>0){
+        dateEvents = DateEventGreenDaoManager.getInstance().queryAllDateEvent(dateBean)
+        if (dateEvents.size > 0) {
             mPlanAdapter?.setNewData(dateEvents[0].plans)
+        } else {
+            mPlanAdapter?.setNewData(null)
         }
-         else{
-             mPlanAdapter?.setNewData(null)
-         }
     }
 
     /**
      * 每年上传日记
      */
-    fun uploadDiary(token:String){
-        val cloudList= mutableListOf<CloudListBean>()
-        val nullItems= mutableListOf<DiaryBean>()
-        val diarys= DiaryDaoManager.getInstance().queryList()
-        for (diaryBean in diarys){
-            val fileName=DateUtils.longToString(diaryBean.date)
-            val path=FileAddress().getPathDiary(fileName)
-            if (FileUtils.isExistContent(path)){
+    fun uploadDiary(token: String) {
+        val cloudList = mutableListOf<CloudListBean>()
+        val nullItems = mutableListOf<DiaryBean>()
+        val diarys = DiaryDaoManager.getInstance().queryList()
+        for (diaryBean in diarys) {
+            val fileName = DateUtils.longToString(diaryBean.date)
+            val path = FileAddress().getPathDiary(fileName)
+            if (FileUtils.isExistContent(path)) {
                 FileUploadManager(token).apply {
-                    startUpload(path,fileName)
-                    setCallBack{
+                    startUpload(path, fileName)
+                    setCallBack {
                         cloudList.add(CloudListBean().apply {
-                            type=8
-                            subTypeStr="日记"
-                            year=diaryBean.year
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(diaryBean)
-                            downloadUrl=it
+                            type = 8
+                            subTypeStr = "日记"
+                            year = diaryBean.year
+                            date = System.currentTimeMillis()
+                            listJson = Gson().toJson(diaryBean)
+                            downloadUrl = it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传
-                        if (cloudList.size== diarys.size-nullItems.size){
+                        if (cloudList.size == diarys.size - nullItems.size) {
                             mCloudUploadPresenter.upload(cloudList)
                         }
                     }
                 }
-            }
-            else{
+            } else {
                 //没有内容不上传
                 nullItems.add(diaryBean)
             }
@@ -465,33 +551,33 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView {
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        val path=FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
+        val path = FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
         FileUtils.deleteFile(File(path).parentFile)
         DiaryDaoManager.getInstance().clear()
         //清除本地增量数据
         DataUpdateManager.clearDataUpdate(8)
-        val map=HashMap<String,Any>()
-        map["type"]=8
+        val map = HashMap<String, Any>()
+        map["type"] = 8
         mDataUploadPresenter.onDeleteData(map)
     }
 
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
-            AUTO_REFRESH_EVENT->{
+            AUTO_REFRESH_EVENT -> {
                 lazyLoad()
             }
             DATE_EVENT -> {
                 findDataPlan()
             }
-            MAIN_HOMEWORK_NOTICE_CLEAR_EVENT->{
+            MAIN_HOMEWORK_NOTICE_CLEAR_EVENT -> {
                 mMainLeftPresenter.deleteHomeworkNotice()
                 mMainLeftPresenter.deleteCorrectNotice()
             }
-            CALENDER_SET_EVENT->{
+            CALENDER_SET_EVENT -> {
                 showCalenderView()
             }
-            DATE_DRAWING_EVENT->{
+            DATE_DRAWING_EVENT -> {
                 setDateView()
             }
         }

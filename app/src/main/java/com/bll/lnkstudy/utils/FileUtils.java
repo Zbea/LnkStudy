@@ -134,26 +134,6 @@ public class FileUtils {
     }
 
     /**
-     *
-     * 获取目录下文件名  不包含文件目录下的子文件目录
-     * @Author：
-     * @Description：获取某个目录下所有直接下级文件，不包括目录下的子目录的下的文件，所以不用递归获取
-     * @Date：
-     */
-    public static List<String> getFilesName(String path) {
-        List<String> files = new ArrayList<String>();
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-
-        for (int i = 0; i < tempList.length; i++) {
-            if (tempList[i].isFile()) {
-                files.add(tempList[i].getName());
-            }
-        }
-        return files;
-    }
-
-    /**
      * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）
      * @param path
      * @return
