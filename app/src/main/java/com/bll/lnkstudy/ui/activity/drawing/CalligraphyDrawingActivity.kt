@@ -1,13 +1,9 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -51,25 +47,6 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_draft)
         iv_btn.setImageResource(R.mipmap.icon_draw_change)
-        onChangeContent()
-
-        ll_page.setOnClickListener {
-            InputContentDialog(this,1,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
-                paintingDrawingBean?.title = string
-                paintingLists[page].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                editDataUpdate(paintingDrawingBean!!)
-            }
-        }
-
-        ll_page_a.setOnClickListener {
-            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
-                paintingDrawingBean_a?.title = string
-                paintingLists[page-1].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-                editDataUpdate(paintingDrawingBean_a!!)
-            }
-        }
 
         iv_btn.setOnClickListener {
             ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
@@ -89,6 +66,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                 }
         }
 
+        onContent()
     }
 
     override fun onCatalog() {
@@ -99,28 +77,36 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this,getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
-            if (page != position) {
-                page = position
-                onChangeContent()
+        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=paintingLists[position].page){
+                    page = paintingLists[position].page
+                    onContent()
+                }
             }
-        }
+            override fun onEdit(position: Int, title: String) {
+                val item=paintingLists[position]
+                item.title=title
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
+                editDataUpdate(item)
+            }
+        })
     }
 
     override fun onPageUp() {
         if(isExpand){
             if (page>2){
                 page-=2
-                onChangeContent()
+                onContent()
             }
             else if (page==2){//当页面不够翻两页时
                 page=1
-                onChangeContent()
+                onContent()
             }
         }else{
             if (page>0){
                 page-=1
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -151,7 +137,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                 page += 1
             }
         }
-        onChangeContent()
+        onContent()
     }
 
     override fun onChangeExpandContent() {
@@ -162,56 +148,55 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         }
         moveToScreen(isExpand)
         onChangeExpandView()
-        onChangeContent()
+        onContent()
     }
 
     //设置背景图
     private fun setBg_a(){
-        v_content_a.setImageResource(resId_a)
+        v_content_a?.setImageResource(resId_a)
     }
 
     private fun setBg_b(){
-        v_content_b.setImageResource(resId_b)
+        v_content_b?.setImageResource(resId_b)
     }
 
-    private fun onChangeContent() {
+    override fun onContent() {
         paintingDrawingBean = paintingLists[page]
-
         if (isExpand) {
-            if (page > 0) {
-                paintingDrawingBean_a = paintingLists[page - 1]
-            }
-            else{
+            if (page<=0){
                 page = 1
                 paintingDrawingBean = paintingLists[page]
-                paintingDrawingBean_a = paintingLists[0]
             }
-        } else {
-            paintingDrawingBean_a = null
+            paintingDrawingBean_a = paintingLists[page-1]
         }
-
-        resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
-        setBg_b()
 
         tv_page_total.text="${paintingLists.size}"
         tv_page_total_a.text="${paintingLists.size}"
 
-        setElikLoadPath(elik_b!!, paintingDrawingBean!!)
+        resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
+        setBg_b()
+        setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
         tv_page.text = "${page+1}"
 
-        //切换页面内容的一些变化
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()
-            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
-            tv_page_a.text = "${page}"
+            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
+            if (screenPos== Constants.SCREEN_LEFT){
+                tv_page.text="$page"
+                tv_page_a.text="${page+1}"
+            }
+            if (screenPos== Constants.SCREEN_RIGHT){
+                tv_page_a.text="$page"
+                tv_page.text="${page+1}"
+            }
         }
     }
 
 
     //保存绘图以及更新手绘
-    private fun setElikLoadPath(elik: EinkPWInterface, bean: PaintingDrawingBean) {
-        elik.setLoadFilePath(bean.path, true)
+    private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
+        elik.setLoadFilePath(path, true)
     }
 
     override fun onElikSava_a() {

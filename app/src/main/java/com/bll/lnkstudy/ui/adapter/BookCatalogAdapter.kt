@@ -19,6 +19,7 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?,private val startCount:Int
         when (helper.itemViewType) {
             0 -> {
                 val item= multiItemEntity as CatalogParent
+                helper.setGone(R.id.iv_edit,false)
                 helper.setText(R.id.tv_name, item.title)
                 helper.setText(R.id.tv_page, "${item.pageNumber-(startCount-1)}")
                 helper.itemView.setOnClickListener {

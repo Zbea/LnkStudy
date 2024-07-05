@@ -7,9 +7,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
 import com.bll.lnkstudy.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_drawing.tv_page_a
 import kotlinx.android.synthetic.main.ac_drawing_file.*
-import kotlinx.android.synthetic.main.ac_drawing_file.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 
@@ -32,22 +30,22 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     override fun initView() {
         disMissView(iv_draft,iv_btn,iv_catalog)
 
-        onChangeContent()
+        onContent()
     }
 
     override fun onPageUp() {
         if (isExpand) {
             if (pageIndex > 1) {
                 pageIndex -= 2
-                onChangeContent()
+                onContent()
             } else {
                 pageIndex = 1
-                onChangeContent()
+                onContent()
             }
         } else {
             if (pageIndex > 0) {
                 pageIndex -= 1
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -56,17 +54,17 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         if (isExpand){
             if (pageIndex<pageCount-2){
                 pageIndex+=2
-                onChangeContent()
+                onContent()
             }
             else if (pageIndex==pageCount-2){
                 pageIndex=pageCount-1
-                onChangeContent()
+                onContent()
             }
         }
         else{
             if (pageIndex<pageCount-1){
                 pageIndex+=1
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -77,14 +75,14 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             isExpand=!isExpand
             moveToScreen(isExpand)
             onChangeExpandView()
-            onChangeContent()
+            onContent()
         }
     }
 
     /**
      * 更新内容
      */
-    private fun onChangeContent() {
+    override fun onContent() {
         if (pageCount==0)
             return
         if (pageIndex>=pageCount){
@@ -99,10 +97,17 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         tv_page_total_a.text="$pageCount"
 
         tv_page.text = "${pageIndex+1}"
-        loadPicture(pageIndex, elik_b!!, iv_content_b)
+        loadPicture(pageIndex, elik_b!!, v_content_b!!)
         if (isExpand) {
-            loadPicture(pageIndex-1, elik_a!!, iv_content_a)
-            tv_page_a.text = "$pageIndex"
+            loadPicture(pageIndex-1, elik_a!!, v_content_a!!)
+            if (screenPos==Constants.SCREEN_LEFT){
+                tv_page.text = "$pageIndex"
+                tv_page_a.text = "${pageIndex+1}"
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text = "$pageIndex"
+                tv_page.text = "${pageIndex+1}"
+            }
         }
 
     }

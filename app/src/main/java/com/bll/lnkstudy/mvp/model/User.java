@@ -10,7 +10,7 @@ public class User {
     public String telNumber;
     public String nickname;
     public int balance;//学豆
-    public int grade;//年级
+    public int grade=1;//年级
     public String parentName;
     public String parentNickname;
     public String parentTel;

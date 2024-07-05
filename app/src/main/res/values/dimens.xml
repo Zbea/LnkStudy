@@ -2,7 +2,7 @@
 <resources>
     <dimen name="height">1363dp</dimen>
     <dimen name="width">1021dp</dimen>
-    <dimen name="drawing_height">1295dp</dimen>
+    <dimen name="drawing_content_width">979dp</dimen>
     <dimen name="drawing_tool_width">42dp</dimen>
     <dimen name="drawing_tool_height">50dp</dimen>
     <dimen name="drawing_tool_dimens">50dp</dimen>

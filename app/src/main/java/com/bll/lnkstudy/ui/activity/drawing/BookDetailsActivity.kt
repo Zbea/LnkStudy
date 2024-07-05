@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -77,22 +78,22 @@ class BookDetailsActivity : BaseDrawingActivity() {
             pageCount =catalogMsg?.totalCount!!
             pageStart =catalogMsg?.startCount!!
         }
-        onChangeContent()
+        onContent()
     }
 
     override fun onPageUp() {
         if (isExpand) {
             if (page > 1) {
                 page -= 2
-                onChangeContent()
+                onContent()
             } else {
                 page = 1
-                onChangeContent()
+                onContent()
             }
         } else {
             if (page > 0) {
                 page -= 1
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -101,26 +102,32 @@ class BookDetailsActivity : BaseDrawingActivity() {
         if (isExpand){
             if (page<pageCount-2){
                 page+=2
-                onChangeContent()
+                onContent()
             }
             else if (page==pageCount-2){
                 page=pageCount-1
-                onChangeContent()
+                onContent()
             }
         }
         else{
             if (page<pageCount-1){
                 page+=1
-                onChangeContent()
+                onContent()
             }
         }
     }
 
     override fun onCatalog() {
-        DrawingCatalogDialog(this, getCurrentScreenPos(),catalogs, 1, pageStart).builder().setOnDialogClickListener { position ->
-                page = position - 1
-                onChangeContent()
+        DrawingCatalogDialog(this,screenPos, getCurrentScreenPos(),catalogs, 1, pageStart).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=position-1){
+                    page = position - 1
+                    onContent()
+                }
             }
+            override fun onEdit(position: Int, title: String) {
+            }
+        })
     }
 
     override fun onChangeExpandContent() {
@@ -128,13 +135,13 @@ class BookDetailsActivity : BaseDrawingActivity() {
         isExpand=!isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
-        onChangeContent()
+        onContent()
     }
 
     /**
      * 更新内容
      */
-    private fun onChangeContent() {
+    override fun onContent() {
         if (pageCount==0)
             return
         if (page>=pageCount){
@@ -147,11 +154,18 @@ class BookDetailsActivity : BaseDrawingActivity() {
         tv_page_total.text="${pageCount-pageStart}"
         tv_page_total_a.text="${pageCount-pageStart}"
 
+        loadPicture(page, elik_b!!, v_content_b!!)
         tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
-        loadPicture(page, elik_b!!, v_content_b)
-        if (isExpand) {
-            loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+        if (isExpand){
+            loadPicture(page-1, elik_a!!, v_content_a!!)
+            if (screenPos==Constants.SCREEN_LEFT){
+                tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+                tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+                tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+            }
         }
         //设置当前展示页
         book?.pageUrl = getIndexFile(page)?.path

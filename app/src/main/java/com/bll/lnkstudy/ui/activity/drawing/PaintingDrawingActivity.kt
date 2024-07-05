@@ -1,12 +1,12 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PaintingLinerSelectDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -51,24 +51,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         onChangeContent()
         iv_btn.setImageResource(R.mipmap.icon_draw_setting)
 
-        ll_page.setOnClickListener {
-            InputContentDialog(this,2,paintingDrawingBean?.title!!).builder().setOnDialogClickListener { string ->
-                paintingDrawingBean?.title = string
-                paintingLists[page].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
-                editDataUpdate(paintingDrawingBean!!)
-            }
-        }
-
-        ll_page_a.setOnClickListener {
-            InputContentDialog(this,1,paintingDrawingBean_a?.title!!).builder().setOnDialogClickListener { string ->
-                paintingDrawingBean_a?.title = string
-                paintingLists[page-1].title = string
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean_a)
-                editDataUpdate(paintingDrawingBean_a!!)
-            }
-        }
-
         iv_btn.setOnClickListener {
             if (linerDialog==null){
                 linerDialog=PaintingLinerSelectDialog(this).builder()
@@ -92,12 +74,20 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this, getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
-            if (page != position) {
-                page = position
-                onChangeContent()
+        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=paintingLists[position].page){
+                    page = paintingLists[position].page
+                    onContent()
+                }
             }
-        }
+            override fun onEdit(position: Int, title: String) {
+                val item=paintingLists[position]
+                item.title=title
+                PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
+                editDataUpdate(item!!)
+            }
+        })
     }
 
     override fun onPageUp() {
@@ -177,20 +167,24 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         tv_page_total.text="${paintingLists.size}"
         tv_page_total_a.text="${paintingLists.size}"
 
-        setElikLoadPath(elik_b!!, paintingDrawingBean!!)
+        setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
         tv_page.text = "${page+1}"
-
-        //切换页面内容的一些变化
         if (isExpand) {
-            v_content_a.setImageResource(resId)
-            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!)
-            tv_page_a.text = "$page"
+            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
+            if (screenPos== Constants.SCREEN_LEFT){
+                tv_page.text="$page"
+                tv_page_a.text="${page+1}"
+            }
+            if (screenPos== Constants.SCREEN_RIGHT){
+                tv_page_a.text="$page"
+                tv_page.text="${page+1}"
+            }
         }
     }
 
     //保存绘图以及更新手绘
-    private fun setElikLoadPath(elik: EinkPWInterface, bean: PaintingDrawingBean) {
-        elik.setLoadFilePath(bean.path, true)
+    private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
+        elik.setLoadFilePath(path, true)
     }
 
     override fun onElikSava_a() {

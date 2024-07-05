@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.widget.ImageView
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -33,7 +34,6 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     private var currentPosition=0
     private var oldPosition=-1
     private var page = 0//页码
-    private var paperContentCount=0//这次考卷所有内容大小
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -57,7 +57,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         if (papers.size>0){
             if (currentPosition==DEFAULT_PAGE)
                 currentPosition=papers.size-1
-            onChangeContent()
+            onContent()
         }
     }
 
@@ -69,47 +69,51 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this, getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
-            if (currentPosition!=position){
-                currentPosition = papers[position].page
-                page = 0
-                onChangeContent()
+        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (currentPosition!=papers[position].page){
+                    currentPosition = papers[position].page
+                    page = 0
+                    onContent()
+                }
             }
-        }
+            override fun onEdit(position: Int, title: String) {
+            }
+        })
     }
 
     override fun onPageUp() {
         if (isExpand&&page>1){
             page-=2
-            onChangeContent()
+            onContent()
         }
         else if (!isExpand&&page>0){
             page-=1
-            onChangeContent()
+            onContent()
         }
         else{
             if (currentPosition>0){
                 currentPosition-=1
                 page=0
-                onChangeContent()
+                onContent()
             }
         }
     }
 
     override fun onPageDown() {
-        if (isExpand&&page+2<paperContentCount){
+        if (isExpand&&page+2<pageCount){
             page+=2
-            onChangeContent()
+            onContent()
         }
-        else if(!isExpand&&page+1<paperContentCount){
+        else if(!isExpand&&page+1<pageCount){
             page+=1
-            onChangeContent()
+            onContent()
         }
         else{
             //切换目录
             currentPosition+=1
             page=0
-            onChangeContent()
+            onContent()
         }
     }
 
@@ -118,22 +122,22 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         isExpand=!isExpand
         //展屏时，如果当前考卷内容为最后一张且这次目录内容不止1张，则页码前移一位
         if (isExpand){
-            if (page==paperContentCount-1&&paperContentCount>1){
+            if (page==pageCount-1&&pageCount>1){
                 page-=1
             }
         }
         moveToScreen(isExpand)
         onChangeExpandView()
-        onChangeContent()
+        onContent()
     }
 
-    private fun onChangeContent(){
+    override fun onContent(){
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
 
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
-        paperContentCount=paperContents.size
+        pageCount=paperContents.size
 
         if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
@@ -142,25 +146,28 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
 
         oldPosition=currentPosition
 
-        tv_page_total.text="$paperContentCount"
-        tv_page_total_a.text="$paperContentCount"
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
 
+        setElikLoadPath(page,v_content_b!!)
+        tv_page.text="${page+1}"
         if (isExpand){
-            setElikLoadPath(page,v_content_a)
-            tv_page_a.text="${page+1}"
-            if (page+1<paperContentCount){
-                setElikLoadPath(page+1,v_content_b)
-                tv_page.text="${page+1+1}"
+            setElikLoadPath(page,v_content_a!!)
+            if (page+1<pageCount){
+                setElikLoadPath(page+1,v_content_b!!)
             }
             else{
                 //不显示 ，不能手写
-                v_content_b.setImageResource(0)
-                tv_page.text=""
+                v_content_b?.setImageResource(0)
             }
-        }
-        else{
-            setElikLoadPath(page,v_content_b)
-            tv_page.text="${page+1}"
+            if (screenPos== Constants.SCREEN_LEFT){
+                tv_page.text="${page+1}"
+                tv_page_a.text=if (page+1<pageCount)"${page+1+1}" else ""
+            }
+            if (screenPos== Constants.SCREEN_RIGHT){
+                tv_page_a.text="${page+1}"
+                tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
+            }
         }
     }
 

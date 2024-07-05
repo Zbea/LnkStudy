@@ -52,7 +52,7 @@ class BookcaseFragment: BaseMainFragment() {
         
         ll_book_top.setOnClickListener {
             if (bookTopBean!=null)
-                MethodManager.gotoBookDetails(requireActivity(),bookTopBean,screenPos)
+                MethodManager.gotoBookDetails(requireActivity(),bookTopBean)
         }
 
     }
@@ -69,7 +69,7 @@ class BookcaseFragment: BaseMainFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(activity,22f),30))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                MethodManager.gotoBookDetails(requireActivity(),bookBean,screenPos)
+                MethodManager.gotoBookDetails(requireActivity(),bookBean)
             }
         }
     }

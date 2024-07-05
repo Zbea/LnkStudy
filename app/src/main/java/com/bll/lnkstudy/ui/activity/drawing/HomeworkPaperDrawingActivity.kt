@@ -131,7 +131,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if(papers.size>0){
             if (currentPosition==Constants.DEFAULT_PAGE)
                 currentPosition=papers.size-1
-            onChangeContent()
+            onContent()
         }
         else{
             setPWEnabled(false)
@@ -170,29 +170,35 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this, getCurrentScreenPos(),list).builder().setOnDialogClickListener { position ->
-            if (currentPosition!=position){
-                currentPosition = papers[position].index
-                page = 0
-                onChangeContent()
+
+        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (currentPosition!=list[position].page){
+                    currentPosition = papers[position].index
+                    page = 0
+                    onContent()
+                }
             }
-        }
+            override fun onEdit(position: Int, title: String) {
+
+            }
+        })
     }
 
     override fun onPageDown() {
         if (isExpand&&page+2<pageCount){
             page+=2
-            onChangeContent()
+            onContent()
         }
         else if (!isExpand&&page+1<pageCount){
             page+=1
-            onChangeContent()
+            onContent()
         }
         else{
             if (currentPosition+1<papers.size){
                 currentPosition+=1
                 page=0
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -200,17 +206,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onPageUp() {
         if (isExpand&&page>1){
             page-=2
-            onChangeContent()
+            onContent()
         }
         else if (!isExpand&&page>0){
             page-=1
-            onChangeContent()
+            onContent()
         }
         else{
             if (currentPosition>0){
                 currentPosition-=1
                 page=0
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -226,10 +232,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
         moveToScreen(isExpand)
         onChangeExpandView()
-        onChangeContent()
+        onContent()
     }
 
-    private fun onChangeContent() {
+    override fun onContent() {
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
@@ -253,25 +259,31 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         tv_page_total.text="${paperContents.size}"
         tv_page_total_a.text="${paperContents.size}"
 
+        paperContentBean=paperContents[page]
+        setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b!!)
+        tv_page.text="${page+1}"
+
         if (isExpand){
             paperContentBean_a=paperContents[page]
-            setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a)
+            setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a!!)
             if (page+1<pageCount){
                 paperContentBean=paperContents[page+1]
-                setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
+                setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b!!)
             }
             else{
                 //不显示 ，不能手写
-                v_content_b.setImageResource(0)
+                v_content_b?.setImageResource(0)
                 elik_b?.setPWEnabled(false)
             }
-            tv_page_a.text="${page+1}"
-            tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
-        }
-        else{
-            paperContentBean=paperContents[page]
-            setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b)
-            tv_page.text="${page+1}"
+
+            if (screenPos==Constants.SCREEN_LEFT){
+                tv_page.text="${page+1}"
+                tv_page_a.text=if (page+1<pageCount)"${page+1+1}" else ""
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text="${page+1}"
+                tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
+            }
         }
     }
 

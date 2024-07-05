@@ -104,7 +104,6 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
             })
         }
         mTabTypeAdapter?.setNewData(itemTabTypes)
-        fetchData()
     }
 
     override fun onTabClickListener(view: View, position: Int) {

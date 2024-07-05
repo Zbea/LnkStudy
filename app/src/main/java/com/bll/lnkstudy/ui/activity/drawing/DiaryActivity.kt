@@ -1,11 +1,7 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
-import android.widget.TextView
-import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.R
+import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CalendarDiaryDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
@@ -88,7 +84,7 @@ class DiaryActivity:BaseDrawingActivity() {
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
-                    v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
                 }
         }
 
@@ -113,22 +109,19 @@ class DiaryActivity:BaseDrawingActivity() {
         isExpand = !isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
-        setContentImage()
+        onContent()
     }
 
 
     override fun onPageDown() {
         posImage += if (isExpand)2 else 1
-        setContentImage()
+        onContent()
     }
 
     override fun onPageUp() {
         if (posImage > 0) {
             posImage -= if (isExpand)2 else 1
-            if (posImage<0){
-                posImage=0
-            }
-            setContentImage()
+            onContent()
         }
     }
 
@@ -139,43 +132,59 @@ class DiaryActivity:BaseDrawingActivity() {
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
         posImage=diaryBean?.page!!
-        setContentImage()
+        onContent()
     }
 
     /**
      * 显示内容
      */
-    private fun setContentImage() {
-        tv_date.text=DateUtils.longToStringWeek(nowLong)
-
-        v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        v_content_a.setImageResource(ToolUtils.getImageResId(this, bgRes))
-
+    override fun onContent() {
         if (isExpand){
-            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
-            setEinkImage(elik_a!!,tv_page_a,posImage,path)
-
-            val path_b = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1+1}.tch"
-            setEinkImage(elik_b!!,tv_page,posImage+1,path_b)
+            if (posImage<1){
+                posImage=1
+            }
         }
         else{
-            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
-            setEinkImage(elik_b!!,tv_page,posImage,path)
+            if (posImage<0){
+                posImage=0
+            }
         }
 
+        tv_date.text=DateUtils.longToStringWeek(nowLong)
+
+        v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+        v_content_a?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+
+        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+        setEinkImage(elik_b!!,path)
+        tv_page.text = "${posImage + 1}"
+        if (isExpand){
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage}.tch"
+            setEinkImage(elik_a!!,path)
+            if (screenPos==Constants.SCREEN_LEFT){
+                tv_page_a.text = "${posImage + 1}"
+                tv_page.text = "$posImage"
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page.text = "${posImage + 1}"
+                tv_page_a.text = "$posImage"
+            }
+        }
     }
 
-    private fun setEinkImage(eink:EinkPWInterface,tv:TextView,page:Int,path:String){
+    private fun setEinkImage(eink:EinkPWInterface,path:String){
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)
         }
-        tv.text = "${page + 1}"
+        eink.setLoadFilePath(path, true)
         tv_page_total.text="${images.size}"
         tv_page_total_a.text="${images.size}"
-        eink.setLoadFilePath(path, true)
     }
 
+    override fun onElikSava_a() {
+        elik_a?.saveBitmap(true) {}
+    }
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}

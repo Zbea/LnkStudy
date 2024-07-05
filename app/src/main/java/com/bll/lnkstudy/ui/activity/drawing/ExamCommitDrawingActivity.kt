@@ -90,6 +90,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     override fun initData() {
         setExamMode(true)
+        screenPos=2
         isExpand=true
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem
         flags=exam?.type!!
@@ -121,7 +122,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         onChangeContent()
 
         iv_btn.setOnClickListener {
-            CommonDialog(this,2).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
+            CommonDialog(this,screenPos).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
@@ -187,17 +188,17 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         tv_page_total.text="$pageCount"
         tv_page_total_a.text="$pageCount"
 
-        setElikLoadPath(page,elik_a!!,v_content_a)
+        setElikLoadPath(page,elik_a!!,v_content_a!!)
         tv_page_a.text="${page+1}"
 
         if (page+1<pageCount){
             elik_b?.setPWEnabled(true)
-            setElikLoadPath(page+1,elik_b!!,v_content_b)
+            setElikLoadPath(page+1,elik_b!!,v_content_b!!)
             tv_page.text="${page+1+1}"
         }
         else{
             elik_b?.setPWEnabled(false)
-            v_content_b.setImageResource(0)
+            v_content_b?.setImageResource(0)
             tv_page.text=""
         }
     }

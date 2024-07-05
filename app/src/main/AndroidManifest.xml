@@ -92,8 +92,6 @@
                 <action android:name="com.bll.lnkstudy.upload"/>
                 <action android:name="com.bll.lnkstudy.upload.1month"/>
                 <action android:name="com.bll.lnkstudy.upload.9month"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.STATE_CHANGE" />
                 <action android:name="com.htfyun.blackwhitebar.refresh"/>
             </intent-filter>
             <intent-filter>

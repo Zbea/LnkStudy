@@ -47,7 +47,6 @@ class Constants {
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")!!.path
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
-        val BOOK_DRAW_PATH = Environment.getExternalStoragePublicDirectory("Notes").absolutePath
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件

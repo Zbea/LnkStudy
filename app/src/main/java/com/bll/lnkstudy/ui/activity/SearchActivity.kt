@@ -73,7 +73,7 @@ class SearchActivity : BaseAppCompatActivity() {
         when(item.category){
             0->{
                 val bookBean=Gson().fromJson(item.listJson, BookBean::class.java)
-                MethodManager.gotoBookDetails(this,bookBean,screenPos)
+                MethodManager.gotoBookDetails(this,bookBean)
                 finish()
             }
             1->{

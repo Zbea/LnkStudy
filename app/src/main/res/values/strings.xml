@@ -186,7 +186,7 @@
     <string name="textbook">课本</string>
     <string name="textbook_tab_my">我的课本</string>
     <string name="textbook_tab_assist">参考课本</string>
-    <string name="textbook_tab_other">越级课本</string>
+    <string name="textbook_tab_other">预习课本</string>
     <string name="textbook_tab_old">往期课本</string>
 
     <string name="book_tab_gj">古籍</string>

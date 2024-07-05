@@ -22,6 +22,7 @@
         android:textSize="18sp"
         android:text="书名"
         android:maxLines="1"
+        android:gravity="center"
         android:layout_marginTop="3dp"
         android:textColor="@color/black"/>
 

@@ -61,7 +61,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        var currentGrade=0
+        var currentGrade=1
         val oldGrade=mUser?.grade!!
         for (item in classGroups){
             if (item.state==1){

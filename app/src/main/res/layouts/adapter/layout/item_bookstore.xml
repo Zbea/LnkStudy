@@ -47,6 +47,7 @@
         android:textSize="@dimen/sp_20"
         android:ellipsize="end"
         android:maxLines="1"
+        android:gravity="center"
         android:layout_marginTop="@dimen/dp_10"
         android:textColor="@color/black"/>
 

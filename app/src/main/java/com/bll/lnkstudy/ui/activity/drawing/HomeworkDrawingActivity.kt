@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.graphics.BitmapFactory
 import android.view.EinkPWInterface
 import androidx.core.view.isVisible
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -10,7 +11,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -103,7 +103,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             time=System.currentTimeMillis()
         })
 
-        onChangeContent()
+        onContent()
     }
 
     override fun layoutId(): Int {
@@ -164,7 +164,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun initView() {
-        onChangeContent()
+        onContent()
 
         iv_btn.setOnClickListener {
             if (NetworkUtil(this).isNetworkConnected()) {
@@ -173,25 +173,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 showNetworkDialog()
             }
         }
-
-        ll_page.setOnClickListener {
-            InputContentDialog(this,2,homeworkContent?.title!!).builder().setOnDialogClickListener { string ->
-                homeworkContent?.title = string
-                homeworks[page].title = string
-                HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
-                DataUpdateManager.editDataUpdate(2, homeworkContent?.id!!.toInt(), 2, Gson().toJson(homeworkContent))
-            }
-        }
-
-        ll_page_a.setOnClickListener {
-            InputContentDialog(this,1,homeworkContent_a?.title!!).builder().setOnDialogClickListener { string ->
-                homeworkContent_a?.title = string
-                homeworks[page-1].title = string
-                HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
-                DataUpdateManager.editDataUpdate(2, homeworkContent_a?.id!!.toInt(), 2, Gson().toJson(homeworkContent_a))
-            }
-        }
-
     }
 
     override fun onCatalog() {
@@ -206,27 +187,35 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 list.add(itemList)
             }
         }
-        DrawingCatalogDialog(this, getCurrentScreenPos(), list).builder().setOnDialogClickListener { position ->
-            if (page!=list[position].page){
-                page = list[position].page
-                onChangeContent()
+        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=list[position].page){
+                    page = list[position].page
+                    onContent()
+                }
             }
-        }
+            override fun onEdit(position: Int, title: String) {
+                val item=homeworks[position]
+                item.title=title
+                HomeworkContentDaoManager.getInstance().insertOrReplace(item)
+                DataUpdateManager.editDataUpdate(2, item.id.toInt(), 2, Gson().toJson(item))
+            }
+        })
     }
 
     override fun onPageUp() {
         if (isExpand) {
             if (page > 2) {
                 page -= 2
-                onChangeContent()
+                onContent()
             } else if (page == 2) {//当页面不够翻两页时
                 page = 1
-                onChangeContent()
+                onContent()
             }
         } else {
             if (page > 0) {
                 page -= 1
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -256,7 +245,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 page += 1
             }
         }
-        onChangeContent()
+        onContent()
     }
 
     override fun onChangeExpandContent() {
@@ -267,10 +256,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
         moveToScreen(isExpand)
         onChangeExpandView()
-        onChangeContent()
+        onContent()
     }
 
-    private fun onChangeContent() {
+    override fun onContent() {
         homeworkContent = homeworks[page]
         if (isExpand) {
             if (page > 0) {
@@ -296,7 +285,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
             else->{
                 setElikLoadPath(elik_b!!, homeworkContent!!)
-                v_content_b.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+                v_content_b?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
             }
         }
         tv_page.text = "${page + 1}"
@@ -312,10 +301,17 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 }
                 else->{
                     setElikLoadPath(elik_a!!, homeworkContent_a!!)
-                    v_content_a.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+                    v_content_a?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
                 }
             }
-            tv_page_a.text = "$page"
+            if (screenPos==Constants.SCREEN_LEFT){
+                tv_page.text = "$page"
+                tv_page_a.text = "${page + 1}"
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text = "$page"
+                tv_page.text = "${page + 1}"
+            }
         }
 
         setScoreDetails(homeworkContent!!)

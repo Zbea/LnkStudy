@@ -65,7 +65,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                MethodManager.gotoBookDetails(this@BookcaseTypeActivity,bookBean,screenPos)
+                MethodManager.gotoBookDetails(this@BookcaseTypeActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                     pos = position

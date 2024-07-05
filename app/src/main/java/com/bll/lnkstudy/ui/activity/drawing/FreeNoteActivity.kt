@@ -32,6 +32,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
 
     override fun initData() {
         freeNoteBean=FreeNoteDaoManager.getInstance().queryBean()
+        freeNoteBean?.title=DateUtils.longToStringNoYear(System.currentTimeMillis())
         if (freeNoteBean==null){
             createFreeNote()
         }
@@ -61,7 +62,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
             ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes = ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
                     bgResList[posImage] = bgRes
                 }
         }
@@ -147,7 +148,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
      * 更换内容
      */
     private fun setContentImage() {
-        v_content_b.setImageResource(ToolUtils.getImageResId(this, bgResList[posImage]))
+        v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgResList[posImage]))
         val path =
             FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${posImage + 1}.tch"
         //判断路径是否已经创建
