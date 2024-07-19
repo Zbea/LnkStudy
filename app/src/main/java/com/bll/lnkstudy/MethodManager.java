@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
@@ -134,6 +136,7 @@ public class MethodManager {
      *
      * @param context
      * @param bookBean
+     * key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      */
     public static void gotoBookDetails(Context context, BookBean bookBean) {
 
@@ -227,6 +230,7 @@ public class MethodManager {
         intent.putExtra("key_book_type", 2);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
     }
 
     /**
@@ -590,5 +594,18 @@ public class MethodManager {
         return url.substring(url.lastIndexOf("."));
     }
 
+    /**
+     * 获取分数
+     * @param scoreStr
+     * @return
+     */
+    public static int getScore(String scoreStr){
+        if (scoreStr==null||scoreStr.isEmpty()||!TextUtils.isDigitsOnly(scoreStr)){
+            return 0;
+        }
+        else {
+            return Integer.valueOf(scoreStr);
+        }
+    }
 
 }

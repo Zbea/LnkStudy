@@ -2,6 +2,7 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.text.InputType
 import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
@@ -10,9 +11,10 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 
-class InputContentDialog(val context: Context, private val screenPos:Int, val string: String) {
+class InputContentDialog(val context: Context, private val screenPos:Int, val string: String,val type: Int) {
 
-    constructor(context: Context ,string: String) :this(context,1,string)
+    constructor(context: Context ,screenPos:Int,string: String) :this(context,screenPos,string,0)
+    constructor(context: Context ,string: String) :this(context,1,string,0)
 
     fun builder(): InputContentDialog {
 
@@ -35,7 +37,8 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
         val name = dialog.findViewById<EditText>(R.id.ed_name)
         name.hint=string
-
+        if (type==1)
+            name?.inputType = InputType.TYPE_CLASS_NUMBER // 设置输入类型为数字
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()

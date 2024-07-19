@@ -127,7 +127,12 @@ class FreeNoteActivity : BaseDrawingActivity() {
 
     private fun initFreeNote(){
         bgResList= freeNoteBean?.bgRes as MutableList<String>
-        images= freeNoteBean?.paths as MutableList<String>
+        if (!freeNoteBean?.paths.isNullOrEmpty()) {
+            images= freeNoteBean?.paths as MutableList<String>
+        }
+        else{
+            images.clear()
+        }
         tv_name.text=freeNoteBean?.title
     }
 
@@ -140,7 +145,6 @@ class FreeNoteActivity : BaseDrawingActivity() {
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.bgRes= arrayListOf(bgRes)
-        freeNoteBean?.paths= arrayListOf()
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 

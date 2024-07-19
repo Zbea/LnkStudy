@@ -11,48 +11,6 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/ll_page_content_a"
-            android:layout_width="@dimen/drawing_tool_width"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="bottom"
-            >
-            <LinearLayout
-                android:id="@+id/ll_page_a"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="80dp"
-                android:orientation="vertical"
-                >
-                <TextView
-                    android:id="@+id/tv_page_a"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:gravity="center_horizontal"
-                    android:textSize="@dimen/sp_18"
-                    android:textColor="@color/black"
-                    />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/black"
-                    android:layout_margin="5dp"
-                    />
-
-                <TextView
-                    android:id="@+id/tv_page_total_a"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:gravity="center_horizontal"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/black"
-                    />
-            </LinearLayout>
-        </LinearLayout>
         <com.android.internal.widget.PreferenceImageView
             android:id="@+id/v_content_a"
             android:layout_width="match_parent"
@@ -61,12 +19,6 @@
             android:background="@mipmap/icon_diary_details_bg_1"
             />
 
-        <include
-            android:id="@+id/ll_page_content_b"
-            layout="@layout/common_drawing_tool"
-            android:layout_width="@dimen/drawing_tool_width"
-            android:layout_height="match_parent"/>
-
         <com.android.internal.widget.PreferenceImageView
             android:id="@+id/v_content_b"
             android:layout_width="match_parent"
@@ -74,6 +26,19 @@
             android:scaleType="fitCenter"
             android:background="@mipmap/icon_diary_details_bg_1"
             />
+
+        <include
+            android:id="@+id/ll_page_content_a"
+            layout="@layout/common_drawing_page_number"
+            android:layout_width="@dimen/drawing_tool_width"
+            android:layout_height="match_parent"
+            />
+
+        <include
+            android:id="@+id/ll_page_content_b"
+            layout="@layout/common_drawing_tool"
+            android:layout_width="@dimen/drawing_tool_width"
+            android:layout_height="match_parent"/>
 
 
     </LinearLayout>

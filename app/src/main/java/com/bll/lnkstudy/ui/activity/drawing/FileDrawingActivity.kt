@@ -7,7 +7,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
 import com.bll.lnkstudy.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_drawing_file.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 

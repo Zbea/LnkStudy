@@ -13,6 +13,7 @@ class SpaceItemDeco(private val topOffset: Int,private val rightOffset: Int,priv
     private val mColorPaint = Paint()
 
     constructor(bottomOffset: Int,isLiner: Boolean):this(0,0,0,bottomOffset,isLiner)
+    constructor(bottomOffset: Int):this(0,0,0,bottomOffset,false)
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(c, parent, state)

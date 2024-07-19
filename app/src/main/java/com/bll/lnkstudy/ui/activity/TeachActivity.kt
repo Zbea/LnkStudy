@@ -10,7 +10,7 @@ import java.util.*
 
 class TeachActivity:BaseAppCompatActivity() {
 
-    private var teach: TeachingVideoList.ItemBean?=null
+    private var teach: TeachingVideoList.VideoBean?=null
     //将长度转换为时间
     private val mFormatBuilder = StringBuilder()
     private val mFormatter = Formatter(mFormatBuilder, Locale.getDefault())
@@ -22,7 +22,7 @@ class TeachActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as TeachingVideoList.ItemBean
+        teach= intent.getBundleExtra("bundle")?.getSerializable("teach") as TeachingVideoList.VideoBean
     }
 
     override fun initView() {

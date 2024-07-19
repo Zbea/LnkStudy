@@ -12,16 +12,18 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
-import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
 import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -48,6 +50,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
     var correctMode=0
+    var scoreMode=0 //1赋分，2对错
+    var answerImages= mutableListOf<String>()//答题地址
     var currentScores= mutableListOf<ExamScoreItem>()
     var mTopicScoreAdapter:TopicScoreAdapter?=null
     var mTopicMultiAdapter:TopicMultiScoreAdapter?=null
@@ -133,6 +137,9 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
     }
 
+    /**
+     * 设置成绩分数
+     */
     private fun initScoreView(){
         setViewElikUnable(iv_score)
         setViewElikUnable(ll_score)
@@ -146,50 +153,97 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             showView(ll_score)
         }
 
+        tv_answer.setOnClickListener {
+            if (answerImages.size>0)
+                ImageDialog(this, answerImages).builder()
+        }
+
         rv_list_score?.layoutManager = GridLayoutManager(this,5)
-        mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,null).apply {
+        mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,0,0,null).apply {
             rv_list_score?.adapter = this
             bindToRecyclerView(rv_list_score)
         }
+        rv_list_score?.addItemDecoration(SpaceGridItemDeco(2,20))
 
         rv_list_multi?.layoutManager = LinearLayoutManager(this)
-        mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
+        mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,0,null).apply {
             rv_list_multi?.adapter = this
             bindToRecyclerView(rv_list_multi)
         }
+        rv_list_multi?.addItemDecoration(SpaceItemDeco(0,0,0,20,false))
     }
 
     /**
      * 设置批改详情小题列表
      */
     fun setScoreListDetails(correctJson:String){
+        if (answerImages.size>0)
+        {
+            showView(tv_answer)
+        }
+        else{
+            disMissView(tv_answer)
+        }
+        currentScores= scoreJsonToList(correctJson) as MutableList<ExamScoreItem>
         if (correctMode<3){
             showView(rv_list_score)
             disMissView(rv_list_multi)
-            currentScores= Gson().fromJson(correctJson, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
             mTopicScoreAdapter?.setNewData(currentScores)
-            mTopicScoreAdapter?.setChangeModule(correctMode)
+            mTopicScoreAdapter?.setCorrectMode(correctMode)
+            mTopicScoreAdapter?.setScoreMode(scoreMode)
         }
         else{
             currentScores.clear()
             showView(rv_list_multi)
             disMissView(rv_list_score)
-            val scores= Gson().fromJson(correctJson, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
+            mTopicMultiAdapter?.setNewData(currentScores)
+            mTopicScoreAdapter?.setScoreMode(scoreMode)
+        }
+    }
+
+    /**
+     * 格式序列化 题目分数集合转成字符串
+     */
+    fun scoreListToJson(list:List<ExamScoreItem>):String{
+        return if (correctMode<3){
+            Gson().toJson(list)
+        } else{
+            val items= arrayListOf <List<ExamScoreItem>>()
+            for (item in list){
+                items.add(item.childScores)
+            }
+            Gson().toJson(items)
+        }
+    }
+
+    /**
+     * 格式序列化  题目分数转行list集合
+     */
+    fun scoreJsonToList(json:String):List<ExamScoreItem>{
+        var items= mutableListOf<ExamScoreItem>()
+        if (correctMode<3){
+            items= Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+        }
+        else{
+            val scores= Gson().fromJson(json, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
             for (i in scores.indices){
-                currentScores.add(ExamScoreItem().apply {
+                items.add(ExamScoreItem().apply {
                     sort=i+1
+                    var totalLabel=0
+                    for (item in scores[i]){
+                        totalLabel+=item.label
+                    }
+                    label=totalLabel
                     var totalItem=0
-                    for (ite in scores[i]){
-                        if (!ite.score.isNullOrEmpty()){
-                            totalItem+=ite.score.toInt()
-                        }
+                    for (item in scores[i]){
+                        totalItem+= MethodManager.getScore(item.score)
                     }
                     score=totalItem.toString()
                     childScores=scores[i]
                 })
             }
-            mTopicMultiAdapter?.setNewData(currentScores)
         }
+        return items
     }
 
     /**

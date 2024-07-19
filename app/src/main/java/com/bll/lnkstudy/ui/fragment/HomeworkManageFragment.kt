@@ -291,4 +291,10 @@ class HomeworkManageFragment: BaseMainFragment() {
         }
     }
 
+    override fun onRefreshData() {
+        for (fragment in fragments){
+            fragment.onRefreshData()
+        }
+    }
+
 }

@@ -6,9 +6,9 @@ import java.util.List;
 public class TeachingVideoList {
 
     public int total;
-    public List<ItemBean> list;
+    public List<VideoBean> list;
 
-    public class ItemBean implements Serializable {
+    public static class VideoBean implements Serializable {
         public int id;
         public int type;
         public String imageUrl;
@@ -18,8 +18,6 @@ public class TeachingVideoList {
         public int semester;
         public String videoName;
         public String videoDesc;
-        public String videoVersion;
-        public String createTime;
         public int status;
     }
 

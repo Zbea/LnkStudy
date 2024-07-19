@@ -109,7 +109,7 @@ class TextbookFragment : BaseMainFragment() {
                                     DataUpdateManager.deleteDateUpdate(1,book.bookId,2)
                                 }
                                 books.clear()
-                                mAdapter?.notifyDataSetChanged()
+                                fetchData()
 
                             }
                         })
@@ -150,6 +150,8 @@ class TextbookFragment : BaseMainFragment() {
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     FileUtils.deleteFile(File(book.bookDrawPath))
                     mAdapter?.remove(position)
+                    if (books.size==0)
+                        fetchData()
                     //删除增量更新
                     DataUpdateManager.deleteDateUpdate(1,book.bookId,1)
                     DataUpdateManager.deleteDateUpdate(1,book.bookId,2)

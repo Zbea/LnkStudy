@@ -12,7 +12,7 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 class CalligraphyDrawingActivity : BaseDrawingActivity() {

@@ -30,7 +30,7 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     private var semester=0//学期
     private var grades= mutableListOf<PopupBean>()
     private var semesters= mutableListOf<PopupBean>()
-    private var datas= mutableListOf<TeachingVideoList.ItemBean>()
+    private var datas= mutableListOf<TeachingVideoList.VideoBean>()
     private var mAdapter:TeachListAdapter?=null
 
     private var popWindowGrade:PopupList?=null

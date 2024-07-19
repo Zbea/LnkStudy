@@ -66,6 +66,7 @@ class CalenderMyActivity:BaseAppCompatActivity(){
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@CalenderMyActivity, 20f)
                 , DP2PX.dip2px(this@CalenderMyActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
+                this@CalenderMyActivity.position=position
                 onLongClick()
             }
             setOnItemChildClickListener { adapter, view, position ->

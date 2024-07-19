@@ -57,20 +57,20 @@
 
 
     <ImageView
-        android:id="@+id/iv_tool"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_tool_height"
-        android:layout_marginBottom="@dimen/drawing_tool_dimens"
-        android:scaleType="center"
-        android:src="@mipmap/icon_draw_tool" />
-
-    <ImageView
         android:id="@+id/iv_catalog"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawing_tool_height"
         android:layout_marginBottom="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_catalog" />
+
+    <ImageView
+        android:id="@+id/iv_tool"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginBottom="@dimen/drawing_tool_dimens"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_tool" />
 
 
     <ImageView
@@ -96,12 +96,12 @@
             android:gravity="center_horizontal"
             android:lines="1"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18" />
+            android:textSize="@dimen/sp_16" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black"
+            android:background="@color/line_color"
             android:layout_margin="5dp"
             />
 
@@ -110,8 +110,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
+            android:ellipsize="end"
             android:gravity="center_horizontal"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_16"
             android:textColor="@color/black"
             />
     </LinearLayout>

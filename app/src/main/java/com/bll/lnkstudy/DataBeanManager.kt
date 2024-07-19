@@ -727,11 +727,11 @@ object DataBeanManager {
         })
         list.add(ItemList().apply {
             type=5
-            desc=mContext.getString(R.string.book_tab_ydjk)
+            desc=mContext.getString(R.string.book_tab_yscn)
         })
         list.add(ItemList().apply {
             type=6
-            desc=mContext.getString(R.string.book_tab_yscn)
+            desc=mContext.getString(R.string.book_tab_ydjk)
         })
         return list
     }

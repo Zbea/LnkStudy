@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="@dimen/width"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/statusbar_height"
+        android:orientation="vertical"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="700dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="@dimen/dp_20"
+            >
+
+            <ScrollView
+                android:id="@+id/sv_answer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_tips"
+                android:scrollbars="none"
+                android:padding="2dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <ImageView
+                        android:id="@+id/iv_answer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <ImageView
+                android:id="@+id/iv_answer_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:src="@mipmap/icon_arrow_page_up"
+                android:layout_centerVertical="true"
+                />
+
+            <ImageView
+                android:id="@+id/iv_answer_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                android:src="@mipmap/icon_arrow_page_down"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                />
+
+            <include
+                layout="@layout/common_page_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:visibility="visible"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_score_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_50"
+            >
+
+            <TextView
+                android:id="@+id/tv_score_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="赋分批改框"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@drawable/bg_black_stroke_10dp_corner"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_score_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_arrow_page_up"
+                    android:layout_centerVertical="true"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_score_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_arrow_page_down"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_list_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginEnd="@dimen/dp_60"
+                    />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_score"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:gravity="center"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_5"
+                android:paddingEnd="@dimen/dp_5"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="总分"
+                    android:textSize="@dimen/sp_22"
+                    android:textColor="@color/black"
+                    />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:layout_marginStart="5dp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_total_score"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_correct_save"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_50"
+                android:text="@string/save"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        >
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_a"
+            android:layout_width="@dimen/drawing_content_width"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
+            android:layout_width="@dimen/drawing_content_width"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+        <include
+            android:id="@+id/ll_page_content_a"
+            layout="@layout/common_drawing_page_number"
+            android:layout_marginTop="@dimen/statusbar_height"
+            android:layout_width="@dimen/drawing_tool_width"
+            android:layout_height="match_parent"
+            />
+
+        <include
+            android:id="@+id/ll_page_content_b"
+            layout="@layout/common_drawing_tool"
+            android:layout_marginTop="@dimen/statusbar_height"
+            android:layout_width="@dimen/drawing_tool_width"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
