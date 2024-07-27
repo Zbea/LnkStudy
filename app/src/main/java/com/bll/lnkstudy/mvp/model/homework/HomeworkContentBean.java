@@ -29,13 +29,17 @@ public class HomeworkContentBean {
     public String path;//文件路径
     public int page;//页码
     public int correctMode;//批改模式
-    public String score;//成绩
+    public int scoreMode;//打分模式1打分
+    public int score;//成绩
     public String correctJson;//批改详情
-
-    @Generated(hash = 1353007954)
+    public boolean isSelfCorrect;//是否自批
+    public String commitJson;//提交信息(自批时)
+    public String answerUrl;
+    @Generated(hash = 1290073061)
     public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
             String typeStr, int contentId, String title, int state, long date, long commitDate,
-            String path, int page, int correctMode, String score, String correctJson) {
+            String path, int page, int correctMode, int scoreMode, int score, String correctJson,
+            boolean isSelfCorrect, String commitJson, String answerUrl) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
@@ -50,8 +54,12 @@ public class HomeworkContentBean {
         this.path = path;
         this.page = page;
         this.correctMode = correctMode;
+        this.scoreMode = scoreMode;
         this.score = score;
         this.correctJson = correctJson;
+        this.isSelfCorrect = isSelfCorrect;
+        this.commitJson = commitJson;
+        this.answerUrl = answerUrl;
     }
     @Generated(hash = 1693358578)
     public HomeworkContentBean() {
@@ -140,10 +148,16 @@ public class HomeworkContentBean {
     public void setCorrectMode(int correctMode) {
         this.correctMode = correctMode;
     }
-    public String getScore() {
+    public int getScoreMode() {
+        return this.scoreMode;
+    }
+    public void setScoreMode(int scoreMode) {
+        this.scoreMode = scoreMode;
+    }
+    public int getScore() {
         return this.score;
     }
-    public void setScore(String score) {
+    public void setScore(int score) {
         this.score = score;
     }
     public String getCorrectJson() {
@@ -151,6 +165,24 @@ public class HomeworkContentBean {
     }
     public void setCorrectJson(String correctJson) {
         this.correctJson = correctJson;
+    }
+    public boolean getIsSelfCorrect() {
+        return this.isSelfCorrect;
+    }
+    public void setIsSelfCorrect(boolean isSelfCorrect) {
+        this.isSelfCorrect = isSelfCorrect;
+    }
+    public String getCommitJson() {
+        return this.commitJson;
+    }
+    public void setCommitJson(String commitJson) {
+        this.commitJson = commitJson;
+    }
+    public String getAnswerUrl() {
+        return this.answerUrl;
+    }
+    public void setAnswerUrl(String answerUrl) {
+        this.answerUrl = answerUrl;
     }
     
 }

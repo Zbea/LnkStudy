@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkCommit
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SToast
@@ -23,7 +23,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 /**
  * pageStart 为课辅作业的 页码开始值
  */
-class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart:Int, var items:MutableList<ItemList>) {
+class DrawingCommitDialog(val context: Context, val screenPos: Int, private val pageStart:Int, var items:MutableList<ItemList>) {
 
     constructor(context: Context,screenPos: Int,items: MutableList<ItemList>):this(context, screenPos, 0, items)
 
@@ -32,6 +32,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
     private var messageId=0
     private var messageTitle=""
     private var postion=0
+    private var isCorrect=false
 
     fun builder(): DrawingCommitDialog {
 
@@ -58,27 +59,29 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
                         this.postion=postion
                         messageId = it.id
                         messageTitle=it.name
-                        tv_selector?.text=messageTitle
+                        isCorrect=it.isSelfCorrect
+                        tv_selector.text=messageTitle
                     }
             }
         }
         if (items.size==1){
             messageId = items[0].id
             messageTitle=items[0].name
+            isCorrect=items[0].isSelfCorrect
             tv_selector?.text=messageTitle
         }
 
         val et_page1 = dialog?.findViewById<EditText>(R.id.et_page1)
         val et_page2 = dialog?.findViewById<EditText>(R.id.et_page2)
 
-        val list= mutableListOf<HomeworkCommit>()
-        val homeworkCommit= HomeworkCommit()
-        homeworkCommit.isAdd=false
-        list.add(homeworkCommit)
+        val list= mutableListOf<ItemList>()
+        val pageItem1= ItemList()
+        pageItem1.isAdd=false
+        list.add(pageItem1)
 
-        val homeworkCommit1= HomeworkCommit()
-        homeworkCommit1.isAdd=true
-        list.add(homeworkCommit1)
+        val pageItem2= ItemList()
+        pageItem2.isAdd=true
+        list.add(pageItem2)
 
         val rvList = dialog?.findViewById<RecyclerView>(R.id.rv_list)
         val mAdapter = MyAdapter(R.layout.item_drawing_commit_page, list)
@@ -88,9 +91,9 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
         rvList?.addItemDecoration(SpaceGridItemDeco(4,10))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             if (list[position].isAdd){
-                val homeworkCommit= HomeworkCommit()
-                homeworkCommit.isAdd=false
-                list.add(list.size-1,homeworkCommit)
+                val item= ItemList()
+                item.isAdd=false
+                list.add(list.size-1,item)
                 mAdapter.setNewData(list)
             }
         }
@@ -113,8 +116,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
                     }
                 }
 
-                val datas=mAdapter.data
-                for (item in datas){
+                for (item in list){
                     if (item.page>0){
                         if (!pages.contains(item.page))
                             pages.add(item.page)
@@ -132,11 +134,12 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
                     realPageIndexs.add(i+pageStart-1)
                 }
 
-                val item = HomeworkCommit()
+                val item = HomeworkCommitInfoItem()
                 item.index=postion
                 item.messageId = messageId
                 item.title = messageTitle
                 item.contents = realPageIndexs
+                item.isSelfCorrect=isCorrect
                 listener?.onClick(item)
                 dismiss()
             } else {
@@ -161,7 +164,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: HomeworkCommit)
+        fun onClick(item: HomeworkCommitInfoItem)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {
@@ -169,9 +172,9 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int,val pageStart
     }
 
 
-    class MyAdapter(layoutResId: Int, data: List<HomeworkCommit>?) : BaseQuickAdapter<HomeworkCommit, BaseViewHolder>(layoutResId, data) {
+    class MyAdapter(layoutResId: Int, data: List<ItemList>) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkCommit) {
+        override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setVisible(R.id.et_name,!item.isAdd)
             helper.setVisible(R.id.iv_add,item.isAdd)
             val etName=helper.getView<EditText>(R.id.et_name)

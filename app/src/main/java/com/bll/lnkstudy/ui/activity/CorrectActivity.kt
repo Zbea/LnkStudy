@@ -1,42 +1,167 @@
 package com.bll.lnkstudy.ui.activity
 
+import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
+import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_correct.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.common_page_number.tv_page_total
-import java.io.File
 
-class CorrectActivity: BaseDrawingActivity() {
+class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
 
+    private var commitItem: HomeworkCommitInfoItem?=null
+    private val mUploadPresenter=FileUploadPresenter(this,3)
+    private var state=0//作业本分类
     private var posImage = 0
     private var posAnswer= 0
     private var images = mutableListOf<String>()
+
+    override fun onToken(token: String) {
+        showLoading()
+        FileImageUploadManager(token, images).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    hideLoading()
+                    val map= HashMap<String, Any>()
+                    map["studentTaskId"]=commitItem?.messageId!!
+                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    map["commonTypeId"] = commitItem?.typeId!!
+                    if (state==4){
+                        map["page"]= ToolUtils.getImagesStr(commitItem?.contents!!)
+                    }
+                    map["score"]=tv_total_score.text.toString().toInt()
+                    map["question"]=scoreListToJson(currentScores)
+                    mUploadPresenter.commit(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast(R.string.upload_fail)
+                }
+            })
+        }
+    }
+
+    override fun onCommitSuccess() {
+        hideLoading()
+        showToast(R.string.toast_commit_success)
+        when (state) {
+            2 -> {
+                val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(commitItem?.course, commitItem?.typeId!!)
+                for (index in commitItem?.contents!!) {
+                    val homework = homeworks[index]
+                    homework.state = 2
+                    homework.title = commitItem?.title
+                    homework.contentId = commitItem?.messageId!!
+                    homework.commitDate = System.currentTimeMillis()
+                    homework.score=tv_total_score.text.toString().toInt()
+                    homework.correctJson=scoreListToJson(currentScores)
+                    homework.commitJson=""
+                    HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
+                    DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, Gson().toJson(homework))
+                }
+            }
+            4 -> {
+                val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,ToolUtils.getImagesStr(commitItem?.contents))
+                item.state=2
+                item.score=tv_total_score.text.toString().toInt()
+                item.correctJson=scoreListToJson(currentScores)
+                item.commitJson=""
+                HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
+                //更新增量数据
+                DataUpdateManager.editDataUpdate(7, item.id.toInt(),2,item.bookId ,Gson().toJson(item))
+            }
+            1 -> {
+                val paper=HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
+                paper.state=2
+                paper.correctJson=scoreListToJson(currentScores)
+                paper.score=tv_total_score.text.toString().toInt()
+                paper.commitJson=""
+                HomeworkPaperDaoManager.getInstance()?.insertOrReplace(paper)
+                //更新目录增量数据
+                DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper.typeId, Gson().toJson(paper))
+            }
+        }
+
+        //添加提交详情
+        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
+            type=1
+            studentTaskId=commitItem?.messageId!!
+            content=commitItem?.title
+            homeworkTypeStr=commitItem?.typeName
+            course=commitItem?.course
+            time=System.currentTimeMillis()
+        })
+
+        //设置批改完成通知
+        setResult(10001, Intent())
+        finish()
+    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_correct
     }
 
     override fun initData() {
+        commitItem=intent.getBundleExtra("bundle")?.getSerializable("homeworkCommit") as HomeworkCommitInfoItem
         screenPos=Constants.SCREEN_LEFT
-
+        correctMode=commitItem!!.correctMode
+        scoreMode=commitItem!!.scoreMode
+        answerImages= commitItem!!.answerUrl.split(",") as MutableList<String>
+        currentScores= scoreJsonToList(commitItem!!.correctJson) as MutableList<ExamScoreItem>
+        images=commitItem!!.paths
+        state=commitItem?.state!!
     }
 
     override fun initView() {
+        disMissView(iv_btn,iv_tool,iv_catalog,iv_draft)
+        setPWEnabled(false)
+
         tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
+
+        iv_score_up.setOnClickListener {
+            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+        iv_score_down.setOnClickListener {
+            rv_list_score.scrollBy(0,DP2PX.dip2px(this,100f))
+        }
+
+        tv_correct_save.setOnClickListener {
+            if (!tv_total_score.text.isNullOrEmpty()){
+                mUploadPresenter.getToken()
+            }
+        }
+
+        tv_total_score.setOnClickListener {
+            InputContentDialog(this@CorrectActivity,3,"",1).builder().setOnDialogClickListener(){
+                tv_total_score.text=it
+            }
+        }
 
         setAnswerView()
         initRecyclerViewScore()
@@ -55,7 +180,7 @@ class CorrectActivity: BaseDrawingActivity() {
             sv_answer.scrollBy(0,DP2PX.dip2px(this,100f))
         }
 
-        btn_page_up.setOnClickListener {
+        btn_page_up_bottom.setOnClickListener {
             if (posAnswer>0){
                 posAnswer-=1
                 GlideUtils.setImageUrl(this,answerImages[posAnswer],iv_answer)
@@ -63,9 +188,9 @@ class CorrectActivity: BaseDrawingActivity() {
             }
         }
 
-        btn_page_down.setOnClickListener {
-            if (posAnswer>0){
-                posAnswer-=1
+        btn_page_down_bottom.setOnClickListener {
+            if (posAnswer<answerImages.size-1){
+                posAnswer+=1
                 GlideUtils.setImageUrl(this,answerImages[posAnswer],iv_answer)
                 setAnswerPageView()
             }
@@ -78,21 +203,21 @@ class CorrectActivity: BaseDrawingActivity() {
     private fun initRecyclerViewScore(){
         if (correctMode<3){
             rv_list_score.layoutManager = GridLayoutManager(this,2)
-            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,scoreMode,correctMode,null).apply {
+            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,scoreMode,correctMode,currentScores).apply {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
                 setOnItemChildClickListener { adapter, view, position ->
                     val item=currentScores[position]
                     when(view.id){
                         R.id.tv_score->{
-                            if (scoreType==1){
+                            if (scoreMode==1){
                                 InputContentDialog(this@CorrectActivity,3,"最大${item.label}",1).builder().setOnDialogClickListener(){
                                     if (item.label!=it.toInt()){
                                         item.result=0
                                     }
                                     item.score= it
                                     notifyItemChanged(position)
-                                    setTotalScore(scoreType)
+                                    setTotalScore()
                                 }
                             }
                         }
@@ -103,19 +228,23 @@ class CorrectActivity: BaseDrawingActivity() {
                             else{
                                 item.result=0
                             }
-                            if (scoreType==1)
+                            if (scoreMode==1){
                                 item.score= (item.result*item.label).toString()
+                            }
+                            else{
+                                item.score=item.result.toString()
+                            }
                             notifyItemChanged(position)
-                            setTotalScore(scoreType)
+                            setTotalScore()
                         }
                     }
                 }
-                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,20))
+                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@CorrectActivity,15f)))
             }
         }
         else{
             rv_list_score.layoutManager = LinearLayoutManager(this)
-            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,null).apply {
+            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,currentScores).apply {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
                 setCustomItemChildClickListener{ position, view, childPos ->
@@ -123,7 +252,7 @@ class CorrectActivity: BaseDrawingActivity() {
                     val childItem=scoreItem.childScores[childPos]
                     when(view.id){
                         R.id.tv_score->{
-                            if (scoreType==1){
+                            if (scoreMode==1){
                                 InputContentDialog(this@CorrectActivity,3,"最大${childItem.label}",1).builder().setOnDialogClickListener(){
                                     if (childItem.label!=it.toInt()){
                                         childItem.result=0
@@ -136,7 +265,7 @@ class CorrectActivity: BaseDrawingActivity() {
                                     }
                                     scoreItem.score=scoreTotal.toString()
                                     notifyItemChanged(position)
-                                    setTotalScore(scoreType)
+                                    setTotalScore()
                                 }
                             }
                         }
@@ -147,7 +276,7 @@ class CorrectActivity: BaseDrawingActivity() {
                             else{
                                 childItem.result=0
                             }
-                            if (scoreType==1){
+                            if (scoreMode==1){
                                 childItem.score= (childItem.result*childItem.label).toString()
                                 //获取小题总分
                                 var scoreTotal=0
@@ -156,12 +285,21 @@ class CorrectActivity: BaseDrawingActivity() {
                                 }
                                 scoreItem.score=scoreTotal.toString()
                             }
+                            else{
+                                childItem.score=childItem.result.toString()
+                                var totalRight=0
+                                for (item in scoreItem.childScores){
+                                    if (item.result==1)
+                                        totalRight+= 1
+                                }
+                                scoreItem.score=totalRight.toString()
+                            }
                             notifyItemChanged(position)
-                            setTotalScore(scoreType)
+                            setTotalScore()
                         }
                     }
                 }
-                rv_list_score.addItemDecoration(SpaceItemDeco(0,0,0,20,false))
+                rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@CorrectActivity,15f)))
             }
         }
     }
@@ -176,15 +314,15 @@ class CorrectActivity: BaseDrawingActivity() {
     }
 
     override fun onPageDown() {
-        if (posImage>0){
-            posImage-=if (isExpand)2 else 1
+        if (posImage<getImageSize()-1){
+            posImage+=if (isExpand)2 else 1
         }
         onContent()
     }
 
     override fun onPageUp() {
-        if (posImage<getImageSize()-1){
-            posImage+=if (isExpand)2 else 1
+        if (posImage>0){
+            posImage-=if (isExpand)2 else 1
         }
         onContent()
     }
@@ -199,35 +337,18 @@ class CorrectActivity: BaseDrawingActivity() {
         tv_page_total_a.text="${getImageSize()}"
 
         if (isExpand){
-            elik_a?.setPWEnabled(true,true)
-            elik_b?.setPWEnabled(true,true)
-
-            val masterImage="${getPath()}/${posImage+1}.png"//原图
-            GlideUtils.setImageFile(this,File(masterImage),v_content_a)
-            val drawPath = getPathDrawStr(posImage+1)
-            elik_a?.setLoadFilePath(drawPath, true)
-
+            GlideUtils.setImageUrl(this, images[posImage],v_content_a)
             if (posImage+1<getImageSize()){
-                val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
-                GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
-                val drawPath_b = getPathDrawStr(posImage+1+1)
-                elik_b?.setLoadFilePath(drawPath_b, true)
+                GlideUtils.setImageUrl(this,images[posImage+1],v_content_b)
             }
             else{
-                elik_b?.setPWEnabled(false,false)
                 v_content_b?.setImageResource(0)
             }
-
             tv_page.text="${posImage+1}"
             tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
-            elik_b?.setPWEnabled(true,true)
-            val masterImage="${getPath()}/${posImage+1}.png"//原图
-            GlideUtils.setImageFile(this, File(masterImage),v_content_b)
-            val drawPath = getPathDrawStr(posImage+1)
-            elik_b?.setLoadFilePath(drawPath, true)
-
+            GlideUtils.setImageUrl(this, images[posImage],v_content_b)
             tv_page.text="${posImage+1}"
         }
     }
@@ -236,35 +357,13 @@ class CorrectActivity: BaseDrawingActivity() {
     /**
      * 总分变化
      */
-    private fun setTotalScore(scoreType: Int){
+    private fun setTotalScore(){
         if (tv_total_score!=null){
             var total=0
-            //统计总分
-            if (scoreType==1){
-                for (item in currentScores){
-                    total+=MethodManager.getScore(item.score)
-                }
-                tv_total_score.text=total.toString()
+            for (item in currentScores){
+                total+=MethodManager.getScore(item.score)
             }
-            else{
-                if (correctMode<3){
-                    for (item in currentScores){
-                        if (item.result==1){
-                            total+=1
-                        }
-                    }
-                }
-                else{
-                    for (item in currentScores){
-                        for (childItem in item.childScores){
-                            if (childItem.result==1){
-                                total+=1
-                            }
-                        }
-                    }
-                }
-                tv_total_score.text=total.toString()
-            }
+            tv_total_score.text=total.toString()
         }
     }
 
@@ -272,8 +371,8 @@ class CorrectActivity: BaseDrawingActivity() {
      * 设置答案页面
      */
     private fun setAnswerPageView(){
-        tv_page_total.text="${answerImages.size}"
         tv_page_current.text="${posAnswer+1}"
+        tv_page_total_bottom.text="${answerImages.size}"
     }
 
     /**
@@ -285,18 +384,4 @@ class CorrectActivity: BaseDrawingActivity() {
         return images.size
     }
 
-    /**
-     * 文件路径
-     */
-    private fun getPath():String{
-        val path=""
-        return path
-    }
-
-    /**
-     * 得到当前手绘图片
-     */
-    private fun getPathDrawStr(index: Int):String{
-        return getPath()+"/draw${index}.tch"//手绘地址
-    }
 }

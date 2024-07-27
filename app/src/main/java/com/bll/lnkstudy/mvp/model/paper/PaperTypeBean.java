@@ -43,6 +43,7 @@ public class PaperTypeBean {
     public String contentJson;
     @Transient
     public String contentSubtypeJson;
+
     @Generated(hash = 825260906)
     public PaperTypeBean(Long id, long studentId, long userId, String name, int typeId, String course, long date,
             int grade, boolean isCloud) {
@@ -113,5 +114,17 @@ public class PaperTypeBean {
     public void setIsCloud(boolean isCloud) {
         this.isCloud = isCloud;
     }
-   
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj==null)
+            return false;
+        if (!(obj instanceof PaperTypeBean))
+            return false;
+        if (this==obj)
+            return true;
+        PaperTypeBean item=(PaperTypeBean) obj;
+        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.userId==item.userId
+                &&this.grade==item.grade&&this.typeId==item.typeId;
+    }
 }

@@ -38,8 +38,12 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         public final static Property Path = new Property(11, String.class, "path", false, "PATH");
         public final static Property Page = new Property(12, int.class, "page", false, "PAGE");
         public final static Property CorrectMode = new Property(13, int.class, "correctMode", false, "CORRECT_MODE");
-        public final static Property Score = new Property(14, String.class, "score", false, "SCORE");
-        public final static Property CorrectJson = new Property(15, String.class, "correctJson", false, "CORRECT_JSON");
+        public final static Property ScoreMode = new Property(14, int.class, "scoreMode", false, "SCORE_MODE");
+        public final static Property Score = new Property(15, int.class, "score", false, "SCORE");
+        public final static Property CorrectJson = new Property(16, String.class, "correctJson", false, "CORRECT_JSON");
+        public final static Property IsSelfCorrect = new Property(17, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
+        public final static Property CommitJson = new Property(18, String.class, "commitJson", false, "COMMIT_JSON");
+        public final static Property AnswerUrl = new Property(19, String.class, "answerUrl", false, "ANSWER_URL");
     }
 
 
@@ -69,8 +73,12 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
                 "\"PATH\" TEXT," + // 11: path
                 "\"PAGE\" INTEGER NOT NULL ," + // 12: page
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 13: correctMode
-                "\"SCORE\" TEXT," + // 14: score
-                "\"CORRECT_JSON\" TEXT);"); // 15: correctJson
+                "\"SCORE_MODE\" INTEGER NOT NULL ," + // 14: scoreMode
+                "\"SCORE\" INTEGER NOT NULL ," + // 15: score
+                "\"CORRECT_JSON\" TEXT," + // 16: correctJson
+                "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 17: isSelfCorrect
+                "\"COMMIT_JSON\" TEXT," + // 18: commitJson
+                "\"ANSWER_URL\" TEXT);"); // 19: answerUrl
     }
 
     /** Drops the underlying database table. */
@@ -120,15 +128,23 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         }
         stmt.bindLong(13, entity.getPage());
         stmt.bindLong(14, entity.getCorrectMode());
- 
-        String score = entity.getScore();
-        if (score != null) {
-            stmt.bindString(15, score);
-        }
+        stmt.bindLong(15, entity.getScoreMode());
+        stmt.bindLong(16, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
-            stmt.bindString(16, correctJson);
+            stmt.bindString(17, correctJson);
+        }
+        stmt.bindLong(18, entity.getIsSelfCorrect() ? 1L: 0L);
+ 
+        String commitJson = entity.getCommitJson();
+        if (commitJson != null) {
+            stmt.bindString(19, commitJson);
+        }
+ 
+        String answerUrl = entity.getAnswerUrl();
+        if (answerUrl != null) {
+            stmt.bindString(20, answerUrl);
         }
     }
 
@@ -173,15 +189,23 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         }
         stmt.bindLong(13, entity.getPage());
         stmt.bindLong(14, entity.getCorrectMode());
- 
-        String score = entity.getScore();
-        if (score != null) {
-            stmt.bindString(15, score);
-        }
+        stmt.bindLong(15, entity.getScoreMode());
+        stmt.bindLong(16, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
-            stmt.bindString(16, correctJson);
+            stmt.bindString(17, correctJson);
+        }
+        stmt.bindLong(18, entity.getIsSelfCorrect() ? 1L: 0L);
+ 
+        String commitJson = entity.getCommitJson();
+        if (commitJson != null) {
+            stmt.bindString(19, commitJson);
+        }
+ 
+        String answerUrl = entity.getAnswerUrl();
+        if (answerUrl != null) {
+            stmt.bindString(20, answerUrl);
         }
     }
 
@@ -207,8 +231,12 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // path
             cursor.getInt(offset + 12), // page
             cursor.getInt(offset + 13), // correctMode
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // score
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // correctJson
+            cursor.getInt(offset + 14), // scoreMode
+            cursor.getInt(offset + 15), // score
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // correctJson
+            cursor.getShort(offset + 17) != 0, // isSelfCorrect
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // commitJson
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19) // answerUrl
         );
         return entity;
     }
@@ -229,8 +257,12 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         entity.setPath(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setPage(cursor.getInt(offset + 12));
         entity.setCorrectMode(cursor.getInt(offset + 13));
-        entity.setScore(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setCorrectJson(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setScoreMode(cursor.getInt(offset + 14));
+        entity.setScore(cursor.getInt(offset + 15));
+        entity.setCorrectJson(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setIsSelfCorrect(cursor.getShort(offset + 17) != 0);
+        entity.setCommitJson(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setAnswerUrl(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
      }
     
     @Override

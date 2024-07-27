@@ -14,6 +14,7 @@ object DataUpdateManager {
      * 创建增量更新
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,json:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -28,6 +29,7 @@ object DataUpdateManager {
      * 创建增量更新（有内容，有手写）
      */
     fun createDataUpdate(type:Int,id:Int,contentType:Int,json:String,path:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -42,6 +44,7 @@ object DataUpdateManager {
      * 创建增量更新（有内容，有手写）
      */
     fun createDataUpdate(type:Int, id:Int, contentType:Int, typeId:Int, json:String, path:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType,typeId)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -57,6 +60,7 @@ object DataUpdateManager {
      * 创建增量更新（线上资源手写）
      */
     fun createDataUpdateDrawing(type:Int, id:Int, contentType:Int, path:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType)
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
@@ -70,6 +74,7 @@ object DataUpdateManager {
      * 创建增量更新(state 作业本状态)
      */
     fun createDataUpdateState(type:Int, id:Int, contentType:Int, state:Int, json:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
@@ -85,6 +90,7 @@ object DataUpdateManager {
      * 创建增量更新(带有源文件地址)
      */
     fun createDataUpdateSource(type:Int,id:Int,contentType:Int,json:String,sourceUrl:String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type

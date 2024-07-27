@@ -23,39 +23,44 @@ public class HomeworkPaperBean {
     public int contentId;//这次作业id
     public String course;//科目
     public int typeId;//作业分组id
-    public String type;//作业分组标题
+    public String typeName;//作业分组标题
     public int index;//（位置下标）
-    public String title;
+    public String title;//这次作业标题
     public long endTime;//老师需要学生提交时间
     public String path;//文件路径
     public int page;
-    public boolean isPg;
-    public boolean isCommit;//作业是否需要提交
-    public int state;//提交状态3学生未提交1已提交未批改2已批改
+    public int state;//提交状态0学生未提交1已提交未批改2已批改
     public int correctMode;//批改模式
-    public String score;//成绩
+    public int score;//成绩
     public String correctJson;//批改详情
-    @Generated(hash = 2024602864)
+    public boolean isSelfCorrect;
+    public int scoreMode;//打分模式1打分
+    public String answerUrl;
+    public String commitJson;//提交信息(自批时)
+    @Generated(hash = 71305048)
     public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
-            String type, int index, String title, long endTime, String path, int page, boolean isPg,
-            boolean isCommit, int state, int correctMode, String score, String correctJson) {
+            String typeName, int index, String title, long endTime, String path, int page, int state,
+            int correctMode, int score, String correctJson, boolean isSelfCorrect, int scoreMode,
+            String answerUrl, String commitJson) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
         this.course = course;
         this.typeId = typeId;
-        this.type = type;
+        this.typeName = typeName;
         this.index = index;
         this.title = title;
         this.endTime = endTime;
         this.path = path;
         this.page = page;
-        this.isPg = isPg;
-        this.isCommit = isCommit;
         this.state = state;
         this.correctMode = correctMode;
         this.score = score;
         this.correctJson = correctJson;
+        this.isSelfCorrect = isSelfCorrect;
+        this.scoreMode = scoreMode;
+        this.answerUrl = answerUrl;
+        this.commitJson = commitJson;
     }
     @Generated(hash = 1573712411)
     public HomeworkPaperBean() {
@@ -90,11 +95,11 @@ public class HomeworkPaperBean {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
-    public String getType() {
-        return this.type;
+    public String getTypeName() {
+        return this.typeName;
     }
-    public void setType(String type) {
-        this.type = type;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
     public int getIndex() {
         return this.index;
@@ -126,18 +131,6 @@ public class HomeworkPaperBean {
     public void setPage(int page) {
         this.page = page;
     }
-    public boolean getIsPg() {
-        return this.isPg;
-    }
-    public void setIsPg(boolean isPg) {
-        this.isPg = isPg;
-    }
-    public boolean getIsCommit() {
-        return this.isCommit;
-    }
-    public void setIsCommit(boolean isCommit) {
-        this.isCommit = isCommit;
-    }
     public int getState() {
         return this.state;
     }
@@ -150,10 +143,10 @@ public class HomeworkPaperBean {
     public void setCorrectMode(int correctMode) {
         this.correctMode = correctMode;
     }
-    public String getScore() {
+    public int getScore() {
         return this.score;
     }
-    public void setScore(String score) {
+    public void setScore(int score) {
         this.score = score;
     }
     public String getCorrectJson() {
@@ -161,5 +154,29 @@ public class HomeworkPaperBean {
     }
     public void setCorrectJson(String correctJson) {
         this.correctJson = correctJson;
+    }
+    public boolean getIsSelfCorrect() {
+        return this.isSelfCorrect;
+    }
+    public void setIsSelfCorrect(boolean isSelfCorrect) {
+        this.isSelfCorrect = isSelfCorrect;
+    }
+    public int getScoreMode() {
+        return this.scoreMode;
+    }
+    public void setScoreMode(int scoreMode) {
+        this.scoreMode = scoreMode;
+    }
+    public String getAnswerUrl() {
+        return this.answerUrl;
+    }
+    public void setAnswerUrl(String answerUrl) {
+        this.answerUrl = answerUrl;
+    }
+    public String getCommitJson() {
+        return this.commitJson;
+    }
+    public void setCommitJson(String commitJson) {
+        this.commitJson = commitJson;
     }
 }

@@ -83,12 +83,12 @@ class SearchActivity : BaseAppCompatActivity() {
             }
             2->{
                 val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
-                when(item.state){
+                when(typeItem.state){
                     1->{
                         MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page)
                     }
                     2->{
-                        MethodManager.gotoHomeworkDrawing(this,typeItem,item.page)
+                        MethodManager.gotoHomeworkDrawing(this, typeItem, Constants.DEFAULT_PAGE)
                     }
                     3->{
                         MethodManager.gotoHomeworkRecord(this,typeItem)
@@ -202,7 +202,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         title=item.title
                         state=1
                         type=item.typeId
-                        typeStr=item.type
+                        typeStr=item.typeName
                         course=item.course
                         page=item.page
                     })
@@ -289,7 +289,7 @@ class SearchActivity : BaseAppCompatActivity() {
     override fun fetchData() {
         mAdapter?.setNewData(listMap[pageIndex])
         tv_page_current.text=pageIndex.toString()
-        tv_page_total.text=pageCount.toString()
+        tv_page_total_bottom.text=pageCount.toString()
         ll_page_number.visibility= View.VISIBLE
     }
 

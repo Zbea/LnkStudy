@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:lines="1"
@@ -17,17 +17,28 @@
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="170dp"
+        android:id="@+id/tv_correct"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:text="自批"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
         android:textSize="@dimen/sp_20"
         android:textColor="@color/black"
         android:gravity="center" />
 
     <TextView
         android:id="@+id/tv_state"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
         android:gravity="center"
         android:textSize="@dimen/sp_20"
         android:textColor="@color/black" />

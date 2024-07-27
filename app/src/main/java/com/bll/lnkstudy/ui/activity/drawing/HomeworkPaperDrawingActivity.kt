@@ -1,7 +1,10 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
@@ -13,12 +16,10 @@ import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.homework.*
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
+import com.bll.lnkstudy.ui.activity.CorrectActivity
 import com.bll.lnkstudy.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -49,6 +50,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var oldPosition=-1
     private var page = 0//页码
     private val commitItems = mutableListOf<ItemList>()
+    private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
 
     override fun onToken(token: String) {
         showLoading()
@@ -72,9 +74,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 }
             })
         }
-    }
-
-    override fun onSuccess(urls: MutableList<String>?) {
     }
 
     override fun onCommitSuccess() {
@@ -119,9 +118,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         daoManager= HomeworkPaperDaoManager.getInstance()
         daoContentManager= HomeworkPaperContentDaoManager.getInstance()
-
         papers= daoManager?.queryAll(course,typeId) as MutableList<HomeworkPaperBean>
-
     }
 
     override fun initChangeScreenData() {
@@ -139,16 +136,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
 
         iv_btn.setOnClickListener {
-            if (paper?.state!=3){
-                showToast("作业已提交")
-                return@setOnClickListener
-            }
-            if (paper?.isCommit==false){
-                showToast("此作业不需要提交")
-                return@setOnClickListener
-            }
-            if (System.currentTimeMillis()>paper?.endTime!!*1000){
-                showToast("此作业已过提交时间")
+            if (paper?.state==1&&paper?.isSelfCorrect==true){
+                homeworkCommitInfoItem=Gson().fromJson(paper?.commitJson, HomeworkCommitInfoItem::class.java)
+                gotoSelfCorrect()
                 return@setOnClickListener
             }
             CommonDialog(this).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
@@ -169,6 +159,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             val itemList= ItemList()
             itemList.name=item.title
             itemList.page=item.page
+            itemList.isEdit=false
             list.add(itemList)
         }
 
@@ -181,7 +172,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 }
             }
             override fun onEdit(position: Int, title: String) {
-
             }
         })
     }
@@ -243,19 +233,36 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<HomeworkPaperContentBean>
         pageCount=paperContents.size
-        
-        setPWEnabled(!paper?.isPg!!)
-        if (currentPosition!=oldPosition)
+
+        if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
-        //用来判断重复加载
-        oldPosition=currentPosition
-        //作业未提交 提示时间 以及关闭手写
-        if (paper?.state==3){
-            val endTime=paper?.endTime!!*1000
-            if (paper?.isCommit==true&&System.currentTimeMillis()<=endTime){
-                showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
+            when(paper?.state){
+                0->{
+                    setPWEnabled(true)
+                    if (paper?.endTime!!>0L){
+                        showView(iv_btn)
+                        val endTime=paper?.endTime!!*1000
+                        if (System.currentTimeMillis()<=endTime){
+                            showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
+                        }
+                    }
+                    else{
+                        disMissView(iv_btn)
+                    }
+                }
+                1->{
+                    setPWEnabled(false)
+                    showToast("请及时自批改后提交")
+                    showView(iv_btn)
+                }
+                2->{
+                    setPWEnabled(false)
+                    disMissView(iv_btn)
+                }
             }
         }
+        //用来判断重复加载
+        oldPosition=currentPosition
 
         tv_page_total.text="${paperContents.size}"
         tv_page_total_a.text="${paperContents.size}"
@@ -295,9 +302,16 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if (item.state==2){
             if (!ll_score.isVisible)
                 showView(iv_score)
+            if (item.answerUrl.isNullOrEmpty()){
+                disMissView(tv_answer)
+            }
+            else{
+                answerImages= item.answerUrl?.split(",") as MutableList<String>
+                showView(tv_answer)
+            }
             correctMode=item.correctMode
             tv_correct_title.text=item.title
-            tv_total_score.text=item.score
+            tv_total_score.text=item.score.toString()
             if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
                 setScoreListDetails(item.correctJson)
             }
@@ -337,22 +351,73 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 提交
      */
     private fun commit(){
+        if (paper?.isSelfCorrect == true){
+            homeworkCommitInfoItem= HomeworkCommitInfoItem()
+            homeworkCommitInfoItem?.messageId=paper?.contentId
+            homeworkCommitInfoItem?.correctJson=paper?.correctJson
+            homeworkCommitInfoItem?.correctMode=paper?.correctMode
+            homeworkCommitInfoItem?.scoreMode=paper?.scoreMode
+            homeworkCommitInfoItem?.answerUrl=paper?.answerUrl
+            homeworkCommitInfoItem?.typeId=homeworkType?.typeId
+            homeworkCommitInfoItem?.typeName=homeworkType?.name
+            homeworkCommitInfoItem?.course=homeworkType?.course
+            homeworkCommitInfoItem?.state=homeworkType?.state
+        }
         commitItems.clear()
         for (i in paperContents.indices) {
             val item=paperContents[i]
+            homeworkCommitInfoItem?.paths?.add(item.path)
             Thread {
                 val drawPath = item.drawPath.replace("tch", "png")//当前绘图路径
                 BitmapUtils.mergeBitmap(item.path, drawPath)
+                FileUtils.deleteFile(File(item.drawPath).parentFile)
                 commitItems.add(ItemList().apply {
                     id = i
                     url = item.path
                 })
-                FileUtils.deleteFile(File(item.drawPath).parentFile)
                 if (commitItems.size == paperContents.size) {
-                    commitItems.sort()
-                    mUploadPresenter.getToken()
+                    if (paper?.isSelfCorrect == true){
+                        //修改当前paper状态
+                        paper?.state = 1
+                        paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
+                        daoManager?.insertOrReplace(paper)
+                        //更新目录增量数据
+                        DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper?.typeId!!, Gson().toJson(paper))
+
+                        gotoSelfCorrect()
+                    }
+                    else{
+                        commitItems.sort()
+                        mUploadPresenter.getToken()
+                    }
                 }
             }.start()
         }
     }
+
+    /**
+     * 开启自批
+     */
+    private fun gotoSelfCorrect(){
+        hideLoading()
+        val intent = Intent(this, CorrectActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("homeworkCommit", homeworkCommitInfoItem)
+        intent.putExtra("bundle", bundle)
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
+        intent.putExtra("android.intent.extra.KEEP_FOCUS", true)
+        activityResultLauncher.launch(intent)
+    }
+
+    /**
+     * 开始通知回调
+     */
+    private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode==10001){
+            papers= daoManager?.queryAll(course,typeId) as MutableList<HomeworkPaperBean>
+            oldPosition=-1
+            onContent()
+        }
+    }
+
 }

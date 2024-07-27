@@ -33,7 +33,7 @@
         android:textColor="@color/black_50"
         android:textSize="22sp"/>
     <TextView
-        android:id="@+id/tv_page_total"
+        android:id="@+id/tv_page_total_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"

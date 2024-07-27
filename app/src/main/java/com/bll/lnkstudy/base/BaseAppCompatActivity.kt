@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -320,7 +318,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 disMissView(ll_page_number)
             } else {
                 tv_page_current.text = pageIndex.toString()
-                tv_page_total.text = pageCount.toString()
+                tv_page_total_bottom.text = pageCount.toString()
                 showView(ll_page_number)
             }
         }

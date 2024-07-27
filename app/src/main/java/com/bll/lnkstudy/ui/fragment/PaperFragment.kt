@@ -367,6 +367,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
      */
     private fun fetchCorrectPaper() {
         val map = HashMap<String, Any>()
+        map["type"]=2
         map["sendStatus"] = 2
         mPresenter.getList(map)
     }

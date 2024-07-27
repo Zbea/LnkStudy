@@ -21,5 +21,4 @@ public class ParentHomeworkBean implements Serializable {
     public long time;
     @SerializedName("submitStatus")
     public int status;
-    public boolean isSelector;
 }

@@ -16,7 +16,6 @@ import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
 import com.bll.lnkstudy.net.system.BaseResult1
 import io.reactivex.Observable
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -28,20 +27,12 @@ interface APIService{
      */
     @POST("Device/CheckUpdate")
     fun RELEASE_CHECK_UPDATE(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
-
     /**
      * 检查系统更新
      */
     @POST("Device/UpdateInfo")
     fun RELEASE_UPDATE_INFO(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
 
-
-    /**
-     * 文件上传
-     */
-    @Multipart
-    @POST("file/manyUpload")
-    fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
     @POST("cloud/data/insert")
     fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
     /**
@@ -279,11 +270,6 @@ interface APIService{
     @POST("student/msg/list")
     fun getHomeworkMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkMessage>>>
 
-    /**
-     * 获取作业卷所有信息
-     */
-    @GET("task/group/studentList")
-    fun getHomeworkReel(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkPaperList>>
     /**
      * 作业卷下载完成后 通知后台
      */

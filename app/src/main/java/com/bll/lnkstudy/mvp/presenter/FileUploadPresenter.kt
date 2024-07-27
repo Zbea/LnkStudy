@@ -2,10 +2,6 @@ package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
 
 class FileUploadPresenter(view: IContractView.IFileUploadView,val screen:Int=0):
     BasePresenter<IContractView.IFileUploadView>(view) {
@@ -20,28 +16,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView,val screen:Int=0):
                 if (tBaseResult.data!=null)
                     view.onToken(tBaseResult.data)
             }
-        }, true)
-    }
-
-    fun upload(files:List<String>) {
-
-        val parts=ArrayList<MultipartBody.Part>()
-
-        for (url in files){
-            val file=File(url)
-            parts.add(MultipartBody.Part.createFormData("files", file.name, RequestBody.create(
-                "multipart/form-data".toMediaTypeOrNull(), file)))
-        }
-
-        val type = RetrofitManager.service.upload(parts)
-        doRequest(type, object : Callback<List<String>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<String>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<List<String>>) {
-                view.onSuccess(tBaseResult.data)
-            }
-        }, true)
+        }, false)
     }
 
     fun commit(map:HashMap<String,Any>){

@@ -75,8 +75,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
             })
         }
     }
-    override fun onSuccess(urls: MutableList<String>?) {
-    }
+
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
         //删除本地考试卷以及手写

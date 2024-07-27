@@ -66,18 +66,18 @@ public class HomeworkBookCorrectDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    public List<HomeworkBookCorrectBean> queryCorrectBeanID(int bookID) {
+    public List<HomeworkBookCorrectBean> queryCorrectAll(int bookID) {
         WhereCondition whereCondition= HomeworkBookCorrectBeanDao.Properties.BookId.eq(bookID);
         return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
-    public HomeworkBookCorrectBean queryCorrectBean(int bookId,String page){
+    public HomeworkBookCorrectBean queryCorrectBean(int bookId,int page){
         HomeworkBookCorrectBean correctBean = null;
-        List<HomeworkBookCorrectBean> list=queryCorrectBeanID(bookId);
+        List<HomeworkBookCorrectBean> list=queryCorrectAll(bookId);
         for (HomeworkBookCorrectBean item: list) {
             String[] pages=item.pages.split(",");
             for (String pageStr:pages) {
-                if (Objects.equals(pageStr, page)){
+                if (page==Integer.parseInt(pageStr)){
                     correctBean=item;
                 }
             }
@@ -85,32 +85,24 @@ public class HomeworkBookCorrectDaoManager {
         return correctBean;
     }
 
-    /**
-     * 判断当前页是否存在批改
-     * @param bookId
-     * @param page
-     * @return
-     */
-    public boolean isExistCorrect(int bookId,String page){
-        boolean isExist=false;
-        List<HomeworkBookCorrectBean> list=queryCorrectBeanID(bookId);
+    public HomeworkBookCorrectBean queryCorrectBean(int bookId,String pages){
+        HomeworkBookCorrectBean correctBean = null;
+        List<HomeworkBookCorrectBean> list=queryCorrectAll(bookId);
         for (HomeworkBookCorrectBean item: list) {
-            String[] pages=item.pages.split(",");
-            for (String pageStr:pages) {
-                if (Objects.equals(pageStr, page)){
-                    isExist=true;
-                }
+            if (Objects.equals(pages, item.pages)){
+                correctBean=item;
             }
         }
-        return isExist;
+        return correctBean;
     }
+
 
     public void clear(){
         dao.deleteAll();
     }
 
     public void delete(int booId){
-        dao.deleteInTx(queryCorrectBeanID(booId));
+        dao.deleteInTx(queryCorrectAll(booId));
     }
 
     public void delete(HomeworkBookCorrectBean bean){

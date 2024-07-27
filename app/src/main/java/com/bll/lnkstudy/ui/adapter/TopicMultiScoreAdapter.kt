@@ -6,16 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
 import com.bll.lnkstudy.utils.ToolUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 class TopicMultiScoreAdapter(layoutResId: Int, var scoreType: Int, data: List<ExamScoreItem>?) : BaseQuickAdapter<ExamScoreItem, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: ExamScoreItem) {
-        helper.setText(R.id.tv_sort, ToolUtils.numbers[item.sort])
+        helper.setText(R.id.tv_sort, ToolUtils.numbers[item.sort+1])
         helper.setText(R.id.tv_score, item.score)
-        helper.setVisible(R.id.ll_score, scoreType == 1)
 
         val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
         recyclerView?.layoutManager = GridLayoutManager(mContext, 2)
@@ -24,14 +22,13 @@ class TopicMultiScoreAdapter(layoutResId: Int, var scoreType: Int, data: List<Ex
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
             listener?.onClick(helper.adapterPosition, view, position)
         }
-        recyclerView?.addItemDecoration(SpaceGridItemDeco(2, 20))
         mAdapter.setScoreMode(scoreType)
     }
 
     class ChildAdapter(layoutResId: Int, var scoreType: Int, data: List<ExamScoreItem>?) : BaseQuickAdapter<ExamScoreItem, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: ExamScoreItem) {
             helper.apply {
-                helper.setText(R.id.tv_sort, item.sort.toString())
+                helper.setText(R.id.tv_sort, "${item.sort}")
                 helper.setText(R.id.tv_score, item.score)
                 helper.setText(R.id.tv_score, if (scoreType == 1) item.score else if (item.result == 1) "对" else "错")
                 helper.setImageResource(R.id.iv_result, if (item.result == 1) R.mipmap.icon_correct_right else R.mipmap.icon_correct_wrong)

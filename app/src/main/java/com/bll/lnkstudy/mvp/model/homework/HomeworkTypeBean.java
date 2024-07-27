@@ -87,19 +87,6 @@ public class HomeworkTypeBean implements Serializable {
     public HomeworkTypeBean() {
     }
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj==null)
-            return false;
-        if (!(obj instanceof HomeworkTypeBean))
-            return false;
-        if (this==obj)
-            return true;
-        HomeworkTypeBean item=(HomeworkTypeBean) obj;
-        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.userId==item.userId
-                &&this.grade==item.grade&&this.typeId==item.typeId&&this.state==item.state;
-    }
-
     public Long getId() {
         return this.id;
     }
@@ -228,6 +215,16 @@ public class HomeworkTypeBean implements Serializable {
         this.isCloud = isCloud;
     }
 
-   
-    
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj==null)
+            return false;
+        if (!(obj instanceof HomeworkTypeBean))
+            return false;
+        if (this==obj)
+            return true;
+        HomeworkTypeBean item=(HomeworkTypeBean) obj;
+        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.userId==item.userId
+                &&this.grade==item.grade&&this.typeId==item.typeId&&this.state==item.state;
+    }
 }

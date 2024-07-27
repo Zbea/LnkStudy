@@ -104,6 +104,7 @@ class DrawingCatalogDialog(val context: Context, private val oldScreen:Int, priv
         override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name, item.name)
             helper.setText(R.id.tv_page, (item.page+1).toString())
+            helper.setGone(R.id.iv_edit,item.isEdit)
             helper.addOnClickListener(R.id.iv_edit)
         }
 

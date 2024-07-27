@@ -13,12 +13,16 @@ public class ItemList implements Serializable,Comparable<ItemList> {
     public int id;
     public String name;
     public int page;//目录页码
+    public boolean isSelfCorrect;//是否自批
     public String date;
     public Drawable icon;
     public Drawable icon_check;
     public String info;
     public String url;
     public int resId;
+    public boolean isEdit=true;//目录可以修改
+
+    public boolean isAdd;//提交选中页码
 
     public ItemList() {
     }

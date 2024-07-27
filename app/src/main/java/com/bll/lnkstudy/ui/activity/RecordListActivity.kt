@@ -68,8 +68,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             })
         }
     }
-    override fun onSuccess(urls: MutableList<String>?) {
-    }
+
     override fun onCommitSuccess() {
         val messageBean=messages[messageIndex]
         messages.removeAt(messageIndex)

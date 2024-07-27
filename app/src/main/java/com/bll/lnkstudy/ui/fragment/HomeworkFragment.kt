@@ -590,9 +590,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             bookCorrectBean.homeworkTitle = item.title
                             bookCorrectBean.bookId = typeBean.bookId
                             bookCorrectBean.pages = item.page
-                            bookCorrectBean.score = item.score.toString()
+                            bookCorrectBean.score = item.score
                             bookCorrectBean.correctMode = item.questionType
                             bookCorrectBean.correctJson = item.question
+                            bookCorrectBean.scoreMode=item.questionMode
+                            bookCorrectBean.answerUrl=item.answerUrl
+                            bookCorrectBean.state=2//已完成
                             val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
                             //更新增量数据
                             DataUpdateManager.createDataUpdate(7, id.toInt(),2,homeworkBookBean.bookId ,Gson().toJson(bookCorrectBean),"")
@@ -657,7 +660,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             //更新增量数据
                             for (homework in homeworkContents) {
                                 homework.state = item.status
-                                homework.score = item.score.toString()
+                                homework.score = item.score
                                 homework.correctJson = item.question
                                 homework.correctMode = item.questionType
                                 HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
@@ -718,11 +721,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             if (item.sendStatus == 2) {
                                 val paper = paperDaoManager.queryByContentID(item.id)
                                 if (paper != null) {
-                                    paper.isPg = true
-                                    paper.state = item.status
-                                    paper.score = item.score.toString()
+                                    paper.state = 2
+                                    paper.score = item.score
                                     paper.correctJson = item.question
-                                    paper.correctMode = item.questionType
+                                    paper.answerUrl=item.answerUrl
                                     paperDaoManager.insertOrReplace(paper)
                                     //更新目录增量数据
                                     DataUpdateManager.editDataUpdate(2, item.id, 2, item.typeId, Gson().toJson(paper))
@@ -737,7 +739,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                         type = 2
                                         studentTaskId = item.id
                                         content = paper.title
-                                        homeworkTypeStr = paper.type
+                                        homeworkTypeStr = paper.typeName
                                         course = paper.course
                                         time = System.currentTimeMillis()
                                     })
@@ -747,26 +749,28 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 val contentBean = paperDaoManager.queryByContentID(item.id)
                                 if (contentBean != null) return//避免重复下载
                                 //查找到之前已经存储的数据、用于页码计算
-                                val papers = paperDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
+                                val homeworkPapers = paperDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
                                 val paperContents = paperContentDaoManager.queryAll(item.subject, item.typeId) as MutableList<*>
                                 //创建作业卷目录
                                 val paper = HomeworkPaperBean().apply {
                                     contentId = item.id
                                     course = item.subject
                                     typeId = item.typeId
-                                    type = item.typeName
+                                    typeName = item.typeName
                                     title = item.title
                                     path = pathStr
                                     page = paperContents.size //子内容的第一个页码位置
-                                    index = papers.size //作业位置
+                                    index = homeworkPapers.size //作业位置
                                     endTime = item.endTime //提交时间
-                                    isPg = false
-                                    isCommit = item.submitStatus == 0
-                                    state = item.status
+                                    answerUrl=item.answerUrl
+                                    isSelfCorrect=item.selfBatchStatus==1
+                                    correctJson=item.question
+                                    correctMode=item.questionType
+                                    scoreMode=item.questionMode
                                 }
                                 paperDaoManager.insertOrReplace(paper)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(2, item.id, 2,item.typeId, Gson().toJson(item),"")
+                                DataUpdateManager.createDataUpdate(2, item.id, 2,paper.typeId, Gson().toJson(paper),"")
 
                                 for (i in paths.indices) {
                                     //创建作业卷内容

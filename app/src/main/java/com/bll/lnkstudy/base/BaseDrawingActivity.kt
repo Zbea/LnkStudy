@@ -26,8 +26,11 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.ac_correct.*
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing.ll_score
 import kotlinx.android.synthetic.main.common_correct_score.*
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -158,32 +161,25 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 ImageDialog(this, answerImages).builder()
         }
 
-        rv_list_score?.layoutManager = GridLayoutManager(this,5)
+        rv_list_score?.layoutManager = GridLayoutManager(this,2)
         mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,0,0,null).apply {
             rv_list_score?.adapter = this
             bindToRecyclerView(rv_list_score)
         }
-        rv_list_score?.addItemDecoration(SpaceGridItemDeco(2,20))
+        rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this,15f)))
 
         rv_list_multi?.layoutManager = LinearLayoutManager(this)
         mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,0,null).apply {
             rv_list_multi?.adapter = this
             bindToRecyclerView(rv_list_multi)
         }
-        rv_list_multi?.addItemDecoration(SpaceItemDeco(0,0,0,20,false))
+        rv_list_multi.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this,15f)))
     }
 
     /**
      * 设置批改详情小题列表
      */
     fun setScoreListDetails(correctJson:String){
-        if (answerImages.size>0)
-        {
-            showView(tv_answer)
-        }
-        else{
-            disMissView(tv_answer)
-        }
         currentScores= scoreJsonToList(correctJson) as MutableList<ExamScoreItem>
         if (correctMode<3){
             showView(rv_list_score)
@@ -193,11 +189,10 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             mTopicScoreAdapter?.setScoreMode(scoreMode)
         }
         else{
-            currentScores.clear()
             showView(rv_list_multi)
             disMissView(rv_list_score)
             mTopicMultiAdapter?.setNewData(currentScores)
-            mTopicScoreAdapter?.setScoreMode(scoreMode)
+            mTopicMultiAdapter?.setScoreMode(scoreMode)
         }
     }
 
@@ -228,17 +223,29 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             val scores= Gson().fromJson(json, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
             for (i in scores.indices){
                 items.add(ExamScoreItem().apply {
-                    sort=i+1
-                    var totalLabel=0
-                    for (item in scores[i]){
-                        totalLabel+=item.label
+                    sort=i
+                    if (scoreMode==1){
+                        var totalLabel=0
+                        for (item in scores[i]){
+                            totalLabel+=item.label
+                        }
+                        label=totalLabel
+                        var totalItem=0
+                        for (item in scores[i]){
+                            totalItem+= MethodManager.getScore(item.score)
+                        }
+                        score=totalItem.toString()
                     }
-                    label=totalLabel
-                    var totalItem=0
-                    for (item in scores[i]){
-                        totalItem+= MethodManager.getScore(item.score)
+                    else{
+                        var totalRight=0
+                        for (item in scores[i]){
+                            item.score=item.result.toString()
+                            if (item.result==1) {
+                                totalRight+= 1
+                            }
+                        }
+                        score=totalRight.toString()
                     }
-                    score=totalItem.toString()
                     childScores=scores[i]
                 })
             }

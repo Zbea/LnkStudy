@@ -93,7 +93,6 @@
     </RelativeLayout>
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list_score"
         android:layout_width="match_parent"

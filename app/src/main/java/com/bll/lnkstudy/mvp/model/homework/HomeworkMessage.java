@@ -26,11 +26,14 @@ public class HomeworkMessage implements Serializable {
         @SerializedName("name")
         public String typeName;
         public long endTime;
-        public int submitState;
         public String subject;
         public int grade;
         public int status;//3未提交 1已提交 2已完成
         public int studentTaskId;
-        public boolean isSelector;
+        public String question;
+        public int questionType;//-1未加入模板0空模板
+        public int questionMode;//1打分
+        public int selfBatchStatus;//1自批
+        public String answerUrl;//答案
     }
 }

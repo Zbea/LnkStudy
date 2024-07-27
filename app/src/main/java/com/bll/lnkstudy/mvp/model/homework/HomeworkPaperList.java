@@ -37,7 +37,10 @@ public class HomeworkPaperList implements Serializable {
         public int status;//是否已经提交状态3学生未提交1已提交未批改2已批改
         public int sendStatus;//1老师下发2老师批改下发
         public int score;//批改成绩
+        public int questionMode;//打分模式
         public int questionType;//批改模型
         public String question;//批改详情
+        public String answerUrl;
+        public int selfBatchStatus;
     }
 }

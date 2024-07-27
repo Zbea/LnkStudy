@@ -13,6 +13,6 @@ public class ExamItem implements Serializable {
     public String name;
     public String examUrl;
     public int commonTypeId;
-    public List<String> paths;//本地图片路径
     public String subject;
+    public List<String> paths;//本地图片路径
 }

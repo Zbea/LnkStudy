@@ -5,7 +5,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.*
 
 
-class LoginPresenter(view: IContractView.ILoginView,val screen:Int=1) : BasePresenter<IContractView.ILoginView>(view) {
+class LoginPresenter(view: IContractView.ILoginView,val screen:Int) : BasePresenter<IContractView.ILoginView>(view) {
 
     fun login(map:HashMap<String,Any>) {
 

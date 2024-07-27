@@ -24,7 +24,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
     private var mAdapter:MessageAdapter?=null
 
     @SuppressLint("SetTextI18n")
-    fun builder(): HomeworkMessageDialog? {
+    fun builder(): HomeworkMessageDialog {
         dialog = Dialog(context)
         dialog!!.setContentView(R.layout.dialog_homework_message)
         dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
@@ -43,7 +43,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
         recyclerview.layoutManager = LinearLayoutManager(context)
         mAdapter= MessageAdapter(R.layout.item_homework_message_all, list,createStatus)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceItemDeco(15,false))
+        recyclerview.addItemDecoration(SpaceItemDeco(20))
 
         return this
     }
@@ -64,8 +64,9 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
             if (createStatus==1){
                 val item=ite as HomeworkMessage.MessageBean
                 helper.setText(R.id.tv_title,item.title)
+                helper.setVisible(R.id.tv_correct,item.selfBatchStatus==1)
                 if (item.endTime>0){
-                    helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
+                    helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime))
                     val state= when (item.status) {
                         3 -> {
                             mContext.getString(R.string.homework_state_no)
@@ -86,6 +87,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
             else{
                 val item=ite as ParentHomeworkBean
                 helper.setText(R.id.tv_title,item.content)
+                helper.setVisible(R.id.tv_correct,false)
                 if (item.endTime>0){
                     helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
                     val state= when (item.status) {

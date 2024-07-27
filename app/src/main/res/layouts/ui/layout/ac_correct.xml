@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="700dp"
+            android:layout_height="650dp"
             android:paddingStart="20dp"
             android:paddingEnd="@dimen/dp_20"
             >
@@ -23,9 +23,9 @@
                 android:id="@+id/sv_answer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_tips"
+                android:background="@drawable/bg_black_stroke_10dp_corner_2dp"
                 android:scrollbars="none"
-                android:padding="2dp"
+                android:padding="5dp"
                 >
 
                 <LinearLayout
@@ -63,14 +63,58 @@
                 android:layout_alignParentEnd="true"
                 />
 
-            <include
-                layout="@layout/common_page_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <LinearLayout
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/dp_5"
-                android:visibility="visible"
-                />
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/btn_page_up_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/black_20"
+                    android:background="@color/color_transparent"
+                    android:text="@string/page_up_string"/>
+
+                <TextView
+                    android:id="@+id/tv_page_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/black_50"
+                    android:textSize="22sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" / "
+                    android:textColor="@color/black_50"
+                    android:textSize="22sp"/>
+                <TextView
+                    android:id="@+id/tv_page_total_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/black_50"
+                    android:textSize="22sp"/>
+
+                <TextView
+                    android:id="@+id/btn_page_down_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/black_20"
+                    android:background="@color/color_transparent"
+                    android:text="@string/page_down_string"/>
+
+            </LinearLayout>
+
         </RelativeLayout>
 
         <LinearLayout
@@ -90,7 +134,6 @@
                 android:gravity="center"
                 android:text="赋分批改框"
                 android:textSize="30sp"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 />
 
@@ -122,8 +165,8 @@
                     android:id="@+id/rv_list_score"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_marginBottom="@dimen/dp_25"
                     android:layout_marginStart="@dimen/dp_60"
                     android:layout_marginEnd="@dimen/dp_60"
                     />
@@ -137,8 +180,8 @@
             android:layout_height="@dimen/dp_50"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             android:gravity="center"
             >
             <LinearLayout
@@ -157,7 +200,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="总分"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_24"
                     android:textColor="@color/black"
                     />
 
@@ -173,8 +216,10 @@
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_26"
                     android:gravity="center"
+                    android:text="0"
+                    android:textStyle="bold"
                     />
 
             </LinearLayout>
@@ -185,7 +230,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/save"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_24"
                 android:textColor="@color/black"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:gravity="center"
