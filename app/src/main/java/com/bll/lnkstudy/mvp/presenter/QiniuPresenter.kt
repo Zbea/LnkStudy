@@ -6,12 +6,11 @@ import com.bll.lnkstudy.net.BaseResult
 import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RetrofitManager
 
-class QiniuPresenter(view: IContractView.IQiniuView):
-    BasePresenter<IContractView.IQiniuView>(view) {
+class QiniuPresenter(view: IContractView.IQiniuView,val screen:Int=1): BasePresenter<IContractView.IQiniuView>(view) {
 
     fun getToken(){
         val token = RetrofitManager.service.getQiniuToken()
-        doRequest(token, object : Callback<String>(view) {
+        doRequest(token, object : Callback<String>(view,screen,false,false) {
             override fun failed(tBaseResult: BaseResult<String>): Boolean {
                 return false
             }

@@ -9,15 +9,11 @@ class CloudUploadPresenter(view: IContractView.ICloudUploadView):
     BasePresenter<IContractView.ICloudUploadView>(view) {
 
     fun upload(list:List<CloudListBean>) {
-        if (list.isEmpty())
-        {
-            return
-        }
         val body= RequestUtils.getBody(
             Pair.create("listModel",list)
         )
         val type = RetrofitManager.service.cloudUpload(body)
-        doRequest(type, object : Callback<MutableList<Int>>(view) {
+        doRequest(type, object : Callback<MutableList<Int>>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<MutableList<Int>>): Boolean {
                 return false
             }
@@ -33,7 +29,7 @@ class CloudUploadPresenter(view: IContractView.ICloudUploadView):
         )
         val delete = RetrofitManager.service.deleteCloudList(body)
 
-        doRequest(delete, object : Callback<Any>(view) {
+        doRequest(delete, object : Callback<Any>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

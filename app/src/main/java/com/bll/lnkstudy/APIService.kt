@@ -252,12 +252,12 @@ interface APIService{
      * 学生下载完老师发送的已批改试卷删除
      */
     @POST("student/task/deleteTag")
-    fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun onDownloadCompletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取下发考卷
      */
     @GET("student/task/list")
-    fun getPapersList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperList>>
+    fun getPaperCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperList>>
 
     /**
      * 获取作业本分类
@@ -384,12 +384,12 @@ interface APIService{
      * 获取考试批改
      */
     @GET("school/exam/allStudentJob")
-    fun getExamCorrectList(): Observable<BaseResult<Map<Int,MutableList<ExamCorrectBean>>>>
+    fun getExamCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<Map<Int,MutableList<ExamCorrectBean>>>>
     /**
-     * 删除下载
+     * 学校考试下载完成
      */
     @POST("school/exam/updateDownloadStatus")
-    fun onDeleteExamCorrect(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun onDownloadCompleteExamCorrect(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 获取家长的权限控制

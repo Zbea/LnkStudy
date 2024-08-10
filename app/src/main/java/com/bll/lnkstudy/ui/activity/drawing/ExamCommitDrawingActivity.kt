@@ -44,7 +44,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     private var pendingIntent:PendingIntent?=null
 
     override fun onToken(token: String) {
-        showLoading()
         val commitPaths = mutableListOf<String>()
         for (item in commitItems) {
             commitPaths.add(item.url)
@@ -90,7 +89,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     override fun initData() {
         setExamMode(true)
-        screenPos=2
+        screenPos=Constants.SCREEN_RIGHT
         isExpand=true
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem
         flags=exam?.type!!
@@ -137,7 +136,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      * 开启定时任务
      */
     private fun startAlarmManager(){
-        val date=Date(exam?.time!!)
+        val date=Date(exam?.time!!*1000)
         val mCalendar = Calendar.getInstance()
         val currentTimeMillisLong = System.currentTimeMillis()
         mCalendar.timeInMillis = currentTimeMillisLong
@@ -148,6 +147,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         mCalendar.set(Calendar.MILLISECOND, 0)
 
         val selectLong = mCalendar.timeInMillis
+
         if (currentTimeMillisLong > selectLong) {
 //            mCalendar.add(Calendar.DAY_OF_MONTH, 1)
 //            selectLong = mCalendar.timeInMillis
@@ -205,7 +205,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
-        GlideUtils.setImageUrl(this,paths[index],view)
+        GlideUtils.setImageNoCacheUrl(this,paths[index],view)
         elik.setLoadFilePath(drawPaths[index],true)
     }
 
@@ -220,6 +220,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      * 提交
      */
     private fun commit(){
+        commitItems.clear()
         if (NetworkUtil(this@ExamCommitDrawingActivity).isNetworkConnected()){
             showLoading()
             for (i in paths.indices) {

@@ -53,7 +53,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var bookId=0
 
     override fun onToken(token: String) {
-        showLoading()
         val commitPaths = mutableListOf<String>()
         for (item in commitItems) {
             commitPaths.add(item.url)
@@ -181,7 +180,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
         iv_btn.setOnClickListener {
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
-            if (correctBean!=null&&correctBean.state==1){
+            if (correctBean!=null&&correctBean.state==1&&!correctBean.commitJson.isNullOrEmpty()){
                 val item=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
                 homeworkCommitInfoItem=Gson().fromJson(item?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
@@ -291,8 +290,17 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
         if (correctBean!=null){
             if (correctBean.state==1){
-                showToast("请及时自批改后提交")
+                setPWEnabled(false)
+                if (!correctBean.commitJson.isNullOrEmpty()){
+                    showToast("请及时自批改后提交")
+                }
             }
+            else{
+                setPWEnabled(true)
+            }
+        }
+        else{
+            setPWEnabled(true)
         }
         setScoreDetails(correctBean)
         //设置当前展示页

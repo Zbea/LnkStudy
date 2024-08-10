@@ -29,9 +29,12 @@ public class PaperBean {
     public int correctMode;//批改模式
     public String score;//成绩
     public String correctJson;//批改详情
-    @Generated(hash = 1377202205)
+    public String answerUrl;
+    public int scoreMode;
+    @Generated(hash = 1633552820)
     public PaperBean(Long id, long userId, int contentId, String course, int typeId, String type,
-            String title, String path, int page, int correctMode, String score, String correctJson) {
+            String title, String path, int page, int correctMode, String score, String correctJson,
+            String answerUrl, int scoreMode) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -44,6 +47,8 @@ public class PaperBean {
         this.correctMode = correctMode;
         this.score = score;
         this.correctJson = correctJson;
+        this.answerUrl = answerUrl;
+        this.scoreMode = scoreMode;
     }
     @Generated(hash = 1608836968)
     public PaperBean() {
@@ -120,6 +125,17 @@ public class PaperBean {
     public void setCorrectJson(String correctJson) {
         this.correctJson = correctJson;
     }
-    
+    public String getAnswerUrl() {
+        return this.answerUrl;
+    }
+    public void setAnswerUrl(String answerUrl) {
+        this.answerUrl = answerUrl;
+    }
+    public int getScoreMode() {
+        return this.scoreMode;
+    }
+    public void setScoreMode(int scoreMode) {
+        this.scoreMode = scoreMode;
+    }
 
 }

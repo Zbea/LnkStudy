@@ -53,7 +53,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
 
     override fun onToken(token: String) {
-        showLoading()
         val commitPaths = mutableListOf<String>()
         for (item in commitItems) {
             commitPaths.add(item.url)
@@ -136,7 +135,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
 
         iv_btn.setOnClickListener {
-            if (paper?.state==1&&paper?.isSelfCorrect==true){
+            if (paper?.state==1&&paper?.isSelfCorrect==true&&!paper?.commitJson.isNullOrEmpty()){
                 homeworkCommitInfoItem=Gson().fromJson(paper?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
                 return@setOnClickListener
@@ -167,6 +166,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             override fun onClick(position: Int) {
                 if (currentPosition!=list[position].page){
                     currentPosition = papers[position].index
+                    oldPosition=-1
                     page = 0
                     onContent()
                 }
@@ -252,11 +252,16 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 }
                 1->{
                     setPWEnabled(false)
-                    showToast("请及时自批改后提交")
-                    showView(iv_btn)
+                    if (paper?.commitJson.isNullOrEmpty()){
+                        disMissView(iv_btn)
+                    }
+                    else{
+                        showToast("请及时自批改后提交")
+                        showView(iv_btn)
+                    }
                 }
                 2->{
-                    setPWEnabled(false)
+                    setPWEnabled(true)
                     disMissView(iv_btn)
                 }
             }
@@ -310,6 +315,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 showView(tv_answer)
             }
             correctMode=item.correctMode
+            scoreMode=item.scoreMode
             tv_correct_title.text=item.title
             tv_total_score.text=item.score.toString()
             if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
@@ -418,6 +424,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             oldPosition=-1
             onContent()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        closeNetwork()
     }
 
 }

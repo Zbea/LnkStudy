@@ -25,8 +25,8 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
         }, false)
     }
 
-    fun getList(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getPapersList(map)
+    fun getPaperCorrectList(map: HashMap<String, Any>) {
+        val type = RetrofitManager.service.getPaperCorrectList(map)
         doRequest(type, object : Callback<PaperList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<PaperList>): Boolean {
                 return false
@@ -38,11 +38,11 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
     }
 
 
-    fun deletePaper(id:Int){
+    fun downloadCompletePaper(id:Int){
         val body= RequestUtils.getBody(
             Pair("studentTaskId",id)
         )
-        val commit = RetrofitManager.service.deletePaper(body)
+        val commit = RetrofitManager.service.onDownloadCompletePaper(body)
         doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -53,8 +53,8 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
         }, false)
     }
 
-    fun getExamList() {
-        val type = RetrofitManager.service.getExamCorrectList()
+    fun getExamList(map: HashMap<String, Any>) {
+        val type = RetrofitManager.service.getExamCorrectList(map)
         doRequest(type, object : Callback<Map<Int,MutableList<ExamCorrectBean>>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Map<Int,MutableList<ExamCorrectBean>>>): Boolean {
                 return false
@@ -66,11 +66,11 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
         }, false)
     }
 
-    fun deleteExam(id:Int){
+    fun downloadCompleteExam(id:Int){
         val body= RequestUtils.getBody(
             Pair("id",id)
         )
-        val commit = RetrofitManager.service.onDeleteExamCorrect(body)
+        val commit = RetrofitManager.service.onDownloadCompleteExamCorrect(body)
         doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false

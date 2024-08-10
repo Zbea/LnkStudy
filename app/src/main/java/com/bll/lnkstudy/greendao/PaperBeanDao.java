@@ -36,6 +36,8 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         public final static Property CorrectMode = new Property(9, int.class, "correctMode", false, "CORRECT_MODE");
         public final static Property Score = new Property(10, String.class, "score", false, "SCORE");
         public final static Property CorrectJson = new Property(11, String.class, "correctJson", false, "CORRECT_JSON");
+        public final static Property AnswerUrl = new Property(12, String.class, "answerUrl", false, "ANSWER_URL");
+        public final static Property ScoreMode = new Property(13, int.class, "scoreMode", false, "SCORE_MODE");
     }
 
 
@@ -62,7 +64,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
                 "\"PAGE\" INTEGER NOT NULL ," + // 8: page
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 9: correctMode
                 "\"SCORE\" TEXT," + // 10: score
-                "\"CORRECT_JSON\" TEXT);"); // 11: correctJson
+                "\"CORRECT_JSON\" TEXT," + // 11: correctJson
+                "\"ANSWER_URL\" TEXT," + // 12: answerUrl
+                "\"SCORE_MODE\" INTEGER NOT NULL );"); // 13: scoreMode
     }
 
     /** Drops the underlying database table. */
@@ -114,6 +118,12 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         if (correctJson != null) {
             stmt.bindString(12, correctJson);
         }
+ 
+        String answerUrl = entity.getAnswerUrl();
+        if (answerUrl != null) {
+            stmt.bindString(13, answerUrl);
+        }
+        stmt.bindLong(14, entity.getScoreMode());
     }
 
     @Override
@@ -159,6 +169,12 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         if (correctJson != null) {
             stmt.bindString(12, correctJson);
         }
+ 
+        String answerUrl = entity.getAnswerUrl();
+        if (answerUrl != null) {
+            stmt.bindString(13, answerUrl);
+        }
+        stmt.bindLong(14, entity.getScoreMode());
     }
 
     @Override
@@ -180,7 +196,9 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             cursor.getInt(offset + 8), // page
             cursor.getInt(offset + 9), // correctMode
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // score
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // correctJson
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // correctJson
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // answerUrl
+            cursor.getInt(offset + 13) // scoreMode
         );
         return entity;
     }
@@ -199,6 +217,8 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         entity.setCorrectMode(cursor.getInt(offset + 9));
         entity.setScore(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setCorrectJson(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setAnswerUrl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setScoreMode(cursor.getInt(offset + 13));
      }
     
     @Override

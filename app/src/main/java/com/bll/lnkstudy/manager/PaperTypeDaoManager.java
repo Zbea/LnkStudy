@@ -70,6 +70,13 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
+    public List<PaperTypeBean> queryAllByCourse(String course,int page, int pageSize){
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
+        return dao.queryBuilder().where(whereUser,whereCondition1)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
+    }
+
     public void deleteBean(PaperTypeBean bean){
         dao.delete(bean);
     }

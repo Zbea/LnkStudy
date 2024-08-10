@@ -234,7 +234,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(requireActivity(), 30f),
-            DP2PX.dip2px(requireActivity(), 40f),
+            DP2PX.dip2px(requireActivity(), 35f),
             DP2PX.dip2px(requireActivity(), 30f), 0
         )
         layoutParams.weight = 1f
@@ -244,7 +244,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             rv_list.layoutManager = GridLayoutManager(activity, 3)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 32f), 30))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 32f), 25))
             setOnItemClickListener { adapter, view, position ->
                 val item = homeworkTypes[position]
                 if (item.isPg) {
@@ -714,7 +714,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
                         override fun completed(task: BaseDownloadTask?) {
                             mPresenter.commitDownload(item.id)
-                            lock.lock()
                             val paperDaoManager = HomeworkPaperDaoManager.getInstance()
                             val paperContentDaoManager = HomeworkPaperContentDaoManager.getInstance()
                             //已完成
@@ -787,12 +786,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                     DataUpdateManager.createDataUpdate(2, id.toInt(), 3, Gson().toJson(paperContent), pathStr)
                                 }
                             }
-                            lock.unlock()
                         }
-
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
-
                         override fun error(task: BaseDownloadTask?, e: Throwable?) {
                         }
                     })
@@ -803,7 +799,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 请求作业分类
      */
     private fun fetchHomeworkType() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil(requireContext()).isNetworkConnected()) {
             countDownTasks = CountDownLatch(2)
 
             val map = HashMap<String, Any>()

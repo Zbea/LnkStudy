@@ -9,7 +9,7 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
 
     fun onList(){
         val type = RetrofitManager.service.onListDataUpdate()
-        doRequest(type, object : Callback<MutableList<DataUpdateBean>>(view) {
+        doRequest(type, object : Callback<MutableList<DataUpdateBean>>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<MutableList<DataUpdateBean>>): Boolean {
                 return false
             }
@@ -22,7 +22,7 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
 
     fun onList(map: HashMap<String, Any>){
         val type = RetrofitManager.service.onListDataUpdate(map)
-        doRequest(type, object : Callback<MutableList<DataUpdateBean>>(view) {
+        doRequest(type, object : Callback<MutableList<DataUpdateBean>>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<MutableList<DataUpdateBean>>): Boolean {
                 return false
             }
@@ -36,7 +36,7 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
     fun onAddData(map: Map<String,Any>) {
         val body= RequestUtils.getBody(map)
         val type = RetrofitManager.service.onAddDataUpdate(body)
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -49,7 +49,7 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
     fun onDeleteData(map: Map<String,Any>) {
         val body= RequestUtils.getBody(map)
         val type = RetrofitManager.service.onDeleteDataUpdate(body)
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -61,7 +61,7 @@ class DataUpdatePresenter(view: IContractView.IDataUpdateView):
 
     fun clearData() {
         val type = RetrofitManager.service.onClearDataUpdate()
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

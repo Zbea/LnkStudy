@@ -170,7 +170,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     override fun initView() {
         iv_btn.setOnClickListener {
             //开启自批
-            if (homeworkContent?.isSelfCorrect==true && homeworkContent?.state==1){
+            if (homeworkContent?.isSelfCorrect==true && homeworkContent?.state==1&&!homeworkContent?.commitJson.isNullOrEmpty()){
                 homeworkCommitInfoItem=Gson().fromJson(homeworkContent?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
                 return@setOnClickListener
@@ -284,38 +284,38 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         tv_page_total.text="${homeworks.size}"
         tv_page_total_a.text="${homeworks.size}"
 
-        if (homeworkContent?.isSelfCorrect == true &&homeworkContent?.state==1){
+        if (homeworkContent?.isSelfCorrect == true &&homeworkContent?.state==1 && !homeworkContent?.commitJson.isNullOrEmpty()){
             showToast("请及时自批改后提交")
         }
 
         //已提交后不能手写，显示合图后的图片
-        elik_b?.setPWEnabled(homeworkContent?.state == 0)
+        elik_b?.setPWEnabled(homeworkContent?.state != 1)
         when(homeworkContent?.state){
+            0->{
+                setElikLoadPath(elik_b!!, homeworkContent!!)
+                v_content_b?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+            }
             1->{
                 GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
             }
             2->{
-                GlideUtils.setImageFile(this, File(homeworkContent?.path), v_content_b)
-            }
-            else->{
                 setElikLoadPath(elik_b!!, homeworkContent!!)
-                v_content_b?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
             }
         }
         tv_page.text = "${page + 1}"
 
         if (isExpand) {
-            elik_a?.setPWEnabled(homeworkContent?.state == 0)
+            elik_a?.setPWEnabled(homeworkContent?.state != 1)
             when(homeworkContent_a?.state){
+                0->{
+                    setElikLoadPath(elik_a!!, homeworkContent_a!!)
+                    v_content_a?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+                }
                 1->{
                     GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
                 }
                 2->{
-                    GlideUtils.setImageFile(this, File(homeworkContent_a?.path), v_content_a)
-                }
-                else->{
                     setElikLoadPath(elik_a!!, homeworkContent_a!!)
-                    v_content_a?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
                 }
             }
             if (screenPos==Constants.SCREEN_LEFT){
@@ -519,9 +519,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         val resId = ToolUtils.getImageResId(this, homeworkType?.contentResId)
         val oldBitmap = BitmapFactory.decodeResource(resources, resId)
         val drawPath = homework.path
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = false
-        val drawBitmap = BitmapFactory.decodeFile(drawPath, options)
+        val drawBitmap = BitmapFactory.decodeFile(drawPath)
         if (drawBitmap != null) {
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)

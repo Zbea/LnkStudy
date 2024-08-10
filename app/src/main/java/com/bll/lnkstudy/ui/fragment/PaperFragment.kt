@@ -53,7 +53,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
                 }
             }
-            setData()
+            fetchData()
         }
     }
 
@@ -86,6 +86,8 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun initView() {
+        pageSize=6
+
         mCourseItem= arguments?.getSerializable("courseItem") as CourseItem
         mCourse=mCourseItem?.subject!!
 
@@ -93,7 +95,8 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun lazyLoad() {
-        fetchData()
+        pageIndex=1
+        fetchTypes()
     }
 
     @SuppressLint("WrongConstant")
@@ -111,7 +114,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             rv_list.layoutManager = GridLayoutManager(activity, 2)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(2, 80))
+            rv_list.addItemDecoration(SpaceGridItemDeco(2, 55))
             setOnItemClickListener { adapter, view, position ->
                 val item = paperTypes[position]
                 item.isPg=false
@@ -162,7 +165,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private fun loadPapers(papers: MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
             val images = item.submitUrl.split(",").toMutableList()
-            val pathStr = FileAddress().getPathTestPaper(item.examId, item.id)
+            val pathStr = FileAddress().getPathTestPaper(item.commonTypeId, item.id)
             val paths = mutableListOf<String>()
             for (i in images.indices) {
                 paths.add("$pathStr/${i + 1}.png")
@@ -172,7 +175,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
-                        mPresenter.deletePaper(item.id)
+                        mPresenter.downloadCompletePaper(item.id)
                         lock.lock()
                         savePaperData(paths,item)
                         lock.unlock()
@@ -212,7 +215,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
                         override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                         }
                         override fun completed(task: BaseDownloadTask?) {
-                            mPresenter.deleteExam(item.id)
+                            mPresenter.downloadCompleteExam(item.id)
                             lock.lock()
                             saveExamData(paths,DataBeanManager.getCourseStr(courseId),item)
                             lock.unlock()
@@ -232,18 +235,21 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private fun savePaperData(paths:List<String>,item:PaperList.PaperListBean){
         //获取分类已保存多少次考试，用于页码排序
         val papers= PaperDaoManager.getInstance().queryAll(mCourse,item.commonTypeId)
+
         //保存本次考试
         val paper= PaperBean().apply {
             contentId=item.id
             course=item.subject
             typeId=item.commonTypeId
-            type=item.examName
+            type=item.typeName
             title=item.title
-            path=FileAddress().getPathTestPaper(item.examId, item.id)
+            path=FileAddress().getPathTestPaper(item.commonTypeId, item.id)
             page=papers.size
             score=item.score.toString()
             correctJson=item.question
             correctMode=item.questionType
+            answerUrl=item.answerUrl
+            scoreMode=item.questionMode
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),"")
@@ -307,7 +313,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private fun refreshView(paperList: PaperList) {
         for (item in paperList.list) {
             for (ite in paperTypes) {
-                if (item.subject == ite.course && item.examId == ite.typeId) {
+                if (item.subject == ite.course && item.commonTypeId == ite.typeId) {
                     ite.score = item.score
                     ite.paperTitle=item.title
                     ite.isPg = true
@@ -331,8 +337,8 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
         mAdapter?.notifyDataSetChanged()
     }
 
-    override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+    private fun fetchTypes() {
+        if (NetworkUtil(requireContext()).isNetworkConnected()) {
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!
@@ -340,17 +346,22 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             map["userId"] = mCourseItem?.userId!!
             mPresenter.getTypeList(map)
 
+            val map1 = HashMap<String, Any>()
+            map["subject"]=mCourse
             //获取考试批改下发列表
-            mPresenter.getExamList()
+            mPresenter.getExamList(map1)
         } else {
-            setData()
+            fetchData()
         }
     }
 
-    private fun setData() {
-        if (paperTypes != PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)) {
-            paperTypes = PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)
+    override fun fetchData() {
+        val types=PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse,pageIndex,pageSize)
+        if (paperTypes != types) {
+            val totalTypes = PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)
+            paperTypes=types
             mAdapter?.setNewData(paperTypes)
+            setPageNumber(totalTypes.size)
         }
         if (NetworkUtil(requireActivity()).isNetworkConnected())
             fetchCorrectPaper()
@@ -369,7 +380,9 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
         val map = HashMap<String, Any>()
         map["type"]=2
         map["sendStatus"] = 2
-        mPresenter.getList(map)
+        map["subject"]=mCourse
+//        map["userId"]=mCourseItem?.userId!!
+        mPresenter.getPaperCorrectList(map)
     }
 
     override fun onRefreshData() {
@@ -377,6 +390,6 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchData()
+        fetchTypes()
     }
 }

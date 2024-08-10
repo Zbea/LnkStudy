@@ -78,7 +78,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
     //获取学生科目列表
     fun getCourseItems() {
         val list= RetrofitManager.service.getCourseItems()
-        doRequest(list, object : Callback<List<CourseItem>>(view,screen) {
+        doRequest(list, object : Callback<List<CourseItem>>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<List<CourseItem>>): Boolean {
                 return false
             }
@@ -92,7 +92,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
     //获取更新信息
     fun getAppUpdate() {
         val list= RetrofitManager.service.onAppUpdate()
-        doRequest(list, object : Callback<AppUpdateBean>(view,screen) {
+        doRequest(list, object : Callback<AppUpdateBean>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
                 return false
             }
@@ -105,7 +105,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
 
     fun active() {
         val type = RetrofitManager.service.active()
-        doRequest(type, object : Callback<Any>(view,screen) {
+        doRequest(type, object : Callback<Any>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -116,7 +116,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
 
     fun getTeachingType() {
         val list = RetrofitManager.service.getTeachType()
-        doRequest(list, object : Callback<TeachingVideoType>(view,screen) {
+        doRequest(list, object : Callback<TeachingVideoType>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<TeachingVideoType>): Boolean {
                 return false
             }
@@ -128,7 +128,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
 
     fun getParentPermission() {
         val type = RetrofitManager.service.getPermissionParentAllow()
-        doRequest(type, object : Callback<PermissionParentBean>(view,screen) {
+        doRequest(type, object : Callback<PermissionParentBean>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<PermissionParentBean>): Boolean {
                 return false
             }
@@ -141,7 +141,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
 
     fun getSchoolPermission() {
         val type = RetrofitManager.service.getPermissionSchoolAllow()
-        doRequest(type, object : Callback<PermissionSchoolBean>(view,screen) {
+        doRequest(type, object : Callback<PermissionSchoolBean>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<PermissionSchoolBean>): Boolean {
                 return false
             }

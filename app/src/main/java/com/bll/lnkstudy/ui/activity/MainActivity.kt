@@ -148,6 +148,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
         registerReceiver(myBroadcastReceiver,intentFilter)
 
+//        val intent = Intent()
+//        intent.putExtra("exam",  0)
+//        intent.action = Constants.EXAM_MODE_BROADCAST_EVENT
+//        sendBroadcast(intent)
+
         val isTips=SPUtil.getBoolean("SpecificationTips")
         if (!isTips){
             showView(ll_tips)
@@ -1247,7 +1252,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             map["uid"] = item.uid
             map["contentType"] = item.contentType
             map["typeId"] = item.typeId
-            map["listJson"] = item.listJson
+            map["listJson"] = if (item.listJson.isNullOrEmpty()) "" else item.listJson
             if (!item.downloadUrl.isNullOrEmpty())
                 map["downloadUrl"] = item.downloadUrl
             map["state"] = item.state

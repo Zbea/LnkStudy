@@ -28,9 +28,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    greendao{
+    greendao {
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 110
+        schemaVersion 111
         //dao的包名
         daoPackage 'com.bll.lnkstudy.greendao'
         //生成数据库文件的目录;

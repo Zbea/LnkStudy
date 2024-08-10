@@ -20,10 +20,7 @@ import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileImageUploadManager
-import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.ToolUtils
+import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
@@ -74,7 +71,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(commitItem?.course, commitItem?.typeId!!)
                 for (index in commitItem?.contents!!) {
                     val homework = homeworks[index]
-                    homework.state = 2
+                    homework.state = 1
                     homework.title = commitItem?.title
                     homework.contentId = commitItem?.messageId!!
                     homework.commitDate = System.currentTimeMillis()
@@ -87,7 +84,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             }
             4 -> {
                 val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,ToolUtils.getImagesStr(commitItem?.contents))
-                item.state=2
+                item.state=1
                 item.score=tv_total_score.text.toString().toInt()
                 item.correctJson=scoreListToJson(currentScores)
                 item.commitJson=""
@@ -97,7 +94,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             }
             1 -> {
                 val paper=HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
-                paper.state=2
+                paper.state=1
                 paper.correctJson=scoreListToJson(currentScores)
                 paper.score=tv_total_score.text.toString().toInt()
                 paper.commitJson=""
@@ -142,7 +139,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         disMissView(iv_btn,iv_tool,iv_catalog,iv_draft)
         setPWEnabled(false)
 
-        tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
+//        tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
 
         iv_score_up.setOnClickListener {
             rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))
@@ -153,7 +150,12 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
 
         tv_correct_save.setOnClickListener {
             if (!tv_total_score.text.isNullOrEmpty()){
-                mUploadPresenter.getToken()
+                if (NetworkUtil(this).isNetworkConnected()){
+                    mUploadPresenter.getToken()
+                }
+                else{
+                    showNetworkDialog()
+                }
             }
         }
 
@@ -384,4 +386,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         return images.size
     }
 
+    override fun onNetworkConnectionSuccess() {
+        mUploadPresenter.getToken()
+    }
 }

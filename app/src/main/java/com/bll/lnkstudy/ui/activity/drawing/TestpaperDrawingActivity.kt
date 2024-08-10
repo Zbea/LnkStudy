@@ -1,8 +1,10 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
+import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.DrawingCatalogDialog
@@ -12,6 +14,7 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
@@ -79,6 +82,11 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
                 }
             }
             override fun onEdit(position: Int, title: String) {
+                val pos = papers[position].page
+                val paper=papers[pos]
+                paper.title=title
+                PaperDaoManager.getInstance().insertOrReplace(paper)
+                DataUpdateManager.editDataUpdate(3,paper.id.toInt(),2,paper.typeId, Gson().toJson(paper))
             }
         })
     }
@@ -150,12 +158,12 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         tv_page_total.text="$pageCount"
         tv_page_total_a.text="$pageCount"
 
-        setElikLoadPath(page,v_content_b!!)
+        setElikLoadPath(elik_b!!,page,v_content_b!!)
         tv_page.text="${page+1}"
         if (isExpand){
-            setElikLoadPath(page,v_content_a!!)
+            setElikLoadPath(elik_a!!,page,v_content_a!!)
             if (page+1<pageCount){
-                setElikLoadPath(page+1,v_content_b!!)
+                setElikLoadPath(elik_b!!,page+1,v_content_b!!)
             }
             else{
                 //不显示 ，不能手写
@@ -180,6 +188,14 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         correctMode=item.correctMode
         tv_correct_title.text=item.title
         tv_total_score.text=item.score
+        scoreMode=item.scoreMode
+        if (item.answerUrl.isNullOrEmpty()){
+            disMissView(tv_answer)
+        }
+        else{
+            answerImages= item.answerUrl?.split(",") as MutableList<String>
+            showView(tv_answer)
+        }
         if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
             setScoreListDetails(item.correctJson)
         }
@@ -189,10 +205,10 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     }
 
     //加载图片
-    private fun setElikLoadPath(index: Int, view:ImageView) {
+    private fun setElikLoadPath( elik: EinkPWInterface ,index: Int, view:ImageView) {
         val testPaperContent=paperContents[index]
-        GlideUtils.setImageFile(this,File(testPaperContent.path),view)
-//        elik.setLoadFilePath(testPaperContent.drawPath,true)
+        GlideUtils.setImageFile(this, File(testPaperContent.path),view)
+//        elik.setLoadFilePath(testPaperContent.path,true)
     }
 
 

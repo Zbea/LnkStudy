@@ -14,7 +14,7 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
 
         val grade = RetrofitManager.service.getCommonData()
 
-        doRequest(grade, object : Callback<CommonData>(view,screen) {
+        doRequest(grade, object : Callback<CommonData>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
                 return false
             }

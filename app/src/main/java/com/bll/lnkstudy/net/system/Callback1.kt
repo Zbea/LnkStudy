@@ -12,7 +12,7 @@ abstract class Callback1<T> : Observer<BaseResult1<T>> {
 
     private var IBaseView: IBaseView
     private var screen=0
-    private var isComplete=true
+    private var isShowToast=true
 
     constructor(IBaseView: IBaseView) {
         this.IBaseView = IBaseView
@@ -23,10 +23,10 @@ abstract class Callback1<T> : Observer<BaseResult1<T>> {
         this.screen=screen
     }
 
-    constructor(IBaseView: IBaseView,screen:Int,isComplete: Boolean) {
+    constructor(IBaseView: IBaseView,screen:Int,isShowToast: Boolean) {
         this.IBaseView = IBaseView
         this.screen=screen
-        this.isComplete=isComplete
+        this.isShowToast=isShowToast
     }
 
     override fun onSubscribe(@NonNull d: Disposable) {
@@ -54,28 +54,28 @@ abstract class Callback1<T> : Observer<BaseResult1<T>> {
     }
 
     override fun onComplete() {
-        if (isComplete)
-            IBaseView.hideLoading()
+        IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
-
-        when (ExceptionHandle.handleException(e).code) {
-            ExceptionHandle.ERROR.NETWORD_ERROR-> {
-                SToast.showText(screen,"网络连接失败")
-            }
-            ExceptionHandle.ERROR.SERVER_TIMEOUT_ERROR -> {
-                SToast.showText(screen,"请求超时")
-            }
-            ExceptionHandle.ERROR.PARSE_ERROR -> {
-                SToast.showText(screen,"数据解析错误")
-            }
-            ExceptionHandle.ERROR.HTTP_ERROR -> {
-                SToast.showText(screen,"服务器连接失败")
-            }
-            else -> {
-                SToast.showText(screen,"服务器开小差，请重试")
+        if (isShowToast){
+            when (ExceptionHandle.handleException(e).code) {
+                ExceptionHandle.ERROR.NETWORD_ERROR-> {
+                    SToast.showText(screen,"网络连接失败")
+                }
+                ExceptionHandle.ERROR.SERVER_TIMEOUT_ERROR -> {
+                    SToast.showText(screen,"请求超时")
+                }
+                ExceptionHandle.ERROR.PARSE_ERROR -> {
+                    SToast.showText(screen,"数据解析错误")
+                }
+                ExceptionHandle.ERROR.HTTP_ERROR -> {
+                    SToast.showText(screen,"服务器连接失败")
+                }
+                else -> {
+                    SToast.showText(screen,"服务器开小差，请重试")
+                }
             }
         }
         IBaseView.hideLoading()
