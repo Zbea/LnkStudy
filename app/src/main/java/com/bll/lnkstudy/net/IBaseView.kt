@@ -13,7 +13,7 @@ interface IBaseView {
 
     fun showLoading()
 
-    fun fail(msg:String)
+    fun fail(screen:Int,msg:String)
 
     /**
      * 加载出现错误

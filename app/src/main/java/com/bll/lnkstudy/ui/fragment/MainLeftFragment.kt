@@ -46,6 +46,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.*
 
 
 /**
@@ -67,8 +68,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     private var noticeItems = mutableListOf<HomeworkNoticeList.HomeworkNoticeBean>()
 
     override fun onUpdateInfo(item: SystemUpdateInfo) {
-//        updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
-//        downLoadStartSystem(item)
+        updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
+        downLoadStartSystem(item)
     }
 
     override fun onAppUpdate(item: AppUpdateBean) {
@@ -346,7 +347,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             val file = if (listFiles.size > nowDayPos - 1) {
                 listFiles[nowDayPos - 1]
             } else {
-                listFiles[listFiles.size - 1]
+                listFiles[Random().nextInt(listFiles.size)]
+//                listFiles[listFiles.size - 1]
             }
             GlideUtils.setImageFileRound(requireActivity(), file, iv_calender, 15)
         }

@@ -18,7 +18,7 @@ public class HomeworkNoticeList {
         public long time;//布置时间
         public int subject;
         public String name;
-        public int type;//1家长2老师
+        public int type;//1家长2老师3学校
     }
 
 }

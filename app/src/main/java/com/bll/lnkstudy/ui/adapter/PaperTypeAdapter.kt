@@ -19,7 +19,7 @@ class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuick
             setVisible(R.id.ll_rank,item.isPg)
             setText(R.id.tv_name,item.name)
             setText(R.id.tv_title,item.paperTitle)
-            setText(R.id.tv_score,"总分："+item.score.toString())
+            setText(R.id.tv_score,"分数："+item.score.toString())
             if (grade!=item.grade){
                 setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})" )
             }

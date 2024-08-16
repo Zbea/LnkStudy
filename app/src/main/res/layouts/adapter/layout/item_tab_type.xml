@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingEnd="44dp"
+    android:paddingEnd="40dp"
     android:paddingBottom="@dimen/dp_10"
     android:gravity="center">
 
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:gravity="center"
-        android:textSize="@dimen/sp_24"
+        android:textSize="@dimen/sp_26"
         android:text="唐诗宋词"
         android:lines="1"
         android:textStyle="bold"

@@ -14,6 +14,7 @@ import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 
@@ -56,7 +57,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
 
     override fun onEditPsd() {
         showToast(R.string.toast_edit_password_success)
-        finish()
+        setIntent()
     }
 
     override fun layoutId(): Int {
@@ -85,6 +86,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
             }
             1 -> {
                 setPageTitle(R.string.find_password)
+                ed_user.setText(SPUtil.getString("account"))
                 disMissView(ll_name,ll_date,ll_school)
                 btn_register.setText(R.string.commit)
             }

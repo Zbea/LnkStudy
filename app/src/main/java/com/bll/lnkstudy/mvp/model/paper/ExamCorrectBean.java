@@ -12,6 +12,8 @@ public class ExamCorrectBean {
     public int score;
     public String question;
     public int questionType;
+    public int questionMode;
+    public String answerUrl;
     public String examName;
     public int typeId;
 }

@@ -448,8 +448,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         mDialog?.show()
     }
 
-    override fun fail(msg: String) {
-        showToast(msg)
+    override fun fail(screen: Int,msg: String) {
+        showToast(screen,msg)
     }
 
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
@@ -478,7 +478,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             }
             Constants.NETWORK_CONNECTION_FAIL_EVENT->{
                 hideNetworkDialog()
-                showToast(R.string.net_work_error)
             }
             else->{
                 onEventBusMessage(msgFlag)

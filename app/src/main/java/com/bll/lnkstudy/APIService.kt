@@ -384,7 +384,7 @@ interface APIService{
      * 获取考试批改
      */
     @GET("school/exam/allStudentJob")
-    fun getExamCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<Map<Int,MutableList<ExamCorrectBean>>>>
+    fun getExamCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<ExamCorrectBean>>>
     /**
      * 学校考试下载完成
      */

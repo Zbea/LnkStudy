@@ -37,19 +37,22 @@
 
         <LinearLayout
             android:id="@+id/ll_rank"
-            android:layout_width="wrap_content"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:background="@mipmap/icon_testpaper_rank_bg"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_60"
                 android:lines="1"
                 android:gravity="center"
                 android:textColor="@color/black"

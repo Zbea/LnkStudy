@@ -59,14 +59,13 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
 
     override fun onList(paperList: PaperList?) {
         loadPapers(paperList?.list!!)
-        refreshView(paperList)
     }
 
     override fun onDeleteSuccess() {
     }
 
-    override fun onExamList(map: Map<Int, MutableList<ExamCorrectBean>>) {
-        loadExams(map)
+    override fun onExamList(list: MutableList<ExamCorrectBean>) {
+        loadExams(list)
     }
 
     /**
@@ -164,6 +163,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
      */
     private fun loadPapers(papers: MutableList<PaperList.PaperListBean>) {
         for (item in papers) {
+            refreshView(item)
             val images = item.submitUrl.split(",").toMutableList()
             val pathStr = FileAddress().getPathTestPaper(item.commonTypeId, item.id)
             val paths = mutableListOf<String>()
@@ -191,41 +191,39 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      * 下载所有考试卷
      */
-    private fun loadExams(map: Map<Int,MutableList<ExamCorrectBean>>) {
-        for (courseId in map.keys){
-            for (item in map[courseId]!!) {
-                val images=if (item.teacherUrl.isNotEmpty()){
-                    item.teacherUrl.split(",").toMutableList()
-                }
-                else{
-                    item.examUrl.split(",").toMutableList()
-                }
-                val typeId=MethodManager.getExamTypeId(DataBeanManager.getCourseStr(courseId))
-                item.typeId=typeId
-                //刷新考试分类成绩
-                refreshExamView(item)
-
-                val pathStr = FileAddress().getPathExam(item.typeId, item.id)
-                val paths = mutableListOf<String>()
-                for (i in images.indices) {
-                    paths.add("$pathStr/${i + 1}.png")
-                }
-                FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
-                    object : FileMultitaskDownManager.MultiTaskCallBack {
-                        override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        }
-                        override fun completed(task: BaseDownloadTask?) {
-                            mPresenter.downloadCompleteExam(item.id)
-                            lock.lock()
-                            saveExamData(paths,DataBeanManager.getCourseStr(courseId),item)
-                            lock.unlock()
-                        }
-                        override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        }
-                        override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        }
-                    })
+    private fun loadExams(list: MutableList<ExamCorrectBean>) {
+        for (item in list) {
+            val images=if (item.teacherUrl.isNotEmpty()){
+                item.teacherUrl.split(",").toMutableList()
             }
+            else{
+                item.examUrl.split(",").toMutableList()
+            }
+            val typeId=MethodManager.getExamTypeId(mCourse)
+            item.typeId=typeId
+            //刷新考试分类成绩
+            refreshExamView(item)
+
+            val pathStr = FileAddress().getPathExam(item.typeId, item.id)
+            val paths = mutableListOf<String>()
+            for (i in images.indices) {
+                paths.add("$pathStr/${i + 1}.png")
+            }
+            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        mPresenter.downloadCompleteExam(item.id)
+                        lock.lock()
+                        saveExamData(paths,item)
+                        lock.unlock()
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
         }
     }
 
@@ -273,13 +271,13 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      *  下载完成后，将考卷保存在本地试卷里面
      */
-    private fun saveExamData(paths:List<String>,subject:String,item:ExamCorrectBean){
+    private fun saveExamData(paths:List<String>,item:ExamCorrectBean){
         //获取分类已保存多少次考试，用于页码排序
-        val papers= PaperDaoManager.getInstance().queryAll(subject,item.typeId)
+        val papers= PaperDaoManager.getInstance().queryAll(mCourse,item.typeId)
         //保存本次考试
         val paper= PaperBean().apply {
             contentId=item.id
-            course=subject
+            course=mCourse
             this.typeId=item.typeId
             type="学校考试卷"
             title=item.examName
@@ -288,15 +286,17 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             score=item.score.toString()
             correctJson=item.question
             correctMode=item.questionType
+            scoreMode=item.questionMode
+            answerUrl=item.answerUrl
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),"")
 
-        val paperContents=PaperContentDaoManager.getInstance().queryAllByType(subject,item.typeId)
+        val paperContents=PaperContentDaoManager.getInstance().queryAllByType(mCourse,item.typeId)
         for (i in paths.indices){
             //保存本次考试的试卷内容
             val paperContent= PaperContentBean().apply {
-                    course=subject
+                    course=mCourse
                     typeId=item.typeId
                     contentId=item.id
                     path=paths[i]
@@ -310,14 +310,12 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      * 刷新批改分 循环遍历
      */
-    private fun refreshView(paperList: PaperList) {
-        for (item in paperList.list) {
-            for (ite in paperTypes) {
-                if (item.subject == ite.course && item.commonTypeId == ite.typeId) {
-                    ite.score = item.score
-                    ite.paperTitle=item.title
-                    ite.isPg = true
-                }
+    private fun refreshView(item: PaperList.PaperListBean) {
+        for (ite in paperTypes) {
+            if (item.subject == ite.course && item.commonTypeId == ite.typeId) {
+                ite.score = item.score
+                ite.paperTitle=item.title
+                ite.isPg = true
             }
         }
         mAdapter?.notifyDataSetChanged()
@@ -345,11 +343,6 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             map["type"] = 1
             map["userId"] = mCourseItem?.userId!!
             mPresenter.getTypeList(map)
-
-            val map1 = HashMap<String, Any>()
-            map["subject"]=mCourse
-            //获取考试批改下发列表
-            mPresenter.getExamList(map1)
         } else {
             fetchData()
         }
@@ -377,11 +370,16 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
      * 获取老师批改下发测试卷
      */
     private fun fetchCorrectPaper() {
+        val map1 = HashMap<String, Any>()
+        map1["subject"]=DataBeanManager.getCourseId(mCourse)
+        //获取考试批改下发列表
+        mPresenter.getExamList(map1)
+
         val map = HashMap<String, Any>()
         map["type"]=2
         map["sendStatus"] = 2
         map["subject"]=mCourse
-//        map["userId"]=mCourseItem?.userId!!
+        //获取测试卷批改下发列表
         mPresenter.getPaperCorrectList(map)
     }
 

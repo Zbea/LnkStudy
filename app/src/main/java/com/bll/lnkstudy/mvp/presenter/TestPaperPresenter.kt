@@ -55,11 +55,11 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
 
     fun getExamList(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getExamCorrectList(map)
-        doRequest(type, object : Callback<Map<Int,MutableList<ExamCorrectBean>>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Map<Int,MutableList<ExamCorrectBean>>>): Boolean {
+        doRequest(type, object : Callback<MutableList<ExamCorrectBean>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<MutableList<ExamCorrectBean>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<Map<Int,MutableList<ExamCorrectBean>>>) {
+            override fun success(tBaseResult: BaseResult<MutableList<ExamCorrectBean>>) {
                 if (tBaseResult.data!=null)
                     view.onExamList(tBaseResult.data)
             }

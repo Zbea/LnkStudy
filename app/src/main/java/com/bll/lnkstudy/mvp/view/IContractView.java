@@ -157,7 +157,7 @@ public interface IContractView {
         void onTypeList(List<PaperTypeBean> list);
         void onList(PaperList paper);
         void onDeleteSuccess();
-        void onExamList(Map<Integer,List<ExamCorrectBean>> map);
+        void onExamList(List<ExamCorrectBean> list);
     }
 
     //作业

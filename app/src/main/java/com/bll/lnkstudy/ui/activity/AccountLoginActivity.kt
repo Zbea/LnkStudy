@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -59,11 +60,11 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         ed_psw.setText(password)
 
         tv_register.setOnClickListener {
-            startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(0), 0)
+            activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(0))
         }
 
         tv_find_psd.setOnClickListener {
-            startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(1), 0)
+            activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(1))
         }
 
         btn_login.setOnClickListener {
@@ -92,9 +93,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     }
 
     private fun gotoMainActivity(){
-
         MethodManager.setStatusBarValue(statusBarValue)
-
         val intent=Intent(this,MainActivity::class.java)
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
@@ -113,13 +112,15 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+    /**
+     * 开始通知回调
+     */
+    private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode==Activity.RESULT_OK){
+            val data=it.data
             ed_user.setText(data?.getStringExtra("user"))
             ed_psw.setText(data?.getStringExtra("psw"))
         }
     }
-
 
 }

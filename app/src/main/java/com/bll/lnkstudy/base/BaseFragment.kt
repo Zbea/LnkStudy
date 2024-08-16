@@ -347,9 +347,9 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     override fun showLoading() {
         mDialog?.show()
     }
-    override fun fail(msg: String) {
+    override fun fail(screen: Int, msg: String) {
         if (mView==null||activity==null)return
-        showToast(msg)
+        showToast(screen,msg)
     }
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
     }
@@ -384,7 +384,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
             }
             Constants.NETWORK_CONNECTION_FAIL_EVENT->{
                 hideNetworkDialog()
-                showToast(R.string.net_work_error)
             }
             else->{
                 onEventBusMessage(msgFlag)
