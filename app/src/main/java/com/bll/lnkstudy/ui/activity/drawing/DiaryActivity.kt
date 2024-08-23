@@ -156,11 +156,11 @@ class DiaryActivity:BaseDrawingActivity() {
         v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
         v_content_a?.setImageResource(ToolUtils.getImageResId(this, bgRes))
 
-        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
         setEinkImage(elik_b!!,path)
         tv_page.text = "${posImage + 1}"
         if (isExpand){
-            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage}.tch"
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage}.png"
             setEinkImage(elik_a!!,path)
             if (screenPos==Constants.SCREEN_LEFT){
                 tv_page_a.text = "${posImage + 1}"

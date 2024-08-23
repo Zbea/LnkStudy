@@ -72,30 +72,14 @@ public class HomeworkBookCorrectDaoManager {
     }
 
     public HomeworkBookCorrectBean queryCorrectBean(int bookId,int page){
-        HomeworkBookCorrectBean correctBean = null;
-        List<HomeworkBookCorrectBean> list=queryCorrectAll(bookId);
-        for (HomeworkBookCorrectBean item: list) {
-            String[] pages=item.pages.split(",");
-            for (String pageStr:pages) {
-                if (page==Integer.parseInt(pageStr)){
-                    correctBean=item;
-                }
-            }
-        }
-        return correctBean;
+        WhereCondition whereCondition= HomeworkBookCorrectBeanDao.Properties.BookId.eq(bookId);
+        WhereCondition whereCondition1= HomeworkBookCorrectBeanDao.Properties.Page.eq(page);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
     }
 
-    public HomeworkBookCorrectBean queryCorrectBean(int bookId,String pages){
-        HomeworkBookCorrectBean correctBean = null;
-        List<HomeworkBookCorrectBean> list=queryCorrectAll(bookId);
-        for (HomeworkBookCorrectBean item: list) {
-            if (Objects.equals(pages, item.pages)){
-                correctBean=item;
-            }
-        }
-        return correctBean;
+    public boolean isExist(int bookId,int page){
+        return queryCorrectBean(bookId,page)!=null;
     }
-
 
     public void clear(){
         dao.deleteAll();

@@ -211,7 +211,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_b?.resId = noteBook?.contentResId
         note_Content_b?.grade=grade
         note_Content_b?.title=getString(R.string.unnamed)+(noteContents.size+1)
-        note_Content_b?.filePath = "$path/$pathName.tch"
+        note_Content_b?.filePath = "$path/$pathName.png"
         note_Content_b?.page = noteContents.size
         page = noteContents.size
 

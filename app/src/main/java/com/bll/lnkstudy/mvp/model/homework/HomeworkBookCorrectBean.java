@@ -19,8 +19,8 @@ public class HomeworkBookCorrectBean {
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int bookId;
     public String homeworkTitle;//本次作业标题
-    public String pages;//下标页码
-    public int state;//状态1提交 2已完成
+    public int page;//下标页码
+    public int state=0;//状态1提交 2已完成
     public int correctMode;//批改模式
     public int scoreMode;//打分模式1打分
     public int score;//成绩
@@ -28,15 +28,16 @@ public class HomeworkBookCorrectBean {
     public String correctJson;//批改详情
     public boolean isSelfCorrect;//是否自批
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 1444364274)
-    public HomeworkBookCorrectBean(Long id, long userId, int bookId, String homeworkTitle, String pages,
+    public Long startTime=0L;
+    @Generated(hash = 203763187)
+    public HomeworkBookCorrectBean(Long id, long userId, int bookId, String homeworkTitle, int page,
             int state, int correctMode, int scoreMode, int score, String answerUrl, String correctJson,
-            boolean isSelfCorrect, String commitJson) {
+            boolean isSelfCorrect, String commitJson, Long startTime) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
         this.homeworkTitle = homeworkTitle;
-        this.pages = pages;
+        this.page = page;
         this.state = state;
         this.correctMode = correctMode;
         this.scoreMode = scoreMode;
@@ -45,6 +46,7 @@ public class HomeworkBookCorrectBean {
         this.correctJson = correctJson;
         this.isSelfCorrect = isSelfCorrect;
         this.commitJson = commitJson;
+        this.startTime = startTime;
     }
     @Generated(hash = 1773308880)
     public HomeworkBookCorrectBean() {
@@ -73,11 +75,11 @@ public class HomeworkBookCorrectBean {
     public void setHomeworkTitle(String homeworkTitle) {
         this.homeworkTitle = homeworkTitle;
     }
-    public String getPages() {
-        return this.pages;
+    public int getPage() {
+        return this.page;
     }
-    public void setPages(String pages) {
-        this.pages = pages;
+    public void setPage(int page) {
+        this.page = page;
     }
     public int getState() {
         return this.state;
@@ -127,4 +129,11 @@ public class HomeworkBookCorrectBean {
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
     }
+    public Long getStartTime() {
+        return this.startTime;
+    }
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
 }

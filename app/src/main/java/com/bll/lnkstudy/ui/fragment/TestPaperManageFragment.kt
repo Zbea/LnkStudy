@@ -7,7 +7,6 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
@@ -19,8 +18,8 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
-    private var currentCourses= mutableListOf<CourseItem>()
-    private var fragments= mutableListOf<PaperFragment>()
+    private var currentCourses= mutableListOf<String>()
+    private var fragments= mutableListOf<TestPaperFragment>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_testpaper_manage
@@ -28,26 +27,10 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[4])
-
+        initTab()
     }
 
     override fun lazyLoad() {
-        for (item in MethodManager.getCourses()){
-            val typeId=MethodManager.getExamTypeId(item.subject)
-            if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
-                val typeItem=PaperTypeBean()
-                typeItem.name="学校考试卷"
-                typeItem.course=item.subject
-                typeItem.date=System.currentTimeMillis()
-                typeItem.grade=mUser?.grade!!
-                typeItem.typeId=typeId
-                typeItem.userId=item.userId
-                PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
-                //创建增量数据
-                DataUpdateManager.createDataUpdate(3, typeItem.typeId, 1, Gson().toJson(item))
-            }
-        }
-        initTab()
     }
 
     //设置头部索引
@@ -58,7 +41,7 @@ class TestPaperManageFragment: BaseMainFragment() {
             currentCourses=MethodManager.getCourses()
             for (i in currentCourses.indices) {
                 itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i].subject
+                    title=currentCourses[i]
                     isCheck=i==0
                 })
             }
@@ -75,8 +58,8 @@ class TestPaperManageFragment: BaseMainFragment() {
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
-        for (item in currentCourses){
-            fragments.add(PaperFragment().newInstance(item))
+        for (course in currentCourses){
+            fragments.add(TestPaperFragment().newInstance(course))
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
@@ -159,7 +142,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
-                lazyLoad()
+                initTab()
             }
         }
     }

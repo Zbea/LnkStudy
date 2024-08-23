@@ -34,7 +34,6 @@ import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
-import com.bll.lnkstudy.mvp.model.CourseItem;
 
 import java.util.List;
 import java.util.Map;
@@ -135,7 +134,7 @@ public interface IContractView {
 
     interface IMainLeftView extends IBaseView {
         void onHomeworkNotice(HomeworkNoticeList list);
-        void onCourseItems(List<CourseItem> courseItems);
+        void onCourseItems(List<String> courseItems);
         void onAppUpdate(AppUpdateBean item);
         void onCorrect(HomeworkNoticeList list);
         void onType(TeachingVideoType type);

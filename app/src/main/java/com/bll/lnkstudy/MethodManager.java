@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
@@ -18,7 +17,6 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ItemList;
 import com.bll.lnkstudy.mvp.model.ItemTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
-import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionTimeBean;
 import com.bll.lnkstudy.mvp.model.PrivacyPassword;
@@ -28,7 +26,6 @@ import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
-import com.bll.lnkstudy.mvp.model.CourseItem;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
@@ -40,7 +37,6 @@ import com.bll.lnkstudy.ui.activity.drawing.TestpaperDrawingActivity;
 import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
 import com.bll.lnkstudy.utils.DateUtils;
-import com.bll.lnkstudy.utils.FileUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
 
@@ -81,16 +77,16 @@ public class MethodManager {
     /**
      * 保存学生科目
      */
-    public static void saveCourses(List<CourseItem> courseItems) {
-        SPUtil.INSTANCE.putCourseItems("courseItems", courseItems);
+    public static void saveCourses(List<String> courseItems) {
+        SPUtil.INSTANCE.putCurrentCourses("currentCourses", courseItems);
         EventBus.getDefault().post(Constants.COURSEITEM_EVENT);
     }
 
     /**
      * 获取学生科目
      */
-    public static List<CourseItem> getCourses() {
-        return SPUtil.INSTANCE.getCourseItems("courseItems");
+    public static List<String> getCourses() {
+        return SPUtil.INSTANCE.getCurrentCourses("currentCourses");
     }
 
     /**

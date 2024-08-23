@@ -25,7 +25,7 @@ class DraftDrawingActivity:BaseDrawingActivity(){
 
     override fun initData() {
         for (i in 0..4){
-            paths.add(FileAddress().getPathDraft()+"/$i.tch")
+            paths.add(FileAddress().getPathDraft()+"/$i.png")
         }
     }
 

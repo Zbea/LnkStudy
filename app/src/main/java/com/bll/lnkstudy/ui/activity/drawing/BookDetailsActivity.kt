@@ -176,7 +176,7 @@ class BookDetailsActivity : BaseDrawingActivity() {
         val showFile = getIndexFile(index)
         if (showFile != null) {
             GlideUtils.setImageFile(this, showFile, view)
-            val drawPath = book?.bookDrawPath+"/${index+1}.tch"
+            val drawPath = book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath, true)
         }
     }

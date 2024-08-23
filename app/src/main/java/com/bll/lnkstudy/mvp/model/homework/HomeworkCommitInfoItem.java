@@ -17,6 +17,7 @@ public class HomeworkCommitInfoItem implements Serializable {
     public int bookId;
     public int messageId;//作业消息id
     public String title;
+    public long takeTime;//时长
     public List<Integer> contents;//选中页码的真实下标
     public boolean isSelfCorrect;
     public int correctMode;//批改模式

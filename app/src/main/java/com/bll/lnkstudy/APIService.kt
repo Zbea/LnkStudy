@@ -149,7 +149,7 @@ interface APIService{
      * 获取学生科目列表
      */
     @GET("class/group/teacherInfo")
-    fun getCourseItems(): Observable<BaseResult<List<CourseItem>>>
+    fun getCourseItems(): Observable<BaseResult<List<String>>>
     /**
      * 加入班群
      */

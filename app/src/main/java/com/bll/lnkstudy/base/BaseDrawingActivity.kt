@@ -430,6 +430,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         elik_a?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
                 elik_a?.setShifted(isCurrent&&isParallel)
+                onElikStart_a()
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(1)
@@ -447,6 +448,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
                 elik_b?.setShifted(isCurrent&&isParallel)
+                onElikStart_b()
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(2)
@@ -653,6 +655,18 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      * 打开目录
      */
     open fun onCatalog(){
+    }
+
+    /**
+     * 左屏抬笔
+     */
+    open fun onElikStart_a(){
+    }
+
+    /**
+     * 右屏抬笔
+     */
+    open fun onElikStart_b(){
     }
 
     /**

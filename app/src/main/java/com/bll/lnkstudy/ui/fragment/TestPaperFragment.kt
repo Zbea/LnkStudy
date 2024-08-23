@@ -11,7 +11,6 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.paper.*
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -30,8 +29,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
  */
-class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
-    private var mCourseItem:CourseItem?=null
+class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private var mCourse = ""//当前科目
     private val lock = ReentrantLock()
     private val mPresenter = TestPaperPresenter(this)
@@ -71,10 +69,10 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      * 实例 传送数据
      */
-    fun newInstance(courseItem: CourseItem): PaperFragment {
-        val fragment= PaperFragment()
+    fun newInstance(courseItem: String): TestPaperFragment {
+        val fragment= TestPaperFragment()
         val bundle= Bundle()
-        bundle.putSerializable("courseItem",courseItem)
+        bundle.putString("courseItem",courseItem)
         fragment.arguments=bundle
         return fragment
     }
@@ -86,9 +84,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
 
     override fun initView() {
         pageSize=6
-
-        mCourseItem= arguments?.getSerializable("courseItem") as CourseItem
-        mCourse=mCourseItem?.subject!!
+        mCourse= arguments?.getString("courseItem") as String
 
         initRecyclerView()
     }
@@ -204,7 +200,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             //刷新考试分类成绩
             refreshExamView(item)
 
-            val pathStr = FileAddress().getPathExam(item.typeId, item.id)
+            val pathStr = FileAddress().getPathTestPaper(item.typeId, item.id)
             val paths = mutableListOf<String>()
             for (i in images.indices) {
                 paths.add("$pathStr/${i + 1}.png")
@@ -281,7 +277,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             this.typeId=item.typeId
             type="学校考试卷"
             title=item.examName
-            path=FileAddress().getPathExam(item.typeId, item.id)
+            path=FileAddress().getPathTestPaper(item.typeId, item.id)
             page=papers.size
             score=item.score.toString()
             correctJson=item.question
@@ -341,7 +337,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
             map["size"] = 100
             map["grade"] = mUser?.grade!!
             map["type"] = 1
-            map["userId"] = mCourseItem?.userId!!
+            map["subject"] = DataBeanManager.getCourseId(mCourse)
             mPresenter.getTypeList(map)
         } else {
             fetchData()
@@ -384,7 +380,7 @@ class PaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onRefreshData() {
-        lazyLoad()
+        fetchTypes()
     }
 
     override fun onNetworkConnectionSuccess() {

@@ -59,7 +59,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
         val courses=MethodManager.getCourses()
         for (item in courses){
-            popCourses.add(PopupBean(0,item.subject))
+            popCourses.add(PopupBean(0,item))
         }
         popCourses.add(PopupBean(0,"运动"))
         popCourses.add(PopupBean(0,"娱乐"))

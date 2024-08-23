@@ -21,11 +21,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 /**
+ * type 1作业本 2作业卷
  * pageStart 为课辅作业的 页码开始值
+ *
  */
-class DrawingCommitDialog(val context: Context, val screenPos: Int, private val pageStart:Int, var items:MutableList<ItemList>) {
-
-    constructor(context: Context,screenPos: Int,items: MutableList<ItemList>):this(context, screenPos, 0, items)
+class DrawingCommitDialog(val context: Context, val screenPos: Int, private val pageStart:Int, private val countSize:Int,var items:MutableList<ItemList>) {
 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
@@ -130,8 +130,13 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
                 }
 
                 val realPageIndexs= mutableListOf<Int>()
-                for (i in pages){
-                    realPageIndexs.add(i+pageStart-1)
+                for (page in pages){
+                    realPageIndexs.add(page+pageStart-1)
+                }
+
+                if (realPageIndexs.last()>=countSize){
+                    SToast.showText(if (screenPos == 3) 2 else screenPos, "输入的页码超出")
+                    return@setOnClickListener
                 }
 
                 val item = HomeworkCommitInfoItem()

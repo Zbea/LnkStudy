@@ -51,6 +51,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var page = 0//页码
     private val commitItems = mutableListOf<ItemList>()
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
+    private var takeTime=0L
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -65,6 +66,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     map["studentTaskId"]=paper?.contentId!!
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
                     map["commonTypeId"] = homeworkType?.typeId!!
+                    map["takeTime"]=takeTime
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -344,6 +346,20 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         saveElik(elik_b!!,paperContentBean!!)
     }
 
+    override fun onElikStart_a() {
+        if (paper?.startTime==0L){
+            paper?.startTime=System.currentTimeMillis()
+            daoManager?.insertOrReplace(paper)
+        }
+    }
+
+    override fun onElikStart_b() {
+        if (paper?.startTime==0L){
+            paper?.startTime=System.currentTimeMillis()
+            daoManager?.insertOrReplace(paper)
+        }
+    }
+
     /**
      * 抬笔后保存手写
      */
@@ -376,12 +392,14 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             Thread {
                 val drawPath = item.drawPath.replace("tch", "png")//当前绘图路径
                 BitmapUtils.mergeBitmap(item.path, drawPath)
-                FileUtils.deleteFile(File(item.drawPath).parentFile)
+                FileUtils.deleteFile(File(drawPath))
                 commitItems.add(ItemList().apply {
                     id = i
                     url = item.path
                 })
                 if (commitItems.size == paperContents.size) {
+                    takeTime=System.currentTimeMillis()- paper?.startTime!!
+                    homeworkCommitInfoItem?.takeTime=takeTime
                     if (paper?.isSelfCorrect == true){
                         //修改当前paper状态
                         paper?.state = 1

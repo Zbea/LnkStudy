@@ -3,16 +3,15 @@ package com.bll.lnkstudy.mvp.model.paper;
 import androidx.annotation.Nullable;
 
 import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.Objects;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class PaperTypeBean {
@@ -21,7 +20,8 @@ public class PaperTypeBean {
     @Id(autoincrement = true)
     public Long id;
     public long studentId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public long userId;//老师id
+    public long teacherId;//老师id
+    public String teacher;
     public String name;//考卷分类
     @Unique
     public int typeId;
@@ -44,12 +44,14 @@ public class PaperTypeBean {
     @Transient
     public String contentSubtypeJson;
 
-    @Generated(hash = 825260906)
-    public PaperTypeBean(Long id, long studentId, long userId, String name, int typeId, String course, long date,
-            int grade, boolean isCloud) {
+
+    @Generated(hash = 779271980)
+    public PaperTypeBean(Long id, long studentId, long teacherId, String teacher, String name, int typeId, String course, long date, int grade,
+            boolean isCloud) {
         this.id = id;
         this.studentId = studentId;
-        this.userId = userId;
+        this.teacherId = teacherId;
+        this.teacher = teacher;
         this.name = name;
         this.typeId = typeId;
         this.course = course;
@@ -57,9 +59,11 @@ public class PaperTypeBean {
         this.grade = grade;
         this.isCloud = isCloud;
     }
+
     @Generated(hash = 26624406)
     public PaperTypeBean() {
     }
+
     public Long getId() {
         return this.id;
     }
@@ -72,11 +76,11 @@ public class PaperTypeBean {
     public void setStudentId(long studentId) {
         this.studentId = studentId;
     }
-    public long getUserId() {
-        return this.userId;
+    public long getTeacherId() {
+        return this.teacherId;
     }
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
     }
     public String getName() {
         return this.name;
@@ -115,6 +119,7 @@ public class PaperTypeBean {
         this.isCloud = isCloud;
     }
 
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj==null)
@@ -124,7 +129,15 @@ public class PaperTypeBean {
         if (this==obj)
             return true;
         PaperTypeBean item=(PaperTypeBean) obj;
-        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.userId==item.userId
+        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.teacherId==item.teacherId
                 &&this.grade==item.grade&&this.typeId==item.typeId;
+    }
+
+    public String getTeacher() {
+        return this.teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
     }
 }

@@ -23,9 +23,10 @@ public class HomeworkContentBean {
     public String typeStr;//作业本分类
     public int contentId;//老师下发作业id
     public String title;
-    public int state;//0未提交1已提交2已批改
-    public long date;
-    public long commitDate;
+    public int state=0;//0未提交1已提交2已批改
+    public Long date=0L;
+    public Long commitDate=0L;
+    public Long startDate=0L;
     public String path;//文件路径
     public int page;//页码
     public int correctMode;//批改模式
@@ -35,11 +36,11 @@ public class HomeworkContentBean {
     public boolean isSelfCorrect;//是否自批
     public String commitJson;//提交信息(自批时)
     public String answerUrl;
-    @Generated(hash = 1290073061)
+    @Generated(hash = 1075778844)
     public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
-            String typeStr, int contentId, String title, int state, long date, long commitDate,
-            String path, int page, int correctMode, int scoreMode, int score, String correctJson,
-            boolean isSelfCorrect, String commitJson, String answerUrl) {
+            String typeStr, int contentId, String title, int state, Long date, Long commitDate,
+            Long startDate, String path, int page, int correctMode, int scoreMode, int score,
+            String correctJson, boolean isSelfCorrect, String commitJson, String answerUrl) {
         this.id = id;
         this.userId = userId;
         this.bgResId = bgResId;
@@ -51,6 +52,7 @@ public class HomeworkContentBean {
         this.state = state;
         this.date = date;
         this.commitDate = commitDate;
+        this.startDate = startDate;
         this.path = path;
         this.page = page;
         this.correctMode = correctMode;
@@ -118,17 +120,23 @@ public class HomeworkContentBean {
     public void setState(int state) {
         this.state = state;
     }
-    public long getDate() {
+    public Long getDate() {
         return this.date;
     }
-    public void setDate(long date) {
+    public void setDate(Long date) {
         this.date = date;
     }
-    public long getCommitDate() {
+    public Long getCommitDate() {
         return this.commitDate;
     }
-    public void setCommitDate(long commitDate) {
+    public void setCommitDate(Long commitDate) {
         this.commitDate = commitDate;
+    }
+    public Long getStartDate() {
+        return this.startDate;
+    }
+    public void setStartDate(Long startDate) {
+        this.startDate = startDate;
     }
     public String getPath() {
         return this.path;
@@ -184,5 +192,6 @@ public class HomeworkContentBean {
     public void setAnswerUrl(String answerUrl) {
         this.answerUrl = answerUrl;
     }
+
     
 }

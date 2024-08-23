@@ -61,20 +61,20 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        var currentGrade=1
+        var currentGrade=0
         val oldGrade=mUser?.grade!!
         for (item in classGroups){
             if (item.state==1){
                 currentGrade=item.grade
+                break
             }
         }
-        if (currentGrade!=oldGrade){
+        if (currentGrade!=oldGrade&&currentGrade>0){
             mUser?.grade=currentGrade
             SPUtil.putObj("user", mUser!!)
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
-            if (oldGrade>0){
-                EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
-            }
+            //当年级变化时，及时上传本地作业、考卷
+            EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
         }
     }
 

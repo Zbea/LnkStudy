@@ -99,7 +99,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         commonTypeId=exam?.commonTypeId!!
 
         for (i in paths.indices){
-            drawPaths.add("${pathStr}/${i+1}/draw.tch")
+            drawPaths.add("${pathStr}/${i+1}_draw.png")
         }
 
         startAlarmManager()
@@ -136,7 +136,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      * 开启定时任务
      */
     private fun startAlarmManager(){
-        val date=Date(exam?.time!!*1000)
+        val date=Date(DateUtils.date10ToDate13(exam?.time!!))
         val mCalendar = Calendar.getInstance()
         val currentTimeMillisLong = System.currentTimeMillis()
         mCalendar.timeInMillis = currentTimeMillisLong
@@ -227,9 +227,8 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
                 Thread{
                     val path = paths[i] //当前原图路径
                     val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
+                    drawPaths.add(drawPath)
                     BitmapUtils.mergeBitmap(path,drawPath)
-                    //删除手写
-                    FileUtils.deleteFile(File(drawPath).parentFile)
                     commitItems.add(ItemList().apply {
                         id = i
                         url = path

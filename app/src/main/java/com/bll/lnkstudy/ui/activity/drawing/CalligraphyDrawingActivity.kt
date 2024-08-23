@@ -226,7 +226,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.title= getString(R.string.calligraphy)+(paintingLists.size+1)
         paintingDrawingBean?.type = 1
         paintingDrawingBean?.date = System.currentTimeMillis()
-        paintingDrawingBean?.path = "$path/$fileName.tch"
+        paintingDrawingBean?.path = "$path/$fileName.png"
         paintingDrawingBean?.grade=grade
         paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_painting_bg_sf)
         page = paintingLists.size

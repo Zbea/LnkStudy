@@ -144,7 +144,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
      * 得到提错本的手写路径
      */
     private fun getDrawingPath(index: Int):String{
-        return "$path/drawing/$index.tch"
+        return "$path/drawing/$index.png"
     }
 
 }

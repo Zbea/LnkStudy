@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.*
 
 
 class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
@@ -51,6 +52,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var pageStart=1
     private var page = 0 //当前页码
     private var bookId=0
+    private var takeTime=0L
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -67,6 +69,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                         map["page"]=ToolUtils.getImagesStr(homeworkCommitInfoItem?.contents!!)
                         map["studentUrl"]= ToolUtils.getImagesStr(urls)
                         map["commonTypeId"] = homeworkType?.typeId!!
+                        map["takeTime"] = takeTime
                         mUploadPresenter.commit(map)
                     }
                     else{
@@ -179,6 +182,8 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         pageStart = if (catalogMsg==null)0 else catalogMsg?.startCount!!
 
         iv_btn.setOnClickListener {
+            if (messages.size==0)
+                return@setOnClickListener
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
             if (correctBean!=null&&correctBean.state==1&&!correctBean.commitJson.isNullOrEmpty()){
                 val item=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
@@ -186,9 +191,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 gotoSelfCorrect()
                 return@setOnClickListener
             }
-
-            if (messages.size==0)
-                return@setOnClickListener
             if (NetworkUtil(this).isNetworkConnected()){
                 commit()
             }
@@ -287,22 +289,20 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
             }
         }
-        val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
-        if (correctBean!=null){
-            if (correctBean.state==1){
-                setPWEnabled(false)
-                if (!correctBean.commitJson.isNullOrEmpty()){
-                    showToast("请及时自批改后提交")
+
+        if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)){
+            val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
+            when(correctBean.state){
+                1->{
+                    if (!correctBean.commitJson.isNullOrEmpty()){
+                        showToast("请及时自批改后提交")
+                    }
+                }
+                2->{
+                    setScoreDetails(correctBean)
                 }
             }
-            else{
-                setPWEnabled(true)
-            }
         }
-        else{
-            setPWEnabled(true)
-        }
-        setScoreDetails(correctBean)
         //设置当前展示页
         book?.pageUrl = getIndexFile(page)?.path
     }
@@ -342,14 +342,52 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val showFile = getIndexFile(index)
         if (showFile != null) {
             GlideUtils.setImageFileNoCache(this, showFile, view)
-            if (HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, index)==null){
-                val drawPath = book?.bookDrawPath+"/${index+1}/draw.tch"
+            if (isCommitState(index)){
+                elik.setPWEnabled(false)
+            }
+            else{
+                val drawPath = book?.bookDrawPath+"/${index+1}.png"
                 elik.setLoadFilePath(drawPath, true)
                 elik.setPWEnabled(true)
             }
-            else{
-                elik.setPWEnabled(false)
-            }
+        }
+    }
+
+    /**
+     * 获取是否是提交状态
+     */
+    private fun isCommitState(page:Int):Boolean{
+        val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
+        return if (correctBean!=null){
+            correctBean.state==1
+        } else{
+            false
+        }
+    }
+
+    override fun onElikStart_a() {
+        if (!HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page-1)){
+            //保存本次题卷本批改详情
+            val bookCorrectBean = HomeworkBookCorrectBean()
+            bookCorrectBean.bookId = bookId
+            bookCorrectBean.page = page-1
+            bookCorrectBean.startTime=System.currentTimeMillis()
+            val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+            //更新增量数据
+            DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),"")
+        }
+    }
+
+    override fun onElikStart_b() {
+        if (!HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)){
+            //保存本次题卷本批改详情
+            val bookCorrectBean = HomeworkBookCorrectBean()
+            bookCorrectBean.bookId = bookId
+            bookCorrectBean.page = page
+            bookCorrectBean.startTime=System.currentTimeMillis()
+            val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+            //更新增量数据
+            DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),"")
         }
     }
 
@@ -379,7 +417,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      * 题卷提交
      */
     private fun commit() {
-        DrawingCommitDialog(this,getCurrentScreenPos(),messages).builder().setOnDialogClickListener {
+        DrawingCommitDialog(this,getCurrentScreenPos(),pageStart-1,pageCount,messages).builder().setOnDialogClickListener {
             homeworkCommitInfoItem=it
             if (homeworkCommitInfoItem?.isSelfCorrect==true){
                 for (item in homeworkType?.messages!!){
@@ -399,44 +437,83 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             showLoading()
             commitItems.clear()
             for (index in homeworkCommitInfoItem?.contents!!){
-                if (index>pageCount)
-                {
-                    showToast(R.string.toast_page_inexistence)
-                    return@setOnDialogClickListener
-                }
                 //查找页码需要加上开始页面的初始下标
                 val imageFile=getIndexFile(index)
                 val path=imageFile?.path.toString()
-                val drawPath = book?.bookDrawPath+"/${index+1}/draw.png"
+                val drawPath = book?.bookDrawPath+"/${index+1}.png"
                 homeworkCommitInfoItem?.paths?.add(path)
                 Thread{
                     BitmapUtils.mergeBitmap(path,drawPath)
-                    FileUtils.deleteFile(File(drawPath).parentFile)
                     commitItems.add(ItemList().apply {
                         id = index
                         url = path
                     })
+                    FileUtils.deleteFile(File(drawPath))
                     if (commitItems.size==homeworkCommitInfoItem?.contents!!.size){
+                        takeTime = if (getStartTime(homeworkCommitInfoItem?.contents!!)==0L){
+                            0
+                        } else{
+                            System.currentTimeMillis()-getStartTime(homeworkCommitInfoItem?.contents!!)
+                        }
                         if (homeworkCommitInfoItem?.isSelfCorrect == true){
                             hideLoading()
-                            //保存本次题卷本批改详情
-                            val bookCorrectBean = HomeworkBookCorrectBean()
-                            bookCorrectBean.homeworkTitle = homeworkCommitInfoItem?.title
-                            bookCorrectBean.bookId = homeworkCommitInfoItem?.bookId!!
-                            bookCorrectBean.pages = ToolUtils.getImagesStr(homeworkCommitInfoItem?.contents)
-                            bookCorrectBean.state = 1
-                            bookCorrectBean.isSelfCorrect=true
-                            bookCorrectBean.correctMode = homeworkCommitInfoItem?.correctMode!!
-                            bookCorrectBean.correctJson = homeworkCommitInfoItem?.correctJson
-                            bookCorrectBean.scoreMode=homeworkCommitInfoItem?.scoreMode!!
-                            bookCorrectBean.answerUrl=homeworkCommitInfoItem?.answerUrl
-                            bookCorrectBean.commitJson=Gson().toJson(homeworkCommitInfoItem)
-                            val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
-                            //更新增量数据
-                            DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),"")
+                            for (page in homeworkCommitInfoItem?.contents!!){
+                                if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId,page)){
+                                    val bookCorrectBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
+                                    bookCorrectBean.homeworkTitle=homeworkCommitInfoItem?.title
+                                    bookCorrectBean.state = 1
+                                    bookCorrectBean.isSelfCorrect=true
+                                    bookCorrectBean.correctMode = homeworkCommitInfoItem?.correctMode!!
+                                    bookCorrectBean.correctJson = homeworkCommitInfoItem?.correctJson
+                                    bookCorrectBean.scoreMode=homeworkCommitInfoItem?.scoreMode!!
+                                    bookCorrectBean.answerUrl=homeworkCommitInfoItem?.answerUrl
+                                    bookCorrectBean.commitJson=Gson().toJson(homeworkCommitInfoItem)
+                                    HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
+                                    DataUpdateManager.editDataUpdate(7,bookCorrectBean.id.toInt(),2,bookId,Gson().toJson(bookCorrectBean))
+                                }
+                                else{
+                                    //保存本次题卷本批改详情
+                                    val bookCorrectBean = HomeworkBookCorrectBean()
+                                    bookCorrectBean.homeworkTitle = homeworkCommitInfoItem?.title
+                                    bookCorrectBean.bookId = bookId
+                                    bookCorrectBean.startTime=System.currentTimeMillis()
+                                    bookCorrectBean.page=page
+                                    bookCorrectBean.state = 1
+                                    bookCorrectBean.isSelfCorrect=true
+                                    bookCorrectBean.correctMode = homeworkCommitInfoItem?.correctMode!!
+                                    bookCorrectBean.correctJson = homeworkCommitInfoItem?.correctJson
+                                    bookCorrectBean.scoreMode=homeworkCommitInfoItem?.scoreMode!!
+                                    bookCorrectBean.answerUrl=homeworkCommitInfoItem?.answerUrl
+                                    bookCorrectBean.commitJson=Gson().toJson(homeworkCommitInfoItem)
+                                    val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+                                    //更新增量数据
+                                    DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookId ,Gson().toJson(bookCorrectBean),"")
+                                }
+                            }
                             gotoSelfCorrect()
                         }
                         else{
+                            for (page in homeworkCommitInfoItem?.contents!!){
+                                if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId,page)){
+                                    val bookCorrectBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
+                                    bookCorrectBean.homeworkTitle=homeworkCommitInfoItem?.title
+                                    bookCorrectBean.state = 1
+                                    HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
+                                    DataUpdateManager.editDataUpdate(7,bookCorrectBean.id.toInt(),2,bookId,Gson().toJson(bookCorrectBean))
+                                }
+                                else{
+                                    //保存本次题卷本批改详情
+                                    val bookCorrectBean = HomeworkBookCorrectBean()
+                                    bookCorrectBean.homeworkTitle = homeworkCommitInfoItem?.title
+                                    bookCorrectBean.bookId = bookId
+                                    bookCorrectBean.page=page
+                                    bookCorrectBean.startTime=System.currentTimeMillis()
+                                    bookCorrectBean.state = 1
+                                    val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+                                    //更新增量数据
+                                    DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookId ,Gson().toJson(bookCorrectBean),"")
+                                }
+                            }
                             commitItems.sort()
                             mUploadPresenter.getToken()
                         }
@@ -444,6 +521,25 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 }.start()
             }
         }
+    }
+
+    /**
+     * 获取开始时间
+     */
+    private fun getStartTime(pages: List<Int>): Long {
+        val times = mutableListOf<Long>()
+        for (page in pages) {
+            if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)) {
+                val correctBean = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
+                if (correctBean.startTime > 0) {
+                    times.add(correctBean.startTime)
+                }
+            }
+        }
+        if (times.size==0){
+            return 0
+        }
+        return Collections.min(times)
     }
 
     /**

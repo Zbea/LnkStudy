@@ -7,7 +7,6 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.HomeworkCommitDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.*
-import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
@@ -22,7 +21,7 @@ class HomeworkManageFragment: BaseMainFragment() {
 
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
-    private var currentCourses= mutableListOf<CourseItem>()
+    private var currentCourses= mutableListOf<String>()
     private var fragments= mutableListOf<HomeworkFragment>()
     private var popWindowBeans = mutableListOf<PopupBean>()
 
@@ -53,10 +52,10 @@ class HomeworkManageFragment: BaseMainFragment() {
                 }
         }
 
+        initTab()
     }
 
     override fun lazyLoad() {
-        initTab()
     }
 
     //设置头部索引
@@ -67,7 +66,7 @@ class HomeworkManageFragment: BaseMainFragment() {
             currentCourses=MethodManager.getCourses()
             for (i in currentCourses.indices) {
                 itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i].subject
+                    title=currentCourses[i]
                     isCheck=i==0
                 })
             }
@@ -84,8 +83,8 @@ class HomeworkManageFragment: BaseMainFragment() {
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
-        for (item in currentCourses){
-            fragments.add(HomeworkFragment().newInstance(item))
+        for (course in currentCourses){
+            fragments.add(HomeworkFragment().newInstance(course))
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
@@ -286,14 +285,14 @@ class HomeworkManageFragment: BaseMainFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
-                lazyLoad()
+                initTab()
             }
         }
     }
 
 //    override fun onRefreshData() {
 //        for (fragment in fragments){
-//            fragment?.onRefreshData()
+//            fragment.onRefreshData()
 //        }
 //    }
 

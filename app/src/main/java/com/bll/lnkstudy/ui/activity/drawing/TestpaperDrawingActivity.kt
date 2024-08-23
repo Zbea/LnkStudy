@@ -208,7 +208,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     private fun setElikLoadPath( elik: EinkPWInterface ,index: Int, view:ImageView) {
         val testPaperContent=paperContents[index]
         GlideUtils.setImageFile(this, File(testPaperContent.path),view)
-//        elik.setLoadFilePath(testPaperContent.path,true)
+        elik.setLoadFilePath(testPaperContent.path,true)
     }
 
 

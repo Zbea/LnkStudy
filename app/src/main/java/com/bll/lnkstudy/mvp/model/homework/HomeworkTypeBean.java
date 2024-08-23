@@ -2,8 +2,6 @@ package com.bll.lnkstudy.mvp.model.homework;
 
 import androidx.annotation.Nullable;
 
-import com.bll.lnkstudy.DataBeanManager;
-import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
@@ -29,7 +27,9 @@ public class HomeworkTypeBean implements Serializable {
     @Id(autoincrement = true)
     public Long id;
     public long studentId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public long userId;//老师id
+    @SerializedName("userId")
+    public Long teacherId;
+    public String teacher;
     public String name;
     public int grade;//年级
     @Unique
@@ -62,12 +62,15 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public List<ParentHomeworkBean> parents;
 
-    @Generated(hash = 430859059)
-    public HomeworkTypeBean(Long id, long studentId, long userId, String name, int grade, int typeId, int parentTypeId, int state, long date,
-            String contentResId, String bgResId, String course, int bookId, int createStatus, int messageTotal, boolean isCloud) {
+
+    @Generated(hash = 1390304507)
+    public HomeworkTypeBean(Long id, long studentId, Long teacherId, String teacher, String name, int grade, int typeId, int parentTypeId,
+            int state, long date, String contentResId, String bgResId, String course, int bookId, int createStatus, int messageTotal,
+            boolean isCloud) {
         this.id = id;
         this.studentId = studentId;
-        this.userId = userId;
+        this.teacherId = teacherId;
+        this.teacher = teacher;
         this.name = name;
         this.grade = grade;
         this.typeId = typeId;
@@ -83,6 +86,7 @@ public class HomeworkTypeBean implements Serializable {
         this.isCloud = isCloud;
     }
 
+
     @Generated(hash = 1652492346)
     public HomeworkTypeBean() {
     }
@@ -90,47 +94,31 @@ public class HomeworkTypeBean implements Serializable {
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public long getStudentId() {
         return this.studentId;
     }
-
     public void setStudentId(long studentId) {
         this.studentId = studentId;
-    }
-
-    public long getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getName() {
         return this.name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public int getGrade() {
         return this.grade;
     }
-
     public void setGrade(int grade) {
         this.grade = grade;
     }
-
     public int getTypeId() {
         return this.typeId;
     }
-
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
@@ -150,15 +138,12 @@ public class HomeworkTypeBean implements Serializable {
     public void setState(int state) {
         this.state = state;
     }
-
     public long getDate() {
         return this.date;
     }
-
     public void setDate(long date) {
         this.date = date;
     }
-
     public String getContentResId() {
         return this.contentResId;
     }
@@ -202,18 +187,28 @@ public class HomeworkTypeBean implements Serializable {
     public int getMessageTotal() {
         return this.messageTotal;
     }
-
     public void setMessageTotal(int messageTotal) {
         this.messageTotal = messageTotal;
     }
-
     public boolean getIsCloud() {
         return this.isCloud;
     }
-
     public void setIsCloud(boolean isCloud) {
         this.isCloud = isCloud;
     }
+    public String getTeacher() {
+        return this.teacher;
+    }
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+    public Long getTeacherId() {
+        return this.teacherId;
+    }
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
 
     @Override
     public boolean equals(@Nullable Object obj) {
@@ -224,7 +219,7 @@ public class HomeworkTypeBean implements Serializable {
         if (this==obj)
             return true;
         HomeworkTypeBean item=(HomeworkTypeBean) obj;
-        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name) &&this.userId==item.userId
+        return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name)&& Objects.equals(this.teacherId, item.teacherId)
                 &&this.grade==item.grade&&this.typeId==item.typeId&&this.state==item.state;
     }
 }

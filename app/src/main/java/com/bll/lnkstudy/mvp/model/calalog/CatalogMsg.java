@@ -12,7 +12,7 @@ public class CatalogMsg {
 
     public String title;
     public int totalCount;
-    public int startCount=1;
+    public int startCount=1;//目录正式开始的页面（扣除前序）
     public List<ContentsBean> contents;
 
     /**

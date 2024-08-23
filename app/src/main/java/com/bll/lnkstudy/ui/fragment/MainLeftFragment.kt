@@ -13,16 +13,17 @@ import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.CalenderDaoManager
-import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.manager.DiaryDaoManager
-import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.mvp.model.AppUpdateBean
+import com.bll.lnkstudy.mvp.model.DiaryBean
+import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
+import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
@@ -107,29 +108,40 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
         }
     }
 
-    override fun onCourseItems(courseItems: MutableList<CourseItem>) {
-        for (item in courseItems) {
+    override fun onCourseItems(courses: MutableList<String>) {
+        for (course in courses) {
             var path = ""
-            val typeId = MethodManager.getExamTypeId(item.subject)
+            val typeId = MethodManager.getExamTypeId(course)
+            //创建作业错题本
             if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
                 val typeItem = HomeworkTypeBean()
-                typeItem.name = "${item.subject}错题本"
-                typeItem.course = item.subject
+                typeItem.name = "${course}错题本"
+                typeItem.course = course
                 typeItem.date = System.currentTimeMillis()
                 typeItem.grade = mUser?.grade!!
                 typeItem.typeId = typeId
-                typeItem.userId = item.userId
                 typeItem.createStatus = 0
                 typeItem.state = 5
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
                 path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
             } else {
-                path = FileAddress().getPathScreenHomework("${item.subject}错题本", mUser?.grade!!)
+                path = FileAddress().getPathScreenHomework("${course}错题本", mUser?.grade!!)
             }
             FileUtils.mkdirs(path)
+
+            //创建考卷分类
+            if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
+                val typeItem= PaperTypeBean()
+                typeItem.name="学校考试卷"
+                typeItem.course=course
+                typeItem.date=System.currentTimeMillis()
+                typeItem.grade=mUser?.grade!!
+                typeItem.typeId=typeId
+                PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
+            }
         }
-        if (courseItems != MethodManager.getCourses()) {
-            MethodManager.saveCourses(courseItems)
+        if (courses != MethodManager.getCourses()) {
+            MethodManager.saveCourses(courses)
             EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
         }
     }

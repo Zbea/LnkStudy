@@ -26,7 +26,8 @@ public class HomeworkPaperBean {
     public String typeName;//作业分组标题
     public int index;//（位置下标）
     public String title;//这次作业标题
-    public long endTime;//老师需要学生提交时间
+    public Long endTime=0L;//老师需要学生提交时间
+    public Long startTime=0L;
     public String path;//文件路径
     public int page;
     public int state;//提交状态0学生未提交1已提交未批改2已批改
@@ -37,11 +38,11 @@ public class HomeworkPaperBean {
     public int scoreMode;//打分模式1打分
     public String answerUrl;
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 71305048)
+    @Generated(hash = 896817749)
     public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
-            String typeName, int index, String title, long endTime, String path, int page, int state,
-            int correctMode, int score, String correctJson, boolean isSelfCorrect, int scoreMode,
-            String answerUrl, String commitJson) {
+            String typeName, int index, String title, Long endTime, Long startTime, String path,
+            int page, int state, int correctMode, int score, String correctJson, boolean isSelfCorrect,
+            int scoreMode, String answerUrl, String commitJson) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -51,6 +52,7 @@ public class HomeworkPaperBean {
         this.index = index;
         this.title = title;
         this.endTime = endTime;
+        this.startTime = startTime;
         this.path = path;
         this.page = page;
         this.state = state;
@@ -113,11 +115,17 @@ public class HomeworkPaperBean {
     public void setTitle(String title) {
         this.title = title;
     }
-    public long getEndTime() {
+    public Long getEndTime() {
         return this.endTime;
     }
-    public void setEndTime(long endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
+    }
+    public Long getStartTime() {
+        return this.startTime;
+    }
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
     }
     public String getPath() {
         return this.path;
@@ -179,4 +187,5 @@ public class HomeworkPaperBean {
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
     }
+
 }

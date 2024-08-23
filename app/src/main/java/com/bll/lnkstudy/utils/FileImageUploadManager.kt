@@ -3,7 +3,6 @@ package com.bll.lnkstudy.utils
 import android.util.Log
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.google.gson.Gson
 import com.qiniu.android.storage.Configuration
 import com.qiniu.android.storage.FileRecorder
 import com.qiniu.android.storage.KeyGenerator
@@ -49,8 +48,7 @@ class FileImageUploadManager(private val uploadToken:String,private val paths:Li
         val uploadManager = UploadManager(config)
         uploadManager.put(path, (System.currentTimeMillis()/1000+index).toString(), uploadToken,
             { key, info, response ->
-                Log.d("debug",Gson().toJson(response))
-                if (info?.isOK == true) {
+                if (info?.isOK == true&&response!=null) {
                     val keyStr=response.optString("key")
                     val downloadUrl="http://cdn.bailianlong.com/${keyStr}?attname=${File(path).name}"
                     items.add(ItemList().apply {

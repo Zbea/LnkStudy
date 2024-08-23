@@ -26,13 +26,14 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property StudentId = new Property(1, long.class, "studentId", false, "STUDENT_ID");
-        public final static Property UserId = new Property(2, long.class, "userId", false, "USER_ID");
-        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
-        public final static Property TypeId = new Property(4, int.class, "typeId", false, "TYPE_ID");
-        public final static Property Course = new Property(5, String.class, "course", false, "COURSE");
-        public final static Property Date = new Property(6, long.class, "date", false, "DATE");
-        public final static Property Grade = new Property(7, int.class, "grade", false, "GRADE");
-        public final static Property IsCloud = new Property(8, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property TeacherId = new Property(2, long.class, "teacherId", false, "TEACHER_ID");
+        public final static Property Teacher = new Property(3, String.class, "teacher", false, "TEACHER");
+        public final static Property Name = new Property(4, String.class, "name", false, "NAME");
+        public final static Property TypeId = new Property(5, int.class, "typeId", false, "TYPE_ID");
+        public final static Property Course = new Property(6, String.class, "course", false, "COURSE");
+        public final static Property Date = new Property(7, long.class, "date", false, "DATE");
+        public final static Property Grade = new Property(8, int.class, "grade", false, "GRADE");
+        public final static Property IsCloud = new Property(9, boolean.class, "isCloud", false, "IS_CLOUD");
     }
 
 
@@ -50,13 +51,14 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"PAPER_TYPE_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"STUDENT_ID\" INTEGER NOT NULL ," + // 1: studentId
-                "\"USER_ID\" INTEGER NOT NULL ," + // 2: userId
-                "\"NAME\" TEXT," + // 3: name
-                "\"TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 4: typeId
-                "\"COURSE\" TEXT," + // 5: course
-                "\"DATE\" INTEGER NOT NULL ," + // 6: date
-                "\"GRADE\" INTEGER NOT NULL ," + // 7: grade
-                "\"IS_CLOUD\" INTEGER NOT NULL );"); // 8: isCloud
+                "\"TEACHER_ID\" INTEGER NOT NULL ," + // 2: teacherId
+                "\"TEACHER\" TEXT," + // 3: teacher
+                "\"NAME\" TEXT," + // 4: name
+                "\"TYPE_ID\" INTEGER NOT NULL UNIQUE ," + // 5: typeId
+                "\"COURSE\" TEXT," + // 6: course
+                "\"DATE\" INTEGER NOT NULL ," + // 7: date
+                "\"GRADE\" INTEGER NOT NULL ," + // 8: grade
+                "\"IS_CLOUD\" INTEGER NOT NULL );"); // 9: isCloud
     }
 
     /** Drops the underlying database table. */
@@ -74,21 +76,26 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getStudentId());
-        stmt.bindLong(3, entity.getUserId());
+        stmt.bindLong(3, entity.getTeacherId());
+ 
+        String teacher = entity.getTeacher();
+        if (teacher != null) {
+            stmt.bindString(4, teacher);
+        }
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(4, name);
+            stmt.bindString(5, name);
         }
-        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(6, entity.getTypeId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(6, course);
+            stmt.bindString(7, course);
         }
-        stmt.bindLong(7, entity.getDate());
-        stmt.bindLong(8, entity.getGrade());
-        stmt.bindLong(9, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(8, entity.getDate());
+        stmt.bindLong(9, entity.getGrade());
+        stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
     }
 
     @Override
@@ -100,21 +107,26 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getStudentId());
-        stmt.bindLong(3, entity.getUserId());
+        stmt.bindLong(3, entity.getTeacherId());
+ 
+        String teacher = entity.getTeacher();
+        if (teacher != null) {
+            stmt.bindString(4, teacher);
+        }
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(4, name);
+            stmt.bindString(5, name);
         }
-        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(6, entity.getTypeId());
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(6, course);
+            stmt.bindString(7, course);
         }
-        stmt.bindLong(7, entity.getDate());
-        stmt.bindLong(8, entity.getGrade());
-        stmt.bindLong(9, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(8, entity.getDate());
+        stmt.bindLong(9, entity.getGrade());
+        stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
     }
 
     @Override
@@ -127,13 +139,14 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         PaperTypeBean entity = new PaperTypeBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // studentId
-            cursor.getLong(offset + 2), // userId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
-            cursor.getInt(offset + 4), // typeId
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // course
-            cursor.getLong(offset + 6), // date
-            cursor.getInt(offset + 7), // grade
-            cursor.getShort(offset + 8) != 0 // isCloud
+            cursor.getLong(offset + 2), // teacherId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // teacher
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // name
+            cursor.getInt(offset + 5), // typeId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // course
+            cursor.getLong(offset + 7), // date
+            cursor.getInt(offset + 8), // grade
+            cursor.getShort(offset + 9) != 0 // isCloud
         );
         return entity;
     }
@@ -142,13 +155,14 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
     public void readEntity(Cursor cursor, PaperTypeBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setStudentId(cursor.getLong(offset + 1));
-        entity.setUserId(cursor.getLong(offset + 2));
-        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setTypeId(cursor.getInt(offset + 4));
-        entity.setCourse(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setDate(cursor.getLong(offset + 6));
-        entity.setGrade(cursor.getInt(offset + 7));
-        entity.setIsCloud(cursor.getShort(offset + 8) != 0);
+        entity.setTeacherId(cursor.getLong(offset + 2));
+        entity.setTeacher(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setTypeId(cursor.getInt(offset + 5));
+        entity.setCourse(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setDate(cursor.getLong(offset + 7));
+        entity.setGrade(cursor.getInt(offset + 8));
+        entity.setIsCloud(cursor.getShort(offset + 9) != 0);
      }
     
     @Override

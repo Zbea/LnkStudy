@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
+import java.util.*
 
 
 /**
@@ -51,6 +52,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private var messages = mutableListOf<ItemList>()
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem? = null
     private val commitItems = mutableListOf<ItemList>()
+    private var takeTime=0L
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -66,6 +68,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                         map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
                         map["studentUrl"] = ToolUtils.getImagesStr(urls)
                         map["commonTypeId"] = homeworkTypeId
+                        map["takeTime"]=takeTime
                         mUploadPresenter.commit(map)
                     } else {
                         map["id"] = homeworkCommitInfoItem?.messageId!!
@@ -169,6 +172,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun initView() {
         iv_btn.setOnClickListener {
+            if (messages.size == 0)
+                return@setOnClickListener
             //开启自批
             if (homeworkContent?.isSelfCorrect==true && homeworkContent?.state==1&&!homeworkContent?.commitJson.isNullOrEmpty()){
                 homeworkCommitInfoItem=Gson().fromJson(homeworkContent?.commitJson, HomeworkCommitInfoItem::class.java)
@@ -364,7 +369,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //设置手写
     private fun setElikLoadPath(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
-        elik.setLoadFilePath(homeworkContent.path.replace("png", "tch"), true)
+        elik.setLoadFilePath(homeworkContent.path, true)
     }
 
     override fun onElikSava_a() {
@@ -373,6 +378,20 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onElikSava_b() {
         saveElik(elik_b!!, homeworkContent!!)
+    }
+
+    override fun onElikStart_a() {
+        if (homeworkContent_a?.startDate==0L){
+            homeworkContent_a?.startDate=System.currentTimeMillis()
+            HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
+        }
+    }
+
+    override fun onElikStart_b() {
+        if (homeworkContent?.startDate==0L){
+            homeworkContent?.startDate=System.currentTimeMillis()
+            HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
+        }
     }
 
     /**
@@ -387,7 +406,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     //创建新的作业内容
     private fun newHomeWorkContent() {
 
-        val path = FileAddress().getPathHomework(course, homeworkTypeId, homeworks.size)
+        val path = FileAddress().getPathHomework(course, homeworkTypeId, homeworks.size+1)
         val pathName = DateUtils.longToString(System.currentTimeMillis())
 
         homeworkContent = HomeworkContentBean()
@@ -399,7 +418,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.title = getString(R.string.unnamed) + (homeworks.size + 1)
         homeworkContent?.path = "$path/$pathName.png"
         homeworkContent?.page = homeworks.size
-        homeworkContent?.state = 0
 
         page = homeworks.size
 
@@ -413,9 +431,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //作业提交
     private fun commit() {
-        if (messages.size == 0 || homeworkContent?.state != 0)
-            return
-        DrawingCommitDialog(this, getCurrentScreenPos(), messages).builder()
+        DrawingCommitDialog(this, getCurrentScreenPos(),0,homeworks.size, messages).builder()
             .setOnDialogClickListener {
                 homeworkCommitInfoItem = it
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
@@ -435,11 +451,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 showLoading()
                 commitItems.clear()
                 for (index in homeworkCommitInfoItem?.contents!!) {
-                    if (index > homeworks.size) {
-                        hideLoading()
-                        showToast("页码填写错误")
-                        return@setOnDialogClickListener
-                    }
                     val homework = homeworks[index]
                     homeworkCommitInfoItem?.paths?.add(homework.path)
                     //异步合图后排序
@@ -450,6 +461,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                             url = path
                         })
                         if (commitItems.size == homeworkCommitInfoItem?.contents!!.size) {
+                            takeTime=System.currentTimeMillis()-getStartTime(homeworkCommitInfoItem?.contents!!)
+                            homeworkCommitInfoItem?.takeTime=takeTime
                             if (homeworkCommitInfoItem?.isSelfCorrect == true){
                                 hideLoading()
                                 gotoSelfCorrect()
@@ -462,6 +475,22 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     }.start()
                 }
             }
+    }
+
+    /**
+     * 获取开始时间
+     */
+    private fun getStartTime(pages:List<Int>):Long{
+        val times = mutableListOf<Long>()
+        for (page in pages){
+            if (homeworks[page].startDate>0){
+                times.add(homeworks[page].startDate)
+            }
+        }
+        if (times.size==0){
+            return 0
+        }
+        return Collections.min(times)
     }
 
     /**
@@ -524,8 +553,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
         }
-        FileUtils.deleteFile(File(drawPath.replace("png", "tch")))
-
         return drawPath
     }
 

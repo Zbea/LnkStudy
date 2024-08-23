@@ -36,6 +36,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
     private var posImage = 0
     private var posAnswer= 0
     private var images = mutableListOf<String>()
+    private var takeTime=0L
 
     override fun onToken(token: String) {
         showLoading()
@@ -48,6 +49,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     map["studentTaskId"]=commitItem?.messageId!!
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
                     map["commonTypeId"] = commitItem?.typeId!!
+                    map["takeTime"]=takeTime
                     if (state==4){
                         map["page"]= ToolUtils.getImagesStr(commitItem?.contents!!)
                     }
@@ -83,14 +85,15 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 }
             }
             4 -> {
-                val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,ToolUtils.getImagesStr(commitItem?.contents))
-                item.state=1
-                item.score=tv_total_score.text.toString().toInt()
-                item.correctJson=scoreListToJson(currentScores)
-                item.commitJson=""
-                HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
-                //更新增量数据
-                DataUpdateManager.editDataUpdate(7, item.id.toInt(),2,item.bookId ,Gson().toJson(item))
+                for (page in commitItem?.contents!!){
+                    val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,page)
+                    item.score=tv_total_score.text.toString().toInt()
+                    item.correctJson=scoreListToJson(currentScores)
+                    item.commitJson=""
+                    HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
+                    //更新增量数据
+                    DataUpdateManager.editDataUpdate(7, item.id.toInt(),2,item.bookId ,Gson().toJson(item))
+                }
             }
             1 -> {
                 val paper=HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
@@ -133,6 +136,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         currentScores= scoreJsonToList(commitItem!!.correctJson) as MutableList<ExamScoreItem>
         images=commitItem!!.paths
         state=commitItem?.state!!
+        takeTime=commitItem?.takeTime!!
     }
 
     override fun initView() {

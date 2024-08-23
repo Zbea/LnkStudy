@@ -153,8 +153,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
      */
     private fun setContentImage() {
         v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgResList[posImage]))
-        val path =
-            FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${posImage + 1}.tch"
+        val path = FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${posImage + 1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)

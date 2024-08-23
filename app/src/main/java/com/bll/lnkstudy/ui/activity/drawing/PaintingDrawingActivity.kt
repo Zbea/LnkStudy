@@ -25,7 +25,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
     private var page = 0//页码
-    private var resId=0
     private var linerDialog:PaintingLinerSelectDialog?=null
 
     override fun layoutId(): Int {
@@ -48,7 +47,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_draft)
-        onChangeContent()
         iv_btn.setImageResource(R.mipmap.icon_draw_setting)
 
         iv_btn.setOnClickListener {
@@ -64,6 +62,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
             }
         }
 
+        onContent()
     }
 
     override fun onCatalog() {
@@ -85,7 +84,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 val item=paintingLists[position]
                 item.title=title
                 PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
-                editDataUpdate(item!!)
+                editDataUpdate(item)
             }
         })
     }
@@ -94,16 +93,16 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         if(isExpand){
             if (page>2){
                 page-=2
-                onChangeContent()
+                onContent()
             }
             else if (page==2){//当页面不够翻两页时
                 page=1
-                onChangeContent()
+                onContent()
             }
         }else{
             if (page>0){
                 page-=1
-                onChangeContent()
+                onContent()
             }
         }
     }
@@ -134,7 +133,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 page += 1
             }
         }
-        onChangeContent()
+        onContent()
     }
 
     override fun onChangeExpandContent() {
@@ -145,23 +144,17 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         }
         moveToScreen(isExpand)
         onChangeExpandView()
-        onChangeContent()
+        onContent()
     }
 
-    private fun onChangeContent() {
+    override fun onContent() {
         paintingDrawingBean = paintingLists[page]
-
         if (isExpand) {
-            if (page > 0) {
-                paintingDrawingBean_a = paintingLists[page - 1]
-            }
-            else{
+            if (page<=0){
                 page = 1
                 paintingDrawingBean = paintingLists[page]
-                paintingDrawingBean_a = paintingLists[page-1]
             }
-        } else {
-            paintingDrawingBean_a = null
+            paintingDrawingBean_a = paintingLists[page-1]
         }
 
         tv_page_total.text="${paintingLists.size}"
@@ -214,7 +207,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.title=getString(R.string.drawing)+(paintingLists.size+1)
         paintingDrawingBean?.type = 0
         paintingDrawingBean?.date = System.currentTimeMillis()
-        paintingDrawingBean?.path = "$path/$fileName.tch"
+        paintingDrawingBean?.path = "$path/$fileName.png"
         paintingDrawingBean?.grade=grade
         paintingDrawingBean?.bgRes=""
         page = paintingLists.size

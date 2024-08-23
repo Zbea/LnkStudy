@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
 import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.CourseItem
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.User
 import com.google.gson.Gson
@@ -44,33 +43,29 @@ object SPUtil {
         return userStr
     }
 
-    fun putList(key: String,list: MutableList<ItemList>){
-        val listStr= gson.toJson(list)
-        putString(getUserId()+key,listStr)
-    }
 
-    fun putCourseItems(key: String,list: MutableList<CourseItem>){
+    fun putCurrentCourses(key: String, list: MutableList<String>){
         val listStr= gson.toJson(list)
-        putString(getUserId()+key,listStr)
+        putString(key,listStr)
     }
     fun putClassGroupItems(key: String,list: MutableList<ClassGroup>){
         val listStr= gson.toJson(list)
-        putString(getUserId()+key,listStr)
+        putString(key,listStr)
     }
 
     fun putListItems(key: String,list: MutableList<ItemList>){
         val listStr= gson.toJson(list)
-        putString(getUserId()+key,listStr)
+        putString(key,listStr)
     }
 
     fun putListInt(key: String,list: MutableList<Int>){
         val listStr= gson.toJson(list)
-        putString(getUserId()+key,listStr)
+        putString(key,listStr)
     }
 
     fun putListLong(key: String,list: MutableList<Long>){
         val listStr= gson.toJson(list)
-        putString(getUserId()+key,listStr)
+        putString(key,listStr)
     }
 
     fun putString(key: String, value: String) {
@@ -100,32 +95,32 @@ object SPUtil {
     }
 
     fun getList(key: String): MutableList<ItemList> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ItemList>>() {}.type)
+        return gson.fromJson(getString(key), object : TypeToken<List<ItemList>>() {}.type)
             ?: return mutableListOf()
     }
 
-    fun getCourseItems(key: String): MutableList<CourseItem> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<CourseItem>>() {}.type)
+    fun getCurrentCourses(key: String): MutableList<String> {
+        return gson.fromJson(getString(key), object : TypeToken<List<String>>() {}.type)
             ?: return mutableListOf()
     }
 
     fun getClassGroupItems(key: String): MutableList<ClassGroup> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ClassGroup>>() {}.type)
+        return gson.fromJson(getString(key), object : TypeToken<List<ClassGroup>>() {}.type)
             ?: return mutableListOf()
     }
 
     fun getListItems(key: String): MutableList<ItemList> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<ItemList>>() {}.type)
+        return gson.fromJson(getString(key), object : TypeToken<List<ItemList>>() {}.type)
             ?: return mutableListOf()
     }
 
     fun getListInt(key: String): MutableList<Int> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<Int>>() {}.type)
+        return gson.fromJson(getString(key), object : TypeToken<List<Int>>() {}.type)
             ?: return mutableListOf()
     }
 
     fun getListLong(key: String): MutableList<Long> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<Long>>() {}.type)
+        return gson.fromJson(getString(key), object : TypeToken<List<Long>>() {}.type)
             ?: return mutableListOf()
     }
 

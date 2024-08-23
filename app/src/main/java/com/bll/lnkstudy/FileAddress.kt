@@ -88,13 +88,6 @@ class FileAddress {
     }
 
     /**
-     * 考试卷下载地址
-     */
-    fun getPathExam(categoryId:Int,contentId:Int):String{
-        return "$TESTPAPER_PATH/$mUserId/examType$categoryId/$contentId"
-    }
-
-    /**
      * 作业文件夹路径
      */
     fun getPathHomework(course:String, typeId:Int):String{
