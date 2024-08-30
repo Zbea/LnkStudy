@@ -36,15 +36,6 @@
             android:textColor="@color/black"
             android:textSize="26sp" />
 
-        <ImageView
-            android:id="@+id/iv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_50"
-            android:src="@mipmap/icon_save" />
-
     </RelativeLayout>
 
     <LinearLayout
@@ -61,35 +52,24 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
-
         <TextView
-            android:id="@+id/tv_theme"
+            android:id="@+id/tv_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:text="格式"
+            android:text="保存"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tv_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_50"
             android:text="删除"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/tv_free_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:text="列表"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            android:gravity="center"
-            />
     </LinearLayout>
     <include
         layout="@layout/common_drawing_tool"

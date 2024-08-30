@@ -3,7 +3,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.view.EinkPWInterface
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.DrawingCatalogDialog
+import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -77,7 +77,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
             itemList.page=item.page
             list.add(itemList)
         }
-        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(position: Int) {
                 if (page!=paintingLists[position].page){
                     page = paintingLists[position].page

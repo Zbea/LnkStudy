@@ -1,10 +1,8 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
-import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
@@ -12,6 +10,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.DiaryBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
+import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.adapter.CloudDiaryAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
@@ -19,15 +18,16 @@ import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
 
 class CloudDiaryFragment: BaseCloudFragment() {
     private var mAdapter: CloudDiaryAdapter?=null
-    private var items= mutableListOf<DiaryBean>()
+    private var items= mutableListOf<CloudListBean>()
     private var position=0
 
     override fun getLayoutId(): Int {
@@ -35,7 +35,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=20
+        pageSize=15
         initRecyclerView()
     }
 
@@ -45,7 +45,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,50f), DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,50f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -55,42 +55,36 @@ class CloudDiaryFragment: BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 val item=items[position]
-                val localItem=DiaryDaoManager.getInstance().queryBean(item.date)
-                if (localItem==null){
-                    showLoading()
-                    download(item)
-                }
-                else{
-                    showToast("已存在")
-                }
+                showLoading()
+                download(item)
             }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+            setOnItemChildClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定删除").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            deleteItem()
-                        }
-                    })
-                true
+                if (view.id==R.id.iv_delete){
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                deleteItem()
+                            }
+                        })
+                }
             }
         }
+        rv_list.addItemDecoration(SpaceItemDeco(20))
     }
 
     private fun deleteItem(){
         val ids= mutableListOf<Int>()
-        ids.add(items[position].cloudId)
+        ids.add(items[position].id)
         mCloudPresenter.deleteCloud(ids)
     }
 
-    private fun download(item:DiaryBean){
-        item.id=null//设置数据库id为null用于重新加入
-        showLoading()
+    private fun download(item:CloudListBean){
         val fileName=DateUtils.longToStringCalender(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
-        val fileTargetPath= FileAddress().getPathDiary(fileName)
+        val fileTargetPath= File(FileAddress().getPathDiary(fileName)).parent
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -101,15 +95,18 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
-                            val id=DiaryDaoManager.getInstance().insertOrReplaceGetId(item)
-                            DataUpdateManager.createDataUpdate(8,id.toInt(),1,Gson().toJson(item),fileTargetPath)
+                            val diaryBeans: MutableList<DiaryBean> = Gson().fromJson(item.listJson, object : TypeToken<List<DiaryBean>>() {}.type)
+                            for (diaryBean in diaryBeans){
+                                if (DiaryDaoManager.getInstance().queryBean(diaryBean.date)==null){
+                                    diaryBean.id=null//设置数据库id为null用于重新加入
+                                    diaryBean.isUpload=true
+                                    DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
+                                }
+                            }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            Handler().postDelayed({
-                                deleteItem()
-                                showToast("下载成功")
-                                hideLoading()
-                            },500)
+                            showToast("下载成功")
+                            hideLoading()
                         }
                         override fun onProgress(percentDone: Int) {
                         }
@@ -133,21 +130,12 @@ class CloudDiaryFragment: BaseCloudFragment() {
         map["page"]=pageIndex
         map["size"] = pageSize
         map["type"] = 7
-        map["subTypeStr"] = "日记"
         mCloudPresenter.getList(map)
     }
 
     override fun onCloudList(cloudList: CloudList) {
         setPageNumber(cloudList.total)
-        items.clear()
-        for (item in cloudList.list){
-            if (item.listJson.isNotEmpty()){
-                val diaryBean= Gson().fromJson(item.listJson, DiaryBean::class.java)
-                diaryBean.cloudId=item.id
-                diaryBean.downloadUrl=item.downloadUrl
-                items.add(diaryBean)
-            }
-        }
+        items=cloudList.list
         mAdapter?.setNewData(items)
     }
 

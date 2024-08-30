@@ -223,6 +223,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             }
         }
         else{
+            var totalChildSort=0
             val scores= Gson().fromJson(json, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
             for (i in scores.indices){
                 items.add(ExamScoreItem().apply {
@@ -250,9 +251,15 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                         score=totalRight.toString()
                     }
                     for (item in scores[i]){
-                        item.sort=scores[i].indexOf(item)
+                        if (correctMode==3){
+                            item.sort=scores[i].indexOf(item)
+                        }
+                        else{
+                            item.sort=totalChildSort+scores[i].indexOf(item)
+                        }
                     }
                     childScores=scores[i]
+                    totalChildSort+=scores[i].size
                 })
             }
         }

@@ -27,15 +27,12 @@ public class DiaryBean {
     public int month;
     public String bgRes;
     public int page;
+    public boolean isUpload=false;//是否已上传
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths=new ArrayList<>();
-    @Transient
-    public int cloudId;
-    @Transient
-    public String downloadUrl;
-    @Generated(hash = 325776954)
+    @Generated(hash = 1051170136)
     public DiaryBean(Long id, long userId, String title, long date, int year, int month, String bgRes,
-            int page, List<String> paths) {
+            int page, boolean isUpload, List<String> paths) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -44,6 +41,7 @@ public class DiaryBean {
         this.month = month;
         this.bgRes = bgRes;
         this.page = page;
+        this.isUpload = isUpload;
         this.paths = paths;
     }
     @Generated(hash = 1749744078)
@@ -97,6 +95,12 @@ public class DiaryBean {
     public void setPage(int page) {
         this.page = page;
     }
+    public boolean getIsUpload() {
+        return this.isUpload;
+    }
+    public void setIsUpload(boolean isUpload) {
+        this.isUpload = isUpload;
+    }
     public List<String> getPaths() {
         return this.paths;
     }
@@ -104,5 +108,5 @@ public class DiaryBean {
         this.paths = paths;
     }
 
-  
+
 }

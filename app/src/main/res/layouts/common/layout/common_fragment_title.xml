@@ -14,7 +14,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_50"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/dp_10"
@@ -23,10 +23,10 @@
         >
         <TextView
             android:id="@+id/tv_search"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_30"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_black_stroke_10dp_corner"
             android:drawableStart="@mipmap/icon_search"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/dp_20"

@@ -5,10 +5,10 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
+import com.bll.lnkstudy.dialog.CatalogFreeNoteDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
-import com.bll.lnkstudy.dialog.PopupFreeNoteList
 import com.bll.lnkstudy.manager.FreeNoteDaoManager
 import com.bll.lnkstudy.mvp.model.FreeNoteBean
 import com.bll.lnkstudy.utils.DateUtils
@@ -40,9 +40,10 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_btn,iv_expand,iv_draft)
+        disMissView(iv_expand,iv_draft)
+        iv_btn.setImageResource(R.mipmap.icon_draw_change)
 
-        iv_save.setOnClickListener {
+        tv_save.setOnClickListener {
             freeNoteBean?.isSave=true
             saveFreeNote()
             createFreeNote()
@@ -58,7 +59,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
             }
         }
 
-        tv_theme.setOnClickListener {
+        iv_btn.setOnClickListener {
             ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes = ToolUtils.getImageResStr(this, moduleBean.resContentId)
@@ -82,31 +83,31 @@ class FreeNoteActivity : BaseDrawingActivity() {
                         createFreeNote()
                         posImage=0
                     }
-                    showView(iv_save)
+                    showView(tv_save)
                     initFreeNote()
                     setContentImage()
                 }
             })
         }
 
-        tv_free_list.setOnClickListener {
-            PopupFreeNoteList(this, tv_free_list,freeNoteBean!!.date).builder().setOnSelectListener {
-                saveFreeNote()
-                freeNoteBean=it
-                posImage=freeNoteBean?.page!!
-                initFreeNote()
-                if (freeNoteBean?.isSave==true){
-                    disMissView(iv_save)
-                }
-                else{
-                    showView(iv_save)
-                }
-                setContentImage()
-            }
-        }
-
         initFreeNote()
         setContentImage()
+    }
+
+    override fun onCatalog() {
+        CatalogFreeNoteDialog(this,freeNoteBean!!.date).builder().setOnItemClickListener {
+            saveFreeNote()
+            freeNoteBean=it
+            posImage=freeNoteBean?.page!!
+            initFreeNote()
+            if (freeNoteBean?.isSave==true){
+                disMissView(tv_save)
+            }
+            else{
+                showView(tv_save)
+            }
+            setContentImage()
+        }
     }
 
     override fun onPageDown() {

@@ -21,7 +21,6 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
             android:background="@color/line_color" />
         <FrameLayout
             android:id="@+id/frame_layout"

@@ -13,6 +13,7 @@ import net.lingala.zip4j.util.Zip4jUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -101,6 +102,38 @@ public final class ZipManager {
         }
     }
 
+    /**
+     * 压缩文件或者文件夹
+     *
+     * @param targetPaths          被压缩的文件路径集合
+     * @param destinationFilePath 压缩后生成的文件路径
+     * @param password            压缩加密 密码
+     * @param callback            压缩进度回调
+     */
+    public static void zip(List<String> targetPaths, String destinationFilePath, String password, IZipCallback callback) {
+        ZipLog.debug("zip: targetPath=" + targetPaths.toString() + " , destinationFilePath=" + destinationFilePath + " , password=" + password);
+        try {
+            ZipParameters parameters = new ZipParameters();
+            ZipFile zipFile = new ZipFile(destinationFilePath);
+            if (password.length() > 0) {
+                parameters.setEncryptFiles(true);
+                parameters.setEncryptionMethod(EncryptionMethod.AES);
+                zipFile.setPassword(password.toCharArray());
+            }
+            for (String path: targetPaths) {
+                File file=new File(path);
+                if (file.isDirectory()) {
+                    zipFile.addFolder(file, parameters);
+                } else {
+                    zipFile.addFile(file, parameters);
+                }
+            }
+            timerMsg(callback, zipFile,"zip");
+        } catch (Exception e) {
+            if (callback != null) callback.onError("压缩失败");
+            ZipLog.debug("zip: Exception=" + e.getMessage());
+        }
+    }
 
     /**
      * 解压

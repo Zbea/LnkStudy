@@ -54,12 +54,6 @@ public class DiaryDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public long insertOrReplaceGetId(DiaryBean bean) {
-        dao.insertOrReplace(bean);
-        List<DiaryBean> queryList = dao.queryBuilder().build().list();
-        return queryList.get(queryList.size()-1).id;
-    }
-
     public DiaryBean queryBean(long time) {
         WhereCondition whereCondition= DiaryBeanDao.Properties.Date.eq(time);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().unique();
@@ -89,7 +83,15 @@ public class DiaryDaoManager {
         return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
 
+    public List<DiaryBean> queryList(long startLong,long endLong) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.between(startLong,endLong);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
 
+    public List<DiaryBean> queryListByTitle() {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Title.isNotNull();
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
     public List<Long> queryLongList(int year,int month) {
         List<Long> times=new ArrayList<>();
         WhereCondition whereCondition= DiaryBeanDao.Properties.Year.eq(year);

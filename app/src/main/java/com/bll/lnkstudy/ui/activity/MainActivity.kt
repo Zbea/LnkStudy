@@ -89,7 +89,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 textbookFragment?.uploadTextBook(token)
             }
             Constants.AUTO_UPLOAD_YEAR_EVENT->{
-                mainLeftFragment?.uploadDiary(token)
+                mainRightFragment?.uploadDiary(token,true)
+            }
+            Constants.DIARY_UPLOAD_EVENT->{
+                mainRightFragment?.uploadDiary(token,false)
             }
             Constants.USER_CHANGE_GRADE_EVENT->{
                 homeworkFragment?.upload(token)
@@ -745,9 +748,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         DataUpdateManager.editDataUpdateUpload(7,item.uid,2,item.typeId)
                     }
                 }
-                8 -> {
-                    downloadDiary(item)
-                }
             }
         }
     }
@@ -1189,46 +1189,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             })
     }
 
-    /**
-     * 下载日记
-     */
-    private fun downloadDiary(item: DataUpdateBean) {
-        val contentBean = Gson().fromJson(item.listJson, DiaryBean::class.java)
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
-                        override fun onFinish() {
-                            DiaryDaoManager.getInstance().insertOrReplace(contentBean)
-                            //删掉本地zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            DataUpdateManager.createDataUpdate(8,item.uid,1,item.listJson,item.path)
-                            DataUpdateManager.editDataUpdateUpload(8,item.uid,1)
-                        }
-
-                        override fun onProgress(percentDone: Int) {
-                        }
-
-                        override fun onError(msg: String?) {
-                        }
-
-                        override fun onStart() {
-                        }
-                    })
-                }
-
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                }
-            })
-    }
 
     /**
      * 每天上传增量数据
@@ -1281,7 +1241,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 eventType = Constants.AUTO_UPLOAD_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                }, 10 * 1000)
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
                 eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
@@ -1289,7 +1249,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     mQiniuPresenter.getToken()
                     //清除作业通知（每学期上学开始）
                     EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
-                }, 30 * 1000)
+                }, 10 * 1000)
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
@@ -1297,19 +1257,23 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     mQiniuPresenter.getToken()
                     //清除作业通知（每学期上学开始）
                     EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
-                }, 30 * 1000)
+                }, 10 * 1000)
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
                 eventType = Constants.USER_CHANGE_GRADE_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                }, 10 * 1000)
             }
-            Constants.ACTION_UPLOAD_YEAR -> {
-                eventType = Constants.ACTION_UPLOAD_YEAR
+            Constants.AUTO_UPLOAD_YEAR_EVENT -> {
+                eventType = Constants.AUTO_UPLOAD_YEAR_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                }, 10 * 1000)
+            }
+            Constants.DIARY_UPLOAD_EVENT -> {
+                eventType = Constants.DIARY_UPLOAD_EVENT
+                mQiniuPresenter.getToken()
             }
             Constants.USER_CHANGE_EVENT -> {
                 mUser = SPUtil.getObj("user", User::class.java)

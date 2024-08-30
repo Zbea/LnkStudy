@@ -25,7 +25,7 @@ public class DataUpdateBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int uid;//标识
-    public int type;//类型1课本2作业3考卷4笔记5画本6书架7题卷本8日记
+    public int type;//类型1课本2作业3考卷4笔记5画本6书架7题卷本
     public int typeId;//用来防止重复
     public int contentType;//内容分类
     public int state;//type==2时：1作业卷 2普通作业本 3听读本

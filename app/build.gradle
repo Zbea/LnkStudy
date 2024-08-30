@@ -30,7 +30,7 @@ android {
     }
     greendao {
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 114
+        schemaVersion 115
         //dao的包名
         daoPackage 'com.bll.lnkstudy.greendao'
         //生成数据库文件的目录;
@@ -75,23 +75,23 @@ android {
         }
     }
 
-//    buildTypes {
-//        debug {
-//            minifyEnabled false
-//            debuggable true
-//            signingConfig signingConfigs.release
-//        }
-//        release {
-//            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            debuggable false
-//            signingConfig signingConfigs.release
-//            aaptOptions.cruncherEnabled = false
-//            aaptOptions.useNewCruncher = false
-//            //Zipalign优化
-//            zipAlignEnabled true
-//        }
-//    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+            signingConfig signingConfigs.release
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.release
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
+            //Zipalign优化
+            zipAlignEnabled true
+        }
+    }
 
 }
 

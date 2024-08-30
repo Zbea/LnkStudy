@@ -75,6 +75,7 @@ class Constants {
         const val AUTO_UPLOAD_NEXT_SEMESTER_EVENT = "AutoUploadEventNextSemester" //下学期开学
         const val AUTO_UPLOAD_YEAR_EVENT = "AutoUploadEventYEAR" //每年上传
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"//每天三点自动上传
+        const val DIARY_UPLOAD_EVENT = "DiaryUploadEvent"//日记上传
         const val DATE_DAY_EVENT = "DateDayEvent"//重要日子刷新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"//书籍下载通知

@@ -3,8 +3,10 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_60"
+    android:paddingStart="@dimen/dp_20"
+    android:paddingEnd="@dimen/dp_20"
     android:gravity="center_vertical"
-    android:background="@drawable/bg_line_bottom"
+    android:background="@drawable/bg_gray_stroke_10dp_corner"
     >
 
     <TextView
@@ -23,8 +25,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textColor="@color/black"
         />
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:src="@mipmap/icon_delete"/>
 
 </LinearLayout>
