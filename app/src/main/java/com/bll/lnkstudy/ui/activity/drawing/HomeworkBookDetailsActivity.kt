@@ -93,8 +93,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         messages.removeAt(homeworkCommitInfoItem?.index!!)
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            type=1
-            studentTaskId=homeworkCommitInfoItem?.messageId!!
             content=homeworkCommitInfoItem?.title
             homeworkTypeStr=homeworkType?.name
             course=homeworkType?.course

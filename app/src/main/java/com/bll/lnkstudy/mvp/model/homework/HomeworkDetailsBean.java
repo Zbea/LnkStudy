@@ -17,19 +17,15 @@ public class HomeworkDetailsBean {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public int studentTaskId;
-    public int type;//1提交 2 批改
     public String content;//内容
     public String homeworkTypeStr;//分类
     public String course;
     public long time;//提交时间
-    @Generated(hash = 1148027112)
-    public HomeworkDetailsBean(Long id, long userId, int studentTaskId, int type, String content,
-            String homeworkTypeStr, String course, long time) {
+    @Generated(hash = 776758551)
+    public HomeworkDetailsBean(Long id, long userId, String content, String homeworkTypeStr,
+            String course, long time) {
         this.id = id;
         this.userId = userId;
-        this.studentTaskId = studentTaskId;
-        this.type = type;
         this.content = content;
         this.homeworkTypeStr = homeworkTypeStr;
         this.course = course;
@@ -49,18 +45,6 @@ public class HomeworkDetailsBean {
     }
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-    public int getStudentTaskId() {
-        return this.studentTaskId;
-    }
-    public void setStudentTaskId(int studentTaskId) {
-        this.studentTaskId = studentTaskId;
-    }
-    public int getType() {
-        return this.type;
-    }
-    public void setType(int type) {
-        this.type = type;
     }
     public String getContent() {
         return this.content;
@@ -86,5 +70,5 @@ public class HomeworkDetailsBean {
     public void setTime(long time) {
         this.time = time;
     }
-    
+
 }

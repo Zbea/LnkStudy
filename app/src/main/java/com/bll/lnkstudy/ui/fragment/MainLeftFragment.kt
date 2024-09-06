@@ -4,27 +4,26 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.RecoverySystem
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
@@ -46,7 +45,6 @@ import com.google.gson.Gson
 import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
@@ -106,44 +104,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
         if (list.list.isNotEmpty()) {
             noticeItems = list.list
             mNoticeAdapter?.setNewData(noticeItems)
-        }
-    }
-
-    override fun onCourseItems(courses: MutableList<String>) {
-        for (course in courses) {
-            var path = ""
-            val typeId = MethodManager.getExamTypeId(course)
-            //创建作业错题本
-            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
-                val typeItem = HomeworkTypeBean()
-                typeItem.name = "${course}错题本"
-                typeItem.course = course
-                typeItem.date = System.currentTimeMillis()
-                typeItem.grade = mUser?.grade!!
-                typeItem.typeId = typeId
-                typeItem.createStatus = 0
-                typeItem.state = 5
-                HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
-                path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
-            } else {
-                path = FileAddress().getPathScreenHomework("${course}错题本", mUser?.grade!!)
-            }
-            FileUtils.mkdirs(path)
-
-            //创建考卷分类
-            if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
-                val typeItem= PaperTypeBean()
-                typeItem.name="学校考试卷"
-                typeItem.course=course
-                typeItem.date=System.currentTimeMillis()
-                typeItem.grade=mUser?.grade!!
-                typeItem.typeId=typeId
-                PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
-            }
-        }
-        if (courses.isNotEmpty() && courses != MethodManager.getCourses()) {
-            MethodManager.saveCourses(courses)
-            EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
         }
     }
 
@@ -271,7 +231,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             mSystemPresenter.checkSystemUpdate(systemUpdateMap)
 
             mMainLeftPresenter.getHomeworkNotice()
-            mMainLeftPresenter.getCourseItems()
             mMainLeftPresenter.getAppUpdate()
             mMainLeftPresenter.active()
             mMainLeftPresenter.getCorrectNotice()

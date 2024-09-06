@@ -41,7 +41,7 @@ class HomeworkManageFragment: BaseMainFragment() {
                 .setOnSelectListener { item ->
                     when (item.id) {
                         0 -> {
-                            HomeworkCommitDetailsDialog(requireActivity(),1).builder()
+                            HomeworkCommitDetailsDialog(requireActivity()).builder()
                         }
                         1 -> {
                             if (currentCourses.size > 0) {
@@ -290,10 +290,10 @@ class HomeworkManageFragment: BaseMainFragment() {
         }
     }
 
-//    override fun onRefreshData() {
-//        for (fragment in fragments){
-//            fragment.onRefreshData()
-//        }
-//    }
+    override fun onRefreshData() {
+        for (fragment in fragments){
+            fragment.onRefreshData()
+        }
+    }
 
 }

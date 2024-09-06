@@ -147,10 +147,10 @@ class TestPaperManageFragment: BaseMainFragment() {
         }
     }
 
-//    override fun onRefreshData() {
-//        for (fragment in fragments){
-//            fragment.onRefreshData()
-//        }
-//    }
+    override fun onRefreshData() {
+        for (fragment in fragments){
+            fragment.onRefreshData()
+        }
+    }
 
 }

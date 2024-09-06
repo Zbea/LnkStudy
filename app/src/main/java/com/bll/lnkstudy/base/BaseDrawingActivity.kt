@@ -695,6 +695,15 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         elik_a?.setPWEnabled(boolean)
         elik_b?.setPWEnabled(boolean)
     }
+
+    /**
+     * 设置是否加载缓存
+     */
+    fun setFreeAllPWBitmapCache(boolean: Boolean){
+        elik_a?.freeAllPWBitmapCache(boolean)
+        elik_b?.freeAllPWBitmapCache(boolean)
+    }
+
     /**
      * 设置擦除
      */

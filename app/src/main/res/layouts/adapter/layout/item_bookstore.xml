@@ -44,7 +44,7 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         android:ellipsize="end"
         android:maxLines="1"
         android:gravity="center"

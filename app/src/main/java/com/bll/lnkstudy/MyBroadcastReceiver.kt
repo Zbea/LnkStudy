@@ -30,6 +30,9 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 if (!NetworkUtil(context).isNetworkConnected()){
                     NetworkUtil(context).toggleNetwork(true)
                 }
+                else{
+                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
+                }
             }
             Constants.ACTION_UPLOAD_15->{
                 Log.d("debug","15点增量上传、以及全局刷新")
@@ -44,6 +47,9 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 MethodManager.wakeUpScreen(context)
                 if (!NetworkUtil(context).isNetworkConnected()){
                     NetworkUtil(context).toggleNetwork(true)
+                }
+                else{
+                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
                 }
             }
             Constants.ACTION_UPLOAD_NEXT_SEMESTER->{

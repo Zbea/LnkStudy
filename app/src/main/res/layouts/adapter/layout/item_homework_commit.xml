@@ -27,11 +27,20 @@
         />
 
     <TextView
+        android:id="@+id/tv_course"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="科目"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="@dimen/sp_22"
+        />
+
+    <TextView
         android:id="@+id/tv_date"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:text="@string/date"
+        android:text="提交日期"
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"

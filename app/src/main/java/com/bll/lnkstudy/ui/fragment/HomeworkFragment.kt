@@ -25,7 +25,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.locks.ReentrantLock
 
 
 /**
@@ -35,7 +34,6 @@ import java.util.concurrent.locks.ReentrantLock
 class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
     private var mCourse = ""//当前科目
-    private val lock = ReentrantLock()
     private var countDownTasks: CountDownLatch? = null //异步完成后操作
     private val mPresenter = HomeworkPresenter(this)
     private var mAdapter: HomeworkAdapter? = null
@@ -372,7 +370,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 for (bean in recordBeans) {
                     RecordDaoManager.getInstance().deleteBean(bean)
                     //修改本地增量更新
-                    DataUpdateManager.deleteDateUpdate(2, bean.id.toInt(),2,item.typeId,)
+                    DataUpdateManager.deleteDateUpdate(2, bean.id.toInt(), 2, item.typeId)
                 }
             }
             4 -> {
@@ -389,6 +387,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
         mAdapter?.remove(position)
+        fetchData()
     }
 
 
@@ -473,22 +472,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.downloadParent(item.id)
-                            lock.lock()
                             //更新增量数据
                             for (homework in homeworkContents) {
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId)
                             }
-                            val typeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.parentHomeworkId)
                             //添加批改详情
-                            HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-                                type = 2
-                                studentTaskId = item.id
-                                content = item.content
-                                homeworkTypeStr = typeBean.name
-                                course = typeBean.course
-                                time = System.currentTimeMillis()
-                            })
-                            lock.unlock()
+                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0,"","")
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -527,19 +516,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         }
 
                         override fun completed(task: BaseDownloadTask?) {
-                            lock.lock()
                             //下载完成后 请求
                             mPresenter.downloadParent(item.id)
                             //添加批改详情
-                            HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-                                type = 2
-                                studentTaskId = item.id
-                                content = item.content
-                                homeworkTypeStr = typeBean.name
-                                course = typeBean.course
-                                time = System.currentTimeMillis()
-                            })
-                            lock.unlock()
+                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0,"","")
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -580,7 +560,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.commitDownload(item.id)
-                            lock.lock()
+
                             for (page in item.page.split(",")){
                                 if (HomeworkBookCorrectDaoManager.getInstance().isExist(typeBean.bookId,page.toInt())){
                                     val bookCorrectBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(typeBean.bookId, page.toInt())
@@ -611,15 +591,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 }
                             }
                             //添加批改详情
-                            HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-                                type = 2
-                                studentTaskId = item.id
-                                content = item.title
-                                homeworkTypeStr = typeBean.name
-                                course = typeBean.course
-                                time = System.currentTimeMillis()
-                            })
-                            lock.unlock()
+                            saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -667,7 +639,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.commitDownload(item.id)
-                            lock.lock()
                             //更新增量数据
                             for (homework in homeworkContents) {
                                 homework.state = item.status
@@ -677,17 +648,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,item.typeId)
                             }
-                            val homework = homeworkContents[0]
                             //添加批改详情
-                            HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-                                type = 2
-                                studentTaskId = item.id
-                                content = homework.title
-                                homeworkTypeStr = homework.typeStr
-                                course = homework.course
-                                time = System.currentTimeMillis()
-                            })
-                            lock.unlock()
+                            saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -725,6 +687,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
                         override fun completed(task: BaseDownloadTask?) {
                             mPresenter.commitDownload(item.id)
+
                             val paperDaoManager = HomeworkPaperDaoManager.getInstance()
                             val paperContentDaoManager = HomeworkPaperContentDaoManager.getInstance()
                             //已完成
@@ -744,16 +707,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                     for (contentPaper in contentPapers) {
                                         DataUpdateManager.editDataUpdate(2, contentPaper.id.toInt(), 3)
                                     }
-                                    //添加批改详情
-                                    HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-                                        type = 2
-                                        studentTaskId = item.id
-                                        content = paper.title
-                                        homeworkTypeStr = paper.typeName
-                                        course = paper.course
-                                        time = System.currentTimeMillis()
-                                    })
                                 }
+                                //添加批改详情
+                                saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
 
                             } else {
                                 val contentBean = paperDaoManager.queryByContentID(item.id)
@@ -807,10 +763,29 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     }
 
     /**
+     * 保存批改详情
+     */
+    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Int,correctJson:String,answerUrl:String){
+        CorrectDetailsManager.getInstance().insertOrReplace(CorrectDetailsBean().apply {
+            type=0
+            course=mCourse
+            this.typeStr=typeStr
+            this.title=title
+            date=System.currentTimeMillis()
+            this.url=url
+            this.correctMode=correctMode
+            this.scoreMode=scoreMode
+            this.score=score
+            this.correctJson=correctJson
+            this.answerUrl=answerUrl
+        })
+    }
+
+    /**
      * 请求作业分类
      */
     private fun fetchHomeworkType() {
-        if (NetworkUtil(requireContext()).isNetworkConnected()) {
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             countDownTasks = CountDownLatch(2)
 
             val map = HashMap<String, Any>()
@@ -862,6 +837,19 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 获取作业卷最新的老师下发
      */
     private fun fetchMessage() {
+        val arrayIds = arrayListOf<Int>()
+        for (item in homeworkTypes) {
+            if (item.createStatus == 2) {
+                arrayIds.add(item.parentTypeId)
+            }
+        }
+        val mapParentMessage = HashMap<String, Any>()
+        mapParentMessage["ids"] = arrayIds
+        mapParentMessage["size"] = 10
+        mPresenter.getParentMessage(mapParentMessage)
+        mapParentMessage.remove("size")
+        mPresenter.getParentReel(mapParentMessage)
+
         val list = arrayListOf<HomeworkRequestArguments>()
         for (item in homeworkTypes) {
             if (item.createStatus == 1 && item.state != 1) {
@@ -889,19 +877,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         val mapPaper = HashMap<String, Any>()
         mapPaper["commonDto"] = list
         mPresenter.getReelList(mapPaper)
-
-        val arrayIds = arrayListOf<Int>()
-        for (item in homeworkTypes) {
-            if (item.createStatus == 2) {
-                arrayIds.add(item.parentTypeId)
-            }
-        }
-        val mapParentMessage = HashMap<String, Any>()
-        mapParentMessage["ids"] = arrayIds
-        mapParentMessage["size"] = 10
-        mPresenter.getParentMessage(mapParentMessage)
-        mapParentMessage.remove("size")
-        mPresenter.getParentReel(mapParentMessage)
     }
 
     override fun onEventBusMessage(msgFlag: String) {

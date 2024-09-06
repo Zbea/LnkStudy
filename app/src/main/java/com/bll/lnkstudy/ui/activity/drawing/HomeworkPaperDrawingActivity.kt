@@ -96,8 +96,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            type=1
-            studentTaskId=paper?.contentId!!
             content=paper?.title
             homeworkTypeStr=homeworkType?.name
             course=homeworkType?.course
@@ -148,7 +146,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     }
                     override fun ok() {
                         showLoading()
-                        commit()
+                        if (NetworkUtil(this@HomeworkPaperDrawingActivity).isNetworkConnected()){
+                            commit()
+                        }
+                        else{
+                            showNetworkDialog()
+                        }
                     }
                 })
         }
@@ -265,6 +268,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 2->{
                     setPWEnabled(true)
                     disMissView(iv_btn)
+                    setFreeAllPWBitmapCache(false)
                 }
             }
         }
@@ -390,7 +394,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             val item=paperContents[i]
             homeworkCommitInfoItem?.paths?.add(item.path)
             Thread {
-                val drawPath = item.drawPath.replace("tch", "png")//当前绘图路径
+                val drawPath = item.drawPath//当前绘图路径
                 BitmapUtils.mergeBitmap(item.path, drawPath)
                 FileUtils.deleteFile(File(drawPath))
                 commitItems.add(ItemList().apply {
@@ -449,4 +453,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         closeNetwork()
     }
 
+    override fun onNetworkConnectionSuccess() {
+        commit()
+    }
 }

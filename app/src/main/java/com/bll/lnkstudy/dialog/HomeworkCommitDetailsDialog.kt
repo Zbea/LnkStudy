@@ -15,7 +15,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkCommitDetailsDialog(val context: Context,val type:Int) {
+class HomeworkCommitDetailsDialog(val context: Context) {
 
     private var dialog:Dialog?=null
     private var mAdapter:CommitAdapter?=null
@@ -32,11 +32,11 @@ class HomeworkCommitDetailsDialog(val context: Context,val type:Int) {
         layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,750f))/2
         dialog?.show()
 
-        val list=HomeworkDetailsDaoManager.getInstance().queryAllByType(type)
+        val list=HomeworkDetailsDaoManager.getInstance().queryList()
 
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
         recyclerview.layoutManager = LinearLayoutManager(context)
-        mAdapter= CommitAdapter(R.layout.item_homework_commit,type, list)
+        mAdapter= CommitAdapter(R.layout.item_homework_commit, list)
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceItemDeco(20,false))
 
@@ -54,10 +54,11 @@ class HomeworkCommitDetailsDialog(val context: Context,val type:Int) {
     }
 
 
-    class CommitAdapter(layoutResId: Int,val type: Int, data: List<HomeworkDetailsBean>) : BaseQuickAdapter<HomeworkDetailsBean, BaseViewHolder>(layoutResId, data) {
+    class CommitAdapter(layoutResId: Int, data: List<HomeworkDetailsBean>) : BaseQuickAdapter<HomeworkDetailsBean, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item:HomeworkDetailsBean) {
             helper.setText(R.id.tv_title,item.content)
             helper.setText(R.id.tv_type,item.homeworkTypeStr)
+            helper.setText(R.id.tv_course,item.course)
             helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.time))
         }
 

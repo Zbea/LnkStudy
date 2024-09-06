@@ -12,11 +12,15 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.manager.DiaryDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -63,8 +67,10 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onCourse(url: String) {
-        SPUtil.putString("courseUrl",url)
-        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+        if (url!=SPUtil.getString("courseUrl")){
+            SPUtil.putString("courseUrl",url)
+            GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+        }
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         var currentGrade=0
@@ -81,6 +87,44 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
             //当年级变化时，及时上传本地作业、考卷
             EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
+        }
+    }
+
+    override fun onCourseItems(courses: MutableList<String>) {
+        for (course in courses) {
+            var path = ""
+            val typeId = MethodManager.getExamTypeId(course)
+            //创建作业错题本
+            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
+                val typeItem = HomeworkTypeBean()
+                typeItem.name = "${course}错题本"
+                typeItem.course = course
+                typeItem.date = System.currentTimeMillis()
+                typeItem.grade = mUser?.grade!!
+                typeItem.typeId = typeId
+                typeItem.createStatus = 0
+                typeItem.state = 5
+                HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
+                path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
+            } else {
+                path = FileAddress().getPathScreenHomework("${course}错题本", mUser?.grade!!)
+            }
+            FileUtils.mkdirs(path)
+
+            //创建考卷分类
+            if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
+                val typeItem= PaperTypeBean()
+                typeItem.name="学校考试卷"
+                typeItem.course=course
+                typeItem.date=System.currentTimeMillis()
+                typeItem.grade=mUser?.grade!!
+                typeItem.typeId=typeId
+                PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
+            }
+        }
+        if (courses.isNotEmpty() && courses != MethodManager.getCourses()) {
+            MethodManager.saveCourses(courses)
+            EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
         }
     }
 
@@ -183,6 +227,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             fetchExam()
             mMainPresenter.getTeacherCourse()
             mMainPresenter.getClassGroupList(false)
+            mMainPresenter.getCourseItems()
         }
         val url=SPUtil.getString("courseUrl")
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)

@@ -101,8 +101,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            type=1
-            studentTaskId=homeworkCommitInfoItem?.messageId!!
             content=homeworkCommitInfoItem?.title
             homeworkTypeStr=homeworkType?.name
             course=homeworkType?.course
@@ -304,6 +302,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
             }
             2->{
+                elik_b?.freeAllPWBitmapCache(true)
                 setElikLoadPath(elik_b!!, homeworkContent!!)
             }
         }
@@ -320,6 +319,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
                 }
                 2->{
+                    elik_a?.freeAllPWBitmapCache(true)
                     setElikLoadPath(elik_a!!, homeworkContent_a!!)
                 }
             }

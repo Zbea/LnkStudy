@@ -21,6 +21,23 @@
         android:orientation="horizontal"
         android:gravity="center"
         >
+
+        <TextView
+            android:id="@+id/tv_course"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingEnd="@dimen/dp_5"
+            android:paddingStart="@dimen/dp_5"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24"
+            android:text="科目"
+            android:visibility="gone"
+            android:background="@drawable/bg_black_stroke_10dp_corner"
+            />
+
         <TextView
             android:id="@+id/tv_search"
             android:layout_width="200dp"

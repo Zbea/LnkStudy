@@ -539,6 +539,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
         HomeworkBookCorrectDaoManager.getInstance().clear()
+        HomeworkDetailsDaoManager.getInstance().clear()
+
+        //清楚学情
+        CorrectDetailsManager.getInstance().clear()
 
         //删除本地考卷分类
         PaperTypeDaoManager.getInstance().clear()
@@ -593,6 +597,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
         HomeworkBookCorrectDaoManager.getInstance().clear()
+        //清楚学情
+        CorrectDetailsManager.getInstance().clear()
+        HomeworkDetailsDaoManager.getInstance().clear()
 
         //删除本地考卷分类
         PaperTypeDaoManager.getInstance().clear()
@@ -1235,6 +1242,18 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
     }
 
+    /**
+     * 每学期清除数据
+     */
+    private fun clearSemesterData(){
+        //清除作业通知（每学期上学开始）
+        EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
+        //清除批改详情
+        CorrectDetailsManager.getInstance().clear()
+        //清除作业提交详情
+        HomeworkDetailsDaoManager.getInstance().clear()
+    }
+
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
@@ -1247,17 +1266,15 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                    //清除作业通知（每学期上学开始）
-                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
                 }, 10 * 1000)
+                clearSemesterData()
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                    //清除作业通知（每学期上学开始）
-                    EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
                 }, 10 * 1000)
+                clearSemesterData()
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
                 eventType = Constants.USER_CHANGE_GRADE_EVENT

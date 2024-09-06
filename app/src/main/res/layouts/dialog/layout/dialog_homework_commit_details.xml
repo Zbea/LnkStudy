@@ -4,10 +4,7 @@
     android:layout_width="750dp"
     android:layout_height="580dp"
     android:background="@drawable/dialog_bg"
-    android:paddingStart="@dimen/dp_30"
-    android:paddingEnd="@dimen/dp_30"
-    android:paddingTop="@dimen/dp_40"
-    android:paddingBottom="@dimen/dp_30"
+    android:padding="@dimen/dp_30"
     >
 
     <include layout="@layout/item_homework_commit"
@@ -17,6 +14,6 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_10"/>
+        android:layout_marginTop="@dimen/dp_20"/>
 
 </LinearLayout>

@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.*
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.manager.CorrectDetailsManager
 import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
+import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
 import com.bll.lnkstudy.mvp.model.paper.*
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -24,14 +26,12 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 考卷(获取考卷分类，获取老师批改下发，考卷来源首页的考试)
  */
 class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private var mCourse = ""//当前科目
-    private val lock = ReentrantLock()
     private val mPresenter = TestPaperPresenter(this)
     private var mAdapter: PaperTypeAdapter? = null
     private var paperTypes = mutableListOf<PaperTypeBean>()
@@ -133,6 +133,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                             val path = FileAddress().getPathTestPaper(item.typeId)
                             FileUtils.deleteFile(File(path))
                             remove(position)
+                            fetchData()
                         }
                     })
                 true
@@ -172,9 +173,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         mPresenter.downloadCompletePaper(item.id)
-                        lock.lock()
                         savePaperData(paths,item)
-                        lock.unlock()
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -211,9 +210,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         mPresenter.downloadCompleteExam(item.id)
-                        lock.lock()
                         saveExamData(paths,item)
-                        lock.unlock()
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -262,6 +259,8 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
             DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),paperContent.path)
         }
+        //保存批改
+        saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
     }
 
     /**
@@ -301,6 +300,28 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
             DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),paperContent.path)
         }
+
+        //保存批改
+        saveCorrectDetails("学校考试卷",item.examName,item.teacherUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
+    }
+
+    /**
+     * 保存批改详情
+     */
+    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Int,correctJson:String,answerUrl:String){
+        CorrectDetailsManager.getInstance().insertOrReplace(CorrectDetailsBean().apply {
+            type=1
+            course=mCourse
+            this.typeStr=typeStr
+            this.title=title
+            date=System.currentTimeMillis()
+            this.url=url
+            this.correctMode=correctMode
+            this.scoreMode=scoreMode
+            this.score=score
+            this.correctJson=correctJson
+            this.answerUrl=answerUrl
+        })
     }
 
     /**
@@ -332,7 +353,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     private fun fetchTypes() {
-        if (NetworkUtil(requireContext()).isNetworkConnected()) {
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!

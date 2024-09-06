@@ -17,6 +17,7 @@ import com.bll.lnkstudy.mvp.model.ItemTypeBean;
 import com.bll.lnkstudy.mvp.model.RecordBean;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.date.DateEventBean;
+import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
@@ -42,6 +43,7 @@ import com.bll.lnkstudy.greendao.ItemTypeBeanDao;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DateEventBeanDao;
+import com.bll.lnkstudy.greendao.CorrectDetailsBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkBookBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkBookCorrectBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
@@ -76,6 +78,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig recordBeanDaoConfig;
     private final DaoConfig bookBeanDaoConfig;
     private final DaoConfig dateEventBeanDaoConfig;
+    private final DaoConfig correctDetailsBeanDaoConfig;
     private final DaoConfig homeworkBookBeanDaoConfig;
     private final DaoConfig homeworkBookCorrectBeanDaoConfig;
     private final DaoConfig homeworkContentBeanDaoConfig;
@@ -101,6 +104,7 @@ public class DaoSession extends AbstractDaoSession {
     private final RecordBeanDao recordBeanDao;
     private final BookBeanDao bookBeanDao;
     private final DateEventBeanDao dateEventBeanDao;
+    private final CorrectDetailsBeanDao correctDetailsBeanDao;
     private final HomeworkBookBeanDao homeworkBookBeanDao;
     private final HomeworkBookCorrectBeanDao homeworkBookCorrectBeanDao;
     private final HomeworkContentBeanDao homeworkContentBeanDao;
@@ -147,6 +151,9 @@ public class DaoSession extends AbstractDaoSession {
 
         dateEventBeanDaoConfig = daoConfigMap.get(DateEventBeanDao.class).clone();
         dateEventBeanDaoConfig.initIdentityScope(type);
+
+        correctDetailsBeanDaoConfig = daoConfigMap.get(CorrectDetailsBeanDao.class).clone();
+        correctDetailsBeanDaoConfig.initIdentityScope(type);
 
         homeworkBookBeanDaoConfig = daoConfigMap.get(HomeworkBookBeanDao.class).clone();
         homeworkBookBeanDaoConfig.initIdentityScope(type);
@@ -202,6 +209,7 @@ public class DaoSession extends AbstractDaoSession {
         recordBeanDao = new RecordBeanDao(recordBeanDaoConfig, this);
         bookBeanDao = new BookBeanDao(bookBeanDaoConfig, this);
         dateEventBeanDao = new DateEventBeanDao(dateEventBeanDaoConfig, this);
+        correctDetailsBeanDao = new CorrectDetailsBeanDao(correctDetailsBeanDaoConfig, this);
         homeworkBookBeanDao = new HomeworkBookBeanDao(homeworkBookBeanDaoConfig, this);
         homeworkBookCorrectBeanDao = new HomeworkBookCorrectBeanDao(homeworkBookCorrectBeanDaoConfig, this);
         homeworkContentBeanDao = new HomeworkContentBeanDao(homeworkContentBeanDaoConfig, this);
@@ -227,6 +235,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(RecordBean.class, recordBeanDao);
         registerDao(BookBean.class, bookBeanDao);
         registerDao(DateEventBean.class, dateEventBeanDao);
+        registerDao(CorrectDetailsBean.class, correctDetailsBeanDao);
         registerDao(HomeworkBookBean.class, homeworkBookBeanDao);
         registerDao(HomeworkBookCorrectBean.class, homeworkBookCorrectBeanDao);
         registerDao(HomeworkContentBean.class, homeworkContentBeanDao);
@@ -254,6 +263,7 @@ public class DaoSession extends AbstractDaoSession {
         recordBeanDaoConfig.clearIdentityScope();
         bookBeanDaoConfig.clearIdentityScope();
         dateEventBeanDaoConfig.clearIdentityScope();
+        correctDetailsBeanDaoConfig.clearIdentityScope();
         homeworkBookBeanDaoConfig.clearIdentityScope();
         homeworkBookCorrectBeanDaoConfig.clearIdentityScope();
         homeworkContentBeanDaoConfig.clearIdentityScope();
@@ -305,6 +315,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public DateEventBeanDao getDateEventBeanDao() {
         return dateEventBeanDao;
+    }
+
+    public CorrectDetailsBeanDao getCorrectDetailsBeanDao() {
+        return correctDetailsBeanDao;
     }
 
     public HomeworkBookBeanDao getHomeworkBookBeanDao() {

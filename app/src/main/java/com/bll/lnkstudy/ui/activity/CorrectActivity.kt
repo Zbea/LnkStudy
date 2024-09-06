@@ -109,8 +109,6 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
 
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            type=1
-            studentTaskId=commitItem?.messageId!!
             content=commitItem?.title
             homeworkTypeStr=commitItem?.typeName
             course=commitItem?.course

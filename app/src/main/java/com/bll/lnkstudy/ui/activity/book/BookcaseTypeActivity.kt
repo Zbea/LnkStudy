@@ -54,7 +54,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         initTab()
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_book_type, null).apply {
+        mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

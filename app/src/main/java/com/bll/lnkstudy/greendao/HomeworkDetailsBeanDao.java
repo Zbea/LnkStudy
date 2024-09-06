@@ -26,12 +26,10 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property StudentTaskId = new Property(2, int.class, "studentTaskId", false, "STUDENT_TASK_ID");
-        public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
-        public final static Property Content = new Property(4, String.class, "content", false, "CONTENT");
-        public final static Property HomeworkTypeStr = new Property(5, String.class, "homeworkTypeStr", false, "HOMEWORK_TYPE_STR");
-        public final static Property Course = new Property(6, String.class, "course", false, "COURSE");
-        public final static Property Time = new Property(7, long.class, "time", false, "TIME");
+        public final static Property Content = new Property(2, String.class, "content", false, "CONTENT");
+        public final static Property HomeworkTypeStr = new Property(3, String.class, "homeworkTypeStr", false, "HOMEWORK_TYPE_STR");
+        public final static Property Course = new Property(4, String.class, "course", false, "COURSE");
+        public final static Property Time = new Property(5, long.class, "time", false, "TIME");
     }
 
 
@@ -49,12 +47,10 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
         db.execSQL("CREATE TABLE " + constraint + "\"HOMEWORK_DETAILS_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"STUDENT_TASK_ID\" INTEGER NOT NULL ," + // 2: studentTaskId
-                "\"TYPE\" INTEGER NOT NULL ," + // 3: type
-                "\"CONTENT\" TEXT," + // 4: content
-                "\"HOMEWORK_TYPE_STR\" TEXT," + // 5: homeworkTypeStr
-                "\"COURSE\" TEXT," + // 6: course
-                "\"TIME\" INTEGER NOT NULL );"); // 7: time
+                "\"CONTENT\" TEXT," + // 2: content
+                "\"HOMEWORK_TYPE_STR\" TEXT," + // 3: homeworkTypeStr
+                "\"COURSE\" TEXT," + // 4: course
+                "\"TIME\" INTEGER NOT NULL );"); // 5: time
     }
 
     /** Drops the underlying database table. */
@@ -72,24 +68,22 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getStudentTaskId());
-        stmt.bindLong(4, entity.getType());
  
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(5, content);
+            stmt.bindString(3, content);
         }
  
         String homeworkTypeStr = entity.getHomeworkTypeStr();
         if (homeworkTypeStr != null) {
-            stmt.bindString(6, homeworkTypeStr);
+            stmt.bindString(4, homeworkTypeStr);
         }
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(7, course);
+            stmt.bindString(5, course);
         }
-        stmt.bindLong(8, entity.getTime());
+        stmt.bindLong(6, entity.getTime());
     }
 
     @Override
@@ -101,24 +95,22 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getStudentTaskId());
-        stmt.bindLong(4, entity.getType());
  
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(5, content);
+            stmt.bindString(3, content);
         }
  
         String homeworkTypeStr = entity.getHomeworkTypeStr();
         if (homeworkTypeStr != null) {
-            stmt.bindString(6, homeworkTypeStr);
+            stmt.bindString(4, homeworkTypeStr);
         }
  
         String course = entity.getCourse();
         if (course != null) {
-            stmt.bindString(7, course);
+            stmt.bindString(5, course);
         }
-        stmt.bindLong(8, entity.getTime());
+        stmt.bindLong(6, entity.getTime());
     }
 
     @Override
@@ -131,12 +123,10 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
         HomeworkDetailsBean entity = new HomeworkDetailsBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
-            cursor.getInt(offset + 2), // studentTaskId
-            cursor.getInt(offset + 3), // type
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // content
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // homeworkTypeStr
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // course
-            cursor.getLong(offset + 7) // time
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // content
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // homeworkTypeStr
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // course
+            cursor.getLong(offset + 5) // time
         );
         return entity;
     }
@@ -145,12 +135,10 @@ public class HomeworkDetailsBeanDao extends AbstractDao<HomeworkDetailsBean, Lon
     public void readEntity(Cursor cursor, HomeworkDetailsBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
-        entity.setStudentTaskId(cursor.getInt(offset + 2));
-        entity.setType(cursor.getInt(offset + 3));
-        entity.setContent(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setHomeworkTypeStr(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCourse(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setTime(cursor.getLong(offset + 7));
+        entity.setContent(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setHomeworkTypeStr(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setCourse(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setTime(cursor.getLong(offset + 5));
      }
     
     @Override

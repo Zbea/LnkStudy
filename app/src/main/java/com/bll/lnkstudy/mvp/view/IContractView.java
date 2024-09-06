@@ -134,7 +134,6 @@ public interface IContractView {
 
     interface IMainLeftView extends IBaseView {
         void onHomeworkNotice(HomeworkNoticeList list);
-        void onCourseItems(List<String> courseItems);
         void onAppUpdate(AppUpdateBean item);
         void onCorrect(HomeworkNoticeList list);
         void onType(TeachingVideoType type);
@@ -146,6 +145,7 @@ public interface IContractView {
         void onExam(ExamItem exam);
         void onCourse(String url);
         void onClassGroupList(List<ClassGroup> classGroups);
+        void onCourseItems(List<String> courseItems);
     }
 
     //公共接口

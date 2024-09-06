@@ -77,11 +77,9 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         mAdapter?.notifyDataSetChanged()
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            type=1
-            studentTaskId=messageBean.studentTaskId
             content=messageBean.title
             homeworkTypeStr=homeworkType?.name
-            course=homeworkType?.course
+            course=course
             time=System.currentTimeMillis()
         })
     }

@@ -30,7 +30,6 @@ import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 教材书城
@@ -40,7 +39,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var tabId = 0 //课本分类
     private var tabStr=""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
-    private val lock = ReentrantLock()
     private lateinit var presenter :TextbookStorePresenter
     private var books = mutableListOf<TextbookBean>()
     private var mAdapter: TextbookStoreAdapter? = null
@@ -308,7 +306,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 override fun completed(task: BaseDownloadTask?) {
                     //删除缓存 poolmap
                     deleteDoneTask(task)
-                    lock.lock()
                     if (tabId>2){
                         val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
                         unzip(book, path, fileTargetPath)
@@ -327,7 +324,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                         DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
                     }
                     refreshView(book, path)
-                    lock.unlock()
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {

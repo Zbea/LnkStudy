@@ -48,7 +48,7 @@ public class HomeworkDetailsDaoManager {
     }
 
     public void insertOrReplace(HomeworkDetailsBean bean) {
-        List<HomeworkDetailsBean> beans=queryAllByType(bean.type);
+        List<HomeworkDetailsBean> beans=queryList();
         if (beans.size()>=10){
             List<HomeworkDetailsBean> detailsBeans=beans.subList(9,beans.size());
             dao.deleteInTx(detailsBeans);
@@ -56,18 +56,8 @@ public class HomeworkDetailsDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public List<HomeworkDetailsBean> queryAllByType(int type){
-        WhereCondition whereCondition1= HomeworkDetailsBeanDao.Properties.Type.eq(type);
-        return dao.queryBuilder().where(whereUser,whereCondition1).orderDesc(HomeworkDetailsBeanDao.Properties.Time).build().list();
-    }
-
-    /**
-     * 获取批改详情
-     * @return
-     */
-    public List<HomeworkDetailsBean> queryCorrect(){
-        WhereCondition whereCondition1= HomeworkDetailsBeanDao.Properties.Type.eq(2);
-        return dao.queryBuilder().where(whereUser,whereCondition1).orderDesc(HomeworkDetailsBeanDao.Properties.Time).limit(7).build().list();
+    public List<HomeworkDetailsBean> queryList(){
+        return dao.queryBuilder().where(whereUser).orderDesc(HomeworkDetailsBeanDao.Properties.Time).build().list();
     }
 
     public void clear(){

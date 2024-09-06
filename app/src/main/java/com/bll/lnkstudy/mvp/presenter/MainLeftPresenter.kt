@@ -74,19 +74,7 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
         }, false)
     }
 
-    //获取学生科目列表
-    fun getCourseItems() {
-        val list= RetrofitManager.service.getCourseItems()
-        doRequest(list, object : Callback<List<String>>(view,screen,false) {
-            override fun failed(tBaseResult: BaseResult<List<String>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<List<String>>) {
-                if (tBaseResult.data!=null)
-                    view.onCourseItems(tBaseResult.data)
-            }
-        }, false)
-    }
+
 
     //获取更新信息
     fun getAppUpdate() {

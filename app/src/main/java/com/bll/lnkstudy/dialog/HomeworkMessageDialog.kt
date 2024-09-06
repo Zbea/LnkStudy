@@ -89,7 +89,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
                 helper.setText(R.id.tv_title,item.content)
                 helper.setVisible(R.id.tv_correct,false)
                 if (item.endTime>0){
-                    helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime*1000))
+                    helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime))
                     val state= when (item.status) {
                         1 -> {
                             mContext.getString(R.string.homework_state_no)
