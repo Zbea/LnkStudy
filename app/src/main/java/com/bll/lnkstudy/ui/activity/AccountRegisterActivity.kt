@@ -14,9 +14,25 @@ import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_account_register.*
+import kotlinx.android.synthetic.main.ac_account_register.btn_code
+import kotlinx.android.synthetic.main.ac_account_register.btn_register
+import kotlinx.android.synthetic.main.ac_account_register.ed_code
+import kotlinx.android.synthetic.main.ac_account_register.ed_name
+import kotlinx.android.synthetic.main.ac_account_register.ed_password
+import kotlinx.android.synthetic.main.ac_account_register.ed_phone
+import kotlinx.android.synthetic.main.ac_account_register.ed_user
+import kotlinx.android.synthetic.main.ac_account_register.et_parent
+import kotlinx.android.synthetic.main.ac_account_register.et_parent_name
+import kotlinx.android.synthetic.main.ac_account_register.et_parent_phone
+import kotlinx.android.synthetic.main.ac_account_register.ll_date
+import kotlinx.android.synthetic.main.ac_account_register.ll_name
+import kotlinx.android.synthetic.main.ac_account_register.ll_school
+import kotlinx.android.synthetic.main.ac_account_register.ll_user
+import kotlinx.android.synthetic.main.ac_account_register.tv_date
+import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
 /**
@@ -68,7 +84,12 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){
-            mSchoolPresenter?.getCommonSchool()
+            if (NetworkUtil(this).isNetworkConnected()){
+                mSchoolPresenter?.getCommonSchool(false)
+            }
+            else{
+                showToast(R.string.net_work_error)
+            }
         }
     }
 
@@ -260,5 +281,9 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         intent.putExtra("psw", ed_password.text.toString())
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        mSchoolPresenter?.getCommonSchool(true)
     }
 }

@@ -19,8 +19,8 @@ import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.iv_manager
 
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -121,6 +121,10 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         ClassGroupAddDialog(this).builder()?.setOnDialogClickListener { code ->
             presenter.onInsertClassGroup(code)
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        presenter.getClassGroupList(true)
     }
 
 }

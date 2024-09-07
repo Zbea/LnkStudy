@@ -12,7 +12,9 @@ import com.bll.lnkstudy.ui.fragment.resource.AppDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.common_title.tv_course
+import kotlinx.android.synthetic.main.common_title.tv_grade
+import kotlinx.android.synthetic.main.common_title.tv_province
 
 class ResourceCenterActivity:BaseAppCompatActivity() {
 
@@ -154,11 +156,6 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         wallpaperFragment?.initChangeScreenData()
         paintingFragment?.initChangeScreenData()
         calenderFragment?.initChangeScreenData()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
     }
 
 }

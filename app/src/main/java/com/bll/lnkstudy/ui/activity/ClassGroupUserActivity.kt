@@ -9,7 +9,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUserList
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupUserAdapter
-import kotlinx.android.synthetic.main.ac_classgroup_user.*
+import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
 
 
 class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -46,10 +46,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
     override fun initData() {
         initChangeScreenData()
         mClassGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
-        val map=HashMap<String,Any>()
-        map["classId"]=mClassGroup?.classId!!
-        map["classGroupId"]=mClassGroup?.classGroupId!!
-        presenter.getClassGroupUser(map)
+        fetchData()
     }
 
     override fun initChangeScreenData() {
@@ -66,4 +63,15 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
         }
     }
 
+
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["classId"]=mClassGroup?.classId!!
+        map["classGroupId"]=mClassGroup?.classGroupId!!
+        presenter.getClassGroupUser(map)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        fetchData()
+    }
 }

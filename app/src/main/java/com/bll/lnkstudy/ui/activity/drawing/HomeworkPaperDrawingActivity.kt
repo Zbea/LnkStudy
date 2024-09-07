@@ -16,16 +16,34 @@ import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.homework.*
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
+import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkstudy.ui.activity.CorrectActivity
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.BitmapUtils
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_correct_score.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.ll_score
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_multi
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
+import kotlinx.android.synthetic.main.common_correct_score.tv_answer
+import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
+import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 
@@ -446,11 +464,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             oldPosition=-1
             onContent()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
     }
 
     override fun onNetworkConnectionSuccess() {

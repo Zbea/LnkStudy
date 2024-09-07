@@ -24,14 +24,27 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.CorrectActivity
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.BitmapUtils
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_correct_score.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.ll_score
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_multi
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
+import kotlinx.android.synthetic.main.common_correct_score.tv_answer
+import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
+import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
-import java.util.*
+import java.util.Collections
 
 
 /**
@@ -559,11 +572,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onNetworkConnectionSuccess() {
         commit()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
     }
 
 }

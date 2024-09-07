@@ -26,11 +26,15 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_page_number.ll_page_number
+import kotlinx.android.synthetic.main.common_title.iv_manager
 import java.io.File
 
 class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadView{
@@ -299,7 +303,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     override fun onDestroy() {
         super.onDestroy()
         release()
-        closeNetwork()
     }
 
 }

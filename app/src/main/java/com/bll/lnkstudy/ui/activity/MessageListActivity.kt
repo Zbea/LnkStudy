@@ -13,8 +13,8 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
@@ -97,11 +97,6 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     override fun onNetworkConnectionSuccess() {
         fetchData()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
     }
 
 }

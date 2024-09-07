@@ -11,8 +11,16 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.*
-import kotlinx.android.synthetic.main.ac_account_login_user.*
+import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
+import kotlinx.android.synthetic.main.ac_account_login_user.btn_login
+import kotlinx.android.synthetic.main.ac_account_login_user.ed_psw
+import kotlinx.android.synthetic.main.ac_account_login_user.ed_user
+import kotlinx.android.synthetic.main.ac_account_login_user.ll_tips
+import kotlinx.android.synthetic.main.ac_account_login_user.tv_find_psd
+import kotlinx.android.synthetic.main.ac_account_login_user.tv_register
 
 class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
@@ -123,4 +131,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         }
     }
 
+    override fun onNetworkConnectionSuccess() {
+        fetchCommonData()
+    }
 }

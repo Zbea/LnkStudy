@@ -1,10 +1,13 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.*
-import com.bll.lnkstudy.mvp.model.PopupBean
+import com.bll.lnkstudy.dialog.AccountEditParentDialog
+import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
@@ -13,7 +16,21 @@ import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
-import kotlinx.android.synthetic.main.ac_account_info.*
+import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
+import kotlinx.android.synthetic.main.ac_account_info.btn_edit_parent
+import kotlinx.android.synthetic.main.ac_account_info.btn_edit_school
+import kotlinx.android.synthetic.main.ac_account_info.btn_logout
+import kotlinx.android.synthetic.main.ac_account_info.tv_area
+import kotlinx.android.synthetic.main.ac_account_info.tv_birthday
+import kotlinx.android.synthetic.main.ac_account_info.tv_city
+import kotlinx.android.synthetic.main.ac_account_info.tv_name
+import kotlinx.android.synthetic.main.ac_account_info.tv_parent
+import kotlinx.android.synthetic.main.ac_account_info.tv_parent_name
+import kotlinx.android.synthetic.main.ac_account_info.tv_parent_phone
+import kotlinx.android.synthetic.main.ac_account_info.tv_phone
+import kotlinx.android.synthetic.main.ac_account_info.tv_provinces
+import kotlinx.android.synthetic.main.ac_account_info.tv_school_name
+import kotlinx.android.synthetic.main.ac_account_info.tv_user
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
 
@@ -21,7 +38,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var presenter:AccountInfoPresenter?=null
     private var nickname = ""
 
-    private var grades = mutableListOf<PopupBean>()
     private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
@@ -66,7 +82,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         initChangeScreenData()
         school=mUser?.schoolId!!
         if (NetworkUtil(this).isNetworkConnected())
-            mSchoolPresenter?.getCommonSchool()
+            mSchoolPresenter?.getCommonSchool(false)
     }
 
     override fun initChangeScreenData() {
@@ -97,7 +113,12 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         }
 
         btn_edit_school.setOnClickListener {
-            editSchool()
+            if (schools.isNotEmpty()){
+                editSchool()
+            }
+            else{
+                showToast("数据加载失败，请重新加载")
+            }
         }
 
         btn_logout.setOnClickListener {
@@ -160,5 +181,9 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun onDestroy() {
         super.onDestroy()
         SPUtil.putObj("user", mUser!!)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        mSchoolPresenter?.getCommonSchool(true)
     }
 }

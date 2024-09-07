@@ -10,7 +10,7 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 class SchoolPresenter(view: IContractView.ISchoolView,val screen:Int=0) : BasePresenter<IContractView.ISchoolView>(view) {
 
-    fun getCommonSchool() {
+    fun getCommonSchool(boolean: Boolean) {
         val grade = RetrofitManager.service.getCommonSchool()
         doRequest(grade, object : Callback<MutableList<SchoolBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<SchoolBean>>): Boolean {
@@ -20,7 +20,7 @@ class SchoolPresenter(view: IContractView.ISchoolView,val screen:Int=0) : BasePr
                 if (tBaseResult.data!=null)
                     view.onListSchools(tBaseResult.data)
             }
-        }, false)
+        }, boolean)
 
     }
 

@@ -18,13 +18,28 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.*
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import com.bll.lnkstudy.utils.BitmapUtils
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_expand
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 
 /**
  * 考卷考试页面
@@ -281,7 +296,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         super.onDestroy()
         alarmManager?.cancel(pendingIntent)
         alarmManager=null
-        closeNetwork()
         setExamMode(false)
     }
 

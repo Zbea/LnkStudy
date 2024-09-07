@@ -18,8 +18,9 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_grade
+import kotlinx.android.synthetic.main.common_title.tv_semester
 
 class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView {
 
@@ -174,11 +175,6 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
 
     override fun onNetworkConnectionSuccess() {
         fetchData()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeNetwork()
     }
 
 }

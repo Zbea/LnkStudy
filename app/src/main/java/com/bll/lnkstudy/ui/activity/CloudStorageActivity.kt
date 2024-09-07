@@ -7,10 +7,16 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
-import com.bll.lnkstudy.ui.fragment.cloud.*
+import com.bll.lnkstudy.ui.fragment.cloud.CloudBookCaseFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudDiaryFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudExamFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudHomeworkFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudNoteFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudPaintingFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudTextbookFragment
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_cloud_storage.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_cloud_storage.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_grade
 
 /**
  * 云存储
@@ -152,7 +158,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     override fun onDestroy() {
         super.onDestroy()
         FileDownloader.getImpl().pauseAll()
-        closeNetwork()
     }
 
 }
