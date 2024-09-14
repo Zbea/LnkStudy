@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">青蓝学生本</string>
     <string name="authority">com.bll.lnkstudy</string>
+<!--    <string name="authority">com.android.settings.files</string>-->
     <string name="request_success">请求成功</string>
     <string name="connect_server_timeout">无法连接到服务器</string>
     <string name="login_timeout">连接超时,请重新登陆</string>

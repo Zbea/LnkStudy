@@ -132,34 +132,11 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <include
+        layout="@layout/common_dialog_ok"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
         android:layout_marginTop="@dimen/dp_30"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/tv_cancel"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/cancel"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/black"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-        <TextView
-            android:id="@+id/tv_ok"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_50"
-            android:gravity="center"
-            android:text="@string/commit"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/black"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-    </LinearLayout>
+        />
 
 </LinearLayout>

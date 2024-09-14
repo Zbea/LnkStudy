@@ -73,7 +73,7 @@ public class ItemTypeDaoManager {
     public Boolean isExistBookType(){
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.IsNew.eq(true);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(5);
-        return dao.queryBuilder().where(whereUser,whereUser1,whereUser2).build().list().size()>0;
+        return !dao.queryBuilder().where(whereUser, whereUser1, whereUser2).build().list().isEmpty();
     }
 
     public List<ItemTypeBean> queryAll(int type) {

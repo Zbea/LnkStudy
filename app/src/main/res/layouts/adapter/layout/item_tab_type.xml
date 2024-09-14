@@ -3,19 +3,18 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingEnd="35dp"
+    android:paddingEnd="@dimen/dp_35"
     android:paddingBottom="@dimen/dp_10"
     android:gravity="center">
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
-        android:layout_height="45dp"
+        android:layout_height="@dimen/dp_45"
         android:gravity="center"
-        android:textSize="@dimen/sp_26"
+        android:textSize="@dimen/sp_28"
         android:text="唐诗宋词"
         android:lines="1"
-        android:textStyle="bold"
         android:textColor="@drawable/color_black_gray_selector"
         android:background="@drawable/bg_rb_line_selector"
         />

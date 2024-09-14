@@ -108,6 +108,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
         messages.removeAt(homeworkCommitInfoItem?.index!!)
+        deleteCommitDraw()
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
             content=homeworkCommitInfoItem?.title
@@ -209,8 +210,8 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             if (NetworkUtil(this).isNetworkConnected()){
                 commit()
             }
-            else{
-                showNetworkDialog()
+            else {
+                showToast("网络连接失败")
             }
         }
 
@@ -308,7 +309,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)){
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
             when(correctBean.state){
+                0->{
+                    disMissView(iv_score,ll_score)
+                }
                 1->{
+                    disMissView(iv_score,ll_score)
                     if (!correctBean.commitJson.isNullOrEmpty()){
                         showToast("请及时自批改后提交")
                     }
@@ -318,6 +323,9 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 }
             }
         }
+        else{
+            disMissView(iv_score,ll_score)
+        }
         //设置当前展示页
         book?.pageUrl = getIndexFile(page)?.path
     }
@@ -325,30 +333,25 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     /**
      * 设置批改详情
      */
-    private fun setScoreDetails(item:HomeworkBookCorrectBean?){
-        if (item!=null){
-            if (!ll_score.isVisible)
-                showView(iv_score)
-            correctMode=item.correctMode
-            scoreMode=item.scoreMode
-            if (item.answerUrl.isNullOrEmpty()){
-                disMissView(tv_answer)
-            }
-            else{
-                answerImages= item.answerUrl?.split(",") as MutableList<String>
-                showView(tv_answer)
-            }
-            tv_correct_title.text=item.homeworkTitle
-            tv_total_score.text=item.score.toString()
-            if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-                setScoreListDetails(item.correctJson)
-            }
-            else{
-                disMissView(rv_list_multi,rv_list_score)
-            }
+    private fun setScoreDetails(item:HomeworkBookCorrectBean){
+        if (!ll_score.isVisible)
+            showView(iv_score)
+        correctMode=item.correctMode
+        scoreMode=item.scoreMode
+        if (item.answerUrl.isNullOrEmpty()){
+            disMissView(tv_answer)
         }
         else{
-            disMissView(iv_score,ll_score)
+            answerImages= item.answerUrl?.split(",") as MutableList<String>
+            showView(tv_answer)
+        }
+        tv_correct_title.text=item.homeworkTitle
+        tv_total_score.text=item.score.toString()
+        if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
+            setScoreListDetails(item.correctJson)
+        }
+        else{
+            disMissView(rv_list_multi,rv_list_score)
         }
     }
 
@@ -505,6 +508,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                                     DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookId ,Gson().toJson(bookCorrectBean),"")
                                 }
                             }
+                            deleteCommitDraw()
                             gotoSelfCorrect()
                         }
                         else{
@@ -572,6 +576,17 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     /**
+     * 删除手写文件
+     */
+    private fun deleteCommitDraw(){
+        //删除手写
+        for (index in homeworkCommitInfoItem?.contents!!){
+            val drawPath = book?.bookDrawPath+"/${index+1}.png"
+            FileUtils.deleteFile(File(drawPath))
+        }
+    }
+
+    /**
      * 开始通知回调
      */
     private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -599,10 +614,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
         super.onDestroy()
-    }
-
-    override fun onNetworkConnectionSuccess() {
-        commit()
     }
 
 }

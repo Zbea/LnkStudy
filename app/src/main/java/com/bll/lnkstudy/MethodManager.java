@@ -155,19 +155,7 @@ public class MethodManager {
         EventBus.getDefault().post(Constants.BOOK_EVENT);
 
         List<AppBean> toolApps = getAppTools(context, 1);
-        JSONArray result = new JSONArray();
-        for (AppBean item : toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
-                continue;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("appName", item.appName);
-                jsonObject.put("packageName", item.packageName);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            result.put(jsonObject);
-        }
+        JSONArray result = getJsonArray(toolApps);
         String format = MethodManager.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
         if (format.contains("pdf")) {
@@ -190,15 +178,7 @@ public class MethodManager {
         context.startActivity(intent);
     }
 
-    /**
-     * 跳转课本详情
-     */
-    public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
-
-        AppUtils.stopApp(context, Constants.PACKAGE_READER);
-        User user = SPUtil.INSTANCE.getObj("user", User.class);
-
-        List<AppBean> toolApps = getAppTools(context, 1);
+    private static JSONArray getJsonArray(List<AppBean> toolApps) {
         JSONArray result = new JSONArray();
         for (AppBean item : toolApps) {
             if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
@@ -212,6 +192,18 @@ public class MethodManager {
             }
             result.put(jsonObject);
         }
+        return result;
+    }
+    /**
+     * 跳转课本详情
+     */
+    public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
+
+        AppUtils.stopApp(context, Constants.PACKAGE_READER);
+        User user = SPUtil.INSTANCE.getObj("user", User.class);
+
+        List<AppBean> toolApps = getAppTools(context, 1);
+        JSONArray result = getJsonArray(toolApps);
 
         Intent intent = new Intent();
         intent.setAction("com.geniatech.reader.action.VIEW_BOOK_PATH");

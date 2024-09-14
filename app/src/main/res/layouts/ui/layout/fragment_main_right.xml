@@ -6,37 +6,45 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
-        android:layout_marginEnd="60dp"
-        android:gravity="bottom|right">
+        >
 
-        <TextView
-            android:id="@+id/tv_diray"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
-            android:drawableStart="@mipmap/icon_diary"
-            android:drawablePadding="@dimen/dp_10"
-            android:gravity="center"
-            android:text="@string/diary_title_str"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:layout_height="@dimen/dp_45"
+            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_diary_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:drawableStart="@mipmap/icon_diary"
+                android:drawablePadding="@dimen/dp_10"
+                android:gravity="center"
+                android:text="日记"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
 
-        <TextView
-            android:id="@+id/tv_free_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/freenote_title_str"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:drawablePadding="@dimen/dp_10"
-            android:drawableStart="@mipmap/icon_freenote"
-            />
+            <TextView
+                android:id="@+id/tv_free_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@mipmap/icon_freenote"
+                android:drawablePadding="@dimen/dp_10"
+                android:gravity="center"
+                android:text="随笔"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -65,7 +73,7 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 android:text="@string/main_receive_paper"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                  />
             <View
@@ -149,7 +157,7 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 android:text="@string/main_message"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold" />
             <View
                 android:layout_width="match_parent"
@@ -197,7 +205,7 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 android:text="@string/main_class_schedule"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold" />
 
         </LinearLayout>

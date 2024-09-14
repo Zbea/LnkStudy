@@ -14,10 +14,14 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
@@ -53,10 +57,8 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_btn)
-
-        v_content_a?.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
-        v_content_b?.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
-
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,noteBook?.contentResId),v_content_a)
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,noteBook?.contentResId),v_content_b)
         onContent()
     }
 

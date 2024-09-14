@@ -11,7 +11,7 @@ import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.SPUtil.getObj
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import java.util.*
+import java.util.Objects
 
 class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
 
@@ -20,8 +20,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setVisible(R.id.ll_info, item.createStatus!=0 && !item.isCloud)
-            if (grade!=item.grade)
-                setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})")
+            setText(R.id.tv_grade,if (grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
             setText(R.id.tv_name, item.name)
             val ivImage=getView<ImageView>(R.id.iv_image)
             when(item.state){

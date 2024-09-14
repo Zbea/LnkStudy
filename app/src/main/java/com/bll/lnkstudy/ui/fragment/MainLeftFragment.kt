@@ -39,14 +39,42 @@ import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.DeviceUtil
+import com.bll.lnkstudy.utils.FileBigDownManager
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.HtRecoverySystem
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.date.CalenderUtils
 import com.google.gson.Gson
 import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_main_left.*
+import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
+import kotlinx.android.synthetic.main.fragment_main_left.iv_change
+import kotlinx.android.synthetic.main.fragment_main_left.iv_close
+import kotlinx.android.synthetic.main.fragment_main_left.iv_date
+import kotlinx.android.synthetic.main.fragment_main_left.iv_date_more
+import kotlinx.android.synthetic.main.fragment_main_left.ll_notice
+import kotlinx.android.synthetic.main.fragment_main_left.rv_main_note
+import kotlinx.android.synthetic.main.fragment_main_left.rv_main_notice
+import kotlinx.android.synthetic.main.fragment_main_left.rv_main_plan
+import kotlinx.android.synthetic.main.fragment_main_left.tv_date_today
+import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_content
+import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_end_time
+import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_name
+import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_time
+import kotlinx.android.synthetic.main.fragment_main_left.tv_plan
+import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
+import kotlinx.android.synthetic.main.fragment_main_left.tv_screenshot
+import kotlinx.android.synthetic.main.fragment_main_left.v_down
+import kotlinx.android.synthetic.main.fragment_main_left.v_up
 import java.io.File
-import java.util.*
+import java.util.Random
 
 
 /**

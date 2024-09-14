@@ -8,7 +8,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.utils.SPUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import java.util.*
+import java.util.Objects
 
 class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuickAdapter<PaperTypeBean, BaseViewHolder>(layoutResId, data) {
 
@@ -20,9 +20,7 @@ class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuick
             setText(R.id.tv_name,item.name)
             setText(R.id.tv_title,item.paperTitle)
             setText(R.id.tv_score,"分数："+item.score.toString())
-            if (grade!=item.grade){
-                setText(R.id.tv_grade,"(${DataBeanManager.getGradeStr(item.grade)})" )
-            }
+            setText(R.id.tv_grade,if (grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
 
         }
     }

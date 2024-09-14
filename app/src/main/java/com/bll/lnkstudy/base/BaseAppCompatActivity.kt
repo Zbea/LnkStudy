@@ -186,15 +186,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             mCommonPresenter.getCommon()
     }
 
-    protected fun showSearchView(isShow:Boolean) {
-        if (isShow){
-            showView(ll_search)
-        }
-        else{
-            disMissView(ll_search)
-        }
-    }
-
     protected fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }

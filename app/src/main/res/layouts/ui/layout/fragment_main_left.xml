@@ -90,7 +90,7 @@
                         android:drawablePadding="@dimen/dp_15"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp_24"
+                        android:textSize="@dimen/sp_25"
                         android:textStyle="bold" />
 
 
@@ -190,7 +190,7 @@
                         android:gravity="center_vertical"
                         android:text="@string/main_date_plan"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp_24"
+                        android:textSize="@dimen/sp_25"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -244,7 +244,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/main_homework_message"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_24"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold" />
 
                 <View
@@ -284,7 +284,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/homework_correct_details_str"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_24"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold" />
 
                 <View
@@ -331,7 +331,7 @@
                     android:layout_centerVertical="true"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/sp_25" />
 
                 <ImageView
                     android:id="@+id/iv_close"
@@ -349,7 +349,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_22"
                 android:textColor="@color/black_20"/>
 
             <TextView
@@ -358,15 +358,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
                 android:visibility="gone"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_22"
                 android:textColor="@color/black_20"/>
 
             <TextView
                 android:id="@+id/tv_notice_content"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:layout_marginTop="@dimen/dp_20"
-                android:textSize="@dimen/sp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textSize="@dimen/sp_22"
                 android:textColor="@color/black"/>
 
 

@@ -23,7 +23,13 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_bookcase.*
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_down
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_up
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_tips
+import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
+import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
+import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
+import kotlinx.android.synthetic.main.fragment_bookcase.tv_type
 import java.io.File
 
 

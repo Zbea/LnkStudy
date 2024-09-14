@@ -5,7 +5,12 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.CorrectDetailsManager
@@ -13,7 +18,11 @@ import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
-import com.bll.lnkstudy.mvp.model.paper.*
+import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
+import com.bll.lnkstudy.mvp.model.paper.PaperBean
+import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
+import com.bll.lnkstudy.mvp.model.paper.PaperList
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
@@ -24,7 +33,7 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import java.io.File
 
 /**
@@ -35,24 +44,17 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private val mPresenter = TestPaperPresenter(this)
     private var mAdapter: PaperTypeAdapter? = null
     private var paperTypes = mutableListOf<PaperTypeBean>()
-    private var onlineTypes = mutableListOf<PaperTypeBean>()
 
     override fun onTypeList(list: MutableList<PaperTypeBean>) {
-        //老师考卷分类没有发生变化时不执行保存
-        if (onlineTypes == list) {
-            fetchCorrectPaper()
-        } else {
-            onlineTypes = list
-            for (item in list) {
-                if (!isSavePaperType(item)) {
-                    item.course = mCourse
-                    PaperTypeDaoManager.getInstance().insertOrReplace(item)
-                    //创建增量数据
-                    DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
-                }
+        for (item in list) {
+            if (!isSavePaperType(item)) {
+                item.course = mCourse
+                PaperTypeDaoManager.getInstance().insertOrReplace(item)
+                //创建增量数据
+                DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
             }
-            fetchData()
         }
+        fetchData()
     }
 
     override fun onList(paperList: PaperList?) {
@@ -243,7 +245,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             scoreMode=item.questionMode
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),"")
+        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),paper.path)
 
         val paperContents=PaperContentDaoManager.getInstance().queryAllByType(mCourse,item.commonTypeId)
         for (i in paths.indices){
@@ -254,10 +256,11 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     typeId=item.commonTypeId
                     contentId=item.id
                     path=paths[i]
+                    drawPath=paper.path+"/${i+1}draw.png"
                     page=paperContents.size+i
                 }
             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),paperContent.path)
+            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),"")
         }
         //保存批改
         saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
@@ -285,7 +288,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             answerUrl=item.answerUrl
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),"")
+        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),paper.path)
 
         val paperContents=PaperContentDaoManager.getInstance().queryAllByType(mCourse,item.typeId)
         for (i in paths.indices){
@@ -295,10 +298,11 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     typeId=item.typeId
                     contentId=item.id
                     path=paths[i]
+                    drawPath=paper.path+"/${i+1}draw.png"
                     page=paperContents.size+i
                 }
             val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),paperContent.path)
+            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),"")
         }
 
         //保存批改
@@ -379,7 +383,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
 
     fun clearData(){
         paperTypes.clear()
-        onlineTypes.clear()
         mAdapter?.setNewData(paperTypes)
     }
 

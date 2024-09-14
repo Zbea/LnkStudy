@@ -13,9 +13,16 @@ import com.bll.lnkstudy.manager.FreeNoteDaoManager
 import com.bll.lnkstudy.mvp.model.FreeNoteBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_freenote.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_freenote.tv_delete
+import kotlinx.android.synthetic.main.ac_freenote.tv_name
+import kotlinx.android.synthetic.main.ac_freenote.tv_save
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_expand
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 class FreeNoteActivity : BaseDrawingActivity() {
@@ -63,7 +70,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
             ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes = ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    GlideUtils.setImageUrl(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage] = bgRes
                 }
         }
@@ -153,7 +160,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
      * 更换内容
      */
     private fun setContentImage() {
-        v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgResList[posImage]))
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgResList[posImage]),v_content_b)
         val path = FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${posImage + 1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)) {

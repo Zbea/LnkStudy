@@ -3,10 +3,15 @@ package com.bll.lnkstudy.ui.activity.book
 import android.os.Handler
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.dialog.TextbookDetailsDialog
+import com.bll.lnkstudy.dialog.DownloadTextbookDialog
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
@@ -19,15 +24,24 @@ import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.mvp.presenter.TextbookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TextbookStoreAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_bookstore.rv_list
+import kotlinx.android.synthetic.main.ac_bookstore.tv_download
+import kotlinx.android.synthetic.main.common_title.tv_course
+import kotlinx.android.synthetic.main.common_title.tv_grade
+import kotlinx.android.synthetic.main.common_title.tv_province
+import kotlinx.android.synthetic.main.common_title.tv_semester
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -47,7 +61,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var semester=1
     private var provinceStr=""
     private var courseId=0//科目
-    private var bookDetailsDialog: TextbookDetailsDialog? = null
+    private var bookDetailsDialog: DownloadTextbookDialog? = null
     private var position=0
 
     private var subjectList = mutableListOf<PopupBean>()
@@ -116,7 +130,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     override fun initView() {
         setPageTitle(R.string.main_teaching)
-        disMissView(ll_search,tv_course,tv_grade,tv_semester)
+        disMissView(tv_course,tv_grade,tv_semester)
 
         initRecyclerView()
         initTab()
@@ -254,7 +268,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
      * 展示书籍详情
      */
     private fun showBookDetails(book: TextbookBean) {
-        bookDetailsDialog = TextbookDetailsDialog(this, book)
+        bookDetailsDialog = DownloadTextbookDialog(this, book)
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus == 1) {

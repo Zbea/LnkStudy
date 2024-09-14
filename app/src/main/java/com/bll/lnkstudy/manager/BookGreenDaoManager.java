@@ -68,11 +68,6 @@ public class BookGreenDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-
-    public void insertOrReplaceBooks(List<BookBean> beans) {
-        bookBeanDao.insertOrReplaceInTx(beans);
-    }
-
     //查询书籍
     public BookBean queryBookByID(int bookID) {
         WhereCondition whereCondition1= BookBeanDao.Properties.BookId.eq(bookID);
@@ -111,24 +106,6 @@ public class BookGreenDaoManager {
                 .build().list();
     }
 
-    //根据名称搜索 分页
-    public List<BookBean> queryAllName(String name,String type, int page, int pageSize) {
-        WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like(name);
-        WhereCondition whereCondition3=BookBeanDao.Properties.SubtypeStr.eq(type);
-        return bookBeanDao.queryBuilder().where(whereUser,whereCondition2,whereCondition3)
-                .orderDesc(BookBeanDao.Properties.Time)
-                .offset((page-1)*pageSize).limit(pageSize)
-                .build().list();
-    }
-    //根据名称搜素全部
-    public List<BookBean> queryAllName(String name,String type) {
-        WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like("%"+name+"%");
-        WhereCondition whereCondition3=BookBeanDao.Properties.SubtypeStr.eq(type);
-        return bookBeanDao.queryBuilder().where(whereUser,whereCondition2,whereCondition3)
-                .orderDesc(BookBeanDao.Properties.Time)
-                .build().list();
-    }
-
     public List<BookBean> search(String name) {
         WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like("%"+name+"%");
         return bookBeanDao.queryBuilder().where(whereUser,whereCondition2)
@@ -139,11 +116,6 @@ public class BookGreenDaoManager {
     //删除书籍数据d对象
     public void deleteBook(BookBean book){
         bookBeanDao.delete(book);
-    }
-
-
-    public void deleteBooks(List<BookBean> bookBeans){
-        bookBeanDao.deleteInTx(bookBeans);
     }
 
     public void clear(){

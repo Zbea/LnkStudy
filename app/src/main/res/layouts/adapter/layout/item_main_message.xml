@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_22" />
 
         <TextView
             android:id="@+id/tv_message_time"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_22" />
 
     </LinearLayout>
 
@@ -37,10 +37,10 @@
         android:id="@+id/tv_message_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="5dp"
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20" />
+        android:textSize="@dimen/sp_22" />
 
 </LinearLayout>

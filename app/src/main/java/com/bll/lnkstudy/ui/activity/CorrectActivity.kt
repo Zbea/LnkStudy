@@ -20,13 +20,35 @@ import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_correct.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_correct.btn_page_down_bottom
+import kotlinx.android.synthetic.main.ac_correct.btn_page_up_bottom
+import kotlinx.android.synthetic.main.ac_correct.iv_answer
+import kotlinx.android.synthetic.main.ac_correct.iv_answer_down
+import kotlinx.android.synthetic.main.ac_correct.iv_answer_up
+import kotlinx.android.synthetic.main.ac_correct.iv_score_down
+import kotlinx.android.synthetic.main.ac_correct.iv_score_up
+import kotlinx.android.synthetic.main.ac_correct.rv_list_score
+import kotlinx.android.synthetic.main.ac_correct.sv_answer
+import kotlinx.android.synthetic.main.ac_correct.tv_correct_save
+import kotlinx.android.synthetic.main.ac_correct.tv_page_current
+import kotlinx.android.synthetic.main.ac_correct.tv_page_total_bottom
+import kotlinx.android.synthetic.main.ac_correct.tv_total_score
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
 
@@ -156,7 +178,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     mUploadPresenter.getToken()
                 }
                 else{
-                    showNetworkDialog()
+                    showToast("网络连接失败")
                 }
             }
         }

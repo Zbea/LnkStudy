@@ -28,12 +28,12 @@
             >
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="账号"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold" />
 
             <EditText
@@ -44,7 +44,7 @@
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 android:lines="1"
                 android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:background="@drawable/bg_line_bottom" />
@@ -59,11 +59,11 @@
             >
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 android:text="密码" />
 
@@ -76,7 +76,7 @@
                 android:textColor="@color/black"
                 android:inputType="textPassword"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -91,11 +91,11 @@
             >
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 android:text="姓名" />
 
@@ -107,7 +107,7 @@
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -122,11 +122,11 @@
             >
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 android:text="生日" />
 
@@ -138,7 +138,7 @@
                 android:textColorHint="@color/color_text_hint"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -152,11 +152,11 @@
             >
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 android:text="手机号码" />
 
@@ -169,7 +169,7 @@
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
                 android:inputType="phone"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 android:lines="1"
                 android:background="@drawable/bg_line_bottom" />
         </LinearLayout>
@@ -183,11 +183,11 @@
             >
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 android:text="验证码" />
 
@@ -208,18 +208,18 @@
                     android:textColor="@color/black"
                     android:gravity="center_vertical"
                     android:inputType="number"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_25"
                     android:lines="1"
                     android:background="@null" />
 
                 <Button
                     android:id="@+id/btn_code"
-                    android:layout_width="120dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"
+                    android:layout_width="140dp"
+                    android:layout_height="@dimen/navigation_type_height"
+                    android:background="@drawable/bg_black_solid_5dp_corner"
                     android:text="获取验证码"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_20" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_22" />
             </LinearLayout>
 
 
@@ -239,11 +239,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold"
                     android:text="@string/school_message" />
 
@@ -255,7 +255,7 @@
                     android:paddingEnd="@dimen/dp_5"
                     android:paddingStart="@dimen/dp_10"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_25"
                     android:hint="@string/school"
                     android:textColorHint="@color/color_text_hint"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"
@@ -272,11 +272,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold"
                     android:text="@string/family" />
 
@@ -290,7 +290,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_25"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
                 <EditText
@@ -304,7 +304,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_25"
                     android:lines="1"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
                 <EditText
@@ -318,7 +318,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_25"
                     android:lines="1"
                     android:inputType="phone"
                     android:background="@drawable/bg_gray_stroke_5dp_corner"/>
@@ -332,14 +332,14 @@
     <Button
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/login_btn_height"
         android:layout_marginStart="150dp"
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="120dp"
         android:background="@drawable/bg_btn_black_solid"
         android:text="注册"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_25" />
 
 
 </LinearLayout>

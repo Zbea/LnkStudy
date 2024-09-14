@@ -6,13 +6,17 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_app_list.*
+import kotlinx.android.synthetic.main.ac_app_list.rv_list
+import kotlinx.android.synthetic.main.ac_app_list.rv_list_tool
+import kotlinx.android.synthetic.main.ac_app_list.tv_add
+import kotlinx.android.synthetic.main.ac_app_list.tv_out
 
 /**
  * 应用工具
@@ -82,15 +86,36 @@ class AppToolActivity:BaseAppCompatActivity() {
         rv_list.addItemDecoration(SpaceGridItemDeco(6,50))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val item=apps[position]
-            if (view.id==R.id.ll_name){
-                item.isCheck=!item.isCheck
-                mAdapter?.notifyItemChanged(position)
+            when(view.id){
+                R.id.ll_name->{
+                    item.isCheck=!item.isCheck
+                    mAdapter?.notifyItemChanged(position)
+                }
             }
+
         }
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val packageName= apps[position].packageName
+            val item=apps[position]
+            val packageName= item.packageName
             if (packageName!=Constants.PACKAGE_GEOMETRY)
                 AppUtils.startAPP(this,packageName)
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            val item=apps[position]
+            val packageName= item.packageName
+            if (packageName!=Constants.PACKAGE_GEOMETRY){
+                CommonDialog(this).setContent("卸载应用？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        AppUtils.uninstallAPK(this@AppToolActivity,apps[position].packageName)
+                        AppDaoManager.getInstance().deleteBean(item)
+                        return
+                    }
+                })
+            }
+            true
         }
 
     }

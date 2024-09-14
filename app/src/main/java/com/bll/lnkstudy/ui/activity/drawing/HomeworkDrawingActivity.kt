@@ -194,7 +194,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             if (NetworkUtil(this).isNetworkConnected()) {
                 commit()
             } else {
-                showNetworkDialog()
+                showToast("网络连接失败")
             }
         }
 
@@ -308,15 +308,18 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         elik_b?.setPWEnabled(homeworkContent?.state != 1)
         when(homeworkContent?.state){
             0->{
-                setElikLoadPath(elik_b!!, homeworkContent!!)
-                v_content_b?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+                setElikLoadPath(elik_b!!, homeworkContent!!.path)
+                GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_b)
             }
             1->{
-                GlideUtils.setImageFileNoCache(this, File(homeworkContent?.path), v_content_b)
+                GlideUtils.setImageUrl(this,homeworkContent?.path, v_content_b)
             }
             2->{
-                elik_b?.freeAllPWBitmapCache(true)
-                setElikLoadPath(elik_b!!, homeworkContent!!)
+                val file=File(homeworkContent?.path)
+                GlideUtils.setImageFileNoCache(this, file, v_content_b)
+
+                val drawPath=file.parent+"/draw.png"
+                setElikLoadPath(elik_b!!, drawPath)
             }
         }
         tv_page.text = "${page + 1}"
@@ -325,15 +328,17 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             elik_a?.setPWEnabled(homeworkContent_a?.state != 1)
             when(homeworkContent_a?.state){
                 0->{
-                    setElikLoadPath(elik_a!!, homeworkContent_a!!)
-                    v_content_a?.setImageResource(ToolUtils.getImageResId(this, homeworkType?.contentResId))//设置背景
+                    setElikLoadPath(elik_a!!, homeworkContent_a!!.path)
+                    GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_a)
                 }
                 1->{
-                    GlideUtils.setImageFileNoCache(this, File(homeworkContent_a?.path), v_content_a)
+                    GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a)
                 }
                 2->{
-                    elik_a?.freeAllPWBitmapCache(true)
-                    setElikLoadPath(elik_a!!, homeworkContent_a!!)
+                    val file=File(homeworkContent_a?.path)
+                    GlideUtils.setImageFileNoCache(this, file, v_content_a)
+                    val drawPath=file.parent+"/draw.png"
+                    setElikLoadPath(elik_b!!, drawPath)
                 }
             }
             if (screenPos==Constants.SCREEN_LEFT){
@@ -381,8 +386,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     //设置手写
-    private fun setElikLoadPath(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
-        elik.setLoadFilePath(homeworkContent.path, true)
+    private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
+        elik.setLoadFilePath(path, true)
     }
 
     override fun onElikSava_a() {
@@ -558,8 +563,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      * 合图
      */
     private fun saveImage(homework: HomeworkContentBean): String {
+
         val resId = ToolUtils.getImageResId(this, homeworkType?.contentResId)
-        val oldBitmap = BitmapFactory.decodeResource(resources, resId)
+        val options = BitmapFactory.Options()
+        options.inScaled = false
+        val oldBitmap = BitmapFactory.decodeResource(resources, resId,options)
+
+
         val drawPath = homework.path
         val drawBitmap = BitmapFactory.decodeFile(drawPath)
         if (drawBitmap != null) {
@@ -567,11 +577,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
         }
         return drawPath
-    }
-
-
-    override fun onNetworkConnectionSuccess() {
-        commit()
     }
 
 }

@@ -167,8 +167,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                         if (NetworkUtil(this@HomeworkPaperDrawingActivity).isNetworkConnected()){
                             commit()
                         }
-                        else{
-                            showNetworkDialog()
+                        else {
+                            showToast("网络连接失败")
                         }
                     }
                 })
@@ -286,7 +286,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 2->{
                     setPWEnabled(true)
                     disMissView(iv_btn)
-                    setFreeAllPWBitmapCache(false)
                 }
             }
         }
@@ -358,14 +357,15 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private fun setElikLoadPath(paperContentBean: HomeworkPaperContentBean, elik:EinkPWInterface, view:ImageView) {
         GlideUtils.setImageFileNoCache(this,File(paperContentBean.path),view)
         elik.setLoadFilePath(paperContentBean.drawPath,true)
+        elik.setPWEnabled(true)
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!,paperContentBean_a!!)
+        elik_a?.saveBitmap(true) {}
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!,paperContentBean!!)
+        elik_b?.saveBitmap(true) {}
     }
 
     override fun onElikStart_a() {
@@ -380,15 +380,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             paper?.startTime=System.currentTimeMillis()
             daoManager?.insertOrReplace(paper)
         }
-    }
-
-    /**
-     * 抬笔后保存手写
-     */
-    private fun saveElik(elik: EinkPWInterface,contentBean:HomeworkPaperContentBean){
-        elik.saveBitmap(true) {}
-        //更新增量作业卷内容(未提交原图和手写图)
-        DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3)
     }
 
     /**
@@ -466,7 +457,4 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
     }
 
-    override fun onNetworkConnectionSuccess() {
-        commit()
-    }
 }

@@ -2,9 +2,13 @@ package com.bll.lnkstudy.ui.activity.book
 
 import android.os.Handler
 import android.view.View
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DownloadBookDialog
 import com.bll.lnkstudy.dialog.PopupList
@@ -27,8 +31,10 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_bookstore.rv_list
+import kotlinx.android.synthetic.main.ac_bookstore.tv_download
+import kotlinx.android.synthetic.main.common_title.tv_subgrade
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 书城
@@ -49,7 +55,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
 
     private var gradeList = mutableListOf<PopupBean>()
     private var subTypeList = mutableListOf<ItemList>()
-    private var bookNameStr=""
 
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
@@ -110,32 +115,25 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
 
     override fun initView() {
         setPageTitle(typeStr)
-        showView(tv_grade,ll_search)
+        showView(tv_subgrade)
         disMissView(tv_download)
 
         setDialogOutside(true)
 
         initRecyclerView()
 
-        et_search.addTextChangedListener {
-            bookNameStr =it.toString()
-            if (bookNameStr.isNotEmpty()){
-                pageIndex=1
-                fetchData()
-            }
-        }
     }
 
     /**
      * 设置分类选择
      */
     private fun initSelectorView() {
-        tv_grade.text = gradeList[DataBeanManager.popupTypePos()].name
-        tv_grade.setOnClickListener {
-            PopupList(this, gradeList, tv_grade, 5).builder()
+        tv_subgrade.text = gradeList[DataBeanManager.popupTypePos()].name
+        tv_subgrade.setOnClickListener {
+            PopupList(this, gradeList, tv_subgrade,tv_subgrade.width, 5).builder()
             .setOnSelectListener { item ->
                 grade = item.id
-                tv_grade.text = item.name
+                tv_subgrade.text = item.name
                 typeFindData()
             }
         }
@@ -146,7 +144,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
      */
     private fun typeFindData(){
         pageIndex = 1
-        bookNameStr=""//清除搜索标记
         fetchData()
     }
 
@@ -261,6 +258,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     downloadBookDialog?.dismiss()
+                    EventBus.getDefault().post(Constants.BOOK_EVENT)
                     hideLoading()
                     Handler().postDelayed({
                         showToast(book.bookName+getString(R.string.book_download_success))
@@ -313,8 +311,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         map["grade"] = grade
         map["subType"] = subtype
         map["type"] = type
-        if (bookNameStr.isNotEmpty())
-            map["bookName"] = bookNameStr
         presenter.getBooks(map)
     }
 

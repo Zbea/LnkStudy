@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "com.bll.lnkstudy"
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 7
         versionName "V 1.0.1"
         multiDexEnabled = true
@@ -38,15 +38,16 @@ android {
     }
 
     gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:app/libs/eink/classes.jar')
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                options.compilerArgs.add('-Xbootclasspath/p:app/libs/eink/classes.jar')
+            }
         }
     }
 
     sourceSets {
         main {
             jniLibs.srcDirs = ['jniLibs']
-            jni.srcDirs = []
             res.srcDirs =
                     [
                             'src/main/res/layouts/adapter',
@@ -92,6 +93,7 @@ android {
             zipAlignEnabled true
         }
     }
+    namespace 'com.bll.lnkstudy'
 
 }
 
@@ -128,8 +130,6 @@ dependencies {
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
-
-    implementation 'com.androidkun:XTabLayout:1.1.5'
 
     implementation 'com.haibin:calendarview:3.7.1'
     //gson

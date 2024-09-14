@@ -12,10 +12,22 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.DiaryBean
-import com.bll.lnkstudy.utils.*
-import kotlinx.android.synthetic.main.ac_diary.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_diary.iv_down
+import kotlinx.android.synthetic.main.ac_diary.iv_up
+import kotlinx.android.synthetic.main.ac_diary.ll_date
+import kotlinx.android.synthetic.main.ac_diary.tv_date
+import kotlinx.android.synthetic.main.ac_diary.tv_digest
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class DiaryActivity:BaseDrawingActivity() {
 
@@ -88,8 +100,7 @@ class DiaryActivity:BaseDrawingActivity() {
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
-                    v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
-                    v_content_a?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    setBg()
                     SPUtil.putString("dirayBgRes",bgRes)
                 }
         }
@@ -172,8 +183,7 @@ class DiaryActivity:BaseDrawingActivity() {
 
         tv_date.text=DateUtils.longToStringWeek(nowLong)
 
-        v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        v_content_a?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+        setBg()
 
         setPWEnabled(!diaryBean?.isUpload!!)
         val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
@@ -226,6 +236,11 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}
+    }
+
+    private fun setBg(){
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_b)
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_a)
     }
 
     private fun saveDiary() {

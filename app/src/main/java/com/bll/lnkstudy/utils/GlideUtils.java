@@ -18,6 +18,17 @@ import java.util.concurrent.ExecutionException;
 public class GlideUtils {
 
 
+    public static final void setImageUrl(Context mContext,int resId, ImageView imageView){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+
+        Glide.with(mContext)
+                .load(resId)
+                .apply(requestOptions)
+                .into(imageView);
+
+    }
 
     public static final void setImageUrl(Context mContext,String url, ImageView imageView){
 
@@ -34,6 +45,7 @@ public class GlideUtils {
     public static final void setImageFile(Context mContext, File file, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
         Glide.with(mContext)
                 .load(file)
                 .apply(requestOptions)

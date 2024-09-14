@@ -2,8 +2,8 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.KeyboardUtils
 
@@ -16,8 +16,8 @@ class AccountEditParentDialog(val context: Context, val name: String, val nickna
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val nameTv = dialog.findViewById<EditText>(R.id.ed_name)
         nameTv.setText(name)
         nameTv.setSelection(name.length)

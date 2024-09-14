@@ -3,7 +3,6 @@ package com.bll.lnkstudy.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
@@ -27,8 +26,8 @@ class PrivacyPasswordDialog(private val context: Context,private val type:Int=0)
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val etPassword=dialog.findViewById<EditText>(R.id.et_password)
         val tvFind = dialog.findViewById<TextView>(R.id.tv_find_password)
 

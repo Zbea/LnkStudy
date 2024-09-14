@@ -32,7 +32,7 @@
                 android:gravity="center"
                 android:text="@string/account"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_22" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_list_a"
@@ -111,7 +111,7 @@
                 android:gravity="center"
                 android:text="@string/classGroup"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_22" />
 
 
             <androidx.recyclerview.widget.RecyclerView

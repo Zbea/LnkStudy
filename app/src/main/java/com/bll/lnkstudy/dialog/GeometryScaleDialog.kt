@@ -4,8 +4,8 @@ import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
@@ -28,8 +28,8 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         dialog.show()
 
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val et_width = dialog.findViewById<EditText>(R.id.et_width)
         val et_height = dialog.findViewById<EditText>(R.id.et_height)
         when(currentGeometry){

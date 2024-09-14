@@ -83,7 +83,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/account"
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold" />
 
                 <EditText
@@ -98,7 +98,7 @@
                     android:lines="1"
                     android:textColor="@color/black"
                     android:textColorHint="@color/color_text_hint"
-                    android:textSize="22sp" />
+                    android:textSize="@dimen/sp_25" />
 
                 <View
                     android:layout_width="match_parent"
@@ -123,7 +123,7 @@
                     android:lines="1"
                     android:text="@string/password"
                     android:textColor="@color/black"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold" />
 
                 <EditText
@@ -140,7 +140,7 @@
                     android:singleLine="true"
                     android:textColor="@color/black"
                     android:textColorHint="@color/color_text_hint"
-                    android:textSize="22sp" />
+                    android:textSize="@dimen/sp_25" />
 
                 <View
                     android:layout_width="match_parent"
@@ -153,12 +153,12 @@
             <Button
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/login_btn_height"
                 android:layout_marginTop="120dp"
                 android:background="@drawable/bg_btn_black_solid"
                 android:text="@string/login"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="@dimen/sp_25" />
         </LinearLayout>
 
 
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/register"
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold" />
 
             <TextView
@@ -186,7 +186,7 @@
                 android:layout_alignParentRight="true"
                 android:text="@string/find_password"
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold" />
 
         </RelativeLayout>

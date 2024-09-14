@@ -10,7 +10,11 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.DiaryManageDialog
+import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
+import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
@@ -29,10 +33,24 @@ import com.bll.lnkstudy.ui.activity.drawing.DiaryActivity
 import com.bll.lnkstudy.ui.activity.drawing.ExamCommitDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileMultitaskDownManager
+import com.bll.lnkstudy.utils.FileUploadManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_main_right.*
+import kotlinx.android.synthetic.main.fragment_main_right.iv_course
+import kotlinx.android.synthetic.main.fragment_main_right.ll_message
+import kotlinx.android.synthetic.main.fragment_main_right.rl_exam
+import kotlinx.android.synthetic.main.fragment_main_right.rv_list_message
+import kotlinx.android.synthetic.main.fragment_main_right.tv_diary_btn
+import kotlinx.android.synthetic.main.fragment_main_right.tv_exam_course
+import kotlinx.android.synthetic.main.fragment_main_right.tv_exam_time
+import kotlinx.android.synthetic.main.fragment_main_right.tv_exam_title
+import kotlinx.android.synthetic.main.fragment_main_right.tv_free_note
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -143,7 +161,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
         }
 
-        tv_diray.setOnClickListener {
+        tv_diary_btn.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
                 PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
                     customStartActivity(Intent(activity,DiaryActivity::class.java))
@@ -154,7 +172,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
         }
 
-        tv_diray.setOnLongClickListener {
+        tv_diary_btn.setOnLongClickListener {
             val pops= mutableListOf<PopupBean>()
             if (privacyPassword==null){
                 pops.add(PopupBean(1,"设置密码"))
@@ -169,7 +187,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             pops.add(PopupBean(2,"上传日记"))
             pops.add(PopupBean(3,"删除日记"))
-            PopupClick(requireActivity(),pops,tv_diray,5).builder().setOnSelectListener{
+            PopupClick(requireActivity(),pops,tv_diary_btn,5).builder().setOnSelectListener{
                 when(it.id){
                     1->{
                         if (privacyPassword==null){

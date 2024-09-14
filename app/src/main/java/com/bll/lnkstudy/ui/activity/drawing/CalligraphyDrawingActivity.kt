@@ -1,7 +1,11 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
@@ -10,10 +14,15 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
@@ -153,11 +162,11 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
     //设置背景图
     private fun setBg_a(){
-        v_content_a?.setImageResource(resId_a)
+        GlideUtils.setImageUrl(this,resId_a,v_content_a)
     }
 
     private fun setBg_b(){
-        v_content_b?.setImageResource(resId_b)
+        GlideUtils.setImageUrl(this,resId_b,v_content_b)
     }
 
     override fun onContent() {
@@ -228,7 +237,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.date = System.currentTimeMillis()
         paintingDrawingBean?.path = "$path/$fileName.png"
         paintingDrawingBean?.grade=grade
-        paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_painting_bg_sf)
+        paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_details_bg_2)
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)

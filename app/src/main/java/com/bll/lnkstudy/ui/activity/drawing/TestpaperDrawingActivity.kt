@@ -15,10 +15,18 @@ import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_correct_score.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_multi
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
+import kotlinx.android.synthetic.main.common_correct_score.tv_answer
+import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
+import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 
@@ -57,11 +65,13 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
 
     override fun initView() {
         disMissView(iv_draft,iv_btn)
-        setPWEnabled(false)
         if (papers.size>0){
             if (currentPosition==DEFAULT_PAGE)
                 currentPosition=papers.size-1
             onContent()
+        }
+        else{
+            setPWEnabled(false)
         }
     }
 
@@ -208,7 +218,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     private fun setElikLoadPath( elik: EinkPWInterface ,index: Int, view:ImageView) {
         val testPaperContent=paperContents[index]
         GlideUtils.setImageFile(this, File(testPaperContent.path),view)
-        elik.setLoadFilePath(testPaperContent.path,true)
+        elik.setLoadFilePath(testPaperContent.drawPath,true)
     }
 
 

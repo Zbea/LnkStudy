@@ -255,8 +255,8 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
                 }.start()
             }
         }
-        else{
-            showNetworkDialog()
+        else {
+            showToast("网络连接失败")
         }
     }
 
@@ -286,10 +286,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         if (msgFlag==Constants.EXAM_TIME_EVENT){
             commit()
         }
-    }
-
-    override fun onNetworkConnectionSuccess() {
-        commit()
     }
 
     override fun onDestroy() {

@@ -32,7 +32,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="@dimen/dp_45"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="50dp"
@@ -60,7 +60,7 @@
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/year"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_26" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_month"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/month"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_26" />
+                android:textSize="@dimen/sp_25" />
 
         </LinearLayout>
 
@@ -106,7 +106,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_1"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_2"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -124,7 +124,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_3"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -133,7 +133,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_4"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -142,7 +142,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_5"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -151,7 +151,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_6"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -160,7 +160,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/week_7"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
 

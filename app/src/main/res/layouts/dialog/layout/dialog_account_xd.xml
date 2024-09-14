@@ -31,13 +31,15 @@
         android:layout_marginTop="@dimen/dp_30"
         android:text="@string/buy_pay_type"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_25" />
 
     <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
         android:orientation="horizontal">
 
         <RadioButton
@@ -55,7 +57,7 @@
             android:textSize="20sp" />
 
         <View
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content" />
 
         <RadioButton
@@ -71,36 +73,10 @@
             android:textSize="20sp" />
     </RadioGroup>
 
-    <LinearLayout
+    <include
+        layout="@layout/common_dialog_ok"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="@dimen/dp_40"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:textSize="24sp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="@string/cancel"
-            android:textColor="@color/black" />
-
-        <View
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            />
-
-        <Button
-            android:id="@+id/btn_ok"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:textSize="24sp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="@string/ok"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_30"
+        />
 </LinearLayout>
