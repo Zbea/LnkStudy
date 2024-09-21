@@ -19,7 +19,7 @@
             android:layout_marginStart="35dp"
             android:text="@string/book_my"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_25" />
 
         <TextView
             android:id="@+id/tv_type"
@@ -29,7 +29,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:text="@string/book_type_title"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_25" />
 
         <ImageView
             android:id="@+id/iv_tips"

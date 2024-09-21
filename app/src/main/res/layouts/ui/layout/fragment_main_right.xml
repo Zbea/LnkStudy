@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
+        android:layout_height="110dp"
         >
 
         <LinearLayout
@@ -50,7 +50,7 @@
     <LinearLayout
         android:layout_width="800dp"
         android:layout_height="357dp"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal">
 
         <LinearLayout

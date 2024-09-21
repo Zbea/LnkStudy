@@ -191,6 +191,7 @@ class DiaryActivity:BaseDrawingActivity() {
         if (!images.contains(path)) {
             images.add(path)
         }
+
         if (diaryBean?.isUpload!!){
             GlideUtils.setImageUrl(this, path, v_content_b)
         }
@@ -239,8 +240,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     private fun setBg(){
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_b)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_a)
+        v_content_a?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
+        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
     }
 
     private fun saveDiary() {

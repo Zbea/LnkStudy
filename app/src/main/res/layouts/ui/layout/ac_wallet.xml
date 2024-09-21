@@ -44,16 +44,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="青豆"
-            android:textSize="24sp"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
 
         <TextView
             android:id="@+id/tv_buy"
-            android:layout_width="142dp"
-            android:layout_height="48dp"
+            android:layout_width="160dp"
+            android:layout_height="45dp"
             android:text="购买青豆"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:gravity="center"
             android:background="@drawable/bg_gary_arch"

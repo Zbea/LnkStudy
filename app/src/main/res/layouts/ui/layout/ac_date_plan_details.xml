@@ -27,13 +27,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_margin="50dp"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_25"
                 android:textColor="@color/black"
                 android:hint="@string/date_plan_title_str"
                 android:textColorHint="@color/color_text_hint"
                 android:paddingStart="@dimen/dp_10"
                 android:paddingEnd="@dimen/dp_10"
                 android:lines="1"
+                android:textStyle="bold"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
                 />
 
@@ -65,7 +66,7 @@
                     android:layout_height="match_parent"
                     android:button="@null"
                     android:text="日期多选"
-                    android:textSize="@dimen/sp_24"
+                    android:textSize="@dimen/sp_25"
                     android:textColor="@drawable/color_black_gray_selector"
                     android:textStyle="bold"
                     android:checked="true"
@@ -80,7 +81,7 @@
                     android:button="@null"
                     android:gravity="center"
                     android:text="星期循环"
-                    android:textSize="@dimen/sp_24"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold"
                     android:textColor="@drawable/color_black_gray_selector"
                     android:background="@drawable/bg_rb_line_selector"/>
@@ -102,7 +103,7 @@
                 android:text="点击添加日期"
                 android:gravity="center"
                 android:textColor="@color/black_90"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_30"
                 />
 
@@ -138,7 +139,7 @@
                 android:layout_height="50dp"
                 android:button="@null"
                 android:text="上午  AM"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_25"
                 android:textColor="@drawable/color_black_gray_selector"
                 android:textStyle="bold"
                 android:checked="true"
@@ -153,7 +154,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:text="下午  PM"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 android:textColor="@drawable/color_black_gray_selector"
                 android:background="@drawable/bg_rb_black_gray_selector"/>

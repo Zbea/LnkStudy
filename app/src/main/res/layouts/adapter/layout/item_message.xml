@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="90dp"
     android:background="@drawable/bg_line_bottom"
-    android:padding="@dimen/dp_10">
+    android:padding="@dimen/dp_5"
+    >
 
     <TextView
         android:id="@+id/tv_message_content"
@@ -14,7 +16,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/dp_10"
         android:textColor="@color/black_20"
-        android:textSize="@dimen/sp_20" />
+        android:textSize="@dimen/sp_25" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -29,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_22" />
 
         <TextView
             android:id="@+id/tv_message_name"
@@ -37,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_22" />
 
     </LinearLayout>
 

@@ -5,11 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.NOTE_EVENT
 import com.bll.lnkstudy.Constants.Companion.NOTE_TAB_MANAGER_EVENT
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.dialog.*
+import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.ModuleAddDialog
+import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
+import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.NoteContentDaoManager
 import com.bll.lnkstudy.manager.NoteDaoManager
@@ -24,8 +34,8 @@ import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_list_tab.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.fragment_list_tab.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -50,7 +60,7 @@ class NoteFragment : BaseMainFragment(){
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[5])
-        pageSize=10
+        pageSize=14
 
         popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str)))
         popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str)))
@@ -84,7 +94,7 @@ class NoteFragment : BaseMainFragment(){
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        mAdapter = NotebookAdapter(1,R.layout.item_note, null).apply {
+        mAdapter = NotebookAdapter(R.layout.item_note, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)

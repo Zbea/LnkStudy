@@ -28,7 +28,7 @@
             android:layout_marginTop="120dp"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_type"
@@ -48,7 +48,7 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/sp_22"
         android:maxLines="1"
         android:layout_marginTop="@dimen/dp_5"
         android:textColor="@color/black"/>

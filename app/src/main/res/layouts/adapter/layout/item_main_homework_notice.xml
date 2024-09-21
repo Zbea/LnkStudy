@@ -13,8 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_5"
         >
 
         <TextView
@@ -24,6 +22,35 @@
             android:layout_weight="1"
             android:lines="1"
             android:ellipsize="end"
+            android:layout_marginStart="@dimen/dp_5"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22" />
+
+        <TextView
+            android:id="@+id/tv_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:ellipsize="end"
+            android:layout_marginStart="@dimen/dp_5"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22" />
 
@@ -35,17 +62,5 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginStart="@dimen/dp_10"
-        android:textColor="@color/black"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textSize="@dimen/sp_22"
-        />
 
 </LinearLayout>

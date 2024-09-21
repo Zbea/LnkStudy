@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:text="姓名"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_weight="1"
         android:text="职务"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView

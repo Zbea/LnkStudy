@@ -5,10 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.PaperContentDaoManager
+import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
@@ -18,7 +27,11 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.ui.adapter.CloudHomeworkAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
@@ -26,7 +39,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_content.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -97,24 +110,36 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 true
             }
             setOnItemClickListener { adapter, view, position ->
-                val homeworkTypeBean=homeworkTypes[position]
-                //如果是题卷本
-                if (homeworkTypeBean.state==4){
-                    if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
-                        startDownload(homeworkTypeBean)
-                    }
-                    else{
-                        showToast(R.string.toast_downloaded)
-                    }
-                }
-                else{
-                    if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
-                        download(homeworkTypeBean)
-                    }
-                    else{
-                        showToast(R.string.toast_downloaded)
-                    }
-                }
+                this@CloudHomeworkFragment.position=position
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
+            }
+        }
+    }
+
+    private fun downloadItem(){
+        val homeworkTypeBean=homeworkTypes[position]
+        //如果是题卷本
+        if (homeworkTypeBean.state==4){
+            if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
+                startDownload(homeworkTypeBean)
+            }
+            else{
+                showToast(R.string.toast_downloaded)
+            }
+        }
+        else{
+            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
+                download(homeworkTypeBean)
+            }
+            else{
+                showToast(R.string.toast_downloaded)
             }
         }
     }

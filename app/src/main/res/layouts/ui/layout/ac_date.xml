@@ -6,88 +6,9 @@
     android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page"
     >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_marginStart="52dp"
-            android:layout_centerVertical="true"
-            android:paddingEnd="@dimen/dp_15"
-            android:scaleType="center"
-            android:src="@mipmap/icon_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/iv_back"
-            android:textColor="@color/black"
-            android:textSize="@dimen/navigation_text" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_45"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="50dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_year"
-                android:layout_width="118dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
-                android:drawableRight="@mipmap/icon_arrow_down"
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:paddingStart="@dimen/dp_10"
-                android:paddingEnd="@dimen/dp_10"
-                android:text="2022"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_30"
-                android:text="@string/year"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25" />
-
-            <TextView
-                android:id="@+id/tv_month"
-                android:layout_width="85dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
-                android:drawableRight="@mipmap/icon_arrow_down"
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:paddingStart="@dimen/dp_10"
-                android:paddingEnd="@dimen/dp_10"
-                android:text="8"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/month"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25" />
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
+    <include
+        layout="@layout/common_title"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

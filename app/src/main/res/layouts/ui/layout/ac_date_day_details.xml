@@ -32,7 +32,7 @@
             android:textColor="@color/black"
             android:hint="@string/date_day_title_hint"
             android:textColorHint="@color/color_text_hint"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:background="@drawable/bg_line_bottom"
             />
         <TextView
@@ -44,7 +44,7 @@
             android:gravity="center_vertical"
             android:hint="@string/date_day_date_hint"
             android:textColorHint="@color/color_text_hint"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:background="@drawable/bg_line_bottom"
             />
 
@@ -63,7 +63,7 @@
                 android:layout_centerVertical="true"
                 android:text="@string/date_day_time_str"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_25" />
 
 
             <TextView
@@ -76,7 +76,7 @@
                 android:layout_marginStart="100dp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:visibility="gone"/>
 
 
@@ -105,7 +105,7 @@
                 android:layout_centerVertical="true"
                 android:text="@string/date_day_remind_str"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_25" />
 
             <LinearLayout
                 android:id="@+id/ll_remind"
@@ -122,7 +122,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/date_day_ahead_str"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22" />
+                    android:textSize="@dimen/sp_25" />
 
                 <TextView
                     android:id="@+id/tv_remind"
@@ -133,7 +133,7 @@
                     android:gravity="center"
                     android:paddingEnd="12dp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_25"
                     app:drawableRightCompat="@mipmap/icon_arrow_down"
                     tools:ignore="RtlSymmetry" />
 
@@ -166,7 +166,7 @@
                 android:layout_centerVertical="true"
                 android:text="@string/date_day_bell_str"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_25" />
 
 
             <ImageView

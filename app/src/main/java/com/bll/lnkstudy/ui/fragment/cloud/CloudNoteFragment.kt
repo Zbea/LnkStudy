@@ -18,15 +18,19 @@ import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
-import com.bll.lnkstudy.ui.adapter.NotebookAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.ui.adapter.CloudNoteAdapter
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_content.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -37,7 +41,7 @@ class CloudNoteFragment: BaseCloudFragment() {
 
     var noteType=0
     private var noteTypeStr=""
-    private var mAdapter:NotebookAdapter?=null
+    private var mAdapter:CloudNoteAdapter?=null
     private var notes= mutableListOf<Note>()
     private var position=0
 
@@ -46,7 +50,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=10
+        pageSize=13
         grade=DateUtils.getYear()
         initRecyclerView()
     }
@@ -81,36 +85,50 @@ class CloudNoteFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(0, DP2PX.dip2px(activity,25f), 0,0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        mAdapter = NotebookAdapter(0,R.layout.item_note, null).apply {
+        mAdapter = CloudNoteAdapter(R.layout.item_cloud_diary, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
-                val notebook=notes[position]
-                val item= NoteDaoManager.getInstance().isExistCloud(notebook.typeStr,notebook.title,notebook.date)
-                if (item==null){
-                    downloadNote(notebook)
-                }
-                else{
-                    showToast(R.string.toast_downloaded)
-                }
-            }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudNoteFragment.position=position
-                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            deleteItem()
+                            downloadItem()
                         }
                     })
-                true
             }
+            setOnItemChildClickListener { adapter, view, position ->
+                this@CloudNoteFragment.position=position
+                if (view.id==R.id.iv_delete){
+                    CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                deleteItem()
+                            }
+                        })
+                }
+            }
+        }
+        rv_list.addItemDecoration(SpaceItemDeco(30))
+    }
+
+    private fun downloadItem(){
+        val notebook=notes[position]
+        val item= NoteDaoManager.getInstance().isExistCloud(notebook.typeStr,notebook.title,notebook.date)
+        if (item==null){
+            downloadNote(notebook)
+        }
+        else{
+            showToast(R.string.toast_downloaded)
         }
     }
 

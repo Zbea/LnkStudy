@@ -13,18 +13,17 @@
 
         <com.android.internal.widget.PreferenceImageView
             android:id="@+id/v_content_a"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/drawing_content_width"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:background="@mipmap/icon_diary_details_bg_1"
+            android:visibility="gone"
             />
 
         <com.android.internal.widget.PreferenceImageView
             android:id="@+id/v_content_b"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/drawing_content_width"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:background="@mipmap/icon_diary_details_bg_1"
             />
 
         <include
@@ -32,6 +31,7 @@
             layout="@layout/common_drawing_page_number"
             android:layout_width="@dimen/drawing_tool_width"
             android:layout_height="match_parent"
+            android:visibility="gone"
             />
 
         <include
@@ -90,7 +90,7 @@
         android:text="摘要"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_25" />
 
     <include
         android:id="@+id/ll_geometry"

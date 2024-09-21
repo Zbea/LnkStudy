@@ -28,7 +28,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_content.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import java.io.File
 
 class CloudPaintingFragment : BaseCloudFragment() {
@@ -98,18 +98,48 @@ class CloudPaintingFragment : BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco(3, 60))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudPaintingFragment.position=position
-                val item=cloudLists[position]
-                val paintType=ItemTypeDaoManager.getInstance().queryBean(tabId,item.grade)
-                if (paintType==null){
-                    downloadLocal(item)
-                }
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudPaintingFragment.position=position
-                deleteCloud(position)
+                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            deleteItem()
+                        }
+                    })
                 true
             }
         }
+    }
+
+    private fun downloadItem(){
+        val item=cloudLists[position]
+        val paintType=ItemTypeDaoManager.getInstance().queryBean(tabId,item.grade)
+        if (paintType==null){
+            downloadLocal(item)
+        }
+        else{
+            showToast(R.string.toast_downloaded)
+        }
+    }
+
+    /**
+     * 删除云数据
+     */
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(cloudLists[position].id)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -146,7 +176,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                deleteCloud(position)
+                                deleteItem()
                                 showToast(R.string.book_download_success)
                                 hideLoading()
                             },500)
@@ -171,21 +201,6 @@ class CloudPaintingFragment : BaseCloudFragment() {
             })
     }
 
-    /**
-     * 删除云数据
-     */
-    private fun deleteCloud(position:Int){
-        CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
-            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    val ids= mutableListOf<Int>()
-                    ids.add(cloudLists[position].id)
-                    mCloudPresenter.deleteCloud(ids)
-                }
-            })
-    }
 
 
     override fun onRefreshData() {

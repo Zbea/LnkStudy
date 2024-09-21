@@ -412,6 +412,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             FileUtils.deleteFile(File(path))
             DiaryDaoManager.getInstance().delete(item)
         }
+        showToast("日记上传成功")
     }
 
 }

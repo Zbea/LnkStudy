@@ -10,6 +10,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -798,7 +799,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 请求作业分类
      */
     private fun fetchHomeworkType() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             countDownTasks = CountDownLatch(2)
 
             val map = HashMap<String, Any>()
@@ -834,7 +835,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             setPageNumber(totalTypes.size)
             mAdapter?.setNewData(homeworkTypes)
         }
-        if (NetworkUtil(requireActivity()).isNetworkConnected())
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
             fetchMessage()
     }
 

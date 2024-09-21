@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="标题"
-        android:textSize="@dimen/sp_24"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
 

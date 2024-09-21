@@ -14,13 +14,13 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginTop="@dimen/dp_60"
             android:layout_marginStart="@dimen/dp_60"
             android:layout_marginEnd="@dimen/dp_10"
             android:gravity="center"
             android:lines="1"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="@dimen/sp_25"
             android:textStyle="bold" />
 
         <TextView
@@ -28,12 +28,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_60"
             android:layout_marginEnd="@dimen/dp_10"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="@dimen/sp_22" />
 
         <LinearLayout
             android:id="@+id/ll_rank"

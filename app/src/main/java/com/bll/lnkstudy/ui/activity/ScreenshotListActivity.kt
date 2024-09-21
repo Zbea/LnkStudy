@@ -23,8 +23,8 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_list_tab.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list_tab.rv_list
+import kotlinx.android.synthetic.main.common_title.iv_manager
 
 class ScreenshotListActivity:BaseAppCompatActivity() {
 
@@ -116,7 +116,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = ScreenshotAdapter(R.layout.item_screenshot, null).apply {
+        mAdapter = ScreenshotAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

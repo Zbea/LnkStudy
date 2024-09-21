@@ -30,7 +30,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_content.*
+import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import java.io.File
 
 class CloudExamFragment:BaseCloudFragment() {
@@ -93,7 +93,7 @@ class CloudExamFragment:BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudExamFragment.position=position
-                CommonDialog(requireActivity(),getScreenPosition()).setContent(R.string.item_is_delete_tips).builder()
+                CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
@@ -104,15 +104,27 @@ class CloudExamFragment:BaseCloudFragment() {
                 true
             }
             setOnItemClickListener { adapter, view, position ->
-                val paperTypeBean=paperTypes[position]
-                val item= PaperTypeDaoManager.getInstance().queryById(paperTypeBean.typeId)
-                if (item==null){
-                    download(paperTypeBean)
-                }
-                else{
-                    showToast(R.string.toast_downloaded)
-                }
+                this@CloudExamFragment.position=position
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
+        }
+    }
+
+    private fun downloadItem(){
+        val paperTypeBean=paperTypes[position]
+        val item= PaperTypeDaoManager.getInstance().queryById(paperTypeBean.typeId)
+        if (item==null){
+            download(paperTypeBean)
+        }
+        else{
+            showToast(R.string.toast_downloaded)
         }
     }
 

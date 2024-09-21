@@ -12,7 +12,7 @@
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_weight="1"
         android:lines="1"
         android:ellipsize="end"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:text="课程表"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -49,14 +49,14 @@
         android:text="老师"
         android:lines="1"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
     <TextView
         android:id="@+id/tv_subject"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="详情"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
     <TextView
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:text="@string/quit"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"/>
 
 </LinearLayout>

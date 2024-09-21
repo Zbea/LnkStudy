@@ -14,32 +14,6 @@
         android:padding="1dp"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:gravity="center"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        >
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/icon_wallet_smoney"/>
-
-
-        <TextView
-            android:id="@+id/tv_price"
-            android:layout_width="40dp"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"

@@ -15,12 +15,13 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="250dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:lines="1"
             android:ellipsize="end"
+            android:textStyle="bold"
             android:layout_marginStart="@dimen/dp_15"
             />
 
@@ -33,8 +34,9 @@
             android:lines="1"
             android:ellipsize="end"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             />
 
         <ImageView

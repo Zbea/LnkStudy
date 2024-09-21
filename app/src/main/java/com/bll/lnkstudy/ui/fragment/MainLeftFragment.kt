@@ -93,7 +93,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     private var updateDialog: AppUpdateDialog? = null
     private var isChange = false
     private var isShow = false//是否存在台历
-    private var noticeItems = mutableListOf<HomeworkNoticeList.HomeworkNoticeBean>()
 
     override fun onUpdateInfo(item: SystemUpdateInfo) {
         updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
@@ -129,10 +128,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     }
 
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
-        if (list.list.isNotEmpty()) {
-            noticeItems = list.list
-            mNoticeAdapter?.setNewData(noticeItems)
-        }
+        mNoticeAdapter?.setNewData(list.list)
     }
 
     override fun getLayoutId(): Int {
@@ -374,18 +370,17 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
         }
         mNoticeAdapter?.setOnItemClickListener { adapter, view, position ->
             showView(ll_notice)
-            setNoticeShow(position)
+            setNoticeShow(mNoticeAdapter?.getItem(position)!!)
         }
     }
 
     /**
      * 展示作业详情
      */
-    private fun setNoticeShow(position: Int) {
-        val item = noticeItems[position]
+    private fun setNoticeShow(item: HomeworkNoticeList.HomeworkNoticeBean) {
 
-        tv_notice_name?.text = item.name + " (${item.typeName})"
-        tv_notice_time?.text = "发送时间：" + DateUtils.longToStringDataNoYear(item.time)
+        tv_notice_name?.text = item.name + " (${DataBeanManager.getCourseStr(item.subject)}  ${item.typeName})"
+        tv_notice_time?.text = "发送时间：" + DateUtils.longToStringNoYear(item.time)
         if (item.endTime > 0) {
             showView(tv_notice_end_time)
             tv_notice_end_time?.text = "提交时间：" + DateUtils.longToStringWeek(item.endTime)
@@ -404,6 +399,10 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_note.adapter = this
             bindToRecyclerView(rv_main_note)
+        }
+        correctAdapter?.setOnItemClickListener { adapter, view, position ->
+            showView(ll_notice)
+            setNoticeShow(correctAdapter?.getItem(position)!!)
         }
     }
 

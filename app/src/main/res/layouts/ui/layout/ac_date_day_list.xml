@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:gravity="center"
             android:text="@string/date_day_content_hint"
@@ -33,9 +33,9 @@
             />
 
         <TextView
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
@@ -43,18 +43,18 @@
             />
 
         <TextView
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
             android:text="@string/date_day_time_str"/>
 
         <TextView
-            android:layout_width="104dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"

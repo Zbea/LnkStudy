@@ -10,6 +10,7 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -357,7 +358,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     private fun fetchTypes() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             val map = HashMap<String, Any>()
             map["size"] = 100
             map["grade"] = mUser?.grade!!
@@ -377,7 +378,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             mAdapter?.setNewData(paperTypes)
             setPageNumber(totalTypes.size)
         }
-        if (NetworkUtil(requireActivity()).isNetworkConnected())
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
             fetchCorrectPaper()
     }
 

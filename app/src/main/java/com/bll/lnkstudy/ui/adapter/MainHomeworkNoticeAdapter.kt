@@ -11,8 +11,9 @@ class MainHomeworkNoticeAdapter(layoutResId: Int, data: List<HomeworkNoticeList.
 
     override fun convert(helper: BaseViewHolder, item: HomeworkNoticeList.HomeworkNoticeBean) {
         helper.apply {
-            setText(R.id.tv_name,"(${item.typeName})${DataBeanManager.getCourseStr(item.subject)}")
-            setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.time))
+            setText(R.id.tv_name,item.typeName)
+            setText(R.id.tv_course,DataBeanManager.getCourseStr(item.subject))
+            setText(R.id.tv_date, DateUtils.longToStringNoYear(item.time))
             setText(R.id.tv_content,item.title)
         }
     }

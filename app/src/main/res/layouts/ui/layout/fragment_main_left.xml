@@ -14,45 +14,50 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/navigation_height">
+            android:layout_height="110dp">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_height="@dimen/navigation_height"
+                android:gravity="center_vertical"
                 android:layout_marginStart="33dp"
                 android:textColor="@color/black"
-                android:textSize="36sp" />
+                android:textSize="@dimen/fragment_navigation_text" />
 
-            <TextView
-                android:id="@+id/tv_screenshot"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="30dp"
-                android:layout_toStartOf="@+id/tv_planover"
-                android:drawableStart="@mipmap/icon_main_screen"
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:text="图库"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
-
-            <TextView
-                android:id="@+id/tv_planover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_45"
+                android:layout_marginEnd="@dimen/dp_60"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginEnd="@dimen/dp_60"
-                android:drawableStart="@mipmap/icon_plan_overview"
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:text="总览"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/tv_screenshot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="30dp"
+                    android:drawableStart="@mipmap/icon_main_screen"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:gravity="center"
+                    android:text="图库"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22" />
+
+
+                <TextView
+                    android:id="@+id/tv_planover"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@mipmap/icon_plan_overview"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:gravity="center"
+                    android:text="总览"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22" />
+            </LinearLayout>
 
 
         </RelativeLayout>
@@ -60,7 +65,7 @@
         <LinearLayout
             android:layout_width="800dp"
             android:layout_height="552dp"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -92,7 +97,11 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_25"
                         android:textStyle="bold" />
-
+                    <ImageView
+                        android:id="@+id/iv_change"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/icon_main_change" />
 
                 </LinearLayout>
 
@@ -143,15 +152,6 @@
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="5dp"
                         android:src="@mipmap/icon_main_down" />
-
-                    <ImageView
-                        android:id="@+id/iv_change"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_margin="@dimen/dp_10"
-                        android:src="@mipmap/icon_main_change" />
 
 
                 </RelativeLayout>
