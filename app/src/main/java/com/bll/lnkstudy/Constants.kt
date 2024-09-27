@@ -32,25 +32,27 @@ class Constants {
         const val dayLong = 24 * 60 * 60 * 1000
         const val weekTime = 7 * 24 * 60 * 60 * 1000
         const val DEFAULT_PAGE = -1
-        const val SCREEN_LEFT=1//左屏
-        const val SCREEN_RIGHT=2//右屏
-        const val SCREEN_FULL=3//全屏
-        const val STATUS_BAR_SHOW=2147483647//永不消失
+        const val SCREEN_LEFT = 1//左屏
+        const val SCREEN_RIGHT = 2//右屏
+        const val SCREEN_FULL = 3//全屏
+        const val STATUS_BAR_SHOW = 2147483647//永不消失
 
-//                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
-        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
-//
+//        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+                const val URL_BASE = "http://192.168.101.100:10800/v1/"
+        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+
+        //
+        const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
+        const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
+        //storage/sdcard/0
+        val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
+        val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
+
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")!!.path
 
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")!!.path
-        val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
-        val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
-
-        const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
-        const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
 
         //收到题卷地址
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
@@ -96,9 +98,9 @@ class Constants {
         const val MAIN_HOMEWORK_NOTICE_CLEAR_EVENT = "MainHomeworkNoticeClearEvent"//作业通知清除广播
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
-        const val DATE_DRAWING_EVENT="DateDrawingEvent"//日程手写结束
+        const val DATE_DRAWING_EVENT = "DateDrawingEvent"//日程手写结束
         const val CALENDER_SET_EVENT = "CalenderSetEvent"//台历设置
-        const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"//截图管理刷新
+        const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理刷新
         const val SETTING_DOWNLOAD_EVENT = "DataDownload"
         const val SETTING_RENT_EVENT = "DataRent"
         const val SETTING_CLEAT_EVENT = "DataClear"
@@ -117,12 +119,13 @@ class Constants {
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkstudy.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkstudy.account.logout"
         const val EXAM_MODE_BROADCAST_EVENT = "com.bll.lnkstudy.exam.mode"
-        const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
+        const val NET_REFRESH = "com.htfyun.blackwhitebar.refresh"
 
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
+        const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"
 
-        const val INTENT_SCREEN_LABEL="android.intent.extra.LAUNCH_SCREEN"
+        const val INTENT_SCREEN_LABEL = "android.intent.extra.LAUNCH_SCREEN"
 
 
         //OTA SN前缀

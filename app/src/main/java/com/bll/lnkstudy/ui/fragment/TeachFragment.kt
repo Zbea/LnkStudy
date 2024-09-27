@@ -22,8 +22,8 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_list_tab.*
+import kotlinx.android.synthetic.main.common_page_number.tv_page_current
+import kotlinx.android.synthetic.main.fragment_list_tab.rv_list
 
 /**
  * 教学
@@ -108,7 +108,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(requireActivity(),30f),
-            DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),40f),
             DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
@@ -117,7 +117,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 30f)))
+            rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 25f)))
             setOnItemClickListener { _, _, position ->
                 if (!MethodManager.getSchoolPermissionAllow(1)){
                     showToast(1,"学校该时间不允许查看义教视频")

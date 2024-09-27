@@ -277,6 +277,16 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     /**
+     * 设置考试模式 true打开 false关闭
+     */
+    fun setExamMode(isMode:Boolean){
+        val intent = Intent()
+        intent.putExtra("exam", if (isMode)1 else 0)
+        intent.action = Constants.EXAM_MODE_BROADCAST_EVENT
+        sendBroadcast(intent)
+    }
+
+    /**
      * 设置dialog可以点击消失
      */
     protected fun setDialogOutside(boolean: Boolean){
@@ -508,6 +518,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      */
     open fun initChangeScreenData(){
     }
+
 }
 
 

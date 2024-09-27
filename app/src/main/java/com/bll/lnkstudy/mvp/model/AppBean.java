@@ -29,7 +29,7 @@ public class AppBean {
     public byte[] imageByte;
     public boolean isTool;
     @Transient
-    public boolean isCheck;
+    public boolean isCheck=false;
 
     @Generated(hash = 867208658)
     public AppBean(Long id, long userId, String appName, String packageName, byte[] imageByte,

@@ -18,8 +18,8 @@ import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
 import com.bll.lnkstudy.ui.adapter.CorrectDetailsAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_app_list.*
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.ac_app_list.rv_list
+import kotlinx.android.synthetic.main.common_fragment_title.tv_course
 
 class LearningConditionFragment:BaseMainFragment() {
 
@@ -99,6 +99,7 @@ class LearningConditionFragment:BaseMainFragment() {
         mAdapter = CorrectDetailsAdapter(R.layout.item_correct_details, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val item=items[position]
             ImageDialog(requireActivity(),1,item.url.split(",")).builder()

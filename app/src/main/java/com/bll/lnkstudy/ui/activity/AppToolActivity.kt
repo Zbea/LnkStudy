@@ -27,6 +27,7 @@ class AppToolActivity:BaseAppCompatActivity() {
     private var mAdapter:AppListAdapter?=null
     private var mAdapterTool:AppListAdapter?=null
     private var toolApps= mutableListOf<AppBean>()
+    private var position=0
 
     override fun layoutId(): Int {
         return R.layout.ac_app_list
@@ -80,7 +81,7 @@ class AppToolActivity:BaseAppCompatActivity() {
 
     private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this,6)//创建布局管理
-        mAdapter = AppListAdapter(0,R.layout.item_app_list, null)
+        mAdapter = AppListAdapter(R.layout.item_app_list, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(6,50))
@@ -91,16 +92,15 @@ class AppToolActivity:BaseAppCompatActivity() {
                     item.isCheck=!item.isCheck
                     mAdapter?.notifyItemChanged(position)
                 }
+                R.id.iv_image->{
+                    val packageName= item.packageName
+                    if (packageName!=Constants.PACKAGE_GEOMETRY)
+                        AppUtils.startAPP(this,packageName)
+                }
             }
-
-        }
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val item=apps[position]
-            val packageName= item.packageName
-            if (packageName!=Constants.PACKAGE_GEOMETRY)
-                AppUtils.startAPP(this,packageName)
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            this.position=position
             val item=apps[position]
             val packageName= item.packageName
             if (packageName!=Constants.PACKAGE_GEOMETRY){
@@ -109,9 +109,7 @@ class AppToolActivity:BaseAppCompatActivity() {
                     override fun cancel() {
                     }
                     override fun ok() {
-                        AppUtils.uninstallAPK(this@AppToolActivity,apps[position].packageName)
-                        AppDaoManager.getInstance().deleteBean(item)
-                        return
+                        AppUtils.uninstallAPK(this@AppToolActivity,packageName)
                     }
                 })
             }
@@ -122,15 +120,22 @@ class AppToolActivity:BaseAppCompatActivity() {
 
     private fun initRecyclerTool(){
         rv_list_tool.layoutManager = GridLayoutManager(this,6)//创建布局管理
-        mAdapterTool = AppListAdapter(0,R.layout.item_app_list, null)
+        mAdapterTool = AppListAdapter(R.layout.item_app_list, null)
         rv_list_tool.adapter = mAdapterTool
         mAdapterTool?.bindToRecyclerView(rv_list_tool)
         rv_list_tool.addItemDecoration(SpaceGridItemDeco(6,30))
         mAdapterTool?.setOnItemChildClickListener { adapter, view, position ->
             val item=toolApps[position]
-            if (view.id==R.id.ll_name){
-                item.isCheck=!item.isCheck
-                mAdapterTool?.notifyItemChanged(position)
+            when(view.id){
+                R.id.ll_name->{
+                    item.isCheck=!item.isCheck
+                    mAdapterTool?.notifyItemChanged(position)
+                }
+                R.id.iv_image->{
+                    val packageName= item.packageName
+                    if (packageName!=Constants.PACKAGE_GEOMETRY)
+                        AppUtils.startAPP(this,packageName)
+                }
             }
         }
 
@@ -155,6 +160,7 @@ class AppToolActivity:BaseAppCompatActivity() {
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             Constants.APP_UNINSTALL_EVENT->{
+                AppDaoManager.getInstance().deleteBean(apps[position])
                 setDataApp()
                 setDataAppTool()
             }

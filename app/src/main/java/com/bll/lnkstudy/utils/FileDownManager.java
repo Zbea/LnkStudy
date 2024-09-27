@@ -69,7 +69,6 @@ public class FileDownManager {
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                 singletaskCallBack.progress(task, soFarBytes, totalBytes);
-
             }
 
             @Override

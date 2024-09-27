@@ -10,7 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:padding="@dimen/dp_10"
-        android:background="@drawable/bg_black_stroke_10dp_corner"
+        android:background="@drawable/click_item_app"
         />
 
     <LinearLayout
@@ -25,7 +25,6 @@
             android:id="@+id/cb_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             />
 
         <TextView

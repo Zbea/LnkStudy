@@ -9,6 +9,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
+import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.DP2PX
 
 
@@ -42,6 +43,11 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
             val item=item as SystemUpdateInfo
             tv_name?.text="系统更新："+item.version
             tv_info?.text=item.description
+            btn_ok?.text="立即更新"
+            btn_ok?.setOnClickListener {
+                dialog?.dismiss()
+                AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
+            }
         }
         return this
     }

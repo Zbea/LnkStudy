@@ -6,17 +6,16 @@ import com.bll.lnkstudy.utils.BitmapUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppListAdapter(private val type:Int, layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<AppBean, BaseViewHolder>(layoutResId, data) {
+class AppListAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<AppBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: AppBean) {
         helper.run {
             item.run{
                 setText(R.id.tv_name,appName)
                 setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(imageByte))
-                setGone(R.id.cb_check,type==0)
                 setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
             }
-            addOnClickListener(R.id.ll_name)
+            addOnClickListener(R.id.ll_name,R.id.iv_image)
         }
     }
 

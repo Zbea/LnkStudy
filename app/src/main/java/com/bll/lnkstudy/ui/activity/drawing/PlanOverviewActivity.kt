@@ -7,7 +7,6 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CalendarSingleDialog
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.iv_down
 import kotlinx.android.synthetic.main.ac_plan_overview.iv_up
@@ -40,8 +39,6 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn,iv_expand,iv_draft)
         setPageTitle(R.string.main_plan)
-
-        GlideUtils.setImageUrl(this,R.mipmap.icon_freenote_bg_1,v_content_b)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

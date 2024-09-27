@@ -52,20 +52,14 @@
             />
 
         <ImageView
-            android:id="@+id/iv_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:visibility="gone"
-            />
-
-        <ImageView
             android:id="@+id/iv_manager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_20"
             android:visibility="gone"
-            android:src="@mipmap/icon_manager"/>
+            android:src="@mipmap/icon_manager"
+            android:padding="2dp"
+            />
 
     </LinearLayout>
 

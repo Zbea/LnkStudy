@@ -23,25 +23,31 @@
             <TextView
                 android:id="@+id/tv_diary_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="30dp"
                 android:drawableStart="@mipmap/icon_diary"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="日记"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_22"
+                android:padding="@dimen/click_line_width"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
 
             <TextView
                 android:id="@+id/tv_free_note"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:drawableStart="@mipmap/icon_freenote"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="随笔"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_22"
+                android:padding="@dimen/click_line_width"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
         </LinearLayout>
 
     </RelativeLayout>
@@ -158,7 +164,9 @@
                 android:textColor="@color/black"
                 android:text="@string/main_message"
                 android:textSize="@dimen/sp_25"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="@drawable/click_btn_transparent_gray"
+                />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

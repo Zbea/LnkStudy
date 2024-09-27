@@ -12,7 +12,7 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.rv_list
-import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.ll_year
 import kotlinx.android.synthetic.main.common_title.tv_month
 import kotlinx.android.synthetic.main.common_title.tv_year
 
@@ -25,17 +25,30 @@ class DateActivity:BaseAppCompatActivity() {
     private var mAdapter:DateAdapter?=null
     private var dateBeans= mutableListOf<DateBean>()
     private var position=0
+    private var yearList= mutableListOf<Int>()
+    private var monthList= mutableListOf<Int>()
 
     override fun layoutId(): Int {
         return R.layout.ac_date
     }
 
     override fun initData() {
+        for (i in 4 downTo 0){
+            yearList.add(yearNow-i)
+        }
+        for (i in 1..5){
+            yearList.add(yearNow+i)
+        }
+
+        for (i in 1..12)
+        {
+            monthList.add(i)
+        }
     }
 
     override fun initView() {
         setPageTitle(R.string.date_title_str)
-        showView(ll_date)
+        showView(ll_year)
 
         initRecycler()
 
@@ -43,9 +56,8 @@ class DateActivity:BaseAppCompatActivity() {
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
-            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027)
             if (yearPop==null){
-                yearPop=PopupDateSelector(this,tv_year,list,0).builder()
+                yearPop=PopupDateSelector(this,tv_year,yearList,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
@@ -61,13 +73,8 @@ class DateActivity:BaseAppCompatActivity() {
         }
 
         tv_month.setOnClickListener {
-            val list= mutableListOf<Int>()
-            for (i in 1..12)
-            {
-                list.add(i)
-            }
             if (monthPop==null){
-                monthPop=PopupDateSelector(this,tv_month,list,1).builder()
+                monthPop=PopupDateSelector(this,tv_month,monthList,1).builder()
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
@@ -151,7 +158,7 @@ class DateActivity:BaseAppCompatActivity() {
         val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
         for (i in 1 .. max)
         {
-            dateBeans.add(getDateBean(yearNow,monthNow,i,true))
+            dateBeans.add(getDateBean(yearNow,monthNow,i))
         }
 
         if (dateBeans.size>35){
@@ -174,8 +181,8 @@ class DateActivity:BaseAppCompatActivity() {
         }
     }
 
-    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): DateBean {
-        val solar=Solar()
+    private fun getDateBean(year:Int,month:Int,day:Int): DateBean {
+        val solar= Solar()
         solar.solarYear=year
         solar.solarMonth=month
         solar.solarDay=day
@@ -184,12 +191,11 @@ class DateActivity:BaseAppCompatActivity() {
         dateBean.year=year
         dateBean.month=month
         dateBean.day=day
-        dateBean.time=DateUtils.dateToStamp("$year-$month-$day")
+        dateBean.time=DateUtils.dateToStamp(year, month, day)
         dateBean.isNow=day==DateUtils.getDay()&&DateUtils.getMonth()==month
-        dateBean.isNowMonth=isMonth
-        dateBean.solar= solar
         dateBean.week=DateUtils.getWeek(dateBean.time)
-        dateBean.lunar=LunarSolarConverter.SolarToLunar(solar)
+        dateBean.solar= solar
+        dateBean.lunar= LunarSolarConverter.SolarToLunar(solar)
 
         return dateBean
     }

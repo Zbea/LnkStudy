@@ -12,8 +12,17 @@ import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_record.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_record.et_title
+import kotlinx.android.synthetic.main.ac_record.iv_play
+import kotlinx.android.synthetic.main.ac_record.iv_record
+import kotlinx.android.synthetic.main.ac_record.ll_record
+import kotlinx.android.synthetic.main.ac_record.ll_record_backward
+import kotlinx.android.synthetic.main.ac_record.ll_record_forward
+import kotlinx.android.synthetic.main.ac_record.ll_record_play
+import kotlinx.android.synthetic.main.ac_record.ll_record_stop
+import kotlinx.android.synthetic.main.ac_record.tv_play
+import kotlinx.android.synthetic.main.common_title.iv_back
+import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.IOException
@@ -99,7 +108,6 @@ class RecordActivity : BaseAppCompatActivity() {
                 setOnErrorListener(null)
                 setOnInfoListener(null)
                 setPreviewDisplay(null)
-                stop()
                 release()
                 mRecorder=null
                 startPrepare()

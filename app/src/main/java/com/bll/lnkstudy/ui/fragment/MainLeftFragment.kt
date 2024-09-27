@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.RecoverySystem
@@ -95,8 +96,9 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     private var isShow = false//是否存在台历
 
     override fun onUpdateInfo(item: SystemUpdateInfo) {
-        updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
-        downLoadStartSystem(item)
+        AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
+//        updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
+//        downLoadStartSystem(item)
     }
 
     override fun onAppUpdate(item: AppUpdateBean) {
@@ -378,8 +380,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
      * 展示作业详情
      */
     private fun setNoticeShow(item: HomeworkNoticeList.HomeworkNoticeBean) {
-
-        tv_notice_name?.text = item.name + " (${DataBeanManager.getCourseStr(item.subject)}  ${item.typeName})"
+        tv_notice_name?.text = "${DataBeanManager.getCourseStr(item.subject)}   ${item.typeName}"
         tv_notice_time?.text = "发送时间：" + DateUtils.longToStringNoYear(item.time)
         if (item.endTime > 0) {
             showView(tv_notice_end_time)
@@ -436,9 +437,11 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     }
 
     //下载系统
+    @SuppressLint("UsableSpace")
     private fun downLoadStartSystem(bean: SystemUpdateInfo) {
         val path=FileAddress().getPathSystemUpdate(bean.version)
-        if (File(path).exists()){
+        val file=File(path)
+        if (file.exists()&&file.length()==bean.size){
             setSystemUpdate(path)
             return
         }

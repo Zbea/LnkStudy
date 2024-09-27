@@ -17,6 +17,7 @@
     <dimen name="statusbar_height">38dp</dimen>
     <dimen name="fragment_tab_left">70dp</dimen>
     <dimen name="login_btn_height">60dp</dimen>
+    <dimen name="click_line_width">2dp</dimen>
 
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>

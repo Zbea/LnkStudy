@@ -85,11 +85,13 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
 
     private fun initTab() {
         tabItems =ItemTypeDaoManager.getInstance().queryAll(5)
-        for (item in tabItems){
-            item.isCheck=false
+        if (tabItems.size>0){
+            for (item in tabItems){
+                item.isCheck=false
+            }
+            tabItems[0].isCheck=true
+            typeStr = tabItems[0].title
         }
-        tabItems[0].isCheck=true
-        typeStr = tabItems[0].title
 
         rv_type.layoutManager = GridLayoutManager(this, 7)//创建布局管理
         mTabAdapter=BookcaseTypeAdapter(R.layout.item_bookcase_type, tabItems).apply {

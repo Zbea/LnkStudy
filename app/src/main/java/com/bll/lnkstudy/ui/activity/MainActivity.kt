@@ -111,7 +111,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         Collections.sort(list, Comparator { p0, p1 ->
             return@Comparator p0.type - p1.type
         })
-        clearDownloadData()
+        clearData(1)
         download(list)
     }
 
@@ -120,28 +120,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
+
         val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
         val type = object : TypeToken<List<Area>>() {}.type
         DataBeanManager.provinces = Gson().fromJson(areaJson, type)
 
-        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
-            val strings = DataBeanManager.bookType
-            for (i in strings.indices) {
-                val item = ItemTypeBean()
-                item.type=5
-                item.title = strings[i]
-                item.date=System.currentTimeMillis()
-                ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            }
-        }
-
-        //创建截屏默认文件夹
-        val path = FileAddress().getPathScreen("未分类")
-        if (!File(path).exists()) {
-            File(path).parentFile?.mkdir()
-            File(path).mkdirs()
-        }
-
+        initStartDate()
     }
 
     override fun initView() {
@@ -262,6 +246,29 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
+     * 初始化数据
+     */
+    private fun initStartDate(){
+        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
+            val strings = DataBeanManager.bookType
+            for (i in strings.indices) {
+                val item = ItemTypeBean()
+                item.type=5
+                item.title = strings[i]
+                item.date=System.currentTimeMillis()
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
+        }
+
+        //创建截屏默认文件夹
+        val path = FileAddress().getPathScreen("未分类")
+        if (!File(path).exists()) {
+            File(path).parentFile?.mkdir()
+            File(path).mkdirs()
+        }
+    }
+
+    /**
      * 开始每天定时自动刷新
      */
     private fun startRemind() {
@@ -284,11 +291,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_DAY_REFRESH
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -318,10 +321,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_8
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -352,10 +352,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_15
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -385,10 +382,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_18
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -398,7 +392,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年8月25 15点执行
+     * 每年8月25 9点执行
      */
     private fun startRemind9Month() {
         val allDay = if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
@@ -422,10 +416,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_LAST_SEMESTER
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -436,7 +427,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年2月1 3点执行
+     * 每年1月初10 9点执行
      */
     private fun startRemind1Month() {
         val allDay = if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
@@ -468,10 +459,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_NEXT_SEMESTER
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -482,7 +470,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年1月1 3点执行
+     * 每年1月1 9点执行
      */
     private fun startRemind1Year() {
         val allDay = if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
@@ -494,7 +482,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -507,10 +495,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_YEAR
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
@@ -521,59 +506,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 一键清除下载数据
+     * 一键清除(type=0) 一键下载type=1
      */
-    private fun clearDownloadData() {
-        DiaryDaoManager.getInstance().clear()
-        BookGreenDaoManager.getInstance().clear()
-        TextbookGreenDaoManager.getInstance().clear()
-
-        HomeworkTypeDaoManager.getInstance().clear()
-        //删除所有作业
-        HomeworkContentDaoManager.getInstance().clear()
-        //删除所有录音
-        RecordDaoManager.getInstance().clear()
-        //删除所有作业卷内容
-        HomeworkPaperDaoManager.getInstance().clear()
-        HomeworkPaperContentDaoManager.getInstance().clear()
-        //题卷本
-        HomeworkBookDaoManager.getInstance().clear()
-        HomeworkBookCorrectDaoManager.getInstance().clear()
-        HomeworkDetailsDaoManager.getInstance().clear()
-
-        //清楚学情
-        CorrectDetailsManager.getInstance().clear()
-
-        //删除本地考卷分类
-        PaperTypeDaoManager.getInstance().clear()
-        //删除所有考卷内容
-        PaperDaoManager.getInstance().clear()
-        PaperContentDaoManager.getInstance().clear()
-
-        NoteDaoManager.getInstance().clear()
-        NoteContentDaoManager.getInstance().clear()
-
-        PaintingDrawingDaoManager.getInstance().clear()
-
-        ItemTypeDaoManager.getInstance().clear()
-        CalenderDaoManager.getInstance().clear()
-
-        FileUtils.deleteFile(File(Constants.BOOK_PATH))
-        FileUtils.deleteFile(File(Constants.NOTE_PATH))
-        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
-        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
-        FileUtils.deleteFile(File(Constants.DIARY_PATH))
-    }
-
-    /**
-     * 一键清除
-     */
-    private fun clearData() {
-        Glide.get(this).clearMemory()
-        Thread{
-            Glide.get(this).clearDiskCache()
-        }.start()
-
+    private fun clearData(type: Int) {
         SPUtil.removeObj("privacyPasswordDiary")
         SPUtil.removeObj("privacyPasswordNote")
         SPUtil.putListInt("weekDateEvent", mutableListOf())
@@ -624,7 +559,17 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
 
-        MethodManager.logout(this)
+        if (type==0){
+            Glide.get(this).clearMemory()
+            Thread{
+                Glide.get(this).clearDiskCache()
+            }.start()
+            MethodManager.logout(this)
+        }
+        else{
+            //清空后恢复
+            initStartDate()
+        }
     }
 
     /**
@@ -1299,7 +1244,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 mDataUpdatePresenter.onList(map)
             }
             Constants.SETTING_CLEAT_EVENT -> {
-                clearData()
+                clearData(0)
             }
         }
     }
@@ -1315,5 +1260,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         if (myBroadcastReceiver!=null){
             unregisterReceiver(myBroadcastReceiver)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setExamMode(false)
     }
 }

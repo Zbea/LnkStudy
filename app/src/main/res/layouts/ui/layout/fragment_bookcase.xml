@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:text="@string/book_my"
+            android:layout_centerVertical="true"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_25" />
 
@@ -29,7 +30,10 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:text="@string/book_type_title"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_25" />
+            android:textSize="@dimen/sp_25"
+            android:padding="4dp"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
 
         <ImageView
             android:id="@+id/iv_tips"

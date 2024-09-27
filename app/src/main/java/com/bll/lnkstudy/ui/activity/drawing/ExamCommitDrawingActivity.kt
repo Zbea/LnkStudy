@@ -261,16 +261,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
 
-    /**
-     * 设置考试模式
-     */
-    private fun setExamMode(isMode:Boolean){
-        val intent = Intent()
-        intent.putExtra("exam", if (isMode)1 else 0)
-        intent.action = Constants.EXAM_MODE_BROADCAST_EVENT
-        sendBroadcast(intent)
-    }
-
     override fun onBackPressed() {
     }
 

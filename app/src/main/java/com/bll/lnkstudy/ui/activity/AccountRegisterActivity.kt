@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.ac_account_register.ed_user
 import kotlinx.android.synthetic.main.ac_account_register.et_parent
 import kotlinx.android.synthetic.main.ac_account_register.et_parent_name
 import kotlinx.android.synthetic.main.ac_account_register.et_parent_phone
-import kotlinx.android.synthetic.main.ac_account_register.ll_date
+import kotlinx.android.synthetic.main.ac_account_register.ll_date_resiter
 import kotlinx.android.synthetic.main.ac_account_register.ll_name
 import kotlinx.android.synthetic.main.ac_account_register.ll_school
 import kotlinx.android.synthetic.main.ac_account_register.ll_user
@@ -102,13 +102,13 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         when (flags) {
             2 -> {
                 setPageTitle(R.string.edit_password)
-                disMissView(ll_name,ll_date,ll_user,ll_school)
+                disMissView(ll_name,ll_date_resiter,ll_user,ll_school)
                 btn_register.setText(R.string.commit)
             }
             1 -> {
                 setPageTitle(R.string.find_password)
                 ed_user.setText(SPUtil.getString("account"))
-                disMissView(ll_name,ll_date,ll_school)
+                disMissView(ll_name,ll_date_resiter,ll_school)
                 btn_register.setText(R.string.commit)
             }
             else -> {
@@ -116,7 +116,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
             }
         }
 
-        ll_date.setOnClickListener {
+        ll_date_resiter.setOnClickListener {
             DateDialog(this).builder().setOnDateListener { dateStr, dateTim ->
                 brithday=dateTim
                 tv_date.text=dateStr

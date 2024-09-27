@@ -195,7 +195,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 item.teacherUrl.split(",").toMutableList()
             }
             else{
-                item.examUrl.split(",").toMutableList()
+                item.studentUrl.split(",").toMutableList()
             }
             val typeId=MethodManager.getExamTypeId(mCourse)
             item.typeId=typeId

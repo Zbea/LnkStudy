@@ -187,7 +187,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             pops.add(PopupBean(2,"上传日记"))
             pops.add(PopupBean(3,"删除日记"))
-            PopupClick(requireActivity(),pops,tv_diary_btn,5).builder().setOnSelectListener{
+            PopupClick(requireActivity(),pops,tv_diary_btn,0).builder().setOnSelectListener{
                 when(it.id){
                     1->{
                         if (privacyPassword==null){
@@ -285,7 +285,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     disMissView(rl_exam)
                     return@setOnClickListener
                 }
-                if (files.size == paths.size) {
+                if (files.size >= paths.size) {
                     val bundle = Bundle()
                     bundle.putSerializable("exam", this)
                     val intent = Intent(activity, ExamCommitDrawingActivity::class.java)

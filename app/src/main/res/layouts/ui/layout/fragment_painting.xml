@@ -20,7 +20,6 @@
         android:id="@+id/ll_painting_dynasty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/xtab"
         android:orientation="vertical">
 
         <LinearLayout
@@ -41,7 +40,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:src="@mipmap/icon_painting_han" />
+                    android:src="@mipmap/icon_painting_han"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
 
                 <ImageView
@@ -49,13 +51,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:src="@mipmap/icon_painting_tang" />
+                    android:src="@mipmap/icon_painting_tang"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_song"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_painting_song" />
+                    android:src="@mipmap/icon_painting_song"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -69,14 +77,20 @@
                     android:id="@+id/iv_jd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_painting_jd" />
+                    android:src="@mipmap/icon_painting_jd"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_dd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="90dp"
-                    android:src="@mipmap/icon_painting_dd" />
+                    android:src="@mipmap/icon_painting_dd"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
             </LinearLayout>
 
@@ -92,20 +106,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:src="@mipmap/icon_painting_yuan" />
+                    android:src="@mipmap/icon_painting_yuan"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_ming"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:src="@mipmap/icon_painting_ming" />
+                    android:src="@mipmap/icon_painting_ming"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_qing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_painting_qing" />
+                    android:src="@mipmap/icon_painting_qing"
+                    android:padding="@dimen/click_line_width"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
             </LinearLayout>
         </LinearLayout>
 
@@ -203,7 +226,10 @@
                 android:id="@+id/iv_hb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_painting_sm" />
+                android:src="@mipmap/icon_painting_sm"
+                android:padding="@dimen/click_line_width"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
 
 
             <ImageView
@@ -211,7 +237,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="150dp"
-                android:src="@mipmap/icon_painting_yb" />
+                android:src="@mipmap/icon_painting_yb"
+                android:padding="@dimen/click_line_width"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
         </LinearLayout>
     </LinearLayout>
 

@@ -13,7 +13,6 @@ import com.bll.lnkstudy.manager.FreeNoteDaoManager
 import com.bll.lnkstudy.mvp.model.FreeNoteBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_freenote.tv_delete
 import kotlinx.android.synthetic.main.ac_freenote.tv_name
@@ -70,7 +69,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
             ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes = ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    GlideUtils.setImageUrl(this,moduleBean.resContentId,v_content_b)
+                    v_content_b?.setBackgroundResource(moduleBean.resContentId)
                     bgResList[posImage] = bgRes
                 }
         }
@@ -160,7 +159,8 @@ class FreeNoteActivity : BaseDrawingActivity() {
      * 更换内容
      */
     private fun setContentImage() {
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgResList[posImage]),v_content_b)
+
+        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgResList[posImage]))
         val path = FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${posImage + 1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)) {

@@ -155,7 +155,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/login_btn_height"
                 android:layout_marginTop="120dp"
-                android:background="@drawable/bg_btn_black_solid"
+                android:background="@drawable/click_btn_black_solid"
                 android:text="@string/login"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_25" />
