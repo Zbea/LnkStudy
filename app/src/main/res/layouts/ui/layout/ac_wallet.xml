@@ -8,11 +8,12 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_45"
+        android:layout_height="@dimen/dp_45"
         android:layout_gravity="right"
         android:layout_margin="@dimen/dp_10"
         android:src="@mipmap/icon_close"
+        android:scaleType="centerInside"
         />
 
     <TextView
@@ -22,9 +23,6 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginEnd="@dimen/dp_40"
         android:gravity="center"
         />
 
@@ -51,12 +49,12 @@
         <TextView
             android:id="@+id/tv_buy"
             android:layout_width="160dp"
-            android:layout_height="45dp"
+            android:layout_height="@dimen/navigation_type_height"
             android:text="购买青豆"
             android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:gravity="center"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/click_btn_line_black_5dp"
             />
 
     </LinearLayout>

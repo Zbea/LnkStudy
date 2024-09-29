@@ -30,11 +30,11 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dp_45"
             android:layout_marginEnd="@dimen/dp_40"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:background="@drawable/click_btn_line_black_5dp"
             android:gravity="center"
             android:text="@string/download"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_22" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

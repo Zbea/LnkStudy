@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="标题"
@@ -20,22 +20,31 @@
 
     <ImageView
         android:id="@+id/iv_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:src="@mipmap/icon_notebook_edit"/>
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@mipmap/icon_notebook_edit"
+        android:scaleType="center"
+        android:background="@drawable/click_btn_transparent_line_black"
+        />
 
     <ImageView
         android:id="@+id/iv_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:src="@mipmap/icon_delete"/>
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@mipmap/icon_delete"
+        android:scaleType="center"
+        android:background="@drawable/click_btn_transparent_line_black"
+        />
 
     <ImageView
         android:id="@+id/iv_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/icon_notebook_top"/>
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:src="@mipmap/icon_notebook_top"
+        android:scaleType="center"
+        android:background="@drawable/click_btn_transparent_line_black"
+        />
 
 </LinearLayout>

@@ -10,8 +10,8 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.dialog.DownloadTextbookDialog
+import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager

@@ -78,8 +78,12 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginEnd="20dp"
-                    android:textColor="@color/black_20"
-                    android:background="@color/color_transparent"
+                    android:textColor="@color/black"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    android:paddingStart="@dimen/dp_5"
+                    android:paddingEnd="@dimen/dp_5"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:text="@string/page_up_string"/>
 
                 <TextView
@@ -109,8 +113,12 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:textColor="@color/black_20"
-                    android:background="@color/color_transparent"
+                    android:textColor="@color/black"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    android:paddingStart="@dimen/dp_5"
+                    android:paddingEnd="@dimen/dp_5"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:text="@string/page_down_string"/>
 
             </LinearLayout>
@@ -222,7 +230,7 @@
                 android:text="@string/save"
                 android:textSize="@dimen/sp_24"
                 android:textColor="@color/black"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:background="@drawable/click_btn_line_black_5dp"
                 android:gravity="center"
                 />
         </LinearLayout>

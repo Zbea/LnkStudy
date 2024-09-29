@@ -380,7 +380,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
      * 展示作业详情
      */
     private fun setNoticeShow(item: HomeworkNoticeList.HomeworkNoticeBean) {
-        tv_notice_name?.text = "${DataBeanManager.getCourseStr(item.subject)}   ${item.typeName}"
+        tv_notice_name?.text = "${item.typeName}   ${DataBeanManager.getCourseStr(item.subject)}"
         tv_notice_time?.text = "发送时间：" + DateUtils.longToStringNoYear(item.time)
         if (item.endTime > 0) {
             showView(tv_notice_end_time)

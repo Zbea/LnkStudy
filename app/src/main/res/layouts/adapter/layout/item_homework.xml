@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:background="@drawable/click_btn_line_black_5dp"
             android:padding="5dp"
             android:orientation="horizontal">
             <ImageView
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:background="@drawable/click_btn_line_black_5dp"
             android:padding="5dp"
             android:orientation="horizontal">
             <ImageView

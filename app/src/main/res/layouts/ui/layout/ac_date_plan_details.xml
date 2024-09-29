@@ -47,11 +47,14 @@
 
             <ImageView
                 android:id="@+id/iv_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/dp_50"
-                android:src="@mipmap/icon_add" />
+                android:src="@mipmap/icon_add"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
 
 
             <RadioGroup

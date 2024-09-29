@@ -78,12 +78,12 @@
                 <TextView
                     android:id="@+id/btn_download"
                     android:layout_width="80dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/bg_black_arch"
+                    android:layout_height="40dp"
+                    android:background="@drawable/click_btn_line_black_5dp"
                     android:gravity="center"
                     android:text="@string/buy"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_20" />
+                    android:textSize="@dimen/sp_22" />
 
             </LinearLayout>
         </LinearLayout>

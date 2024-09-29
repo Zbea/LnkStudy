@@ -6,9 +6,9 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="208dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_black_stroke_10dp_corner"
+        android:background="@drawable/click_btn_line_black_10dp"
         android:orientation="vertical">
 
         <TextView
@@ -29,9 +29,9 @@
 
         <ImageView
             android:id="@+id/iv_image"
-            android:layout_width="208dp"
+            android:layout_width="match_parent"
             android:layout_height="130dp"
-            android:padding="1dp"
+            android:padding="2dp"
             />
 
     </LinearLayout>

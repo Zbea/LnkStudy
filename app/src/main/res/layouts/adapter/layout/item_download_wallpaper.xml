@@ -60,7 +60,7 @@
             android:id="@+id/btn_download"
             android:layout_width="60dp"
             android:layout_height="30dp"
-            android:background="@drawable/bg_black_arch"
+            android:background="@drawable/click_btn_line_black_5dp"
             android:gravity="center"
             android:text="@string/buy"
             android:textColor="@color/black"

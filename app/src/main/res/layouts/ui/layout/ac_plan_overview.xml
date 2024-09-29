@@ -66,10 +66,11 @@
 
             <ImageView
                 android:id="@+id/iv_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="center"
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
                 android:src="@mipmap/icon_date_arrow_up"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
 
 
@@ -85,9 +86,11 @@
 
             <ImageView
                 android:id="@+id/iv_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
                 android:src="@mipmap/icon_date_arrow_down"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
 
         </LinearLayout>

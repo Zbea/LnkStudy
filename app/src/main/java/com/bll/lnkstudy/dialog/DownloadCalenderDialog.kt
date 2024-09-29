@@ -23,7 +23,7 @@ class DownloadCalenderDialog(private val context: Context, private val item: Cal
             show()
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             btn_ok = findViewById(R.id.btn_ok)
-            val iv_cancel = findViewById<ImageView>(R.id.iv_cancel)
+            val iv_cancel = findViewById<ImageView>(R.id.iv_close)
             val iv_image = findViewById<ImageView>(R.id.iv_image)
             val tv_price =findViewById<TextView>(R.id.tv_price)
             val tv_info = findViewById<TextView>(R.id.tv_info)

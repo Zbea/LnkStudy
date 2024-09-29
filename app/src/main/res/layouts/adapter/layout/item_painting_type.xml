@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/icon_painting_sm"
+        android:padding="@dimen/click_line_width"
+        android:background="@drawable/click_btn_transparent_line_black"
         />
 
     <TextView

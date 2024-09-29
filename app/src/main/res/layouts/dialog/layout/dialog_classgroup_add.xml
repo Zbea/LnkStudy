@@ -21,7 +21,7 @@
     <EditText
         android:id="@+id/et_number"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
         android:paddingStart="@dimen/dp_20"
@@ -32,8 +32,8 @@
         android:textSize="24sp"
         android:inputType="number"
         android:textColor="@color/black"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="35dp"
+        android:layout_marginTop="30dp"
         android:padding="5dp"
         tools:ignore="RtlSymmetry" />
 

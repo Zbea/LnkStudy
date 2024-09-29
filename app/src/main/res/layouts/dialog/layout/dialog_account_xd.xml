@@ -23,7 +23,7 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"/>
+        android:layout_marginTop="@dimen/dp_30"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,6 +40,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_35"
         android:orientation="horizontal">
 
         <RadioButton
@@ -75,8 +76,5 @@
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
         />
 </LinearLayout>

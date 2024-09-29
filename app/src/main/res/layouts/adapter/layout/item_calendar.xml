@@ -42,7 +42,7 @@
             android:layout_marginEnd="@dimen/dp_5"
             android:text="预览"
             android:textColor="@color/black"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:background="@drawable/click_btn_line_black_5dp"
             />
 
     </LinearLayout>

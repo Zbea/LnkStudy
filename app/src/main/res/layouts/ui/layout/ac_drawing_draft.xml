@@ -94,25 +94,31 @@
 
         <ImageView
             android:id="@+id/iv_change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:src="@mipmap/icon_draw_screen"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
             android:id="@+id/iv_top"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginStart="30dp"
             android:src="@mipmap/icon_notebook_top"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
             android:id="@+id/iv_clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_30"
             android:src="@mipmap/icon_draw_erasure"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
@@ -121,8 +127,9 @@
             android:layout_height="@dimen/dp_40"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="60dp"
-            android:scaleType="center"
             android:src="@mipmap/icon_close"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
     </LinearLayout>

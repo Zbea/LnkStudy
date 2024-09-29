@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="460dp"
+    android:layout_width="500dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:padding="@dimen/dialog_padding"
     android:gravity="center_horizontal"
     android:orientation="vertical">
-
 
 
     <EditText
@@ -17,16 +16,15 @@
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_line_bottom"
         android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        android:layout_marginBottom="@dimen/dp_35"
+        />
 
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_40"
         />
 
 </LinearLayout>

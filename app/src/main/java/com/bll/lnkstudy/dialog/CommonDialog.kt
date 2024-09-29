@@ -14,7 +14,6 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
 
     private var dialog: Dialog? = null
     private var titleStr = ""
-    private var isTitle = false
     private var contentStr = "" //提示文案
     private var contentStrId = 0 //提示文案
     private var cancelStr = "取消" //取消文案
@@ -47,11 +46,6 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
         return this
     }
 
-    fun setTitleView(boolean: Boolean): CommonDialog {
-        isTitle = boolean
-        return this
-    }
-
     fun builder(): CommonDialog {
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_com)
@@ -74,10 +68,8 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
         val tvOk = dialog!!.findViewById<TextView>(R.id.tv_ok)
 
         if (titleStr.isNotEmpty()) titleTv.text = titleStr
-        if (!isTitle) {
-            titleTv.visibility = View.GONE
-            contentTv.minHeight = 220
-        }
+        titleTv.visibility =  if (titleStr.isNotEmpty()) View.VISIBLE else View.GONE
+
         if (contentStr.isNotEmpty()) contentTv.text = contentStr
         if (contentStrId!=0) contentTv.setText(contentStrId)
         if (cancelStr.isNotEmpty()) cancelTv.text = cancelStr

@@ -10,11 +10,11 @@
         android:id="@+id/tv_cancel"
         android:layout_width="120dp"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        android:background="@drawable/click_btn_line_black_5dp"
         android:gravity="center"
         android:text="@string/cancel"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_22" />
 
 
     <TextView
@@ -22,10 +22,10 @@
         android:layout_width="120dp"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/dp_50"
-        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        android:background="@drawable/click_btn_line_black_5dp"
         android:gravity="center"
         android:text="@string/ok"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_22" />
 
 </LinearLayout>

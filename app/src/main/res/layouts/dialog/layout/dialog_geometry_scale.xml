@@ -11,7 +11,7 @@
         android:id="@+id/et_width"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_line_bottom"
         android:layout_gravity="center_horizontal"
@@ -30,14 +30,13 @@
         android:textSize="20sp"
         android:textColor="@color/black"
         android:inputType="number"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        android:layout_marginBottom="@dimen/dp_35"
+        />
 
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_40"
         />
 
 </LinearLayout>

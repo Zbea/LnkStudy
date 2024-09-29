@@ -43,14 +43,12 @@
         android:textSize="20sp"
         android:hint="家长电话"
         android:textColor="@color/black"
+        android:layout_marginBottom="@dimen/dp_35"
         android:padding="5dp"/>
 
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
         />
 
 </LinearLayout>

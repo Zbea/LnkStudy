@@ -154,7 +154,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="5dp"
                         android:src="@mipmap/icon_main_up" />
 
                     <ImageView
@@ -163,7 +162,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="5dp"
                         android:src="@mipmap/icon_main_down" />
 
 
@@ -355,12 +353,13 @@
 
                 <ImageView
                     android:id="@+id/iv_close"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_close" />
-
+                    android:layout_width="@dimen/dp_45"
+                    android:layout_height="@dimen/dp_45"
+                    android:layout_alignParentEnd="true"
+                    android:src="@mipmap/icon_close"
+                    android:scaleType="center"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
             </RelativeLayout>
 

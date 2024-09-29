@@ -37,7 +37,6 @@ public class TextbookBean {
     public int subject;//课目
     public int version;  //版本
     public String supply ;  //官方
-    @Unique
     @SerializedName("bodyUrl")
     public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径

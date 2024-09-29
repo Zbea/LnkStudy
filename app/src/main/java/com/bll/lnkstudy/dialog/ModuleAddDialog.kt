@@ -38,7 +38,7 @@ class ModuleAddDialog(private val context: Context,private val screenPos:Int,val
         val tvName = dialog?.findViewById<TextView>(R.id.tv_name)
         tvName?.text=title
 
-        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
+        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_close)
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
         val count=if (list.size>4) 3 else 2

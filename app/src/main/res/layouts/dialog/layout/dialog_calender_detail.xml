@@ -22,11 +22,13 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/iv_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
-            android:src="@mipmap/icon_close" />
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            android:src="@mipmap/icon_close"
+            android:scaleType="center"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
     </LinearLayout>
 
     <ImageView
@@ -77,13 +79,13 @@
 
         <Button
             android:id="@+id/btn_ok"
-            android:layout_width="150dp"
+            android:layout_width="160dp"
             android:layout_height="@dimen/dp_45"
             android:layout_gravity="right"
-            android:background="@drawable/bg_black_solid_10dp_corner"
+            android:background="@drawable/click_btn_black_solid"
             android:text="@string/buy"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/sp_22" />
 
     </LinearLayout>
 

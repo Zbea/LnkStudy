@@ -21,14 +21,17 @@
 
     <ImageView
         android:id="@+id/iv_close"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_45"
+        android:layout_height="@dimen/dp_45"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        android:src="@mipmap/icon_close" />
+        android:src="@mipmap/icon_close"
+        android:scaleType="centerInside"
+        android:background="@drawable/click_btn_transparent_line_black"
+        />
 
     <RelativeLayout
         android:id="@+id/rl_page"
@@ -39,12 +42,15 @@
 
         <ImageView
             android:id="@+id/iv_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_50"
-            android:src="@mipmap/icon_draw_page_up" />
+            android:src="@mipmap/icon_draw_page_up"
+            android:scaleType="center"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
 
         <TextView
             android:id="@+id/tv_page"
@@ -56,12 +62,15 @@
 
         <ImageView
             android:id="@+id/iv_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_50"
-            android:src="@mipmap/icon_draw_page_down" />
+            android:src="@mipmap/icon_draw_page_down"
+            android:scaleType="center"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
     </RelativeLayout>
 
 </RelativeLayout>

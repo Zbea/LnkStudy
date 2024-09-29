@@ -67,8 +67,8 @@
                 android:textColor="@color/black"
                 android:layout_width="80dp"
                 android:gravity="center"
-                android:layout_height="32dp"
-                android:background="@drawable/bg_black_arch"
+                android:layout_height="35dp"
+                android:background="@drawable/click_btn_line_black_5dp"
                 android:text="下载" />
 
             <LinearLayout

@@ -2,7 +2,9 @@ package com.bll.lnkstudy.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.Gravity.*
+import android.view.Gravity.CENTER_VERTICAL
+import android.view.Gravity.END
+import android.view.Gravity.START
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,7 +22,7 @@ class LongClickManageDialog(val context: Context, val screenPos:Int,val name:Str
 
     fun builder(): LongClickManageDialog {
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_long_click_manage)
+        dialog.setContentView(R.layout.dialog_item_select)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = dialog.window?.attributes
         if (screenPos==1){
