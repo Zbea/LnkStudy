@@ -60,14 +60,11 @@ class NoteFragment : BaseMainFragment(){
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[5])
+        showView(iv_manager)
         pageSize=14
 
         popWindowBeans.add(PopupBean(0, getString(R.string.note_manage_str)))
         popWindowBeans.add(PopupBean(1, getString(R.string.notebook_create_str)))
-
-        showView(iv_manager)
-
-        initRecyclerView()
 
         iv_manager?.setOnClickListener {
             PopupClick(requireActivity(), popWindowBeans, iv_manager, 5).builder().setOnSelectListener { item ->
@@ -82,6 +79,7 @@ class NoteFragment : BaseMainFragment(){
             }
         }
 
+        initRecyclerView()
         initTabs()
     }
 
@@ -283,7 +281,8 @@ class NoteFragment : BaseMainFragment(){
                     val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteBook)
                     //创建笔记分类增量更新
                     DataUpdateManager.createDataUpdate(4,id.toInt(),1,Gson().toJson(noteBook))
-                    mTabTypeAdapter?.addData(noteBook)
+                    noteTypes.add(noteBook)
+                    mTabTypeAdapter?.setNewData(noteTypes)
                 }
             }
     }
@@ -313,7 +312,7 @@ class NoteFragment : BaseMainFragment(){
                 //如果此笔记还没有开始书写，则不用上传源文件
                 if (noteContents.size>0){
                     FileUploadManager(token).apply {
-                        startUpload(path,fileName)
+                        startZipUpload(path,fileName)
                         setCallBack{
                             cloudList.add(CloudListBean().apply {
                                 type=4

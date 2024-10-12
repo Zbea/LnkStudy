@@ -31,7 +31,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                     NetworkUtil(context).toggleNetwork(true)
                 }
                 else{
-                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
+                    EventBus.getDefault().postSticky(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
                 }
             }
             Constants.ACTION_UPLOAD_15->{
@@ -40,7 +40,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 if (!NetworkUtil(context).isNetworkConnected()){
                     NetworkUtil(context).toggleNetwork(true)
                 }
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
             }
             Constants.ACTION_UPLOAD_18->{
                 Log.d("debug","18点全局刷新")
@@ -49,7 +49,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                     NetworkUtil(context).toggleNetwork(true)
                 }
                 else{
-                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
+                    EventBus.getDefault().postSticky(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
                 }
             }
             Constants.ACTION_UPLOAD_NEXT_SEMESTER->{
@@ -58,7 +58,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 if (!NetworkUtil(context).isNetworkConnected()){
                     NetworkUtil(context).toggleNetwork(true)
                 }
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
             }
             Constants.ACTION_UPLOAD_YEAR->{
                 Log.d("debug","每年上传")
@@ -66,7 +66,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 if (!NetworkUtil(context).isNetworkConnected()){
                     NetworkUtil(context).toggleNetwork(true)
                 }
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_YEAR_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_YEAR_EVENT)
             }
             Constants.ACTION_UPLOAD_LAST_SEMESTER->{
                 Log.d("debug","9月1日升年级、清空")
@@ -74,7 +74,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 if (!NetworkUtil(context).isNetworkConnected()){
                     NetworkUtil(context).toggleNetwork(true)
                 }
-                EventBus.getDefault().post(Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT)
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT)
             }
             Constants.ACTION_EXAM_TIME->{
                 Log.d("debug","考试提交")

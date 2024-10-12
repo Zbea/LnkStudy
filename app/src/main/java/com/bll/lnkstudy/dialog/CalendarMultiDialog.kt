@@ -12,7 +12,6 @@ import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SToast
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
-import java.util.*
 
 
 class CalendarMultiDialog(private val context: Context,private var times:MutableList<Long>,private var selectDateLong:MutableList<Long>) {
@@ -27,7 +26,7 @@ class CalendarMultiDialog(private val context: Context,private var times:Mutable
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.BOTTOM or Gravity.LEFT
+        layoutParams.gravity = Gravity.BOTTOM or Gravity.START
         layoutParams.y = DP2PX.dip2px(context, 320f)
         layoutParams.x = DP2PX.dip2px(context, 100f)
         dialog?.show()

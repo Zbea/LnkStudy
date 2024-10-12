@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.RecoverySystem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
@@ -16,7 +15,6 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.AppUpdateDialog
-import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
@@ -32,10 +30,10 @@ import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.presenter.SystemManagerPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
 import com.bll.lnkstudy.mvp.view.IContractView.ISystemView
+import com.bll.lnkstudy.ui.activity.HomeworkNoticeListActivity
 import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
-import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
@@ -56,15 +54,16 @@ import com.google.gson.Gson
 import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
-import kotlinx.android.synthetic.main.fragment_main_left.iv_change
 import kotlinx.android.synthetic.main.fragment_main_left.iv_close
-import kotlinx.android.synthetic.main.fragment_main_left.iv_date
 import kotlinx.android.synthetic.main.fragment_main_left.iv_date_more
+import kotlinx.android.synthetic.main.fragment_main_left.ll_calender
 import kotlinx.android.synthetic.main.fragment_main_left.ll_notice
 import kotlinx.android.synthetic.main.fragment_main_left.rv_main_note
 import kotlinx.android.synthetic.main.fragment_main_left.rv_main_notice
 import kotlinx.android.synthetic.main.fragment_main_left.rv_main_plan
+import kotlinx.android.synthetic.main.fragment_main_left.tv_correct_notice
 import kotlinx.android.synthetic.main.fragment_main_left.tv_date_today
+import kotlinx.android.synthetic.main.fragment_main_left.tv_homework_notice
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_content
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_end_time
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_name
@@ -74,6 +73,7 @@ import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
 import kotlinx.android.synthetic.main.fragment_main_left.tv_screenshot
 import kotlinx.android.synthetic.main.fragment_main_left.v_down
 import kotlinx.android.synthetic.main.fragment_main_left.v_up
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Random
 
@@ -92,8 +92,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     private var calenderPath = ""
     private var dateEvents = mutableListOf<DateEventBean>()
     private var updateDialog: AppUpdateDialog? = null
-    private var isChange = false
-    private var isShow = false//是否存在台历
 
     override fun onUpdateInfo(item: SystemUpdateInfo) {
         AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
@@ -146,13 +144,9 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
+//            EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
         }
 
-        iv_date.setOnClickListener {
-            val intent = Intent(requireActivity(), DateEventActivity::class.java)
-            intent.putExtra("date", nowDate)
-            customStartActivity(intent)
-        }
 
         iv_date_more.setOnClickListener {
             customStartActivity(Intent(activity, DateDayListActivity::class.java))
@@ -162,63 +156,22 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             customStartActivity(Intent(activity, DatePlanListActivity::class.java))
         }
 
-//        tv_plan.setOnClickListener {
-//            if (dateEvents.isEmpty())
-//                return@setOnClickListener
-//            val item =dateEvents[0]
-//            val intent=Intent(requireActivity(), DatePlanDetailsActivity::class.java)
-//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//            val bundle = Bundle()
-//            bundle.putSerializable("dateEvent", item)
-//            intent.putExtra("bundle", bundle)
-//            customStartActivity(intent)
-//        }
-
         v_up.setOnClickListener {
             nowDate -= Constants.dayLong
             setDateView()
-            if (isShow && nowDayPos > 1) {
+            if (nowDayPos > 1) {
                 nowDayPos -= 1
-                setCalenderBg()
+                setCalenderImage()
             }
         }
 
         v_down.setOnClickListener {
             nowDate += Constants.dayLong
             setDateView()
-            if (isShow && nowDayPos <= 366) {
+            if (nowDayPos <= 366) {
                 nowDayPos += 1
-                setCalenderBg()
+                setCalenderImage()
             }
-        }
-
-        iv_change.setOnClickListener {
-            isChange = !isChange
-            if (isChange) {
-                showView(iv_calender)
-            } else {
-                disMissView(iv_calender)
-            }
-        }
-
-        iv_change.setOnLongClickListener {
-            val boolean = SPUtil.getBoolean("isShowCalender")
-            val titleStr = if (boolean) "默认显示日程？" else "默认显示台历？"
-            CommonDialog(requireActivity(), 1).setContent(titleStr).builder().onDialogClickListener = object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-
-                override fun ok() {
-                    if (boolean) {
-                        SPUtil.putBoolean("isShowCalender", false)
-                        disMissView(iv_calender)
-                    } else {
-                        SPUtil.putBoolean("isShowCalender", true)
-                        showView(iv_calender)
-                    }
-                }
-            }
-            return@setOnLongClickListener true
         }
 
         tv_screenshot.setOnClickListener {
@@ -229,16 +182,23 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
         }
 
+        tv_homework_notice.setOnClickListener {
+            customStartActivity(Intent(activity, HomeworkNoticeListActivity::class.java).setFlags(0))
+        }
+
+        tv_correct_notice.setOnClickListener {
+            customStartActivity(Intent(activity, HomeworkNoticeListActivity::class.java).setFlags(1))
+        }
+
         initDialog(1)
     }
 
     override fun lazyLoad() {
-        //删除系统更新文件
-        val path=FileAddress().getPathSystemUpdate(DeviceUtil.getOtaProductVersion())
-        if (File(path).exists()){
-            File(path).delete()
-        }
-
+//        //删除系统更新文件
+//        val path=FileAddress().getPathSystemUpdate(DeviceUtil.getOtaProductVersion())
+//        if (File(path).exists()){
+//            File(path).delete()
+//        }
         nowDate = DateUtils.getStartOfDayInMillis()
         setDateView()
         showCalenderView()
@@ -292,14 +252,14 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
 //        }
         tv_date_today.text = DateUtils.longToStringWeek(nowDate)
 
-        val path = FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate)) + "/draw.png"
-        if (File(path).exists()) {
-//            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
-            val myBitmap = BitmapFactory.decodeFile(path)
-            iv_date.setImageBitmap(myBitmap)
-        } else {
-            iv_date.setImageResource(0)
-        }
+//        val path = FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate)) + "/draw.png"
+//        if (File(path).exists()) {
+////            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
+//            val myBitmap = BitmapFactory.decodeFile(path)
+//            iv_date.setImageBitmap(myBitmap)
+//        } else {
+//            iv_date.setImageResource(0)
+//        }
     }
 
     /**
@@ -307,39 +267,22 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
      */
     private fun showCalenderView() {
         val item = CalenderDaoManager.getInstance().queryCalenderBean()
-        isShow = item != null
-        if (isShow) {
+        if (item != null) {
             calenderPath = item.path
-            showView(iv_change, iv_calender)
-            setCalenderView()
-        } else {
-            isChange = false
-            disMissView(iv_change, iv_calender)
-        }
-    }
-
-    /**
-     * 设置台历内容
-     */
-    private fun setCalenderView() {
-        if (isShow) {
+            showView(ll_calender)
             val calenderUtils = CalenderUtils(DateUtils.longToStringDataNoHour(nowDate))
             nowDayPos = calenderUtils.elapsedTime()
-            setCalenderBg()
-            if (SPUtil.getBoolean("isShowCalender")) {
-                isChange = true
-                showView(iv_calender)
-            } else {
-                isChange = false
-                disMissView(iv_calender)
-            }
+            setCalenderImage()
+        }
+        else{
+            disMissView(ll_calender)
         }
     }
 
     /**
      * 设置台历图片
      */
-    private fun setCalenderBg() {
+    private fun setCalenderImage() {
         val listFiles = FileUtils.getFiles(calenderPath)
         if (listFiles.size > 0) {
             val file = if (listFiles.size > nowDayPos - 1) {
@@ -381,7 +324,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
      */
     private fun setNoticeShow(item: HomeworkNoticeList.HomeworkNoticeBean) {
         tv_notice_name?.text = "${item.typeName}   ${DataBeanManager.getCourseStr(item.subject)}"
-        tv_notice_time?.text = "发送时间：" + DateUtils.longToStringNoYear(item.time)
+        tv_notice_time?.text = "布置时间：" + DateUtils.longToStringNoYear(item.time)
         if (item.endTime > 0) {
             showView(tv_notice_end_time)
             tv_notice_end_time?.text = "提交时间：" + DateUtils.longToStringWeek(item.endTime)

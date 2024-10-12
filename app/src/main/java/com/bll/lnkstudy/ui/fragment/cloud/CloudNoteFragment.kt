@@ -182,7 +182,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                                 contentBean.noteTitle=titleStr
                                 val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                 //新建笔记内容增量更新
-                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(contentBean),File(contentBean.filePath).parent)
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(contentBean),contentBean.filePath)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))

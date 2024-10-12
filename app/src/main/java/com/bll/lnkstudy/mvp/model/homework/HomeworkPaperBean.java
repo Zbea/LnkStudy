@@ -2,12 +2,15 @@ package com.bll.lnkstudy.mvp.model.homework;
 
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
+import com.bll.lnkstudy.utils.greendao.StringConverter;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,11 +27,14 @@ public class HomeworkPaperBean {
     public String course;//科目
     public int typeId;//作业分组id
     public String typeName;//作业分组标题
-    public int index;//（位置下标）
     public String title;//这次作业标题
     public Long endTime=0L;//老师需要学生提交时间
     public Long startTime=0L;
-    public String path;//文件路径
+    public String filePath;//文件路径
+    @Convert(columnType = String.class,converter = StringConverter.class)
+    public List<String> paths;
+    @Convert(columnType = String.class,converter = StringConverter.class)
+    public List<String> drawPaths;
     public int page;
     public int state;//提交状态0学生未提交1已提交未批改2已批改
     public int correctMode;//批改模式
@@ -38,22 +44,24 @@ public class HomeworkPaperBean {
     public int scoreMode;//打分模式1打分
     public String answerUrl;
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 896817749)
+    @Generated(hash = 987730780)
     public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
-            String typeName, int index, String title, Long endTime, Long startTime, String path,
-            int page, int state, int correctMode, int score, String correctJson, boolean isSelfCorrect,
-            int scoreMode, String answerUrl, String commitJson) {
+            String typeName, String title, Long endTime, Long startTime, String filePath,
+            List<String> paths, List<String> drawPaths, int page, int state, int correctMode, int score,
+            String correctJson, boolean isSelfCorrect, int scoreMode, String answerUrl,
+            String commitJson) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
         this.course = course;
         this.typeId = typeId;
         this.typeName = typeName;
-        this.index = index;
         this.title = title;
         this.endTime = endTime;
         this.startTime = startTime;
-        this.path = path;
+        this.filePath = filePath;
+        this.paths = paths;
+        this.drawPaths = drawPaths;
         this.page = page;
         this.state = state;
         this.correctMode = correctMode;
@@ -103,12 +111,6 @@ public class HomeworkPaperBean {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
-    public int getIndex() {
-        return this.index;
-    }
-    public void setIndex(int index) {
-        this.index = index;
-    }
     public String getTitle() {
         return this.title;
     }
@@ -127,11 +129,23 @@ public class HomeworkPaperBean {
     public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
-    public String getPath() {
-        return this.path;
+    public String getFilePath() {
+        return this.filePath;
     }
-    public void setPath(String path) {
-        this.path = path;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+    public List<String> getPaths() {
+        return this.paths;
+    }
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
+    }
+    public List<String> getDrawPaths() {
+        return this.drawPaths;
+    }
+    public void setDrawPaths(List<String> drawPaths) {
+        this.drawPaths = drawPaths;
     }
     public int getPage() {
         return this.page;
@@ -187,5 +201,7 @@ public class HomeworkPaperBean {
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
     }
+
+
 
 }

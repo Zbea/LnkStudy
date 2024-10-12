@@ -2,12 +2,16 @@ package com.bll.lnkstudy.mvp.model.paper;
 
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
+import com.bll.lnkstudy.utils.greendao.DateWeekConverter;
+import com.bll.lnkstudy.utils.greendao.StringConverter;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,17 +28,21 @@ public class PaperBean {
     public int typeId;//考卷分组id
     public String type;//考卷分组标题
     public String title;
-    public String path;//文件路径
+    public String filePath;//文件路径
+    @Convert(columnType = String.class,converter = StringConverter.class)
+    public List<String> paths;
+    @Convert(columnType = String.class,converter = StringConverter.class)
+    public List<String> drawPaths;
     public int page;
     public int correctMode;//批改模式
     public String score;//成绩
     public String correctJson;//批改详情
     public String answerUrl;
     public int scoreMode;
-    @Generated(hash = 1633552820)
+    @Generated(hash = 64126081)
     public PaperBean(Long id, long userId, int contentId, String course, int typeId, String type,
-            String title, String path, int page, int correctMode, String score, String correctJson,
-            String answerUrl, int scoreMode) {
+            String title, String filePath, List<String> paths, List<String> drawPaths, int page,
+            int correctMode, String score, String correctJson, String answerUrl, int scoreMode) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -42,7 +50,9 @@ public class PaperBean {
         this.typeId = typeId;
         this.type = type;
         this.title = title;
-        this.path = path;
+        this.filePath = filePath;
+        this.paths = paths;
+        this.drawPaths = drawPaths;
         this.page = page;
         this.correctMode = correctMode;
         this.score = score;
@@ -95,11 +105,23 @@ public class PaperBean {
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getPath() {
-        return this.path;
+    public String getFilePath() {
+        return this.filePath;
     }
-    public void setPath(String path) {
-        this.path = path;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+    public List<String> getPaths() {
+        return this.paths;
+    }
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
+    }
+    public List<String> getDrawPaths() {
+        return this.drawPaths;
+    }
+    public void setDrawPaths(List<String> drawPaths) {
+        this.drawPaths = drawPaths;
     }
     public int getPage() {
         return this.page;
@@ -137,5 +159,7 @@ public class PaperBean {
     public void setScoreMode(int scoreMode) {
         this.scoreMode = scoreMode;
     }
+
+
 
 }

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity.date
 
-import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
@@ -61,9 +60,7 @@ class DateActivity:BaseAppCompatActivity() {
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
-                    Thread{
-                        getDates()
-                    }.start()
+                    getDates()
                 }
                 yearPop?.show()
             }
@@ -78,9 +75,7 @@ class DateActivity:BaseAppCompatActivity() {
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
-                    Thread {
-                        getDates()
-                    }.start()
+                    getDates()
                 }
                 monthPop?.show()
             }
@@ -89,9 +84,7 @@ class DateActivity:BaseAppCompatActivity() {
             }
         }
 
-        Thread {
-            getDates()
-        }.start()
+        getDates()
     }
 
     private fun initRecycler(){
@@ -102,11 +95,11 @@ class DateActivity:BaseAppCompatActivity() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             val dateBean=dateBeans[position]
-            if (dateBean.year!=0){
-                val intent = Intent(this, DateEventActivity::class.java)
-                intent.putExtra("date",dateBean.time)
-                customStartActivity(intent)
-            }
+//            if (dateBean.year!=0){
+//                val intent = Intent(this, DateEventActivity::class.java)
+//                intent.putExtra("date",dateBean.time)
+//                customStartActivity(intent)
+//            }
         }
     }
 
@@ -176,9 +169,8 @@ class DateActivity:BaseAppCompatActivity() {
                 dateBeans.add(DateBean())
             }
         }
-        runOnUiThread {
-            mAdapter?.setNewData(dateBeans)
-        }
+
+        mAdapter?.setNewData(dateBeans)
     }
 
     private fun getDateBean(year:Int,month:Int,day:Int): DateBean {

@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.adapter
 
-import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.utils.GlideUtils
@@ -18,8 +17,7 @@ class DownloadPaintingAdapter(layoutResId: Int, data: List<PaintingList.ListBean
             setText(R.id.tv_publishers,getString(R.string.publisher)+"：${item.publisher}")
             setText(R.id.tv_introduce,getString(R.string.introduction)+"：${item.drawDesc}")
 
-            val image=getView<ImageView>(R.id.iv_image)
-            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl,image,5)
+            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl.split(",")[0],getView(R.id.iv_image),10)
 
             addOnClickListener(R.id.btn_download)
         }

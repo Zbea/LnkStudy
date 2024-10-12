@@ -126,9 +126,6 @@ class BookcaseFragment: BaseMainFragment() {
         }
     }
 
-    override fun onRefreshData() {
-        lazyLoad()
-    }
 
     fun upload(token:String){
         cloudList.clear()
@@ -144,7 +141,7 @@ class BookcaseFragment: BaseMainFragment() {
         for (item in maxBooks){
             if (FileUtils.isExistContent(item.bookDrawPath)){
                 FileUploadManager(token).apply {
-                    startUpload(item.bookDrawPath,item.bookId.toString())
+                    startZipUpload(item.bookDrawPath,item.bookId.toString())
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=6

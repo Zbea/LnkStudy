@@ -49,7 +49,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         if (noteContents.size > 0) {
             if (page==DEFAULT_PAGE)
                 page = noteBook!!.page
-            note_Content_b = noteContents[page]
+            note_Content_b = if (page<noteContents.size){
+                noteContents[page]
+            } else{
+                noteContents.last()
+            }
         } else {
             newNoteContent()
         }
@@ -203,8 +207,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     private fun newNoteContent() {
 
         val date=System.currentTimeMillis()
-        val path=FileAddress().getPathNote(grade,type,noteBook?.title,date)
-        val pathName = DateUtils.longToString(date)
+        val path=FileAddress().getPathNote(grade,type,noteBook?.title)
 
         note_Content_b = NoteContentBean()
         note_Content_b?.date=date
@@ -213,7 +216,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_b?.resId = noteBook?.contentResId
         note_Content_b?.grade=grade
         note_Content_b?.title=getString(R.string.unnamed)+(noteContents.size+1)
-        note_Content_b?.filePath = "$path/$pathName.png"
+        note_Content_b?.filePath = "$path/${DateUtils.longToString(date)}.png"
         note_Content_b?.page = noteContents.size
         page = noteContents.size
 
@@ -221,7 +224,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_b?.id=id
         noteContents.add(note_Content_b!!)
 
-        DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(note_Content_b),path)
+        DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(note_Content_b),note_Content_b?.filePath!!)
     }
 
     override fun onDestroy() {

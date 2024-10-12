@@ -86,6 +86,19 @@ public class RecordDaoManager {
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
     }
 
+    /**
+     * 作业录音
+     * @param course
+     * @param typeId
+     * @return
+     */
+    public List<RecordBean> queryAllByCourse(String course,int typeId,int page, int pageSize) {
+        WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(typeId);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+                .orderDesc(RecordBeanDao.Properties.Date).offset((page-1)*pageSize).limit(pageSize).build().list();
+    }
+
     public List<RecordBean> search(String title) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Title.like("%"+title+"%");
         return recordBeanDao.queryBuilder().where(whereUser,whereCondition)

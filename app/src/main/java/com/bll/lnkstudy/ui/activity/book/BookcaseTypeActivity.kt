@@ -17,7 +17,7 @@ import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookcaseTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.rv_list
 import kotlinx.android.synthetic.main.ac_book_type_list.rv_type
@@ -67,7 +67,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@BookcaseTypeActivity, 22f), DP2PX.dip2px(this@BookcaseTypeActivity, 35f)))
+
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
                 MethodManager.gotoBookDetails(this@BookcaseTypeActivity,bookBean)
@@ -78,6 +78,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
                     true
                 }
         }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this, 35f)))
 
         fetchData()
     }

@@ -3,18 +3,13 @@ package com.bll.lnkstudy.ui.adapter
 import android.annotation.SuppressLint
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
-import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.date.DateBean
-import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import java.io.File
 
 class DateAdapter(layoutResId: Int, data: List<DateBean>?) :
     BaseQuickAdapter<DateBean, BaseViewHolder>(layoutResId, data) {
@@ -46,19 +41,19 @@ class DateAdapter(layoutResId: Int, data: List<DateBean>?) :
                 }
                 tvLunar.text=str
 
-                if (item.time!=0L){
-                    val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
-                    if (File(path).exists()){
-                        GlideUtils.setImageFileNoCache(mContext,File(path),ivImage)
-                        rlImage.visibility= View.VISIBLE
-                    }
-                    else{
-                        rlImage.visibility= View.GONE
-                    }
-                }
-                else{
-                    rlImage.visibility= View.GONE
-                }
+//                if (item.time!=0L){
+//                    val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
+//                    if (File(path).exists()){
+//                        GlideUtils.setImageFileNoCache(mContext,File(path),ivImage)
+//                        rlImage.visibility= View.VISIBLE
+//                    }
+//                    else{
+//                        rlImage.visibility= View.GONE
+//                    }
+//                }
+//                else{
+//                    rlImage.visibility= View.GONE
+//                }
             }
         }
 

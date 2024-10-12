@@ -90,13 +90,7 @@ class FileAddress {
     /**
      * 作业文件夹路径
      */
-    fun getPathHomework(course:String, typeId:Int):String{
-        return "$HOMEWORK_PATH/$mUserId/$course/$typeId"
-    }
-    /**
-     * 朗读作业文件夹路径
-     */
-    fun getPathRecord(course:String, typeId:Int):String{
+    fun getPathHomework(course:String,typeId:Int):String{
         return "$HOMEWORK_PATH/$mUserId/$course/$typeId"
     }
     /**
@@ -111,13 +105,6 @@ class FileAddress {
      */
     fun getPathNote(grade:Int,type: String?,noteBookStr: String?):String{
         return "$NOTE_PATH/$mUserId/$grade/$type/$noteBookStr"
-    }
-
-    /**
-     * 笔记保存地址（详情）
-     */
-    fun getPathNote(grade:Int,type: String?,noteBookStr: String?,date:Long):String{
-        return "$NOTE_PATH/$mUserId/$grade/$type/$noteBookStr/$date"
     }
 
     /**

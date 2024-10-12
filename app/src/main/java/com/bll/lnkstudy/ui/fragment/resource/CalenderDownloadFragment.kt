@@ -15,13 +15,17 @@ import com.bll.lnkstudy.mvp.model.CalenderList
 import com.bll.lnkstudy.mvp.presenter.CalenderPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.CalenderListAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_list.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
 import java.io.File
 import java.text.DecimalFormat
 
@@ -60,40 +64,35 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
         if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             fetchData()
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),28f), DP2PX.dip2px(requireActivity(),60f),
-            DP2PX.dip2px(requireActivity(),28f),0)
+            DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(), 4)//创建布局管理
-        mAdapter = CalenderListAdapter(R.layout.item_calendar, null).apply {
+        mAdapter = CalenderListAdapter(R.layout.item_calendar, 0,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(), 20f)
-                , DP2PX.dip2px(requireActivity(), 50f)))
             setOnItemClickListener { adapter, view, position ->
-                this@CalenderDownloadFragment.position=position
                 val item=items[position]
-                showDetails(item)
+                val urls=item.previewUrl.split(",")
+                ImageDialog(requireActivity(),urls).builder()
             }
             setOnItemChildClickListener { adapter, view, position ->
+                this@CalenderDownloadFragment.position=position
                 val item=items[position]
-                if (view.id==R.id.tv_preview){
-                    val urls=item.previewUrl.split(",")
-                    ImageDialog(requireActivity(),urls).builder()
+                if (view.id==R.id.tv_buy){
+                    showDetails(item)
                 }
             }
         }
-
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(requireActivity(), 50f)))
     }
 
 

@@ -24,7 +24,6 @@ import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.mvp.presenter.TextbookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TextbookStoreAdapter
-import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -32,7 +31,7 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
@@ -108,9 +107,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         onCommonData()
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
-        }
-        else{
-            showNetworkDialog()
         }
     }
 
@@ -199,7 +195,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this, 22f), 60))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             showBookDetails(books[position])
@@ -371,7 +367,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                     }
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
                     //创建增量数据
-                    DataUpdateManager.createDataUpdateState(2, homeworkTypeBean.typeId, 1,  4, Gson().toJson(homeworkTypeBean))
+                    DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1,  Gson().toJson(homeworkTypeBean))
                 }
                 val homeworkBookBean= HomeworkBookBean().apply {
                     bookId=book.bookId

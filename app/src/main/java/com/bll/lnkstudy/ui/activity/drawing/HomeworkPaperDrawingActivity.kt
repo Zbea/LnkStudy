@@ -13,13 +13,11 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
-import com.bll.lnkstudy.manager.HomeworkPaperContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
 import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
@@ -57,12 +55,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var course=""
     private var typeId=0//分组id
     private var daoManager: HomeworkPaperDaoManager?=null
-    private var daoContentManager: HomeworkPaperContentDaoManager?=null
     private var papers= mutableListOf<HomeworkPaperBean>()
-    private var paperContents= mutableListOf<HomeworkPaperContentBean>()
     private var paper: HomeworkPaperBean?=null
-    private var paperContentBean:HomeworkPaperContentBean?=null
-    private var paperContentBean_a:HomeworkPaperContentBean?=null
 
     private var currentPosition=0
     private var oldPosition=-1
@@ -103,14 +97,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         paper?.state=1
         papers[currentPosition]=paper!!
         daoManager?.insertOrReplace(paper)
-        //更新增量数据
-        DataUpdateManager.editDataUpdate(2,paper?.contentId!!,2,Gson().toJson(paper))
-
-        //提交成功后循环遍历删除手写
-        for (contentBean in paperContents){
-            //更新增量作业卷内容(作业提交后合图后不存在手写内容)
-            DataUpdateManager.editDataUpdate(2,contentBean.id.toInt(),3)
-        }
+        refreshDataUpdate()
 
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
@@ -134,7 +121,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         typeId=homeworkType?.typeId!!
 
         daoManager= HomeworkPaperDaoManager.getInstance()
-        daoContentManager= HomeworkPaperContentDaoManager.getInstance()
         papers= daoManager?.queryAll(course,typeId) as MutableList<HomeworkPaperBean>
     }
 
@@ -153,6 +139,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         }
 
         iv_btn.setOnClickListener {
+            if (!NetworkUtil(this).isNetworkConnected()){
+                showToast(R.string.net_work_error)
+                return@setOnClickListener
+            }
             if (paper?.state==1&&paper?.isSelfCorrect==true&&!paper?.commitJson.isNullOrEmpty()){
                 homeworkCommitInfoItem=Gson().fromJson(paper?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
@@ -164,12 +154,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     }
                     override fun ok() {
                         showLoading()
-                        if (NetworkUtil(this@HomeworkPaperDrawingActivity).isNetworkConnected()){
-                            commit()
-                        }
-                        else {
-                            showToast("网络连接失败")
-                        }
+                        commit()
                     }
                 })
         }
@@ -188,7 +173,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(position: Int) {
                 if (currentPosition!=list[position].page){
-                    currentPosition = papers[position].index
+                    currentPosition = papers[position].page
                     oldPosition=-1
                     page = 0
                     onContent()
@@ -200,16 +185,16 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onPageDown() {
-        if (isExpand&&page+2<pageCount){
+        if (isExpand&&page<pageCount-1){
             page+=2
             onContent()
         }
-        else if (!isExpand&&page+1<pageCount){
+        else if (!isExpand&&page<pageCount-1){
             page+=1
             onContent()
         }
         else{
-            if (currentPosition+1<papers.size){
+            if (currentPosition<papers.size-1){
                 currentPosition+=1
                 page=0
                 onContent()
@@ -218,7 +203,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onPageUp() {
-        if (isExpand&&page>1){
+        if (isExpand&&page>0){
             page-=2
             onContent()
         }
@@ -253,9 +238,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
-
-        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<HomeworkPaperContentBean>
-        pageCount=paperContents.size
+        pageCount=paper!!.paths.size
 
         if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
@@ -292,24 +275,23 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         //用来判断重复加载
         oldPosition=currentPosition
 
-        tv_page_total.text="${paperContents.size}"
-        tv_page_total_a.text="${paperContents.size}"
-
-        paperContentBean=paperContents[page]
-        setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b!!)
-        tv_page.text="${page+1}"
+        if (page<0){
+            page=0
+        }
+        if (page>pageCount-1){
+            page=pageCount-1
+        }
 
         if (isExpand){
-            paperContentBean_a=paperContents[page]
-            setElikLoadPath(paperContentBean_a!!,elik_a!!,v_content_a!!)
+            setElikLoadPath(page,elik_a!!,v_content_a!!)
             if (page+1<pageCount){
-                paperContentBean=paperContents[page+1]
-                setElikLoadPath(paperContentBean!!,elik_b!!,v_content_b!!)
+                elik_b?.setPWEnabled(true)
+                setElikLoadPath(page+1,elik_b!!,v_content_b!!)
             }
             else{
-                //不显示 ，不能手写
-                v_content_b?.setImageResource(0)
                 elik_b?.setPWEnabled(false)
+                //不显示 ，不能手写
+                v_content_b?.setImageResource(R.color.white)
             }
 
             if (screenPos==Constants.SCREEN_LEFT){
@@ -321,6 +303,14 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
             }
         }
+        else{
+            elik_b?.setPWEnabled(true)
+            setElikLoadPath(page,elik_b!!,v_content_b!!)
+            tv_page.text="${page+1}"
+        }
+
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
     }
 
     /**
@@ -354,24 +344,31 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
     
     //加载图片
-    private fun setElikLoadPath(paperContentBean: HomeworkPaperContentBean, elik:EinkPWInterface, view:ImageView) {
-        GlideUtils.setImageFileNoCache(this,File(paperContentBean.path),view)
-        elik.setLoadFilePath(paperContentBean.drawPath,true)
-        elik.setPWEnabled(true)
+    private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
+        if (paper!!.state==2){
+            GlideUtils.setImageNoCacheUrl(this,paper!!.paths[index],view)
+        }
+        else{
+            GlideUtils.setImageUrl(this,paper!!.paths[index],view)
+        }
+        elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 
     override fun onElikSava_a() {
         elik_a?.saveBitmap(true) {}
+        refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}
+        refreshDataUpdate()
     }
 
     override fun onElikStart_a() {
         if (paper?.startTime==0L){
             paper?.startTime=System.currentTimeMillis()
             daoManager?.insertOrReplace(paper)
+            refreshDataUpdate()
         }
     }
 
@@ -379,6 +376,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if (paper?.startTime==0L){
             paper?.startTime=System.currentTimeMillis()
             daoManager?.insertOrReplace(paper)
+            refreshDataUpdate()
         }
     }
 
@@ -399,18 +397,18 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             homeworkCommitInfoItem?.state=homeworkType?.state
         }
         commitItems.clear()
-        for (i in paperContents.indices) {
-            val item=paperContents[i]
-            homeworkCommitInfoItem?.paths?.add(item.path)
+        for (i in 0 until pageCount) {
+            val path=paper!!.paths[i]
+            val drawPath=paper!!.drawPaths[i]
+            homeworkCommitInfoItem?.paths?.add(path)
             Thread {
-                val drawPath = item.drawPath//当前绘图路径
-                BitmapUtils.mergeBitmap(item.path, drawPath)
+                BitmapUtils.mergeBitmap(path, drawPath)
                 FileUtils.deleteFile(File(drawPath))
                 commitItems.add(ItemList().apply {
                     id = i
-                    url = item.path
+                    url = path
                 })
-                if (commitItems.size == paperContents.size) {
+                if (commitItems.size == pageCount) {
                     takeTime=System.currentTimeMillis()- paper?.startTime!!
                     homeworkCommitInfoItem?.takeTime=takeTime
                     if (paper?.isSelfCorrect == true){
@@ -418,8 +416,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                         paper?.state = 1
                         paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
                         daoManager?.insertOrReplace(paper)
-                        //更新目录增量数据
-                        DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper?.typeId!!, Gson().toJson(paper))
+                        refreshDataUpdate()
 
                         gotoSelfCorrect()
                     }
@@ -430,6 +427,14 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 }
             }.start()
         }
+    }
+
+    /**
+     * 刷新增量更新
+     */
+    private fun refreshDataUpdate(){
+        //更新目录增量数据
+        DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper?.typeId!!, Gson().toJson(paper))
     }
 
     /**

@@ -3,7 +3,15 @@ package com.bll.lnkstudy.base
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
+import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.manager.PaperTypeDaoManager
+import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
@@ -42,7 +50,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         RecordDaoManager.getInstance().clear()
         //删除所有作业卷内容
         HomeworkPaperDaoManager.getInstance().clear()
-        HomeworkPaperContentDaoManager.getInstance().clear()
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
         //题卷本批改详情
@@ -68,7 +75,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         PaperTypeDaoManager.getInstance().clear()
         //删除所有考卷内容
         PaperDaoManager.getInstance().clear()
-        PaperContentDaoManager.getInstance().clear()
         FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
         //清除本地增量数据
         DataUpdateManager.clearDataUpdate(3)

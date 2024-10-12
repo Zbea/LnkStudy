@@ -21,7 +21,7 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -85,7 +85,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
         mAdapter = TextBookAdapter(R.layout.item_textbook, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,33f),38))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
@@ -110,6 +109,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 true
             }
         }
+        rv_list.addItemDecoration(SpaceGridItemDeco(3, 38))
     }
 
     private fun downloadItem(){

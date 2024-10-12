@@ -14,3 +14,5 @@ public class CloudListBean {
     public String contentJson;//内容json
     public String contentSubtypeJson;//子内容json
 }
+
+

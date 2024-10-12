@@ -10,13 +10,11 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.ui.adapter.PaperTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -162,18 +160,8 @@ class CloudExamFragment:BaseCloudFragment() {
                                 paperBean.id=null//设置数据库id为null用于重新加入
                                 PaperDaoManager.getInstance().insertOrReplace(paperBean)
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(3,paperBean.contentId,2,paperBean.typeId,Gson().toJson(item),"")
+                                DataUpdateManager.createDataUpdate(3,paperBean.contentId,2,paperBean.typeId,Gson().toJson(item),paperBean.filePath)
                             }
-
-                            val jsonSubtypeArray= JsonParser().parse(item.contentSubtypeJson).asJsonArray
-                            for (json in jsonSubtypeArray){
-                                val contentBean=Gson().fromJson(json, PaperContentBean::class.java)
-                                contentBean.id=null//设置数据库id为null用于重新加入
-                                val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
-                                //创建增量数据
-                                DataUpdateManager.createDataUpdate(3,id.toInt(),3,contentBean.typeId,Gson().toJson(contentBean),contentBean.path)
-                            }
-
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({

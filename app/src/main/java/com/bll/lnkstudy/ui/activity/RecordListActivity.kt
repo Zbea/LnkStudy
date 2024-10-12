@@ -70,16 +70,21 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     }
 
     override fun onCommitSuccess() {
+        showToast(R.string.toast_commit_success)
+
         val messageBean=messages[messageIndex]
         messages.removeAt(messageIndex)
-        showToast(R.string.toast_commit_success)
+
         recordBeans[position].isCommit=true
-        mAdapter?.notifyDataSetChanged()
+        mAdapter?.notifyItemChanged(position)
+
+        refreshDataUpdate(recordBeans[position])
+
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
             content=messageBean.title
             homeworkTypeStr=homeworkType?.name
-            course=course
+            course=this@RecordListActivity.course
             time=System.currentTimeMillis()
         })
     }
@@ -89,6 +94,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     }
 
     override fun initData() {
+        pageSize=12
         initChangeScreenData()
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
@@ -118,13 +124,14 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             addRecord()
         }
 
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,30f), DP2PX.dip2px(this,50f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = RecordAdapter(R.layout.item_homework_record, recordBeans)
         rv_list.adapter = mAdapter
-        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),DP2PX.dip2px(this,50f),20)
-        layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
@@ -140,25 +147,19 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                         commit()
                     }
                     else{
-                        showNetworkDialog()
+                        showToast(R.string.net_work_error)
                     }
                 }
-                R.id.tv_edit->{
+                R.id.iv_edit->{
                     edit()
                 }
-                R.id.tv_delete->{
+                R.id.iv_delete->{
                     delete()
                 }
             }
         }
 
-        findDatas()
-    }
-
-
-    private fun findDatas() {
-        recordBeans = RecordDaoManager.getInstance().queryAllByCourse(course,homeworkType?.typeId!!)
-        mAdapter?.setNewData(recordBeans)
+        fetchData()
     }
 
 
@@ -232,8 +233,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             recordBean.title=string
             mAdapter?.notifyDataSetChanged()
             RecordDaoManager.getInstance().insertOrReplace(recordBean)
-            //修改本地增量更新
-            DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,homeworkType?.typeId!!,Gson().toJson(recordBean))
+            refreshDataUpdate(recordBean)
         }
     }
 
@@ -275,14 +275,26 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             }
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == Constants.RECORD_EVENT) {
-            findDatas()
-        }
+    /**
+     * 刷新增量更新
+     */
+    private fun refreshDataUpdate(recordBean: RecordBean){
+        //修改本地增量更新
+        DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,homeworkType?.typeId!!,Gson().toJson(recordBean))
     }
 
-    override fun onNetworkConnectionSuccess() {
-        commit()
+    override fun fetchData() {
+        val total = RecordDaoManager.getInstance().queryAllByCourse(course,homeworkType?.typeId!!).size
+        setPageNumber(total)
+        recordBeans=RecordDaoManager.getInstance().queryAllByCourse(course,homeworkType?.typeId!!,pageIndex,pageSize)
+        mAdapter?.setNewData(recordBeans)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag == Constants.RECORD_EVENT) {
+            pageIndex=1
+            fetchData()
+        }
     }
 
     override fun onDestroy() {

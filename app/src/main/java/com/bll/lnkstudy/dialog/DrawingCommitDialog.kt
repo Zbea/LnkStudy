@@ -43,7 +43,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
         val layoutParams = window?.attributes
         if (screenPos == 3) {
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 480f)) / 2
+            layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 500f)) / 2
         }
         dialog?.show()
 

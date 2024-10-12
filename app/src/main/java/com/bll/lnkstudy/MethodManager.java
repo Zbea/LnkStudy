@@ -1,5 +1,7 @@
 package com.bll.lnkstudy;
 
+import static com.bll.lnkstudy.Constants.BOOK_EVENT;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -152,7 +154,7 @@ public class MethodManager {
         bookBean.isLook = true;
         bookBean.time = System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
-        EventBus.getDefault().post(Constants.BOOK_EVENT);
+        EventBus.getDefault().post(BOOK_EVENT);
 
         List<AppBean> toolApps = getAppTools(context, 1);
         JSONArray result = getJsonArray(toolApps);

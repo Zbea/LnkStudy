@@ -12,10 +12,14 @@ import java.io.File
 
 class FileUploadManager(private val uploadToken:String) {
 
-    fun startUpload(filePath: String, fileName: String){
+    fun startUpload(filePath: String){
+        upload(filePath,1)
+    }
+
+    fun startZipUpload(filePath: String, fileName: String){
         autoZip(filePath,fileName)
     }
-    fun startUpload(targetPaths: List<String>, fileName: String){
+    fun startZipUpload(targetPaths: List<String>, fileName: String){
         autoZip(targetPaths,fileName)
     }
 
@@ -27,7 +31,7 @@ class FileUploadManager(private val uploadToken:String) {
             }
             override fun onFinish() {
                 val path = FileAddress().getPathZip(fileName)
-                upload(path)
+                upload(path,0)
             }
             override fun onError(msg: String?) {
                 Log.d("debug","onError ${fileName}:$msg")
@@ -43,7 +47,7 @@ class FileUploadManager(private val uploadToken:String) {
             }
             override fun onFinish() {
                 val path = FileAddress().getPathZip(fileName)
-                upload(path)
+                upload(path,0)
             }
             override fun onError(msg: String?) {
                 Log.d("debug","onError ${fileName}:$msg")
@@ -51,7 +55,10 @@ class FileUploadManager(private val uploadToken:String) {
         })
     }
 
-    private fun upload(path: String) {
+    /**
+     * type==0上传zip type==1直接上传文件
+     */
+    private fun upload(path: String,type:Int) {
         val recorder = FileRecorder(FileAddress().getPathRecorder())
         //默认使用 key 的 url_safe_base64 编码字符串作为断点记录文件的文件名
         //避免记录文件冲突（特别是 key 指定为 null 时），也可自定义文件名(下方为默认实现)：
@@ -77,7 +84,9 @@ class FileUploadManager(private val uploadToken:String) {
         uploadManager.put(path, null, uploadToken,
             { key, info, response ->
                 if (info?.isOK == true) {
-                    FileUtils.deleteFile(File(path))
+                    if (type==0){
+                        FileUtils.deleteFile(File(path))
+                    }
                     val keyStr=response.optString("key")
                     val downloadUrl="http://cdn.bailianlong.com/${keyStr}?attname=${File(path).name}"
                     Log.d("debug",downloadUrl)

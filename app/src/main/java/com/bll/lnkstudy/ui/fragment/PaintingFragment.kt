@@ -14,7 +14,6 @@ import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import com.qiniu.android.storage.*
 import kotlinx.android.synthetic.main.fragment_painting.*
 import java.io.File
 
@@ -162,7 +161,7 @@ class PaintingFragment : BaseMainFragment(){
             if (paintingContents.size>0){
                 uploadList.add(item)
                 FileUploadManager(token).apply {
-                    startUpload(item.path,fileName)
+                    startZipUpload(item.path,fileName)
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=5

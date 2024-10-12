@@ -19,7 +19,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -76,18 +76,15 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
         if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             fetchData()
         }
-         else{
-             showNetworkDialog()
-         }
     }
 
     private fun initRecyclerView(){
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),52f),
             DP2PX.dip2px(requireActivity(),50f),
-            DP2PX.dip2px(requireActivity(),52f),0)
+            DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),50f),0)
         layoutParams.weight=1f
 
         rv_list.layoutParams= layoutParams

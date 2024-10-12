@@ -4,17 +4,13 @@ import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
-import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.utils.GlideUtils
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.common_correct_score.rv_list_multi
 import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
@@ -27,7 +23,6 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
-import java.io.File
 
 
 /**
@@ -38,9 +33,7 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     private var course=""
     private var typeId=0//分组id
     private var daoManager: PaperDaoManager?=null
-    private var daoContentManager: PaperContentDaoManager?=null
     private var papers= mutableListOf<PaperBean>()
-    private var paperContents= mutableListOf<PaperContentBean>()
     private var paper: PaperBean?=null
 
     private var currentPosition=0
@@ -57,7 +50,6 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
 
         daoManager= PaperDaoManager.getInstance()
-        daoContentManager= PaperContentDaoManager.getInstance()
 
         papers= daoManager?.queryAll(course,typeId) as MutableList<PaperBean>
 
@@ -81,28 +73,25 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
             val itemList= ItemList()
             itemList.name=item.title
             itemList.page=item.page
+            itemList.isEdit=false
             list.add(itemList)
         }
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(position: Int) {
                 if (currentPosition!=papers[position].page){
                     currentPosition = papers[position].page
+                    oldPosition=-1
                     page = 0
                     onContent()
                 }
             }
             override fun onEdit(position: Int, title: String) {
-                val pos = papers[position].page
-                val paper=papers[pos]
-                paper.title=title
-                PaperDaoManager.getInstance().insertOrReplace(paper)
-                DataUpdateManager.editDataUpdate(3,paper.id.toInt(),2,paper.typeId, Gson().toJson(paper))
             }
         })
     }
 
     override fun onPageUp() {
-        if (isExpand&&page>1){
+        if (isExpand&&page>0){
             page-=2
             onContent()
         }
@@ -120,11 +109,11 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
     }
 
     override fun onPageDown() {
-        if (isExpand&&page+2<pageCount){
+        if (isExpand&&page<pageCount-1){
             page+=2
             onContent()
         }
-        else if(!isExpand&&page+1<pageCount){
+        else if(!isExpand&&page<pageCount-1){
             page+=1
             onContent()
         }
@@ -154,30 +143,31 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
         if(papers.size==0||currentPosition>=papers.size)
             return
         paper=papers[currentPosition]
-
-        paperContents= daoContentManager?.queryByID(paper?.contentId!!) as MutableList<PaperContentBean>
-        pageCount=paperContents.size
+        pageCount=paper?.paths!!.size
 
         if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
             page=0
         }
-
         oldPosition=currentPosition
 
-        tv_page_total.text="$pageCount"
-        tv_page_total_a.text="$pageCount"
+        if (page<0){
+            page=0
+        }
+        if (page>pageCount-1){
+            page=pageCount-1
+        }
 
-        setElikLoadPath(elik_b!!,page,v_content_b!!)
-        tv_page.text="${page+1}"
         if (isExpand){
             setElikLoadPath(elik_a!!,page,v_content_a!!)
             if (page+1<pageCount){
                 setElikLoadPath(elik_b!!,page+1,v_content_b!!)
+                elik_b?.setPWEnabled(true)
             }
             else{
                 //不显示 ，不能手写
                 v_content_b?.setImageResource(0)
+                elik_b?.setPWEnabled(false)
             }
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="${page+1}"
@@ -188,6 +178,14 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
                 tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
             }
         }
+        else{
+            setElikLoadPath(elik_b!!,page,v_content_b!!)
+            elik_b?.setPWEnabled(true)
+            tv_page.text="${page+1}"
+        }
+
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
     }
 
     /**
@@ -216,9 +214,8 @@ class TestpaperDrawingActivity: BaseDrawingActivity(){
 
     //加载图片
     private fun setElikLoadPath( elik: EinkPWInterface ,index: Int, view:ImageView) {
-        val testPaperContent=paperContents[index]
-        GlideUtils.setImageFile(this, File(testPaperContent.path),view)
-        elik.setLoadFilePath(testPaperContent.drawPath,true)
+        GlideUtils.setImageUrl(this, paper!!.paths[index],view)
+        elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 
 

@@ -15,13 +15,11 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.CorrectDetailsManager
-import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.mvp.model.paper.PaperContentBean
 import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
@@ -130,7 +128,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                             //删除本地当前作业本
                             PaperTypeDaoManager.getInstance().deleteBean(item)
                             PaperDaoManager.getInstance().delete(item.course, item.typeId)
-                            PaperContentDaoManager.getInstance().delete(item.course, item.typeId)
                             //删除增量更新
                             DataUpdateManager.deleteDateUpdate(3,item.typeId)
                             val path = FileAddress().getPathTestPaper(item.typeId)
@@ -167,8 +164,10 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             val images = item.submitUrl.split(",").toMutableList()
             val pathStr = FileAddress().getPathTestPaper(item.commonTypeId, item.id)
             val paths = mutableListOf<String>()
+            val drawPaths = mutableListOf<String>()
             for (i in images.indices) {
                 paths.add("$pathStr/${i + 1}.png")
+                drawPaths.add("$pathStr/${i + 1}draw.png")
             }
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -176,7 +175,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         mPresenter.downloadCompletePaper(item.id)
-                        savePaperData(paths,item)
+                        savePaperData(paths,drawPaths,item)
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -204,8 +203,10 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
 
             val pathStr = FileAddress().getPathTestPaper(item.typeId, item.id)
             val paths = mutableListOf<String>()
+            val drawPaths = mutableListOf<String>()
             for (i in images.indices) {
                 paths.add("$pathStr/${i + 1}.png")
+                drawPaths.add("$pathStr/${i + 1}draw.png")
             }
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -213,7 +214,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         mPresenter.downloadCompleteExam(item.id)
-                        saveExamData(paths,item)
+                        saveExamData(paths,drawPaths,item)
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -226,7 +227,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      *  下载完成后，将考卷保存在本地试卷里面
      */
-    private fun savePaperData(paths:List<String>,item:PaperList.PaperListBean){
+    private fun savePaperData(paths:List<String>,drawPaths:List<String>,item:PaperList.PaperListBean){
         //获取分类已保存多少次考试，用于页码排序
         val papers= PaperDaoManager.getInstance().queryAll(mCourse,item.commonTypeId)
 
@@ -237,7 +238,9 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             typeId=item.commonTypeId
             type=item.typeName
             title=item.title
-            path=FileAddress().getPathTestPaper(item.commonTypeId, item.id)
+            filePath=FileAddress().getPathTestPaper(item.commonTypeId, item.id)
+            this.paths=paths
+            this.drawPaths=drawPaths
             page=papers.size
             score=item.score.toString()
             correctJson=item.question
@@ -246,23 +249,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             scoreMode=item.questionMode
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),paper.path)
-
-        val paperContents=PaperContentDaoManager.getInstance().queryAllByType(mCourse,item.commonTypeId)
-        for (i in paths.indices){
-            //保存本次考试的试卷内容
-            val paperContent= PaperContentBean()
-                .apply {
-                    course=item.subject
-                    typeId=item.commonTypeId
-                    contentId=item.id
-                    path=paths[i]
-                    drawPath=paper.path+"/${i+1}draw.png"
-                    page=paperContents.size+i
-                }
-            val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),"")
-        }
+        DataUpdateManager.createDataUpdate(3,paper.contentId,2,paper.typeId,Gson().toJson(paper),paper.filePath)
         //保存批改
         saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
     }
@@ -270,7 +257,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      *  下载完成后，将考卷保存在本地试卷里面
      */
-    private fun saveExamData(paths:List<String>,item:ExamCorrectBean){
+    private fun saveExamData(paths:List<String>,drawPaths:List<String>,item:ExamCorrectBean){
         //获取分类已保存多少次考试，用于页码排序
         val papers= PaperDaoManager.getInstance().queryAll(mCourse,item.typeId)
         //保存本次考试
@@ -280,7 +267,9 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             this.typeId=item.typeId
             type="学校考试卷"
             title=item.examName
-            path=FileAddress().getPathTestPaper(item.typeId, item.id)
+            filePath=FileAddress().getPathTestPaper(item.typeId, item.id)
+            this.paths=paths
+            this.drawPaths=drawPaths
             page=papers.size
             score=item.score.toString()
             correctJson=item.question
@@ -289,23 +278,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             answerUrl=item.answerUrl
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
-        DataUpdateManager.createDataUpdate(3,item.id,2,paper.typeId,Gson().toJson(paper),paper.path)
-
-        val paperContents=PaperContentDaoManager.getInstance().queryAllByType(mCourse,item.typeId)
-        for (i in paths.indices){
-            //保存本次考试的试卷内容
-            val paperContent= PaperContentBean().apply {
-                    course=mCourse
-                    typeId=item.typeId
-                    contentId=item.id
-                    path=paths[i]
-                    drawPath=paper.path+"/${i+1}draw.png"
-                    page=paperContents.size+i
-                }
-            val id=PaperContentDaoManager.getInstance().insertOrReplaceGetId(paperContent)
-            DataUpdateManager.createDataUpdate(3,id.toInt(),3,paperContent.typeId,Gson().toJson(paperContent),"")
-        }
-
+        DataUpdateManager.createDataUpdate(3,paper.contentId,2,paper.typeId,Gson().toJson(paper),paper.filePath)
         //保存批改
         saveCorrectDetails("学校考试卷",item.examName,item.teacherUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
     }

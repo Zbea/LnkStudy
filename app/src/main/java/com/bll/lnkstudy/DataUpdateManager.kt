@@ -71,18 +71,20 @@ object DataUpdateManager {
     }
 
     /**
-     * 创建增量更新(state 作业本状态)
+     * 创建增量更新(state 作业本分类)
      */
-    fun createDataUpdateState(type:Int, id:Int, contentType:Int, state:Int, json:String){
-        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType)
+    fun createDataUpdateState(type:Int, id:Int, contentType:Int, typeId: Int,state:Int, json:String,path: String){
+        DataUpdateDaoManager.getInstance().deleteBean(type, id, contentType,typeId)
         //创建增量数据
         mDataUpdateDaoManager.insertOrReplace(DataUpdateBean().apply {
             this.type=type
             uid=id
             this.contentType=contentType
+            this.typeId=typeId
             this.state=state
             date=System.currentTimeMillis()
             listJson= json
+            this.path=path
         })
     }
 

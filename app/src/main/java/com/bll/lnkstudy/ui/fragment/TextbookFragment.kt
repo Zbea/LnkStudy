@@ -24,7 +24,7 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_list_tab.*
+import kotlinx.android.synthetic.main.fragment_list_tab.rv_list
 import java.io.File
 
 /**
@@ -190,7 +190,7 @@ class TextbookFragment : BaseMainFragment() {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)){
                 FileUploadManager(token).apply {
-                    startUpload(book.bookDrawPath,File(book.bookDrawPath).name)
+                    startZipUpload(book.bookDrawPath,File(book.bookDrawPath).name)
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=1
@@ -245,10 +245,6 @@ class TextbookFragment : BaseMainFragment() {
         }
     }
 
-    override fun onRefreshData() {
-        fetchData()
-    }
-
     override fun fetchData() {
         val total = bookGreenDaoManager.queryAllTextBook(textBook).size
         books = bookGreenDaoManager.queryAllTextBook(textBook, pageIndex, pageSize)
@@ -268,7 +264,7 @@ class TextbookFragment : BaseMainFragment() {
             DataUpdateManager.deleteDateUpdate(1,item.bookId,1)
             DataUpdateManager.deleteDateUpdate(1,item.bookId,2)
         }
-        lazyLoad()
+        fetchData()
     }
 
 }

@@ -29,9 +29,9 @@ public class DataUpdateBean {
     public int typeId;//用来防止重复
     public int contentType;//内容分类
     public int state;//type==2时：1作业卷 2普通作业本 3听读本
-    public String listJson;
+    public String listJson="";
     public long date;
-    public String downloadUrl;//上传文件下载地址
+    public String downloadUrl="";//上传文件下载地址
     public String path;//本地上传文件路径
     public boolean isDelete;//是否清除后台数据
     public boolean isUpload;//是否已经上传

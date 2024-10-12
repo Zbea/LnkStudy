@@ -136,6 +136,10 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         onChangeContent()
 
         iv_btn.setOnClickListener {
+            if (!NetworkUtil(this).isNetworkConnected()){
+                showToast(R.string.net_work_error)
+                return@setOnClickListener
+            }
             CommonDialog(this,screenPos).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
@@ -236,27 +240,22 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      */
     private fun commit(){
         commitItems.clear()
-        if (NetworkUtil(this@ExamCommitDrawingActivity).isNetworkConnected()){
-            showLoading()
-            for (i in paths.indices) {
-                Thread{
-                    val path = paths[i] //当前原图路径
-                    val drawPath = drawPaths[i].replace("tch","png") //当前绘图路径
-                    drawPaths.add(drawPath)
-                    BitmapUtils.mergeBitmap(path,drawPath)
-                    commitItems.add(ItemList().apply {
-                        id = i
-                        url = path
-                    })
-                    if (commitItems.size==paths.size){
-                        commitItems.sort()
-                        mUploadPresenter.getToken()
-                    }
-                }.start()
-            }
-        }
-        else {
-            showToast("网络连接失败")
+        showLoading()
+        for (i in paths.indices) {
+            Thread{
+                val path = paths[i] //当前原图路径
+                val drawPath = drawPaths[i] //当前绘图路径
+                drawPaths.add(drawPath)
+                BitmapUtils.mergeBitmap(path,drawPath)
+                commitItems.add(ItemList().apply {
+                    id = i
+                    url = path
+                })
+                if (commitItems.size==paths.size){
+                    commitItems.sort()
+                    mUploadPresenter.getToken()
+                }
+            }.start()
         }
     }
 

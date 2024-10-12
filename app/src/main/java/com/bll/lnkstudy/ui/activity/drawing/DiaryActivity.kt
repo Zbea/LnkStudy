@@ -17,11 +17,11 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_diary.iv_down
-import kotlinx.android.synthetic.main.ac_diary.iv_up
 import kotlinx.android.synthetic.main.ac_diary.ll_date
-import kotlinx.android.synthetic.main.ac_diary.tv_date
 import kotlinx.android.synthetic.main.ac_diary.tv_digest
+import kotlinx.android.synthetic.main.common_date_arrow.iv_down
+import kotlinx.android.synthetic.main.common_date_arrow.iv_up
+import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -258,4 +258,8 @@ class DiaryActivity:BaseDrawingActivity() {
         saveDiary()
     }
 
+    override fun onPause() {
+        super.onPause()
+        saveDiary()
+    }
 }

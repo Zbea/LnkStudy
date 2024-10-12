@@ -38,6 +38,7 @@
         android:id="@+id/rl_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:layout_marginBottom="1dp"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_5">

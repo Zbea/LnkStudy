@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -19,15 +20,15 @@ import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -79,9 +80,9 @@ class CloudBookCaseFragment:BaseCloudFragment() {
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(activity,28f),
+            DP2PX.dip2px(activity,30f),
             DP2PX.dip2px(activity,20f),
-            DP2PX.dip2px(activity,28f),0)
+            DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -89,7 +90,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
+            rv_list.addItemDecoration(SpaceGridItemDeco(3,50))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudBookCaseFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
@@ -157,8 +158,8 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     showToast(book.bookName+getString(R.string.book_download_success))
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
-                    val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-                    DataUpdateManager.createDataUpdate(6,book.bookId,2,FileAddress().getPathBookDraw(fileName))
+                    DataUpdateManager.createDataUpdate(6,book.bookId,2,localBook.bookDrawPath)
+                    EventBus.getDefault().post(Constants.BOOK_EVENT)
                 }
                 else{
                     if (FileUtils.isExistContent(book.bookDrawPath)){

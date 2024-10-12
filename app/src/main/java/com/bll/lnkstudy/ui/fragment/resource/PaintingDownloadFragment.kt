@@ -19,7 +19,7 @@ import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
 
@@ -55,9 +55,6 @@ class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
     override fun lazyLoad() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             fetchData()
-        }
-        else{
-            showNetworkDialog()
         }
     }
 
@@ -108,8 +105,11 @@ class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
         showLoading()
         val item=items[position]
         val pathStr= FileAddress().getPathImage("painting" ,item.fontDrawId)
-        val images = mutableListOf(item.bodyUrl)
-        val savePaths= arrayListOf("$pathStr/1.png")
+        val images = item.bodyUrl.split(",")
+        val savePaths= mutableListOf<String>()
+        for (i in images.indices){
+            savePaths.add("$pathStr/${i+1}.png")
+        }
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
@@ -133,7 +133,7 @@ class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
                     bean.publisher=item.publisher
                     bean.supply=item.supply
                     bean.bodyUrl=item.bodyUrl
-                    PaintingBeanDaoManager.getInstance().insertOrReplaceGetId(bean)
+                    PaintingBeanDaoManager.getInstance().insertOrReplace(bean)
                     showToast(R.string.book_download_success)
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

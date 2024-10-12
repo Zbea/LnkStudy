@@ -13,7 +13,7 @@ class NotebookAdapter(layoutResId: Int, data: List<Note>?) : BaseQuickAdapter<No
         helper.apply {
             setText(R.id.tv_title,item.title)
             setText(R.id.tv_date, DateUtils.longToStringDataNoHour(item.date) )
-            setVisible(R.id.iv_password,item.typeStr==mContext.getString(R.string.note_tab_diary))
+            setGone(R.id.iv_password,item.typeStr==mContext.getString(R.string.note_tab_diary))
             if (MethodManager.getPrivacyPassword(1)!=null)
                 setImageResource(R.id.iv_password,if (item.isCancelPassword) R.mipmap.icon_encrypt_cancel else R.mipmap.icon_encrypt_check)
 

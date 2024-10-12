@@ -1,7 +1,5 @@
 package com.bll.lnkstudy.mvp.model;
 
-import com.google.gson.annotations.SerializedName;
-
 public class User {
 
     public String token;

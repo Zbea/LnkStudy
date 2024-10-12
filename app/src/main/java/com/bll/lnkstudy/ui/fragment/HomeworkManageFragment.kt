@@ -2,11 +2,19 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.HomeworkCommitDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
-import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
@@ -14,7 +22,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import java.io.File
 
 class HomeworkManageFragment: BaseMainFragment() {
@@ -104,11 +112,10 @@ class HomeworkManageFragment: BaseMainFragment() {
             when (typeBean.state) {
                 1 -> {
                     val homePapers = HomeworkPaperDaoManager.getInstance().queryAll(typeBean.course, typeBean.typeId)
-                    val homeworkContents = HomeworkPaperContentDaoManager.getInstance().queryAll(typeBean.course, typeBean.typeId)
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
-                            startUpload(path, typeBean.name)
+                            startZipUpload(path, typeBean.name)
                             setCallBack {
                                 cloudList.add(CloudListBean().apply {
                                     this.type = 2
@@ -117,7 +124,6 @@ class HomeworkManageFragment: BaseMainFragment() {
                                     grade = typeBean.grade
                                     listJson = Gson().toJson(typeBean)
                                     contentJson = Gson().toJson(homePapers)
-                                    contentSubtypeJson = Gson().toJson(homeworkContents)
                                     downloadUrl = it
                                 })
                                 startUpload(cloudList, nullItems)
@@ -132,7 +138,7 @@ class HomeworkManageFragment: BaseMainFragment() {
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
-                            startUpload(path, typeBean.name)
+                            startZipUpload(path, typeBean.name)
                             setCallBack {
                                 cloudList.add(CloudListBean().apply {
                                     this.type = 2
@@ -153,10 +159,10 @@ class HomeworkManageFragment: BaseMainFragment() {
                 }
                 3 -> {
                     val records = RecordDaoManager.getInstance().queryAllByCourse(typeBean.course, typeBean.typeId)
-                    val path = FileAddress().getPathRecord(typeBean.course, typeBean.typeId)
+                    val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
-                            startUpload(path, typeBean.name)
+                            startZipUpload(path, typeBean.name)
                             setCallBack {
                                 cloudList.add(CloudListBean().apply {
                                     this.type = 2
@@ -183,7 +189,7 @@ class HomeworkManageFragment: BaseMainFragment() {
                         //判读是否存在手写内容
                         if (FileUtils.isExistContent(homeworkBook.bookDrawPath)) {
                             FileUploadManager(token).apply {
-                                startUpload(homeworkBook.bookPath, File(homeworkBook.bookPath).name)
+                                startZipUpload(homeworkBook.bookPath, File(homeworkBook.bookPath).name)
                                 setCallBack {
                                     cloudList.add(CloudListBean().apply {
                                         this.type = 2
@@ -218,7 +224,7 @@ class HomeworkManageFragment: BaseMainFragment() {
                     val path=FileAddress().getPathScreenHomework(typeBean.name,typeBean.grade)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
-                            startUpload(path, typeBean.name+typeBean.grade)
+                            startZipUpload(path, typeBean.name+typeBean.grade)
                             setCallBack {
                                 cloudList.add(CloudListBean().apply {
                                     this.type = 2

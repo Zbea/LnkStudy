@@ -2,9 +2,12 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.manager.PaperContentDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
@@ -76,11 +79,10 @@ class TestPaperManageFragment: BaseMainFragment() {
         val types = PaperTypeDaoManager.getInstance().queryAll()
         for (item in types) {
             val papers = PaperDaoManager.getInstance().queryAll(item.course, item.typeId)
-            val paperContents = PaperContentDaoManager.getInstance().queryAllByType(item.course, item.typeId)
             val path = FileAddress().getPathTestPaper(item.typeId)
             if (FileUtils.isExistContent(path)) {
                 FileUploadManager(token).apply {
-                    startUpload(path, item.name)
+                    startZipUpload(path, item.name)
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
                             type = 3
@@ -89,7 +91,6 @@ class TestPaperManageFragment: BaseMainFragment() {
                             grade = item.grade
                             listJson = Gson().toJson(item)
                             contentJson = Gson().toJson(papers)
-                            contentSubtypeJson = Gson().toJson(paperContents)
                             downloadUrl = it
                         })
                         if (cloudList.size == types.size - nullItems.size)

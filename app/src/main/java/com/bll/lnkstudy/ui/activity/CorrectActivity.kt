@@ -103,7 +103,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     homework.correctJson=scoreListToJson(currentScores)
                     homework.commitJson=""
                     HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-                    DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, Gson().toJson(homework))
+                    DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId, Gson().toJson(homework))
                 }
             }
             4 -> {
@@ -178,7 +178,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     mUploadPresenter.getToken()
                 }
                 else{
-                    showToast("网络连接失败")
+                    showToast(R.string.net_work_error)
                 }
             }
         }

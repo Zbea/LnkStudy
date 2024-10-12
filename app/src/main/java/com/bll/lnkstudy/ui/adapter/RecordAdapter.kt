@@ -13,8 +13,8 @@ class RecordAdapter(layoutResId: Int, data: MutableList<RecordBean>?) : BaseQuic
             setText(R.id.tv_title,item.title)
             setText(R.id.tv_date, DateUtils.longToStringDataNoHour(item.date))
             setImageResource(R.id.iv_record,if (item.state==0) R.mipmap.icon_record_play else R.mipmap.icon_record_pause)
-            setText(R.id.tv_save,if (item.isCommit) mContext.getString(R.string.homework_state_yes) else mContext.getString(R.string.commit))
-            addOnClickListener(R.id.iv_record,R.id.tv_delete,R.id.tv_edit,R.id.tv_save)
+            setVisible(R.id.tv_save,!item.isCommit)
+            addOnClickListener(R.id.iv_record,R.id.iv_delete,R.id.iv_edit,R.id.tv_save)
         }
     }
 }

@@ -63,7 +63,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         initTab()
 
         tv_province.setOnClickListener {
-            PopupList(this,popSupplys,tv_province,tv_province.width,0).builder().setOnSelectListener {
+            PopupList(this,popSupplys,tv_province,tv_province.width,5).builder().setOnSelectListener {
                 tv_province.text = it.name
                 toolFragment?.changeSupply(it.id)
                 wallpaperFragment?.changeSupply(it.id)
@@ -73,7 +73,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         }
 
         tv_course.setOnClickListener {
-            PopupList(this,popPaintings,tv_course,tv_course.width,0).builder().setOnSelectListener{
+            PopupList(this,popPaintings,tv_course,tv_course.width,5).builder().setOnSelectListener{
                 tv_course.text=it.name
                 paintingType=it.id
                 paintingFragment?.changePainting(paintingType)
@@ -89,7 +89,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         }
 
         tv_grade.setOnClickListener {
-            PopupList(this,popTimes,tv_grade,tv_grade.width,0).builder().setOnSelectListener{
+            PopupList(this,popTimes,tv_grade,tv_grade.width,5).builder().setOnSelectListener{
                 tv_grade.text=it.name
                 dynasty=it.id
                 paintingFragment?.changeDynasty(dynasty)

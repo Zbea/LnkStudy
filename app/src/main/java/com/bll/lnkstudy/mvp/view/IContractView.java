@@ -148,6 +148,11 @@ public interface IContractView {
         void onCourseItems(List<String> courseItems);
     }
 
+    interface IHomeworkNoticeView extends IBaseView {
+        void onHomeworkNotice(HomeworkNoticeList list);
+        void onCorrect(HomeworkNoticeList list);
+    }
+
     //公共接口
     interface IPaperView extends IBaseView {
         /**

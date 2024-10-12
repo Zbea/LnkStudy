@@ -34,7 +34,7 @@
 
             <TextView
                 android:id="@+id/tv_name"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
 
             <TextView
                 android:id="@+id/tv_introduce"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_width="wrap_content"
@@ -63,11 +63,11 @@
             >
             <TextView
                 android:id="@+id/btn_download"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textColor="@color/black"
                 android:layout_width="80dp"
                 android:gravity="center"
-                android:layout_height="35dp"
+                android:layout_height="@dimen/dp_40"
                 android:background="@drawable/click_btn_line_black_5dp"
                 android:text="下载" />
 

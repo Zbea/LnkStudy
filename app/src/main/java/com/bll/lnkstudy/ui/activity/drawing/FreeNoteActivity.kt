@@ -190,4 +190,9 @@ class FreeNoteActivity : BaseDrawingActivity() {
         super.onDestroy()
         saveFreeNote()
     }
+
+    override fun onPause() {
+        super.onPause()
+        saveFreeNote()
+    }
 }

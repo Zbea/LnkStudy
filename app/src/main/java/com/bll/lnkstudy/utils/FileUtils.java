@@ -455,11 +455,11 @@ public class FileUtils {
      * @return
      */
     public static boolean isExistContent(String path){
-        if (path==null){
+        if (path==null&&path.isEmpty()){
             return false;
         }
         List<File> files= getAscFiles(path);
-        return files.size()>0;
+        return !files.isEmpty();
     }
 
 }

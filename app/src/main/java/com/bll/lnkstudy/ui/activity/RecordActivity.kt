@@ -43,10 +43,11 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("recordBundle")?.getSerializable("record") as RecordBean
-        val path=FileAddress().getPathRecord(recordBean?.course!!,recordBean?.typeId!!)
+        val path=FileAddress().getPathHomework(recordBean?.course!!,recordBean?.typeId!!)
         if (!File(path).exists())
-            File(path).mkdir()
+            File(path).mkdirs()
         pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
+        File(pathFile).createNewFile()
     }
 
     override fun initView() {
@@ -75,7 +76,7 @@ class RecordActivity : BaseAppCompatActivity() {
             recordBean?.path = pathFile
             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
             //创建增量数据
-            DataUpdateManager.createDataUpdate(2,id.toInt(),2,recordBean?.typeId!!,Gson().toJson(recordBean),pathFile!!)
+            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.typeId!!,3,Gson().toJson(recordBean),pathFile!!)
 
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()
@@ -83,10 +84,6 @@ class RecordActivity : BaseAppCompatActivity() {
 
         ll_record.setOnClickListener {
             hideKeyboard()
-            mPlayer?.run {
-                release()
-                null
-            }
             iv_record.setImageResource(R.mipmap.icon_record_show)
             mRecorder = MediaRecorder().apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -103,14 +100,17 @@ class RecordActivity : BaseAppCompatActivity() {
         }
 
         ll_record_stop.setOnClickListener {
+            if (mRecorder==null){
+                return@setOnClickListener
+            }
             iv_record.setImageResource(R.mipmap.icon_record_file)
             mRecorder?.apply {
-                setOnErrorListener(null)
-                setOnInfoListener(null)
-                setPreviewDisplay(null)
-                release()
-                mRecorder=null
-                startPrepare()
+                try {
+                    release()
+                    mRecorder=null
+                } catch (e: IOException) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -118,6 +118,9 @@ class RecordActivity : BaseAppCompatActivity() {
             if(mRecorder!=null){
                 showToast(R.string.toast_recording)
                 return@setOnClickListener
+            }
+            if (mPlayer==null){
+                startPrepare()
             }
             mPlayer?.apply {
                 if (isPlaying){
@@ -130,7 +133,6 @@ class RecordActivity : BaseAppCompatActivity() {
                     tv_play.setText(R.string.pause)
                     start()
                 }
-
             }
         }
 

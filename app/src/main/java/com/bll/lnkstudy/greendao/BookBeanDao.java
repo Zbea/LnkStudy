@@ -68,7 +68,7 @@ public class BookBeanDao extends AbstractDao<BookBean, Long> {
                 "\"GRADE\" INTEGER NOT NULL ," + // 9: grade
                 "\"VERSION\" TEXT," + // 10: version
                 "\"SUPPLY\" TEXT," + // 11: supply
-                "\"DOWNLOAD_URL\" TEXT UNIQUE ," + // 12: downloadUrl
+                "\"DOWNLOAD_URL\" TEXT," + // 12: downloadUrl
                 "\"BOOK_PATH\" TEXT," + // 13: bookPath
                 "\"BOOK_DRAW_PATH\" TEXT," + // 14: bookDrawPath
                 "\"TIME\" INTEGER NOT NULL ," + // 15: time

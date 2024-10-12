@@ -16,9 +16,9 @@ import com.bll.lnkstudy.ui.adapter.DownloadWallpaperAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
 
@@ -53,24 +53,21 @@ class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintingView
         if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             fetchData()
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),28f),
-            DP2PX.dip2px(requireActivity(),50f),
-            DP2PX.dip2px(requireActivity(),28f),0)
+            DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
         mAdapter = DownloadWallpaperAdapter(R.layout.item_download_wallpaper, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(),22f),35))
+        rv_list.addItemDecoration(SpaceGridItemDeco(4,30))
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->

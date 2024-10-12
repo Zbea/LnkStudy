@@ -165,7 +165,6 @@
                 android:text="@string/main_message"
                 android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
-                android:background="@drawable/click_btn_transparent_gray"
                 />
             <View
                 android:layout_width="match_parent"

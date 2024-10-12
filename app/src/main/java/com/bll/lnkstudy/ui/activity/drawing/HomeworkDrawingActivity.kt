@@ -109,7 +109,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             homework.contentId = homeworkCommitInfoItem?.messageId!!
             homework.commitDate = System.currentTimeMillis()
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-            DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, Gson().toJson(homework))
+            refreshDataUpdate(homework)
         }
 
         //添加提交详情
@@ -224,7 +224,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 val item=homeworks[position]
                 item.title=title
                 HomeworkContentDaoManager.getInstance().insertOrReplace(item)
-                DataUpdateManager.editDataUpdate(2, item.id.toInt(), 2, Gson().toJson(item))
+                refreshDataUpdate(item)
             }
         })
     }
@@ -402,6 +402,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (homeworkContent_a?.startDate==0L){
             homeworkContent_a?.startDate=System.currentTimeMillis()
             HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent_a)
+            refreshDataUpdate(homeworkContent_a!!)
         }
     }
 
@@ -409,6 +410,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (homeworkContent?.startDate==0L){
             homeworkContent?.startDate=System.currentTimeMillis()
             HomeworkContentDaoManager.getInstance().insertOrReplace(homeworkContent)
+            refreshDataUpdate(homeworkContent!!)
         }
     }
 
@@ -417,7 +419,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private fun saveElik(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
         elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(2, homeworkContent.id.toInt(), 2,homeworkTypeId)
+        refreshDataUpdate(homeworkContent)
     }
 
 
@@ -425,16 +427,16 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private fun newHomeWorkContent() {
 
         val path = FileAddress().getPathHomework(course, homeworkTypeId, homeworks.size+1)
-        val pathName = DateUtils.longToString(System.currentTimeMillis())
+        val currentTime=System.currentTimeMillis()
 
         homeworkContent = HomeworkContentBean()
         homeworkContent?.course = course
-        homeworkContent?.date = System.currentTimeMillis()
+        homeworkContent?.date = currentTime
         homeworkContent?.homeworkTypeId = homeworkTypeId
         homeworkContent?.bgResId = homeworkType?.bgResId
         homeworkContent?.typeStr = homeworkType?.name
         homeworkContent?.title = getString(R.string.unnamed) + (homeworks.size + 1)
-        homeworkContent?.path = "$path/$pathName.png"
+        homeworkContent?.path = "$path/${DateUtils.longToString(System.currentTimeMillis())}.png"
         homeworkContent?.page = homeworks.size
 
         page = homeworks.size
@@ -443,7 +445,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.id = id
         homeworks.add(homeworkContent!!)
 
-        DataUpdateManager.createDataUpdate(2, id.toInt(), 2,homeworkTypeId , Gson().toJson(homeworkContent), path)
+        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,2, Gson().toJson(homeworkContent), homeworkContent?.path!!)
     }
 
 
@@ -528,7 +530,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 homework.correctMode=homeworkCommitInfoItem?.correctMode!!
                 HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
 
-                DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId)
+                refreshDataUpdate(homework)
             }
         }
 
@@ -540,6 +542,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         intent.putExtra("android.intent.extra.KEEP_FOCUS", true)
         activityResultLauncher.launch(intent)
 
+    }
+
+    /**
+     * 刷新增量更新
+     */
+    private fun refreshDataUpdate(homework: HomeworkContentBean){
+        DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homeworkTypeId,Gson().toJson(homework))
     }
 
     /**

@@ -388,7 +388,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             val time=System.currentTimeMillis()
             FileUploadManager(token).apply {
-                startUpload(paths,DateUtils.longToString(time))
+                startZipUpload(paths,DateUtils.longToString(time))
                 setCallBack{
                     cloudList.add(CloudListBean().apply {
                         type=7

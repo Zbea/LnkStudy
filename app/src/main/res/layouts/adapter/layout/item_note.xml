@@ -54,7 +54,7 @@
         android:id="@+id/iv_delete"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_20"
         android:src="@mipmap/icon_delete"
         android:scaleType="center"
         android:background="@drawable/click_btn_transparent_line_black"
