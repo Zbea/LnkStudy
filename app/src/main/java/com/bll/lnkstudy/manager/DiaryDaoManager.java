@@ -54,9 +54,20 @@ public class DiaryDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public DiaryBean queryBean(long time) {
+    public DiaryBean queryBean(int uploadId) {
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.UploadId.eq(uploadId);
+        List<DiaryBean> diaryBeans=dao.queryBuilder().where(whereUser,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+        DiaryBean diaryBean = null;
+        if (!diaryBeans.isEmpty()){
+            diaryBean= diaryBeans.get(diaryBeans.size() - 1);
+        }
+        return diaryBean;
+    }
+
+    public DiaryBean queryBean(long time,int uploadId) {
         WhereCondition whereCondition= DiaryBeanDao.Properties.Date.eq(time);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().unique();
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.UploadId.eq(uploadId);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().unique();
     }
 
     /**
@@ -65,16 +76,17 @@ public class DiaryDaoManager {
      * @param type 0小于当前时间 1大于当前时间
      * @return
      */
-    public DiaryBean queryBean(long time,int type){
+    public DiaryBean queryBeanByDate(long time,int type,int uploadId){
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.UploadId.eq(uploadId);
         WhereCondition whereCondition;
         DiaryBean diaryBean;
         if (type==0){
             whereCondition= DiaryBeanDao.Properties.Date.lt(time);
-            diaryBean=dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).limit(1).build().unique();
+            diaryBean=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).limit(1).build().unique();
         }
         else {
             whereCondition= DiaryBeanDao.Properties.Date.gt(time);
-            diaryBean=dao.queryBuilder().where(whereUser,whereCondition).orderAsc(DiaryBeanDao.Properties.Date).limit(1).build().unique();
+            diaryBean=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(DiaryBeanDao.Properties.Date).limit(1).build().unique();
         }
         return diaryBean;
     }
@@ -83,20 +95,28 @@ public class DiaryDaoManager {
         return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
 
-    public List<DiaryBean> queryList(long startLong,long endLong) {
-        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.between(startLong,endLong);
+    public List<DiaryBean> queryList(int uploadId) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.UploadId.eq(uploadId);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
 
-    public List<DiaryBean> queryListByTitle() {
-        WhereCondition whereCondition= DiaryBeanDao.Properties.Title.isNotNull();
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    public List<DiaryBean> queryList(long startLong,long endLong) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.between(startLong,endLong);
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.UploadId.eq(0);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
-    public List<Long> queryLongList(int year,int month) {
+
+    public List<DiaryBean> queryListByTitle(int uploadId) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Title.isNotNull();
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.UploadId.eq(uploadId);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+    public List<Long> queryLongList(int year,int month,int uploadId) {
         List<Long> times=new ArrayList<>();
         WhereCondition whereCondition= DiaryBeanDao.Properties.Year.eq(year);
         WhereCondition whereCondition1= DiaryBeanDao.Properties.Month.eq(month);
-        List<DiaryBean> beans=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+        WhereCondition whereCondition2= DiaryBeanDao.Properties.UploadId.eq(uploadId);
+        List<DiaryBean> beans=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).orderDesc(DiaryBeanDao.Properties.Date).build().list();
         for (DiaryBean item :beans) {
             times.add(item.date);
         }

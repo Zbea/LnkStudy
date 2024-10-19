@@ -27,8 +27,6 @@ class WalletPresenter(view: IContractView.IWalletView,val screen:Int=0) : BasePr
 
     }
 
-
-
     //提交学豆订单
     fun postXdOrder(id:String)
     {

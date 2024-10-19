@@ -1,51 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="400dp"
+    android:orientation="vertical"
+    android:layout_width="420dp"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:padding="@dimen/dp_20"
     android:background="@drawable/bg_geometry"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_35"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_18"
+            android:textColor="@color/black_30"
+            android:text="笔型"
+            />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
-        android:text="线径"
-        />
+        <TextView
+            android:id="@+id/tv_pencil"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_40"
+            android:gravity="center"
+            android:text="铅笔"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            />
 
-    <ImageView
-        android:id="@+id/line_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:src="@mipmap/icon_line_1"
-        />
+        <TextView
+            android:id="@+id/tv_pen"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="钢笔"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            />
 
-    <ImageView
-        android:id="@+id/line_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:src="@mipmap/icon_line_2"
-        />
+        <TextView
+            android:id="@+id/tv_pen_brush"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="毛笔"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            />
 
-    <ImageView
-        android:id="@+id/line_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:src="@mipmap/icon_line_3"
-        />
+        <TextView
+            android:id="@+id/tv_pen_ball"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="圆珠笔"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            />
 
-    <ImageView
-        android:id="@+id/line_4"
-        android:layout_width="wrap_content"
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:src="@mipmap/icon_line_4"
-        />
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_18"
+            android:textColor="@color/black_30"
+            android:text="线径"
+            />
+
+        <ImageView
+            android:id="@+id/line_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_40"
+            android:src="@mipmap/icon_line_1"
+            />
+
+        <ImageView
+            android:id="@+id/line_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:src="@mipmap/icon_line_2"
+            />
+
+        <ImageView
+            android:id="@+id/line_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:src="@mipmap/icon_line_3"
+            />
+
+        <ImageView
+            android:id="@+id/line_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:src="@mipmap/icon_line_4"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_18"
+            android:textColor="@color/black_30"
+            android:text="规矩图"
+            />
+
+        <Switch
+            android:id="@+id/sw_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

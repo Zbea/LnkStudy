@@ -21,7 +21,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
-class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
+open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
 
     private var presenter= DownloadPaintingPresenter(this,getScreenPosition())
     private var items= mutableListOf<PaintingList.ListBean>()
@@ -35,6 +35,9 @@ class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
     override fun onList(bean: PaintingList) {
         setPageNumber(bean.total)
         items=bean.list
+        for (item in items){
+            item.imageUrl=item.bodyUrl.split(",")[0]
+        }
         mAdapter?.setNewData(items)
     }
 
@@ -128,7 +131,7 @@ class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
                     bean.paintingTypeStr=DataBeanManager.popupPainting()[painting-1].name
                     bean.info=item.drawDesc
                     bean.price=item.price
-                    bean.imageUrl=item.bodyUrl
+                    bean.imageUrl=item.imageUrl
                     bean.author=item.author
                     bean.publisher=item.publisher
                     bean.supply=item.supply
@@ -170,7 +173,7 @@ class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
         fetchData()
     }
 
-    open override fun initChangeScreenData() {
+    override fun initChangeScreenData() {
         super.initChangeScreenData()
         presenter= DownloadPaintingPresenter(this,getScreenPosition())
     }

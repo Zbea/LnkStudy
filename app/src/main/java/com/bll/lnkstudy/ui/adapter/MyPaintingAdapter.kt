@@ -14,7 +14,7 @@ class MyPaintingAdapter(layoutResId: Int, data: List<PaintingBean>?) : BaseQuick
             setText(R.id.tv_name,item.title)
             val image=getView<ImageView>(R.id.iv_image)
             image.scaleType=ImageView.ScaleType.CENTER_INSIDE
-            GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,5)
+            GlideUtils.setImageUrl(mContext,item.imageUrl,image)
         }
     }
 

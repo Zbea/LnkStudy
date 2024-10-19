@@ -49,6 +49,7 @@ public class PaintingBean {
     public boolean isLeft;
     @Transient
     public boolean isRight;
+
     @Generated(hash = 1227138445)
     public PaintingBean(Long id, long userId, int contentId, int type, int time, String timeStr,
             int paintingType, String paintingTypeStr, String title, String info, int price,

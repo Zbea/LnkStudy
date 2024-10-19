@@ -34,7 +34,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     private var paintingFragment: CloudPaintingFragment? = null
     private var diaryFragment: CloudDiaryFragment? = null
 
-    var grade=mUser?.grade!!
     private var popWindowGrade:PopupList?=null
 
     override fun layoutId(): Int {

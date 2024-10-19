@@ -3,18 +3,37 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.View
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.ui.activity.PaintingDrawingTypeActivity
 import com.bll.lnkstudy.ui.activity.PaintingListActivity
-import com.bll.lnkstudy.ui.activity.PaintingTypeListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_painting.*
+import kotlinx.android.synthetic.main.fragment_painting.iv_dd
+import kotlinx.android.synthetic.main.fragment_painting.iv_dd_1
+import kotlinx.android.synthetic.main.fragment_painting.iv_han
+import kotlinx.android.synthetic.main.fragment_painting.iv_hb
+import kotlinx.android.synthetic.main.fragment_painting.iv_jd
+import kotlinx.android.synthetic.main.fragment_painting.iv_jd_1
+import kotlinx.android.synthetic.main.fragment_painting.iv_ming
+import kotlinx.android.synthetic.main.fragment_painting.iv_qing
+import kotlinx.android.synthetic.main.fragment_painting.iv_sf
+import kotlinx.android.synthetic.main.fragment_painting.iv_song
+import kotlinx.android.synthetic.main.fragment_painting.iv_tang
+import kotlinx.android.synthetic.main.fragment_painting.iv_yuan
+import kotlinx.android.synthetic.main.fragment_painting.ll_content1
+import kotlinx.android.synthetic.main.fragment_painting.ll_content2
 import java.io.File
 
 
@@ -69,6 +88,16 @@ class PaintingFragment : BaseMainFragment(){
         }
         iv_sf.setOnClickListener {
             gotoPaintingDrawing(4)
+        }
+
+        iv_hb.setOnLongClickListener {
+            onDelete(3)
+            true
+        }
+
+        iv_sf.setOnLongClickListener {
+            onDelete(4)
+            true
         }
 
     }
@@ -126,15 +155,16 @@ class PaintingFragment : BaseMainFragment(){
             item.type = type
             item.grade = grade
             item.date = System.currentTimeMillis()
-            item.path=FileAddress().getPathPainting(type,grade)
-            val id=ItemTypeDaoManager.getInstance().insertOrReplaceGetId(item)
+            item.path=FileAddress().getPathPaintingDraw(if (type==3) 0 else 1,grade)
+            item.typeId=MethodManager.getPaintingTypeId(type,grade)
+            ItemTypeDaoManager.getInstance().insertOrReplace(item)
             //创建本地画本增量更新
-            DataUpdateManager.createDataUpdate(5,id.toInt(),1, Gson().toJson(item))
+            DataUpdateManager.createDataUpdate(5,item.typeId,1, Gson().toJson(item))
         }
 
         //当本地画本或者书法分类不止一个时候，进去列表
         if (items.size>1){
-            val intent=Intent(activity, PaintingTypeListActivity::class.java)
+            val intent=Intent(activity, PaintingDrawingTypeActivity::class.java)
             intent.flags=type
             customStartActivity(intent)
         } else{
@@ -143,6 +173,22 @@ class PaintingFragment : BaseMainFragment(){
 
     }
 
+    /**
+     * 长按删除当前画本或者书法
+     */
+    private fun onDelete(type: Int){
+        val items=ItemTypeDaoManager.getInstance().queryAll(type)
+        if (items.size==1){
+            val item=ItemTypeDaoManager.getInstance().queryBean(type,grade)
+            CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    MethodManager.deletePaintingDrawing(item)
+                }
+            })
+        }
+    }
 
     /**
      * 上传本地手绘书画
@@ -157,7 +203,7 @@ class PaintingFragment : BaseMainFragment(){
         types.addAll(ItemTypeDaoManager.getInstance().queryAll(4))
         for (item in types){
             val paintingContents=PaintingDrawingDaoManager.getInstance().queryAllByType(item.type,item.grade)
-            val fileName="${if (item.type==3) "画本" else "书法"}${item.grade}年级"
+            val fileName="${if (item.type==3) "画本" else "书法"}${DataBeanManager.getCourseStr(item.grade)}"
             if (paintingContents.size>0){
                 uploadList.add(item)
                 FileUploadManager(token).apply {
@@ -167,7 +213,7 @@ class PaintingFragment : BaseMainFragment(){
                             type=5
                             subTypeStr=if (item.type==3) "我的画本" else "我的书法"
                             date=System.currentTimeMillis()
-                            grade=this@PaintingFragment.grade
+                            grade=item.grade
                             listJson=Gson().toJson(item)
                             contentJson=Gson().toJson(paintingContents)
                             downloadUrl=it

@@ -20,7 +20,13 @@ import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.dialog_book_detail.*
+import kotlinx.android.synthetic.main.dialog_book_detail.btn_ok
+import kotlinx.android.synthetic.main.dialog_book_detail.iv_book
+import kotlinx.android.synthetic.main.dialog_book_detail.tv_book_name
+import kotlinx.android.synthetic.main.dialog_book_detail.tv_course
+import kotlinx.android.synthetic.main.dialog_book_detail.tv_info
+import kotlinx.android.synthetic.main.dialog_book_detail.tv_price
+import kotlinx.android.synthetic.main.dialog_book_detail.tv_version
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
@@ -63,9 +69,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     override fun initChangeScreenData() {
@@ -74,6 +77,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
 
     override fun initView() {
         disMissView(btn_ok)
+
         btn_ok.setOnClickListener {
             if (book?.buyStatus == 1) {
                 if (!HomeworkBookDaoManager.getInstance().isExist(book!!.bookId)) {

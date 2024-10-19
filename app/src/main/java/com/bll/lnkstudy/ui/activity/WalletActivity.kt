@@ -15,7 +15,8 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.king.zxing.util.CodeUtils
-import kotlinx.android.synthetic.main.ac_wallet.*
+import kotlinx.android.synthetic.main.ac_wallet.tv_buy
+import kotlinx.android.synthetic.main.ac_wallet.tv_xdmoney
 
 class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
@@ -30,9 +31,9 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         xdList= list
     }
 
-    override fun onXdOrder(order: AccountOrder?) {
-        showQrCodeDialog(order?.qrCode)
-        checkOrderState(order?.outTradeNo)
+    override fun onXdOrder(order: AccountOrder) {
+        showQrCodeDialog(order.qrCode)
+        checkOrderState(order.outTradeNo)
     }
 
     override fun checkOrder(order: AccountOrder?) {
@@ -65,9 +66,6 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         if (NetworkUtil(this).isNetworkConnected()){
             walletPresenter.getXdList(false)
             walletPresenter.accounts()
-        }
-        else{
-            showNetworkDialog()
         }
     }
 
@@ -103,7 +101,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     //展示支付二维码的图片
-    private fun showQrCodeDialog(url: String?) {
+    private fun showQrCodeDialog(url: String) {
         qrCodeDialog = Dialog(this)
         qrCodeDialog?.setContentView(R.layout.dialog_account_qrcode)
         qrCodeDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)

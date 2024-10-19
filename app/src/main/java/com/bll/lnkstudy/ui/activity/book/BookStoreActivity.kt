@@ -46,7 +46,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     private lateinit var presenter : BookStorePresenter
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
-    private var grade = 0
     private var subTypeStr=""
     private var subtype=0
     private var downloadBookDialog: DownloadBookDialog? = null

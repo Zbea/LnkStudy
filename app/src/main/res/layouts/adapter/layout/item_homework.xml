@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center">
 
@@ -60,7 +59,7 @@
 
     <LinearLayout
         android:id="@+id/ll_info"
-        android:layout_width="match_parent"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"
         android:paddingStart="@dimen/dp_5"
@@ -85,9 +84,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_5"
-                android:textColor="@color/gray"
+                android:textColor="@color/black_30"
                 android:textSize="@dimen/sp_14"
-                android:text="收到通知"/>
+                android:text="收到作业"/>
         </LinearLayout>
 
         <View
@@ -100,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:background="@drawable/click_btn_line_black_5dp"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
             android:padding="5dp"
             android:orientation="horizontal">
             <ImageView
@@ -113,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_5"
-                android:textColor="@color/gray"
+                android:textColor="@color/black_30"
                 android:textSize="@dimen/sp_14"
                 android:text="收到批改"/>
         </LinearLayout>

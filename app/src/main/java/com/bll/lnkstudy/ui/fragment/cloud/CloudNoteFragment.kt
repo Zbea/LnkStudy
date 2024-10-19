@@ -59,9 +59,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCloudPresenter.getType(4)
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     private fun initTab(){

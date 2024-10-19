@@ -51,9 +51,6 @@ class CloudExamFragment:BaseCloudFragment() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCloudPresenter.getType(3)
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     private fun initTab(){

@@ -40,9 +40,8 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
                 4->{
-                    if (item.isCloud)
-                        setText(R.id.tv_grade,"")
                     setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
+                    setGone(R.id.tv_grade,!item.isCloud)
                     setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
                     setText(R.id.tv_name, "")
                     GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
@@ -57,7 +56,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 setTextColor(R.id.tv_pg, mContext.getColor(R.color.black))
                 getView<TextView>(R.id.tv_pg).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                setTextColor(R.id.tv_pg, mContext.getColor(R.color.gray))
+                setTextColor(R.id.tv_pg, mContext.getColor(R.color.black_30))
                 getView<TextView>(R.id.tv_pg).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
             }
 
@@ -65,7 +64,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 setTextColor(R.id.tv_message, mContext.getColor(R.color.black))
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                setTextColor(R.id.tv_message, mContext.getColor(R.color.gray))
+                setTextColor(R.id.tv_message, mContext.getColor(R.color.black_30))
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
             }
 

@@ -65,15 +65,25 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser).build().list();
     }
 
+    /**
+     * 获取低年级考试卷
+     * @param grade
+     * @return
+     */
+    public List<PaperTypeBean> queryAll(int grade) {
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Grade.lt(grade);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+    }
+
     public List<PaperTypeBean> queryAllByCourse(String course){
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition1).orderDesc(PaperTypeBeanDao.Properties.Grade).build().list();
     }
 
     public List<PaperTypeBean> queryAllByCourse(String course,int page, int pageSize){
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition1)
-                .offset((page-1)*pageSize).limit(pageSize)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(PaperTypeBeanDao.Properties.Grade)
                 .build().list();
     }
 

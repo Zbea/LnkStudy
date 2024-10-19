@@ -11,8 +11,10 @@ import com.bumptech.glide.load.resource.bitmap.BitmapDrawableDecoder;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class GlideUtils {
@@ -42,6 +44,26 @@ public class GlideUtils {
 
     }
 
+    /**
+     * 设置刷新
+     * @param mContext
+     * @param url
+     * @param imageView
+     * @param state
+     */
+    public static final void setImageUrl(Context mContext,String url, ImageView imageView,int state){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+
+        Glide.with(mContext)
+                .load(url)
+                .apply(requestOptions)
+                .signature(new ObjectKey(url+ state))
+                .into(imageView);
+
+    }
+
     public static final void setImageFile(Context mContext, File file, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
@@ -64,18 +86,6 @@ public class GlideUtils {
                 .into(imageView);
     }
 
-    public static void setImageFileNoCache(Context mContext, File file, ImageView imageView){
-
-        RequestOptions requestOptions=new RequestOptions();
-        requestOptions.skipMemoryCache(true);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-
-        Glide.with(mContext)
-                .load(file)
-                .apply(requestOptions)
-                .into(imageView);
-    }
-
     public static void setImageRoundUrl(Context mContext, String url, ImageView imageView, int round){
 
         RequestOptions requestOptions=new RequestOptions();
@@ -86,50 +96,6 @@ public class GlideUtils {
                 .load(url)
                 .apply(requestOptions)
                 .into(imageView);
-    }
-
-    public static void setImageNoCacheRoundUrl(Context mContext, String url, ImageView imageView, int round){
-
-        RequestOptions requestOptions=new RequestOptions();
-        requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(true);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-        requestOptions.transform(new RoundedCorners(round));
-
-        Glide.with(mContext)
-                .load(url)
-                .apply(requestOptions)
-                .into(imageView);
-    }
-
-    public static final void setImageNoCacheUrl(Context mContext,String url, ImageView imageView){
-
-        RequestOptions requestOptions=new RequestOptions();
-        requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(true);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-
-        Glide.with(mContext)
-                .load(url)
-                .apply(requestOptions)
-                .into(imageView);
-    }
-
-
-    public static final Bitmap getBitmap(Context mContext,String url){
-        Bitmap bitmap=null;
-        try {
-            bitmap=Glide.with(mContext)
-                    .asBitmap()
-                    .load(url)
-                    .into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL)
-                    .get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
     }
 
 }

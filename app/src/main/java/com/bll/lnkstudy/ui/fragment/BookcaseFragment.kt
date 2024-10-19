@@ -186,5 +186,4 @@ class BookcaseFragment: BaseMainFragment() {
         lazyLoad()
     }
 
-
 }

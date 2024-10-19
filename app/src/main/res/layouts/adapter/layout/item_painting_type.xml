@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/icon_painting_sm"
+        android:src="@mipmap/icon_painting_list_hb"
         android:padding="@dimen/click_line_width"
         android:background="@drawable/click_btn_transparent_line_black"
         />
@@ -21,8 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_18"
-        android:layout_marginTop="10dp"
+        android:textSize="@dimen/sp_22"
+        android:text="三年级"
+        android:layout_marginTop="80dp"
         />
 
 </RelativeLayout>

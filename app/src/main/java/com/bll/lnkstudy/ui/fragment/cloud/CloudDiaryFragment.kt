@@ -8,7 +8,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.DiaryBean
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.adapter.CloudDiaryAdapter
@@ -83,8 +85,13 @@ class CloudDiaryFragment: BaseCloudFragment() {
 
     private fun downloadItem(){
         val item=items[position]
-        showLoading()
-        download(item)
+        if (!ItemTypeDaoManager.getInstance().isExistDiaryType(item.id)){
+            showLoading()
+            download(item)
+        }
+        else{
+            showToast(R.string.toast_downloaded)
+        }
     }
 
     private fun deleteItem(){
@@ -107,13 +114,20 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
+                            val itemTypeBean=ItemTypeBean().apply {
+                                type=6
+                                title=item.subTypeStr
+                                date=System.currentTimeMillis()
+                                typeId=item.id
+                            }
+                            ItemTypeDaoManager.getInstance().insertOrReplace(itemTypeBean)
+
                             val diaryBeans: MutableList<DiaryBean> = Gson().fromJson(item.listJson, object : TypeToken<List<DiaryBean>>() {}.type)
                             for (diaryBean in diaryBeans){
-                                if (DiaryDaoManager.getInstance().queryBean(diaryBean.date)==null){
-                                    diaryBean.id=null//设置数据库id为null用于重新加入
-                                    diaryBean.isUpload=true
-                                    DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
-                                }
+                                diaryBean.id=null//设置数据库id为null用于重新加入
+                                diaryBean.isUpload=true
+                                diaryBean.uploadId=item.id
+                                DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))

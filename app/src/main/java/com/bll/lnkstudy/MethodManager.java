@@ -13,6 +13,7 @@ import android.text.TextUtils;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
+import com.bll.lnkstudy.manager.ItemTypeDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
@@ -35,10 +36,11 @@ import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
-import com.bll.lnkstudy.ui.activity.drawing.TestpaperDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.TestPaperDrawingActivity;
 import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
 import com.bll.lnkstudy.utils.DateUtils;
+import com.bll.lnkstudy.utils.FileUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
 
@@ -47,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +63,10 @@ public class MethodManager {
         user = SPUtil.INSTANCE.getObj("user", User.class);
     }
 
+    public static boolean isLogin(){
+        String tokenStr=SPUtil.INSTANCE.getString("token");
+        return !TextUtils.isEmpty(tokenStr) && user!=null;
+    }
 
     /**
      * 保存公用数据
@@ -232,7 +239,7 @@ public class MethodManager {
         Bundle bundle = new Bundle();
         bundle.putSerializable("homework", typeBean);
         intent.putExtra("homeworkBundle", bundle);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
@@ -250,7 +257,7 @@ public class MethodManager {
         bundle.putSerializable("homework", item);
         intent.putExtra("homeworkBundle", bundle);
         intent.putExtra("page", page);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
@@ -269,7 +276,7 @@ public class MethodManager {
         bundle.putSerializable("homework", item);
         intent.putExtra("homeworkBundle", bundle);
         intent.putExtra("page", page);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
@@ -293,11 +300,11 @@ public class MethodManager {
      */
     public static void gotoPaperDrawing(Context context, String course, int typeId, int page) {
         ActivityManager.getInstance().checkPaperDrawingIsExist(course, typeId);
-        Intent intent = new Intent(context, TestpaperDrawingActivity.class);
+        Intent intent = new Intent(context, TestPaperDrawingActivity.class);
         intent.putExtra("course", course);
         intent.putExtra("typeId", typeId);
         intent.putExtra("page", page);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
@@ -316,7 +323,7 @@ public class MethodManager {
         Intent intent = new Intent(context, NoteDrawingActivity.class);
         intent.putExtra("noteId", note.id);
         intent.putExtra("page", page);
-        intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         if (screen != 0)
             intent.putExtra(Constants.INTENT_SCREEN_LABEL, screen);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
@@ -331,14 +338,13 @@ public class MethodManager {
             SToast.showText(2, "学校该时间不允许手绘");
             return;
         }
-
         if (type == 3) {
             ActivityManager.getInstance().checkPaintingDrawingIsExist();
             Intent intent = new Intent(context, PaintingDrawingActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("painting", item);
             intent.putExtra("paintingBundle", bundle);
-            intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+            intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
             context.startActivity(intent);
         } else {
             ActivityManager.getInstance().checkCalligraphyDrawingIsExist();
@@ -346,10 +352,22 @@ public class MethodManager {
             Bundle bundle = new Bundle();
             bundle.putSerializable("calligraphy", item);
             intent.putExtra("paintingBundle", bundle);
-            intent.putExtra("android.intent.extra.KEEP_FOCUS", true);
+            intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
             context.startActivity(intent);
         }
+    }
 
+    /**
+     * 删除本地画本、书法
+     * @param item
+     */
+    public static void deletePaintingDrawing(ItemTypeBean item) {
+        ItemTypeDaoManager.getInstance().deleteBean(item);
+        FileUtils.deleteFile(new File(item.path));
+        //删除本地itemType增量更新
+        DataUpdateManager.INSTANCE.deleteDateUpdate(5,item.typeId,1);
+        //删除增量更新
+        DataUpdateManager.INSTANCE.deleteDateUpdate(5, item.typeId);
     }
 
     /**
@@ -411,9 +429,9 @@ public class MethodManager {
      */
     public static void savePrivacyPassword(int type, PrivacyPassword privacyPassword) {
         if (type == 0) {
-            SPUtil.INSTANCE.putObj("privacyPasswordDiary", privacyPassword);
+            SPUtil.INSTANCE.putObj(Constants.SP_PRIVACY_PW_DIARY, privacyPassword);
         } else {
-            SPUtil.INSTANCE.putObj("privacyPasswordNote", privacyPassword);
+            SPUtil.INSTANCE.putObj(Constants.SP_PRIVACY_PW_NOTE, privacyPassword);
         }
     }
 
@@ -425,9 +443,9 @@ public class MethodManager {
      */
     public static PrivacyPassword getPrivacyPassword(int type) {
         if (type == 0) {
-            return SPUtil.INSTANCE.getObj("privacyPasswordDiary", PrivacyPassword.class);
+            return SPUtil.INSTANCE.getObj(Constants.SP_PRIVACY_PW_DIARY, PrivacyPassword.class);
         } else {
-            return SPUtil.INSTANCE.getObj("privacyPasswordNote", PrivacyPassword.class);
+            return SPUtil.INSTANCE.getObj(Constants.SP_PRIVACY_PW_NOTE, PrivacyPassword.class);
         }
     }
 
@@ -554,6 +572,17 @@ public class MethodManager {
     public static int getExamTypeId(String subject) {
         int i = DataBeanManager.INSTANCE.getCourseId(subject) + user.grade;
         String idStr = i + String.valueOf(user.accountId);
+        return Integer.parseInt(idStr);
+    }
+
+    /**
+     * 根据分类以及年级获取对应唯一typeId
+     * @param type
+     * @param grade
+     * @return
+     */
+    public static int getPaintingTypeId(int type,int grade){
+        String idStr=type+String.valueOf(grade);
         return Integer.parseInt(idStr);
     }
 

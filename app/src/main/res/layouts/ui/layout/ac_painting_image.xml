@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_draw_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="horizontal">
+
+    <include
+        android:id="@+id/ll_page_content"
+        layout="@layout/common_drawing_tool"
+        android:layout_width="@dimen/drawing_tool_width"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/statusbar_height" />
+
+    <RelativeLayout
+        android:id="@+id/rl_draw_content"
+        android:layout_width="@dimen/drawing_content_width"
+        android:layout_height="wrap_content">
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/iv_rule"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

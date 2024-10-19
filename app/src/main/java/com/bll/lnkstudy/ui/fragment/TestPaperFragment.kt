@@ -117,27 +117,27 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 notifyItemChanged(position)
                 MethodManager.gotoPaperDrawing(requireActivity(), item.course, item.typeId, Constants.DEFAULT_PAGE)
             }
-            setOnItemLongClickListener { adapter, view, position ->
-                CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(
-                    object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-
-                        override fun ok() {
-                            val item = paperTypes[position]
-                            //删除本地当前作业本
-                            PaperTypeDaoManager.getInstance().deleteBean(item)
-                            PaperDaoManager.getInstance().delete(item.course, item.typeId)
-                            //删除增量更新
-                            DataUpdateManager.deleteDateUpdate(3,item.typeId)
-                            val path = FileAddress().getPathTestPaper(item.typeId)
-                            FileUtils.deleteFile(File(path))
-                            remove(position)
-                            fetchData()
-                        }
-                    })
-                true
-            }
+//            setOnItemLongClickListener { adapter, view, position ->
+//                CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(
+//                    object : CommonDialog.OnDialogClickListener {
+//                        override fun cancel() {
+//                        }
+//
+//                        override fun ok() {
+//                            val item = paperTypes[position]
+//                            //删除本地当前作业本
+//                            PaperTypeDaoManager.getInstance().deleteBean(item)
+//                            PaperDaoManager.getInstance().delete(item.course, item.typeId)
+//                            //删除增量更新
+//                            DataUpdateManager.deleteDateUpdate(3,item.typeId)
+//                            val path = FileAddress().getPathTestPaper(item.typeId)
+//                            FileUtils.deleteFile(File(path))
+//                            remove(position)
+//                            fetchData()
+//                        }
+//                    })
+//                true
+//            }
         }
     }
 

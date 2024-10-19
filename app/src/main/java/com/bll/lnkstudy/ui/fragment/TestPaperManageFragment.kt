@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -16,6 +17,7 @@ import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
+import java.io.File
 
 class TestPaperManageFragment: BaseMainFragment() {
 
@@ -69,11 +71,40 @@ class TestPaperManageFragment: BaseMainFragment() {
         }
     }
 
+    //页码跳转
+    private fun switchFragment(from: Fragment?, to: Fragment?) {
+        if (from != to) {
+            lastFragment = to
+            val fm = activity?.supportFragmentManager!!
+            val ft = fm.beginTransaction()
+
+            if (!to?.isAdded!!) {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.add(R.id.fl_content_paper, to).commit()
+            } else {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.show(to).commit()
+            }
+        }
+    }
+
+    private fun removeAllFragment(){
+        val fm = activity?.supportFragmentManager!!
+        val ft = fm.beginTransaction()
+        for (fragment in fragments){
+            ft.remove(fragment).commit()
+        }
+    }
+
+
     /**
      * 控制上传
      */
     fun uploadPaper(token: String) {
-        if (grade == 0) return
         val cloudList = mutableListOf<CloudListBean>()
         val nullItems = mutableListOf<PaperTypeBean>()
         val types = PaperTypeDaoManager.getInstance().queryAll()
@@ -111,39 +142,46 @@ class TestPaperManageFragment: BaseMainFragment() {
         }
     }
 
-    //页码跳转
-    private fun switchFragment(from: Fragment?, to: Fragment?) {
-        if (from != to) {
-            lastFragment = to
-            val fm = activity?.supportFragmentManager!!
-            val ft = fm.beginTransaction()
-
-            if (!to?.isAdded!!) {
-                if (from != null) {
-                    ft.hide(from)
-                }
-                ft.add(R.id.fl_content_paper, to).commit()
-            } else {
-                if (from != null) {
-                    ft.hide(from)
-                }
-                ft.show(to).commit()
+    /**
+     * 年级变化时，清除低年级没有内容的考试卷
+     */
+    private fun clearLowGradeHomework(){
+        val list= PaperTypeDaoManager.getInstance().queryAll(grade)
+        for (item in list){
+            val path = FileAddress().getPathTestPaper(item.typeId)
+            if (!FileUtils.isExistContent(path)){
+                PaperTypeDaoManager.getInstance().deleteBean(item)
+                //删除增量更新
+                DataUpdateManager.deleteDateUpdate(3,item.typeId,1)
             }
         }
     }
 
-    private fun removeAllFragment(){
-        val fm = activity?.supportFragmentManager!!
-        val ft = fm.beginTransaction()
-        for (fragment in fragments){
-            ft.remove(fragment).commit()
-        }
+    /**
+     * 清空考卷
+     */
+    private fun setClearExamPaper(){
+        //删除本地考卷分类
+        PaperTypeDaoManager.getInstance().clear()
+        //删除所有考卷内容
+        PaperDaoManager.getInstance().clear()
+        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
+        //清除本地增量数据
+        DataUpdateManager.clearDataUpdate(3)
+        val map=HashMap<String,Any>()
+        map["type"]=3
+        mDataUploadPresenter.onDeleteData(map)
     }
+
+
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
                 initTab()
+            }
+            Constants.USER_CHANGE_GRADE_EVENT->{
+                clearLowGradeHomework()
             }
         }
     }

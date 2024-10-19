@@ -20,7 +20,7 @@ object DataBeanManager {
         "首页","书架",
         "课本","作业",
         "考卷","笔记",
-        "书画","义教",
+        "书画","视教",
         "学情","日记"
     )
     val teachingType = arrayOf(

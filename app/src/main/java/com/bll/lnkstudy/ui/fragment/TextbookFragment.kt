@@ -21,7 +21,7 @@ import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_list_tab.rv_list
@@ -88,7 +88,7 @@ class TextbookFragment : BaseMainFragment() {
             rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity,33f),38))
+            rv_list.addItemDecoration(SpaceGridItemDeco(3,38))
             setOnItemClickListener { adapter, view, position ->
                 MethodManager.gotoTextBookDetails(requireActivity(),books[position])
             }

@@ -166,10 +166,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         mCalendar.set(Calendar.MILLISECOND, 0)
 
         val selectLong = mCalendar.timeInMillis
-
         if (currentTimeMillisLong > selectLong) {
-//            mCalendar.add(Calendar.DAY_OF_MONTH, 1)
-//            selectLong = mCalendar.timeInMillis
             showToast("已过提交时间")
             return
         }
@@ -177,10 +174,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         intent.action = Constants.ACTION_EXAM_TIME
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager?.setRepeating(
-            AlarmManager.RTC_WAKEUP, selectLong,
-            AlarmManager.INTERVAL_DAY, pendingIntent
-        )
+        alarmManager?.set(AlarmManager.RTC_WAKEUP,selectLong,pendingIntent)
     }
 
 
@@ -224,7 +218,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
-        GlideUtils.setImageNoCacheUrl(this,paths[index],view)
+        GlideUtils.setImageUrl(this,paths[index],view)
         elik.setLoadFilePath(drawPaths[index],true)
     }
 

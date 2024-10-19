@@ -106,6 +106,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             course=homeworkType?.course
             time=System.currentTimeMillis()
         })
+
+        //刷新当前paper
+        oldPosition=-1
+        onContent()
     }
 
 
@@ -166,7 +170,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             val itemList= ItemList()
             itemList.name=item.title
             itemList.page=item.page
-            itemList.isEdit=false
             list.add(itemList)
         }
 
@@ -240,41 +243,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         paper=papers[currentPosition]
         pageCount=paper!!.paths.size
 
-        if (currentPosition!=oldPosition){
-            setScoreDetails(paper!!)
-            when(paper?.state){
-                0->{
-                    setPWEnabled(true)
-                    if (paper?.endTime!!>0L){
-                        showView(iv_btn)
-                        val endTime=paper?.endTime!!*1000
-                        if (System.currentTimeMillis()<=endTime){
-                            showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
-                        }
-                    }
-                    else{
-                        disMissView(iv_btn)
-                    }
-                }
-                1->{
-                    setPWEnabled(false)
-                    if (paper?.commitJson.isNullOrEmpty()){
-                        disMissView(iv_btn)
-                    }
-                    else{
-                        showToast("请及时自批改后提交")
-                        showView(iv_btn)
-                    }
-                }
-                2->{
-                    setPWEnabled(true)
-                    disMissView(iv_btn)
-                }
-            }
-        }
-        //用来判断重复加载
-        oldPosition=currentPosition
-
         if (page<0){
             page=0
         }
@@ -311,6 +279,41 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         tv_page_total.text="$pageCount"
         tv_page_total_a.text="$pageCount"
+
+        if (currentPosition!=oldPosition){
+            setScoreDetails(paper!!)
+            when(paper?.state){
+                0->{
+                    setPWEnabled(true)
+                    if (paper?.endTime!!>0L){
+                        showView(iv_btn)
+                        val endTime=paper?.endTime!!*1000
+                        if (System.currentTimeMillis()<=endTime){
+                            showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
+                        }
+                    }
+                    else{
+                        disMissView(iv_btn)
+                    }
+                }
+                1->{
+                    setPWEnabled(false)
+                    if (paper?.commitJson.isNullOrEmpty()){
+                        disMissView(iv_btn)
+                    }
+                    else{
+                        showToast("请及时自批改后提交")
+                        showView(iv_btn)
+                    }
+                }
+                2->{
+                    setPWEnabled(true)
+                    disMissView(iv_btn)
+                }
+            }
+        }
+        //用来判断重复加载
+        oldPosition=currentPosition
     }
 
     /**
@@ -345,12 +348,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
-        if (paper!!.state==2){
-            GlideUtils.setImageNoCacheUrl(this,paper!!.paths[index],view)
-        }
-        else{
-            GlideUtils.setImageUrl(this,paper!!.paths[index],view)
-        }
+        GlideUtils.setImageUrl(this,paper!!.paths[index],view,paper?.state!!)
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 

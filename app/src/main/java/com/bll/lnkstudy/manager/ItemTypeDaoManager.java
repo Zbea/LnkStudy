@@ -84,7 +84,18 @@ public class ItemTypeDaoManager {
     public Boolean isExist(String title,int type){
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.Title.eq(title);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(type);
-        return dao.queryBuilder().where(whereUser,whereUser1,whereUser2).unique()!=null;
+        return !dao.queryBuilder().where(whereUser,whereUser1,whereUser2).build().list().isEmpty();
+    }
+
+    /**
+     * 查看日记分类是否已经下载
+     * @param typeId
+     * @return
+     */
+    public Boolean isExistDiaryType(int typeId){
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.TypeId.eq(typeId);
+        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(6);
+        return !dao.queryBuilder().where(whereUser, whereUser1, whereUser2).build().list().isEmpty();
     }
 
     public void deleteBean(ItemTypeBean bean){

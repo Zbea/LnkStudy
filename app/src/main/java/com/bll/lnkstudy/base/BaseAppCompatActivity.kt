@@ -52,6 +52,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var mNetworkDialog: ProgressDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
+    var grade=0
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -115,6 +116,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
         EventBus.getDefault().register(this)
         screenPos=getCurrentScreenPos()
+
+        if (mUser!=null)
+            grade=mUser?.grade!!
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
@@ -197,6 +201,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     protected fun setPageSetting(setId:Int){
         showView(tv_setting)
         tv_setting?.setText(setId)
+    }
+    protected fun setPageSetting(setId:String){
+        showView(tv_setting)
+        tv_setting?.text = setId
     }
     protected fun setImageManager(setId:Int){
         showView(iv_manager)
@@ -473,6 +481,10 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         when(msgFlag){
+            Constants.USER_CHANGE_EVENT->{
+                mUser= SPUtil.getObj("user", User::class.java)
+                grade=mUser?.grade!!
+            }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
                 hideNetworkDialog()
                 onNetworkConnectionSuccess()

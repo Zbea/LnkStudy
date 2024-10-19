@@ -80,13 +80,13 @@ public class HomeworkTypeDaoManager {
      */
     public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(HomeworkTypeBeanDao.Properties.Grade).build().list();
     }
 
     public List<HomeworkTypeBean> queryAllByCourse(String course,int page, int pageSize) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition)
-                .offset((page-1)*pageSize).limit(pageSize)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.Grade)
                 .build().list();
     }
 
@@ -146,6 +146,16 @@ public class HomeworkTypeDaoManager {
 
     public List<HomeworkTypeBean> queryAll() {
         return dao.queryBuilder().where(whereUser).build().list();
+    }
+
+    /**
+     * 获取低年级的所有作业本
+     * @param grade
+     * @return
+     */
+    public List<HomeworkTypeBean> queryAll(int grade) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Grade.lt(grade);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     public void deleteBean(HomeworkTypeBean bean){

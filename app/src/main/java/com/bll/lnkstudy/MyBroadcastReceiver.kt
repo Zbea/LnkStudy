@@ -19,20 +19,14 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
 
     @SuppressLint("InvalidWakeLockTag")
     override fun onReceive(context: Context, intent: Intent) {
+        //未登录不执行
+        if (!MethodManager.isLogin()){
+            return
+        }
         when(intent.action){
             Constants.ACTION_DAY_REFRESH->{
                 Log.d("debug","每天刷新")
                 EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
-            }
-            Constants.ACTION_UPLOAD_8->{
-                Log.d("debug","8点全局刷新")
-                MethodManager.wakeUpScreen(context)
-                if (!NetworkUtil(context).isNetworkConnected()){
-                    NetworkUtil(context).toggleNetwork(true)
-                }
-                else{
-                    EventBus.getDefault().postSticky(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
-                }
             }
             Constants.ACTION_UPLOAD_15->{
                 Log.d("debug","15点增量上传、以及全局刷新")
@@ -41,16 +35,6 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                     NetworkUtil(context).toggleNetwork(true)
                 }
                 EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
-            }
-            Constants.ACTION_UPLOAD_18->{
-                Log.d("debug","18点全局刷新")
-                MethodManager.wakeUpScreen(context)
-                if (!NetworkUtil(context).isNetworkConnected()){
-                    NetworkUtil(context).toggleNetwork(true)
-                }
-                else{
-                    EventBus.getDefault().postSticky(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
-                }
             }
             Constants.ACTION_UPLOAD_NEXT_SEMESTER->{
                 Log.d("debug","2月1日下学期开学")
@@ -156,7 +140,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
 //                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_FAIL_EVENT)
 //                }
 //            }
-            Constants.NET_REFRESH->{
+            Constants.APP_NET_REFRESH->{
                 if (NetworkUtil(context).isNetworkConnected()){
                     EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
                 }

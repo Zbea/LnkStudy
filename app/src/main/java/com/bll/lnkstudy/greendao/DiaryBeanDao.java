@@ -35,8 +35,9 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
         public final static Property Month = new Property(5, int.class, "month", false, "MONTH");
         public final static Property BgRes = new Property(6, String.class, "bgRes", false, "BG_RES");
         public final static Property Page = new Property(7, int.class, "page", false, "PAGE");
-        public final static Property IsUpload = new Property(8, boolean.class, "isUpload", false, "IS_UPLOAD");
-        public final static Property Paths = new Property(9, String.class, "paths", false, "PATHS");
+        public final static Property UploadId = new Property(8, int.class, "uploadId", false, "UPLOAD_ID");
+        public final static Property IsUpload = new Property(9, boolean.class, "isUpload", false, "IS_UPLOAD");
+        public final static Property Paths = new Property(10, String.class, "paths", false, "PATHS");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -61,8 +62,9 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
                 "\"MONTH\" INTEGER NOT NULL ," + // 5: month
                 "\"BG_RES\" TEXT," + // 6: bgRes
                 "\"PAGE\" INTEGER NOT NULL ," + // 7: page
-                "\"IS_UPLOAD\" INTEGER NOT NULL ," + // 8: isUpload
-                "\"PATHS\" TEXT);"); // 9: paths
+                "\"UPLOAD_ID\" INTEGER NOT NULL ," + // 8: uploadId
+                "\"IS_UPLOAD\" INTEGER NOT NULL ," + // 9: isUpload
+                "\"PATHS\" TEXT);"); // 10: paths
     }
 
     /** Drops the underlying database table. */
@@ -94,11 +96,12 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
             stmt.bindString(7, bgRes);
         }
         stmt.bindLong(8, entity.getPage());
-        stmt.bindLong(9, entity.getIsUpload() ? 1L: 0L);
+        stmt.bindLong(9, entity.getUploadId());
+        stmt.bindLong(10, entity.getIsUpload() ? 1L: 0L);
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(10, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(11, pathsConverter.convertToDatabaseValue(paths));
         }
     }
 
@@ -125,11 +128,12 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
             stmt.bindString(7, bgRes);
         }
         stmt.bindLong(8, entity.getPage());
-        stmt.bindLong(9, entity.getIsUpload() ? 1L: 0L);
+        stmt.bindLong(9, entity.getUploadId());
+        stmt.bindLong(10, entity.getIsUpload() ? 1L: 0L);
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(10, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(11, pathsConverter.convertToDatabaseValue(paths));
         }
     }
 
@@ -149,8 +153,9 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
             cursor.getInt(offset + 5), // month
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bgRes
             cursor.getInt(offset + 7), // page
-            cursor.getShort(offset + 8) != 0, // isUpload
-            cursor.isNull(offset + 9) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 9)) // paths
+            cursor.getInt(offset + 8), // uploadId
+            cursor.getShort(offset + 9) != 0, // isUpload
+            cursor.isNull(offset + 10) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 10)) // paths
         );
         return entity;
     }
@@ -165,8 +170,9 @@ public class DiaryBeanDao extends AbstractDao<DiaryBean, Long> {
         entity.setMonth(cursor.getInt(offset + 5));
         entity.setBgRes(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setPage(cursor.getInt(offset + 7));
-        entity.setIsUpload(cursor.getShort(offset + 8) != 0);
-        entity.setPaths(cursor.isNull(offset + 9) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 9)));
+        entity.setUploadId(cursor.getInt(offset + 8));
+        entity.setIsUpload(cursor.getShort(offset + 9) != 0);
+        entity.setPaths(cursor.isNull(offset + 10) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 10)));
      }
     
     @Override

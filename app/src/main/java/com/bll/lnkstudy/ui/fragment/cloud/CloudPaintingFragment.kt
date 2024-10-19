@@ -53,9 +53,6 @@ class CloudPaintingFragment : BaseCloudFragment() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             fetchData()
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     private fun initTab(){
@@ -160,9 +157,9 @@ class CloudPaintingFragment : BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, typeBean.path, object : IZipCallback {
                         override fun onFinish() {
                             typeBean.id=null
-                            val id=ItemTypeDaoManager.getInstance().insertOrReplaceGetId(typeBean)
+                            ItemTypeDaoManager.getInstance().insertOrReplace(typeBean)
                             //创建本地画本增量更新
-                            DataUpdateManager.createDataUpdate(5,id.toInt(),1, Gson().toJson(typeBean))
+                            DataUpdateManager.createDataUpdate(5,typeBean.typeId,1, Gson().toJson(typeBean))
 
                             //存储画本内容
                             val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
@@ -171,8 +168,9 @@ class CloudPaintingFragment : BaseCloudFragment() {
                                 drawingBean.id=null
                                 val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                 //创建本地画本增量更新
-                                DataUpdateManager.createDataUpdate(5,id.toInt(),2, Gson().toJson(drawingBean),File(drawingBean.path).parent)
+                                DataUpdateManager.createDataUpdate(5,id.toInt(),2,typeBean.typeId, Gson().toJson(drawingBean),drawingBean.path)
                             }
+
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({

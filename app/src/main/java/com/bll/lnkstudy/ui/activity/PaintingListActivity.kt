@@ -13,8 +13,8 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco1
-import kotlinx.android.synthetic.main.ac_list.*
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import kotlinx.android.synthetic.main.ac_list.rv_list
 import java.io.File
 
 class PaintingListActivity:BaseAppCompatActivity() {
@@ -43,30 +43,31 @@ class PaintingListActivity:BaseAppCompatActivity() {
         fetchData()
     }
 
-    private fun initRecyclerView(){
-        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+    private fun initRecyclerView() {
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,20f),
-            DP2PX.dip2px(this,50f),
-            DP2PX.dip2px(this,20f),0)
-        layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
+            DP2PX.dip2px(this, 30f),
+            DP2PX.dip2px(this, 60f),
+            DP2PX.dip2px(this, 30f), 0
+        )
+        layoutParams.weight = 1f
+        rv_list.layoutParams = layoutParams
 
-        mAdapter = MyPaintingAdapter(R.layout.item_textbook, null).apply {
-            rv_list.layoutManager = GridLayoutManager(this@PaintingListActivity,4)//创建布局管理
+        mAdapter = MyPaintingAdapter(R.layout.item_bookstore, null).apply {
+            rv_list.layoutManager = GridLayoutManager(this@PaintingListActivity, 4)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@PaintingListActivity,12f),70))
             setOnItemClickListener { adapter, view, position ->
-                val item =lists[position]
-                customStartActivity(Intent(this@PaintingListActivity,PaintingDetailsActivity::class.java).setFlags(item.contentId))
+                val item = lists[position]
+                customStartActivity(Intent(this@PaintingListActivity, PaintingImageActivity::class.java).setFlags(item.contentId))
             }
             setOnItemLongClickListener { adapter, view, position ->
-                this@PaintingListActivity.position=position
+                this@PaintingListActivity.position = position
                 delete()
                 true
             }
+            rv_list?.addItemDecoration(SpaceGridItemDeco(4, 90))
         }
     }
 
@@ -86,7 +87,6 @@ class PaintingListActivity:BaseAppCompatActivity() {
     }
 
     override fun fetchData() {
-        hideKeyboard()
         lists =PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType,pageIndex,pageSize)
         val total= PaintingBeanDaoManager.getInstance().queryPaintings(time,paintingType)
         setPageNumber(total)

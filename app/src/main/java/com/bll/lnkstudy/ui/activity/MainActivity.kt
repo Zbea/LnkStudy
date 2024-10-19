@@ -92,10 +92,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.DIARY_UPLOAD_EVENT->{
                 mainRightFragment?.uploadDiary(token,false)
             }
-            Constants.USER_CHANGE_GRADE_EVENT->{
-                homeworkFragment?.upload(token)
-                paperFragment?.uploadPaper(token)
-            }
+//            Constants.USER_CHANGE_GRADE_EVENT->{
+//                homeworkFragment?.upload(token)
+//                paperFragment?.uploadPaper(token)
+//            }
         }
 
     }
@@ -188,9 +188,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         }
 
         startRemind()
-        startRemind8()
         startRemind15()
-        startRemind18()
         startRemind1Month()
         startRemind9Month()
         startRemind1Year()
@@ -283,45 +281,14 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_DAY_REFRESH
-            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 AlarmManager.INTERVAL_DAY, pendingIntent
             )
         }
     }
-
-    /**
-     * 开始每天定时任务
-     */
-    private fun startRemind8() {
-        Calendar.getInstance().apply {
-            val currentTimeMillisLong = System.currentTimeMillis()
-            timeInMillis = currentTimeMillisLong
-            timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 8)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            var selectLong = timeInMillis
-            if (currentTimeMillisLong > selectLong) {
-                add(Calendar.DAY_OF_MONTH, 1)
-                selectLong = timeInMillis
-            }
-
-            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_8
-            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                AlarmManager.INTERVAL_DAY, pendingIntent
-            )
-        }
-    }
-
 
     /**
      * 开始每天定时任务 下午三点
@@ -331,7 +298,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.HOUR_OF_DAY, 13)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -344,40 +311,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_15
-            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                AlarmManager.INTERVAL_DAY, pendingIntent
-            )
-        }
-    }
-
-    /**
-     * 开始每天定时任务
-     */
-    private fun startRemind18() {
-        Calendar.getInstance().apply {
-            val currentTimeMillisLong = System.currentTimeMillis()
-            timeInMillis = currentTimeMillisLong
-            timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 18)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            var selectLong = timeInMillis
-            if (currentTimeMillisLong > selectLong) {
-                add(Calendar.DAY_OF_MONTH, 1)
-                selectLong = timeInMillis
-            }
-
-            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_18
-            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 AlarmManager.INTERVAL_DAY, pendingIntent
             )
         }
@@ -394,7 +331,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 7)
-            set(Calendar.DAY_OF_MONTH, 25)
+            set(Calendar.DAY_OF_MONTH, 31)
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -411,7 +348,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 date, pendingIntent
             )
         }
@@ -451,10 +388,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_NEXT_SEMESTER
-            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 date, pendingIntent
             )
         }
@@ -487,10 +424,10 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_UPLOAD_YEAR
-            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent =PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 date, pendingIntent
             )
         }
@@ -501,10 +438,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 一键清除(type=0) 一键下载type=1
      */
     private fun clearData(type: Int) {
-        SPUtil.removeObj("privacyPasswordDiary")
-        SPUtil.removeObj("privacyPasswordNote")
-        SPUtil.putListInt("weekDateEvent", mutableListOf())
-        SPUtil.putListLong("dateDateEvent", mutableListOf())
+        SPUtil.removeObj(Constants.SP_PRIVACY_PW_DIARY)
+        SPUtil.removeObj(Constants.SP_PRIVACY_PW_NOTE)
+        SPUtil.putListInt(Constants.SP_WEEK_DATE_LIST, mutableListOf())
+        SPUtil.putListLong(Constants.SP_DATE_LIST, mutableListOf())
+        SPUtil.putBoolean(Constants.SP_PAINTING_RULE_SET,false)
+        SPUtil.putString(Constants.SP_DIARY_BG_SET,"")
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()
@@ -1012,8 +951,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载本地书画
      */
     private fun downloadPaintingLocal(item: DataUpdateBean) {
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with(this).create(item.downloadUrl).setPath(item.path)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -1021,31 +959,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
-                        override fun onFinish() {
-                            val drawingBean = Gson().fromJson(item.listJson, PaintingDrawingBean::class.java)
-                            PaintingDrawingDaoManager.getInstance().insertOrReplace(drawingBean)
-                            //删掉本地zip文件
-                            FileUtils.deleteFile(File(zipPath))
-
-                            //创建本地画本增量更新
-                            DataUpdateManager.createDataUpdate(5,item.uid,2, item.listJson,item.path)
-                            DataUpdateManager.editDataUpdateUpload(5,item.uid,2)
-                        }
-
-                        override fun onProgress(percentDone: Int) {
-                        }
-
-                        override fun onError(msg: String?) {
-                        }
-
-                        override fun onStart() {
-                        }
-                    })
+                    val drawingBean = Gson().fromJson(item.listJson, PaintingDrawingBean::class.java)
+                    PaintingDrawingDaoManager.getInstance().insertOrReplace(drawingBean)
+                    //创建本地画本增量更新
+                    DataUpdateManager.createDataUpdate(5,item.uid,2,item.typeId, item.listJson,item.path)
+                    DataUpdateManager.editDataUpdateUpload(5,item.uid,2,item.typeId)
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })

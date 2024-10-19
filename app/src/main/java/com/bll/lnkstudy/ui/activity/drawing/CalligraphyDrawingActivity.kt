@@ -4,7 +4,6 @@ import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
-    private var grade=0
+    private var typeId=0
     private var paintingTypeBean: ItemTypeBean?=null
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
@@ -42,9 +41,10 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     override fun initData() {
         paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("calligraphy") as ItemTypeBean
         grade=paintingTypeBean?.grade!!
+        typeId= paintingTypeBean?.typeId!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,grade)
 
-        if (paintingLists.size > 0) {
+        if (!paintingLists.isNullOrEmpty()) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
             page = paintingLists.size - 1
         } else {
@@ -84,6 +84,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
             val itemList= ItemList()
             itemList.name=item.title
             itemList.page=item.page
+            itemList.isEdit=true
             list.add(itemList)
         }
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
@@ -228,13 +229,13 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newPaintingContent() {
         val date=System.currentTimeMillis()
-        val path = FileAddress().getPathPainting(1,grade,date)
+        val path = paintingTypeBean?.path
         val fileName = DateUtils.longToString(date)
 
         paintingDrawingBean = PaintingDrawingBean()
         paintingDrawingBean?.title= getString(R.string.calligraphy)+(paintingLists.size+1)
         paintingDrawingBean?.type = 1
-        paintingDrawingBean?.date = System.currentTimeMillis()
+        paintingDrawingBean?.date = date
         paintingDrawingBean?.path = "$path/$fileName.png"
         paintingDrawingBean?.grade=grade
         paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_details_bg_2)
@@ -244,14 +245,14 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
         val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)
         //创建本地画本增量更新
-        DataUpdateManager.createDataUpdate(5,id.toInt(),2,Gson().toJson(paintingDrawingBean),path)
+        DataUpdateManager.createDataUpdate(5,id.toInt(),2,typeId,Gson().toJson(paintingDrawingBean),paintingDrawingBean?.path!!)
     }
 
     /**
      * 修改增量更新
      */
     private fun editDataUpdate(item: PaintingDrawingBean){
-        DataUpdateManager.editDataUpdate(5,item.id!!.toInt(),2, Gson().toJson(item))
+        DataUpdateManager.editDataUpdate(5,item.id!!.toInt(),2,typeId, Gson().toJson(item))
     }
 
 }

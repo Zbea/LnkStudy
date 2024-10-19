@@ -54,9 +54,6 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             fetchData()
         }
-        else{
-            showNetworkDialog()
-        }
     }
 
     private fun initTab(){

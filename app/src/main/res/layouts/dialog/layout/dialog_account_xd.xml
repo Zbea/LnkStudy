@@ -35,31 +35,24 @@
 
     <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_35"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rb_zfb"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/rb_bg_zfb"
             android:button="@null"
             android:buttonTint="@color/black"
             android:checked="true"
             android:drawablePadding="20dp"
-            android:paddingLeft="20dp"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/rb_wx"
@@ -71,6 +64,7 @@
             android:buttonTint="@color/black"
             android:drawablePadding="20dp"
             android:textColor="@color/black"
+            android:visibility="gone"
             android:textSize="20sp" />
     </RadioGroup>
 

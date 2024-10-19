@@ -62,6 +62,8 @@
     <uses-permission android:name="android.permission.RESTART_PACKAGES"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.rockchip.update.permission.SHOW_UI" />
+    <uses-permission android:name="android.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".MyApplication"
@@ -194,7 +196,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".ui.activity.drawing.TestpaperDrawingActivity"
+            android:name=".ui.activity.drawing.TestPaperDrawingActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
@@ -207,7 +209,7 @@
             android:theme="@style/activityCustom"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.WallpaperListActivity"
+        <activity android:name=".ui.activity.WallpaperMyActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
@@ -233,7 +235,7 @@
         <activity android:name=".ui.activity.ClassGroupUserActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PaintingTypeListActivity"
+        <activity android:name=".ui.activity.PaintingDrawingTypeActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity"
@@ -266,7 +268,8 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PaintingDetailsActivity"
+        <activity android:name=".ui.activity.PaintingImageActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.date.DateEventActivity"

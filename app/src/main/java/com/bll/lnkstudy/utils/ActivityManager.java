@@ -9,7 +9,7 @@ import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
-import com.bll.lnkstudy.ui.activity.drawing.TestpaperDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.TestPaperDrawingActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -242,7 +242,7 @@ public class ActivityManager {
         while (it.hasNext()) {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
-            if (activity.getClass().getName().equals(TestpaperDrawingActivity.class.getName())) {
+            if (activity.getClass().getName().equals(TestPaperDrawingActivity.class.getName())) {
                 String course= activity.getIntent().getStringExtra("course");
                 int categoryId= activity.getIntent().getIntExtra("typeId",0);
                 if (Objects.equals(course, mCourse) && categoryId==mTypeId){

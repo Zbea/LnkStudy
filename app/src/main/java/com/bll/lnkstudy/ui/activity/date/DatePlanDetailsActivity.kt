@@ -3,6 +3,8 @@ package com.bll.lnkstudy.ui.activity.date
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.SP_DATE_LIST
+import com.bll.lnkstudy.Constants.Companion.SP_WEEK_DATE_LIST
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -20,8 +22,16 @@ import com.bll.lnkstudy.ui.adapter.DateTimeAdapter
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_date_plan_details.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_date_plan_details.et_title
+import kotlinx.android.synthetic.main.ac_date_plan_details.iv_add
+import kotlinx.android.synthetic.main.ac_date_plan_details.iv_clock
+import kotlinx.android.synthetic.main.ac_date_plan_details.rg_group
+import kotlinx.android.synthetic.main.ac_date_plan_details.rg_group_date
+import kotlinx.android.synthetic.main.ac_date_plan_details.rv_date
+import kotlinx.android.synthetic.main.ac_date_plan_details.rv_list
+import kotlinx.android.synthetic.main.ac_date_plan_details.rv_week
+import kotlinx.android.synthetic.main.ac_date_plan_details.tv_date
+import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 
 class DatePlanDetailsActivity:BaseAppCompatActivity() {
@@ -54,8 +64,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         flags=intent.flags
         currentWeeks= DataBeanManager.weeks
 
-        selectWeekInt=SPUtil.getListInt("weekDateEvent")
-        selectDateLong=SPUtil.getListLong("dateDateEvent")
+        selectWeekInt=SPUtil.getListInt(SP_WEEK_DATE_LIST)
+        selectDateLong=SPUtil.getListLong(SP_DATE_LIST)
 
         val courses=MethodManager.getCourses()
         for (item in courses){
@@ -327,8 +337,8 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         }
 
         //存储已选日期
-        SPUtil.putListLong("dateDateEvent",selectDateLong)
-        SPUtil.putListInt("weekDateEvent",selectWeekInt)
+        SPUtil.putListLong(SP_DATE_LIST,selectDateLong)
+        SPUtil.putListInt(SP_WEEK_DATE_LIST,selectWeekInt)
 
         val plans = mutableListOf<DatePlan>()
         for (item in mAdapter?.data!!) {

@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.SP_DATE_LIST
+import com.bll.lnkstudy.Constants.Companion.SP_WEEK_DATE_LIST
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -15,8 +17,8 @@ import com.bll.lnkstudy.ui.adapter.DatePlanListAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.iv_manager
 import org.greenrobot.eventbus.EventBus
 
 class DatePlanListActivity:BaseAppCompatActivity() {
@@ -78,16 +80,16 @@ class DatePlanListActivity:BaseAppCompatActivity() {
                         val item=plans[position]
                         //删除计划的同时，移出星期的选择
                         if (item.date==0){
-                            val selectWeek=SPUtil.getListInt("weekDateEvent")
+                            val selectWeek=SPUtil.getListInt(SP_WEEK_DATE_LIST)
                             for (week in item.weeks){
                                 selectWeek.remove(week.week)
                             }
-                            SPUtil.putListInt("weekDateEvent",selectWeek)
+                            SPUtil.putListInt(SP_WEEK_DATE_LIST,selectWeek)
                         }
                         else{
-                            val selectDate=SPUtil.getListLong("dateDateEvent")
+                            val selectDate=SPUtil.getListLong(SP_DATE_LIST)
                             selectDate.removeAll(item.dates)
-                            SPUtil.putListLong("dateDateEvent",selectDate)
+                            SPUtil.putListLong(SP_WEEK_DATE_LIST,selectDate)
                         }
                         DateEventGreenDaoManager.getInstance().deleteDateEvent(item)
                         plans.removeAt(position)

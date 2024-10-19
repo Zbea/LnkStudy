@@ -115,17 +115,10 @@ class FileAddress {
     }
 
     /**
-     * 画本、书法文件夹地址
+     * 画本、书法文件夹地址 type=0 画本 type=1 书法
      */
-    fun getPathPainting(type:Int, grade: Int):String{
+    fun getPathPaintingDraw(type:Int, grade: Int):String{
         return "$PAINTING_PATH/$mUserId/$type/$grade"
-    }
-
-    /**
-     * 画本、书法内容具体路径
-     */
-    fun getPathPainting(type:Int, grade: Int,date: Long):String{
-        return "$PAINTING_PATH/$mUserId/$type/$grade/$date"
     }
 
     /**
@@ -175,12 +168,7 @@ class FileAddress {
     fun getPathScreen(typeStr: String):String{
         return "$SCREEN_PATH/${mUserId}/$typeStr"
     }
-    /**
-     * 截图手写
-     */
-    fun getPathScreenDrawing(typeStr: String,index:Int):String{
-        return "$SCREEN_PATH/${mUserId}/$typeStr/drawing/$index.tch"
-    }
+
     /**
      * 截图
      */

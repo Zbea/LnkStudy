@@ -1,23 +1,10 @@
 package com.bll.lnkstudy.base
 
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
-import com.bll.lnkstudy.manager.HomeworkBookDaoManager
-import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
-import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
-import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.manager.PaperDaoManager
-import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.FileUtils
-import java.io.File
 
 
 abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView,IContractView.IDataUpdateView{
@@ -36,51 +23,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     override fun onSuccess() {
     }
     override fun onList(list: MutableList<DataUpdateBean>?) {
-    }
-
-    /**
-     * 清空作业本
-     */
-    protected fun setClearHomework(){
-        //删除所有作业分类
-        HomeworkTypeDaoManager.getInstance().clear()
-        //删除所有作业
-        HomeworkContentDaoManager.getInstance().clear()
-        //删除所有朗读
-        RecordDaoManager.getInstance().clear()
-        //删除所有作业卷内容
-        HomeworkPaperDaoManager.getInstance().clear()
-        //题卷本
-        HomeworkBookDaoManager.getInstance().clear()
-        //题卷本批改详情
-        HomeworkBookCorrectDaoManager.getInstance().clear()
-        //提交详情
-        HomeworkDetailsDaoManager.getInstance().clear()
-
-        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
-        //清空本地题错本
-        FileUtils.deleteHomework(File(FileAddress().getPathScreen("未分类")).parent)
-        //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(2)
-        val map=HashMap<String,Any>()
-        map["type"]=2
-        mDataUploadPresenter.onDeleteData(map)
-    }
-
-    /**
-     * 清空考卷
-     */
-    protected fun setClearExamPaper(){
-        //删除本地考卷分类
-        PaperTypeDaoManager.getInstance().clear()
-        //删除所有考卷内容
-        PaperDaoManager.getInstance().clear()
-        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
-        //清除本地增量数据
-        DataUpdateManager.clearDataUpdate(3)
-        val map=HashMap<String,Any>()
-        map["type"]=3
-        mDataUploadPresenter.onDeleteData(map)
     }
 
 

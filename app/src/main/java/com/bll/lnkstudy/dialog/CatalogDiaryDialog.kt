@@ -39,7 +39,6 @@ class CatalogDiaryDialog(val context: Context, private val oldScreen:Int, privat
             dismiss()
             listener?.onClick(position)
         }
-
         return this
     }
 

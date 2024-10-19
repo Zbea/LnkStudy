@@ -208,6 +208,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             val itemList = ItemList()
             itemList.name = item.title
             itemList.page = item.page
+            itemList.isEdit=true
             if (titleStr != item.title) {
                 titleStr = item.title
                 list.add(itemList)
@@ -312,12 +313,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_b)
             }
             1->{
-                GlideUtils.setImageUrl(this,homeworkContent?.path, v_content_b)
+                GlideUtils.setImageUrl(this,homeworkContent?.path, v_content_b,homeworkContent?.state!!)
             }
             2->{
                 val file=File(homeworkContent?.path)
-                GlideUtils.setImageFileNoCache(this, file, v_content_b)
-
+                GlideUtils.setImageUrl(this, file.path, v_content_b,homeworkContent?.state!!)
                 val drawPath=file.parent+"/draw.png"
                 setElikLoadPath(elik_b!!, drawPath)
             }
@@ -332,11 +332,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_a)
                 }
                 1->{
-                    GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a)
+                    GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
                 }
                 2->{
                     val file=File(homeworkContent_a?.path)
-                    GlideUtils.setImageFileNoCache(this, file, v_content_a)
+                    GlideUtils.setImageUrl(this, file.path, v_content_a,homeworkContent_a?.state!!)
                     val drawPath=file.parent+"/draw.png"
                     setElikLoadPath(elik_b!!, drawPath)
                 }
@@ -436,7 +436,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.bgResId = homeworkType?.bgResId
         homeworkContent?.typeStr = homeworkType?.name
         homeworkContent?.title = getString(R.string.unnamed) + (homeworks.size + 1)
-        homeworkContent?.path = "$path/${DateUtils.longToString(System.currentTimeMillis())}.png"
+        homeworkContent?.path = "$path/${DateUtils.longToString(currentTime)}.png"
         homeworkContent?.page = homeworks.size
 
         page = homeworks.size

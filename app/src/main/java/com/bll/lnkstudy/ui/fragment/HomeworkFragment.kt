@@ -266,6 +266,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     item.isPg = false
                     notifyItemChanged(position)
                 }
+                if (item.isMessage) {
+                    item.isMessage = false
+                    notifyItemChanged(position)
+                }
                 when (item.state) {
                     1 -> {
                         MethodManager.gotoHomeworkReelDrawing(requireActivity(), item, Constants.DEFAULT_PAGE)
@@ -345,6 +349,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun deleteHomework() {
         val item = homeworkTypes[position]
+        //当前年级的老师、家长、本地错题本无法删除
+        if (item.grade==mUser?.grade){
+            if (item.createStatus==0){
+                if (item.state==5)
+                    return
+            }
+            else{
+                return
+            }
+        }
         HomeworkTypeDaoManager.getInstance().deleteBean(item)
         //删除增量更新
         DataUpdateManager.deleteDateUpdate(2, item.typeId, 1)

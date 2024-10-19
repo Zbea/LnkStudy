@@ -4,14 +4,17 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.HomeworkCommitDetailsDialog
 import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
@@ -25,7 +28,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import java.io.File
 
-class HomeworkManageFragment: BaseMainFragment() {
+open class HomeworkManageFragment: BaseMainFragment() {
 
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
@@ -99,11 +102,99 @@ class HomeworkManageFragment: BaseMainFragment() {
         }
     }
 
+    //页码跳转
+    private fun switchFragment(from: Fragment?, to: Fragment?) {
+        if (from != to) {
+            lastFragment = to
+            val fm = activity?.supportFragmentManager
+            val ft = fm?.beginTransaction()
+
+            if (!to?.isAdded!!) {
+                if (from != null) {
+                    ft?.hide(from)
+                }
+                ft?.add(R.id.fl_content_homework, to)?.commit()
+            } else {
+                if (from != null) {
+                    ft?.hide(from)
+                }
+                ft?.show(to)?.commit()
+            }
+        }
+    }
+
+    private fun removeAllFragment(){
+        val fm = activity?.supportFragmentManager!!
+        val ft = fm.beginTransaction()
+        for (fragment in fragments){
+            ft.remove(fragment).commit()
+        }
+    }
+
+    /**
+     * 清空作业本
+     */
+    private fun setClearHomework(){
+        //删除所有作业分类
+        HomeworkTypeDaoManager.getInstance().clear()
+        //删除所有作业
+        HomeworkContentDaoManager.getInstance().clear()
+        //删除所有朗读
+        RecordDaoManager.getInstance().clear()
+        //删除所有作业卷内容
+        HomeworkPaperDaoManager.getInstance().clear()
+        //题卷本
+        HomeworkBookDaoManager.getInstance().clear()
+        //题卷本批改详情
+        HomeworkBookCorrectDaoManager.getInstance().clear()
+        //提交详情
+        HomeworkDetailsDaoManager.getInstance().clear()
+
+        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
+        FileUtils.deleteHomework(File(FileAddress().getPathScreen("未分类")).parent)
+        //清除本地增量数据
+        DataUpdateManager.clearDataUpdate(2)
+        val map=HashMap<String,Any>()
+        map["type"]=2
+        mDataUploadPresenter.onDeleteData(map)
+    }
+
+    /**
+     * 年级变化时，清除低年级没有内容的作业本
+     */
+    private fun clearLowGradeHomework(){
+        val list=HomeworkTypeDaoManager.getInstance().queryAll(grade)
+        for (item in list){
+            when(item.state){
+                1,2,3->{
+                    val path = FileAddress().getPathHomework(item.course, item.typeId)
+                    if (!FileUtils.isExistContent(path)){
+                        HomeworkTypeDaoManager.getInstance().deleteBean(item)
+                        DataUpdateManager.deleteDateUpdate(2,item.typeId,1)
+                    }
+                }
+                4->{
+                    val homeworkBook = HomeworkBookDaoManager.getInstance().queryBookByID(item.bookId)
+                    if (homeworkBook==null){
+                        HomeworkTypeDaoManager.getInstance().deleteBean(item)
+                        DataUpdateManager.deleteDateUpdate(2,item.typeId,1)
+                    }
+                }
+                5->{
+                    val path=FileAddress().getPathScreenHomework(item.name,item.grade)
+                    if (!FileUtils.isExistContent(path)){
+                        HomeworkTypeDaoManager.getInstance().deleteBean(item)
+                        DataUpdateManager.deleteDateUpdate(2,item.typeId,1)
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * 上传
      */
     fun upload(token: String) {
-        if (grade == 0) return
         val cloudList = mutableListOf<CloudListBean>()
         //空内容不上传
         val nullItems = mutableListOf<HomeworkTypeBean>()
@@ -259,39 +350,13 @@ class HomeworkManageFragment: BaseMainFragment() {
         }
     }
 
-    //页码跳转
-    private fun switchFragment(from: Fragment?, to: Fragment?) {
-        if (from != to) {
-            lastFragment = to
-            val fm = activity?.supportFragmentManager
-            val ft = fm?.beginTransaction()
-
-            if (!to?.isAdded!!) {
-                if (from != null) {
-                    ft?.hide(from)
-                }
-                ft?.add(R.id.fl_content_homework, to)?.commit()
-            } else {
-                if (from != null) {
-                    ft?.hide(from)
-                }
-                ft?.show(to)?.commit()
-            }
-        }
-    }
-
-    private fun removeAllFragment(){
-        val fm = activity?.supportFragmentManager!!
-        val ft = fm.beginTransaction()
-        for (fragment in fragments){
-            ft.remove(fragment).commit()
-        }
-    }
-
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
                 initTab()
+            }
+            Constants.USER_CHANGE_GRADE_EVENT->{
+                clearLowGradeHomework()
             }
         }
     }

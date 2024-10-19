@@ -27,7 +27,6 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
     private lateinit var mPresenter:TeachingVideoPresenter
     private var flags=0
     private var item:ItemList?=null
-    private var grade=0//年级
     private var semester=0//学期
     private var grades= mutableListOf<PopupBean>()
     private var semesters= mutableListOf<PopupBean>()

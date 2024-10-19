@@ -11,7 +11,7 @@ class PaintingTypeAdapter(layoutResId: Int, data: List<ItemTypeBean>?) : BaseQui
 
     override fun convert(helper: BaseViewHolder, item: ItemTypeBean) {
         helper.apply {
-            setImageResource(R.id.iv_painting,if (item.type==3) R.mipmap.icon_painting_sm else R.mipmap.icon_painting_yb)
+            setImageResource(R.id.iv_painting,if (item.type==3) R.mipmap.icon_painting_list_hb else R.mipmap.icon_painting_list_sf)
             setText(R.id.tv_grade,DataBeanManager.getGradeStr(item.grade))
         }
     }

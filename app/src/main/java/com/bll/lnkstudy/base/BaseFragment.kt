@@ -23,12 +23,21 @@ import com.bll.lnkstudy.ui.activity.CloudStorageActivity
 import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
-import com.bll.lnkstudy.utils.*
+import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.utils.KeyboardUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.fragment_list_tab.*
+import kotlinx.android.synthetic.main.common_fragment_title.tv_search
+import kotlinx.android.synthetic.main.common_fragment_title.tv_title
+import kotlinx.android.synthetic.main.common_page_number.btn_page_down
+import kotlinx.android.synthetic.main.common_page_number.btn_page_up
+import kotlinx.android.synthetic.main.common_page_number.ll_page_number
+import kotlinx.android.synthetic.main.common_page_number.tv_page_current
+import kotlinx.android.synthetic.main.common_page_number.tv_page_total_bottom
+import kotlinx.android.synthetic.main.fragment_list_tab.rv_tab
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -55,7 +64,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     var mUser=SPUtil.getObj("user",User::class.java)
     var accountId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=1
-    var grade=0
+    var grade=mUser?.grade!!
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -94,7 +103,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
-        grade=mUser?.grade!!
         initCommonTitle()
 
         if (rv_tab!=null){

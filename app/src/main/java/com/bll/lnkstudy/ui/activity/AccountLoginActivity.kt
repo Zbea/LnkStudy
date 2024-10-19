@@ -90,14 +90,9 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             presenter.login(map)
         }
 
-
-        val tokenStr=SPUtil.getString("token")
-
-        if (tokenStr.isNotEmpty() && mUser!=null)
-        {
+        if (MethodManager.isLogin()){
             gotoMainActivity()
         }
-
     }
 
     private fun gotoMainActivity(){

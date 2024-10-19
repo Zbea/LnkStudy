@@ -31,7 +31,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     private var note_Content_a: NoteContentBean? = null//a屏内容
     private var noteContents = mutableListOf<NoteContentBean>() //所有内容
     private var page = 0//页码
-    private var grade=1
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -73,6 +72,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             val itemList= ItemList()
             itemList.name=item.title
             itemList.page=item.page
+            itemList.isEdit=true
             if (titleStr != item.title)
             {
                 titleStr=item.title

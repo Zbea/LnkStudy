@@ -310,7 +310,7 @@
     <string name="homework_my_book">我的教辅本</string>
     <string name="homework_other_book">参考教辅本</string>
     <string name="homework_receiver_reel">收到题卷</string>
-    <string name="homework_receiver_message">收到通知</string>
+    <string name="homework_receiver_message">收到作业</string>
     <string name="homework_create_str">新建作业本</string>
     <string name="homework_create_hint">输入作业本标题</string>
     <string name="homework_commit_details_str">提交详情</string>

@@ -73,7 +73,6 @@ import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
 import kotlinx.android.synthetic.main.fragment_main_left.tv_screenshot
 import kotlinx.android.synthetic.main.fragment_main_left.v_down
 import kotlinx.android.synthetic.main.fragment_main_left.v_up
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Random
 
@@ -146,7 +145,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             customStartActivity(Intent(activity, DateActivity::class.java))
 //            EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
         }
-
 
         iv_date_more.setOnClickListener {
             customStartActivity(Intent(activity, DateDayListActivity::class.java))

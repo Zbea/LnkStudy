@@ -17,6 +17,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
+import com.bll.lnkstudy.ui.activity.PaintingImageActivity
 import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
@@ -52,6 +53,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     private var revocationList= mutableListOf<Int>()
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
+
     var correctMode=0
     var scoreMode=0 //1赋分，2对错
     var answerImages= mutableListOf<String>()//答题地址

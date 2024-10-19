@@ -12,6 +12,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DiaryManageDialog
+import com.bll.lnkstudy.dialog.DiaryUploadListDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
@@ -103,7 +104,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             mUser?.grade=currentGrade
             SPUtil.putObj("user", mUser!!)
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
-            //当年级变化时，及时上传本地作业、考卷
+            //当年级变化时，清除本地其他年级作业、考卷
             EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
         }
     }
@@ -120,7 +121,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 typeItem.date = System.currentTimeMillis()
                 typeItem.grade = mUser?.grade!!
                 typeItem.typeId = typeId
-                typeItem.createStatus = 0
                 typeItem.state = 5
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
                 path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
@@ -162,77 +162,11 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         }
 
         tv_diary_btn.setOnClickListener {
-            if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                    customStartActivity(Intent(activity,DiaryActivity::class.java))
-                }
-            }
-            else{
-                customStartActivity(Intent(activity,DiaryActivity::class.java))
-            }
+            startDiaryActivity(0)
         }
 
         tv_diary_btn.setOnLongClickListener {
-            val pops= mutableListOf<PopupBean>()
-            if (privacyPassword==null){
-                pops.add(PopupBean(1,"设置密码"))
-            }
-            else{
-                if (privacyPassword?.isSet==true){
-                    pops.add(PopupBean(1,"取消密码"))
-                }
-                else{
-                    pops.add(PopupBean(1,"设置密码"))
-                }
-            }
-            pops.add(PopupBean(2,"上传日记"))
-            pops.add(PopupBean(3,"删除日记"))
-            PopupClick(requireActivity(),pops,tv_diary_btn,0).builder().setOnSelectListener{
-                when(it.id){
-                    1->{
-                        if (privacyPassword==null){
-                            PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                                privacyPassword=it
-                                showToast("日记密码设置成功")
-                            }
-                        }
-                        else{
-                            val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
-                            CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                                override fun cancel() {
-                                }
-                                override fun ok() {
-                                    PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                        MethodManager.savePrivacyPassword(0,privacyPassword)
-                                    }
-                                }
-                            })
-                        }
-                    }
-                    2->{
-                        DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                                titleStr,startLong,endLong->
-                            diaryStartLong=startLong
-                            diaryEndLong=endLong
-                            diaryUploadTitleStr=titleStr
-                            EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
-                        }
-                    }
-                    3->{
-                        DiaryManageDialog(requireActivity(),2).builder().setOnDialogClickListener{
-                                titleStr,startLong,endLong->
-                            val diarys= DiaryDaoManager.getInstance().queryList(startLong, endLong)
-                            for (item in diarys){
-                                val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
-                                FileUtils.deleteFile(File(path))
-                                DiaryDaoManager.getInstance().delete(item)
-                            }
-                            showToast(2,"删除日记成功")
-                        }
-                    }
-                }
-            }
+            onLongDiary()
             return@setOnLongClickListener true
         }
 
@@ -291,8 +225,81 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
                     intent.putExtra("bundle", bundle)
                     intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
-                    intent.putExtra("android.intent.extra.KEEP_FOCUS",true)
+                    intent.putExtra(Constants.INTENT_DRAWING_FOCUS,true)
                     customStartActivity(intent)
+                }
+            }
+        }
+    }
+
+    /**
+     * 跳转日记
+     */
+    private fun startDiaryActivity(typeId:Int){
+        if (privacyPassword!=null&&privacyPassword?.isSet==true){
+            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+            }
+        }
+        else{
+            customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+        }
+    }
+
+    /**
+     * 长按日记管理
+     */
+    private fun onLongDiary(){
+        val pops= mutableListOf<PopupBean>()
+        if (privacyPassword==null){
+            pops.add(PopupBean(1,"设置密码"))
+        }
+        else{
+            if (privacyPassword?.isSet==true){
+                pops.add(PopupBean(1,"取消密码"))
+            }
+            else{
+                pops.add(PopupBean(1,"设置密码"))
+            }
+        }
+        pops.add(PopupBean(2,"结集保存"))
+        pops.add(PopupBean(3,"云库日记"))
+        PopupClick(requireActivity(),pops,tv_diary_btn,0).builder().setOnSelectListener{
+            when(it.id){
+                1->{
+                    if (privacyPassword==null){
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                            privacyPassword=it
+                            showToast("日记密码设置成功")
+                        }
+                    }
+                    else{
+                        val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                        CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                                    privacyPassword!!.isSet=!privacyPassword!!.isSet
+                                    MethodManager.savePrivacyPassword(0,privacyPassword)
+                                }
+                            }
+                        })
+                    }
+                }
+                2->{
+                    DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                            titleStr,startLong,endLong->
+                        diaryStartLong=startLong
+                        diaryEndLong=endLong
+                        diaryUploadTitleStr=titleStr
+                        EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
+                    }
+                }
+                3->{
+                    DiaryUploadListDialog(requireActivity()).builder().setOnDialogClickListener{ typeId->
+                        startDiaryActivity(typeId)
+                    }
                 }
             }
         }

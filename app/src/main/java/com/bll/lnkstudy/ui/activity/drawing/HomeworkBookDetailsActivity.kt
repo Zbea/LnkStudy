@@ -359,7 +359,14 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
         val showFile = getIndexFile(index)
         if (showFile != null) {
-            GlideUtils.setImageFileNoCache(this, showFile, view)
+            val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
+            if (correctBean==null){
+                GlideUtils.setImageUrl(this, showFile.path, view)
+            }
+            else{
+                GlideUtils.setImageUrl(this, showFile.path, view,correctBean.state)
+            }
+
             if (isCommitState(index)){
                 elik.setPWEnabled(false)
             }
