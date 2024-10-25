@@ -31,7 +31,7 @@ class DiaryUploadListDialog(val context: Context) {
             layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
-        val diaryTypes=ItemTypeDaoManager.getInstance().queryAll(6)
+        val diaryTypes=ItemTypeDaoManager.getInstance().queryAllOrderDesc(6)
 
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)

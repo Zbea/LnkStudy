@@ -7,8 +7,13 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
 import com.bll.lnkstudy.utils.FileUtils
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 
 class FileDrawingActivity : BaseFileDrawingActivity() {
@@ -123,21 +128,6 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
                 elik.setLoadFilePath(getDrawingPath(index+1), true)
             }
         }
-    }
-
-    override fun onElikSava_a() {
-        saveElik(elik_a!!)
-    }
-
-    override fun onElikSava_b() {
-        saveElik(elik_b!!)
-    }
-
-    /**
-     * 抬笔后保存手写
-     */
-    private fun saveElik(elik: EinkPWInterface){
-        elik.saveBitmap(true) {}
     }
 
     /**

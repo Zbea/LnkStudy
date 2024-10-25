@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:text="总计：50本"
+            android:text="总计"
             android:textColor="@color/black"
             android:textSize="22sp"
             />

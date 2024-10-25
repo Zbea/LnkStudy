@@ -450,6 +450,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik_a?.saveBitmap(true) {}
                 onElikSava_a()
             }
         })
@@ -468,6 +469,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik_b?.saveBitmap(true) {}
                 onElikSava_b()
             }
         })

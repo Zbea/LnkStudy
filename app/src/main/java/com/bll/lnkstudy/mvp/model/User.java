@@ -7,7 +7,7 @@ public class User {
     public long accountId;
     public String telNumber;
     public String nickname;
-    public int balance;//学豆
+    public int balance=0;//学豆
     public int grade=1;//年级
     public String parentName;
     public String parentNickname;

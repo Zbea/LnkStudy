@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
         android:layout_marginTop="30dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
         android:background="@drawable/bg_line_bottom"
         android:gravity="center_vertical">
 
@@ -72,8 +72,8 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="40dp"
         />

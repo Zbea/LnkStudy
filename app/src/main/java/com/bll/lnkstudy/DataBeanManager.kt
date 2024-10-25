@@ -25,7 +25,7 @@ object DataBeanManager {
     )
     val teachingType = arrayOf(
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
-        mContext.getString(R.string.textbook_tab_other), mContext.getString(R.string.homework_my_book),mContext.getString(R.string.homework_other_book)
+        mContext.getString(R.string.textbook_tab_other),mContext.getString(R.string.homework_other_book)
     )
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),

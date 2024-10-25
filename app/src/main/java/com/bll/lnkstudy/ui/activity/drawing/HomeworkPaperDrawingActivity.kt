@@ -353,12 +353,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onElikSava_a() {
-        elik_a?.saveBitmap(true) {}
         refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
-        elik_b?.saveBitmap(true) {}
         refreshDataUpdate()
     }
 

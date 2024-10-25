@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import java.io.File
 
 class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
@@ -109,7 +110,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                 page-=2
                 onContent()
             }
-            else if (page==2){//当页面不够翻两页时
+            else if (page==2){
                 page=1
                 onContent()
             }
@@ -124,38 +125,49 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     override fun onPageDown() {
         val total=paintingLists.size-1
         if(isExpand){
-            when(page){
-                total->{
+            if (page<total-1){
+                page+=2
+                onContent()
+            }
+            else if (page==total-1){
+                if (isDrawLastContent()){
                     newPaintingContent()
-                    newPaintingContent()
-                    page=paintingLists.size-1
+                    onContent()
                 }
-                total-1->{
-                    newPaintingContent()
-                    page=paintingLists.size-1
-                }
-                else->{
-                    page+=2
+                else{
+                    page=total
+                    onContent()
                 }
             }
         }
         else{
-            if (page >=total) {
-                newPaintingContent()
-                page=paintingLists.size-1
+            if (page==total) {
+                if (isDrawLastContent()){
+                    newPaintingContent()
+                    onContent()
+                }
             } else {
                 page += 1
+                onContent()
             }
         }
-        onContent()
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
-        isExpand=!isExpand
-        if (paintingLists.size==1&&isExpand){
-            newPaintingContent()
+        if (paintingLists.size==1){
+            //如果最后一张已写,则可以在全屏时创建新的
+            if (isDrawLastContent()){
+                newPaintingContent()
+            }
+            else{
+                return
+            }
         }
+        if (page==0){
+            page=1
+        }
+        isExpand=!isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
         onContent()
@@ -170,13 +182,17 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         GlideUtils.setImageUrl(this,resId_b,v_content_b)
     }
 
+    /**
+     * 最新content是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val contentBean = paintingLists.last()
+        return File(contentBean.path).exists()
+    }
+
     override fun onContent() {
         paintingDrawingBean = paintingLists[page]
         if (isExpand) {
-            if (page<=0){
-                page = 1
-                paintingDrawingBean = paintingLists[page]
-            }
             paintingDrawingBean_a = paintingLists[page-1]
         }
 
@@ -203,28 +219,18 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         }
     }
 
-
     //保存绘图以及更新手绘
     private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
         elik.setLoadFilePath(path, true)
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!,paintingDrawingBean_a!!)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a!!.id.toInt(),2)
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!,paintingDrawingBean!!)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean!!.id.toInt(),2)
     }
-
-    /**
-     * 抬笔后保存手写
-     */
-    private fun saveElik(elik: EinkPWInterface,item: PaintingDrawingBean){
-        elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2)
-    }
-
 
     //创建新的作业内容
     private fun newPaintingContent() {

@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
-import com.bll.lnkstudy.Constants.Companion.halfYear
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
@@ -85,7 +84,7 @@ class BookcaseFragment: BaseMainFragment() {
      * 查找本地书籍
      */
     private fun findBook(){
-        iv_tips.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
+        iv_tips?.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
 
         books=BookGreenDaoManager.getInstance().queryAllBook(true,13)
         if (books.size==0){
@@ -105,12 +104,12 @@ class BookcaseFragment: BaseMainFragment() {
         if (bookTopBean!=null){
             setImageUrl(bookTopBean?.imageUrl!!,iv_content_up)
             setImageUrl(bookTopBean?.imageUrl!!,iv_content_down)
-            tv_name.text=bookTopBean?.bookName
+            tv_name?.text=bookTopBean?.bookName
         }
         else{
-            iv_content_up.setImageResource(0)
-            iv_content_down.setImageResource(0)
-            tv_name.text=""
+            iv_content_up?.setImageResource(0)
+            iv_content_down?.setImageResource(0)
+            tv_name?.text=""
         }
     }
 
@@ -129,16 +128,9 @@ class BookcaseFragment: BaseMainFragment() {
 
     fun upload(token:String){
         cloudList.clear()
-        val maxBooks= mutableListOf<BookBean>()
-        val books= BookGreenDaoManager.getInstance().queryAllBook()
-        //遍历获取所有需要上传的书籍数目
-        for (item in books){
-            if (System.currentTimeMillis()>=item.time+ halfYear){
-                maxBooks.add(item)
-            }
-        }
+        val books= BookGreenDaoManager.getInstance().queryAllByHalfYear()
         //遍历上传书籍
-        for (item in maxBooks){
+        for (item in books){
             if (FileUtils.isExistContent(item.bookDrawPath)){
                 FileUploadManager(token).apply {
                     startZipUpload(item.bookDrawPath,item.bookId.toString())
@@ -152,7 +144,7 @@ class BookcaseFragment: BaseMainFragment() {
                             listJson= Gson().toJson(item)
                             bookId=item.bookId
                         })
-                        if (cloudList.size==maxBooks.size)
+                        if (cloudList.size==books.size)
                             mCloudUploadPresenter.upload(cloudList)
                     }
                 }
@@ -166,7 +158,7 @@ class BookcaseFragment: BaseMainFragment() {
                     listJson= Gson().toJson(item)
                     bookId=item.bookId
                 })
-                if (cloudList.size==maxBooks.size)
+                if (cloudList.size==books.size)
                     mCloudUploadPresenter.upload(cloudList)
             }
         }

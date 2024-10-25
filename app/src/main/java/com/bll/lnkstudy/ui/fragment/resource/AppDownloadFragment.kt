@@ -67,6 +67,7 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
     }
 
     override fun initView() {
+        initChangeScreenData()
         index= arguments?.getInt("index")!!
         pageSize=8
         initRecyclerView()

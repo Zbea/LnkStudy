@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 
 class PaintingDrawingActivity : BaseDrawingActivity() {
 
@@ -43,7 +44,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         typeId= paintingTypeBean?.typeId!!
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
 
-        if (paintingLists.isNotEmpty()) {
+        if (!paintingLists.isNullOrEmpty()) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
             page = paintingLists.size - 1
         } else {
@@ -119,7 +120,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 page-=2
                 onContent()
             }
-            else if (page==2){//当页面不够翻两页时
+            else if (page==2){
                 page=1
                 onContent()
             }
@@ -134,50 +135,65 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     override fun onPageDown() {
         val total=paintingLists.size-1
         if(isExpand){
-            when(page){
-                total->{
+            if (page<total-1){
+                page+=2
+                onContent()
+            }
+            else if (page==total-1){
+                if (isDrawLastContent()){
                     newPaintingContent()
-                    newPaintingContent()
-                    page=paintingLists.size-1
+                    onContent()
                 }
-                total-1->{
-                    newPaintingContent()
-                    page=paintingLists.size-1
-                }
-                else->{
-                    page+=2
+                else{
+                    page=total
+                    onContent()
                 }
             }
         }
         else{
-            if (page >=total) {
-                newPaintingContent()
-                page=paintingLists.size-1
+            if (page==total) {
+                if (isDrawLastContent()){
+                    newPaintingContent()
+                    onContent()
+                }
             } else {
                 page += 1
+                onContent()
             }
         }
-        onContent()
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
-        isExpand=!isExpand
-        if (paintingLists.size==1&&isExpand){
-            newPaintingContent()
+        if (paintingLists.size==1){
+            //如果最后一张已写,则可以在全屏时创建新的
+            if (isDrawLastContent()){
+                newPaintingContent()
+            }
+            else{
+                return
+            }
         }
+        if (page==0){
+            page=1
+        }
+        isExpand=!isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
         onContent()
     }
 
+    /**
+     * 最新content是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val contentBean = paintingLists.last()
+        return File(contentBean.path).exists()
+    }
+
     override fun onContent() {
         paintingDrawingBean = paintingLists[page]
         if (isExpand) {
-            if (page<=0){
-                page = 1
-                paintingDrawingBean = paintingLists[page]
-            }
             paintingDrawingBean_a = paintingLists[page-1]
         }
 
@@ -205,19 +221,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!,paintingDrawingBean_a!!)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a!!.id.toInt(),2)
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!,paintingDrawingBean!!)
-    }
-
-    /**
-     * 抬笔后保存手写
-     */
-    private fun saveElik(elik: EinkPWInterface,item: PaintingDrawingBean){
-        elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(5,item.id.toInt(),2)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean!!.id.toInt(),2)
     }
 
     private fun setBg(resId:Int){
@@ -237,7 +245,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.date = date
         paintingDrawingBean?.path = "$path/$fileName.png"
         paintingDrawingBean?.grade=grade
-        paintingDrawingBean?.bgRes=""
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)

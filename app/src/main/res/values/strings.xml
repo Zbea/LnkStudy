@@ -307,8 +307,7 @@
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
 
-    <string name="homework_my_book">我的教辅本</string>
-    <string name="homework_other_book">参考教辅本</string>
+    <string name="homework_other_book">参考教辅</string>
     <string name="homework_receiver_reel">收到题卷</string>
     <string name="homework_receiver_message">收到作业</string>
     <string name="homework_create_str">新建作业本</string>

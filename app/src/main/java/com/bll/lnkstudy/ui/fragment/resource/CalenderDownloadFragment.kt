@@ -56,6 +56,7 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
     }
 
     override fun initView() {
+        initChangeScreenData()
         pageSize=12
         initRecycleView()
     }

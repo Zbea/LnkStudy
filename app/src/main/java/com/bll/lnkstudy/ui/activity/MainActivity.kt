@@ -331,8 +331,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 7)
-            set(Calendar.DAY_OF_MONTH, 31)
-            set(Calendar.HOUR_OF_DAY, 9)
+            set(Calendar.DAY_OF_MONTH, 25)
+            set(Calendar.HOUR_OF_DAY, 8)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -373,9 +373,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.MONTH, solar.solarMonth)
+            set(Calendar.MONTH, solar.solarMonth-1)
             set(Calendar.DAY_OF_MONTH, solar.solarDay)
-            set(Calendar.HOUR_OF_DAY, 9)
+            set(Calendar.HOUR_OF_DAY, 8)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)

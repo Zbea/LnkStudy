@@ -428,7 +428,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      * 抬笔后保存手写
      */
     private fun saveElik(elik: EinkPWInterface){
-        elik.saveBitmap(true) {}
         if (File(elik.pwBitmapFilePath).exists()){
             DataUpdateManager.editDataUpdate(7,bookId,1)
         }

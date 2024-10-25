@@ -18,7 +18,7 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.rv_list
-import kotlinx.android.synthetic.main.common_title.iv_manager
+import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 
 class DatePlanListActivity:BaseAppCompatActivity() {
@@ -39,20 +39,18 @@ class DatePlanListActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(R.string.date_plan)
-        setImageManager(R.mipmap.icon_add)
+        setPageSetting("创建")
 
-        iv_manager.setOnClickListener {
+        tv_setting.setOnClickListener {
             customStartActivity(Intent(this,DatePlanDetailsActivity::class.java).addFlags(0)
                 .putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
             )
-//            SPUtil.putListInt("weekDateEvent", mutableListOf())
-//            SPUtil.putListLong("dateDateEvent", mutableListOf())
         }
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,100f), DP2PX.dip2px(this,40f),
-            DP2PX.dip2px(this,100f), DP2PX.dip2px(this,20f))
+            DP2PX.dip2px(this,80f), DP2PX.dip2px(this,30f),
+            DP2PX.dip2px(this,80f), DP2PX.dip2px(this,20f))
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -60,7 +58,7 @@ class DatePlanListActivity:BaseAppCompatActivity() {
         mAdapter = DatePlanListAdapter(R.layout.item_date_plan_list, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceItemDeco(30,false))
+        rv_list?.addItemDecoration(SpaceItemDeco(40,false))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val intent=Intent(this,DatePlanDetailsActivity::class.java)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

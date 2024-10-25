@@ -38,7 +38,7 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     }
     override fun initView() {
         disMissView(iv_catalog,iv_btn,iv_expand,iv_draft)
-        setPageTitle(R.string.main_plan)
+        setPageTitle("规划")
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){
@@ -110,12 +110,12 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     override fun onPageUp() {
         if (posImage>0)
             posImage-=1
-        setContentImage()
+        onContent()
     }
 
     override fun onPageDown() {
         posImage+=1
-        setContentImage()
+        onContent()
     }
 
     /**
@@ -145,13 +145,10 @@ class PlanOverviewActivity:BaseDrawingActivity() {
         }
         posImage=0
         getPathsSize()
-        setContentImage()
+        onContent()
     }
 
-    /**
-     * 更换内容
-     */
-    private fun setContentImage() {
+    override fun onContent() {
         val path = if (type==1){
             FileAddress().getPathPlan(nowYear,nowMonth)+ "/${posImage + 1}.png"
         }

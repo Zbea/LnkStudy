@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.manager;
 
 
+import com.bll.lnkstudy.Constants;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -78,6 +79,16 @@ public class BookGreenDaoManager {
     //查询所有书籍
     public List<BookBean> queryAllBook() {
         return bookBeanDao.queryBuilder().where(whereUser).orderDesc(BookBeanDao.Properties.Time).build().list();
+    }
+
+    /**
+     * 获取半年以前的书籍
+     * @return
+     */
+    public List<BookBean> queryAllByHalfYear(){
+        long time=System.currentTimeMillis()- Constants.halfYear;
+        WhereCondition whereCondition1= BookBeanDao.Properties.Time.le(time);
+        return bookBeanDao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
     /**

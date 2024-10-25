@@ -28,17 +28,18 @@ class Constants {
 
         const val WIDTH = 1404
         const val HEIGHT = 1872 //38->52 50->69
-        const val halfYear = 180 * 24 * 60 * 60 * 1000
-        const val dayLong = 24 * 60 * 60 * 1000
-        const val weekTime = 7 * 24 * 60 * 60 * 1000
+        const val halfYear = 180 * 24 * 60 * 60 * 1000L
+        const val dayLong = 24 * 60 * 60 * 1000L
+        const val weekTime = 7 * 24 * 60 * 60 * 1000L
         const val DEFAULT_PAGE = -1
         const val SCREEN_LEFT = 1//左屏
         const val SCREEN_RIGHT = 2//右屏
         const val SCREEN_FULL = 3//全屏
         const val STATUS_BAR_SHOW = 2147483647//永不消失
+            const val DEBUG="debug"
 
-                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        const val URL_BASE = "http://192.168.101.100:10800/v1/"
         const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 
         //
@@ -88,6 +89,7 @@ class Constants {
         const val APP_INSTALL_EVENT = "AppInstallEvent"//应用下载安装通知
         const val APP_UNINSTALL_EVENT = "AppUninstallEvent"//应用卸载安装通知
         const val APP_INSERT_EVENT = "AppInsertEvent"//工具保存通知
+        const val CLASSGROUP_REFRESH_EVENT = "ClassGroupRefreshEvent"//班群更新通知
         const val COURSEITEM_EVENT = "ClassItemEvent" //学生科目刷新
         const val NOTE_TAB_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"

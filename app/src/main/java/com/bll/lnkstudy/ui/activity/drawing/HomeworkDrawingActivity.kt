@@ -235,7 +235,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             if (page > 2) {
                 page -= 2
                 onContent()
-            } else if (page == 2) {//当页面不够翻两页时
+            } else if (page == 2) {
                 page = 1
                 onContent()
             }
@@ -249,54 +249,67 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onPageDown() {
         val total = homeworks.size - 1
-        if (isExpand) {
-            when (page) {
-                total -> {
-                    newHomeWorkContent()
-                    newHomeWorkContent()
-                    page = homeworks.size - 1
-                }
-                total - 1 -> {
-                    newHomeWorkContent()
-                    page = homeworks.size - 1
-                }
-                else -> {
-                    page += 2
-                }
+        if(isExpand){
+            if (page<total-1){
+                page+=2
+                onContent()
             }
-        } else {
-            if (page >= total) {
-                newHomeWorkContent()
-                page = homeworks.size - 1
-            } else {
-                page += 1
+            else if (page==total-1){
+                if (isDrawLastContent()){
+                    newHomeWorkContent()
+                    onContent()
+                }
+                else{
+                    page=total
+                    onContent()
+                }
             }
         }
-        onContent()
+        else{
+            if (page==total) {
+                if (isDrawLastContent()){
+                    newHomeWorkContent()
+                    onContent()
+                }
+            } else {
+                page += 1
+                onContent()
+            }
+        }
     }
 
     override fun onChangeExpandContent() {
         changeErasure()
-        isExpand = !isExpand
-        if (homeworks.size == 1&&isExpand) {
-            newHomeWorkContent()
+        if (homeworks.size==1){
+            //如果最后一张已写,则可以在全屏时创建新的
+            if (isDrawLastContent()){
+                newHomeWorkContent()
+            }
+            else{
+                return
+            }
         }
+        if (page==0){
+            page=1
+        }
+        isExpand = !isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
         onContent()
     }
 
+    /**
+     * 最新content是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val contentBean = homeworks.last()
+        return File(contentBean.path).exists()
+    }
+
     override fun onContent() {
         homeworkContent = homeworks[page]
-        if (isExpand) {
-            if (page > 0) {
-                homeworkContent_a = homeworks[page - 1]
-            } else {
-                page = 1
-                homeworkContent = homeworks[page]
-                homeworkContent_a = homeworks[0]
-            }
-        }
+        if (isExpand)
+            homeworkContent_a = homeworks[page - 1]
 
         tv_page_total.text="${homeworks.size}"
         tv_page_total_a.text="${homeworks.size}"
@@ -391,11 +404,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!, homeworkContent_a!!)
+        refreshDataUpdate(homeworkContent_a!!)
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!, homeworkContent!!)
+        refreshDataUpdate(homeworkContent!!)
     }
 
     override fun onElikStart_a() {
@@ -414,18 +427,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
     }
 
-    /**
-     * 抬笔后保存手写
-     */
-    private fun saveElik(elik: EinkPWInterface, homeworkContent: HomeworkContentBean) {
-        elik.saveBitmap(true) {}
-        refreshDataUpdate(homeworkContent)
-    }
-
 
     //创建新的作业内容
     private fun newHomeWorkContent() {
-
         val path = FileAddress().getPathHomework(course, homeworkTypeId, homeworks.size+1)
         val currentTime=System.currentTimeMillis()
 
@@ -572,12 +576,10 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      * 合图
      */
     private fun saveImage(homework: HomeworkContentBean): String {
-
         val resId = ToolUtils.getImageResId(this, homeworkType?.contentResId)
         val options = BitmapFactory.Options()
         options.inScaled = false
         val oldBitmap = BitmapFactory.decodeResource(resources, resId,options)
-
 
         val drawPath = homework.path
         val drawBitmap = BitmapFactory.decodeFile(drawPath)

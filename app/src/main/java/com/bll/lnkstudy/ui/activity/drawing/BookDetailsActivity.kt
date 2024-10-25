@@ -18,8 +18,12 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -193,7 +197,6 @@ class BookDetailsActivity : BaseDrawingActivity() {
      * 抬笔后保存手写
      */
     private fun saveElik(elik: EinkPWInterface){
-        elik.saveBitmap(true) {}
         if (File(elik.pwBitmapFilePath).exists()){
             DataUpdateManager.editDataUpdate(1,book?.bookId!!,2)
         }

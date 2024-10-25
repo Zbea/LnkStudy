@@ -10,9 +10,9 @@
 
     <TextView
         android:id="@+id/tv_start_time"
-        android:layout_width="70dp"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         android:gravity="center"
         />
@@ -22,15 +22,15 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         android:text="~"/>
 
     <TextView
         android:id="@+id/tv_end_time"
-        android:layout_width="70dp"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         android:gravity="center"/>
 
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black" />
 
 
@@ -54,7 +54,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25" />
+        android:textSize="@dimen/sp_22" />
 
 
 </LinearLayout>

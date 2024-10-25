@@ -59,7 +59,7 @@ public class DiaryDaoManager {
         List<DiaryBean> diaryBeans=dao.queryBuilder().where(whereUser,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
         DiaryBean diaryBean = null;
         if (!diaryBeans.isEmpty()){
-            diaryBean= diaryBeans.get(diaryBeans.size() - 1);
+            diaryBean= diaryBeans.get(0);
         }
         return diaryBean;
     }

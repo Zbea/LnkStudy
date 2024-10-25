@@ -22,10 +22,12 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import java.io.File
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
     private var type =""
+    private var noteTitle=""
     private var noteBook: Note? = null
     private var note_Content_b: NoteContentBean? = null//当前内容
     private var note_Content_a: NoteContentBean? = null//a屏内容
@@ -42,10 +44,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteBook = NoteDaoManager.getInstance().queryBean(id)
         type = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
+        noteTitle=noteBook?.title!!
 
-        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.title,grade)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteTitle,grade)
 
-        if (noteContents.size > 0) {
+        if (!noteContents.isNullOrEmpty()) {
             if (page==DEFAULT_PAGE)
                 page = noteBook!!.page
             note_Content_b = if (page<noteContents.size){
@@ -98,30 +101,32 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     override fun onPageDown() {
         val total=noteContents.size-1
         if(isExpand){
-            when(page){
-                total->{
+            if (page<total-1){
+                page+=2
+                onContent()
+            }
+            else if (page==total-1){
+                if (isDrawLastContent()){
                     newNoteContent()
-                    newNoteContent()
-                    page=noteContents.size-1
+                    onContent()
                 }
-                total-1->{
-                    newNoteContent()
-                    page=noteContents.size-1
-                }
-                else->{
-                    page+=2
+                else{
+                    page=total
+                    onContent()
                 }
             }
         }
         else{
-            if (page >=total) {
-                newNoteContent()
-                page=noteContents.size-1
+            if (page ==total) {
+                if (isDrawLastContent()){
+                    newNoteContent()
+                    onContent()
+                }
             } else {
                 page += 1
+                onContent()
             }
         }
-        onContent()
     }
 
     override fun onPageUp() {
@@ -130,7 +135,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 page-=2
                 onContent()
             }
-            else if (page==2){//当页面不够翻两页时
+            else if (page==2){
                 page=1
                 onContent()
             }
@@ -144,25 +149,36 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun onChangeExpandContent() {
         changeErasure()
-        isExpand=!isExpand
-        if (noteContents.size==1&&isExpand){
-            newNoteContent()
+        if (noteContents.size==1){
+            //如果最后一张已写,则可以在全屏时创建新的
+            if (isDrawLastContent()){
+                newNoteContent()
+            }
+            else{
+                return
+            }
         }
+        if (page==0){
+            page=1
+        }
+        isExpand=!isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
         onContent()
     }
 
+    /**
+     * 最后一个是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val contentBean = noteContents.last()
+        return File(contentBean.filePath).exists()
+    }
+
     override fun onContent() {
         note_Content_b = noteContents[page]
-
-        if (isExpand) {
-            if (page<=0){
-                page=1
-                note_Content_b = noteContents[page]
-            }
+        if (isExpand)
             note_Content_a = noteContents[page-1]
-        }
 
         tv_page_total.text="${noteContents.size}"
         tv_page_total_a.text="${noteContents.size}"
@@ -188,31 +204,23 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!,note_Content_a!!)
+        DataUpdateManager.editDataUpdate(4,note_Content_a!!.id.toInt(),3)
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!,note_Content_b!!)
-    }
-
-    /**
-     * 抬笔后保存手写
-     */
-    private fun saveElik(elik: EinkPWInterface,item: NoteContentBean){
-        elik.saveBitmap(true) {}
-        DataUpdateManager.editDataUpdate(4,item.id.toInt(),3)
+        DataUpdateManager.editDataUpdate(4,note_Content_b!!.id.toInt(),3)
     }
 
     //创建新的作业内容
     private fun newNoteContent() {
 
         val date=System.currentTimeMillis()
-        val path=FileAddress().getPathNote(grade,type,noteBook?.title)
+        val path=FileAddress().getPathNote(grade,type,noteTitle)
 
         note_Content_b = NoteContentBean()
         note_Content_b?.date=date
         note_Content_b?.typeStr=type
-        note_Content_b?.noteTitle = noteBook?.title
+        note_Content_b?.noteTitle = noteTitle
         note_Content_b?.resId = noteBook?.contentResId
         note_Content_b?.grade=grade
         note_Content_b?.title=getString(R.string.unnamed)+(noteContents.size+1)
@@ -227,8 +235,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(note_Content_b),note_Content_b?.filePath!!)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun onPause() {
+        super.onPause()
         noteBook?.page=page
         NoteDaoManager.getInstance().insertOrReplace(noteBook)
     }

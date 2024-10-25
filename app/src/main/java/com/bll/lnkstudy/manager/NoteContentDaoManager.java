@@ -6,10 +6,12 @@ import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean;
 import com.bll.lnkstudy.mvp.model.User;
+import com.bll.lnkstudy.utils.FileUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,7 +65,7 @@ public class NoteContentDaoManager {
         WhereCondition whereCondition=NoteContentBeanDao.Properties.TypeStr.eq(type);
         WhereCondition whereCondition1=NoteContentBeanDao.Properties.NoteTitle.eq(notebookStr);
         WhereCondition whereCondition2=NoteContentBeanDao.Properties.Grade.eq(grade);
-        return noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
+        return noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).orderAsc(NoteContentBeanDao.Properties.Date).build().list();
     }
 
     public List<NoteContentBean> search(String title) {

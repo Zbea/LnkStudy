@@ -25,6 +25,7 @@ public class PaintingDrawingBean {
     public String bgRes;
     public int page;
     public int grade;
+
     @Generated(hash = 361607556)
     public PaintingDrawingBean(Long id, long userId, int type, long date, String path, String title,
             String bgRes, int page, int grade) {

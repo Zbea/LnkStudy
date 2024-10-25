@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -21,6 +22,7 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.iv_manager
+import org.greenrobot.eventbus.EventBus
 
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
@@ -32,6 +34,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
 
     override fun onInsert() {
         showToast(R.string.toast_add_classGroup_success)
+        EventBus.getDefault().post(Constants.CLASSGROUP_REFRESH_EVENT)
         presenter.getClassGroupList(true)
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
@@ -40,6 +43,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         mAdapter?.setNewData(groups)
     }
     override fun onQuit() {
+        EventBus.getDefault().post(Constants.CLASSGROUP_REFRESH_EVENT)
         presenter.getClassGroupList(false)
     }
     override fun onUser(userList: ClassGroupUserList?) {

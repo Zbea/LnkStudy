@@ -12,11 +12,11 @@ class AccountXdAdapter(layoutResId: Int, data: List<AccountQdBean>?) : BaseQuick
     override fun convert(helper: BaseViewHolder, item: AccountQdBean) {
         helper.setText(R.id.tv_name,item.amount.toString())
         if (helper.adapterPosition==mPosition){
-            helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_gray_solid_5dp_corner)
+            helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_black_solid_5dp_corner)
             helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.white) )
         }
         else{
-            helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_gray_stroke_5dp_corner)
+            helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_black_stroke_5dp_corner)
             helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
         }
     }

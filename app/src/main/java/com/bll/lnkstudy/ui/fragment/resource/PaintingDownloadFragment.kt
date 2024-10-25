@@ -51,6 +51,7 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
     }
 
     override fun initView() {
+        initChangeScreenData()
         pageSize=6
         initRecyclerView()
     }

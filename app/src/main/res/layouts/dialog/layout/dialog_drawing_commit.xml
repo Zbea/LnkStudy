@@ -23,115 +23,99 @@
         android:background="@drawable/click_btn_line_black_5dp"
         />
 
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/rg_group"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_single"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:gravity="center"
+            android:text="单页选择"
+            android:textSize="@dimen/sp_22"
+            android:textStyle="bold"
+            android:checked="true"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_batch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="30dp"
+            android:button="@null"
+            android:text="批量输入"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_rb_line_selector"/>
+    </RadioGroup>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_35"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:orientation="vertical"
         >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_40"
-            android:gravity="center"
-            android:text="@string/page"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/black"
-            />
-
-
-
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:orientation="vertical"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_batch"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
             >
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <EditText
+                android:id="@+id/et_page_start"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:hint="1"
+                android:gravity="center"
+                android:inputType="number"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:lines="1"
+                android:background="@color/color_transparent"
+                />
+
+            <TextView
+                android:layout_width="@dimen/dp_20"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_40"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/black"
-                    android:gravity="center"
-                    android:text="@string/single_page"
-                    />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_20"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/black"
-                    android:gravity="center"
-                    android:text="@string/multi_page"
-                    />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_40"
-                    android:orientation="horizontal"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"
-                    >
-
-                    <EditText
-                        android:id="@+id/et_page1"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:hint="1"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:textSize="@dimen/sp_20"
-                        android:textColor="@color/black"
-                        android:lines="1"
-                        android:background="@color/color_transparent"
-                        />
-
-                    <TextView
-                        android:layout_width="@dimen/dp_10"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_18"
-                        android:textColor="@color/black"
-                        android:gravity="center"
-                        android:text="—"
-                        />
-                    <EditText
-                        android:id="@+id/et_page2"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:hint="1"
-                        android:inputType="number"
-                        android:textSize="@dimen/sp_20"
-                        android:textColor="@color/black"
-                        android:gravity="center"
-                        android:lines="1"
-                        android:background="@color/color_transparent"
-                        />
-                </LinearLayout>
-            </LinearLayout>
-
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="—"
+                />
+            <EditText
+                android:id="@+id/et_page_end"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:hint="1"
+                android:inputType="number"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:lines="1"
+                android:background="@color/color_transparent"
+                />
         </LinearLayout>
+    </RelativeLayout>
 
-    </LinearLayout>
+
 
     <include
         layout="@layout/common_dialog_ok"

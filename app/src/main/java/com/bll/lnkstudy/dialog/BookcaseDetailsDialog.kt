@@ -17,7 +17,7 @@ class BookcaseDetailsDialog(val context: Context) {
     fun builder(): BookcaseDetailsDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_bookcase_list)
-        val window=dialog?.window!!
+        val window= dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 

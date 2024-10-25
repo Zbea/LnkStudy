@@ -464,11 +464,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             map["subjectName"]=courseId
         when(tabId){
             3->{
-                map["area"] = provinceStr
-                map["type"] = 1
-                presenter.getHomeworkBooks(map)
-            }
-            4->{
                 map["type"] = 2
                 presenter.getHomeworkBooks(map)
             }

@@ -210,7 +210,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
             val item=planList[position]
             when(view.id){
                 R.id.tv_course->{
-                    PopupClick(this,popCourses,view,5).builder().setOnSelectListener{
+                    PopupClick(this,popCourses,view,0).builder().setOnSelectListener{
                         item.course=it.name
                         mAdapter?.notifyItemChanged(position)
                     }

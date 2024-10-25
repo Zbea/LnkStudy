@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
 import com.bll.lnkstudy.FileAddress
@@ -170,6 +171,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             return@setOnLongClickListener true
         }
 
+        val url=SPUtil.getString("courseUrl")
+        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
 
     override fun lazyLoad() {
@@ -181,8 +184,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             mMainPresenter.getClassGroupList(false)
             mMainPresenter.getCourseItems()
         }
-        val url=SPUtil.getString("courseUrl")
-        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
 
     //消息相关处理
@@ -358,6 +359,11 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             MESSAGE_COMMIT_EVENT -> {
                 findMessages()
+            }
+            CLASSGROUP_REFRESH_EVENT->{
+                mMainPresenter.getTeacherCourse()
+                mMainPresenter.getClassGroupList(false)
+                mMainPresenter.getCourseItems()
             }
         }
     }

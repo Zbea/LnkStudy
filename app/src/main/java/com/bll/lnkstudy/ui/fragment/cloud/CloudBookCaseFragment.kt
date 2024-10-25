@@ -87,7 +87,6 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(3,50))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudBookCaseFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
@@ -112,6 +111,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 true
             }
         }
+        rv_list.addItemDecoration(SpaceGridItemDeco(3,30))
     }
 
     private fun downloadItem(){
@@ -238,17 +238,15 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         mCloudPresenter.getList(map)
     }
 
-    override fun onCloudList(cloudList: CloudList) {
-        setPageNumber(cloudList.total)
+    override fun onCloudList(cloudBean: CloudList) {
+        setPageNumber(cloudBean.total)
         books.clear()
-        for (bookCloud in cloudList.list){
-            if (bookCloud.listJson.isNotEmpty()){
-                val bookBean= Gson().fromJson(bookCloud.listJson, BookBean::class.java)
-                bookBean.id=null
-                bookBean.cloudId=bookCloud.id
-                bookBean.drawUrl=bookCloud.downloadUrl
-                books.add(bookBean)
-            }
+        for (item in cloudBean.list){
+            val bookBean= Gson().fromJson(item.listJson, BookBean::class.java)
+            bookBean.id=null
+            bookBean.cloudId=item.id
+            bookBean.drawUrl=item.downloadUrl
+            books.add(bookBean)
         }
         mAdapter?.setNewData(books)
     }

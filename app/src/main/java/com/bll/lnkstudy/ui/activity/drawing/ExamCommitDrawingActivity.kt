@@ -222,13 +222,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         elik.setLoadFilePath(drawPaths[index],true)
     }
 
-    override fun onElikSava_a() {
-        elik_a?.saveBitmap(true) {}
-    }
-    override fun onElikSava_b() {
-        elik_b?.saveBitmap(true) {}
-    }
-
     /**
      * 提交
      */

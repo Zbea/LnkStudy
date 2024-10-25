@@ -36,14 +36,6 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 }
                 EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
             }
-            Constants.ACTION_UPLOAD_NEXT_SEMESTER->{
-                Log.d("debug","2月1日下学期开学")
-                MethodManager.wakeUpScreen(context)
-                if (!NetworkUtil(context).isNetworkConnected()){
-                    NetworkUtil(context).toggleNetwork(true)
-                }
-                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
-            }
             Constants.ACTION_UPLOAD_YEAR->{
                 Log.d("debug","每年上传")
                 MethodManager.wakeUpScreen(context)
@@ -51,6 +43,14 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                     NetworkUtil(context).toggleNetwork(true)
                 }
                 EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_YEAR_EVENT)
+            }
+            Constants.ACTION_UPLOAD_NEXT_SEMESTER->{
+                Log.d("debug","2月1日下学期开学")
+                MethodManager.wakeUpScreen(context)
+                if (!NetworkUtil(context).isNetworkConnected()){
+                    NetworkUtil(context).toggleNetwork(true)
+                }
+                EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT)
             }
             Constants.ACTION_UPLOAD_LAST_SEMESTER->{
                 Log.d("debug","9月1日升年级、清空")

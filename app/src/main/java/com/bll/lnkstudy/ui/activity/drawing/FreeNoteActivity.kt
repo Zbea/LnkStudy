@@ -37,6 +37,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
+        bgRes=ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
         freeNoteBean=FreeNoteDaoManager.getInstance().queryBean()
         freeNoteBean?.title=DateUtils.longToStringNoYear(System.currentTimeMillis())
         if (freeNoteBean==null){
@@ -46,16 +47,15 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_expand,iv_draft)
-        iv_btn.setImageResource(R.mipmap.icon_draw_change)
+        disMissView(iv_btn,iv_draft)
+        iv_expand.setImageResource(R.mipmap.icon_draw_change)
 
         tv_save.setOnClickListener {
             freeNoteBean?.isSave=true
             saveFreeNote()
-            createFreeNote()
             posImage=0
-            initFreeNote()
-            setContentImage()
+            createFreeNote()
+            setChangeContent()
         }
 
         tv_name.setOnClickListener {
@@ -65,12 +65,11 @@ class FreeNoteActivity : BaseDrawingActivity() {
             }
         }
 
-        iv_btn.setOnClickListener {
+        iv_expand.setOnClickListener {
             ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    bgRes = ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     v_content_b?.setBackgroundResource(moduleBean.resContentId)
-                    bgResList[posImage] = bgRes
+                    bgResList[posImage] = ToolUtils.getImageResStr(this, moduleBean.resContentId)
                 }
         }
 
@@ -86,18 +85,16 @@ class FreeNoteActivity : BaseDrawingActivity() {
                         posImage=freeNoteBean?.page!!
                     }
                     else{
-                        createFreeNote()
                         posImage=0
+                        createFreeNote()
                     }
                     showView(tv_save)
-                    initFreeNote()
-                    setContentImage()
+                    setChangeContent()
                 }
             })
         }
 
-        initFreeNote()
-        setContentImage()
+        setChangeContent()
     }
 
     override fun onCatalog() {
@@ -105,90 +102,86 @@ class FreeNoteActivity : BaseDrawingActivity() {
             saveFreeNote()
             freeNoteBean=it
             posImage=freeNoteBean?.page!!
-            initFreeNote()
             if (freeNoteBean?.isSave==true){
                 disMissView(tv_save)
             }
             else{
                 showView(tv_save)
             }
-            setContentImage()
+            setChangeContent()
         }
-    }
-
-    override fun onPageDown() {
-        posImage += 1
-        if (posImage >= bgResList.size) {
-            bgRes = ToolUtils.getImageResStr(this, R.mipmap.icon_freenote_bg_1)
-            bgResList.add(bgRes)
-        }
-        setContentImage()
-    }
-
-    override fun onPageUp() {
-        if (posImage > 0) {
-            posImage -= 1
-            setContentImage()
-        }
-    }
-
-    private fun initFreeNote(){
-        bgResList= freeNoteBean?.bgRes as MutableList<String>
-        if (!freeNoteBean?.paths.isNullOrEmpty()) {
-            images= freeNoteBean?.paths as MutableList<String>
-        }
-        else{
-            images.clear()
-        }
-        tv_name.text=freeNoteBean?.title
     }
 
     /**
      * 创建新随笔
      */
     private fun createFreeNote(){
-        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
         freeNoteBean= FreeNoteBean()
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.bgRes= arrayListOf(bgRes)
+        freeNoteBean?.paths= mutableListOf(getPath(posImage))
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
-    /**
-     * 更换内容
-     */
-    private fun setContentImage() {
-
-        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgResList[posImage]))
-        val path = FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${posImage + 1}.png"
-        //判断路径是否已经创建
-        if (!images.contains(path)) {
-            images.add(path)
+    private fun setChangeContent(){
+        bgResList= freeNoteBean?.bgRes as MutableList<String>
+        //兼容以前版本
+        images = if (freeNoteBean?.paths.isNullOrEmpty()){
+            mutableListOf(getPath(0))
+        } else{
+            freeNoteBean?.paths as MutableList<String>
         }
-        tv_page.text = "${posImage + 1}"
-        tv_page_total.text="${images.size}"
-
-        elik_b?.setLoadFilePath(path, true)
+        tv_name.text=freeNoteBean?.title
+        onContent()
     }
 
-    override fun onElikSava_b() {
-        elik_b?.saveBitmap(true) {}
+    override fun onPageDown() {
+        if (posImage<images.size-1){
+            posImage+=1
+            onContent()
+        }
+        else{
+            if (isDrawLastContent()){
+                images.add(getPath(images.size))
+                bgResList.add(bgRes)
+                posImage=images.size-1
+                onContent()
+            }
+        }
+    }
+
+    override fun onPageUp() {
+        if (posImage > 0) {
+            posImage -= 1
+            onContent()
+        }
+    }
+
+    override fun onContent() {
+        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgResList[posImage]))
+        tv_page.text = "${posImage + 1}"
+        tv_page_total.text="${images.size}"
+        elik_b?.setLoadFilePath(getPath(posImage), true)
+    }
+
+    /**
+     * 最后一个是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val path = images.last()
+        return File(path).exists()
+    }
+
+    private fun getPath(index:Int):String{
+        return FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${index + 1}.png"
     }
 
     private fun saveFreeNote() {
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
-        if (!File(path).list().isNullOrEmpty()){
-            freeNoteBean?.paths = images
-            freeNoteBean?.bgRes = bgResList
-            freeNoteBean?.page=posImage
-            FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        saveFreeNote()
+        freeNoteBean?.paths = images
+        freeNoteBean?.bgRes = bgResList
+        freeNoteBean?.page=posImage
+        FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
     override fun onPause() {

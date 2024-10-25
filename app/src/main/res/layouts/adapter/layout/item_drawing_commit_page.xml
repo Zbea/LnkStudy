@@ -10,8 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:src="@mipmap/icon_drawing_commit_add"
         />
 
@@ -25,6 +23,6 @@
         android:inputType="number"
         android:lines="1"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="@dimen/sp_22" />
 
 </RelativeLayout>

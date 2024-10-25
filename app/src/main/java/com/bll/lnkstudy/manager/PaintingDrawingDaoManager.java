@@ -58,7 +58,7 @@ public class PaintingDrawingDaoManager {
     public List<PaintingDrawingBean> queryAllByType(int type,int grade) {
         WhereCondition whereCondition=PaintingDrawingBeanDao.Properties.Type.eq(type);
         WhereCondition whereCondition1=PaintingDrawingBeanDao.Properties.Grade.eq(grade);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(PaintingDrawingBeanDao.Properties.Date).build().list();
     }
 
     public void deleteBean(PaintingDrawingBean bean){

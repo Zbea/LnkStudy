@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -18,7 +19,7 @@ public class NoteContentBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String typeStr;//分类
     public String noteTitle;
     public long date;//创建时间
@@ -27,10 +28,10 @@ public class NoteContentBean implements Serializable {
     public String filePath;//文件路径
     public int page;//页码
     public int grade;//年级
+
     @Generated(hash = 1594347445)
-    public NoteContentBean(Long id, long userId, String typeStr, String noteTitle,
-            long date, String title, String resId, String filePath, int page,
-            int grade) {
+    public NoteContentBean(Long id, long userId, String typeStr, String noteTitle, long date,
+            String title, String resId, String filePath, int page, int grade) {
         this.id = id;
         this.userId = userId;
         this.typeStr = typeStr;
@@ -106,5 +107,4 @@ public class NoteContentBean implements Serializable {
         this.grade = grade;
     }
 
-    
 }
