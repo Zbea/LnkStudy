@@ -151,7 +151,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         }
     }
 
-    override fun onCommonData() {
+    override fun initChangeScreenData() {
         toolFragment?.initChangeScreenData()
         wallpaperFragment?.initChangeScreenData()
         paintingFragment?.initChangeScreenData()

@@ -57,6 +57,8 @@ class DownloadCalenderDialog(private val context: Context, private val item: Cal
 
     fun setChangeStatus() {
         item.buyStatus=1
+        btn_ok?.isClickable = true
+        btn_ok?.isEnabled = true
         btn_ok?.text = context.getString(R.string.book_download_str)
     }
 

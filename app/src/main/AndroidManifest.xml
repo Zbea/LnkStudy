@@ -62,7 +62,7 @@
     <uses-permission android:name="android.permission.RESTART_PACKAGES"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.rockchip.update.permission.SHOW_UI" />
-    <uses-permission android:name="android.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application

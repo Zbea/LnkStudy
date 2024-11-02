@@ -976,6 +976,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 每天上传增量数据
      */
     private fun uploadDataUpdate(token: String) {
+        showLog("开始增量更新")
         val items=DataUpdateDaoManager.getInstance().queryList()
         for (item in items) {
             if (item.isDelete) {

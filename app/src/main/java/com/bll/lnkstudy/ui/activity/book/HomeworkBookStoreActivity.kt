@@ -30,14 +30,12 @@ import kotlinx.android.synthetic.main.dialog_book_detail.tv_version
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 题卷本书城
  */
 class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookStoreView {
 
-    private val lock = ReentrantLock()
     private lateinit var presenter :TextbookStorePresenter
     private var book:TextbookBean?=null
     private var bookId =0
@@ -64,8 +62,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         pageSize=12
         bookId=intent.getIntExtra("bookId",0)
 
-        setDialogOutside(true)
-
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
         }
@@ -89,7 +85,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                 }
             } else {
                 val map = HashMap<String, Any>()
-                map["type"] = 2
+                map["type"] = 1
                 map["bookId"] = book?.bookId!!
                 presenter.buyBook(map)
             }
@@ -143,12 +139,10 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    lock.lock()
                     val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
                     unzip(book, zipPath, fileTargetPath)
                     //删除zip文件
                     FileUtils.deleteFile(File(zipPath))
-                    lock.unlock()
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {

@@ -95,8 +95,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         typeList = DataBeanManager.teachingType.toMutableList()
         tabStr = typeList[0]
 
-        setDialogOutside(true)
-
         getSemester()
 
         provinceStr= mUser?.schoolProvince.toString()
@@ -116,7 +114,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     override fun onCommonData() {
         selectGradeId=gradeId
-        gradeList=DataBeanManager.popupGrades(gradeId)
+        gradeList=DataBeanManager.popupGradeThans(gradeId)
         subjectList=DataBeanManager.popupCourses
         if (subjectList.size>0){
             courseId=subjectList[0].id
@@ -280,7 +278,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 }
             } else {
                 val map = HashMap<String, Any>()
-                map["type"] = if (tabId==3)2 else 1
+                map["type"] = if (tabId==3)1 else 2
                 map["bookId"] = book.bookId
                 presenter.buyBook(map)
             }

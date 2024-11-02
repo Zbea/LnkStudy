@@ -20,7 +20,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
-class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
+open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintingView{
 
     private var presenter= DownloadPaintingPresenter(this,getScreenPosition())
     private var items= mutableListOf<PaintingList.ListBean>()
@@ -144,7 +144,7 @@ class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintingView
         fetchData()
     }
 
-    open override fun initChangeScreenData() {
+    override fun initChangeScreenData() {
         super.initChangeScreenData()
         presenter= DownloadPaintingPresenter(this,getScreenPosition())
     }

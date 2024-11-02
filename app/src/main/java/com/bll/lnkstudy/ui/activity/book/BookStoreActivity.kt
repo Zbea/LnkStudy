@@ -63,7 +63,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     override fun onType(bookStoreType: BookStoreType) {
         //子分类
         val types = bookStoreType.subType[typeStr]
-        if (types?.size!! >0){
+        if (!types.isNullOrEmpty()){
             subTypeList=types
             subTypeStr=types[0].desc
             subtype=types[0].type
@@ -113,8 +113,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         showView(tv_subgrade)
         disMissView(tv_download)
 
-        setDialogOutside(true)
-
         initRecyclerView()
 
     }
@@ -143,6 +141,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     }
 
     private fun initTab(){
+        itemTabTypes.clear()
         for (i in subTypeList.indices) {
             itemTabTypes.add(ItemTypeBean().apply {
                 title=subTypeList[i].desc
@@ -297,7 +296,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     }
 
     override fun fetchData() {
-        hideKeyboard()
         books.clear()
         mAdapter?.notifyDataSetChanged()
         val map = HashMap<String, Any>()

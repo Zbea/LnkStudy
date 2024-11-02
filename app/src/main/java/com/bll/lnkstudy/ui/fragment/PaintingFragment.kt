@@ -11,6 +11,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.PaintingDetailsDialog
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
@@ -20,6 +21,7 @@ import com.bll.lnkstudy.ui.activity.PaintingListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.common_fragment_title.tv_btn
 import kotlinx.android.synthetic.main.fragment_painting.iv_dd
 import kotlinx.android.synthetic.main.fragment_painting.iv_dd_1
 import kotlinx.android.synthetic.main.fragment_painting.iv_han
@@ -50,7 +52,12 @@ class PaintingFragment : BaseMainFragment(){
     @SuppressLint("WrongConstant")
     override fun initView() {
         setTitle(DataBeanManager.listTitle[6])
-        initTab()
+        showView(tv_btn)
+        tv_btn.text="书画明显"
+
+        tv_btn.setOnClickListener {
+            PaintingDetailsDialog(requireActivity()).builder()
+        }
 
         iv_han.setOnClickListener {
             onClick(1)
@@ -100,6 +107,7 @@ class PaintingFragment : BaseMainFragment(){
             true
         }
 
+        initTab()
     }
 
     override fun lazyLoad() {

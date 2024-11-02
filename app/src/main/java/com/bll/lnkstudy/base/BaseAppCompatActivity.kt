@@ -78,14 +78,18 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     override fun onList(commonData: CommonData) {
-        if (!commonData.grade.isNullOrEmpty())
+        if (!commonData.grade.isNullOrEmpty()&&commonData.grade!=MethodManager.getItemLists("grades")){
             MethodManager.saveItemLists("grades",commonData.grade)
-        if (!commonData.subject.isNullOrEmpty())
+        }
+        if (!commonData.subject.isNullOrEmpty()&&commonData.subject!=MethodManager.getItemLists("courses")){
             MethodManager.saveItemLists("courses",commonData.subject)
-        if (!commonData.typeGrade.isNullOrEmpty())
+        }
+        if (!commonData.typeGrade.isNullOrEmpty()&&commonData.typeGrade!=MethodManager.getItemLists("typeGrades")){
             MethodManager.saveItemLists("typeGrades",commonData.typeGrade)
-        if (!commonData.version.isNullOrEmpty())
+        }
+        if (!commonData.version.isNullOrEmpty()&&commonData.version!=MethodManager.getItemLists("bookVersions")){
             MethodManager.saveItemLists("bookVersions",commonData.version)
+        }
         onCommonData()
     }
 
@@ -186,7 +190,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(this).isNetworkConnected()&&MethodManager.getItemLists("grades").size==0)
+        if (NetworkUtil(this).isNetworkConnected())
             mCommonPresenter.getCommon()
     }
 
@@ -292,14 +296,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         intent.putExtra("exam", if (isMode)1 else 0)
         intent.action = Constants.EXAM_MODE_BROADCAST_EVENT
         sendBroadcast(intent)
-    }
-
-    /**
-     * 设置dialog可以点击消失
-     */
-    protected fun setDialogOutside(boolean: Boolean){
-        mDialog?.setCanceledOutside(boolean)
-        mNetworkDialog?.setCanceledOutside(boolean)
     }
 
     protected fun hideNetworkDialog() {

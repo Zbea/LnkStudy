@@ -130,14 +130,16 @@ public class PaintingBeanDaoManager {
                 .build().list();
     }
 
-    public List<PaintingBean> searchPaintings(String titleStr,int time, int paintingType,int page, int pageSize) {
-        WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
-        WhereCondition whereCondition2= PaintingBeanDao.Properties.Time.like("%"+titleStr+"%");
-        WhereCondition whereCondition3= PaintingBeanDao.Properties.Time.eq(time);
+    /**
+     * 获取该分类所有书画
+     * @param paintingType
+     * @return
+     */
+    public List<PaintingBean> queryPaintings(int paintingType) {
+        WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);;
         WhereCondition whereCondition4= PaintingBeanDao.Properties.PaintingType.eq(paintingType);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4)
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition4)
                 .orderDesc(PaintingBeanDao.Properties.Date)
-                .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
     }
 

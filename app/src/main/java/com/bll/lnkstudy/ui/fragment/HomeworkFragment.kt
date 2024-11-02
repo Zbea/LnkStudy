@@ -75,7 +75,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 item.course = mCourse
                 item.createStatus = 1
                 if (item.state!=4){
-                    item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!)
+                    if (item.state==6){
+                        item.contentResId =ToolUtils.getImageResStr(requireActivity(), R.mipmap.icon_homework_content_yw_lzb)
+                    }
+                    else{
+                        item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!)
+                    }
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     //创建增量数据
                     DataUpdateManager.createDataUpdate(2, item.typeId, 1, Gson().toJson(item))

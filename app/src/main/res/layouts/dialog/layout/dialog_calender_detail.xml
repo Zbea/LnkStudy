@@ -27,6 +27,7 @@
             android:layout_height="@dimen/dp_45"
             android:src="@mipmap/icon_close"
             android:scaleType="center"
+            android:visibility="gone"
             android:background="@drawable/click_btn_transparent_line_black"
             />
     </LinearLayout>

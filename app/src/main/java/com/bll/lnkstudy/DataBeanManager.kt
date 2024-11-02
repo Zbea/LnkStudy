@@ -82,6 +82,17 @@ object DataBeanManager {
         return list
     }
 
+    fun popupGradeThans(grade: Int): MutableList<PopupBean> {
+        val grades=MethodManager.getItemLists("grades")
+        val list = mutableListOf<PopupBean>()
+        for (item in grades) {
+            if(item.type>=grade){
+                list.add(PopupBean(item.type, item.desc, item.type == grade))
+            }
+        }
+        return list
+    }
+
     //学期选择
     fun popupSemesters(): MutableList<PopupBean>{
         val list = mutableListOf<PopupBean>()
@@ -458,10 +469,14 @@ object DataBeanManager {
     fun getHomeWorkContentStr(courseStr: String, grade: Int): String {
         val resId = when (courseStr) {
             "语文"-> {
-                if (grade < 7) {
-                    R.mipmap.icon_homework_content_other_lxb
-                } else {
+                if (grade >6) {
                     R.mipmap.icon_homework_content_other_zxlxb
+                }
+                else if (grade<4){
+                    R.mipmap.icon_homework_content_yw_tzb
+                }
+                else {
+                    R.mipmap.icon_homework_content_other_lxb
                 }
             }
             "数学" -> {

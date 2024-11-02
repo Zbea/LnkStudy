@@ -169,8 +169,6 @@ public class MethodManager {
         int key_type = 0;
         if (format.contains("pdf")) {
             key_type = 1;
-        } else {
-            key_type = 0;
         }
         Intent intent = new Intent();
         intent.setAction("com.geniatech.reader.action.VIEW_BOOK_PATH");
@@ -409,7 +407,7 @@ public class MethodManager {
             protected Exception doInBackground(Void... params) {
                 try {
                     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                    PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "Loneworker - FULL WAKE LOCK");
+                    PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock( PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP , "Loneworker - FULL WAKE LOCK");
                     fullWakeLock.acquire(5 * 60 * 1000L);
                     if (fullWakeLock.isHeld())
                         fullWakeLock.release();

@@ -23,7 +23,7 @@ class DownloadBookDialog(private val context: Context, private val book: BookBea
         dialog?.show()
 
         btn_ok = dialog?.findViewById(R.id.btn_ok)
-        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_close)
+        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_back)
         val iv_book = dialog?.findViewById<ImageView>(R.id.iv_book)
         val tv_price = dialog?.findViewById<TextView>(R.id.tv_price)
         val tv_course = dialog?.findViewById<TextView>(R.id.tv_course)
@@ -57,6 +57,8 @@ class DownloadBookDialog(private val context: Context, private val book: BookBea
 
     fun setChangeStatus() {
         book.buyStatus=1
+        btn_ok?.isClickable = true
+        btn_ok?.isEnabled = true
         btn_ok?.setText(R.string.book_download_str)
     }
 

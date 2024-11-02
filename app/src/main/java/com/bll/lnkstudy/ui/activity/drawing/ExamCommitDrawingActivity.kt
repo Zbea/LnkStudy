@@ -121,15 +121,17 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_draft,iv_expand,iv_tool)
-        showView(iv_geometry)
+        disMissView(iv_catalog,iv_expand,iv_tool,iv_draft)
         setViewElikUnable(iv_geometry)
 
-        if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){
-            showView(iv_geometry)
-        }
-        else{
-            disMissView(iv_geometry)
+        if (grade>4){
+            showView(iv_draft)
+            if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){
+                showView(iv_geometry)
+            }
+            else{
+                disMissView(iv_geometry)
+            }
         }
 
         onChangeExpandView()

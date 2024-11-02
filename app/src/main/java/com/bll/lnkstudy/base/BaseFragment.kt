@@ -73,14 +73,18 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     override fun onList(commonData: CommonData) {
-        if (!commonData.grade.isNullOrEmpty())
+        if (!commonData.grade.isNullOrEmpty()&&commonData.grade!=MethodManager.getItemLists("grades")){
             MethodManager.saveItemLists("grades",commonData.grade)
-        if (!commonData.subject.isNullOrEmpty())
+        }
+        if (!commonData.subject.isNullOrEmpty()&&commonData.subject!=MethodManager.getItemLists("courses")){
             MethodManager.saveItemLists("courses",commonData.subject)
-        if (!commonData.typeGrade.isNullOrEmpty())
+        }
+        if (!commonData.typeGrade.isNullOrEmpty()&&commonData.typeGrade!=MethodManager.getItemLists("typeGrades")){
             MethodManager.saveItemLists("typeGrades",commonData.typeGrade)
-        if (!commonData.version.isNullOrEmpty())
+        }
+        if (!commonData.version.isNullOrEmpty()&&commonData.version!=MethodManager.getItemLists("bookVersions")){
             MethodManager.saveItemLists("bookVersions",commonData.version)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -274,7 +278,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected()&&MethodManager.getItemLists("grades").size==0)
+        if (NetworkUtil(requireActivity()).isNetworkConnected())
             mCommonPresenter.getCommon()
     }
 

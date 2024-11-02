@@ -59,13 +59,11 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     @SuppressLint("WrongConstant")
     override fun initView() {
         val account=SPUtil.getString("account")
-        val password=SPUtil.getString("password")
 
         statusBarValue=MethodManager.getStatusBarValue()
         MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
 
         ed_user.setText(account)
-        ed_psw.setText(password)
 
         tv_register.setOnClickListener {
             activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(0))
@@ -81,7 +79,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
             val password = MD5Utils.digest(psdStr)
 
             SPUtil.putString("account",account)
-            SPUtil.putString("password",psdStr)
 
             val map=HashMap<String,Any>()
             map ["account"]=account

@@ -111,24 +111,27 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onCourseItems(courses: MutableList<String>) {
+        val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
         for (course in courses) {
-            var path = ""
             val typeId = MethodManager.getExamTypeId(course)
-            //创建作业错题本
-            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
-                val typeItem = HomeworkTypeBean()
-                typeItem.name = "${course}错题本"
-                typeItem.course = course
-                typeItem.date = System.currentTimeMillis()
-                typeItem.grade = mUser?.grade!!
-                typeItem.typeId = typeId
-                typeItem.state = 5
-                HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
-                path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
-            } else {
-                path = FileAddress().getPathScreenHomework("${course}错题本", mUser?.grade!!)
+            if (!otherCourse.contains(course)){
+                var path = ""
+                //创建作业错题本
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
+                    val typeItem = HomeworkTypeBean()
+                    typeItem.name = "${course}错题本"
+                    typeItem.course = course
+                    typeItem.date = System.currentTimeMillis()
+                    typeItem.grade = mUser?.grade!!
+                    typeItem.typeId = typeId
+                    typeItem.state = 5
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
+                    path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
+                } else {
+                    path = FileAddress().getPathScreenHomework("${course}错题本", mUser?.grade!!)
+                }
+                FileUtils.mkdirs(path)
             }
-            FileUtils.mkdirs(path)
 
             //创建考卷分类
             if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){

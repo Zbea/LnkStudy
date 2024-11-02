@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.book.BookcaseDetailsBean
@@ -43,7 +44,11 @@ class BookcaseDetailsDialog(val context: Context) {
         val mAdapter = BookcaseDetailsAdapter(R.layout.item_bookcase_list, items)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceItemDeco(20))
+        rv_list?.addItemDecoration(SpaceItemDeco(30))
+        mAdapter.setOnChildClickListener{
+            dialog.dismiss()
+            MethodManager.gotoBookDetails(context,it)
+        }
 
         return this
     }
