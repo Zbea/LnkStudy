@@ -133,7 +133,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                             val path = FileAddress().getPathTestPaper(item.typeId)
                             FileUtils.deleteFile(File(path))
                             remove(position)
-                            fetchData()
                         }
                     })
                 true

@@ -129,8 +129,8 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
 
         tvOk?.setOnClickListener {
             if (school!=null){
-                onClickListener?.onSelect(school!!)
                 dialog?.dismiss()
+                onClickListener?.onSelect(school!!)
             }
             else{
                 SToast.showText(screenPos,"请选择学校")

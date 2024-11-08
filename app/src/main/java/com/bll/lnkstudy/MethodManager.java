@@ -15,6 +15,7 @@ import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.ItemTypeDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
+import com.bll.lnkstudy.manager.TextbookGreenDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ItemList;
@@ -29,8 +30,10 @@ import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.textbook.TextbookBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
+import com.bll.lnkstudy.ui.activity.PaintingImageActivity;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
@@ -144,19 +147,16 @@ public class MethodManager {
      * key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      */
     public static void gotoBookDetails(Context context, BookBean bookBean) {
-
         if (!MethodManager.getSchoolPermissionAllow(0)) {
             SToast.showText(1, "学校该时间不允许查看书籍");
             return;
         }
-
         if (!MethodManager.getParentPermissionAllow(0)) {
             SToast.showText(1, "家长该时间不允许查看书籍");
             return;
         }
 
         AppUtils.stopApp(context, Constants.PACKAGE_READER);
-        User user = SPUtil.INSTANCE.getObj("user", User.class);
 
         bookBean.isLook = true;
         bookBean.time = System.currentTimeMillis();
@@ -185,29 +185,27 @@ public class MethodManager {
         context.startActivity(intent);
     }
 
-    private static JSONArray getJsonArray(List<AppBean> toolApps) {
-        JSONArray result = new JSONArray();
-        for (AppBean item : toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
-                continue;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("appName", item.appName);
-                jsonObject.put("packageName", item.packageName);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            result.put(jsonObject);
-        }
-        return result;
+    /**
+     * 删除书籍
+     * @param book
+     */
+    public static void deleteBook(BookBean book){
+        BookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
+        FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
+        if (new File(book.bookDrawPath).exists())
+            FileUtils.deleteFile(new File(book.bookDrawPath));
+        //删除增量更新
+        DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId,1);
+        //删除增量更新
+        DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId,2);
     }
+
     /**
      * 跳转课本详情
      */
     public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
 
         AppUtils.stopApp(context, Constants.PACKAGE_READER);
-        User user = SPUtil.INSTANCE.getObj("user", User.class);
 
         List<AppBean> toolApps = getAppTools(context, 1);
         JSONArray result = getJsonArray(toolApps);
@@ -225,7 +223,37 @@ public class MethodManager {
         intent.putExtra("key_book_type", 2);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
 
+    /**
+     * 删除课本
+     * @param book
+     */
+    public static void deleteTextbook(TextbookBean book){
+        TextbookGreenDaoManager.getInstance().deleteBook(book);
+        FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
+        if (new File(book.bookDrawPath).exists())
+            FileUtils.deleteFile(new File(book.bookDrawPath));
+        //删除增量更新
+        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,1);
+        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,2);
+    }
+
+    private static JSONArray getJsonArray(List<AppBean> toolApps) {
+        JSONArray result = new JSONArray();
+        for (AppBean item : toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("appName", item.appName);
+                jsonObject.put("packageName", item.packageName);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            result.put(jsonObject);
+        }
+        return result;
     }
 
     /**
@@ -356,6 +384,21 @@ public class MethodManager {
     }
 
     /**
+     * 跳转书画详情
+     * @param context
+     * @param contentId
+     * @param screen
+     */
+    public static void gotoPaintingImage(Context context,int contentId,int screen){
+        Intent intent = new Intent(context, PaintingImageActivity.class);
+        intent.setFlags(contentId);
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, screen);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
+        context.startActivity(intent);
+    }
+
+
+    /**
      * 删除本地画本、书法
      * @param item
      */
@@ -366,6 +409,20 @@ public class MethodManager {
         DataUpdateManager.INSTANCE.deleteDateUpdate(5,item.typeId,1);
         //删除增量更新
         DataUpdateManager.INSTANCE.deleteDateUpdate(5, item.typeId);
+    }
+
+    /**
+     * 跳转截图列表
+     * @param context
+     * @param index
+     * @param tabPath
+     */
+    public static void gotoScreenFile(Context context,int index,String tabPath){
+        Intent intent=new Intent(context,FileDrawingActivity.class);
+        intent.putExtra("pageIndex",index);
+        intent.putExtra("pagePath",tabPath);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
+        context.startActivity(intent);
     }
 
     /**

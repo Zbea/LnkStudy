@@ -87,7 +87,7 @@ public class BookGreenDaoManager {
      */
     public List<BookBean> queryAllByHalfYear(){
         long time=System.currentTimeMillis()- Constants.halfYear;
-        WhereCondition whereCondition1= BookBeanDao.Properties.Time.ge(time);
+        WhereCondition whereCondition1= BookBeanDao.Properties.Time.le(time);
         return bookBeanDao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 

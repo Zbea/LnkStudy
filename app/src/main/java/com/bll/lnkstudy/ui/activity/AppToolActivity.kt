@@ -85,6 +85,12 @@ class AppToolActivity:BaseAppCompatActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(6,50))
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            val item=apps[position]
+            val packageName= item.packageName
+            if (packageName!=Constants.PACKAGE_GEOMETRY)
+                AppUtils.startAPP(this,packageName)
+        }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val item=apps[position]
             when(view.id){
@@ -92,17 +98,13 @@ class AppToolActivity:BaseAppCompatActivity() {
                     item.isCheck=!item.isCheck
                     mAdapter?.notifyItemChanged(position)
                 }
-                R.id.iv_image->{
-                    val packageName= item.packageName
-                    if (packageName!=Constants.PACKAGE_GEOMETRY)
-                        AppUtils.startAPP(this,packageName)
-                }
             }
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
             val item=apps[position]
             val packageName= item.packageName
+            showLog(packageName)
             if (packageName!=Constants.PACKAGE_GEOMETRY){
                 CommonDialog(this).setContent("卸载应用？").builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
@@ -130,11 +132,6 @@ class AppToolActivity:BaseAppCompatActivity() {
                 R.id.ll_name->{
                     item.isCheck=!item.isCheck
                     mAdapterTool?.notifyItemChanged(position)
-                }
-                R.id.iv_image->{
-                    val packageName= item.packageName
-                    if (packageName!=Constants.PACKAGE_GEOMETRY)
-                        AppUtils.startAPP(this,packageName)
                 }
             }
         }

@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.activity.book
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -16,14 +15,12 @@ import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookcaseTypeAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.rv_list
 import kotlinx.android.synthetic.main.ac_book_type_list.rv_type
 import kotlinx.android.synthetic.main.common_title.tv_btn
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 /**
  * 书架分类
@@ -117,15 +114,8 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         val book = books[pos]
         LongClickManageDialog(this,getCurrentScreenPos(),book.bookName,longItems).builder()
             .setOnDialogClickListener {
-                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                if (File(book.bookDrawPath).exists())
-                    FileUtils.deleteFile(File(book.bookDrawPath))
+                MethodManager.deleteBook(book)
                 mAdapter?.remove(pos)
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(6,book.bookId,1)
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(6,book.bookId,2)
             }
     }
 

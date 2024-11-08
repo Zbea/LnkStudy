@@ -363,9 +363,9 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         tv_page_total_a.text="${getImageSize()}"
 
         if (isExpand){
-            GlideUtils.setImageUrl(this, images[posImage],v_content_a)
+            GlideUtils.setImageCacheUrl(this, images[posImage],v_content_a)
             if (posImage+1<getImageSize()){
-                GlideUtils.setImageUrl(this,images[posImage+1],v_content_b)
+                GlideUtils.setImageCacheUrl(this,images[posImage+1],v_content_b)
             }
             else{
                 v_content_b?.setImageResource(0)
@@ -374,7 +374,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
-            GlideUtils.setImageUrl(this, images[posImage],v_content_b)
+            GlideUtils.setImageCacheUrl(this, images[posImage],v_content_b)
             tv_page.text="${posImage+1}"
         }
     }
@@ -410,7 +410,4 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         return images.size
     }
 
-    override fun onNetworkConnectionSuccess() {
-        mUploadPresenter.getToken()
-    }
 }

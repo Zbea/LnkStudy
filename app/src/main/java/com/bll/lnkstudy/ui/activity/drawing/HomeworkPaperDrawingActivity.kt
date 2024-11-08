@@ -348,7 +348,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
-        GlideUtils.setImageUrl(this,paper!!.paths[index],view,paper?.state!!)
+        val path=paper!!.paths[index]
+        GlideUtils.setImageCacheUrl(this,path,view, paper?.state!!)
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 

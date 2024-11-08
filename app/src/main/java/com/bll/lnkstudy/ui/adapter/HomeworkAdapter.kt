@@ -50,6 +50,11 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_4)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
+                6->{
+                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                }
             }
 
             if (item.isPg) {

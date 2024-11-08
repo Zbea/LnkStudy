@@ -322,10 +322,20 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@HomeworkFragment.position = position
+                val item=homeworkTypes[position]
+                //当前年级的老师、家长、本地错题本无法删除
+                if (item.grade==mUser?.grade){
+                    if (item.createStatus==0){
+                        if (item.state==5)
+                            return@setOnItemLongClickListener true
+                    }
+                    else{
+                        return@setOnItemLongClickListener true
+                    }
+                }
                 CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
-
                     override fun ok() {
                         deleteHomework()
                     }
@@ -354,16 +364,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun deleteHomework() {
         val item = homeworkTypes[position]
-        //当前年级的老师、家长、本地错题本无法删除
-        if (item.grade==mUser?.grade){
-            if (item.createStatus==0){
-                if (item.state==5)
-                    return
-            }
-            else{
-                return
-            }
-        }
         HomeworkTypeDaoManager.getInstance().deleteBean(item)
         //删除增量更新
         DataUpdateManager.deleteDateUpdate(2, item.typeId, 1)
@@ -636,7 +636,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 获得题卷本图片地址
      */
     private fun getIndexFile(bookBean: HomeworkBookBean, page: Int): File? {
-        val path = FileAddress().getPathTextbookPicture(bookBean.bookPath)
+        val path = FileAddress().getPathHomeworkBookPicture(bookBean.bookPath)
         val listFiles = FileUtils.getAscFiles(path)
         return if (listFiles.size > page) listFiles[page] else null
     }

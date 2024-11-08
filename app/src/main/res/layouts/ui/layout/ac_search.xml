@@ -4,7 +4,10 @@
     android:orientation="vertical"
     android:layout_width="960dp"
     android:layout_height="900dp"
-    android:padding="@dimen/dp_40"
+    android:paddingStart="@dimen/dp_40"
+    android:paddingTop="@dimen/dp_40"
+    android:paddingEnd="@dimen/dp_40"
+    android:paddingBottom="@dimen/dp_10"
     android:background="@drawable/dialog_bg"
     >
 
@@ -83,14 +86,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"/>
 
     <include
         layout="@layout/common_page_number"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:visibility="gone"
         />
 
 </LinearLayout>

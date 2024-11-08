@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.dialog
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
@@ -41,16 +40,10 @@ class ProgressDialog(var context: Context, val screenPos: Int,val type:Int) {
     }
 
     fun show() {
-        val activity = context as Activity
-        if (!activity.isFinishing && !activity.isDestroyed && mDialog != null && !mDialog!!.isShowing) {
-            mDialog!!.show()
-        }
+        mDialog?.show()
     }
 
     fun dismiss() {
-        val activity = context as Activity
-        if (!activity.isFinishing && !activity.isDestroyed && mDialog != null && mDialog!!.isShowing) {
-            mDialog!!.dismiss()
-        }
+        mDialog?.dismiss()
     }
 }

@@ -38,8 +38,8 @@ class Constants {
         const val STATUS_BAR_SHOW = 2147483647//永不消失
             const val DEBUG="debug"
 
-//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
         const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 
         //
@@ -102,6 +102,7 @@ class Constants {
         const val MAIN_HOMEWORK_NOTICE_CLEAR_EVENT = "MainHomeworkNoticeClearEvent"//作业通知清除广播
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val NETWORK_CONNECTION_FAIL_EVENT = "NetworkConnectionFailEvent"//网络连接断开
+        const val WIFI_CONNECTION_FAIL_EVENT = "WIFIConnectionFailEvent"//wifi连接断开
         const val DATE_DRAWING_EVENT = "DateDrawingEvent"//日程手写结束
         const val CALENDER_SET_EVENT = "CalenderSetEvent"//台历设置
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理刷新

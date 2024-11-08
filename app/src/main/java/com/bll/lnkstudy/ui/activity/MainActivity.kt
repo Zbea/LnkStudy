@@ -332,8 +332,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 7)
             set(Calendar.DAY_OF_MONTH, 25)
-            set(Calendar.HOUR_OF_DAY, 8)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 13)
+            set(Calendar.MINUTE, 10)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
@@ -375,8 +375,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, solar.solarMonth-1)
             set(Calendar.DAY_OF_MONTH, solar.solarDay)
-            set(Calendar.HOUR_OF_DAY, 8)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 13)
+            set(Calendar.MINUTE, 10)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
@@ -411,7 +411,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR_OF_DAY, 9)
+            set(Calendar.HOUR_OF_DAY, 8)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -1046,43 +1046,55 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
+                if (!NetworkUtil(this).isNetworkConnected()){
+                    NetworkUtil(this).toggleNetwork(true)
+                }
                 eventType = Constants.AUTO_UPLOAD_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 10 * 1000)
+                }, 30 * 1000)
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
+                if (!NetworkUtil(this).isNetworkConnected()){
+                    NetworkUtil(this).toggleNetwork(true)
+                }
                 eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 10 * 1000)
+                }, 30 * 1000)
                 clearSemesterData()
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
+                if (!NetworkUtil(this).isNetworkConnected()){
+                    NetworkUtil(this).toggleNetwork(true)
+                }
                 eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 10 * 1000)
+                }, 30 * 1000)
                 clearSemesterData()
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
+                if (!NetworkUtil(this).isNetworkConnected()){
+                    NetworkUtil(this).toggleNetwork(true)
+                }
                 eventType = Constants.USER_CHANGE_GRADE_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 10 * 1000)
+                }, 30 * 1000)
             }
             Constants.AUTO_UPLOAD_YEAR_EVENT -> {
+                if (!NetworkUtil(this).isNetworkConnected()){
+                    NetworkUtil(this).toggleNetwork(true)
+                }
                 eventType = Constants.AUTO_UPLOAD_YEAR_EVENT
                 Handler().postDelayed({
                     mQiniuPresenter.getToken()
-                }, 10 * 1000)
+                }, 30 * 1000)
             }
             Constants.DIARY_UPLOAD_EVENT -> {
                 eventType = Constants.DIARY_UPLOAD_EVENT
                 mQiniuPresenter.getToken()
-            }
-            Constants.USER_CHANGE_EVENT -> {
-                mUser = SPUtil.getObj("user", User::class.java)
             }
             Constants.SETTING_DOWNLOAD_EVENT -> {
                 mDataUpdatePresenter.onList()
@@ -1106,9 +1118,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     override fun onDestroy() {
         super.onDestroy()
-        if (myBroadcastReceiver!=null){
-            unregisterReceiver(myBroadcastReceiver)
-        }
+        unregisterReceiver(myBroadcastReceiver)
     }
 
     override fun onResume() {

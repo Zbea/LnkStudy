@@ -17,11 +17,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -49,7 +51,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     private var mCommonPresenter=CommonPresenter(this)
     var screenPos=0
     var mDialog: ProgressDialog? = null
-    var mNetworkDialog: ProgressDialog?=null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var grade=0
@@ -92,9 +93,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
         onCommonData()
     }
-
     open fun onCommonData(){
+    }
 
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        if (list.size!=DataBeanManager.schools.size)
+            DataBeanManager.schools=list
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -181,17 +185,17 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
 
     private fun initDialog(){
         mDialog = ProgressDialog(this,getCurrentScreenPos(),0)
-        mNetworkDialog= ProgressDialog(this,getCurrentScreenPos(),1)
     }
 
     fun initDialog(screen:Int){
         mDialog = ProgressDialog(this,screen,0)
-        mNetworkDialog= ProgressDialog(this,screen,1)
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(this).isNetworkConnected())
+        if (NetworkUtil(this).isNetworkConnected()){
             mCommonPresenter.getCommon()
+            mCommonPresenter.getCommonSchool()
+        }
     }
 
     protected fun setPageTitle(pageTitle: String) {
@@ -262,14 +266,16 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in mTabTypeAdapter?.data!!){
+                for (item in itemTabTypes){
                     item.isCheck=false
                 }
-                val item=mTabTypeAdapter?.data!![position]
-                item.isCheck=true
-                mTabTypeAdapter?.notifyDataSetChanged()
+                if (position<itemTabTypes.size){
+                    val item=itemTabTypes[position]
+                    item.isCheck=true
+                    mTabTypeAdapter?.notifyDataSetChanged()
 
-                onTabClickListener(view,position)
+                    onTabClickListener(view,position)
+                }
             }
         }
     }
@@ -296,15 +302,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         intent.putExtra("exam", if (isMode)1 else 0)
         intent.action = Constants.EXAM_MODE_BROADCAST_EVENT
         sendBroadcast(intent)
-    }
-
-    protected fun hideNetworkDialog() {
-        mNetworkDialog?.dismiss()
-    }
-
-    protected fun showNetworkDialog() {
-        mNetworkDialog?.show()
-        NetworkUtil(this).toggleNetwork(true)
     }
 
     protected fun gotoBookStore(type: Int){
@@ -478,15 +475,12 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     fun onMessageEvent(msgFlag: String) {
         when(msgFlag){
             Constants.USER_CHANGE_EVENT->{
+                MethodManager.getUser()
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
             }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
-                hideNetworkDialog()
                 onNetworkConnectionSuccess()
-            }
-            Constants.NETWORK_CONNECTION_FAIL_EVENT->{
-                hideNetworkDialog()
             }
             else->{
                 onEventBusMessage(msgFlag)

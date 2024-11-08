@@ -1,6 +1,8 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -10,11 +12,8 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
-import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_parent
@@ -31,14 +30,13 @@ import kotlinx.android.synthetic.main.ac_account_info.tv_phone
 import kotlinx.android.synthetic.main.ac_account_info.tv_provinces
 import kotlinx.android.synthetic.main.ac_account_info.tv_school_name
 import kotlinx.android.synthetic.main.ac_account_info.tv_user
+import org.greenrobot.eventbus.EventBus
 
-class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView ,ISchoolView{
+class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView {
 
-    private var mSchoolPresenter:SchoolPresenter?=null
     private var presenter:AccountInfoPresenter?=null
     private var nickname = ""
 
-    private var schools= mutableListOf<SchoolBean>()
     private var school=0
     private var schoolBean:SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
@@ -70,10 +68,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         mUser?.parentTel=tv_parent_phone.text.toString()
     }
 
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        schools=list
-    }
-
     override fun layoutId(): Int {
         return R.layout.ac_account_info
     }
@@ -81,12 +75,9 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initData() {
         initChangeScreenData()
         school=mUser?.schoolId!!
-        if (NetworkUtil(this).isNetworkConnected())
-            mSchoolPresenter?.getCommonSchool(false)
     }
 
     override fun initChangeScreenData() {
-        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter = AccountInfoPresenter(this,getCurrentScreenPos())
     }
 
@@ -113,12 +104,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         }
 
         btn_edit_school.setOnClickListener {
-            if (schools.isNotEmpty()){
-                editSchool()
-            }
-            else{
-                showToast("数据加载失败，请重新加载")
-            }
+            editSchool()
         }
 
         btn_logout.setOnClickListener {
@@ -150,13 +136,11 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
      */
     private fun editSchool() {
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),DataBeanManager.schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
-                if (school==mUser?.schoolId)
-                    return@setOnDialogClickListener
                 presenter?.editSchool(it.id)
-                for (item in schools){
+                for (item in DataBeanManager.schools){
                     if (item.id==school)
                         schoolBean=item
                 }
@@ -181,9 +165,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun onDestroy() {
         super.onDestroy()
         SPUtil.putObj("user", mUser!!)
+        EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
     }
 
-    override fun onNetworkConnectionSuccess() {
-        mSchoolPresenter?.getCommonSchool(true)
-    }
 }

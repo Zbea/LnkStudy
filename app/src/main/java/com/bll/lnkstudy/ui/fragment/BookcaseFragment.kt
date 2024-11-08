@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
 import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
@@ -29,7 +28,6 @@ import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
 import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_type
-import java.io.File
 
 
 /**
@@ -167,13 +165,7 @@ class BookcaseFragment: BaseMainFragment() {
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         for (item in cloudList){
             val bookBean=BookGreenDaoManager.getInstance().queryBookByID(item.bookId)
-            //删除书籍
-            FileUtils.deleteFile(File(bookBean.bookPath))
-            FileUtils.deleteFile(File(bookBean.bookDrawPath))
-            BookGreenDaoManager.getInstance().deleteBook(bookBean)
-            //删除增量数据
-            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,1)
-            DataUpdateManager.deleteDateUpdate(6,bookBean.bookId,2)
+            MethodManager.deleteBook(bookBean)
         }
         lazyLoad()
     }

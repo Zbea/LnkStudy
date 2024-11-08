@@ -212,7 +212,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
 
     //加载图片
     private fun setElikLoadPath( elik: EinkPWInterface ,index: Int, view:ImageView) {
-        GlideUtils.setImageUrl(this, paper!!.paths[index],view)
+        GlideUtils.setImageCacheUrl(this,paper!!.paths[index],view)
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 

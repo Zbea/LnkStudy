@@ -2,6 +2,7 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.NoteContentBeanDao;
 import com.bll.lnkstudy.greendao.PaintingBeanDao;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean;
@@ -90,9 +91,18 @@ public class PaintingBeanDaoManager {
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
     }
+
     public List<PaintingBean> queryPaintings() {
         WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
         return dao.queryBuilder().where(whereUser,whereCondition1)
+                .orderDesc(PaintingBeanDao.Properties.Date)
+                .build().list();
+    }
+
+    public List<PaintingBean> searchPaintings(String title) {
+        WhereCondition whereCondition1= PaintingBeanDao.Properties.Type.eq(2);
+        WhereCondition whereCondition2= PaintingBeanDao.Properties.Title.like("%"+title+"%");
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(PaintingBeanDao.Properties.Date)
                 .build().list();
     }

@@ -306,7 +306,7 @@ class DiaryActivity:BaseDrawingActivity() {
 
     private fun saveDiary() {
         val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong))
-        if (FileUtils.isExistContent(path)){
+        if (FileUtils.isExistContent(path)||!diaryBean?.title.isNullOrEmpty()){
             diaryBean?.paths = images
             diaryBean?.page=posImage
             DiaryDaoManager.getInstance().insertOrReplace(diaryBean)

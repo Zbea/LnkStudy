@@ -1,10 +1,10 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -60,7 +60,7 @@ class PaintingListActivity:BaseAppCompatActivity() {
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val item = lists[position]
-                customStartActivity(Intent(this@PaintingListActivity, PaintingImageActivity::class.java).setFlags(item.contentId))
+                MethodManager.gotoPaintingImage(this@PaintingListActivity,item.contentId,getCurrentScreenPos())
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@PaintingListActivity.position = position

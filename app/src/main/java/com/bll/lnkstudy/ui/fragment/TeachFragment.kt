@@ -62,7 +62,6 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     override fun lazyLoad() {
         pageIndex=1
-        fetchCommonData()
         if(NetworkUtil(requireActivity()).isNetworkConnected()){
             mPresenter.getType()
         }

@@ -11,6 +11,7 @@ import java.util.*
 object DataBeanManager {
 
     var provinces= mutableListOf<Area>()
+    var schools= mutableListOf<SchoolBean>()
 //    var grades= mutableListOf<ItemList>()
 //    var typeGrades= mutableListOf<ItemList>()
 //    var courses= mutableListOf<ItemList>()
@@ -33,7 +34,7 @@ object DataBeanManager {
     )
     val searchType = arrayOf(
         mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),
-        mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str),mContext.getString(R.string.diary_title_str)
+        mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str),"书画"
     )
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
     val bookType = arrayOf(

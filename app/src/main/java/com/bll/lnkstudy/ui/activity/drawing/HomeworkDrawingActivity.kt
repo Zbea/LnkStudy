@@ -326,11 +326,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_b)
             }
             1->{
-                GlideUtils.setImageUrl(this,homeworkContent?.path, v_content_b,homeworkContent?.state!!)
+                GlideUtils.setImageCacheUrl(this,homeworkContent?.path, v_content_b,homeworkContent?.state!!)
             }
             2->{
                 val file=File(homeworkContent?.path)
-                GlideUtils.setImageUrl(this, file.path, v_content_b,homeworkContent?.state!!)
+                GlideUtils.setImageCacheUrl(this, file.path, v_content_b,homeworkContent?.state!!)
                 val drawPath=file.parent+"/draw.png"
                 setElikLoadPath(elik_b!!, drawPath)
             }
@@ -345,11 +345,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_a)
                 }
                 1->{
-                    GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
+                    GlideUtils.setImageCacheUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
                 }
                 2->{
                     val file=File(homeworkContent_a?.path)
-                    GlideUtils.setImageUrl(this, file.path, v_content_a,homeworkContent_a?.state!!)
+                    GlideUtils.setImageCacheUrl(this, file.path, v_content_a,homeworkContent_a?.state!!)
                     val drawPath=file.parent+"/draw.png"
                     setElikLoadPath(elik_b!!, drawPath)
                 }

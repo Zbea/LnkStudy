@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.model.CommonData
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult
@@ -26,5 +27,17 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
         }, false)
     }
 
+    fun getCommonSchool() {
+        val grade = RetrofitManager.service.getCommonSchool()
+        doRequest(grade, object : Callback<MutableList<SchoolBean>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<MutableList<SchoolBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<SchoolBean>>) {
+                if (tBaseResult.data!=null)
+                    view.onListSchools(tBaseResult.data)
+            }
+        }, false)
+    }
 
 }

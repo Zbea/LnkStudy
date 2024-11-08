@@ -4,11 +4,25 @@ import android.content.Intent
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkstudy.*
+import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.PopupList
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
-import com.bll.lnkstudy.manager.*
+import com.bll.lnkstudy.manager.BookGreenDaoManager
+import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
+import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.NoteContentDaoManager
+import com.bll.lnkstudy.manager.NoteDaoManager
+import com.bll.lnkstudy.manager.PaintingBeanDaoManager
+import com.bll.lnkstudy.manager.PaperDaoManager
+import com.bll.lnkstudy.manager.RecordDaoManager
+import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
@@ -17,8 +31,12 @@ import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_search.*
-import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.ac_search.et_search
+import kotlinx.android.synthetic.main.ac_search.rv_list
+import kotlinx.android.synthetic.main.ac_search.tv_class
+import kotlinx.android.synthetic.main.common_page_number.ll_page_number
+import kotlinx.android.synthetic.main.common_page_number.tv_page_current
+import kotlinx.android.synthetic.main.common_page_number.tv_page_total_bottom
 import kotlin.math.ceil
 
 class SearchActivity : BaseAppCompatActivity() {
@@ -41,7 +59,6 @@ class SearchActivity : BaseAppCompatActivity() {
     }
 
     override fun initView() {
-        tv_class?.text=popups[0].name
 
         et_search?.doAfterTextChanged {
             val titleStr=it.toString()
@@ -49,8 +66,19 @@ class SearchActivity : BaseAppCompatActivity() {
                 searchContent(titleStr)
             }
         }
+
+        tv_class?.text=popups[0].name
         tv_class.setOnClickListener {
-            showClassTypeView()
+            PopupList(this,popups,tv_class,tv_class.width,5).builder()
+                .setOnSelectListener {
+                    typeId=it.id
+                    tv_class.text=it.name
+
+                    val titleStr=et_search.text.toString()
+                    if (titleStr.isNotEmpty()){
+                        searchContent(titleStr)
+                    }
+                }
         }
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
@@ -58,12 +86,11 @@ class SearchActivity : BaseAppCompatActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list.addItemDecoration(SpaceGridItemDeco1(4,0, 40))
+        rv_list.addItemDecoration(SpaceGridItemDeco1(4,0, 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val item= listMap[pageIndex]?.get(position)
             onItemClick(item!!)
         }
-
     }
 
     /**
@@ -126,27 +153,12 @@ class SearchActivity : BaseAppCompatActivity() {
                     finish()
                 }
             }
+            5->{
+                MethodManager.gotoPaintingImage(this,item.id,getCurrentScreenPos())
+                finish()
+            }
         }
     }
-
-
-
-    /**
-     * 分类选择
-     */
-    private fun showClassTypeView(){
-        PopupList(this,popups,tv_class,tv_class.width,5).builder()
-            .setOnSelectListener {
-                typeId=it.id
-                tv_class.text=it.name
-
-                val titleStr=et_search.text.toString()
-                if (titleStr.isNotEmpty()){
-                    searchContent(titleStr)
-                }
-            }
-    }
-
     /**
      * 搜索内容
      */
@@ -257,6 +269,17 @@ class SearchActivity : BaseAppCompatActivity() {
                         typeStr=item.typeStr
                         page=item.page
                         grade=item.grade
+                    })
+                }
+            }
+            5->{
+                val paintings=PaintingBeanDaoManager.getInstance().searchPaintings(titleStr)
+                for (item in paintings){
+                    searchBeans.add(SearchBean().apply {
+                        category=5
+                        title=item.title
+                        id=item.contentId
+                        imageUrl=item.imageUrl
                     })
                 }
             }

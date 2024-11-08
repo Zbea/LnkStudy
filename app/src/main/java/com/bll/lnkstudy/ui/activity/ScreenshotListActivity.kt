@@ -7,17 +7,18 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.ItemSelectorDialog
 import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.dialog.PopupClick
+import com.bll.lnkstudy.dialog.ScreenshotDetailsDialog
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.ScreenshotAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
@@ -45,6 +46,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
         pageSize = 12
         popupBeans.add(PopupBean(0, "管理分类", false))
         popupBeans.add(PopupBean(1, "创建分类", false))
+        popupBeans.add(PopupBean(2, "截图明细", false))
     }
 
     override fun initView() {
@@ -75,6 +77,9 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
                             ItemTypeDaoManager.getInstance().insertOrReplace(bean)
                             mTabTypeAdapter?.addData(screenTypes.size, bean)
                         }
+                    }
+                    2->{
+                        ScreenshotDetailsDialog(this).builder()
                     }
                 }
             }
@@ -122,10 +127,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val index=totalNum-1-((pageIndex-1)*pageSize+position)
-                customStartActivity(Intent(this@ScreenshotListActivity,FileDrawingActivity::class.java)
-                    .putExtra("pageIndex",index)
-                    .putExtra("pagePath",tabPath)
-                )
+                MethodManager.gotoScreenFile(this@ScreenshotListActivity,index,tabPath)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@ScreenshotListActivity.position=position

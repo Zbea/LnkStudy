@@ -4,15 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
-import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
-import com.bll.lnkstudy.mvp.presenter.SchoolPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.mvp.view.IContractView.ISchoolView
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
@@ -42,20 +40,14 @@ import kotlinx.android.synthetic.main.ac_account_register.tv_school
 //5. 手机号码规则 11 位有效手机号
 //6. 验证码规则数字即可
  */
-class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView {
+class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView {
 
-    private var mSchoolPresenter:SchoolPresenter?=null
     private var presenter:RegisterOrFindPsdPresenter?=null
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var brithday=0L
     private var school=0
-    private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
-
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        schools=list
-    }
 
     override fun onSms() {
         showToast(R.string.toast_message_code_success)
@@ -84,17 +76,13 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){
-            if (NetworkUtil(this).isNetworkConnected()){
-                mSchoolPresenter?.getCommonSchool(false)
-            }
-            else{
+            if (!NetworkUtil(this).isNetworkConnected()){
                 showToast(R.string.net_work_error)
             }
         }
     }
 
     override fun initChangeScreenData() {
-        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
     }
 
@@ -264,7 +252,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
      */
     private fun selectorSchool(){
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),DataBeanManager.schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
                 tv_school.text=it.name
@@ -284,6 +272,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
     }
 
     override fun onNetworkConnectionSuccess() {
-        mSchoolPresenter?.getCommonSchool(true)
+        fetchCommonData()
     }
 }

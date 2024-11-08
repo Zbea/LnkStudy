@@ -31,13 +31,13 @@ class FileAddress {
     /**
      * 教材目录地址
      */
-    fun getPathTextbookCatalog(path:String):String{
+    fun getPathHomeworkBookCatalog(path:String):String{
         return path + File.separator + TEXTBOOK_CATALOG_TXT
     }
     /**
      * 教材图片地址
      */
-    fun getPathTextbookPicture(path:String):String{
+    fun getPathHomeworkBookPicture(path:String):String{
         return path + File.separator + TEXTBOOK_CONTENTS
     }
 
@@ -62,6 +62,13 @@ class FileAddress {
      */
     fun getPathBookDraw(fileName: String):String{
         return "$BOOK_PATH/$mUserId/${fileName}draw"
+    }
+
+    fun getPathTextBook(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/textbook/$fileName"
+    }
+    fun getPathTextBookDraw(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/textbook/${fileName}draw"
     }
 
     /**

@@ -12,7 +12,6 @@ import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MessageAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.NetworkUtil
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
@@ -44,12 +43,7 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
     override fun initData() {
         initChangeScreenData()
         pageSize=12
-        if (NetworkUtil(this).isNetworkConnected()){
-            fetchData()
-        }
-        else{
-            showNetworkDialog()
-        }
+        fetchData()
     }
 
     override fun initChangeScreenData() {

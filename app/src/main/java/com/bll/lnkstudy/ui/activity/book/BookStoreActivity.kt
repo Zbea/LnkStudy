@@ -63,13 +63,13 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     override fun onType(bookStoreType: BookStoreType) {
         //子分类
         val types = bookStoreType.subType[typeStr]
-        if (!types.isNullOrEmpty()){
+        if (!types.isNullOrEmpty()&&subTypeList!=types){
             subTypeList=types
             subTypeStr=types[0].desc
             subtype=types[0].type
             initTab()
+            fetchData()
         }
-        fetchData()
     }
 
     override fun buySuccess() {

@@ -15,10 +15,7 @@ class AppListAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<
                 setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(imageByte))
                 setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
             }
-            addOnClickListener(R.id.ll_name,R.id.iv_image)
+            addOnClickListener(R.id.ll_name)
         }
     }
-
-
-
 }

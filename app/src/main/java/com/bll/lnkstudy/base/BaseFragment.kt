@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -60,7 +62,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mNetworkDialog:ProgressDialog?=null
     var mUser=SPUtil.getObj("user",User::class.java)
     var accountId=SPUtil.getObj("user",User::class.java)?.accountId
     var screenPos=1
@@ -85,6 +86,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (!commonData.version.isNullOrEmpty()&&commonData.version!=MethodManager.getItemLists("bookVersions")){
             MethodManager.saveItemLists("bookVersions",commonData.version)
         }
+    }
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        if (list.size!= DataBeanManager.schools.size)
+            DataBeanManager.schools=list
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -131,12 +136,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
 
     private fun initDialog(){
         mDialog = ProgressDialog(requireActivity(),getScreenPosition(),0)
-        mNetworkDialog= ProgressDialog(requireActivity(),getScreenPosition(),1)
     }
 
     fun initDialog(screen:Int){
         mDialog = ProgressDialog(requireActivity(),screen,0)
-        mNetworkDialog= ProgressDialog(requireActivity(),screen,1)
     }
 
     /**
@@ -278,8 +281,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected())
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCommonPresenter.getCommon()
+            mCommonPresenter.getCommonSchool()
+        }
     }
 
     private fun initTabView(){
@@ -338,14 +343,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         initDialog()
     }
 
-    protected fun hideNetworkDialog() {
-        mNetworkDialog?.dismiss()
-    }
-    protected fun showNetworkDialog() {
-        mNetworkDialog?.show()
-        NetworkUtil(requireActivity()).toggleNetwork(true)
-    }
-
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
@@ -391,11 +388,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
                 grade=mUser?.grade!!
             }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
-                hideNetworkDialog()
                 onNetworkConnectionSuccess()
-            }
-            Constants.NETWORK_CONNECTION_FAIL_EVENT->{
-                hideNetworkDialog()
             }
             else->{
                 onEventBusMessage(msgFlag)

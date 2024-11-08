@@ -101,16 +101,9 @@ class TextbookFragment : BaseMainFragment() {
                             }
                             override fun ok() {
                                 for (book in books){
-                                    bookGreenDaoManager.deleteBook(book) //删除本地数据库
-                                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                                    FileUtils.deleteFile(File(book.bookDrawPath))
-                                    //删除增量更新
-                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1)
-                                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2)
+                                    MethodManager.deleteTextbook(book)
                                 }
-                                books.clear()
                                 fetchData()
-
                             }
                         })
                 }
@@ -146,15 +139,10 @@ class TextbookFragment : BaseMainFragment() {
         LongClickManageDialog(requireActivity(),1,book.bookName,beans).builder()
             .setOnDialogClickListener {
                 if (it==0){
-                    bookGreenDaoManager.deleteBook(book) //删除本地数据库
-                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                    FileUtils.deleteFile(File(book.bookDrawPath))
+                    MethodManager.deleteTextbook(book)
                     mAdapter?.remove(position)
                     if (books.size==0)
                         fetchData()
-                    //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(1,book.bookId,1)
-                    DataUpdateManager.deleteDateUpdate(1,book.bookId,2)
                 }
                 else{
                     book.isLock=!book.isLock
@@ -183,7 +171,6 @@ class TextbookFragment : BaseMainFragment() {
      * 上传本地课本
      */
     fun uploadTextBook(token:String){
-        moveTextbook()
         val cloudList= mutableListOf<CloudListBean>()
         val textBooks= getTextbooksUnLock()
         for (book in textBooks){
@@ -253,17 +240,11 @@ class TextbookFragment : BaseMainFragment() {
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        val oldBooks=getTextbooksUnLock()
-        //删除现在所有所有往期教材
-        bookGreenDaoManager.deleteBooks(oldBooks)
         //删除所有往期教材的图片文件
-        for (item in oldBooks){
-            FileUtils.deleteFile(File(item.bookPath))
-            FileUtils.deleteFile(File(item.bookDrawPath))
-            //删除增量更新
-            DataUpdateManager.deleteDateUpdate(1,item.bookId,1)
-            DataUpdateManager.deleteDateUpdate(1,item.bookId,2)
+        for (book in getTextbooksUnLock()){
+            MethodManager.deleteTextbook(book)
         }
+        moveTextbook()
         fetchData()
     }
 

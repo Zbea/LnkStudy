@@ -196,9 +196,6 @@ public interface IContractView {
     //公共接口
     interface ICommonView extends IBaseView {
         void onList(CommonData commonData);
-    }
-
-    interface ISchoolView extends IBaseView {
         void onListSchools(List<SchoolBean> list);
     }
 

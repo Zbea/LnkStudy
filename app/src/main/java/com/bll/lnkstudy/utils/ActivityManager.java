@@ -3,7 +3,6 @@ package com.bll.lnkstudy.utils;
 import android.app.Activity;
 
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
-import com.bll.lnkstudy.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
@@ -120,25 +119,6 @@ public class ActivityManager {
         }
     }
 
-    /**
-     * 获取当前书籍是否已经打开
-     * @param id
-     * @return
-     */
-    public void checkBookIDisExist(int id){
-        Iterator<WeakReference<Activity>> it = stack.iterator();
-        while (it.hasNext()) {
-            WeakReference<Activity> weak = it.next();
-            Activity activity=weak.get();
-            if (activity.getClass().getName().equals(BookDetailsActivity.class.getName())) {
-                int bookId=activity.getIntent().getIntExtra("book_id",0);
-                if (bookId==id){
-                    activity.finish();
-                    it.remove();
-                }
-            }
-        }
-    }
 
     /**
      * 获取当前作业书是否已经打开

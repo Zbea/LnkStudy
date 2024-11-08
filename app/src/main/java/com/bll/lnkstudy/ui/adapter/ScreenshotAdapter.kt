@@ -13,7 +13,7 @@ class ScreenshotAdapter(layoutResId: Int, data: List<File>?) : BaseQuickAdapter<
         helper.apply {
             setText(R.id.tv_name,file.name.replace(".png",""))
             val image=getView<ImageView>(R.id.iv_image)
-            GlideUtils.setImageFileRound(mContext,file,image,12)
+            GlideUtils.setImageRoundUrl(mContext,file.path,image,12)
         }
     }
 

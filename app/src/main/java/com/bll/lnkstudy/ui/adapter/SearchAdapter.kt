@@ -34,6 +34,10 @@ class SearchAdapter(layoutResId: Int, data: List<SearchBean>?) : BaseQuickAdapte
                 helper.setImageResource(R.id.iv_image,R.mipmap.icon_search_note_bg)
                 helper.setBackgroundRes(R.id.iv_image,R.color.color_transparent)
             }
+            5->{
+                GlideUtils.setImageUrl(mContext,item.imageUrl,helper.getView(R.id.iv_image))
+                helper.setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)
+            }
         }
 
     }

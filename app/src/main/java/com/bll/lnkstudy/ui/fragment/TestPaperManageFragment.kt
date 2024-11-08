@@ -93,9 +93,9 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     private fun removeAllFragment(){
-        val fm = activity?.supportFragmentManager!!
-        val ft = fm.beginTransaction()
         for (fragment in fragments){
+            val fm = activity?.supportFragmentManager!!
+            val ft = fm.beginTransaction()
             ft.remove(fragment).commit()
         }
     }

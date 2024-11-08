@@ -166,6 +166,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
                             item.id=null//设置数据库id为null用于重新加入
+                            item.createStatus=0
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                             if (item.state!=5){
                                 //创建增量数据

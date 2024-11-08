@@ -1,8 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.RecoverySystem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
@@ -41,11 +39,9 @@ import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.DeviceUtil
-import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.HtRecoverySystem
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
@@ -73,7 +69,6 @@ import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
 import kotlinx.android.synthetic.main.fragment_main_left.tv_screenshot
 import kotlinx.android.synthetic.main.fragment_main_left.v_down
 import kotlinx.android.synthetic.main.fragment_main_left.v_up
-import java.io.File
 import java.util.Random
 
 
@@ -94,8 +89,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
 
     override fun onUpdateInfo(item: SystemUpdateInfo) {
         AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
-//        updateDialog = AppUpdateDialog(requireActivity(), 2, item).builder()
-//        downLoadStartSystem(item)
     }
 
     override fun onAppUpdate(item: AppUpdateBean) {
@@ -136,6 +129,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[0])
+        initDialog(1)
 
         initPlanView()
         initNoticeView()
@@ -143,7 +137,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
-//            EventBus.getDefault().post(Constants.AUTO_UPLOAD_EVENT)
         }
 
         iv_date_more.setOnClickListener {
@@ -187,16 +180,9 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
         tv_correct_notice.setOnClickListener {
             customStartActivity(Intent(activity, HomeworkNoticeListActivity::class.java).setFlags(1))
         }
-
-        initDialog(1)
     }
 
     override fun lazyLoad() {
-//        //删除系统更新文件
-//        val path=FileAddress().getPathSystemUpdate(DeviceUtil.getOtaProductVersion())
-//        if (File(path).exists()){
-//            File(path).delete()
-//        }
         nowDate = DateUtils.getStartOfDayInMillis()
         setDateView()
         showCalenderView()
@@ -207,7 +193,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     override fun fetchData() {
         fetchCommonData()
         if (NetworkUtil(requireActivity()).isNetworkConnected()) {
-
             val systemUpdateMap = HashMap<String, String>()
             systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
             systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
@@ -289,7 +274,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
                 listFiles[Random().nextInt(listFiles.size)]
 //                listFiles[listFiles.size - 1]
             }
-            GlideUtils.setImageFileRound(requireActivity(), file, iv_calender, 15)
+            GlideUtils.setImageRoundUrl(requireActivity(), file.path, iv_calender, 15)
         }
     }
 
@@ -375,59 +360,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
                 updateDialog?.dismiss()
             }
         })
-    }
-
-    //下载系统
-    @SuppressLint("UsableSpace")
-    private fun downLoadStartSystem(bean: SystemUpdateInfo) {
-        val path=FileAddress().getPathSystemUpdate(bean.version)
-        val file=File(path)
-        if (file.exists()&&file.length()==bean.size){
-            setSystemUpdate(path)
-            return
-        }
-        FileBigDownManager.with(requireActivity()).create(bean.otaUrl).setPath(path).startSingleTaskDownLoad(object :
-            FileBigDownManager.SingleTaskCallBack {
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
-                if (task != null && task.isRunning) {
-                    requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
-                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                        updateDialog?.setUpdateBtn(s)
-                    }
-                }
-            }
-
-            override fun completed(task: BaseDownloadTask?) {
-                setSystemUpdate(path)
-            }
-
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
-            }
-
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                updateDialog?.dismiss()
-            }
-        })
-    }
-
-    /**
-     * 下载完毕开始系统更新
-     */
-    private fun setSystemUpdate(path:String){
-        updateDialog?.setUpdateInfo()
-        Thread {
-            try {
-                RecoverySystem.verifyPackage(File(path), {
-                    if (it == 100) {
-                        HtRecoverySystem.installPackage(requireActivity(), File(path))
-                    }
-                }, null)
-            }
-            catch (e:java.lang.Exception){
-                e.printStackTrace()
-            }
-        }.start()
     }
 
     /**

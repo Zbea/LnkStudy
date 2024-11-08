@@ -160,7 +160,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         book = HomeworkBookDaoManager.getInstance().queryBookByID(bookId)
         if (book == null) return
         page = book?.pageIndex!!
-        val catalogFilePath = FileAddress().getPathTextbookCatalog(book?.bookPath!!)
+        val catalogFilePath = FileAddress().getPathHomeworkBookCatalog(book?.bookPath!!)
         if (FileUtils.isExist(catalogFilePath))
         {
             val catalogMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(catalogFilePath)))
@@ -360,20 +360,15 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val showFile = getIndexFile(index)
         if (showFile != null) {
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
-            if (correctBean==null){
-                GlideUtils.setImageUrl(this, showFile.path, view)
-            }
-            else{
-                GlideUtils.setImageUrl(this, showFile.path, view,correctBean.state)
-            }
+            GlideUtils.setImageCacheUrl(this, showFile.path, view, correctBean?.state ?: 0)
 
             if (isCommitState(index)){
                 elik.setPWEnabled(false)
             }
             else{
+                elik.setPWEnabled(true)
                 val drawPath = book?.bookDrawPath+"/${index+1}.png"
                 elik.setLoadFilePath(drawPath, true)
-                elik.setPWEnabled(true)
             }
         }
     }
@@ -610,7 +605,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
-        val path = FileAddress().getPathTextbookPicture(book?.bookPath!!)
+        val path = FileAddress().getPathHomeworkBookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getAscFiles(path)
         return if (listFiles.size>index) listFiles[index] else null
     }

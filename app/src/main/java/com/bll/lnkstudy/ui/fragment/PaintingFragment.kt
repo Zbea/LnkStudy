@@ -53,7 +53,7 @@ class PaintingFragment : BaseMainFragment(){
     override fun initView() {
         setTitle(DataBeanManager.listTitle[6])
         showView(tv_btn)
-        tv_btn.text="书画明显"
+        tv_btn.text="书画明细"
 
         tv_btn.setOnClickListener {
             PaintingDetailsDialog(requireActivity()).builder()

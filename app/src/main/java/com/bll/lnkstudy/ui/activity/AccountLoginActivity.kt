@@ -28,15 +28,15 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     private var token=""
     private var statusBarValue=0
 
-    override fun getLogin(user: User?) {
-        token= user?.token.toString()
+    override fun getLogin(user: User) {
+        token= user.token.toString()
         SPUtil.putString("token",token)
         presenter.accounts()
     }
 
-    override fun getAccount(user: User?) {
-        user?.token=token
-        SPUtil.putObj("user",user!!)
+    override fun getAccount(user: User) {
+        user.token=token
+        SPUtil.putObj("user",user)
 
         val intent = Intent()
         intent.putExtra("token", token)

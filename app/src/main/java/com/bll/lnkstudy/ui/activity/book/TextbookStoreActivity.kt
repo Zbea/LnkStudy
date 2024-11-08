@@ -292,7 +292,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         val path = if (tabId>2){
             FileAddress().getPathZip(fileName)
         } else{
-            FileAddress().getPathBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
+            FileAddress().getPathTextBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
         val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object :
@@ -324,7 +324,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                             loadSate = 2
                             time = System.currentTimeMillis()//下载时间用于排序
                             bookPath = path
-                            bookDrawPath=FileAddress().getPathBookDraw(fileName)
+                            bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
                         }
                         //下载解压完成后更新存储的book
                         TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)

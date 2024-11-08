@@ -55,13 +55,8 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         flags=intent.flags
         item= intent.getBundleExtra("bundle")?.getSerializable("item") as ItemList
 
-        onCommonData()
-
         if (NetworkUtil(this).isNetworkConnected()){
             fetchData()
-        }
-        else{
-            showNetworkDialog()
         }
     }
 
@@ -69,31 +64,27 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
         mPresenter=TeachingVideoPresenter(this,getCurrentScreenPos())
     }
 
-    override fun onCommonData() {
+    override fun initView() {
+        setPageTitle(item?.desc!!)
+        if (flags==0) showView(tv_grade,tv_semester) else showView(tv_grade)
         if (flags==0){
             grade=mUser?.grade!!
-            grades=DataBeanManager.popupGrades(grade)
+            grades= DataBeanManager.popupGrades(grade)
         }
         else{
-            grades=DataBeanManager.popupTypeGrades()
+            grades= DataBeanManager.popupTypeGrades()
             grade=grades[DataBeanManager.popupTypePos()].id
         }
 
         if (grades.size>0){
             tv_grade.text = grades[grade-1].name
             if (flags==0){
-                semesters=DataBeanManager.popupSemesters()
+                semesters= DataBeanManager.popupSemesters()
                 semester=semesters[0].id
                 tv_semester.text = semesters[0].name
             }
             initSelectorView()
         }
-
-    }
-
-    override fun initView() {
-        setPageTitle(item?.desc!!)
-        if (flags==0) showView(tv_grade,tv_semester) else showView(tv_grade)
 
         initRecyclerView()
     }
@@ -114,11 +105,16 @@ class TeachListActivity:BaseAppCompatActivity(),IContractView.ITeachingVideoView
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                val intent= Intent(this@TeachListActivity, TeachActivity::class.java)
-                val bundle= Bundle()
-                bundle.putSerializable("teach", datas[position])
-                intent.putExtra("bundle", bundle)
-                customStartActivity(intent)
+                if (NetworkUtil(this@TeachListActivity).isWifiConnected()){
+                    val intent= Intent(this@TeachListActivity, TeachActivity::class.java)
+                    val bundle= Bundle()
+                    bundle.putSerializable("teach", datas[position])
+                    intent.putExtra("bundle", bundle)
+                    customStartActivity(intent)
+                }
+                else{
+                    showToast("WIFI未打开，无法播放视频")
+                }
             }
         }
     }

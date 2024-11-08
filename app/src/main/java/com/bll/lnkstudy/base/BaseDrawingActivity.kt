@@ -17,7 +17,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
-import com.bll.lnkstudy.ui.activity.PaintingImageActivity
 import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
 import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
