@@ -3,23 +3,24 @@ package com.bll.lnkstudy.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.View
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.dialog.CloudDownloadListDialog
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PaintingDetailsDialog
-import com.bll.lnkstudy.manager.ItemTypeDaoManager
+import com.bll.lnkstudy.dialog.PopupUpClick
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.ui.activity.PaintingDrawingTypeActivity
+import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.PaintingListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
-import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.tv_btn
 import kotlinx.android.synthetic.main.fragment_painting.iv_dd
@@ -36,14 +37,24 @@ import kotlinx.android.synthetic.main.fragment_painting.iv_tang
 import kotlinx.android.synthetic.main.fragment_painting.iv_yuan
 import kotlinx.android.synthetic.main.fragment_painting.ll_content1
 import kotlinx.android.synthetic.main.fragment_painting.ll_content2
-import java.io.File
 
 
 /**
  * 书画
  */
-class PaintingFragment : BaseMainFragment(){
-    private var typeId = 0//类型
+class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
+    private var presenter=QiniuPresenter(this,2)
+    private var tabPos = 0//类型
+    private var popupHbs= mutableListOf<PopupBean>()
+    private var popupSfs= mutableListOf<PopupBean>()
+    private var uploadTitleStr=""
+    private var type=0
+
+    override fun onToken(token: String) {
+        showLoading()
+        uploadLocalDrawing(token)
+    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_painting
@@ -54,6 +65,33 @@ class PaintingFragment : BaseMainFragment(){
         setTitle(DataBeanManager.listTitle[6])
         showView(tv_btn)
         tv_btn.text="书画明细"
+
+        popupHbs.add(PopupBean().apply {
+            id=0
+            name="删除画本"
+        })
+        popupHbs.add(PopupBean().apply {
+            id=1
+            name="画本上传"
+        })
+        popupHbs.add(PopupBean().apply {
+            id=2
+            name="云库画本"
+        })
+
+        popupSfs.add(PopupBean().apply {
+            id=0
+            name="删除书法"
+        })
+        popupSfs.add(PopupBean().apply {
+            id=1
+            name="书法上传"
+        })
+        popupSfs.add(PopupBean().apply {
+            id=2
+            name="云库书法"
+        })
+
 
         tv_btn.setOnClickListener {
             PaintingDetailsDialog(requireActivity()).builder()
@@ -91,19 +129,19 @@ class PaintingFragment : BaseMainFragment(){
         }
 
         iv_hb.setOnClickListener {
-            gotoPaintingDrawing(3)
+            MethodManager.gotoPaintingDrawing(requireActivity(),0,0)
         }
         iv_sf.setOnClickListener {
-            gotoPaintingDrawing(4)
+            MethodManager.gotoPaintingDrawing(requireActivity(),1,0)
         }
 
         iv_hb.setOnLongClickListener {
-            onDelete(3)
+            onLongClick(0)
             true
         }
 
         iv_sf.setOnLongClickListener {
-            onDelete(4)
+            onLongClick(1)
             true
         }
 
@@ -126,8 +164,8 @@ class PaintingFragment : BaseMainFragment(){
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        typeId = position
-        if (typeId==4||typeId==5){
+        tabPos = position
+        if (tabPos==4||tabPos==5){
             showView(ll_content2)
             disMissView(ll_content1)
         }
@@ -142,111 +180,92 @@ class PaintingFragment : BaseMainFragment(){
      */
     private fun onClick(time: Int) {
         val intent = Intent(activity, PaintingListActivity::class.java)
-        intent.putExtra("title", "${getString(DataBeanManager.dynastys[time-1])}   ${DataBeanManager.PAINTING[typeId]}")
+        intent.putExtra("title", "${getString(DataBeanManager.dynastys[time-1])}   ${DataBeanManager.PAINTING[tabPos]}")
         intent.putExtra("time", time)
-        intent.putExtra("paintingType", typeId+1)
+        intent.putExtra("paintingType", tabPos+1)
         customStartActivity(intent)
     }
 
-
     /**
-     * 跳转手写画本
+     * 长按点击事件
      */
-    private fun gotoPaintingDrawing(type: Int){
-        val items=ItemTypeDaoManager.getInstance().queryAll(type)
-
-        //当前年级 画本、书法分类为null则创建
-        var item=ItemTypeDaoManager.getInstance().queryBean(type,grade)
-        if (item==null) {
-            item= ItemTypeBean()
-            item.title=if (type==3) "我的画本" else "我的书法"
-            item.type = type
-            item.grade = grade
-            item.date = System.currentTimeMillis()
-            item.path=FileAddress().getPathPaintingDraw(if (type==3) 0 else 1,grade)
-            item.typeId=MethodManager.getPaintingTypeId(type,grade)
-            ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            //创建本地画本增量更新
-            DataUpdateManager.createDataUpdate(5,item.typeId,1, Gson().toJson(item))
-        }
-
-        //当本地画本或者书法分类不止一个时候，进去列表
-        if (items.size>1){
-            val intent=Intent(activity, PaintingDrawingTypeActivity::class.java)
-            intent.flags=type
-            customStartActivity(intent)
-        } else{
-            MethodManager.gotoPaintingDrawing(requireActivity(),item,type)
-        }
-
-    }
-
-    /**
-     * 长按删除当前画本或者书法
-     */
-    private fun onDelete(type: Int){
-        val items=ItemTypeDaoManager.getInstance().queryAll(type)
-        if (items.size==1){
-            val item=ItemTypeDaoManager.getInstance().queryBean(type,grade)
-            CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    MethodManager.deletePaintingDrawing(item)
-                }
-            })
-        }
-    }
-
-    /**
-     * 上传本地手绘书画
-     */
-    fun uploadLocalDrawing(token: String) {
-        if (grade==0) return
-        val cloudList= mutableListOf<CloudListBean>()
-        val uploadList= mutableListOf<ItemTypeBean>()
-        val types= mutableListOf<ItemTypeBean>()
-        //查找所有分类
-        types.addAll(ItemTypeDaoManager.getInstance().queryAll(3))
-        types.addAll(ItemTypeDaoManager.getInstance().queryAll(4))
-        for (item in types){
-            val paintingContents=PaintingDrawingDaoManager.getInstance().queryAllByType(item.type,item.grade)
-            val fileName="${if (item.type==3) "画本" else "书法"}${DataBeanManager.getCourseStr(item.grade)}"
-            if (paintingContents.size>0){
-                uploadList.add(item)
-                FileUploadManager(token).apply {
-                    startZipUpload(item.path,fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=5
-                            subTypeStr=if (item.type==3) "我的画本" else "我的书法"
-                            date=System.currentTimeMillis()
-                            grade=item.grade
-                            listJson=Gson().toJson(item)
-                            contentJson=Gson().toJson(paintingContents)
-                            downloadUrl=it
-                        })
-                        if (cloudList.size==uploadList.size){
-                            mCloudUploadPresenter.upload(cloudList)
+    private fun onLongClick(type: Int){
+        val view=if (type==0) iv_hb else iv_sf
+        val pops=if (type==0) popupHbs else popupSfs
+        PopupUpClick(requireActivity(),pops,view,160,(view.width-160)/2,-(view.height+10)) .builder().setOnSelectListener{
+            when(it.id){
+                0->{
+                    CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
                         }
+                        override fun ok() {
+                            MethodManager.deletePaintingDrawing(type,null)
+                            showToast("删除${getTypeStr()}成功")
+                        }
+                    })
+                }
+                1->{
+                    InputContentDialog(requireActivity(),2,"请输入我的${getTypeStr()}上传标题").builder().setOnDialogClickListener{
+                        uploadTitleStr=it
+                        this.type=type
+                        presenter.getToken(true)
+                    }
+                }
+                2->{
+                    CloudDownloadListDialog(requireActivity(),if (type==0) 3 else 4).builder().setOnDialogClickListener{
+                        MethodManager.gotoPaintingDrawing(requireActivity(),type,it)
                     }
                 }
             }
         }
     }
 
-    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        //删除所有本地画本、书法分类
-        ItemTypeDaoManager.getInstance().clear(3)
-        ItemTypeDaoManager.getInstance().clear(4)
-        //删除所有本地画本、书法内容
-        PaintingDrawingDaoManager.getInstance().clear()
-        FileUtils.deleteFile(File(Constants.PAINTING_PATH))
-        //清除增量数据
-        DataUpdateManager.clearDataUpdate(5)
-        val map=HashMap<String,Any>()
-        map["type"]=5
-        mDataUploadPresenter.onDeleteData(map)
+    /**
+     * 获取画本、书法标记
+     */
+    private fun getTypeStr():String{
+        return if (type==0) "画本" else "书法"
     }
 
+    /**
+     * 上传本地手绘书画
+     */
+    private fun uploadLocalDrawing(token: String) {
+        val itemTypeBean=ItemTypeBean()
+        itemTypeBean.type=if (type==0) 3 else 4
+        itemTypeBean.title=uploadTitleStr
+        itemTypeBean.typeId=0
+        itemTypeBean.date=System.currentTimeMillis()
+        itemTypeBean.path=FileAddress().getPathPaintingDraw(type,0)
+
+        val cloudList= mutableListOf<CloudListBean>()
+        val paintingContents=PaintingDrawingDaoManager.getInstance().queryAllByType(type,0)
+        if (paintingContents.isNotEmpty()){
+            FileUploadManager(token).apply {
+                startZipUpload(itemTypeBean.path,uploadTitleStr)
+                setCallBack{
+                    cloudList.add(CloudListBean().apply {
+                        type=5
+                        title=itemTypeBean.title
+                        subTypeStr="我的${getTypeStr()}"
+                        date=itemTypeBean.date
+                        grade=this@PaintingFragment.grade
+                        listJson=Gson().toJson(itemTypeBean)
+                        contentJson=Gson().toJson(paintingContents)
+                        downloadUrl=it
+                    })
+                    mCloudUploadPresenter.upload(cloudList,true)
+                }
+            }
+        }
+        else{
+            hideLoading()
+            showToast("我的${getTypeStr()}暂无内容，无需上传")
+        }
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        showToast("我的${getTypeStr()}上传成功")
+        MethodManager.deletePaintingDrawing(type,null)
+    }
 }

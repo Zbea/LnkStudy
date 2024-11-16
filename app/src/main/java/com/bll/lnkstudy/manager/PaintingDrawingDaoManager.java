@@ -55,14 +55,19 @@ public class PaintingDrawingDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    public List<PaintingDrawingBean> queryAllByType(int type,int grade) {
+    public List<PaintingDrawingBean> queryAllByType(int type,int cloudId) {
         WhereCondition whereCondition=PaintingDrawingBeanDao.Properties.Type.eq(type);
-        WhereCondition whereCondition1=PaintingDrawingBeanDao.Properties.Grade.eq(grade);
+        WhereCondition whereCondition1=PaintingDrawingBeanDao.Properties.CloudId.eq(cloudId);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(PaintingDrawingBeanDao.Properties.Date).build().list();
     }
 
     public void deleteBean(PaintingDrawingBean bean){
         dao.delete(bean);
+    }
+
+    public void deleteBean(int type,int cloudId){
+        List<PaintingDrawingBean> list=queryAllByType(type, cloudId);
+        dao.deleteInTx(list);
     }
 
     public void clear(){

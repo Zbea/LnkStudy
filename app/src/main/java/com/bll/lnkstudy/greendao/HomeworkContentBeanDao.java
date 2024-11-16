@@ -40,7 +40,7 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         public final static Property Page = new Property(13, int.class, "page", false, "PAGE");
         public final static Property CorrectMode = new Property(14, int.class, "correctMode", false, "CORRECT_MODE");
         public final static Property ScoreMode = new Property(15, int.class, "scoreMode", false, "SCORE_MODE");
-        public final static Property Score = new Property(16, int.class, "score", false, "SCORE");
+        public final static Property Score = new Property(16, double.class, "score", false, "SCORE");
         public final static Property CorrectJson = new Property(17, String.class, "correctJson", false, "CORRECT_JSON");
         public final static Property IsSelfCorrect = new Property(18, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
         public final static Property CommitJson = new Property(19, String.class, "commitJson", false, "COMMIT_JSON");
@@ -76,7 +76,7 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
                 "\"PAGE\" INTEGER NOT NULL ," + // 13: page
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 14: correctMode
                 "\"SCORE_MODE\" INTEGER NOT NULL ," + // 15: scoreMode
-                "\"SCORE\" INTEGER NOT NULL ," + // 16: score
+                "\"SCORE\" REAL NOT NULL ," + // 16: score
                 "\"CORRECT_JSON\" TEXT," + // 17: correctJson
                 "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 18: isSelfCorrect
                 "\"COMMIT_JSON\" TEXT," + // 19: commitJson
@@ -144,7 +144,7 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         stmt.bindLong(14, entity.getPage());
         stmt.bindLong(15, entity.getCorrectMode());
         stmt.bindLong(16, entity.getScoreMode());
-        stmt.bindLong(17, entity.getScore());
+        stmt.bindDouble(17, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
@@ -218,7 +218,7 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         stmt.bindLong(14, entity.getPage());
         stmt.bindLong(15, entity.getCorrectMode());
         stmt.bindLong(16, entity.getScoreMode());
-        stmt.bindLong(17, entity.getScore());
+        stmt.bindDouble(17, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
@@ -261,7 +261,7 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
             cursor.getInt(offset + 13), // page
             cursor.getInt(offset + 14), // correctMode
             cursor.getInt(offset + 15), // scoreMode
-            cursor.getInt(offset + 16), // score
+            cursor.getDouble(offset + 16), // score
             cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // correctJson
             cursor.getShort(offset + 18) != 0, // isSelfCorrect
             cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // commitJson
@@ -288,7 +288,7 @@ public class HomeworkContentBeanDao extends AbstractDao<HomeworkContentBean, Lon
         entity.setPage(cursor.getInt(offset + 13));
         entity.setCorrectMode(cursor.getInt(offset + 14));
         entity.setScoreMode(cursor.getInt(offset + 15));
-        entity.setScore(cursor.getInt(offset + 16));
+        entity.setScore(cursor.getDouble(offset + 16));
         entity.setCorrectJson(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
         entity.setIsSelfCorrect(cursor.getShort(offset + 18) != 0);
         entity.setCommitJson(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));

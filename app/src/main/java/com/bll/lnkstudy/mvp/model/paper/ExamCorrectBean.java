@@ -9,7 +9,7 @@ public class ExamCorrectBean {
     public String examUrl;
     public String studentUrl;
     public String teacherUrl;
-    public int score;
+    public double score;
     public String question;
     public int questionType;
     public int questionMode;

@@ -32,7 +32,7 @@ public class PaperTypeBean {
     @Transient
     public boolean isPg;//是否批改
     @Transient
-    public int score;
+    public double score;
     @Transient
     public String paperTitle;
     @Transient
@@ -64,60 +64,7 @@ public class PaperTypeBean {
     public PaperTypeBean() {
     }
 
-    public Long getId() {
-        return this.id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public long getStudentId() {
-        return this.studentId;
-    }
-    public void setStudentId(long studentId) {
-        this.studentId = studentId;
-    }
-    public long getTeacherId() {
-        return this.teacherId;
-    }
-    public void setTeacherId(long teacherId) {
-        this.teacherId = teacherId;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public int getTypeId() {
-        return this.typeId;
-    }
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-    public String getCourse() {
-        return this.course;
-    }
-    public void setCourse(String course) {
-        this.course = course;
-    }
-    public long getDate() {
-        return this.date;
-    }
-    public void setDate(long date) {
-        this.date = date;
-    }
-    public int getGrade() {
-        return this.grade;
-    }
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-    public boolean getIsCloud() {
-        return this.isCloud;
-    }
-    public void setIsCloud(boolean isCloud) {
-        this.isCloud = isCloud;
-    }
+    
 
 
     @Override
@@ -139,5 +86,77 @@ public class PaperTypeBean {
 
     public void setTeacher(String teacher) {
         this.teacher = teacher;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public long getStudentId() {
+        return this.studentId;
+    }
+
+    public void setStudentId(long studentId) {
+        this.studentId = studentId;
+    }
+
+    public long getTeacherId() {
+        return this.teacherId;
+    }
+
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getTypeId() {
+        return this.typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getCourse() {
+        return this.course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public long getDate() {
+        return this.date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public int getGrade() {
+        return this.grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
+    public boolean getIsCloud() {
+        return this.isCloud;
+    }
+
+    public void setIsCloud(boolean isCloud) {
+        this.isCloud = isCloud;
     }
 }

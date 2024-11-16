@@ -28,7 +28,7 @@ class ItemSelectorDialog(val context: Context, val titleStr: String,val items:Mu
         rv_list?.layoutManager = GridLayoutManager(context,2)
         val mAdapter = MyAdapter(R.layout.item_select_name, items)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(2, 0, 40))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(2, 0, 30))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             listener?.onClick(position)

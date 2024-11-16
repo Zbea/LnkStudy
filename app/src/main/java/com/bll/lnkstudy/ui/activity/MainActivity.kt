@@ -77,8 +77,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 uploadDataUpdate(token)
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
-                noteFragment?.uploadNote(token)
-                paintingFragment?.uploadLocalDrawing(token)
                 textbookFragment?.uploadTextBook(token)
                 homeworkFragment?.upload(token)
                 paperFragment?.uploadPaper(token)
@@ -298,7 +296,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 13)
+            set(Calendar.HOUR_OF_DAY, 15)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -485,7 +483,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         CalenderDaoManager.getInstance().clear()
 
         FileUtils.deleteFile(File(Constants.BOOK_PATH))
-        FileUtils.deleteFile(File(Constants.NOTES_PATH))
         FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
 

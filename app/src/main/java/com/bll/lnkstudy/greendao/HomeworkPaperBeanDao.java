@@ -42,7 +42,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         public final static Property Page = new Property(12, int.class, "page", false, "PAGE");
         public final static Property State = new Property(13, int.class, "state", false, "STATE");
         public final static Property CorrectMode = new Property(14, int.class, "correctMode", false, "CORRECT_MODE");
-        public final static Property Score = new Property(15, int.class, "score", false, "SCORE");
+        public final static Property Score = new Property(15, double.class, "score", false, "SCORE");
         public final static Property CorrectJson = new Property(16, String.class, "correctJson", false, "CORRECT_JSON");
         public final static Property IsSelfCorrect = new Property(17, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
         public final static Property ScoreMode = new Property(18, int.class, "scoreMode", false, "SCORE_MODE");
@@ -80,7 +80,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
                 "\"PAGE\" INTEGER NOT NULL ," + // 12: page
                 "\"STATE\" INTEGER NOT NULL ," + // 13: state
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 14: correctMode
-                "\"SCORE\" INTEGER NOT NULL ," + // 15: score
+                "\"SCORE\" REAL NOT NULL ," + // 15: score
                 "\"CORRECT_JSON\" TEXT," + // 16: correctJson
                 "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 17: isSelfCorrect
                 "\"SCORE_MODE\" INTEGER NOT NULL ," + // 18: scoreMode
@@ -148,7 +148,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         stmt.bindLong(13, entity.getPage());
         stmt.bindLong(14, entity.getState());
         stmt.bindLong(15, entity.getCorrectMode());
-        stmt.bindLong(16, entity.getScore());
+        stmt.bindDouble(16, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
@@ -222,7 +222,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         stmt.bindLong(13, entity.getPage());
         stmt.bindLong(14, entity.getState());
         stmt.bindLong(15, entity.getCorrectMode());
-        stmt.bindLong(16, entity.getScore());
+        stmt.bindDouble(16, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
@@ -265,7 +265,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
             cursor.getInt(offset + 12), // page
             cursor.getInt(offset + 13), // state
             cursor.getInt(offset + 14), // correctMode
-            cursor.getInt(offset + 15), // score
+            cursor.getDouble(offset + 15), // score
             cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // correctJson
             cursor.getShort(offset + 17) != 0, // isSelfCorrect
             cursor.getInt(offset + 18), // scoreMode
@@ -292,7 +292,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         entity.setPage(cursor.getInt(offset + 12));
         entity.setState(cursor.getInt(offset + 13));
         entity.setCorrectMode(cursor.getInt(offset + 14));
-        entity.setScore(cursor.getInt(offset + 15));
+        entity.setScore(cursor.getDouble(offset + 15));
         entity.setCorrectJson(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
         entity.setIsSelfCorrect(cursor.getShort(offset + 17) != 0);
         entity.setScoreMode(cursor.getInt(offset + 18));

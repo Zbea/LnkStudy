@@ -80,6 +80,10 @@ public interface IContractView {
     //账户页面回调
     interface IAccountInfoView extends IBaseView {
         void onLogout();
+        void onSms();
+        void onCheckSuccess();
+        void onEditPhone();
+        void onEditBirthday();
         void onEditNameSuccess();
         void onEditSchool();
         void onEditParent();

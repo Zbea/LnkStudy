@@ -46,9 +46,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         grade=noteBook?.grade!!
         noteTitle=noteBook?.title!!
 
-        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteTitle,grade)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteTitle)
 
-        if (!noteContents.isNullOrEmpty()) {
+        if (noteContents.isNotEmpty()) {
             if (page==DEFAULT_PAGE)
                 page = noteBook!!.page
             note_Content_b = if (page<noteContents.size){
@@ -213,9 +213,8 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //创建新的作业内容
     private fun newNoteContent() {
-
         val date=System.currentTimeMillis()
-        val path=FileAddress().getPathNote(grade,type,noteTitle)
+        val path=FileAddress().getPathNote(type,noteTitle)
 
         note_Content_b = NoteContentBean()
         note_Content_b?.date=date

@@ -123,7 +123,6 @@ class BookcaseFragment: BaseMainFragment() {
         }
     }
 
-
     fun upload(token:String){
         cloudList.clear()
         val books= BookGreenDaoManager.getInstance().queryAllByHalfYear()
@@ -167,7 +166,6 @@ class BookcaseFragment: BaseMainFragment() {
             val bookBean=BookGreenDaoManager.getInstance().queryBookByID(item.bookId)
             MethodManager.deleteBook(bookBean)
         }
-        lazyLoad()
     }
 
 }

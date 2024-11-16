@@ -23,16 +23,16 @@ public class HomeworkBookCorrectBean {
     public int state=0;//状态1提交 2已完成
     public int correctMode;//批改模式
     public int scoreMode;//打分模式1打分
-    public int score;//成绩
+    public double score;//成绩
     public String answerUrl;//答案
     public String correctJson;//批改详情
     public boolean isSelfCorrect;//是否自批
     public String commitJson;//提交信息(自批时)
     public Long startTime=0L;
-    @Generated(hash = 203763187)
+    @Generated(hash = 2061864620)
     public HomeworkBookCorrectBean(Long id, long userId, int bookId, String homeworkTitle, int page,
-            int state, int correctMode, int scoreMode, int score, String answerUrl, String correctJson,
-            boolean isSelfCorrect, String commitJson, Long startTime) {
+            int state, int correctMode, int scoreMode, double score, String answerUrl,
+            String correctJson, boolean isSelfCorrect, String commitJson, Long startTime) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -99,10 +99,10 @@ public class HomeworkBookCorrectBean {
     public void setScoreMode(int scoreMode) {
         this.scoreMode = scoreMode;
     }
-    public int getScore() {
+    public double getScore() {
         return this.score;
     }
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
     public String getAnswerUrl() {

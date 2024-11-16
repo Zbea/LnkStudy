@@ -24,11 +24,10 @@ public class PaintingDrawingBean {
     public String title;
     public String bgRes;
     public int page;
-    public int grade;
-
-    @Generated(hash = 361607556)
+    public int cloudId;
+    @Generated(hash = 1022619939)
     public PaintingDrawingBean(Long id, long userId, int type, long date, String path, String title,
-            String bgRes, int page, int grade) {
+            String bgRes, int page, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -37,7 +36,7 @@ public class PaintingDrawingBean {
         this.title = title;
         this.bgRes = bgRes;
         this.page = page;
-        this.grade = grade;
+        this.cloudId = cloudId;
     }
     @Generated(hash = 1527197434)
     public PaintingDrawingBean() {
@@ -90,12 +89,11 @@ public class PaintingDrawingBean {
     public void setPage(int page) {
         this.page = page;
     }
-    public int getGrade() {
-        return this.grade;
+    public int getCloudId() {
+        return this.cloudId;
     }
-    public void setGrade(int grade) {
-        this.grade = grade;
+    public void setCloudId(int cloudId) {
+        this.cloudId = cloudId;
     }
-
 
 }

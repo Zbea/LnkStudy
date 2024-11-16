@@ -56,10 +56,8 @@ public class ItemTypeDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    public ItemTypeBean queryBean(int type,int grade) {
-        WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(type);
-        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Grade.eq(grade);
-        return dao.queryBuilder().where(whereUser,whereUser1,whereUser2).orderAsc(ItemTypeBeanDao.Properties.Date).build().unique();
+    public void queryBean(int type,int typeId){
+
     }
 
     public void saveBookBean(int type,String title,boolean isNew) {
@@ -91,8 +89,26 @@ public class ItemTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereUser1).orderDesc(ItemTypeBeanDao.Properties.Date).build().list();
     }
 
-    public Boolean isExist(String title,int type){
+    /**
+     * 是否存在
+     * @param type
+     * @param title
+     * @return true存在 false 不存在
+     */
+    public Boolean isExist(int type,String title){
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.Title.eq(title);
+        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(type);
+        return !dao.queryBuilder().where(whereUser,whereUser1,whereUser2).build().list().isEmpty();
+    }
+
+    /**
+     * 是否存在
+     * @param type
+     * @param typeId
+     * @return true存在 false 不存在
+     */
+    public Boolean isExist(int type,int typeId){
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.TypeId.eq(typeId);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(type);
         return !dao.queryBuilder().where(whereUser,whereUser1,whereUser2).build().list().isEmpty();
     }

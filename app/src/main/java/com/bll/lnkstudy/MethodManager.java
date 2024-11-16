@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -15,6 +17,7 @@ import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.ItemTypeDaoManager;
 import com.bll.lnkstudy.manager.NoteDaoManager;
+import com.bll.lnkstudy.manager.PaintingDrawingDaoManager;
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
@@ -148,11 +151,11 @@ public class MethodManager {
      */
     public static void gotoBookDetails(Context context, BookBean bookBean) {
         if (!MethodManager.getSchoolPermissionAllow(0)) {
-            SToast.showText(1, "学校该时间不允许查看书籍");
+            SToast.showText(1, "学校不允许该时间段查看书籍");
             return;
         }
         if (!MethodManager.getParentPermissionAllow(0)) {
-            SToast.showText(1, "家长该时间不允许查看书籍");
+            SToast.showText(1, "家长不允许该时间段查看书籍");
             return;
         }
 
@@ -161,7 +164,6 @@ public class MethodManager {
         bookBean.isLook = true;
         bookBean.time = System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
-        EventBus.getDefault().post(BOOK_EVENT);
 
         List<AppBean> toolApps = getAppTools(context, 1);
         JSONArray result = getJsonArray(toolApps);
@@ -183,6 +185,11 @@ public class MethodManager {
         intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
+        Handler handler=new Handler(Looper.getMainLooper());
+        handler.postDelayed(() ->
+                        EventBus.getDefault().post(Constants.BOOK_EVENT)
+                ,5000);
     }
 
     /**
@@ -198,6 +205,7 @@ public class MethodManager {
         DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId,1);
         //删除增量更新
         DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId,2);
+        EventBus.getDefault().post(BOOK_EVENT);
     }
 
     /**
@@ -206,6 +214,9 @@ public class MethodManager {
     public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
 
         AppUtils.stopApp(context, Constants.PACKAGE_READER);
+
+        textbookBean.time = System.currentTimeMillis();
+        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(textbookBean);
 
         List<AppBean> toolApps = getAppTools(context, 1);
         JSONArray result = getJsonArray(toolApps);
@@ -223,6 +234,11 @@ public class MethodManager {
         intent.putExtra("key_book_type", 2);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
+        Handler handler=new Handler(Looper.getMainLooper());
+        handler.postDelayed(() ->
+                        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
+                ,5000);
     }
 
     /**
@@ -359,25 +375,21 @@ public class MethodManager {
     /**
      * 转跳本地画本、书法
      */
-    public static void gotoPaintingDrawing(Context context, ItemTypeBean item, int type) {
+    public static void gotoPaintingDrawing(Context context, int type, int cloudId) {
         if (!MethodManager.getSchoolPermissionAllow(2)) {
-            SToast.showText(2, "学校该时间不允许手绘");
+            SToast.showText(2, "学校不允许该时间段手绘");
             return;
         }
-        if (type == 3) {
+        if (type == 0) {
             ActivityManager.getInstance().checkPaintingDrawingIsExist();
             Intent intent = new Intent(context, PaintingDrawingActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("painting", item);
-            intent.putExtra("paintingBundle", bundle);
+            intent.setFlags(cloudId);
             intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
             context.startActivity(intent);
         } else {
             ActivityManager.getInstance().checkCalligraphyDrawingIsExist();
             Intent intent = new Intent(context, CalligraphyDrawingActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("calligraphy", item);
-            intent.putExtra("paintingBundle", bundle);
+            intent.setFlags(cloudId);
             intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
             context.startActivity(intent);
         }
@@ -402,13 +414,22 @@ public class MethodManager {
      * 删除本地画本、书法
      * @param item
      */
-    public static void deletePaintingDrawing(ItemTypeBean item) {
-        ItemTypeDaoManager.getInstance().deleteBean(item);
-        FileUtils.deleteFile(new File(item.path));
-        //删除本地itemType增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(5,item.typeId,1);
+    public static void deletePaintingDrawing(int type,ItemTypeBean item) {
+        String path="";
+        int typeId=0;
+        if (item!=null){
+            ItemTypeDaoManager.getInstance().deleteBean(item);
+            path=item.path;
+            typeId=item.typeId;
+        }
+        else {
+            path= new FileAddress().getPathPaintingDraw(type,0);
+        }
+        PaintingDrawingDaoManager.getInstance().deleteBean(type,typeId);
+        FileUtils.deleteFile(new File(path));
         //删除增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(5, item.typeId);
+        DataUpdateManager.INSTANCE.deleteDateUpdate(5,typeId,1);
+        DataUpdateManager.INSTANCE.deleteDateUpdate(5, typeId);
     }
 
     /**
@@ -674,12 +695,12 @@ public class MethodManager {
      * @param scoreStr
      * @return
      */
-    public static int getScore(String scoreStr){
-        if (scoreStr==null||scoreStr.isEmpty()||!TextUtils.isDigitsOnly(scoreStr)){
+    public static double getScore(String scoreStr){
+        if (scoreStr==null||scoreStr.isEmpty()){
             return 0;
         }
         else {
-            return Integer.valueOf(scoreStr);
+            return Double.parseDouble(scoreStr);
         }
     }
 

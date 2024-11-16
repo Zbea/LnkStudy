@@ -110,8 +110,8 @@ class FileAddress {
     /**
      * 笔记文件夹地址
      */
-    fun getPathNote(grade:Int,type: String?,noteBookStr: String?):String{
-        return "$NOTE_PATH/$mUserId/$grade/$type/$noteBookStr"
+    fun getPathNote(type: String?,noteBookStr: String?):String{
+        return "$NOTE_PATH/$mUserId/$type/$noteBookStr"
     }
 
     /**
@@ -124,8 +124,8 @@ class FileAddress {
     /**
      * 画本、书法文件夹地址 type=0 画本 type=1 书法
      */
-    fun getPathPaintingDraw(type:Int, grade: Int):String{
-        return "$PAINTING_PATH/$mUserId/$type/$grade"
+    fun getPathPaintingDraw(type:Int, cloudId: Int):String{
+        return "$PAINTING_PATH/$mUserId/${if (type==0) "hb" else "sf" }/$cloudId"
     }
 
     /**

@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:text="日记"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_24"
                 android:padding="@dimen/click_line_width"
                 android:background="@drawable/click_btn_transparent_line_black"
                 />
@@ -44,7 +44,7 @@
                 android:gravity="center"
                 android:text="随笔"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_24"
                 android:padding="@dimen/click_line_width"
                 android:background="@drawable/click_btn_transparent_line_black"
                 />

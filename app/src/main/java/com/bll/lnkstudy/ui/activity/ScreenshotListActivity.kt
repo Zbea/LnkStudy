@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.common_title.iv_manager
 
 class ScreenshotListActivity:BaseAppCompatActivity() {
 
-    private var screenTypes= mutableListOf<ItemTypeBean>()
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
     private var tabPos=0
@@ -61,7 +60,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
                     }
                     1 -> {
                         InputContentDialog(this, "创建分类").builder().setOnDialogClickListener {
-                            if (ItemTypeDaoManager.getInstance().isExist(it, 1)) {
+                            if (ItemTypeDaoManager.getInstance().isExist(1,it)) {
                                 //创建文件夹
                                 showToast("已存在")
                                 return@setOnDialogClickListener
@@ -75,7 +74,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
                             bean.path = path
                             bean.date = System.currentTimeMillis()
                             ItemTypeDaoManager.getInstance().insertOrReplace(bean)
-                            mTabTypeAdapter?.addData(screenTypes.size, bean)
+                            mTabTypeAdapter?.addData(bean)
                         }
                     }
                     2->{
@@ -90,19 +89,20 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
     }
 
     private fun initTab() {
-        screenTypes=ItemTypeDaoManager.getInstance().queryAll(1)
-        screenTypes.add(0,ItemTypeBean().apply {
+        pageIndex=1
+        itemTabTypes=ItemTypeDaoManager.getInstance().queryAll(1)
+        itemTabTypes.add(0,ItemTypeBean().apply {
             path=FileAddress().getPathScreen("未分类")
             title="未分类"
         })
-        if (tabPos>=screenTypes.size){
+        if (tabPos>=itemTabTypes.size){
             tabPos=0
         }
-        for (item in screenTypes){
+        for (item in itemTabTypes){
             item.isCheck=false
         }
-        screenTypes[tabPos].isCheck=true
-        mTabTypeAdapter?.setNewData(screenTypes)
+        itemTabTypes[tabPos].isCheck=true
+        mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }
 
@@ -185,7 +185,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
     }
 
     override fun fetchData() {
-        tabPath=screenTypes[tabPos].path
+        tabPath=itemTabTypes[tabPos].path
         totalNum= FileUtils.getDescFiles(tabPath).size
         setPageNumber(totalNum)
         val files= FileUtils.getDescFiles(tabPath,pageIndex, pageSize)

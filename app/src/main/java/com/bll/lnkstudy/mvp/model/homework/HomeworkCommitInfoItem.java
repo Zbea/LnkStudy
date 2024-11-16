@@ -22,7 +22,7 @@ public class HomeworkCommitInfoItem implements Serializable {
     public boolean isSelfCorrect;
     public int correctMode;//批改模式
     public int scoreMode;//打分模式1打分
-    public int score;//成绩
+    public double score;//成绩
     public String correctJson;//批改详情
     public String answerUrl;
     public List<String> paths=new ArrayList<>();

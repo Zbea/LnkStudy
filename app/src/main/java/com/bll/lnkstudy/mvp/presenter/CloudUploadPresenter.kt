@@ -3,12 +3,16 @@ package com.bll.lnkstudy.mvp.presenter
 import android.util.Pair
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.net.*
+import com.bll.lnkstudy.net.BasePresenter
+import com.bll.lnkstudy.net.BaseResult
+import com.bll.lnkstudy.net.Callback
+import com.bll.lnkstudy.net.RequestUtils
+import com.bll.lnkstudy.net.RetrofitManager
 
 class CloudUploadPresenter(view: IContractView.ICloudUploadView):
     BasePresenter<IContractView.ICloudUploadView>(view) {
 
-    fun upload(list:List<CloudListBean>) {
+    fun upload(list:List<CloudListBean>,isShow:Boolean=false) {
         val body= RequestUtils.getBody(
             Pair.create("listModel",list)
         )
@@ -20,7 +24,7 @@ class CloudUploadPresenter(view: IContractView.ICloudUploadView):
             override fun success(tBaseResult: BaseResult<MutableList<Int>>) {
                 view.onSuccess(tBaseResult.data)
             }
-        }, false)
+        }, isShow)
     }
 
     fun deleteCloud(ids:List<Int>) {
@@ -37,7 +41,6 @@ class CloudUploadPresenter(view: IContractView.ICloudUploadView):
                 view.onDeleteSuccess()
             }
         }, false)
-
     }
 
 }

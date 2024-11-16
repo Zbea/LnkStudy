@@ -89,10 +89,21 @@
 
             <TextView
                 android:id="@+id/tv_birthday"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"/>
+
+            <TextView
+                android:id="@+id/btn_edit_birthday"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="修改生日"
+                android:background="@drawable/click_btn_black_solid_5dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_22"/>
 
         </LinearLayout>
         <LinearLayout
@@ -110,10 +121,21 @@
 
             <TextView
                 android:id="@+id/tv_phone"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"/>
+
+            <TextView
+                android:id="@+id/btn_edit_phone"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="修改号码"
+                android:background="@drawable/click_btn_black_solid_5dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_22"/>
 
         </LinearLayout>
 
@@ -211,7 +233,7 @@
                 <TextView
                     android:id="@+id/btn_edit_school"
                     android:layout_width="120dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="50dp"
                     android:gravity="center"
                     android:text="@string/edit_school_message"
                     android:background="@drawable/click_btn_black_solid_5dp"
@@ -279,7 +301,7 @@
             <TextView
                 android:id="@+id/btn_edit_parent"
                 android:layout_width="120dp"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:layout_marginStart="@dimen/dp_20"
                 android:gravity="center"
                 android:text="修改信息"

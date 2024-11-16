@@ -25,12 +25,12 @@ public class CorrectDetailsBean {
     public String url;//文件路径
     public int correctMode;//批改模式
     public int scoreMode;//打分模式1打分
-    public int score;//成绩
+    public double score;//成绩
     public String correctJson;//批改详情
     public String answerUrl;
-    @Generated(hash = 176902322)
+    @Generated(hash = 1289821839)
     public CorrectDetailsBean(Long id, long userId, int type, String course, String typeStr,
-            String title, long date, String url, int correctMode, int scoreMode, int score,
+            String title, long date, String url, int correctMode, int scoreMode, double score,
             String correctJson, String answerUrl) {
         this.id = id;
         this.userId = userId;
@@ -109,10 +109,10 @@ public class CorrectDetailsBean {
     public void setScoreMode(int scoreMode) {
         this.scoreMode = scoreMode;
     }
-    public int getScore() {
+    public double getScore() {
         return this.score;
     }
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
     public String getCorrectJson() {
@@ -127,4 +127,5 @@ public class CorrectDetailsBean {
     public void setAnswerUrl(String answerUrl) {
         this.answerUrl = answerUrl;
     }
+
 }

@@ -31,15 +31,15 @@ public class HomeworkContentBean {
     public int page;//页码
     public int correctMode;//批改模式
     public int scoreMode;//打分模式1打分
-    public int score;//成绩
+    public double score;//成绩
     public String correctJson;//批改详情
     public boolean isSelfCorrect;//是否自批
     public String commitJson;//提交信息(自批时)
     public String answerUrl;
-    @Generated(hash = 1075778844)
+    @Generated(hash = 1053978476)
     public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
             String typeStr, int contentId, String title, int state, Long date, Long commitDate,
-            Long startDate, String path, int page, int correctMode, int scoreMode, int score,
+            Long startDate, String path, int page, int correctMode, int scoreMode, double score,
             String correctJson, boolean isSelfCorrect, String commitJson, String answerUrl) {
         this.id = id;
         this.userId = userId;
@@ -162,10 +162,10 @@ public class HomeworkContentBean {
     public void setScoreMode(int scoreMode) {
         this.scoreMode = scoreMode;
     }
-    public int getScore() {
+    public double getScore() {
         return this.score;
     }
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
     public String getCorrectJson() {
@@ -193,5 +193,4 @@ public class HomeworkContentBean {
         this.answerUrl = answerUrl;
     }
 
-    
 }

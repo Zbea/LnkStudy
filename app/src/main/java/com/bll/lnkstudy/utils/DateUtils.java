@@ -203,6 +203,13 @@ public class DateUtils {
         String year = new SimpleDateFormat("yyyy").format(date);
         return Integer.parseInt(year);
     }
+    //返回当前月份
+    public static int getYear(long datelong)
+    {
+        Date date = new Date(date10ToDate13(datelong));
+        String month = new SimpleDateFormat("yyyy").format(date);
+        return Integer.parseInt(month);
+    }
 
     //返回当前月份
     public static int getMonth()
@@ -227,7 +234,13 @@ public class DateUtils {
         String month = new SimpleDateFormat("dd").format(date);
         return Integer.parseInt(month);
     }
-
+    //返回当前月份
+    public static int getDay(long datelong)
+    {
+        Date date = new Date(date10ToDate13(datelong));
+        String month = new SimpleDateFormat("dd").format(date);
+        return Integer.parseInt(month);
+    }
 
     /**
      *  把秒换算成 "yyyy-MM-dd"

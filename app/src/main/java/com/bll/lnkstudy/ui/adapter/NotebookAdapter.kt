@@ -17,7 +17,7 @@ class NotebookAdapter(layoutResId: Int, data: List<Note>?) : BaseQuickAdapter<No
             if (MethodManager.getPrivacyPassword(1)!=null)
                 setImageResource(R.id.iv_password,if (item.isCancelPassword) R.mipmap.icon_encrypt_cancel else R.mipmap.icon_encrypt_check)
 
-            addOnClickListener(R.id.iv_password,R.id.iv_delete,R.id.iv_edit)
+            addOnClickListener(R.id.iv_password,R.id.iv_delete,R.id.iv_edit,R.id.iv_upload)
         }
     }
 

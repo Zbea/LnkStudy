@@ -73,7 +73,10 @@ class CloudStorageActivity: BaseAppCompatActivity(){
                     1 -> switchFragment(lastFragment, textbookFragment)//课本
                     2 -> switchFragment(lastFragment, homeworkFragment)//作业
                     3 -> switchFragment(lastFragment, paperFragment)//考卷
-                    4 -> switchFragment(lastFragment, noteFragment)//笔记
+                    4 -> {
+                        closeGradeView()
+                        switchFragment(lastFragment, noteFragment)//笔记
+                    }
                     5 -> {
                         closeGradeView()
                         switchFragment(lastFragment, paintingFragment)//书画
@@ -118,7 +121,6 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     private fun changeGrade(grade: Int){
         paperFragment?.changeGrade(grade)
         textbookFragment?.changeGrade(grade)
-        noteFragment?.changeGrade(grade)
         paintingFragment?.changeGrade(grade)
         homeworkFragment?.changeGrade(grade)
     }

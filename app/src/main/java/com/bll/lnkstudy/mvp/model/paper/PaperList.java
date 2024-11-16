@@ -24,8 +24,7 @@ public class PaperList implements Serializable {
         public List<String> paths;//图片路径
         public long date;
         public long endTime;
-
-        public int score;
+        public double score;
         public int questionType;//批改模型
         public String question;//批改详情
         public String answerUrl;

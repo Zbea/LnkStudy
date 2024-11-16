@@ -7,7 +7,9 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.AccountEditParentDialog
+import com.bll.lnkstudy.dialog.AccountEditPhoneDialog
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.SchoolBean
@@ -15,8 +17,10 @@ import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
+import kotlinx.android.synthetic.main.ac_account_info.btn_edit_birthday
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_parent
+import kotlinx.android.synthetic.main.ac_account_info.btn_edit_phone
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_school
 import kotlinx.android.synthetic.main.ac_account_info.btn_logout
 import kotlinx.android.synthetic.main.ac_account_info.tv_area
@@ -40,12 +44,31 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var school=0
     private var schoolBean:SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
+    private var phone=""
+    private var birthday=0L
 
     override fun onLogout() {
     }
 
+    override fun onSms() {
+        showToast("短信发送成功")
+    }
+
+    override fun onCheckSuccess() {
+        editPhone()
+    }
+
+    override fun onEditPhone() {
+        mUser?.telNumber=phone
+        tv_phone.text=phone
+    }
+
+    override fun onEditBirthday() {
+        mUser?.birthdayTime=birthday
+        tv_birthday.text=DateUtils.intToStringDataNoHour(birthday)
+    }
+
     override fun onEditNameSuccess() {
-        showToast(R.string.toast_edit_success)
         mUser?.nickname = nickname
         tv_name.text = nickname
     }
@@ -75,6 +98,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initData() {
         initChangeScreenData()
         school=mUser?.schoolId!!
+        birthday=mUser?.birthdayTime!!
     }
 
     override fun initChangeScreenData() {
@@ -89,7 +113,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_user.text = account
             tv_name.text = nickname
             tv_phone.text = telNumber.substring(0, 3) + "****" + telNumber.substring(7, 11)
-            tv_birthday.text = DateUtils.intToStringDataNoHour(birthdayTime)
+            tv_birthday.text = DateUtils.intToStringDataNoHour(birthday)
             tv_parent.text = parentName
             tv_parent_name.text = parentNickname
             tv_parent_phone.text = parentTel
@@ -105,6 +129,20 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
         btn_edit_school.setOnClickListener {
             editSchool()
+        }
+
+        btn_edit_birthday.setOnClickListener {
+            DateDialog(this,birthday).builder().setOnDateListener { dateStr, dateTim ->
+                birthday=dateTim
+                presenter?.editBirthday(birthday)
+            }
+        }
+
+        btn_edit_phone.setOnClickListener {
+            presenter?.sms(mUser?.telNumber!!)
+            InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
+                presenter?.checkPhone(it)
+            }
         }
 
         btn_logout.setOnClickListener {
@@ -149,6 +187,18 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         else{
             schoolSelectDialog?.show()
         }
+    }
+
+    private fun editPhone(){
+        AccountEditPhoneDialog(this).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+            override fun onClick(code: String, phone: String) {
+                this@AccountInfoActivity.phone=phone
+                presenter?.editPhone(code, phone)
+            }
+            override fun onPhone(phone: String) {
+                presenter?.sms(phone)
+            }
+        })
     }
 
     /**

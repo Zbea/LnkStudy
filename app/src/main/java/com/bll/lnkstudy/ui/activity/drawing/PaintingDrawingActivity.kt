@@ -1,15 +1,16 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
 import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.PaintingLinerSelectDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.GlideUtils
@@ -27,7 +28,7 @@ import java.io.File
 class PaintingDrawingActivity : BaseDrawingActivity() {
 
     private var typeId=0
-    private var paintingTypeBean: ItemTypeBean?=null
+    private var path=""
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
@@ -39,12 +40,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("painting") as ItemTypeBean
-        grade=paintingTypeBean?.grade!!
-        typeId= paintingTypeBean?.typeId!!
-        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,grade)
+        typeId= intent.flags
+        path=FileAddress().getPathPaintingDraw(0,typeId)
+        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,typeId)
 
-        if (!paintingLists.isNullOrEmpty()) {
+        if (paintingLists.isNotEmpty()) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
             page = paintingLists.size - 1
         } else {
@@ -57,17 +57,22 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         disMissView(iv_draft)
         iv_btn.setImageResource(R.mipmap.icon_draw_setting)
 
+        setPWEnabled(typeId==0)
+
+        //设置初始笔形
+        val drawType=SPUtil.getInt(Constants.SP_PAINTING_DRAW_TYPE)
+        setDrawOjectType(if (drawType==0) PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN else drawType)
+
         iv_btn.setOnClickListener {
             if (linerDialog==null){
                 linerDialog=PaintingLinerSelectDialog(this).builder()
                 linerDialog!!.setOnSelectListener(object : PaintingLinerSelectDialog.OnSelectListener {
                     override fun setWidth(width: Int) {
-                        elik_a?.penSettingWidth=width
-                        elik_b?.penSettingWidth=width
+                        setDrawWidth(width)
                     }
                     override fun setDrawType(drawType: Int) {
-                        elik_a?.drawObjectType=drawType
-                        elik_b?.drawObjectType=drawType
+                        setDrawOjectType(drawType)
+                        SPUtil.putInt(Constants.SP_PAINTING_DRAW_TYPE,drawType)
                     }
                     override fun setOpenRule(isOPen: Boolean) {
                         if (isOPen){
@@ -188,7 +193,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
      */
     private fun isDrawLastContent():Boolean{
         val contentBean = paintingLists.last()
-        return File(contentBean.path).exists()
+        return File(contentBean.path).exists()&&typeId==0
     }
 
     override fun onContent() {
@@ -200,10 +205,22 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         tv_page_total.text="${paintingLists.size}"
         tv_page_total_a.text="${paintingLists.size}"
 
-        setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
+        if (typeId==0){
+            setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
+        }
+        else{
+            GlideUtils.setImageCacheUrl(this, paintingDrawingBean!!.path, v_content_b)
+        }
         tv_page.text = "${page+1}"
+
         if (isExpand) {
-            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
+            if (typeId==0){
+                setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
+            }
+            else{
+                GlideUtils.setImageCacheUrl(this, paintingDrawingBean_a!!.path, v_content_a)
+            }
+
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="$page"
                 tv_page_a.text="${page+1}"
@@ -236,15 +253,12 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newPaintingContent() {
         val date=System.currentTimeMillis()
-        val path = paintingTypeBean?.path
-        val fileName = DateUtils.longToString(date)
-
         paintingDrawingBean = PaintingDrawingBean()
         paintingDrawingBean?.title=getString(R.string.drawing)+(paintingLists.size+1)
         paintingDrawingBean?.type = 0
         paintingDrawingBean?.date = date
-        paintingDrawingBean?.path = "$path/$fileName.png"
-        paintingDrawingBean?.grade=grade
+        paintingDrawingBean?.path = "$path/${DateUtils.longToString(date)}.png"
+        paintingDrawingBean?.cloudId=typeId
         page = paintingLists.size
         paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)

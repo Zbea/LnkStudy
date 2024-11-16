@@ -8,7 +8,7 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 class QiniuPresenter(view: IContractView.IQiniuView,val screen:Int=1): BasePresenter<IContractView.IQiniuView>(view) {
 
-    fun getToken(){
+    fun getToken(boolean: Boolean=false){
         val token = RetrofitManager.service.getQiniuToken()
         doRequest(token, object : Callback<String>(view,screen,false,false) {
             override fun failed(tBaseResult: BaseResult<String>): Boolean {
@@ -18,7 +18,7 @@ class QiniuPresenter(view: IContractView.IQiniuView,val screen:Int=1): BasePrese
                 if (tBaseResult.data!=null)
                     view.onToken(tBaseResult.data)
             }
-        }, false)
+        }, boolean)
     }
 
 

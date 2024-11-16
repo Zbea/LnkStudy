@@ -5,7 +5,6 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -16,11 +15,9 @@ import com.bll.lnkstudy.manager.NoteDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_list.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 class NotebookManagerActivity : BaseAppCompatActivity() {
 
@@ -94,30 +91,17 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
             }
             override fun ok() {
                 val noteBook=notebooks[position]
-                notebooks.removeAt(position)
-                //删除笔记本
-                ItemTypeDaoManager.getInstance().deleteBean(noteBook)
-                DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1)
                 val notes= NoteDaoManager.getInstance().queryAll(noteBook.title)
-                //删除该笔记分类中的所有笔记本及其内容
-                for (note in notes){
-                    //删除当前笔记本增量更新
-                    DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2)
-                    //获取所有内容
-                    val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
-                    //删除当前笔记本内容增量更新
-                    for (item in noteContents){
-                        DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3)
-                    }
-                    //本地笔记本以及笔记内容数据
-                    NoteDaoManager.getInstance().deleteBean(note)
-                    NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title,note.grade)
-                    val path= FileAddress().getPathNote(note.grade,note.typeStr,note.title)
-                    FileUtils.deleteFile(File(path))
+                if (notes.isNotEmpty()){
+                    showToast("笔记本还有主题,无法删除")
                 }
-                setNotify()
+                else{
+                    notebooks.removeAt(position)
+                    ItemTypeDaoManager.getInstance().deleteBean(noteBook)
+                    DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1)
+                    setNotify()
+                }
             }
-
         })
     }
 
@@ -125,7 +109,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
     //修改笔记本
     private fun editNotebook(name: String){
         InputContentDialog(this,getCurrentScreenPos(),name).builder().setOnDialogClickListener { string ->
-            if (ItemTypeDaoManager.getInstance().isExist(string,2)){
+            if (ItemTypeDaoManager.getInstance().isExist(2,string)){
                 showToast(R.string.toast_existed)
                 return@setOnDialogClickListener
             }
@@ -133,7 +117,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
             //修改笔记本所有笔记以及内容
             val notes=NoteDaoManager.getInstance().queryAll(notebook.title)
             for (note in notes){
-                val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title,note.grade)
+                val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title)
                 for (noteContent in noteContents){
                     noteContent.typeStr=string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)

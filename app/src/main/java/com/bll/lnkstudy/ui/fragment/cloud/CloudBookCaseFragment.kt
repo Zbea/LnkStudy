@@ -156,6 +156,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
                     DataUpdateManager.createDataUpdate(6,book.bookId,2,localBook.bookDrawPath)
+                    EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
                     EventBus.getDefault().post(Constants.BOOK_EVENT)
                 }
                 else{

@@ -8,7 +8,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.NumberDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
@@ -75,7 +75,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     if (state==4){
                         map["page"]= ToolUtils.getImagesStr(commitItem?.contents!!)
                     }
-                    map["score"]=tv_total_score.text.toString().toInt()
+                    map["score"]=tv_total_score.text.toString().toDouble()
                     map["question"]=scoreListToJson(currentScores)
                     mUploadPresenter.commit(map)
                 }
@@ -99,7 +99,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     homework.title = commitItem?.title
                     homework.contentId = commitItem?.messageId!!
                     homework.commitDate = System.currentTimeMillis()
-                    homework.score=tv_total_score.text.toString().toInt()
+                    homework.score=tv_total_score.text.toString().toDouble()
                     homework.correctJson=scoreListToJson(currentScores)
                     homework.commitJson=""
                     HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
@@ -109,7 +109,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             4 -> {
                 for (page in commitItem?.contents!!){
                     val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,page)
-                    item.score=tv_total_score.text.toString().toInt()
+                    item.score=tv_total_score.text.toString().toDouble()
                     item.correctJson=scoreListToJson(currentScores)
                     item.commitJson=""
                     HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
@@ -121,7 +121,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 val paper=HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
                 paper.state=1
                 paper.correctJson=scoreListToJson(currentScores)
-                paper.score=tv_total_score.text.toString().toInt()
+                paper.score=tv_total_score.text.toString().toDouble()
                 paper.commitJson=""
                 HomeworkPaperDaoManager.getInstance()?.insertOrReplace(paper)
                 //更新目录增量数据
@@ -177,15 +177,12 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 if (NetworkUtil(this).isNetworkConnected()){
                     mUploadPresenter.getToken()
                 }
-                else{
-                    showToast(R.string.net_work_error)
-                }
             }
         }
 
         tv_total_score.setOnClickListener {
-            InputContentDialog(this@CorrectActivity,3,"",1).builder().setOnDialogClickListener(){
-                tv_total_score.text=it
+            NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
+                tv_total_score.text= it.toString()
             }
         }
 
@@ -237,11 +234,11 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     when(view.id){
                         R.id.tv_score->{
                             if (scoreMode==1){
-                                InputContentDialog(this@CorrectActivity,3,"最大${item.label}",1).builder().setOnDialogClickListener(){
-                                    if (item.label!=it.toInt()){
+                                NumberDialog(this@CorrectActivity,2,"最大${item.label}",item.label).builder().setDialogClickListener{
+                                    if (item.label!=it){
                                         item.result=0
                                     }
-                                    item.score= it
+                                    item.score= it.toString()
                                     notifyItemChanged(position)
                                     setTotalScore()
                                 }
@@ -279,17 +276,17 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     when(view.id){
                         R.id.tv_score->{
                             if (scoreMode==1){
-                                InputContentDialog(this@CorrectActivity,3,"最大${childItem.label}",1).builder().setOnDialogClickListener(){
-                                    if (childItem.label!=it.toInt()){
+                                NumberDialog(this@CorrectActivity,2,"最大${childItem.label}",childItem.label).builder().setDialogClickListener{
+                                    if (childItem.label!=it){
                                         childItem.result=0
                                     }
-                                    childItem.score= it
+                                    childItem.score= it.toString()
                                     //获取小题总分
-                                    var scoreTotal=0
+                                    var scoreTotal=0.0
                                     for (item in scoreItem.childScores){
                                         scoreTotal+=MethodManager.getScore(item.score)
                                     }
-                                    scoreItem.score=scoreTotal.toString()
+                                    scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
                                     notifyItemChanged(position)
                                     setTotalScore()
                                 }
@@ -305,11 +302,11 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                             if (scoreMode==1){
                                 childItem.score= (childItem.result*childItem.label).toString()
                                 //获取小题总分
-                                var scoreTotal=0
+                                var scoreTotal=0.0
                                 for (item in scoreItem.childScores){
                                     scoreTotal+= MethodManager.getScore(item.score)
                                 }
-                                scoreItem.score=scoreTotal.toString()
+                                scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
                             }
                             else{
                                 childItem.score=childItem.result.toString()
@@ -385,11 +382,11 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
      */
     private fun setTotalScore(){
         if (tv_total_score!=null){
-            var total=0
+            var total=0.0
             for (item in currentScores){
                 total+=MethodManager.getScore(item.score)
             }
-            tv_total_score.text=total.toString()
+            tv_total_score.text=ToolUtils.getFormatNum(total,"0.0")
         }
     }
 

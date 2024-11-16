@@ -38,8 +38,8 @@ class Constants {
         const val STATUS_BAR_SHOW = 2147483647//永不消失
             const val DEBUG="debug"
 
-                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        const val URL_BASE = "http://192.168.101.100:10800/v1/"
         const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 
         //
@@ -48,7 +48,6 @@ class Constants {
 
         //storage/sdcard/0
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
-        val NOTES_PATH = Environment.getExternalStoragePublicDirectory("Notes").absolutePath
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -84,6 +83,7 @@ class Constants {
         const val DATE_DAY_EVENT = "DateDayEvent"//重要日子刷新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"//书籍下载通知
+        const val BOOK_TYPE_EVENT = "BookTypeEvent"//书籍下载通知
         const val TEXT_BOOK_EVENT = "TextBookEvent"//课本下载通知
         const val HOMEWORK_BOOK_EVENT = "HomeworkBookEvent"//课本下载通知
         const val APP_INSTALL_EVENT = "AppInstallEvent"//应用下载安装通知
@@ -145,6 +145,7 @@ class Constants {
         const val SP_WEEK_DATE_LIST = "weekDateEvent"//学习计划星期所选
         const val SP_DATE_LIST = "dateDateEvent"//学习计划日期所选
         const val SP_PAINTING_RULE_SET = "PaintingRuleSet"//规矩图设置
+            const val SP_PAINTING_DRAW_TYPE = "PaintingDrawTYpe"//画笔类型
         const val SP_DIARY_BG_SET ="dirayBgRes"//日记
     }
 

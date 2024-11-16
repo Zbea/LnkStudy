@@ -285,7 +285,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      * 保存批改详情
      */
-    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Int,correctJson:String,answerUrl:String){
+    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Double,correctJson:String,answerUrl:String){
         CorrectDetailsManager.getInstance().insertOrReplace(CorrectDetailsBean().apply {
             type=1
             course=mCourse

@@ -1,10 +1,30 @@
 package com.bll.lnkstudy
 
-import com.bll.lnkstudy.mvp.model.*
+import com.bll.lnkstudy.mvp.model.AccountOrder
+import com.bll.lnkstudy.mvp.model.AccountQdBean
+import com.bll.lnkstudy.mvp.model.AppList
+import com.bll.lnkstudy.mvp.model.AppUpdateBean
+import com.bll.lnkstudy.mvp.model.CalenderList
+import com.bll.lnkstudy.mvp.model.ClassGroup
+import com.bll.lnkstudy.mvp.model.ClassGroupUserList
+import com.bll.lnkstudy.mvp.model.CommonData
+import com.bll.lnkstudy.mvp.model.DataUpdateBean
+import com.bll.lnkstudy.mvp.model.MessageList
+import com.bll.lnkstudy.mvp.model.SchoolBean
+import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
+import com.bll.lnkstudy.mvp.model.TeachingVideoList
+import com.bll.lnkstudy.mvp.model.TeachingVideoType
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.model.homework.*
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkType
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
@@ -17,7 +37,13 @@ import com.bll.lnkstudy.net.BaseResult
 import com.bll.lnkstudy.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.RequestBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 interface APIService{
@@ -112,7 +138,21 @@ interface APIService{
      */
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 验证手机号
+     */
+    @POST("accounts/checkCode")
+    fun checkPhone(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 修改电话
+     */
+    @POST("accounts/changeTel")
+    fun editPhone(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 修改生日
+     */
+    @POST("accounts/updateInfo")
+    fun editBirthday(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 修改学校信息
      */

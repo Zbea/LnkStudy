@@ -61,11 +61,10 @@ public class NoteContentDaoManager {
     }
 
 
-    public List<NoteContentBean> queryAll(String type, String notebookStr,int grade) {
+    public List<NoteContentBean> queryAll(String type, String notebookStr) {
         WhereCondition whereCondition=NoteContentBeanDao.Properties.TypeStr.eq(type);
         WhereCondition whereCondition1=NoteContentBeanDao.Properties.NoteTitle.eq(notebookStr);
-        WhereCondition whereCondition2=NoteContentBeanDao.Properties.Grade.eq(grade);
-        return noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).orderAsc(NoteContentBeanDao.Properties.Date).build().list();
+        return noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(NoteContentBeanDao.Properties.Date).build().list();
     }
 
     public List<NoteContentBean> search(String title) {
@@ -77,11 +76,8 @@ public class NoteContentDaoManager {
         noteDao.delete(noteContent);
     }
 
-    public void deleteType(String type,String notebookStr,int grade){
-        WhereCondition whereCondition=NoteContentBeanDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentBeanDao.Properties.NoteTitle.eq(notebookStr);
-        WhereCondition whereCondition2=NoteContentBeanDao.Properties.Grade.eq(grade);
-        List<NoteContentBean> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
+    public void deleteType(String type,String notebookStr){
+        List<NoteContentBean> list = queryAll(type, notebookStr);
         noteDao.deleteInTx(list);
     }
 

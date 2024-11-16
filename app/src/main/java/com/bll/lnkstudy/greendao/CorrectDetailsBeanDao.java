@@ -34,7 +34,7 @@ public class CorrectDetailsBeanDao extends AbstractDao<CorrectDetailsBean, Long>
         public final static Property Url = new Property(7, String.class, "url", false, "URL");
         public final static Property CorrectMode = new Property(8, int.class, "correctMode", false, "CORRECT_MODE");
         public final static Property ScoreMode = new Property(9, int.class, "scoreMode", false, "SCORE_MODE");
-        public final static Property Score = new Property(10, int.class, "score", false, "SCORE");
+        public final static Property Score = new Property(10, double.class, "score", false, "SCORE");
         public final static Property CorrectJson = new Property(11, String.class, "correctJson", false, "CORRECT_JSON");
         public final static Property AnswerUrl = new Property(12, String.class, "answerUrl", false, "ANSWER_URL");
     }
@@ -62,7 +62,7 @@ public class CorrectDetailsBeanDao extends AbstractDao<CorrectDetailsBean, Long>
                 "\"URL\" TEXT," + // 7: url
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 8: correctMode
                 "\"SCORE_MODE\" INTEGER NOT NULL ," + // 9: scoreMode
-                "\"SCORE\" INTEGER NOT NULL ," + // 10: score
+                "\"SCORE\" REAL NOT NULL ," + // 10: score
                 "\"CORRECT_JSON\" TEXT," + // 11: correctJson
                 "\"ANSWER_URL\" TEXT);"); // 12: answerUrl
     }
@@ -106,7 +106,7 @@ public class CorrectDetailsBeanDao extends AbstractDao<CorrectDetailsBean, Long>
         }
         stmt.bindLong(9, entity.getCorrectMode());
         stmt.bindLong(10, entity.getScoreMode());
-        stmt.bindLong(11, entity.getScore());
+        stmt.bindDouble(11, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
@@ -152,7 +152,7 @@ public class CorrectDetailsBeanDao extends AbstractDao<CorrectDetailsBean, Long>
         }
         stmt.bindLong(9, entity.getCorrectMode());
         stmt.bindLong(10, entity.getScoreMode());
-        stmt.bindLong(11, entity.getScore());
+        stmt.bindDouble(11, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
@@ -183,7 +183,7 @@ public class CorrectDetailsBeanDao extends AbstractDao<CorrectDetailsBean, Long>
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // url
             cursor.getInt(offset + 8), // correctMode
             cursor.getInt(offset + 9), // scoreMode
-            cursor.getInt(offset + 10), // score
+            cursor.getDouble(offset + 10), // score
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // correctJson
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // answerUrl
         );
@@ -202,7 +202,7 @@ public class CorrectDetailsBeanDao extends AbstractDao<CorrectDetailsBean, Long>
         entity.setUrl(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setCorrectMode(cursor.getInt(offset + 8));
         entity.setScoreMode(cursor.getInt(offset + 9));
-        entity.setScore(cursor.getInt(offset + 10));
+        entity.setScore(cursor.getDouble(offset + 10));
         entity.setCorrectJson(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setAnswerUrl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
      }

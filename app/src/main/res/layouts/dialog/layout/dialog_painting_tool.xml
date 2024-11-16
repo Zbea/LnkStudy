@@ -63,6 +63,7 @@
             android:text="圆珠笔"
             android:textSize="@dimen/sp_22"
             android:textColor="@color/black"
+            android:visibility="gone"
             />
 
 

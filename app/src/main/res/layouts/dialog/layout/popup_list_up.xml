@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/icon_popwindow_drawing_btn_bg"
+    android:paddingTop="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_20"
+    android:paddingEnd="12dp"
+    android:paddingStart="12dp">
+
+    <com.bll.lnkstudy.widget.MaxRecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>

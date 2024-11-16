@@ -11,9 +11,9 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.dialog.CloudDownloadListDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DiaryManageDialog
-import com.bll.lnkstudy.dialog.DiaryUploadListDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
@@ -301,7 +301,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     }
                 }
                 3->{
-                    DiaryUploadListDialog(requireActivity()).builder().setOnDialogClickListener{ typeId->
+                    CloudDownloadListDialog(requireActivity(),6).builder().setOnDialogClickListener{ typeId->
                         startDiaryActivity(typeId)
                     }
                 }
@@ -408,7 +408,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 setCallBack{
                     cloudList.add(CloudListBean().apply {
                         type=7
-                        subTypeStr=diaryUploadTitleStr
+                        title=diaryUploadTitleStr
+                        subTypeStr="我的日记"
                         year=DateUtils.getYear()
                         date=time
                         listJson= Gson().toJson(diarys)

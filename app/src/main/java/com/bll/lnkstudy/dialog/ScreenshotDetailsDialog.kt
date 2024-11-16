@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemDetailsBean
@@ -62,10 +61,10 @@ class ScreenshotDetailsDialog(val context: Context) {
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
         mAdapter.setOnChildClickListener{ parentPos,pos->
-            dialog.dismiss()
-            val path=screenTypes[parentPos].path
-            val files=FileUtils.getDescFiles(path)
-            MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
+//            dialog.dismiss()
+//            val path=screenTypes[parentPos].path
+//            val files=FileUtils.getDescFiles(path)
+//            MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
         }
 
         return this

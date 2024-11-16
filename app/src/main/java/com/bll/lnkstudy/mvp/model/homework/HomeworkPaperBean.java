@@ -38,17 +38,17 @@ public class HomeworkPaperBean {
     public int page;
     public int state;//提交状态0学生未提交1已提交未批改2已批改
     public int correctMode;//批改模式
-    public int score;//成绩
+    public double score;//成绩
     public String correctJson;//批改详情
     public boolean isSelfCorrect;
     public int scoreMode;//打分模式1打分
     public String answerUrl;
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 987730780)
+    @Generated(hash = 1920063784)
     public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
             String typeName, String title, Long endTime, Long startTime, String filePath,
-            List<String> paths, List<String> drawPaths, int page, int state, int correctMode, int score,
-            String correctJson, boolean isSelfCorrect, int scoreMode, String answerUrl,
+            List<String> paths, List<String> drawPaths, int page, int state, int correctMode,
+            double score, String correctJson, boolean isSelfCorrect, int scoreMode, String answerUrl,
             String commitJson) {
         this.id = id;
         this.userId = userId;
@@ -165,10 +165,10 @@ public class HomeworkPaperBean {
     public void setCorrectMode(int correctMode) {
         this.correctMode = correctMode;
     }
-    public int getScore() {
+    public double getScore() {
         return this.score;
     }
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
     public String getCorrectJson() {
@@ -201,7 +201,5 @@ public class HomeworkPaperBean {
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
     }
-
-
 
 }

@@ -230,16 +230,16 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 items.add(ExamScoreItem().apply {
                     sort=i
                     if (scoreMode==1){
-                        var totalLabel=0
+                        var totalLabel=0.0
                         for (item in scores[i]){
                             totalLabel+=item.label
                         }
                         label=totalLabel
-                        var totalItem=0
+                        var totalItem=0.0
                         for (item in scores[i]){
                             totalItem+= MethodManager.getScore(item.score)
                         }
-                        score=totalItem.toString()
+                        score=ToolUtils.getFormatNum(totalItem,"0.0")
                     }
                     else{
                         var totalRight=0
@@ -251,6 +251,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                         }
                         score=totalRight.toString()
                     }
+                    //重新排序
                     for (item in scores[i]){
                         if (correctMode==3){
                             item.sort=scores[i].indexOf(item)
@@ -623,11 +624,19 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     /**
      * 设置笔类型
      */
-    private fun setDrawOjectType(type:Int){
+    protected fun setDrawOjectType(type:Int){
         elik_a?.drawObjectType = type
         elik_b?.drawObjectType = type
         if (type!=PWDrawObjectHandler.DRAW_OBJ_CHOICERASE)
             currentDrawObj=type
+    }
+
+    /**
+     * 设置笔宽
+     */
+    protected fun setDrawWidth(width:Int){
+        elik_a?.penSettingWidth=width
+        elik_b?.penSettingWidth=width
     }
 
     /**

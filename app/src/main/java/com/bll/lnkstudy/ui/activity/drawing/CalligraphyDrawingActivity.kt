@@ -4,13 +4,13 @@ import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.GlideUtils
@@ -27,7 +27,7 @@ import java.io.File
 class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
     private var typeId=0
-    private var paintingTypeBean: ItemTypeBean?=null
+    private var path=""
     private var paintingDrawingBean: PaintingDrawingBean? = null//当前作业内容
     private var paintingDrawingBean_a: PaintingDrawingBean? = null//a屏作业
     private var paintingLists = mutableListOf<PaintingDrawingBean>() //所有作业内容
@@ -40,12 +40,11 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        paintingTypeBean=intent.getBundleExtra("paintingBundle")?.getSerializable("calligraphy") as ItemTypeBean
-        grade=paintingTypeBean?.grade!!
-        typeId= paintingTypeBean?.typeId!!
-        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,grade)
+        typeId= intent.flags
+        path=FileAddress().getPathPaintingDraw(1,typeId)
+        paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,typeId)
 
-        if (!paintingLists.isNullOrEmpty()) {
+        if (paintingLists.isNotEmpty()) {
             paintingDrawingBean = paintingLists[paintingLists.size - 1]
             page = paintingLists.size - 1
         } else {
@@ -57,6 +56,11 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_draft)
         iv_btn.setImageResource(R.mipmap.icon_draw_change)
+        //云书库下载不可手写，不可更换背景
+        if (typeId!=0){
+            disMissView(iv_btn)
+        }
+        setPWEnabled(typeId==0)
 
         iv_btn.setOnClickListener {
             ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
@@ -187,7 +191,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
      */
     private fun isDrawLastContent():Boolean{
         val contentBean = paintingLists.last()
-        return File(contentBean.path).exists()
+        return File(contentBean.path).exists() && typeId==0
     }
 
     override fun onContent() {
@@ -201,13 +205,24 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
         resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
         setBg_b()
-        setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
+
+        if (typeId==0){
+            setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
+        }
+        else{
+            GlideUtils.setImageCacheUrl(this, paintingDrawingBean!!.path, v_content_b)
+        }
         tv_page.text = "${page+1}"
 
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()
-            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
+            if (typeId==0){
+                setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
+            }
+            else{
+                GlideUtils.setImageCacheUrl(this, paintingDrawingBean_a!!.path, v_content_a)
+            }
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="$page"
                 tv_page_a.text="${page+1}"
@@ -235,15 +250,12 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newPaintingContent() {
         val date=System.currentTimeMillis()
-        val path = paintingTypeBean?.path
-        val fileName = DateUtils.longToString(date)
-
         paintingDrawingBean = PaintingDrawingBean()
         paintingDrawingBean?.title= getString(R.string.calligraphy)+(paintingLists.size+1)
         paintingDrawingBean?.type = 1
         paintingDrawingBean?.date = date
-        paintingDrawingBean?.path = "$path/$fileName.png"
-        paintingDrawingBean?.grade=grade
+        paintingDrawingBean?.path = "$path/${DateUtils.longToString(date)}.png"
+        paintingDrawingBean?.cloudId=grade
         paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_details_bg_2)
         page = paintingLists.size
         paintingDrawingBean?.page=page

@@ -119,7 +119,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 25f)))
             setOnItemClickListener { _, _, position ->
                 if (!MethodManager.getSchoolPermissionAllow(1)){
-                    showToast(1,"学校该时间不允许查看义教视频")
+                    showToast(1,"学校不允许该时间段播放义教视频")
                 }
                 else{
                     if (MethodManager.getParentPermissionAllow(1)){
@@ -130,7 +130,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
                         customStartActivity(intent)
                     }
                     else{
-                        showToast(1,"家长该时间不允许查看义教视频")
+                        showToast(1,"家长不允许该时间段播放义教视频")
                     }
                 }
             }

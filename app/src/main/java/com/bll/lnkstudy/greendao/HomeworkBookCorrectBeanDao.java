@@ -32,7 +32,7 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         public final static Property State = new Property(5, int.class, "state", false, "STATE");
         public final static Property CorrectMode = new Property(6, int.class, "correctMode", false, "CORRECT_MODE");
         public final static Property ScoreMode = new Property(7, int.class, "scoreMode", false, "SCORE_MODE");
-        public final static Property Score = new Property(8, int.class, "score", false, "SCORE");
+        public final static Property Score = new Property(8, double.class, "score", false, "SCORE");
         public final static Property AnswerUrl = new Property(9, String.class, "answerUrl", false, "ANSWER_URL");
         public final static Property CorrectJson = new Property(10, String.class, "correctJson", false, "CORRECT_JSON");
         public final static Property IsSelfCorrect = new Property(11, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
@@ -61,7 +61,7 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
                 "\"STATE\" INTEGER NOT NULL ," + // 5: state
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 6: correctMode
                 "\"SCORE_MODE\" INTEGER NOT NULL ," + // 7: scoreMode
-                "\"SCORE\" INTEGER NOT NULL ," + // 8: score
+                "\"SCORE\" REAL NOT NULL ," + // 8: score
                 "\"ANSWER_URL\" TEXT," + // 9: answerUrl
                 "\"CORRECT_JSON\" TEXT," + // 10: correctJson
                 "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 11: isSelfCorrect
@@ -94,7 +94,7 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         stmt.bindLong(6, entity.getState());
         stmt.bindLong(7, entity.getCorrectMode());
         stmt.bindLong(8, entity.getScoreMode());
-        stmt.bindLong(9, entity.getScore());
+        stmt.bindDouble(9, entity.getScore());
  
         String answerUrl = entity.getAnswerUrl();
         if (answerUrl != null) {
@@ -137,7 +137,7 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         stmt.bindLong(6, entity.getState());
         stmt.bindLong(7, entity.getCorrectMode());
         stmt.bindLong(8, entity.getScoreMode());
-        stmt.bindLong(9, entity.getScore());
+        stmt.bindDouble(9, entity.getScore());
  
         String answerUrl = entity.getAnswerUrl();
         if (answerUrl != null) {
@@ -177,7 +177,7 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
             cursor.getInt(offset + 5), // state
             cursor.getInt(offset + 6), // correctMode
             cursor.getInt(offset + 7), // scoreMode
-            cursor.getInt(offset + 8), // score
+            cursor.getDouble(offset + 8), // score
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // answerUrl
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // correctJson
             cursor.getShort(offset + 11) != 0, // isSelfCorrect
@@ -197,7 +197,7 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         entity.setState(cursor.getInt(offset + 5));
         entity.setCorrectMode(cursor.getInt(offset + 6));
         entity.setScoreMode(cursor.getInt(offset + 7));
-        entity.setScore(cursor.getInt(offset + 8));
+        entity.setScore(cursor.getDouble(offset + 8));
         entity.setAnswerUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setCorrectJson(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setIsSelfCorrect(cursor.getShort(offset + 11) != 0);

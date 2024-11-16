@@ -506,7 +506,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId)
                             }
                             //添加批改详情
-                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0,"","")
+                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0.0,"","")
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -548,7 +548,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             //下载完成后 请求
                             mPresenter.downloadParent(item.id)
                             //添加批改详情
-                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0,"","")
+                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0.0,"","")
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -674,6 +674,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 homework.score = item.score
                                 homework.correctJson = item.question
                                 homework.correctMode = item.questionType
+                                homework.answerUrl=item.answerUrl
                                 HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,item.typeId,Gson().toJson(homework))
                             }
@@ -774,7 +775,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     /**
      * 保存批改详情
      */
-    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Int,correctJson:String,answerUrl:String){
+    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Double,correctJson:String,answerUrl:String){
         CorrectDetailsManager.getInstance().insertOrReplace(CorrectDetailsBean().apply {
             type=0
             course=mCourse

@@ -293,14 +293,15 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in mTabTypeAdapter?.data!!){
+                for (item in data){
                     item.isCheck=false
                 }
-                val item=mTabTypeAdapter?.data!![position]
-                item.isCheck=true
-                mTabTypeAdapter?.notifyDataSetChanged()
-
-                onTabClickListener(view,position)
+                if (position<data.size){
+                    val item=data[position]
+                    item.isCheck=true
+                    mTabTypeAdapter?.notifyDataSetChanged()
+                    onTabClickListener(view,position)
+                }
             }
         }
     }

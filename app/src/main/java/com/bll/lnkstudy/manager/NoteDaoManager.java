@@ -76,11 +76,10 @@ public class NoteDaoManager {
      * 是否存在笔记（云书库）
      * @return
      */
-    public Boolean isExistCloud(String typeStr,String title,long date){
+    public Boolean isExistCloud(String typeStr,String title){
         WhereCondition whereCondition1=NoteDao.Properties.TypeStr.eq(typeStr);
         WhereCondition whereCondition2= NoteDao.Properties.Title.eq(title);
-        WhereCondition whereCondition3= NoteDao.Properties.Date.eq(date);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).unique()!=null;
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).unique()!=null;
     }
 
     /**

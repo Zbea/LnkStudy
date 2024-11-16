@@ -65,8 +65,11 @@
 -keep public class * extends android.view.View
 -keep public class com.bll.lnkstudy.utils.SPUtil{
 *;}
--keep public class com.bll.lnkstudy.mvp.model.* {
+-keep public class com.bll.lnkstudy.mvp.model.** {
 *;}
+
+-keep class android.support.v4.** { *; }
+-dontwarn android.support.v4.**
 
 # support
 -keep class android.support.** {*;}
@@ -193,8 +196,6 @@
 #retrofit2
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature
--keepattributes Exceptions
 -dontwarn org.robovm.**
 -keep class org.robovm.** { *; }
 

@@ -63,12 +63,12 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     override fun onType(bookStoreType: BookStoreType) {
         //子分类
         val types = bookStoreType.subType[typeStr]
-        if (!types.isNullOrEmpty()&&subTypeList!=types){
+        if (!types.isNullOrEmpty()){
             subTypeList=types
             subTypeStr=types[0].desc
             subtype=types[0].type
             initTab()
-            fetchData()
+            typeFindData()
         }
     }
 
@@ -252,6 +252,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     downloadBookDialog?.dismiss()
+                    EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
                     EventBus.getDefault().post(Constants.BOOK_EVENT)
                     hideLoading()
                     Handler().postDelayed({

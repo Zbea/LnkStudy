@@ -230,9 +230,6 @@
         <activity android:name=".ui.activity.ClassGroupUserActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PaintingDrawingTypeActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.book.HomeworkBookStoreActivity"
             android:theme="@style/activityCustom"
             android:windowSoftInputMode="adjustPan"

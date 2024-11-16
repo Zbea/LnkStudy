@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.SPUtil
 
 
 class PaintingLinerSelectDialog(private val context: Context){
@@ -22,8 +23,6 @@ class PaintingLinerSelectDialog(private val context: Context){
 
     private var tvPencil:TextView?=null
     private var tvPen:TextView?=null
-    private var tvPenBall:TextView?=null
-    private var tvPenBrush:TextView?=null
 
     private var currentType= PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
     private var currentWidth=3
@@ -53,19 +52,9 @@ class PaintingLinerSelectDialog(private val context: Context){
             setSelectPen(tvPen!!,PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
         }
 
-        tvPenBall= dialog!!.findViewById(R.id.tv_pen_ball)
-        tvPenBall!!.setOnClickListener {
-            setSelectPen(tvPenBall!!,PWDrawObjectHandler.DRAW_OBJ_RANDOM_BALLPEN)
-        }
-
-        tvPenBrush= dialog!!.findViewById(R.id.tv_pen_brush)
-        tvPenBrush!!.setOnClickListener {
-            setSelectPen(tvPenBrush!!,PWDrawObjectHandler.DRAW_OBJ_RANDOM_BRUSH)
-        }
-
         ivLine1 = dialog!!.findViewById(R.id.line_1)
         ivLine1!!.setOnClickListener {
-            setSelectImageView(ivLine1!!,1)
+            setSelectImageView(ivLine1!!,2)
         }
 
         ivLine2= dialog!!.findViewById(R.id.line_2)
@@ -83,9 +72,16 @@ class PaintingLinerSelectDialog(private val context: Context){
             setSelectImageView(ivLine4!!,7)
         }
 
-        setSelectPen(tvPen!!,currentType)
-        setSelectImageView(ivLine2!!,currentWidth)
+        //设置初始笔形
+        val drawType= SPUtil.getInt(Constants.SP_PAINTING_DRAW_TYPE)
+        if (drawType==PWDrawObjectHandler.DRAW_OBJ_RANDOM_PENCIL){
+            setSelectPen(tvPencil!!,PWDrawObjectHandler.DRAW_OBJ_RANDOM_PENCIL)
+        }
+        else{
+            setSelectPen(tvPen!!,currentType)
+        }
 
+        setSelectImageView(ivLine2!!,currentWidth)
 
         return this
     }
@@ -93,8 +89,6 @@ class PaintingLinerSelectDialog(private val context: Context){
     private fun setSelectPen(view:TextView,des: Int){
         tvPen?.setBackgroundResource(R.color.color_transparent)
         tvPencil?.setBackgroundResource(R.color.color_transparent)
-        tvPenBall?.setBackgroundResource(R.color.color_transparent)
-        tvPenBrush?.setBackgroundResource(R.color.color_transparent)
         view.setBackgroundResource(R.drawable.bg_black_stroke_0dp_corner)
         currentType=des
         onSelectListener?.setDrawType(currentType)

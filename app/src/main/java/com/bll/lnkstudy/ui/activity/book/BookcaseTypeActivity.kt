@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.book
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
+import com.bll.lnkstudy.Constants.Companion.BOOK_TYPE_EVENT
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -10,7 +11,6 @@ import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.ui.adapter.BookcaseTypeAdapter
@@ -34,7 +34,6 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
     private var pos = 0 //当前书籍位置
     private var longItems= mutableListOf<ItemList>()
     private var mTabAdapter:BookcaseTypeAdapter?=null
-    private var tabItems= mutableListOf<ItemTypeBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_book_type_list
@@ -82,24 +81,24 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
 
 
     private fun initTab() {
-        tabItems =ItemTypeDaoManager.getInstance().queryAll(5)
-        if (tabItems.size>0){
-            for (item in tabItems){
+        itemTabTypes =ItemTypeDaoManager.getInstance().queryAll(5)
+        if (itemTabTypes.size>0){
+            for (item in itemTabTypes){
                 item.isCheck=false
             }
-            tabItems[0].isCheck=true
-            typeStr = tabItems[0].title
+            itemTabTypes[0].isCheck=true
+            typeStr = itemTabTypes[0].title
         }
 
         rv_type.layoutManager = GridLayoutManager(this, 7)//创建布局管理
-        mTabAdapter=BookcaseTypeAdapter(R.layout.item_bookcase_type, tabItems).apply {
+        mTabAdapter=BookcaseTypeAdapter(R.layout.item_bookcase_type, itemTabTypes).apply {
             rv_type.adapter = this
             bindToRecyclerView(rv_type)
             setOnItemClickListener { adapter, view, position ->
                 getItem(typePos)?.isCheck = false
                 typePos = position
                 getItem(typePos)?.isCheck = true
-                typeStr = tabItems[typePos].title
+                typeStr = itemTabTypes[typePos].title
                 //修改当前分类状态
                 ItemTypeDaoManager.getInstance().saveBookBean(5,typeStr,false)
                 notifyDataSetChanged()
@@ -115,7 +114,6 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         LongClickManageDialog(this,getCurrentScreenPos(),book.bookName,longItems).builder()
             .setOnDialogClickListener {
                 MethodManager.deleteBook(book)
-                mAdapter?.remove(pos)
             }
     }
 
@@ -129,11 +127,15 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == BOOK_EVENT) {
-            tabItems =ItemTypeDaoManager.getInstance().queryAll(5)
-            tabItems[typePos].isCheck=true
-            mTabAdapter?.setNewData(tabItems)
-            fetchData()
+        when(msgFlag){
+            BOOK_EVENT->{
+                fetchData()
+            }
+            BOOK_TYPE_EVENT->{
+                itemTabTypes =ItemTypeDaoManager.getInstance().queryAll(5)
+                itemTabTypes[typePos].isCheck=true
+                mTabAdapter?.setNewData(itemTabTypes)
+            }
         }
     }
 

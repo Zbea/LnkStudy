@@ -119,10 +119,9 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     private fun downloadItem(){
-        val notebook=notes[position]
-        val item= NoteDaoManager.getInstance().isExistCloud(notebook.typeStr,notebook.title,notebook.date)
-        if (item==null){
-            downloadNote(notebook)
+        val note=notes[position]
+        if (!NoteDaoManager.getInstance().isExistCloud(note.typeStr,note.title)){
+            downloadNote(note)
         }
         else{
             showToast(R.string.toast_downloaded)
@@ -140,9 +139,8 @@ class CloudNoteFragment: BaseCloudFragment() {
      */
     private fun downloadNote(item: Note){
         showLoading()
-        val titleStr=item.title+"副本"
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val fileTargetPath=FileAddress().getPathNote(item.grade,item.typeStr,titleStr)
+        val fileTargetPath=FileAddress().getPathNote(item.typeStr,item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -153,7 +151,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
-                            if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(item.typeStr,2)){
+                            if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(2,item.typeStr)){
                                 val noteType = ItemTypeBean().apply {
                                     title = item.typeStr
                                     type=2
@@ -165,7 +163,6 @@ class CloudNoteFragment: BaseCloudFragment() {
                             }
                             //添加笔记
                             item.id=null//设置数据库id为null用于重新加入
-                            item.title=titleStr
                             val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
                             //新建笔记本增量更新
                             DataUpdateManager.createDataUpdate(4,id.toInt(),2,Gson().toJson(item))
@@ -175,8 +172,6 @@ class CloudNoteFragment: BaseCloudFragment() {
                             for (json in jsonArray){
                                 val contentBean=Gson().fromJson(json, NoteContentBean::class.java)
                                 contentBean.id=null//设置数据库id为null用于重新加入
-                                contentBean.filePath=contentBean.filePath.replace(contentBean.noteTitle,titleStr)
-                                contentBean.noteTitle=titleStr
                                 val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                 //新建笔记内容增量更新
                                 DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(contentBean),contentBean.filePath)
@@ -215,8 +210,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         map["page"]=pageIndex
         map["size"] = pageSize
         map["type"] = 4
-        map["grade"] = grade
-        map["subTypeStr"] = noteTypeStr
         mCloudPresenter.getList(map)
     }
 
