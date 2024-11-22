@@ -167,6 +167,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         override fun onFinish() {
                             item.id=null//设置数据库id为null用于重新加入
                             item.createStatus=0
+                            item.date=System.currentTimeMillis()
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                             if (item.state!=5){
                                 //创建增量数据
@@ -208,7 +209,6 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 showToast(R.string.book_download_success)
-                                deleteItem()
                                 EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
                                 hideLoading()
                             },500)

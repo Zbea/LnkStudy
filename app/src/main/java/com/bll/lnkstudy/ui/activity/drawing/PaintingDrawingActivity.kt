@@ -205,21 +205,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         tv_page_total.text="${paintingLists.size}"
         tv_page_total_a.text="${paintingLists.size}"
 
-        if (typeId==0){
-            setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
-        }
-        else{
-            GlideUtils.setImageCacheUrl(this, paintingDrawingBean!!.path, v_content_b)
-        }
+        setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
         tv_page.text = "${page+1}"
 
         if (isExpand) {
-            if (typeId==0){
-                setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
-            }
-            else{
-                GlideUtils.setImageCacheUrl(this, paintingDrawingBean_a!!.path, v_content_a)
-            }
+            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
 
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="$page"

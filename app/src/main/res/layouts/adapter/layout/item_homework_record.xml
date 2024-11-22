@@ -58,7 +58,7 @@
         android:layout_height="60dp"
         android:layout_marginEnd="@dimen/dp_10"
         android:scaleType="center"
-        android:src="@mipmap/icon_notebook_edit"
+        android:src="@mipmap/icon_setting_edit"
         android:background="@drawable/click_btn_transparent_line_black"
         />
 
@@ -68,7 +68,7 @@
         android:layout_height="60dp"
         android:layout_marginEnd="@dimen/dp_10"
         android:scaleType="center"
-        android:src="@mipmap/icon_delete"
+        android:src="@mipmap/icon_setting_delete"
         android:background="@drawable/click_btn_transparent_line_black"
         />
 

@@ -106,7 +106,7 @@
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="30dp"
-            android:src="@mipmap/icon_notebook_top"
+            android:src="@mipmap/icon_setting_top"
             android:padding="@dimen/dp_5"
             android:background="@drawable/click_btn_transparent_line_black"
             />

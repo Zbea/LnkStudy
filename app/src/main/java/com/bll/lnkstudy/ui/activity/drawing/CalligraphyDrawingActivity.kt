@@ -205,24 +205,13 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
         resId_b=ToolUtils.getImageResId(this,paintingDrawingBean?.bgRes)
         setBg_b()
-
-        if (typeId==0){
-            setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
-        }
-        else{
-            GlideUtils.setImageCacheUrl(this, paintingDrawingBean!!.path, v_content_b)
-        }
+        setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
         tv_page.text = "${page+1}"
 
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()
-            if (typeId==0){
-                setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
-            }
-            else{
-                GlideUtils.setImageCacheUrl(this, paintingDrawingBean_a!!.path, v_content_a)
-            }
+            setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="$page"
                 tv_page_a.text="${page+1}"
@@ -255,7 +244,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.type = 1
         paintingDrawingBean?.date = date
         paintingDrawingBean?.path = "$path/${DateUtils.longToString(date)}.png"
-        paintingDrawingBean?.cloudId=grade
+        paintingDrawingBean?.cloudId=typeId
         paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_details_bg_2)
         page = paintingLists.size
         paintingDrawingBean?.page=page

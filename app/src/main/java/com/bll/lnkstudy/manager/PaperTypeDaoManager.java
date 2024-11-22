@@ -61,8 +61,9 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().unique();
     }
 
-    public List<PaperTypeBean> queryAll() {
-        return dao.queryBuilder().where(whereUser).build().list();
+    public List<PaperTypeBean> queryAllExceptCloud() {
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.IsCloud.lt(false);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
     /**

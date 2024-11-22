@@ -11,6 +11,8 @@ class MainDatePlanAdapter(layoutResId: Int, data: List<DatePlan>?) : BaseQuickAd
         helper.apply {
             setText(R.id.tv_start_time, item.startTimeStr)
             setText(R.id.tv_end_time, item.endTimeStr)
+            setVisible(R.id.tv_space,!item.endTimeStr.isNullOrEmpty())
+//            setGone(R.id.tv_end_time,!item.endTimeStr.isNullOrEmpty())
             setText(R.id.tv_course,item.course)
             setText(R.id.tv_content, item.content)
         }

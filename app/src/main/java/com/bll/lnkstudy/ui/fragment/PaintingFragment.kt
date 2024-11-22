@@ -13,14 +13,17 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.PaintingDetailsDialog
 import com.bll.lnkstudy.dialog.PopupUpClick
+import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.PaintingListActivity
 import com.bll.lnkstudy.utils.FileUploadManager
+import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.tv_btn
 import kotlinx.android.synthetic.main.fragment_painting.iv_dd
@@ -37,6 +40,7 @@ import kotlinx.android.synthetic.main.fragment_painting.iv_tang
 import kotlinx.android.synthetic.main.fragment_painting.iv_yuan
 import kotlinx.android.synthetic.main.fragment_painting.ll_content1
 import kotlinx.android.synthetic.main.fragment_painting.ll_content2
+import java.io.File
 
 
 /**
@@ -49,6 +53,8 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
     private var popupSfs= mutableListOf<PopupBean>()
     private var uploadTitleStr=""
     private var type=0
+    private var uploadType=0
+    private var uploadPaintings= mutableListOf<PaintingBean>()
 
     override fun onToken(token: String) {
         showLoading()
@@ -94,7 +100,11 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
 
 
         tv_btn.setOnClickListener {
-            PaintingDetailsDialog(requireActivity()).builder()
+            PaintingDetailsDialog(requireActivity()).builder().setOnDialogClickListener{
+                uploadPaintings= it.toMutableList()
+                uploadType=2
+                uploadPainting()
+            }
         }
 
         iv_han.setOnClickListener {
@@ -190,6 +200,7 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
      * 长按点击事件
      */
     private fun onLongClick(type: Int){
+        this.type=type
         val view=if (type==0) iv_hb else iv_sf
         val pops=if (type==0) popupHbs else popupSfs
         PopupUpClick(requireActivity(),pops,view,160,(view.width-160)/2,-(view.height+10)) .builder().setOnSelectListener{
@@ -207,7 +218,7 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
                 1->{
                     InputContentDialog(requireActivity(),2,"请输入我的${getTypeStr()}上传标题").builder().setOnDialogClickListener{
                         uploadTitleStr=it
-                        this.type=type
+                        uploadType=1
                         presenter.getToken(true)
                     }
                 }
@@ -225,6 +236,27 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
      */
     private fun getTypeStr():String{
         return if (type==0) "画本" else "书法"
+    }
+
+    /**
+     * 上传书画
+     */
+    private fun uploadPainting(){
+        val cloudList= mutableListOf<CloudListBean>()
+        for(item in uploadPaintings){
+            showLoading()
+            cloudList.add(CloudListBean().apply {
+                type=5
+                title=item.title
+                subTypeStr="我的书画"
+                date=System.currentTimeMillis()
+                listJson=Gson().toJson(item)
+                downloadUrl=item.bodyUrl
+                bookId=item.contentId
+            })
+            if (cloudList.size==uploadPaintings.size)
+                mCloudUploadPresenter.upload(cloudList,true)
+        }
     }
 
     /**
@@ -265,7 +297,16 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        showToast("我的${getTypeStr()}上传成功")
-        MethodManager.deletePaintingDrawing(type,null)
+        if (uploadType==1){
+            showToast("我的${getTypeStr()}上传成功")
+            MethodManager.deletePaintingDrawing(type,null)
+        }
+        else{
+            showToast("书画上传成功")
+            for (item in uploadPaintings){
+                PaintingBeanDaoManager.getInstance().deleteBean(item)
+                FileUtils.deleteFile(File(FileAddress().getPathImage("painting",item.contentId)))
+            }
+        }
     }
 }

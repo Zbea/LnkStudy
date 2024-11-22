@@ -2,6 +2,7 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
+import com.bll.lnkstudy.greendao.HomeworkPaperBeanDao;
 import com.bll.lnkstudy.greendao.HomeworkTypeBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.User;
@@ -80,13 +81,21 @@ public class HomeworkTypeDaoManager {
      */
     public List<HomeworkTypeBean> queryAllByCourse(String course) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(HomeworkTypeBeanDao.Properties.Grade).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     public List<HomeworkTypeBean> queryAllByCourse(String course,int page, int pageSize) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition)
-                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.Grade)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.CreateStatus).orderAsc(HomeworkTypeBeanDao.Properties.Date)
+                .build().list();
+    }
+
+    public List<HomeworkTypeBean> queryAllByCreate(String course,int create){
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.CreateStatus.eq(create);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+                .orderDesc(HomeworkTypeBeanDao.Properties.Grade).orderAsc(HomeworkTypeBeanDao.Properties.Date)
                 .build().list();
     }
 
@@ -144,8 +153,9 @@ public class HomeworkTypeDaoManager {
         return bean!=null;
     }
 
-    public List<HomeworkTypeBean> queryAll() {
-        return dao.queryBuilder().where(whereUser).build().list();
+    public List<HomeworkTypeBean> queryAllExceptCloud() {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     /**

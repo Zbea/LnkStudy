@@ -73,6 +73,9 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
         }
         popCourses.add(PopupBean(0,"运动"))
         popCourses.add(PopupBean(0,"娱乐"))
+        popCourses.add(PopupBean(0,"才艺"))
+        popCourses.add(PopupBean(0,"间休"))
+        popCourses.add(PopupBean(0,"起卧"))
 
         if (flags==0){
             dateEventBean= DateEventBean()
@@ -342,7 +345,7 @@ class DatePlanDetailsActivity:BaseAppCompatActivity() {
 
         val plans = mutableListOf<DatePlan>()
         for (item in mAdapter?.data!!) {
-            if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty()&& !item.startTimeStr.isNullOrEmpty() && !item.endTimeStr.isNullOrEmpty()) {
+            if (!item.content.isNullOrEmpty() && !item.course.isNullOrEmpty()&& !item.startTimeStr.isNullOrEmpty()) {
                 item.isEndSelect=false
                 item.isEndSelect=false
                 plans.add(item)

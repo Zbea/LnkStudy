@@ -13,9 +13,9 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.HomeworkMessageDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.dialog.ModuleAddDialog
 import com.bll.lnkstudy.manager.CorrectDetailsManager
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
@@ -24,6 +24,7 @@ import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
@@ -41,6 +42,7 @@ import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -106,6 +108,15 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     }
                 }
             }
+            else{
+                val homeworkTypeBean=HomeworkTypeDaoManager.getInstance().queryByTypeId(item.typeId)
+                if (homeworkTypeBean.name!=item.name){
+                    homeworkTypeBean.name=item.name
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                    //修改增量更新
+                    DataUpdateManager.editDataUpdate(2,item.typeId,1,Gson().toJson(homeworkTypeBean))
+                }
+            }
         }
         countDownTasks?.countDown()
     }
@@ -120,7 +131,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     typeId = ToolUtils.getDateId() + item.id
                     parentTypeId = item.id
                     state = if (item.type == 1) 2 else 4
-                    date = item.time
+                    date = DateUtils.date10ToDate13(item.time)
                     contentResId = if (item.type == 1) DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!) else ""
                     course = mCourse
                     bgResId = item.imageUrl
@@ -324,22 +335,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 this@HomeworkFragment.position = position
                 val item=homeworkTypes[position]
                 //当前年级的老师、家长、本地错题本无法删除
-                if (item.grade==mUser?.grade){
-                    if (item.createStatus==0){
-                        if (item.state==5)
-                            return@setOnItemLongClickListener true
-                    }
-                    else{
-                        return@setOnItemLongClickListener true
-                    }
+                if (item.createStatus!=0){
+                    return@setOnItemLongClickListener true
                 }
-                CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        deleteHomework()
-                    }
-                })
+                onLongClick()
                 true
             }
         }
@@ -357,6 +356,51 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
         return homeworkTypeBean
+    }
+
+    private fun onLongClick(){
+        val item=homeworkTypes[position]
+        val beans = mutableListOf<ItemList>()
+        beans.add(ItemList().apply {
+            name = "删除"
+            resId = R.mipmap.icon_setting_delete
+        })
+        beans.add(ItemList().apply {
+            name = "置顶"
+            resId = R.mipmap.icon_setting_top
+        })
+        beans.add(ItemList().apply {
+            name = "重命名"
+            resId = R.mipmap.icon_setting_edit
+        })
+        LongClickManageDialog(requireActivity(),2, item.name, beans).builder()
+            .setOnDialogClickListener { position->
+                when(position){
+                    0->{
+                        deleteHomework()
+                    }
+                    1->{
+                        val items=HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse,0)
+                        if (items.size>1){
+                            item.date=items[0].date-1000
+                            HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
+                            //修改增量更新
+                            DataUpdateManager.editDataUpdate(2,item.typeId,1,Gson().toJson(item))
+                            pageIndex=1
+                            fetchData()
+                        }
+                    }
+                    2->{
+                        InputContentDialog(requireActivity(),2,item.name).builder().setOnDialogClickListener{
+                            item.name=it
+                            HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
+                            //修改增量更新
+                            DataUpdateManager.editDataUpdate(2,item.typeId,1,Gson().toJson(item))
+                            mAdapter?.notifyItemChanged(this@HomeworkFragment.position)
+                        }
+                    }
+                }
+            }
     }
 
     /**

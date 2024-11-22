@@ -107,7 +107,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     fun uploadPaper(token: String) {
         val cloudList = mutableListOf<CloudListBean>()
         val nullItems = mutableListOf<PaperTypeBean>()
-        val types = PaperTypeDaoManager.getInstance().queryAll()
+        val types = PaperTypeDaoManager.getInstance().queryAllExceptCloud()
         for (item in types) {
             val papers = PaperDaoManager.getInstance().queryAll(item.course, item.typeId)
             val path = FileAddress().getPathTestPaper(item.typeId)

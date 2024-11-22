@@ -1,50 +1,38 @@
 package com.bll.lnkstudy.ui.fragment.cloud
 
-import android.os.Handler
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.FileAddress
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.ItemTypeDaoManager
-import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
-import com.bll.lnkstudy.ui.adapter.CloudDiaryAdapter
+import com.bll.lnkstudy.mvp.model.painting.PaintingBean
+import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileDownManager
-import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.zip.IZipCallback
-import com.bll.lnkstudy.utils.zip.ZipUtils
-import com.bll.lnkstudy.widget.SpaceItemDeco
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
-import java.io.File
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class CloudPaintingFragment : BaseCloudFragment() {
 
     private var typeStr=""
-    private var tabId=0
     private var position=0
-    private var cloudLists= mutableListOf<CloudListBean>()
-    private var mLocalAdapter: CloudDiaryAdapter?=null
+    private var paintings= mutableListOf<PaintingBean>()
+    private var mAdapter: MyPaintingAdapter?=null
+
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_content
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
-        pageSize=13
-        initTab()
+        pageSize=9
+        typeStr="我的书画"
         initRecyclerView()
     }
 
@@ -54,36 +42,18 @@ class CloudPaintingFragment : BaseCloudFragment() {
         }
     }
 
-    private fun initTab(){
-        types= mutableListOf("我的书画","我的画本","我的书法")
-        for (i in types.indices) {
-            itemTabTypes.add(ItemTypeBean().apply {
-                title=types[i]
-                typeId=when(i){ 1->3 2->4 else->i }
-                isCheck=i==0
-            })
-        }
-        mTabTypeAdapter?.setNewData(itemTabTypes)
-    }
-
-    override fun onTabClickListener(view: View, position: Int) {
-        tabId=itemTabTypes[position].typeId
-        typeStr=if (position==0)"" else itemTabTypes[position].title
-        pageIndex = 1
-        fetchData()
-    }
 
     /**
      * 本地画本、书法
      */
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,30f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,10f), DP2PX.dip2px(activity,60f), DP2PX.dip2px(activity,10f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        mLocalAdapter = CloudDiaryAdapter(R.layout.item_cloud_diary, null).apply {
-            rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(requireActivity(), 3)//创建布局管理
+        mAdapter = MyPaintingAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
@@ -111,13 +81,13 @@ class CloudPaintingFragment : BaseCloudFragment() {
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(30))
+        rv_list.addItemDecoration(SpaceGridItemDeco(3,70))
     }
 
     private fun downloadItem(){
-        val item=cloudLists[position]
-        if (!ItemTypeDaoManager.getInstance().isExist(tabId,item.id)){
-            downloadLocal(item)
+        val item=paintings[position]
+        if (PaintingBeanDaoManager.getInstance().queryBean(item.contentId)==null){
+            download(item)
         }
         else{
             showToast(R.string.toast_downloaded)
@@ -129,75 +99,33 @@ class CloudPaintingFragment : BaseCloudFragment() {
      */
     private fun deleteItem(){
         val ids= mutableListOf<Int>()
-        ids.add(cloudLists[position].id)
+        ids.add(paintings[position].cloudId)
         mCloudPresenter.deleteCloud(ids)
     }
 
     /**
      * 下载本地画本、书法
      */
-    private fun downloadLocal(item:CloudListBean){
+    private fun download(item:PaintingBean){
         showLoading()
-        val typeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
-        typeBean.typeId=item.id
-        val path=FileAddress().getPathPaintingDraw(if (typeBean.type==3) 0 else 1,typeBean.typeId)
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+        val images = item.bodyUrl.split(",")
+        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(item.paths).startMultiTaskDownLoad(
+            object : FileMultitaskDownManager.MultiTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    hideLoading()
+                    PaintingBeanDaoManager.getInstance().insertOrReplace(item)
+                    showToast(R.string.book_download_success)
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, path, object : IZipCallback {
-                        override fun onFinish() {
-                            typeBean.date=System.currentTimeMillis()
-                            typeBean.path=path
-                            ItemTypeDaoManager.getInstance().insertOrReplace(typeBean)
-                            //创建本地画本增量更新
-                            DataUpdateManager.createDataUpdate(5,typeBean.typeId,1, Gson().toJson(typeBean))
-
-                            //存储画本内容
-                            val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
-                            for (json in jsonArray){
-                                val drawingBean=Gson().fromJson(json, PaintingDrawingBean::class.java)
-                                drawingBean.id=null
-                                drawingBean.cloudId=typeBean.typeId
-                                drawingBean.path=path+"/"+File(drawingBean.path).name
-                                drawingBean.page=jsonArray.indexOf(json)
-                                val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
-                                //创建本地画本增量更新
-                                DataUpdateManager.createDataUpdate(5,id.toInt(),2,typeBean.typeId, Gson().toJson(drawingBean),drawingBean.path)
-                            }
-
-                            //删掉本地zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            Handler().postDelayed({
-                                showToast(R.string.book_download_success)
-                                hideLoading()
-                            },500)
-                        }
-
-                        override fun onProgress(percentDone: Int) {
-                        }
-
-                        override fun onError(msg: String?) {
-                            showToast(msg!!)
-                            hideLoading()
-                        }
-
-                        override fun onStart() {
-                        }
-                    })
-                }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
-                    showToast( R.string.book_download_fail)
+                    showToast(R.string.book_download_fail)
                 }
             })
     }
-
 
 
     override fun onRefreshData() {
@@ -215,12 +143,18 @@ class CloudPaintingFragment : BaseCloudFragment() {
 
     override fun onCloudList(cloudList: CloudList) {
         setPageNumber(cloudList.total)
-        cloudLists=cloudList.list
-        mLocalAdapter?.setNewData(cloudLists)
+        paintings.clear()
+        for (item in cloudList.list){
+            val paintingBean= Gson().fromJson(item.listJson, PaintingBean::class.java)
+            paintingBean.id=null
+            paintingBean.cloudId=item.id
+            paintings.add(paintingBean)
+        }
+        mAdapter?.setNewData(paintings)
     }
 
     override fun onCloudDelete() {
-        mLocalAdapter?.remove(position)
+        mAdapter?.remove(position)
     }
 
     override fun onNetworkConnectionSuccess() {

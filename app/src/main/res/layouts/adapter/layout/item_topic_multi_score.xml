@@ -47,6 +47,16 @@
                 android:textSize="@dimen/sp_26" />
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/iv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_correct_wrong"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

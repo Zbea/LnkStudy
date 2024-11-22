@@ -212,11 +212,7 @@ public class MethodManager {
      * 跳转课本详情
      */
     public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
-
         AppUtils.stopApp(context, Constants.PACKAGE_READER);
-
-        textbookBean.time = System.currentTimeMillis();
-        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(textbookBean);
 
         List<AppBean> toolApps = getAppTools(context, 1);
         JSONArray result = getJsonArray(toolApps);
@@ -234,11 +230,6 @@ public class MethodManager {
         intent.putExtra("key_book_type", 2);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-
-        Handler handler=new Handler(Looper.getMainLooper());
-        handler.postDelayed(() ->
-                        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-                ,5000);
     }
 
     /**
@@ -358,10 +349,6 @@ public class MethodManager {
      * @param page    调转指定页码（正常-1跳转最后一页）
      */
     public static void gotoNoteDrawing(Context context, Note note, int screen, int page) {
-        note.date = System.currentTimeMillis();
-        NoteDaoManager.getInstance().insertOrReplace(note);
-        EventBus.getDefault().post(Constants.NOTE_EVENT);
-
         Intent intent = new Intent(context, NoteDrawingActivity.class);
         intent.putExtra("noteId", note.id);
         intent.putExtra("page", page);
@@ -370,6 +357,10 @@ public class MethodManager {
             intent.putExtra(Constants.INTENT_SCREEN_LABEL, screen);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
+
+        note.date = System.currentTimeMillis();
+        NoteDaoManager.getInstance().insertOrReplace(note);
+        EventBus.getDefault().post(Constants.NOTE_EVENT);
     }
 
     /**
@@ -652,17 +643,6 @@ public class MethodManager {
     }
 
     /**
-     * 根据分类以及年级获取对应唯一typeId
-     * @param type
-     * @param grade
-     * @return
-     */
-    public static int getPaintingTypeId(int type,int grade){
-        String idStr=type+String.valueOf(grade);
-        return Integer.parseInt(idStr);
-    }
-
-    /**
      * 获取状态栏的值
      *
      * @return
@@ -688,20 +668,6 @@ public class MethodManager {
      */
     public static String getUrlFormat(String url) {
         return url.substring(url.lastIndexOf("."));
-    }
-
-    /**
-     * 获取分数
-     * @param scoreStr
-     * @return
-     */
-    public static double getScore(String scoreStr){
-        if (scoreStr==null||scoreStr.isEmpty()){
-            return 0;
-        }
-        else {
-            return Double.parseDouble(scoreStr);
-        }
     }
 
 }

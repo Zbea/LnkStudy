@@ -25,7 +25,7 @@
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:scaleType="centerInside"
-        android:src="@mipmap/icon_delete"
+        android:src="@mipmap/icon_setting_delete"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:padding="@dimen/dp_5"

@@ -42,7 +42,7 @@ public class HomeworkTypeBean implements Serializable {
     public String bgResId;//当前作业本背景样式id
     public String course;
     public int bookId;
-    public int createStatus=0;//自建作业本0老师创建1家长创建2
+    public int createStatus=0;//自建作业本0老师创建1家长创建2自动创建错题本3
     public int messageTotal=0;//作业消息数目
     public boolean isCloud;
     @Transient

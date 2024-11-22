@@ -53,8 +53,8 @@ class PaintingListActivity:BaseAppCompatActivity() {
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
 
+        rv_list.layoutManager = GridLayoutManager(this@PaintingListActivity, 4)//创建布局管理
         mAdapter = MyPaintingAdapter(R.layout.item_bookstore, null).apply {
-            rv_list.layoutManager = GridLayoutManager(this@PaintingListActivity, 4)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

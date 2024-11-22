@@ -139,6 +139,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 for (item in books) {
                     val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
                     if (localBook!=null){
+                        //预习课本转移到我的课本中
                         if (localBook.typeStr!=tabStr){
                             localBook.typeStr=tabStr
                             localBook.time = System.currentTimeMillis()

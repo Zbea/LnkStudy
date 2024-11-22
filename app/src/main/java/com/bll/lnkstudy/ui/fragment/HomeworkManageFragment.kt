@@ -55,7 +55,7 @@ open class HomeworkManageFragment: BaseMainFragment() {
                             HomeworkCommitDetailsDialog(requireActivity()).builder()
                         }
                         1 -> {
-                            if (currentCourses.size > 0) {
+                            if (currentCourses.isNotEmpty() && mUser?.grade!! >0) {
                                 fragments[mCoursePos].addContentModule()
                             }
                         }
@@ -198,7 +198,7 @@ open class HomeworkManageFragment: BaseMainFragment() {
         val cloudList = mutableListOf<CloudListBean>()
         //空内容不上传
         val nullItems = mutableListOf<HomeworkTypeBean>()
-        val types= HomeworkTypeDaoManager.getInstance().queryAll()
+        val types= HomeworkTypeDaoManager.getInstance().queryAllExceptCloud()
         for (typeBean in types) {
             when (typeBean.state) {
                 1 -> {
@@ -224,7 +224,7 @@ open class HomeworkManageFragment: BaseMainFragment() {
                         nullItems.add(typeBean)
                     }
                 }
-                2 -> {
+                2,6 -> {
                     val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(typeBean.course, typeBean.typeId)
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
@@ -339,7 +339,7 @@ open class HomeworkManageFragment: BaseMainFragment() {
      * 开始上传到云书库
      */
     private fun startUpload(list: MutableList<CloudListBean>, nullList: MutableList<HomeworkTypeBean>) {
-        if (list.size == HomeworkTypeDaoManager.getInstance().queryAll().size - nullList.size)
+        if (list.size == HomeworkTypeDaoManager.getInstance().queryAllExceptCloud().size - nullList.size)
             mCloudUploadPresenter.upload(list)
     }
 

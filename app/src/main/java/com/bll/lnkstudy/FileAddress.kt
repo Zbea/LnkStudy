@@ -114,6 +114,10 @@ class FileAddress {
         return "$NOTE_PATH/$mUserId/$type/$noteBookStr"
     }
 
+    fun getPathImage(type:String):String{
+        return "$IMAGE_PATH/$mUserId/$type"
+    }
+
     /**
      * 壁纸、书画
      */

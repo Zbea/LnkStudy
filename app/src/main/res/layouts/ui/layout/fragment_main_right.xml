@@ -96,42 +96,49 @@
                 android:layout_marginEnd="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_30"
                 android:layout_margin="@dimen/dp_30"
-                android:visibility="gone"
-                android:background="@mipmap/icon_main_receivepaper_bg"
+                android:background="@mipmap/icon_testpaper_bg"
                 >
 
                 <TextView
-                    android:id="@+id/tv_exam_course"
-                    android:layout_width="100dp"
+                    android:id="@+id/tv_exam_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:gravity="center"
+                    android:lines="1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_25"
                     android:textStyle="bold" />
 
-
                 <TextView
-                    android:id="@+id/tv_exam_title"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_exam_course"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/tv_exam_course"
-                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginTop="70dp"
+                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:gravity="center"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_24"
+                    android:textStyle="bold"
                     />
+
 
                 <TextView
                     android:id="@+id/tv_exam_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_60"
+                    android:gravity="center"
                     android:layout_marginBottom="@dimen/dp_20"
                     android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/dp_20"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_24"
+                    android:textStyle="bold"
                     />
 
             </RelativeLayout>

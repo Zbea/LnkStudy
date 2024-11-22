@@ -12,7 +12,7 @@ import com.bll.lnkstudy.ui.fragment.cloud.CloudDiaryFragment
 import com.bll.lnkstudy.ui.fragment.cloud.CloudExamFragment
 import com.bll.lnkstudy.ui.fragment.cloud.CloudHomeworkFragment
 import com.bll.lnkstudy.ui.fragment.cloud.CloudNoteFragment
-import com.bll.lnkstudy.ui.fragment.cloud.CloudPaintingFragment
+import com.bll.lnkstudy.ui.fragment.cloud.CloudPaintingManagerFragment
 import com.bll.lnkstudy.ui.fragment.cloud.CloudTextbookFragment
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_cloud_storage.rv_list
@@ -31,7 +31,7 @@ class CloudStorageActivity: BaseAppCompatActivity(){
     private var paperFragment: CloudExamFragment? = null
     private var homeworkFragment: CloudHomeworkFragment? = null
     private var noteFragment: CloudNoteFragment? = null
-    private var paintingFragment: CloudPaintingFragment? = null
+    private var paintingFragment: CloudPaintingManagerFragment? = null
     private var diaryFragment: CloudDiaryFragment? = null
 
     private var popWindowGrade:PopupList?=null
@@ -52,7 +52,7 @@ class CloudStorageActivity: BaseAppCompatActivity(){
         homeworkFragment = CloudHomeworkFragment()
         paperFragment = CloudExamFragment()
         noteFragment= CloudNoteFragment()
-        paintingFragment = CloudPaintingFragment()
+        paintingFragment = CloudPaintingManagerFragment()
         diaryFragment= CloudDiaryFragment()
 
         switchFragment(lastFragment, bookcaseFragment)

@@ -18,6 +18,8 @@
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
         android:padding="5dp"
         android:layout_marginBottom="@dimen/dp_35"
         />

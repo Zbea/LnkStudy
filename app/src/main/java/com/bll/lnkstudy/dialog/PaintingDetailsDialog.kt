@@ -3,6 +3,7 @@ package com.bll.lnkstudy.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
+import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.ItemDetailsBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import com.bll.lnkstudy.widget.MaxRecyclerView
 import com.bll.lnkstudy.widget.SpaceItemDeco
@@ -36,6 +38,9 @@ class PaintingDetailsDialog(val context: Context) {
 
         val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
         tv_title.text="书画明细"
+
+        val tv_upload=dialog.findViewById<TextView>(R.id.tv_upload)
+        tv_upload.visibility= View.VISIBLE
 
         val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
         tv_total.text="总计：${total}幅"
@@ -63,6 +68,25 @@ class PaintingDetailsDialog(val context: Context) {
             MethodManager.gotoPaintingImage(context,it.contentId,2)
         }
 
+        tv_upload.setOnClickListener {
+            val paintings= mutableListOf<PaintingBean>()
+            for (item in items){
+                for (childItem in item.paintings){
+                    if (childItem.isCheck){
+                        paintings.add(childItem)
+                    }
+                }
+            }
+
+            if (paintings.isNotEmpty()){
+                dialog.dismiss()
+                listener?.onUpload(paintings)
+            }
+            else{
+                SToast.showText(2,"暂无上传书画")
+            }
+        }
+
         return this
     }
 
@@ -75,17 +99,26 @@ class PaintingDetailsDialog(val context: Context) {
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.paintings)
+            val mAdapter = ChildAdapter(R.layout.item_painting_name,item.paintings)
             recyclerView?.adapter = mAdapter
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(item.paintings[position])
+            }
+            mAdapter.setOnItemChildClickListener { adapter, view, position ->
+                if (view.id==R.id.cb_check){
+                    val childItem=item.paintings[position]
+                    childItem.isCheck=!childItem.isCheck
+                    mAdapter.notifyItemChanged(position)
+                }
             }
         }
 
         class ChildAdapter(layoutResId: Int,  data: List<PaintingBean>?) : BaseQuickAdapter<PaintingBean, BaseViewHolder>(layoutResId, data) {
             override fun convert(helper: BaseViewHolder, item: PaintingBean) {
                 helper.apply {
-                    helper.setText(R.id.tv_name, item.title)
+                    setText(R.id.tv_name, item.title)
+                    setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
+                    addOnClickListener(R.id.cb_check)
                 }
             }
         }
@@ -98,6 +131,16 @@ class PaintingDetailsDialog(val context: Context) {
         fun setOnChildClickListener(listener: OnChildClickListener?) {
             this.listener = listener
         }
+
+    }
+
+    private var listener: OnDialogClickListener? = null
+
+    fun interface OnDialogClickListener {
+        fun onUpload(items: List<PaintingBean>)
+    }
+    fun setOnDialogClickListener(listener: OnDialogClickListener?) {
+        this.listener = listener
     }
 
 }

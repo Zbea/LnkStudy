@@ -52,6 +52,14 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 //创建增量数据
                 DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
             }
+            else{
+                val paperTypeBean= PaperTypeDaoManager.getInstance().queryById(item.typeId)
+                if (paperTypeBean.name!=item.name){
+                    paperTypeBean.name=item.name
+                    PaperTypeDaoManager.getInstance().insertOrReplace(paperTypeBean)
+                    DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(paperTypeBean))
+                }
+            }
         }
         fetchData()
     }
@@ -145,13 +153,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      * 判断 考卷分类是否已经保存本地
      */
     private fun isSavePaperType(item: PaperTypeBean): Boolean {
-        var isSave = false
-        for (list in PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)) {
-            if (item.name == list.name && item.typeId == list.typeId) {
-                isSave = true
-            }
-        }
-        return isSave
+        return PaperTypeDaoManager.getInstance().queryById(item.typeId)!=null
     }
 
     /**

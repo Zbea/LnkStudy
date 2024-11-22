@@ -147,6 +147,7 @@ class CloudExamFragment:BaseCloudFragment() {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
                             item.id=null//设置数据库id为null用于重新加入
+                            item.date=System.currentTimeMillis()
                             PaperTypeDaoManager.getInstance().insertOrReplace(item)
                             //创建增量数据
                             DataUpdateManager.createDataUpdate(3,item.typeId,1,Gson().toJson(item))
@@ -162,7 +163,6 @@ class CloudExamFragment:BaseCloudFragment() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                deleteItem()
                                 showToast(R.string.book_download_success)
                                 hideLoading()
                             },500)

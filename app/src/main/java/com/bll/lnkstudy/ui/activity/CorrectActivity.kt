@@ -1,11 +1,11 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.NumberDialog
@@ -76,7 +76,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                         map["page"]= ToolUtils.getImagesStr(commitItem?.contents!!)
                     }
                     map["score"]=tv_total_score.text.toString().toDouble()
-                    map["question"]=scoreListToJson(currentScores)
+                    map["question"]=Gson().toJson(currentScores)
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -100,7 +100,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     homework.contentId = commitItem?.messageId!!
                     homework.commitDate = System.currentTimeMillis()
                     homework.score=tv_total_score.text.toString().toDouble()
-                    homework.correctJson=scoreListToJson(currentScores)
+                    homework.correctJson=Gson().toJson(currentScores)
                     homework.commitJson=""
                     HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
                     DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId, Gson().toJson(homework))
@@ -110,7 +110,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 for (page in commitItem?.contents!!){
                     val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,page)
                     item.score=tv_total_score.text.toString().toDouble()
-                    item.correctJson=scoreListToJson(currentScores)
+                    item.correctJson=Gson().toJson(currentScores)
                     item.commitJson=""
                     HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
                     //更新增量数据
@@ -120,7 +120,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             1 -> {
                 val paper=HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
                 paper.state=1
-                paper.correctJson=scoreListToJson(currentScores)
+                paper.correctJson=Gson().toJson(currentScores)
                 paper.score=tv_total_score.text.toString().toDouble()
                 paper.commitJson=""
                 HomeworkPaperDaoManager.getInstance()?.insertOrReplace(paper)
@@ -230,37 +230,8 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
                 setOnItemChildClickListener { adapter, view, position ->
-                    val item=currentScores[position]
-                    when(view.id){
-                        R.id.tv_score->{
-                            if (scoreMode==1){
-                                NumberDialog(this@CorrectActivity,2,"最大${item.label}",item.label).builder().setDialogClickListener{
-                                    if (item.label!=it){
-                                        item.result=0
-                                    }
-                                    item.score= it.toString()
-                                    notifyItemChanged(position)
-                                    setTotalScore()
-                                }
-                            }
-                        }
-                        R.id.iv_result->{
-                            if (item.result==0){
-                                item.result=1
-                            }
-                            else{
-                                item.result=0
-                            }
-                            if (scoreMode==1){
-                                item.score= (item.result*item.label).toString()
-                            }
-                            else{
-                                item.score=item.result.toString()
-                            }
-                            notifyItemChanged(position)
-                            setTotalScore()
-                        }
-                    }
+                    setChangeItemScore(view,position)
+                    notifyItemChanged(position)
                 }
                 rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@CorrectActivity,15f)))
             }
@@ -270,6 +241,14 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,currentScores).apply {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
+                setOnItemChildClickListener { adapter, view, position ->
+                    val item=currentScores[position]
+                    //批改状态为已提交未批改 且 没有子题目才能执行
+                    if (item.childScores.isNullOrEmpty()){
+                        setChangeItemScore(view,position)
+                        notifyItemChanged(position)
+                    }
+                }
                 setCustomItemChildClickListener{ position, view, childPos ->
                     val scoreItem=currentScores[position]
                     val childItem=scoreItem.childScores[childPos]
@@ -280,13 +259,13 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                                     if (childItem.label!=it){
                                         childItem.result=0
                                     }
-                                    childItem.score= it.toString()
+                                    childItem.score= it
                                     //获取小题总分
                                     var scoreTotal=0.0
                                     for (item in scoreItem.childScores){
-                                        scoreTotal+=MethodManager.getScore(item.score)
+                                        scoreTotal+=item.score
                                     }
-                                    scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
+                                    scoreItem.score=scoreTotal
                                     notifyItemChanged(position)
                                     setTotalScore()
                                 }
@@ -300,22 +279,22 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                                 childItem.result=0
                             }
                             if (scoreMode==1){
-                                childItem.score= (childItem.result*childItem.label).toString()
+                                childItem.score= childItem.result*childItem.label
                                 //获取小题总分
                                 var scoreTotal=0.0
                                 for (item in scoreItem.childScores){
-                                    scoreTotal+= MethodManager.getScore(item.score)
+                                    scoreTotal+= item.score
                                 }
-                                scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
+                                scoreItem.score=scoreTotal
                             }
                             else{
-                                childItem.score=childItem.result.toString()
+                                childItem.score= childItem.result.toDouble()
                                 var totalRight=0
                                 for (item in scoreItem.childScores){
                                     if (item.result==1)
                                         totalRight+= 1
                                 }
-                                scoreItem.score=totalRight.toString()
+                                scoreItem.score= totalRight.toDouble()
                             }
                             notifyItemChanged(position)
                             setTotalScore()
@@ -326,6 +305,43 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             }
         }
     }
+
+    /**
+     * 大题数据变化
+     */
+    private fun setChangeItemScore(view: View, position: Int){
+        val item=currentScores[position]
+        when(view.id){
+            R.id.tv_score->{
+                if (scoreMode==1){
+                    NumberDialog(this,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
+                        if (item.label!=it){
+                            item.result=0
+                        }
+                        item.score= it
+                        setTotalScore()
+                    }
+                }
+            }
+            R.id.iv_result->{
+                if (item.result==0){
+                    item.result=1
+                }
+                else{
+                    item.result=0
+                }
+
+                if (scoreMode==1){
+                    item.score= item.result*item.label
+                }
+                else{
+                    item.score= item.result.toDouble()
+                }
+                setTotalScore()
+            }
+        }
+    }
+
 
     override fun onChangeExpandContent() {
         if (getImageSize()==1)
@@ -384,9 +400,9 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         if (tv_total_score!=null){
             var total=0.0
             for (item in currentScores){
-                total+=MethodManager.getScore(item.score)
+                total+=item.score
             }
-            tv_total_score.text=ToolUtils.getFormatNum(total,"0.0")
+            tv_total_score.text= total.toString()
         }
     }
 

@@ -125,6 +125,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     typeItem.grade = mUser?.grade!!
                     typeItem.typeId = typeId
                     typeItem.state = 5
+                    typeItem.createStatus=3
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
                     path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
                 } else {
@@ -209,7 +210,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         examItem?.apply {
             tv_exam_course.text= subject
             tv_exam_title.text=name
-            tv_exam_time.text=DateUtils.longToHour(time)+"之前提交"
+            tv_exam_time.text="提交时间："+DateUtils.longToHour(time)
             rl_exam.setOnClickListener {
                 val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
                 val files = FileUtils.getAscFiles(pathStr)
