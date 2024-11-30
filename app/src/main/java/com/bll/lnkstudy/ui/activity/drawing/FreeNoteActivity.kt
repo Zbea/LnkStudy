@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogFreeNoteDialog
@@ -68,7 +69,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
         iv_expand.setOnClickListener {
             ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    v_content_b?.setBackgroundResource(moduleBean.resContentId)
+                    MethodManager.setImageResource(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage] = ToolUtils.getImageResStr(this, moduleBean.resContentId)
                 }
         }
@@ -159,7 +160,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun onContent() {
-        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgResList[posImage]))
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgResList[posImage]),v_content_b)
         tv_page.text = "${posImage + 1}"
         tv_page_total.text="${images.size}"
         elik_b?.setLoadFilePath(getPath(posImage), true)

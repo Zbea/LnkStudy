@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
@@ -21,6 +21,7 @@ import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
@@ -29,13 +30,12 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import org.greenrobot.eventbus.EventBus
@@ -123,7 +123,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
         //如果是题卷本
         if (homeworkTypeBean.state==4){
             if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
-                startDownload(homeworkTypeBean)
+                downloadBook(homeworkTypeBean)
             }
             else{
                 showToast(R.string.toast_downloaded)
@@ -174,9 +174,8 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                 DataUpdateManager.createDataUpdate(2,item.typeId,1,Gson().toJson(item))
                                 when(item.state){
                                     1->{
-                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                        for (json in jsonArray){
-                                            val paperBean=Gson().fromJson(json, PaperBean::class.java)
+                                        val papers=Gson().fromJson(item.contentJson, object : TypeToken<List<PaperBean>>() {}.type) as MutableList<PaperBean>
+                                        for (paperBean in papers){
                                             paperBean.id=null//设置数据库id为null用于重新加入
                                             PaperDaoManager.getInstance().insertOrReplace(paperBean)
                                             //创建增量数据
@@ -184,9 +183,8 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                         }
                                     }
                                     2->{
-                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                        for (json in jsonArray){
-                                            val homeworkContentBean=Gson().fromJson(json, HomeworkContentBean::class.java)
+                                        val homeworks=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkContentBean>>() {}.type) as MutableList<HomeworkContentBean>
+                                        for (homeworkContentBean in homeworks){
                                             homeworkContentBean.id=null//设置数据库id为null用于重新加入
                                             val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
                                             //创建增量数据
@@ -194,9 +192,8 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                         }
                                     }
                                     3->{
-                                        val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                                        for (json in jsonArray){
-                                            val recordBean=Gson().fromJson(json, RecordBean::class.java)
+                                        val recordBeans=Gson().fromJson(item.contentJson, object : TypeToken<List<RecordBean>>() {}.type) as MutableList<RecordBean>
+                                        for (recordBean in recordBeans){
                                             recordBean.id=null//设置数据库id为null用于重新加入
                                             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
                                             //创建增量数据
@@ -237,20 +234,11 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     /**
      * 下载
      */
-    private fun startDownload(homeworkTypeBean: HomeworkTypeBean){
-        val bookBean= Gson().fromJson(homeworkTypeBean.contentJson, HomeworkBookBean::class.java)
-        bookBean.drawUrl=homeworkTypeBean.downloadUrl
-        downloadBook(bookBean,!homeworkTypeBean.downloadUrl.isNullOrEmpty())
-    }
-
-    /**
-     * 下载题卷本
-     */
-    private fun downloadBook(book: HomeworkBookBean,isDraw:Boolean) {
-        val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        val url=if (isDraw) book.drawUrl else book.downloadUrl
-        FileDownManager.with(activity).create(url).setPath(zipPath)
+    private fun downloadBook(homeworkTypeBean: HomeworkTypeBean){
+        showLoading()
+        val book= Gson().fromJson(homeworkTypeBean.contentJson, HomeworkBookBean::class.java)
+        val zipPath = FileAddress().getPathZip(book.bookId.toString())
+        FileDownManager.with(activity).create(homeworkTypeBean.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
@@ -259,30 +247,28 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
-                            val homeworkTypeBean=HomeworkTypeBean().apply {
-                                name=book.bookName
-                                grade=book.grade
-                                typeId=ToolUtils.getDateId()
-                                state=4
-                                date=System.currentTimeMillis()
-                                course=DataBeanManager.getCourseStr(book.subject)
-                                bookId=book.bookId
-                                bgResId=book.imageUrl
-                                createStatus=0
-                            }
+                            homeworkTypeBean.createStatus=0
+                            homeworkTypeBean.date=System.currentTimeMillis()
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
-                            book.id=null
-                            HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
                             //创建增量数据
                             DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1, Gson().toJson(homeworkTypeBean))
-                            if (isDraw){
-                                DataUpdateManager.createDataUpdateDrawing(7,book.bookId,1,book.bookDrawPath)
+
+                            book.id=null
+                            HomeworkBookDaoManager.getInstance().insertOrReplaceBook(book)
+                            DataUpdateManager.createDataUpdateDrawing(7,book.bookId,1,book.bookDrawPath)
+
+                            val corrects=Gson().fromJson(homeworkTypeBean.contentSubtypeJson, object : TypeToken<List<HomeworkBookCorrectBean>>() {}.type) as MutableList<HomeworkBookCorrectBean>
+                            for (item in corrects){
+                                item.id=null
+                                val id= HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(item)
+                                //更新增量数据
+                                DataUpdateManager.createDataUpdate(7, id.toInt(),2,book.bookId ,Gson().toJson(item),"")
                             }
+
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 hideLoading()
-                                deleteItem()
                                 EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
                                 showToast(book.bookName+getString(R.string.book_download_success))
                             },500)
@@ -292,7 +278,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         override fun onError(msg: String?) {
                             hideLoading()
                             //下载失败删掉已下载手写内容
-                            FileUtils.deleteFile(File(book.bookDrawPath))
+                            FileUtils.deleteFile(File(book.bookPath))
                             showToast(msg!!)
                         }
                         override fun onStart() {
@@ -325,10 +311,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
             initTab()
     }
 
-    override fun onCloudList(cloudList: CloudList) {
-        setPageNumber(cloudList.total)
+    override fun onCloudList(item: CloudList) {
+        setPageNumber(item.total)
         homeworkTypes.clear()
-        for (type in cloudList.list){
+        for (type in item.list){
             if (type.listJson.isNotEmpty()){
                 val homeworkTypeBean= Gson().fromJson(type.listJson, HomeworkTypeBean::class.java)
                 homeworkTypeBean.cloudId=type.id

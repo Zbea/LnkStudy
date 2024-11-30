@@ -5,6 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -14,7 +15,6 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.note.Note
 import com.bll.lnkstudy.mvp.model.note.NoteContentBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -63,8 +63,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_btn)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,noteBook?.contentResId),v_content_a)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,noteBook?.contentResId),v_content_b)
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this,noteBook?.contentResId),v_content_a)
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this,noteBook?.contentResId),v_content_b)
+
         onContent()
     }
 

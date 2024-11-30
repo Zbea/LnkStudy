@@ -136,7 +136,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             initTabView()
         }
 
-        fetchCommonData()
         initCreate()
         initDialog()
         initData()

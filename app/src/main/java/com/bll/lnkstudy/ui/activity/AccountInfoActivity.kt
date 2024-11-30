@@ -96,6 +96,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
 
     override fun initData() {
+        fetchCommonData()
         initChangeScreenData()
         school=mUser?.schoolId!!
         birthday=mUser?.birthdayTime!!

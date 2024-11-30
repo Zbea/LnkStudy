@@ -35,14 +35,11 @@
 -dontshrink
 # 不优化输入的类文件
 -dontoptimize
-# 保留注解不混淆
--keepattributes *Annotation*,InnerClasses
-# 避免混淆泛型
--keepattributes Signature
 # 保留代码行号，方便异常信息的追踪
 -keepattributes SourceFile,LineNumberTable
 # 混淆采用的算法
 -optimizations !code/simplification/cast,!field/*,!class/merging/*
+-keepattributes *Annotation*,InnerClasses,Signature,EnclosingMethod # 避免混淆注解、内部类、泛型、匿名类
 
 # dump.txt文件列出apk包内所有class的内部结构
 -dump proguard/class_files.txt
@@ -55,32 +52,32 @@
 
 # Android类
 -keep public class * extends android.app.Activity
--keep public class * extends androidx.appcompat.app.AppCompatActivity
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class * extends android.view.View
--keep public class com.bll.lnkstudy.utils.SPUtil{
-*;}
--keep public class com.bll.lnkstudy.mvp.model.** {
-*;}
+-keep class com.bll.lnkstudy.utils.**{*;}
+-keep class com.bll.lnkstudy.mvp.** {*;}
+-keep class com.bll.lnkstudy.net.** {*;}
+-keep class com.htfy.** { *; }
+-keep class com.bll.lnkstudy.DataUpdateManager{*;}
+-keep class com.bll.lnkstudy.DataBeanManager{*;}
 
--keep class android.support.v4.** { *; }
--dontwarn android.support.v4.**
-
-# support
+# 保留support下的所有类及其内部类
 -keep class android.support.** {*;}
--keep public class * extends android.support.**
--dontwarn android.support.**
--keep interface android.support.** { *; }
-
-# androidx
+# 保留继承的support类
+-keep public class * extends android.support.v4.**
+-keep public class * extends android.support.v7.**
+-keep public class * extends android.support.annotation.**
+# AndroidX混淆
+-keep class com.google.android.material.** {*;}
 -keep class androidx.** {*;}
--keep interface androidx.** {*;}
 -keep public class * extends androidx.**
+-keep interface androidx.** {*;}
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
 -dontwarn androidx.**
 
 # 自定义控件
@@ -93,9 +90,7 @@
 }
 
 # R文件
--keep class **.R$* {
- *;
-}
+-keep class **.R$* {*;}
 
 # webview
 -keepclassmembers class android.webkit.WebView {
@@ -137,6 +132,10 @@
   public static final android.os.Parcelable$Creator *;
 }
 # Serializable
+
+#需要序列化和反序列化的类不能被混淆(注：Java反射用到的类也不能被混淆)
+-keepnames class * implements java.io.Serializable
+
 -keepclassmembers class * implements java.io.Serializable {
     static final long serialVersionUID;
     private static final java.io.ObjectStreamField[] serialPersistentFields;
@@ -145,6 +144,12 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+
+-keep public class * extends android.widget.BaseAdapter {
+    *; }
+
+#网络请求相关
+-keep public class android.net.http.SslError
 
 #greendao
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
@@ -163,7 +168,6 @@
 -keep class * extends org.greenrobot.greendao.AbstractDao { *; }
 
 # EventBus
--keepattributes *Annotation*
 -keepclassmembers class ** {
     public <methods>;
 }
@@ -182,6 +186,11 @@
 -keep class tv.danmaku.ijk.media.player.** {*; }
 -dontwarn tv.danmaku.ijk.media.player.*
 -keep interface tv.danmaku.ijk.media.player.** { *; }
+
+# Gson
+-keep class com.google.gson.** { *; }
+-keep class com.idea.fifaalarmclock.entity.**
+-keep class com.google.gson.stream.** { *; }
 
 #okhttp3
 -dontwarn com.squareup.okhttp3.**
@@ -207,10 +216,15 @@
 }
 -dontnote rx.internal.util.PlatformDependent
 
+# Glide图片库
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
 -keep class android.security*{
 *;}
-
--keep public class * extends android.print.PrintService
 
 # ============忽略警告，否则打包可能会不成功=============
 -ignorewarnings

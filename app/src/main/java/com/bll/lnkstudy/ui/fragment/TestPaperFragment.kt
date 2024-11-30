@@ -126,13 +126,15 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 MethodManager.gotoPaperDrawing(requireActivity(), item.course, item.typeId, Constants.DEFAULT_PAGE)
             }
             setOnItemLongClickListener { adapter, view, position ->
+                val item = paperTypes[position]
+                if (!item.isCloud){
+                    return@setOnItemLongClickListener true
+                }
                 CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(
                     object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
-
                         override fun ok() {
-                            val item = paperTypes[position]
                             //删除本地当前作业本
                             PaperTypeDaoManager.getInstance().deleteBean(item)
                             PaperDaoManager.getInstance().delete(item.course, item.typeId)
@@ -365,17 +367,19 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      * 获取老师批改下发测试卷
      */
     private fun fetchCorrectPaper() {
-        val map1 = HashMap<String, Any>()
-        map1["subject"]=DataBeanManager.getCourseId(mCourse)
-        //获取考试批改下发列表
-        mPresenter.getExamList(map1)
+        if (mCourse.isNotEmpty()){
+            val map1 = HashMap<String, Any>()
+            map1["subject"]=DataBeanManager.getCourseId(mCourse)
+            //获取考试批改下发列表
+            mPresenter.getExamList(map1)
 
-        val map = HashMap<String, Any>()
-        map["type"]=2
-        map["sendStatus"] = 2
-        map["subject"]=mCourse
-        //获取测试卷批改下发列表
-        mPresenter.getPaperCorrectList(map)
+            val map = HashMap<String, Any>()
+            map["type"]=2
+            map["sendStatus"] = 2
+            map["subject"]=mCourse
+            //获取测试卷批改下发列表
+            mPresenter.getPaperCorrectList(map)
+        }
     }
 
     override fun onRefreshData() {

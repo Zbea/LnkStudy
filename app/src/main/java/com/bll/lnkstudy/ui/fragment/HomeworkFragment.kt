@@ -142,6 +142,15 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 //创建增量数据
                 DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1,  Gson().toJson(homeworkTypeBean))
             }
+            else{
+                val homeworkTypeBean=HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.id)
+                if (homeworkTypeBean.name!=item.name){
+                    homeworkTypeBean.name=item.name
+                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
+                    //修改增量更新
+                    DataUpdateManager.editDataUpdate(2,homeworkTypeBean.typeId,1,Gson().toJson(homeworkTypeBean))
+                }
+            }
         }
         countDownTasks?.countDown()
     }
@@ -525,7 +534,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         for (item in beans) {
             //拿到对应作业的所有本地图片地址
             val paths = mutableListOf<String>()
-            val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id)
+            val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id,item.typeId)
             if (homeworkContents.isNullOrEmpty()) {
                 //下载完成后 请求
                 mPresenter.downloadParent(item.id)
@@ -543,14 +552,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         }
 
                         override fun completed(task: BaseDownloadTask?) {
-                            //下载完成后 请求
+//                            //下载完成后 请求
                             mPresenter.downloadParent(item.id)
                             //更新增量数据
                             for (homework in homeworkContents) {
+                                homework.state=2
+                                HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
                                 DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId)
                             }
                             //添加批改详情
-                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0.0,"","")
+                            saveCorrectDetails(item.homeworkName,item.title,item.submitUrl,0,0,0.0,"","")
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -567,7 +578,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadParentHomeworkBook(beans: MutableList<ParentHomeworkBean>) {
         for (item in beans) {
-            val typeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.parentHomeworkId)
+            val typeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.typeId)
             val homeworkBookBean = HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId)
             //本地不存在时，结束本次下载
             if (homeworkBookBean == null) {
@@ -591,8 +602,30 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         override fun completed(task: BaseDownloadTask?) {
                             //下载完成后 请求
                             mPresenter.downloadParent(item.id)
+
+                            for (page in item.pageStr.split(",")){
+                                if (HomeworkBookCorrectDaoManager.getInstance().isExist(typeBean.bookId,page.toInt())){
+                                    val bookCorrectBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(typeBean.bookId, page.toInt())
+                                    bookCorrectBean.state = 2
+                                    bookCorrectBean.homeworkTitle = item.title
+                                    HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
+                                    DataUpdateManager.editDataUpdate(7,bookCorrectBean.id.toInt(),2,typeBean.bookId,Gson().toJson(bookCorrectBean))
+                                }
+                                else{
+                                    val bookCorrectBean = HomeworkBookCorrectBean()
+                                    bookCorrectBean.startTime=System.currentTimeMillis()
+                                    bookCorrectBean.homeworkTitle = item.title
+                                    bookCorrectBean.bookId = typeBean.bookId
+                                    bookCorrectBean.page = page.toInt()
+                                    bookCorrectBean.state=2//已完成
+                                    val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+                                    //更新增量数据
+                                    DataUpdateManager.createDataUpdate(7, id.toInt(),2,homeworkBookBean.bookId ,Gson().toJson(bookCorrectBean),"")
+                                }
+                            }
+
                             //添加批改详情
-                            saveCorrectDetails(item.homeworkName,item.content,item.submitUrl,0,0,0.0,"","")
+                            saveCorrectDetails(item.homeworkName,item.title,item.submitUrl,0,0,0.0,"","")
                         }
 
                         override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -690,7 +723,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun loadHomeworkImage(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id)
+            val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id,item.typeId)
             if (homeworkContents.isNullOrEmpty()) {
                 //下载完成后 请求
                 mPresenter.commitDownload(item.id)

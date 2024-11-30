@@ -161,7 +161,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
 
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog,iv_draft)
-        setPWEnabled(false)
+        setDisableTouchInput(true)
 
 //        tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
 
@@ -231,7 +231,6 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 bindToRecyclerView(rv_list_score)
                 setOnItemChildClickListener { adapter, view, position ->
                     setChangeItemScore(view,position)
-                    notifyItemChanged(position)
                 }
                 rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@CorrectActivity,15f)))
             }
@@ -246,7 +245,6 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     //批改状态为已提交未批改 且 没有子题目才能执行
                     if (item.childScores.isNullOrEmpty()){
                         setChangeItemScore(view,position)
-                        notifyItemChanged(position)
                     }
                 }
                 setCustomItemChildClickListener{ position, view, childPos ->
@@ -320,6 +318,12 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                         }
                         item.score= it
                         setTotalScore()
+                        if (correctMode<3){
+                            mTopicScoreAdapter?.notifyItemChanged(position)
+                        }
+                        else{
+                            mTopicMultiAdapter?.notifyItemChanged(position)
+                        }
                     }
                 }
             }
@@ -338,6 +342,12 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     item.score= item.result.toDouble()
                 }
                 setTotalScore()
+                if (correctMode<3){
+                    mTopicScoreAdapter?.notifyItemChanged(position)
+                }
+                else{
+                    mTopicMultiAdapter?.notifyItemChanged(position)
+                }
             }
         }
     }

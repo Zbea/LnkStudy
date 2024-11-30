@@ -204,10 +204,10 @@ class CloudExamFragment:BaseCloudFragment() {
             initTab()
     }
 
-    override fun onCloudList(cloudList: CloudList) {
-        setPageNumber(cloudList.total)
+    override fun onCloudList(item: CloudList) {
+        setPageNumber(item.total)
         paperTypes.clear()
-        for (type in cloudList.list){
+        for (type in item.list){
             if (type.listJson.isNotEmpty()){
                 val paperTypeBean= Gson().fromJson(type.listJson, PaperTypeBean::class.java)
                 paperTypeBean.cloudId=type.id

@@ -73,6 +73,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
     }
 
     override fun initData() {
+        fetchCommonData()
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){

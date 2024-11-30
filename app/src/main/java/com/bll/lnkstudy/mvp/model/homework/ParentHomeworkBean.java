@@ -9,9 +9,9 @@ public class ParentHomeworkBean implements Serializable {
     public String submitUrl;
     public String changeUrl;
     public int type;
-    public int parentHomeworkId;
-    @SerializedName("title")
-    public String content;
+    @SerializedName("parentHomeworkId")
+    public int typeId;
+    public String title;
     public long endTime;
     public long submitTime;
     @SerializedName("name")

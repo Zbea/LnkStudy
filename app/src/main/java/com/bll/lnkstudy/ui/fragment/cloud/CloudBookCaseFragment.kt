@@ -201,7 +201,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: BookBean){
-        val fileName = book.bookId.toString()//文件名
+        val fileName = book.bookId.toString()+"draw"//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {

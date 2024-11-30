@@ -143,6 +143,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@NoteFragment.position = position
+                val note=notes[position]
                 when(view.id){
                     R.id.iv_password->{
                         setPasswordNote()
@@ -151,7 +152,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
                         editNote()
                     }
                     R.id.iv_delete->{
-                        CommonDialog(requireActivity(),2).setContent("确定删除主题？").builder()
+                        CommonDialog(requireActivity(),2).setContent("确定删除${note.title}？").builder()
                             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                                 override fun cancel() {
                                 }
@@ -161,13 +162,12 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
                             })
                     }
                     R.id.iv_upload->{
-                        val note=notes[position]
                         val path=FileAddress().getPathNote(note.typeStr,note.title)
                         if (!FileUtils.isExistContent(path)){
-                            showToast("主题暂无内容，无法上传")
+                            showToast("${note.title}暂无内容，无需上传")
                             return@setOnItemChildClickListener
                         }
-                        CommonDialog(requireActivity()).setContent("确定上传该主题到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        CommonDialog(requireActivity()).setContent("上传${note.title}到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
                             override fun ok() {

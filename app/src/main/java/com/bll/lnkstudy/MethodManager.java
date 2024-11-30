@@ -5,6 +5,8 @@ import static com.bll.lnkstudy.Constants.BOOK_EVENT;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +14,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
@@ -189,7 +192,7 @@ public class MethodManager {
         Handler handler=new Handler(Looper.getMainLooper());
         handler.postDelayed(() ->
                         EventBus.getDefault().post(Constants.BOOK_EVENT)
-                ,5000);
+                ,3000);
     }
 
     /**
@@ -668,6 +671,19 @@ public class MethodManager {
      */
     public static String getUrlFormat(String url) {
         return url.substring(url.lastIndexOf("."));
+    }
+
+    /**
+     * 加载不失真背景
+     * @param context
+     * @param resId
+     * @param imageView
+     */
+    public static void setImageResource(Context context, int resId, ImageView imageView){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false; // 防止自动缩放
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
+        imageView.setImageBitmap(bitmap);
     }
 
 }

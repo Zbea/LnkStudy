@@ -4,6 +4,7 @@ import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CalendarDiaryDialog
@@ -14,7 +15,6 @@ import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.mvp.model.DiaryBean
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_diary.ll_date
@@ -155,7 +155,7 @@ class DiaryActivity:BaseDrawingActivity() {
         posImage=diaryBean?.page!!
         setBg()
         tv_date.text=DateUtils.longToStringWeek(nowLong)
-        setPWEnabled(!diaryBean?.isUpload!!)
+        setDisableTouchInput(diaryBean?.isUpload!!)
         onContent()
     }
 
@@ -250,24 +250,12 @@ class DiaryActivity:BaseDrawingActivity() {
      */
     override fun onContent() {
         val path = getPath(posImage)
-
-        if (diaryBean?.isUpload!!){
-            GlideUtils.setImageUrl(this, path, v_content_b)
-        }
-        else{
-            setEinkImage(elik_b!!,path)
-        }
+        setEinkImage(elik_b!!,path)
         tv_page.text = "${posImage + 1}"
 
         if (isExpand){
             val path_a =getPath(posImage-1)
-
-            if (diaryBean?.isUpload!!){
-                GlideUtils.setImageUrl(this, path_a, v_content_a)
-            }
-            else{
-                setEinkImage(elik_a!!,path_a)
-            }
+            setEinkImage(elik_a!!,path_a)
 
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page_a.text = "${posImage + 1}"
@@ -288,8 +276,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     private fun setBg(){
-        v_content_a?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
-        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content_a)
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content_b)
     }
 
     /**

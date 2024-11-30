@@ -651,11 +651,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     }
 
     /**
-     * 设置是否加载缓存
+     * 设置是否可以手写
      */
-    fun setFreeAllPWBitmapCache(boolean: Boolean) {
-        elik_a?.freeAllPWBitmapCache(boolean)
-        elik_b?.freeAllPWBitmapCache(boolean)
+    fun setDisableTouchInput(boolean: Boolean) {
+        elik_a?.disableTouchInput(boolean)
+        elik_b?.disableTouchInput(boolean)
     }
 
     /**

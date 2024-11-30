@@ -62,7 +62,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             onContent()
         }
         else{
-            setPWEnabled(false)
+            setDisableTouchInput(true)
         }
     }
 
@@ -160,12 +160,12 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             setElikLoadPath(elik_a!!,page,v_content_a!!)
             if (page+1<pageCount){
                 setElikLoadPath(elik_b!!,page+1,v_content_b!!)
-                elik_b?.setPWEnabled(true)
+                elik_b?.disablePWInput(false)
             }
             else{
                 //不显示 ，不能手写
                 v_content_b?.setImageResource(0)
-                elik_b?.setPWEnabled(false)
+                elik_b?.disablePWInput(true)
             }
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="${page+1}"
@@ -178,7 +178,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         }
         else{
             setElikLoadPath(elik_b!!,page,v_content_b!!)
-            elik_b?.setPWEnabled(true)
+            elik_b?.disablePWInput(false)
             tv_page.text="${page+1}"
         }
 

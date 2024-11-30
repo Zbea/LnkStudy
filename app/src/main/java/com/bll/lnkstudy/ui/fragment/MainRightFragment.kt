@@ -49,7 +49,6 @@ import kotlinx.android.synthetic.main.fragment_main_right.ll_message
 import kotlinx.android.synthetic.main.fragment_main_right.rl_exam
 import kotlinx.android.synthetic.main.fragment_main_right.rv_list_message
 import kotlinx.android.synthetic.main.fragment_main_right.tv_diary_btn
-import kotlinx.android.synthetic.main.fragment_main_right.tv_exam_course
 import kotlinx.android.synthetic.main.fragment_main_right.tv_exam_time
 import kotlinx.android.synthetic.main.fragment_main_right.tv_exam_title
 import kotlinx.android.synthetic.main.fragment_main_right.tv_free_note
@@ -208,9 +207,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         }
         showView(rl_exam)
         examItem?.apply {
-            tv_exam_course.text= subject
-            tv_exam_title.text=name
-            tv_exam_time.text="提交时间："+DateUtils.longToHour(time)
+            tv_exam_title.text=subject+"  "+name
+            tv_exam_time.text=DateUtils.longToHour(time)+"  提交"
             rl_exam.setOnClickListener {
                 val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
                 val files = FileUtils.getAscFiles(pathStr)

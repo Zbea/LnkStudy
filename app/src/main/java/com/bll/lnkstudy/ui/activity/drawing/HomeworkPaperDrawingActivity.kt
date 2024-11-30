@@ -92,7 +92,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onCommitSuccess() {
         showToast(R.string.toast_commit_success)
         //设置不能手写
-        setPWEnabled(false)
+        setDisableTouchInput(true)
         //修改状态
         paper?.state=1
         papers[currentPosition]=paper!!
@@ -133,13 +133,18 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initView() {
+        //云书库没有提交按钮
+        if (homeworkType?.isCloud!!){
+            disMissView(iv_btn)
+        }
+
         if(papers.size>0){
             if (currentPosition==Constants.DEFAULT_PAGE)
                 currentPosition=papers.size-1
             onContent()
         }
         else{
-            setPWEnabled(false)
+            setDisableTouchInput(true)
         }
 
         iv_btn.setOnClickListener {
@@ -253,11 +258,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if (isExpand){
             setElikLoadPath(page,elik_a!!,v_content_a!!)
             if (page+1<pageCount){
-                elik_b?.setPWEnabled(true)
+                elik_b?.disablePWInput(false)
                 setElikLoadPath(page+1,elik_b!!,v_content_b!!)
             }
             else{
-                elik_b?.setPWEnabled(false)
+                elik_b?.disablePWInput(true)
                 //不显示 ，不能手写
                 v_content_b?.setImageResource(R.color.white)
             }
@@ -272,7 +277,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             }
         }
         else{
-            elik_b?.setPWEnabled(true)
+            elik_b?.disablePWInput(false)
             setElikLoadPath(page,elik_b!!,v_content_b!!)
             tv_page.text="${page+1}"
         }
@@ -280,11 +285,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         tv_page_total.text="$pageCount"
         tv_page_total_a.text="$pageCount"
 
+        //云书库下载无法手写
+        setDisableTouchInput(homeworkType?.isCloud!!||paper?.state==1)
+
         if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
             when(paper?.state){
                 0->{
-                    setPWEnabled(true)
                     if (paper?.endTime!!>0L){
                         showView(iv_btn)
                         val endTime=paper?.endTime!!*1000
@@ -297,7 +304,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     }
                 }
                 1->{
-                    setPWEnabled(false)
                     if (paper?.commitJson.isNullOrEmpty()){
                         disMissView(iv_btn)
                     }
@@ -307,7 +313,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     }
                 }
                 2->{
-                    setPWEnabled(true)
                     disMissView(iv_btn)
                 }
             }

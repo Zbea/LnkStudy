@@ -10,6 +10,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -132,7 +133,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         page = intent.getIntExtra("page", DEFAULT_PAGE)
-        homeworkTypeId = homeworkType?.typeId!!
+        homeworkTypeId = if (homeworkType?.createStatus==2) homeworkType?.parentTypeId!! else homeworkType?.typeId!!
         course = homeworkType?.course!!
 
         when (homeworkType?.createStatus) {
@@ -157,7 +158,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                         if (item.endTime > 0 && item.status == 1) {
                             messages.add(ItemList().apply {
                                 id = item.id
-                                name = item.content
+                                name = item.title
                             })
                         }
                     }
@@ -182,6 +183,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun initView() {
+        //云书库没有提交按钮
+        if (homeworkType?.isCloud!!){
+            disMissView(iv_btn)
+        }
+
         iv_btn.setOnClickListener {
             if (messages.size == 0)
                 return@setOnClickListener
@@ -319,18 +325,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
 
         //已提交后不能手写，显示合图后的图片
-        elik_b?.setPWEnabled(homeworkContent?.state != 1)
+        elik_b?.disableTouchInput(homeworkContent?.state == 1||homeworkType?.isCloud!!)
         when(homeworkContent?.state){
             0->{
                 setElikLoadPath(elik_b!!, homeworkContent!!.path)
-                GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_b)
+                MethodManager.setImageResource(this,ToolUtils.getImageResId(this, homeworkType?.contentResId),v_content_b)
             }
-            1->{
-                GlideUtils.setImageUrl(this,homeworkContent?.path, v_content_b,homeworkContent?.state!!)
-            }
-            2->{
+            else->{
+                GlideUtils.setImageUrl(this, homeworkContent?.path, v_content_b,homeworkContent?.state!!)
                 val file=File(homeworkContent?.path)
-                GlideUtils.setImageUrl(this, file.path, v_content_b,homeworkContent?.state!!)
                 val drawPath=file.parent+"/draw.png"
                 setElikLoadPath(elik_b!!, drawPath)
             }
@@ -338,18 +341,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         tv_page.text = "${page + 1}"
 
         if (isExpand) {
-            elik_a?.setPWEnabled(homeworkContent_a?.state != 1)
+            elik_a?.disableTouchInput(homeworkContent_a?.state == 1||homeworkType?.isCloud!!)
             when(homeworkContent_a?.state){
                 0->{
                     setElikLoadPath(elik_a!!, homeworkContent_a!!.path)
-                    GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, homeworkType?.contentResId), v_content_a)
+                    MethodManager.setImageResource(this,ToolUtils.getImageResId(this, homeworkType?.contentResId),v_content_a)
                 }
-                1->{
+                else->{
                     GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
-                }
-                2->{
                     val file=File(homeworkContent_a?.path)
-                    GlideUtils.setImageUrl(this, file.path, v_content_a,homeworkContent_a?.state!!)
                     val drawPath=file.parent+"/draw.png"
                     setElikLoadPath(elik_b!!, drawPath)
                 }
@@ -488,7 +488,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                             takeTime=System.currentTimeMillis()-getStartTime(homeworkCommitInfoItem?.contents!!)
                             homeworkCommitInfoItem?.takeTime=takeTime
                             if (homeworkCommitInfoItem?.isSelfCorrect == true){
-                                hideLoading()
                                 gotoSelfCorrect()
                             }
                             else{

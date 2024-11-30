@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
@@ -88,10 +89,10 @@ class PaintingImageActivity:BaseAppCompatActivity() {
      */
     private fun setRule(){
         if (SPUtil.getBoolean(Constants.SP_PAINTING_RULE_SET)){
-            GlideUtils.setImageUrl(this,R.mipmap.icon_painting_draw_hb,iv_rule)
+            MethodManager.setImageResource(this,R.mipmap.icon_painting_draw_hb,iv_rule)
         }
         else{
-            GlideUtils.setImageUrl(this,0,iv_rule)
+            MethodManager.setImageResource(this,0,iv_rule)
         }
     }
 

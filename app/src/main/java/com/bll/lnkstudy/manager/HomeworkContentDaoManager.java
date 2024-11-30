@@ -70,9 +70,10 @@ public class HomeworkContentDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(HomeworkContentBeanDao.Properties.Date).build().list();
     }
 
-    public List<HomeworkContentBean> queryAllById(int contentId) {
+    public List<HomeworkContentBean> queryAllById(int contentId,int typeId) {
         WhereCondition whereCondition=HomeworkContentBeanDao.Properties.ContentId.eq(contentId);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderAsc(HomeworkContentBeanDao.Properties.Date).build().list();
+        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(typeId);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(HomeworkContentBeanDao.Properties.Date).build().list();
     }
 
     public List<HomeworkContentBean> search(String title) {

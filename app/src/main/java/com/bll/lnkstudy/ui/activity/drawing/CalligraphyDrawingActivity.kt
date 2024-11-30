@@ -5,6 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -13,7 +14,6 @@ import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -60,7 +60,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         if (typeId!=0){
             disMissView(iv_btn)
         }
-        setPWEnabled(typeId==0)
+        setDisableTouchInput(typeId!=0)
 
         iv_btn.setOnClickListener {
             ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
@@ -179,11 +179,11 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
 
     //设置背景图
     private fun setBg_a(){
-        GlideUtils.setImageUrl(this,resId_a,v_content_a)
+        MethodManager.setImageResource(this,resId_a,v_content_a)
     }
 
     private fun setBg_b(){
-        GlideUtils.setImageUrl(this,resId_b,v_content_b)
+        MethodManager.setImageResource(this,resId_b,v_content_b)
     }
 
     /**

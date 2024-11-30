@@ -92,7 +92,6 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             return
         if (pageIndex>=pageCount){
             pageIndex=pageCount-1
-            return
         }
         if (pageIndex==0&&isExpand){
             pageIndex=1

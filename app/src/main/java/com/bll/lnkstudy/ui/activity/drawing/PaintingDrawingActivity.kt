@@ -5,6 +5,7 @@ import android.view.PWDrawObjectHandler
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -13,7 +14,6 @@ import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -57,7 +57,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         disMissView(iv_draft)
         iv_btn.setImageResource(R.mipmap.icon_draw_setting)
 
-        setPWEnabled(typeId==0)
+        setDisableTouchInput(typeId!=0)
 
         //设置初始笔形
         val drawType=SPUtil.getInt(Constants.SP_PAINTING_DRAW_TYPE)
@@ -236,8 +236,8 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     private fun setBg(resId:Int){
-        GlideUtils.setImageUrl(this,resId,v_content_a)
-        GlideUtils.setImageUrl(this,resId,v_content_b)
+        MethodManager.setImageResource(this,resId,v_content_a)
+        MethodManager.setImageResource(this,resId,v_content_b)
     }
 
     //创建新的作业内容

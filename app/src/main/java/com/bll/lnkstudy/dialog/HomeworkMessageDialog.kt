@@ -86,7 +86,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
             }
             else{
                 val item=ite as ParentHomeworkBean
-                helper.setText(R.id.tv_title,item.content)
+                helper.setText(R.id.tv_title,item.title)
                 helper.setVisible(R.id.tv_correct,false)
                 if (item.endTime>0){
                     helper.setText(R.id.tv_date, DateUtils.longToStringWeek(item.endTime))

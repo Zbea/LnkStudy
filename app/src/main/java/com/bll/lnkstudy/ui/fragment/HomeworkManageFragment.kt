@@ -273,12 +273,13 @@ open class HomeworkManageFragment: BaseMainFragment() {
                 }
                 4 -> {
                     val homeworkBook = HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId)
+                    val homeworkBookCorrects=HomeworkBookCorrectDaoManager.getInstance().queryCorrectAll(typeBean.bookId)
                     //判断题卷本是否已下载题卷书籍
                     if (homeworkBook == null) {
                         nullItems.add(typeBean)
                     } else {
                         //判读是否存在手写内容
-                        if (FileUtils.isExistContent(homeworkBook.bookDrawPath)) {
+                        if (FileUtils.isExistContent(homeworkBook.bookPath)) {
                             FileUploadManager(token).apply {
                                 startZipUpload(homeworkBook.bookPath, File(homeworkBook.bookPath).name)
                                 setCallBack {
@@ -289,6 +290,7 @@ open class HomeworkManageFragment: BaseMainFragment() {
                                         grade = typeBean.grade
                                         listJson = Gson().toJson(typeBean)
                                         contentJson = Gson().toJson(homeworkBook)
+                                        contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
                                         downloadUrl = it
                                         zipUrl = homeworkBook.downloadUrl
                                         bookId = typeBean.bookId
@@ -304,7 +306,8 @@ open class HomeworkManageFragment: BaseMainFragment() {
                                 grade = typeBean.grade
                                 listJson = Gson().toJson(typeBean)
                                 contentJson = Gson().toJson(homeworkBook)
-                                zipUrl = homeworkBook.downloadUrl
+                                contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
+                                downloadUrl = homeworkBook.downloadUrl
                                 bookId = typeBean.bookId
                             })
                             startUpload(cloudList, nullItems)

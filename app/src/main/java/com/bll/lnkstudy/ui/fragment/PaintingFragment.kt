@@ -73,10 +73,6 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
         tv_btn.text="书画明细"
 
         popupHbs.add(PopupBean().apply {
-            id=0
-            name="删除画本"
-        })
-        popupHbs.add(PopupBean().apply {
             id=1
             name="画本上传"
         })
@@ -85,10 +81,6 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
             name="云库画本"
         })
 
-        popupSfs.add(PopupBean().apply {
-            id=0
-            name="删除书法"
-        })
         popupSfs.add(PopupBean().apply {
             id=1
             name="书法上传"
@@ -203,8 +195,8 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
         this.type=type
         val view=if (type==0) iv_hb else iv_sf
         val pops=if (type==0) popupHbs else popupSfs
-        PopupUpClick(requireActivity(),pops,view,160,(view.width-160)/2,-(view.height+10)) .builder().setOnSelectListener{
-            when(it.id){
+        PopupUpClick(requireActivity(),pops,view,160,(view.width-160)/2,-(view.height-50)) .builder().setOnSelectListener{ item->
+            when(item.id){
                 0->{
                     CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {

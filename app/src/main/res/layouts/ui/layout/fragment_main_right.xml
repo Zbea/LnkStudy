@@ -92,10 +92,8 @@
                 android:id="@+id/rl_exam"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_30"
-                android:layout_marginEnd="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_30"
-                android:layout_margin="@dimen/dp_30"
+                android:layout_margin="@dimen/dp_20"
+                android:visibility="gone"
                 android:background="@mipmap/icon_testpaper_bg"
                 >
 
@@ -103,41 +101,29 @@
                     android:id="@+id/tv_exam_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_30"
-                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginTop="@dimen/dp_50"
+                    android:layout_marginStart="@dimen/dp_50"
                     android:layout_marginEnd="@dimen/dp_10"
                     android:gravity="center"
                     android:lines="1"
+                    android:text="单元测试卷"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_25"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_exam_course"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="70dp"
-                    android:layout_marginStart="@dimen/dp_60"
-                    android:layout_marginEnd="@dimen/dp_10"
-                    android:gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_24"
-                    android:textStyle="bold"
-                    />
-
-
-                <TextView
                     android:id="@+id/tv_exam_time"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginStart="@dimen/dp_50"
                     android:gravity="center"
-                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_30"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/dp_20"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_24"
+                    android:textSize="@dimen/sp_22"
+                    android:text="12.30提交"
                     android:textStyle="bold"
                     />
 

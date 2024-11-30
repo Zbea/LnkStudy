@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CalendarSingleDialog
@@ -39,6 +40,8 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn,iv_expand,iv_draft)
         setPageTitle("规划")
+
+        MethodManager.setImageResource(this,R.mipmap.icon_freenote_bg_1,v_content_b)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){
