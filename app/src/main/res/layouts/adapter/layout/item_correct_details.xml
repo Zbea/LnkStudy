@@ -26,6 +26,8 @@
         android:layout_weight="1"
         android:layout_marginStart="@dimen/dp_20"
         android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
         android:textSize="@dimen/sp_22"
         android:text="课堂作业本"
         />

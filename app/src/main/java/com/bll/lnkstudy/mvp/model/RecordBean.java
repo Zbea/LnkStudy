@@ -22,8 +22,9 @@ public class RecordBean implements Serializable {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public int typeId;
-    public String typeStr;
+    public int homeworkTypeId;
+    public int typeId;//作业分组id
+    public String typeName;//作业分组标题
     public String title;
     public long date;
     public String path;
@@ -32,13 +33,14 @@ public class RecordBean implements Serializable {
     @Transient
     public int state=0;//播放状态
 
-    @Generated(hash = 22307786)
-    public RecordBean(Long id, long userId, int typeId, String typeStr, String title, long date,
-            String path, String course, boolean isCommit) {
+    @Generated(hash = 1221133260)
+    public RecordBean(Long id, long userId, int homeworkTypeId, int typeId, String typeName,
+            String title, long date, String path, String course, boolean isCommit) {
         this.id = id;
         this.userId = userId;
+        this.homeworkTypeId = homeworkTypeId;
         this.typeId = typeId;
-        this.typeStr = typeStr;
+        this.typeName = typeName;
         this.title = title;
         this.date = date;
         this.path = path;
@@ -96,11 +98,17 @@ public class RecordBean implements Serializable {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
-    public String getTypeStr() {
-        return this.typeStr;
+    public int getHomeworkTypeId() {
+        return this.homeworkTypeId;
     }
-    public void setTypeStr(String typeStr) {
-        this.typeStr = typeStr;
+    public void setHomeworkTypeId(int homeworkTypeId) {
+        this.homeworkTypeId = homeworkTypeId;
+    }
+    public String getTypeName() {
+        return this.typeName;
+    }
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
     
 }

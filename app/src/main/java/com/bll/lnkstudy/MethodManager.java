@@ -640,8 +640,7 @@ public class MethodManager {
      * @return
      */
     public static int getExamTypeId(String subject) {
-        int i = DataBeanManager.INSTANCE.getCourseId(subject) + user.grade;
-        String idStr = i + String.valueOf(user.accountId);
+        String idStr = DataBeanManager.INSTANCE.getCourseId(subject) + String.valueOf(user.grade);
         return Integer.parseInt(idStr);
     }
 

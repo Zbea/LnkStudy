@@ -202,7 +202,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         state=2
                         course=item.course
                         type=item.homeworkTypeId
-                        typeStr=item.typeStr
+                        typeStr=item.typeName
                         page=item.page
                     })
                 }
@@ -227,7 +227,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         title=item.title
                         state=3
                         type=item.typeId
-                        typeStr=item.typeStr
+                        typeStr=item.typeName
                         course=item.course
                         listJson= Gson().toJson(item)
                     })
@@ -253,7 +253,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         category=3
                         title=item.title
                         type=item.typeId
-                        typeStr=item.type
+                        typeStr=item.typeName
                         course=item.course
                         page=item.page
                     })

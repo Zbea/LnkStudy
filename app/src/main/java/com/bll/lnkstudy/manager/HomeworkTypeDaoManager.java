@@ -69,7 +69,7 @@ public class HomeworkTypeDaoManager {
      * @return
      */
     public HomeworkTypeBean queryByParentTypeId(int typeId) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.ParentTypeId.eq(typeId);
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(typeId);
         WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.CreateStatus.eq(2);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
     }
@@ -90,6 +90,15 @@ public class HomeworkTypeDaoManager {
                 .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.CreateStatus).orderAsc(HomeworkTypeBeanDao.Properties.Date)
                 .build().list();
     }
+
+
+    public List<HomeworkTypeBean> queryAllByAuto(String course,int grade) {
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.Grade.eq(grade);
+        WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.AutoState.eq(1);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
+    }
+
 
     public List<HomeworkTypeBean> queryAllByCreate(String course,int create){
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
@@ -143,13 +152,30 @@ public class HomeworkTypeDaoManager {
     }
 
     /**
+     * 获取当前年级、自动生成的作业本是否已经保存
+     * @param name
+     * @param course
+     * @param grade
+     * @return
+     */
+    public boolean isExistHomeworkTypeAuto(String name,String course,int grade){
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.Grade.eq(grade);
+        WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.AutoState.eq(1);
+        WhereCondition whereCondition3=HomeworkTypeBeanDao.Properties.Name.eq(name);
+        List<HomeworkTypeBean> list=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2,whereCondition3).build().list();
+        return !list.isEmpty();
+    }
+
+    /**
      * 是否存在家长本子
      * @param parentId
      * @return
      */
     public boolean isExistParentType(int parentId) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.ParentTypeId.eq(parentId);
-        HomeworkTypeBean bean= dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.TypeId.eq(parentId);
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.CreateStatus.eq(2);
+        HomeworkTypeBean bean= dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
         return bean!=null;
     }
 

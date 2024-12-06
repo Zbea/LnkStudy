@@ -25,6 +25,8 @@ public class HomeworkMessage implements Serializable {
         public String title;
         @SerializedName("name")
         public String typeName;
+        @SerializedName("commonTypeId")
+        public int typeId;
         public long endTime;
         public String subject;
         public int grade;

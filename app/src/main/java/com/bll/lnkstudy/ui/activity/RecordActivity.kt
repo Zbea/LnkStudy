@@ -43,7 +43,7 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         recordBean = intent.getBundleExtra("recordBundle")?.getSerializable("record") as RecordBean
-        val path=FileAddress().getPathHomework(recordBean?.course!!,recordBean?.typeId!!)
+        val path=FileAddress().getPathHomework(recordBean?.course!!,recordBean?.homeworkTypeId!!)
         if (!File(path).exists())
             File(path).mkdirs()
         pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
@@ -76,7 +76,7 @@ class RecordActivity : BaseAppCompatActivity() {
             recordBean?.path = pathFile
             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
             //创建增量数据
-            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.typeId!!,3,Gson().toJson(recordBean),pathFile!!)
+            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.homeworkTypeId!!,3,Gson().toJson(recordBean),pathFile!!)
 
             EventBus.getDefault().post(Constants.RECORD_EVENT)
             finish()

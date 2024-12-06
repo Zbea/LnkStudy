@@ -25,8 +25,10 @@ public class PaperBean {
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int contentId;//这次考卷id
     public String course;//科目
+    public int paperTypeId;//本地测卷分类id
     public int typeId;//考卷分组id
-    public String type;//考卷分组标题
+    public int grade;
+    public String typeName;//考卷分组标题
     public String title;
     public String filePath;//文件路径
     @Convert(columnType = String.class,converter = StringConverter.class)
@@ -39,16 +41,19 @@ public class PaperBean {
     public String correctJson;//批改详情
     public String answerUrl;
     public int scoreMode;
-    @Generated(hash = 64126081)
-    public PaperBean(Long id, long userId, int contentId, String course, int typeId, String type,
-            String title, String filePath, List<String> paths, List<String> drawPaths, int page,
-            int correctMode, String score, String correctJson, String answerUrl, int scoreMode) {
+    @Generated(hash = 1034147635)
+    public PaperBean(Long id, long userId, int contentId, String course, int paperTypeId, int typeId,
+            int grade, String typeName, String title, String filePath, List<String> paths,
+            List<String> drawPaths, int page, int correctMode, String score, String correctJson,
+            String answerUrl, int scoreMode) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
         this.course = course;
+        this.paperTypeId = paperTypeId;
         this.typeId = typeId;
-        this.type = type;
+        this.grade = grade;
+        this.typeName = typeName;
         this.title = title;
         this.filePath = filePath;
         this.paths = paths;
@@ -92,12 +97,6 @@ public class PaperBean {
     }
     public void setTypeId(int typeId) {
         this.typeId = typeId;
-    }
-    public String getType() {
-        return this.type;
-    }
-    public void setType(String type) {
-        this.type = type;
     }
     public String getTitle() {
         return this.title;
@@ -158,6 +157,24 @@ public class PaperBean {
     }
     public void setScoreMode(int scoreMode) {
         this.scoreMode = scoreMode;
+    }
+    public int getPaperTypeId() {
+        return this.paperTypeId;
+    }
+    public void setPaperTypeId(int paperTypeId) {
+        this.paperTypeId = paperTypeId;
+    }
+    public String getTypeName() {
+        return this.typeName;
+    }
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+    public int getGrade() {
+        return this.grade;
+    }
+    public void setGrade(int grade) {
+        this.grade = grade;
     }
 
 

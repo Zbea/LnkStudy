@@ -61,6 +61,12 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().unique();
     }
 
+    public PaperTypeBean queryByName(String name,int grade) {
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Name.eq(name);
+        WhereCondition whereCondition2= PaperTypeBeanDao.Properties.Grade.eq(grade);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().unique();
+    }
+
     public List<PaperTypeBean> queryAllExceptCloud() {
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.IsCloud.lt(false);
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
@@ -84,8 +90,28 @@ public class PaperTypeDaoManager {
     public List<PaperTypeBean> queryAllByCourse(String course,int page, int pageSize){
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition1)
-                .offset((page-1)*pageSize).limit(pageSize).orderDesc(PaperTypeBeanDao.Properties.Grade)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(PaperTypeBeanDao.Properties.CreateStatus)
                 .build().list();
+    }
+
+    public boolean isExistPaperType(int typeId){
+        return queryById(typeId)!=null;
+    }
+
+    /**
+     * 获取当前年级、自动生成的作业本是否已经保存
+     * @param name
+     * @param course
+     * @param grade
+     * @return
+     */
+    public boolean isExistPaperTypeAuto(String name,String course,int grade){
+        WhereCondition whereCondition=PaperTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=PaperTypeBeanDao.Properties.Grade.eq(grade);
+        WhereCondition whereCondition2=PaperTypeBeanDao.Properties.AutoState.eq(1);
+        WhereCondition whereCondition3=PaperTypeBeanDao.Properties.Name.eq(name);
+        List<PaperTypeBean> list=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2,whereCondition3).build().list();
+        return !list.isEmpty();
     }
 
     public void deleteBean(PaperTypeBean bean){

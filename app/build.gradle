@@ -30,7 +30,7 @@ android {
     }
     greendao {
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 123
+        schemaVersion 124
         //dao的包名
         daoPackage 'com.bll.lnkstudy.greendao'
         //生成数据库文件的目录;
@@ -61,8 +61,8 @@ android {
     }
 
     // 自定义输出配置
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {
+    android.applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
             outputFileName = "LnkStudy${variant.versionName}_${variant.name}.apk"
         }
     }

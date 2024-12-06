@@ -11,24 +11,31 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.manager.CorrectDetailsManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
+import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.CorrectDetailsAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.rv_list
 import kotlinx.android.synthetic.main.common_fragment_title.tv_course
 
-class LearningConditionFragment:BaseMainFragment() {
-
-    private var items= mutableListOf<CorrectDetailsBean>()
+class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNoticeView {
+    private var mPresenter: HomeworkNoticePresenter = HomeworkNoticePresenter(this, 1)
     private var mAdapter: CorrectDetailsAdapter?=null
     private var coursePops= mutableListOf<PopupBean>()
     private var currentCourses= mutableListOf<String>()
     private var mCourse=""
     private var type=0
+
+    override fun onHomeworkNotice(list: HomeworkNoticeList) {
+    }
+    override fun onCorrect(list: HomeworkNoticeList) {
+        setPageNumber(list.total)
+        mAdapter?.setNewData(list.list)
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_tab
@@ -54,7 +61,6 @@ class LearningConditionFragment:BaseMainFragment() {
     }
 
     override fun lazyLoad() {
-
     }
 
     private fun initType(){
@@ -101,25 +107,29 @@ class LearningConditionFragment:BaseMainFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val item=items[position]
-            ImageDialog(requireActivity(),1,item.url.split(",")).builder()
+            ImageDialog(requireActivity(),1,mAdapter?.getItem(position)?.correctUrl!!.split(",")).builder()
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            val item=items[position]
+            val item=mAdapter?.getItem(position)
             if (view.id==R.id.tv_answer){
-                ImageDialog(requireActivity(),1,item.answerUrl.split(",")).builder()
+                ImageDialog(requireActivity(),1,item!!.answerUrl.split(",")).builder()
             }
         }
         rv_list.addItemDecoration(SpaceItemDeco(20))
     }
 
     override fun fetchData() {
-        items = CorrectDetailsManager.getInstance().queryList(mCourse,type,pageIndex,pageSize)
-        val total= CorrectDetailsManager.getInstance().queryList(mCourse,type)
-        setPageNumber(total.size)
-        mAdapter?.setNewData(items)
+        val map=HashMap<String,Any>()
+        map["page"]=pageIndex
+        map["size"]=pageSize
+        map["subject"]=DataBeanManager.getCourseId(mCourse)
+        map["type"]=type
+        mPresenter.getCorrectNotice(map)
     }
 
+    override fun onRefreshData() {
+        fetchData()
+    }
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {

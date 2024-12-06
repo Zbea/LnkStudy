@@ -32,9 +32,7 @@ public class HomeworkTypeBean implements Serializable {
     public String teacher;
     public String name;
     public int grade;//年级
-    @Unique
     public int typeId;//作业本分类id
-    public int parentTypeId;//家长作业本id（防止和老师作业本重复）
     @SerializedName("subType")
     public int state;//1作业卷 2普通作业本 3听读本4题卷本 5错题本 6练字本
     public long date; //创建时间
@@ -45,6 +43,9 @@ public class HomeworkTypeBean implements Serializable {
     public int createStatus=0;//自建作业本0老师创建1家长创建2自动创建错题本3
     public int messageTotal=0;//作业消息数目
     public boolean isCloud;
+    @SerializedName("addType")
+    public Integer autoState;//1生成作业本 0创建作业本
+
     @Transient
     public int cloudId;
     @Transient
@@ -62,11 +63,9 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public List<ParentHomeworkBean> parents;
 
-
-    @Generated(hash = 1390304507)
-    public HomeworkTypeBean(Long id, long studentId, Long teacherId, String teacher, String name, int grade, int typeId, int parentTypeId,
-            int state, long date, String contentResId, String bgResId, String course, int bookId, int createStatus, int messageTotal,
-            boolean isCloud) {
+    @Generated(hash = 895573776)
+    public HomeworkTypeBean(Long id, long studentId, Long teacherId, String teacher, String name, int grade, int typeId, int state, long date, String contentResId,
+            String bgResId, String course, int bookId, int createStatus, int messageTotal, boolean isCloud, Integer autoState) {
         this.id = id;
         this.studentId = studentId;
         this.teacherId = teacherId;
@@ -74,7 +73,6 @@ public class HomeworkTypeBean implements Serializable {
         this.name = name;
         this.grade = grade;
         this.typeId = typeId;
-        this.parentTypeId = parentTypeId;
         this.state = state;
         this.date = date;
         this.contentResId = contentResId;
@@ -84,6 +82,7 @@ public class HomeworkTypeBean implements Serializable {
         this.createStatus = createStatus;
         this.messageTotal = messageTotal;
         this.isCloud = isCloud;
+        this.autoState = autoState;
     }
 
 
@@ -121,14 +120,6 @@ public class HomeworkTypeBean implements Serializable {
     }
     public void setTypeId(int typeId) {
         this.typeId = typeId;
-    }
-
-    public int getParentTypeId() {
-        return this.parentTypeId;
-    }
-
-    public void setParentTypeId(int parentTypeId) {
-        this.parentTypeId = parentTypeId;
     }
 
     public int getState() {
@@ -222,4 +213,15 @@ public class HomeworkTypeBean implements Serializable {
         return Objects.equals(this.id, item.id)&&this.studentId==item.studentId && Objects.equals(this.name, item.name)&& Objects.equals(this.teacherId, item.teacherId)
                 &&this.grade==item.grade&&this.typeId==item.typeId&&this.state==item.state;
     }
+
+
+    public Integer getAutoState() {
+        return this.autoState;
+    }
+
+
+    public void setAutoState(Integer autoState) {
+        this.autoState = autoState;
+    }
+
 }

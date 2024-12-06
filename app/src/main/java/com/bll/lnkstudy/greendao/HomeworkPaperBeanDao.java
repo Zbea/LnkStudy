@@ -31,23 +31,24 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property ContentId = new Property(2, int.class, "contentId", false, "CONTENT_ID");
         public final static Property Course = new Property(3, String.class, "course", false, "COURSE");
-        public final static Property TypeId = new Property(4, int.class, "typeId", false, "TYPE_ID");
-        public final static Property TypeName = new Property(5, String.class, "typeName", false, "TYPE_NAME");
-        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
-        public final static Property EndTime = new Property(7, Long.class, "endTime", false, "END_TIME");
-        public final static Property StartTime = new Property(8, Long.class, "startTime", false, "START_TIME");
-        public final static Property FilePath = new Property(9, String.class, "filePath", false, "FILE_PATH");
-        public final static Property Paths = new Property(10, String.class, "paths", false, "PATHS");
-        public final static Property DrawPaths = new Property(11, String.class, "drawPaths", false, "DRAW_PATHS");
-        public final static Property Page = new Property(12, int.class, "page", false, "PAGE");
-        public final static Property State = new Property(13, int.class, "state", false, "STATE");
-        public final static Property CorrectMode = new Property(14, int.class, "correctMode", false, "CORRECT_MODE");
-        public final static Property Score = new Property(15, double.class, "score", false, "SCORE");
-        public final static Property CorrectJson = new Property(16, String.class, "correctJson", false, "CORRECT_JSON");
-        public final static Property IsSelfCorrect = new Property(17, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
-        public final static Property ScoreMode = new Property(18, int.class, "scoreMode", false, "SCORE_MODE");
-        public final static Property AnswerUrl = new Property(19, String.class, "answerUrl", false, "ANSWER_URL");
-        public final static Property CommitJson = new Property(20, String.class, "commitJson", false, "COMMIT_JSON");
+        public final static Property HomeworkTypeId = new Property(4, int.class, "homeworkTypeId", false, "HOMEWORK_TYPE_ID");
+        public final static Property TypeId = new Property(5, int.class, "typeId", false, "TYPE_ID");
+        public final static Property TypeName = new Property(6, String.class, "typeName", false, "TYPE_NAME");
+        public final static Property Title = new Property(7, String.class, "title", false, "TITLE");
+        public final static Property EndTime = new Property(8, Long.class, "endTime", false, "END_TIME");
+        public final static Property StartTime = new Property(9, Long.class, "startTime", false, "START_TIME");
+        public final static Property FilePath = new Property(10, String.class, "filePath", false, "FILE_PATH");
+        public final static Property Paths = new Property(11, String.class, "paths", false, "PATHS");
+        public final static Property DrawPaths = new Property(12, String.class, "drawPaths", false, "DRAW_PATHS");
+        public final static Property Page = new Property(13, int.class, "page", false, "PAGE");
+        public final static Property State = new Property(14, int.class, "state", false, "STATE");
+        public final static Property CorrectMode = new Property(15, int.class, "correctMode", false, "CORRECT_MODE");
+        public final static Property Score = new Property(16, double.class, "score", false, "SCORE");
+        public final static Property CorrectJson = new Property(17, String.class, "correctJson", false, "CORRECT_JSON");
+        public final static Property IsSelfCorrect = new Property(18, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
+        public final static Property ScoreMode = new Property(19, int.class, "scoreMode", false, "SCORE_MODE");
+        public final static Property AnswerUrl = new Property(20, String.class, "answerUrl", false, "ANSWER_URL");
+        public final static Property CommitJson = new Property(21, String.class, "commitJson", false, "COMMIT_JSON");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -69,23 +70,24 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"CONTENT_ID\" INTEGER NOT NULL UNIQUE ," + // 2: contentId
                 "\"COURSE\" TEXT," + // 3: course
-                "\"TYPE_ID\" INTEGER NOT NULL ," + // 4: typeId
-                "\"TYPE_NAME\" TEXT," + // 5: typeName
-                "\"TITLE\" TEXT," + // 6: title
-                "\"END_TIME\" INTEGER," + // 7: endTime
-                "\"START_TIME\" INTEGER," + // 8: startTime
-                "\"FILE_PATH\" TEXT," + // 9: filePath
-                "\"PATHS\" TEXT," + // 10: paths
-                "\"DRAW_PATHS\" TEXT," + // 11: drawPaths
-                "\"PAGE\" INTEGER NOT NULL ," + // 12: page
-                "\"STATE\" INTEGER NOT NULL ," + // 13: state
-                "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 14: correctMode
-                "\"SCORE\" REAL NOT NULL ," + // 15: score
-                "\"CORRECT_JSON\" TEXT," + // 16: correctJson
-                "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 17: isSelfCorrect
-                "\"SCORE_MODE\" INTEGER NOT NULL ," + // 18: scoreMode
-                "\"ANSWER_URL\" TEXT," + // 19: answerUrl
-                "\"COMMIT_JSON\" TEXT);"); // 20: commitJson
+                "\"HOMEWORK_TYPE_ID\" INTEGER NOT NULL ," + // 4: homeworkTypeId
+                "\"TYPE_ID\" INTEGER NOT NULL ," + // 5: typeId
+                "\"TYPE_NAME\" TEXT," + // 6: typeName
+                "\"TITLE\" TEXT," + // 7: title
+                "\"END_TIME\" INTEGER," + // 8: endTime
+                "\"START_TIME\" INTEGER," + // 9: startTime
+                "\"FILE_PATH\" TEXT," + // 10: filePath
+                "\"PATHS\" TEXT," + // 11: paths
+                "\"DRAW_PATHS\" TEXT," + // 12: drawPaths
+                "\"PAGE\" INTEGER NOT NULL ," + // 13: page
+                "\"STATE\" INTEGER NOT NULL ," + // 14: state
+                "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 15: correctMode
+                "\"SCORE\" REAL NOT NULL ," + // 16: score
+                "\"CORRECT_JSON\" TEXT," + // 17: correctJson
+                "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 18: isSelfCorrect
+                "\"SCORE_MODE\" INTEGER NOT NULL ," + // 19: scoreMode
+                "\"ANSWER_URL\" TEXT," + // 20: answerUrl
+                "\"COMMIT_JSON\" TEXT);"); // 21: commitJson
     }
 
     /** Drops the underlying database table. */
@@ -109,62 +111,63 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         if (course != null) {
             stmt.bindString(4, course);
         }
-        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(5, entity.getHomeworkTypeId());
+        stmt.bindLong(6, entity.getTypeId());
  
         String typeName = entity.getTypeName();
         if (typeName != null) {
-            stmt.bindString(6, typeName);
+            stmt.bindString(7, typeName);
         }
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(7, title);
+            stmt.bindString(8, title);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(8, endTime);
+            stmt.bindLong(9, endTime);
         }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(9, startTime);
+            stmt.bindLong(10, startTime);
         }
  
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(10, filePath);
+            stmt.bindString(11, filePath);
         }
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(11, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(12, pathsConverter.convertToDatabaseValue(paths));
         }
  
         List drawPaths = entity.getDrawPaths();
         if (drawPaths != null) {
-            stmt.bindString(12, drawPathsConverter.convertToDatabaseValue(drawPaths));
+            stmt.bindString(13, drawPathsConverter.convertToDatabaseValue(drawPaths));
         }
-        stmt.bindLong(13, entity.getPage());
-        stmt.bindLong(14, entity.getState());
-        stmt.bindLong(15, entity.getCorrectMode());
-        stmt.bindDouble(16, entity.getScore());
+        stmt.bindLong(14, entity.getPage());
+        stmt.bindLong(15, entity.getState());
+        stmt.bindLong(16, entity.getCorrectMode());
+        stmt.bindDouble(17, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
-            stmt.bindString(17, correctJson);
+            stmt.bindString(18, correctJson);
         }
-        stmt.bindLong(18, entity.getIsSelfCorrect() ? 1L: 0L);
-        stmt.bindLong(19, entity.getScoreMode());
+        stmt.bindLong(19, entity.getIsSelfCorrect() ? 1L: 0L);
+        stmt.bindLong(20, entity.getScoreMode());
  
         String answerUrl = entity.getAnswerUrl();
         if (answerUrl != null) {
-            stmt.bindString(20, answerUrl);
+            stmt.bindString(21, answerUrl);
         }
  
         String commitJson = entity.getCommitJson();
         if (commitJson != null) {
-            stmt.bindString(21, commitJson);
+            stmt.bindString(22, commitJson);
         }
     }
 
@@ -183,62 +186,63 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         if (course != null) {
             stmt.bindString(4, course);
         }
-        stmt.bindLong(5, entity.getTypeId());
+        stmt.bindLong(5, entity.getHomeworkTypeId());
+        stmt.bindLong(6, entity.getTypeId());
  
         String typeName = entity.getTypeName();
         if (typeName != null) {
-            stmt.bindString(6, typeName);
+            stmt.bindString(7, typeName);
         }
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(7, title);
+            stmt.bindString(8, title);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(8, endTime);
+            stmt.bindLong(9, endTime);
         }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(9, startTime);
+            stmt.bindLong(10, startTime);
         }
  
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(10, filePath);
+            stmt.bindString(11, filePath);
         }
  
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(11, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(12, pathsConverter.convertToDatabaseValue(paths));
         }
  
         List drawPaths = entity.getDrawPaths();
         if (drawPaths != null) {
-            stmt.bindString(12, drawPathsConverter.convertToDatabaseValue(drawPaths));
+            stmt.bindString(13, drawPathsConverter.convertToDatabaseValue(drawPaths));
         }
-        stmt.bindLong(13, entity.getPage());
-        stmt.bindLong(14, entity.getState());
-        stmt.bindLong(15, entity.getCorrectMode());
-        stmt.bindDouble(16, entity.getScore());
+        stmt.bindLong(14, entity.getPage());
+        stmt.bindLong(15, entity.getState());
+        stmt.bindLong(16, entity.getCorrectMode());
+        stmt.bindDouble(17, entity.getScore());
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
-            stmt.bindString(17, correctJson);
+            stmt.bindString(18, correctJson);
         }
-        stmt.bindLong(18, entity.getIsSelfCorrect() ? 1L: 0L);
-        stmt.bindLong(19, entity.getScoreMode());
+        stmt.bindLong(19, entity.getIsSelfCorrect() ? 1L: 0L);
+        stmt.bindLong(20, entity.getScoreMode());
  
         String answerUrl = entity.getAnswerUrl();
         if (answerUrl != null) {
-            stmt.bindString(20, answerUrl);
+            stmt.bindString(21, answerUrl);
         }
  
         String commitJson = entity.getCommitJson();
         if (commitJson != null) {
-            stmt.bindString(21, commitJson);
+            stmt.bindString(22, commitJson);
         }
     }
 
@@ -254,23 +258,24 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // contentId
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // course
-            cursor.getInt(offset + 4), // typeId
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // typeName
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // endTime
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // startTime
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // filePath
-            cursor.isNull(offset + 10) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 10)), // paths
-            cursor.isNull(offset + 11) ? null : drawPathsConverter.convertToEntityProperty(cursor.getString(offset + 11)), // drawPaths
-            cursor.getInt(offset + 12), // page
-            cursor.getInt(offset + 13), // state
-            cursor.getInt(offset + 14), // correctMode
-            cursor.getDouble(offset + 15), // score
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // correctJson
-            cursor.getShort(offset + 17) != 0, // isSelfCorrect
-            cursor.getInt(offset + 18), // scoreMode
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // answerUrl
-            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20) // commitJson
+            cursor.getInt(offset + 4), // homeworkTypeId
+            cursor.getInt(offset + 5), // typeId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // typeName
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // title
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // endTime
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // startTime
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // filePath
+            cursor.isNull(offset + 11) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 11)), // paths
+            cursor.isNull(offset + 12) ? null : drawPathsConverter.convertToEntityProperty(cursor.getString(offset + 12)), // drawPaths
+            cursor.getInt(offset + 13), // page
+            cursor.getInt(offset + 14), // state
+            cursor.getInt(offset + 15), // correctMode
+            cursor.getDouble(offset + 16), // score
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // correctJson
+            cursor.getShort(offset + 18) != 0, // isSelfCorrect
+            cursor.getInt(offset + 19), // scoreMode
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // answerUrl
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21) // commitJson
         );
         return entity;
     }
@@ -281,23 +286,24 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setContentId(cursor.getInt(offset + 2));
         entity.setCourse(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setTypeId(cursor.getInt(offset + 4));
-        entity.setTypeName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setEndTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setStartTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setFilePath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPaths(cursor.isNull(offset + 10) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 10)));
-        entity.setDrawPaths(cursor.isNull(offset + 11) ? null : drawPathsConverter.convertToEntityProperty(cursor.getString(offset + 11)));
-        entity.setPage(cursor.getInt(offset + 12));
-        entity.setState(cursor.getInt(offset + 13));
-        entity.setCorrectMode(cursor.getInt(offset + 14));
-        entity.setScore(cursor.getDouble(offset + 15));
-        entity.setCorrectJson(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setIsSelfCorrect(cursor.getShort(offset + 17) != 0);
-        entity.setScoreMode(cursor.getInt(offset + 18));
-        entity.setAnswerUrl(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
-        entity.setCommitJson(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setHomeworkTypeId(cursor.getInt(offset + 4));
+        entity.setTypeId(cursor.getInt(offset + 5));
+        entity.setTypeName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setTitle(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setEndTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setStartTime(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setFilePath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setPaths(cursor.isNull(offset + 11) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 11)));
+        entity.setDrawPaths(cursor.isNull(offset + 12) ? null : drawPathsConverter.convertToEntityProperty(cursor.getString(offset + 12)));
+        entity.setPage(cursor.getInt(offset + 13));
+        entity.setState(cursor.getInt(offset + 14));
+        entity.setCorrectMode(cursor.getInt(offset + 15));
+        entity.setScore(cursor.getDouble(offset + 16));
+        entity.setCorrectJson(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setIsSelfCorrect(cursor.getShort(offset + 18) != 0);
+        entity.setScoreMode(cursor.getInt(offset + 19));
+        entity.setAnswerUrl(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setCommitJson(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
      }
     
     @Override

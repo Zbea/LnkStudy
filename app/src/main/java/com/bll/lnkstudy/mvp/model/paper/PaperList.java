@@ -15,9 +15,13 @@ public class PaperList implements Serializable {
         public int id;
         public String title;//作业标题
         public String subject;//科目
-        public int commonTypeId;//收到考卷 分类id
+        @SerializedName("addType")
+        public int autoState;//创建状态：1默认创建
+        @SerializedName("commonTypeId")
+        public int typeId;//收到考卷 分类id
         @SerializedName("examName")
         public String typeName;//收到考卷 分类名称
+        public int grade;
         public String submitUrl;
         public String studentUrl;
         public String path;//文件夹路径

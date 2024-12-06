@@ -138,6 +138,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 val typeItem= PaperTypeBean()
                 typeItem.name="学校考试卷"
                 typeItem.course=course
+                typeItem.createStatus=2
                 typeItem.date=System.currentTimeMillis()
                 typeItem.grade=mUser?.grade!!
                 typeItem.typeId=typeId

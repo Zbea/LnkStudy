@@ -17,10 +17,10 @@ public class HomeworkContentBean {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    public String bgResId;//作业背景样式id
     public String course;//科目
     public int homeworkTypeId;//作业本分组id
-    public String typeStr;//作业本分类
+    public Integer typeId;
+    public String typeName;//作业本分类
     public int contentId;//老师下发作业id
     public String title;
     public int state=0;//0未提交1已提交2已批改
@@ -36,17 +36,18 @@ public class HomeworkContentBean {
     public boolean isSelfCorrect;//是否自批
     public String commitJson;//提交信息(自批时)
     public String answerUrl;
-    @Generated(hash = 1053978476)
-    public HomeworkContentBean(Long id, long userId, String bgResId, String course, int homeworkTypeId,
-            String typeStr, int contentId, String title, int state, Long date, Long commitDate,
+
+    @Generated(hash = 624335388)
+    public HomeworkContentBean(Long id, long userId, String course, int homeworkTypeId, Integer typeId,
+            String typeName, int contentId, String title, int state, Long date, Long commitDate,
             Long startDate, String path, int page, int correctMode, int scoreMode, double score,
             String correctJson, boolean isSelfCorrect, String commitJson, String answerUrl) {
         this.id = id;
         this.userId = userId;
-        this.bgResId = bgResId;
         this.course = course;
         this.homeworkTypeId = homeworkTypeId;
-        this.typeStr = typeStr;
+        this.typeId = typeId;
+        this.typeName = typeName;
         this.contentId = contentId;
         this.title = title;
         this.state = state;
@@ -78,12 +79,6 @@ public class HomeworkContentBean {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-    public String getBgResId() {
-        return this.bgResId;
-    }
-    public void setBgResId(String bgResId) {
-        this.bgResId = bgResId;
-    }
     public String getCourse() {
         return this.course;
     }
@@ -95,12 +90,6 @@ public class HomeworkContentBean {
     }
     public void setHomeworkTypeId(int homeworkTypeId) {
         this.homeworkTypeId = homeworkTypeId;
-    }
-    public String getTypeStr() {
-        return this.typeStr;
-    }
-    public void setTypeStr(String typeStr) {
-        this.typeStr = typeStr;
     }
     public int getContentId() {
         return this.contentId;
@@ -191,6 +180,18 @@ public class HomeworkContentBean {
     }
     public void setAnswerUrl(String answerUrl) {
         this.answerUrl = answerUrl;
+    }
+    public Integer getTypeId() {
+        return this.typeId;
+    }
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+    public String getTypeName() {
+        return this.typeName;
+    }
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
 }

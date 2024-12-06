@@ -75,10 +75,12 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         val messageBean=messages[messageIndex]
         messages.removeAt(messageIndex)
 
-        recordBeans[position].isCommit=true
+        val recordBean=recordBeans[position]
+        recordBean.isCommit=true
+        recordBean.typeId=messageBean.typeId
         mAdapter?.notifyItemChanged(position)
 
-        refreshDataUpdate(recordBeans[position])
+        refreshDataUpdate(recordBean)
 
         //添加提交详情
         HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
@@ -169,8 +171,8 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         val item = RecordBean()
         item.date = time
         item.course = course
-        item.typeId=homeworkType?.typeId!!
-        item.typeStr=homeworkType?.name
+        item.homeworkTypeId=homeworkType?.typeId!!
+        item.typeName=homeworkType?.name
 
         val bundle = Bundle()
         bundle.putSerializable("record", item)
@@ -279,8 +281,9 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
      * 刷新增量更新
      */
     private fun refreshDataUpdate(recordBean: RecordBean){
+        RecordDaoManager.getInstance().insertOrReplace(recordBean)
         //修改本地增量更新
-        DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,homeworkType?.typeId!!,Gson().toJson(recordBean))
+        DataUpdateManager.editDataUpdateState(2,recordBean.id.toInt(),2,recordBean.homeworkTypeId,3,Gson().toJson(recordBean))
     }
 
     override fun fetchData() {

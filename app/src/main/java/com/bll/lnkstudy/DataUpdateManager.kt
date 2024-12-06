@@ -195,6 +195,16 @@ object DataUpdateManager {
     }
 
     /**
+     * 修改增量更新
+     */
+    fun editDataUpdateState(type:Int,id:Int,contentType:Int,typeId: Int,state: Int,json: String){
+        mDataUpdateDaoManager.insertOrReplace(mDataUpdateDaoManager.queryBean(type,id,contentType,typeId,state)?.apply {
+            listJson=json
+            isUpload=false
+        })
+    }
+
+    /**
      * 修改增量更新(有手写内容,保存路径)
      */
     fun editDataUpdate(type:Int,id:Int,contentType:Int,json: String,path: String){

@@ -106,6 +106,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         for (index in homeworkCommitInfoItem?.contents!!) {
             val homework = homeworks[index]
             homework.state = 1
+            homework.typeId=homeworkCommitInfoItem?.typeId
             homework.title = homeworkCommitInfoItem?.title
             homework.contentId = homeworkCommitInfoItem?.messageId!!
             homework.commitDate = System.currentTimeMillis()
@@ -133,7 +134,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         val bundle = intent.getBundleExtra("homeworkBundle")
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         page = intent.getIntExtra("page", DEFAULT_PAGE)
-        homeworkTypeId = if (homeworkType?.createStatus==2) homeworkType?.parentTypeId!! else homeworkType?.typeId!!
+        homeworkTypeId =homeworkType?.typeId!!
         course = homeworkType?.course!!
 
         when (homeworkType?.createStatus) {
@@ -437,8 +438,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.course = course
         homeworkContent?.date = currentTime
         homeworkContent?.homeworkTypeId = homeworkTypeId
-        homeworkContent?.bgResId = homeworkType?.bgResId
-        homeworkContent?.typeStr = homeworkType?.name
+        homeworkContent?.typeName = homeworkType?.name
         homeworkContent?.title = getString(R.string.unnamed) + (homeworks.size + 1)
         homeworkContent?.path = "$path/${DateUtils.longToString(currentTime)}.png"
         homeworkContent?.page = homeworks.size
@@ -449,7 +449,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.id = id
         homeworks.add(homeworkContent!!)
 
-        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,2, Gson().toJson(homeworkContent), homeworkContent?.path!!)
+        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,homeworkType?.state!!, Gson().toJson(homeworkContent), homeworkContent?.path!!)
     }
 
 
@@ -551,7 +551,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      * 刷新增量更新
      */
     private fun refreshDataUpdate(homework: HomeworkContentBean){
-        DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homeworkTypeId,Gson().toJson(homework))
+        DataUpdateManager.editDataUpdateState(2, homework.id.toInt(), 2,homeworkTypeId,homeworkType?.state!!,Gson().toJson(homework))
     }
 
     /**

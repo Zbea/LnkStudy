@@ -59,12 +59,10 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-        val account=SPUtil.getString("account")
-
         statusBarValue=MethodManager.getStatusBarValue()
         MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
 
-        ed_user.setText(account)
+        ed_user.setText(SPUtil.getString("account"))
 
         tv_register.setOnClickListener {
             activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(0))

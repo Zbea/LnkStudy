@@ -67,6 +67,15 @@ public class DataUpdateDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4).build().unique();
     }
 
+    public DataUpdateBean queryBean(int type,int id,int contentType,int typeId,int state){
+        WhereCondition whereCondition1= DataUpdateBeanDao.Properties.Type.eq(type);
+        WhereCondition whereCondition2= DataUpdateBeanDao.Properties.Uid.eq(id);
+        WhereCondition whereCondition3= DataUpdateBeanDao.Properties.ContentType.eq(contentType);
+        WhereCondition whereCondition4= DataUpdateBeanDao.Properties.TypeId.eq(typeId);
+        WhereCondition whereCondition5= DataUpdateBeanDao.Properties.TypeId.eq(state);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4,whereCondition5).build().unique();
+    }
+
     public DataUpdateBean queryBean(int type,int id,int contentType){
         return queryBean(type, id, contentType,0);
     }

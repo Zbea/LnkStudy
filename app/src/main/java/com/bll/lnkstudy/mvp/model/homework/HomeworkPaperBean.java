@@ -25,6 +25,7 @@ public class HomeworkPaperBean {
     @Unique
     public int contentId;//这次作业id
     public String course;//科目
+    public int homeworkTypeId;
     public int typeId;//作业分组id
     public String typeName;//作业分组标题
     public String title;//这次作业标题
@@ -44,9 +45,9 @@ public class HomeworkPaperBean {
     public int scoreMode;//打分模式1打分
     public String answerUrl;
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 1920063784)
-    public HomeworkPaperBean(Long id, long userId, int contentId, String course, int typeId,
-            String typeName, String title, Long endTime, Long startTime, String filePath,
+    @Generated(hash = 917619588)
+    public HomeworkPaperBean(Long id, long userId, int contentId, String course, int homeworkTypeId,
+            int typeId, String typeName, String title, Long endTime, Long startTime, String filePath,
             List<String> paths, List<String> drawPaths, int page, int state, int correctMode,
             double score, String correctJson, boolean isSelfCorrect, int scoreMode, String answerUrl,
             String commitJson) {
@@ -54,6 +55,7 @@ public class HomeworkPaperBean {
         this.userId = userId;
         this.contentId = contentId;
         this.course = course;
+        this.homeworkTypeId = homeworkTypeId;
         this.typeId = typeId;
         this.typeName = typeName;
         this.title = title;
@@ -200,6 +202,12 @@ public class HomeworkPaperBean {
     }
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
+    }
+    public int getHomeworkTypeId() {
+        return this.homeworkTypeId;
+    }
+    public void setHomeworkTypeId(int homeworkTypeId) {
+        this.homeworkTypeId = homeworkTypeId;
     }
 
 }
