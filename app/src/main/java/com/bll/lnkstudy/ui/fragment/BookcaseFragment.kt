@@ -50,6 +50,7 @@ class BookcaseFragment: BaseMainFragment() {
         initRecyclerView()
 
         tv_type.setOnClickListener {
+            ItemTypeDaoManager.getInstance().saveBookBean(5,"诗经楚辞",false)
             customStartActivity(Intent(activity, BookcaseTypeActivity::class.java))
         }
         

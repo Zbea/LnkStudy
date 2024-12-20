@@ -48,10 +48,6 @@ public class PaperTypeBean {
     @Transient
     public String contentSubtypeJson;
 
-
-
-
-
     @Generated(hash = 104583001)
     public PaperTypeBean(Long id, long studentId, long teacherId, String teacher, String name, int typeId, String course, long date, int grade,
             boolean isCloud, Integer createStatus, Integer autoState) {

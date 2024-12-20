@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
@@ -61,8 +61,8 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
     class MessageAdapter(layoutResId: Int, data: List<Any>, private val createStatus: Int) : BaseQuickAdapter<Any, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, ite: Any) {
-            if (createStatus==1){
-                val item=ite as HomeworkMessage.MessageBean
+            if (createStatus==2){
+                val item=ite as HomeworkMessageList.MessageBean
                 helper.setText(R.id.tv_title,item.title)
                 helper.setVisible(R.id.tv_correct,item.selfBatchStatus==1)
                 if (item.endTime>0){
@@ -85,7 +85,7 @@ class HomeworkMessageDialog(val context: Context, val screenPos:Int, val title :
                 }
             }
             else{
-                val item=ite as ParentHomeworkBean
+                val item=ite as ParentHomeworkMessageList.ParentHomeworkBean
                 helper.setText(R.id.tv_title,item.title)
                 helper.setVisible(R.id.tv_correct,false)
                 if (item.endTime>0){

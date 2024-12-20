@@ -12,11 +12,9 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
@@ -53,7 +51,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private lateinit var mUploadPresenter:FileUploadPresenter
     private var homeworkType:HomeworkTypeBean?=null
     private var course=""
-    private var typeId=0//分组id
+    private var homeworkTypeId=0//分组id
     private var daoManager: HomeworkPaperDaoManager?=null
     private var papers= mutableListOf<HomeworkPaperBean>()
     private var paper: HomeworkPaperBean?=null
@@ -77,7 +75,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=paper?.contentId!!
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
-                    map["commonTypeId"] = homeworkType?.typeId!!
+                    map["commonTypeId"] = paper?.typeId!!
                     map["takeTime"]=takeTime
                     mUploadPresenter.commit(map)
                 }
@@ -99,14 +97,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         daoManager?.insertOrReplace(paper)
         refreshDataUpdate()
 
-        //添加提交详情
-        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            content=paper?.title
-            homeworkTypeStr=homeworkType?.name
-            course=homeworkType?.course
-            time=System.currentTimeMillis()
-        })
-
         //刷新当前paper
         oldPosition=-1
         onContent()
@@ -122,10 +112,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         homeworkType = intent.getBundleExtra("homeworkBundle")?.getSerializable("homework") as HomeworkTypeBean
         currentPosition=intent.getIntExtra("page",Constants.DEFAULT_PAGE)
         course=homeworkType?.course!!
-        typeId=homeworkType?.typeId!!
+        homeworkTypeId=homeworkType?.typeId!!
 
         daoManager= HomeworkPaperDaoManager.getInstance()
-        papers= daoManager?.queryAll(course,typeId) as MutableList<HomeworkPaperBean>
+        papers= daoManager?.queryAll(course,homeworkTypeId) as MutableList<HomeworkPaperBean>
     }
 
     override fun initChangeScreenData() {
@@ -186,8 +176,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     page = 0
                     onContent()
                 }
-            }
-            override fun onEdit(position: Int, title: String) {
             }
         })
     }
@@ -393,7 +381,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             homeworkCommitInfoItem?.correctMode=paper?.correctMode
             homeworkCommitInfoItem?.scoreMode=paper?.scoreMode
             homeworkCommitInfoItem?.answerUrl=paper?.answerUrl
-            homeworkCommitInfoItem?.typeId=homeworkType?.typeId
+            homeworkCommitInfoItem?.typeId=paper?.typeId
             homeworkCommitInfoItem?.typeName=homeworkType?.name
             homeworkCommitInfoItem?.course=homeworkType?.course
             homeworkCommitInfoItem?.state=homeworkType?.state
@@ -458,7 +446,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      */
     private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if (it.resultCode==10001){
-            papers= daoManager?.queryAll(course,typeId) as MutableList<HomeworkPaperBean>
+            papers= daoManager?.queryAll(course,homeworkTypeId) as MutableList<HomeworkPaperBean>
             oldPosition=-1
             onContent()
         }

@@ -81,7 +81,7 @@ public class RecordDaoManager {
      */
     public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(typeId);
+        WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);
         return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
     }
@@ -94,7 +94,7 @@ public class RecordDaoManager {
      */
     public List<RecordBean> queryAllByCourse(String course,int typeId,int page, int pageSize) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(typeId);
+        WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);
         return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
                 .orderDesc(RecordBeanDao.Properties.Date).offset((page-1)*pageSize).limit(pageSize).build().list();
     }

@@ -32,6 +32,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
     private var messageId = 0
+    private var typeId=0
     private var messageTitle = ""
     private var postion = 0
     private var isCorrect = false
@@ -66,6 +67,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
             messageId = items[0].id
             messageTitle = items[0].name
             isCorrect = items[0].isSelfCorrect
+            typeId=items[0].typeId
             tv_selector?.text = messageTitle
         }
 
@@ -86,6 +88,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
                         messageId = it.id
                         messageTitle = it.name
                         isCorrect = it.isSelfCorrect
+                        typeId=it.typeId
                         tv_selector.text = messageTitle
                     }
             }
@@ -168,6 +171,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
                 val item = HomeworkCommitInfoItem()
                 item.index=postion
                 item.messageId = messageId
+                item.typeId=typeId
                 item.title = messageTitle
                 item.contents = realPageIndexs
                 item.isSelfCorrect=isCorrect

@@ -1,12 +1,12 @@
 package com.bll.lnkstudy.ui.fragment
 
+import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.HomeworkCommitDetailsDialog
@@ -14,27 +14,35 @@ import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
+import com.bll.lnkstudy.ui.activity.CourseManagerActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import java.io.File
 
-open class HomeworkManageFragment: BaseMainFragment() {
-
+class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
+    private val mPresenter = HomeworkPresenter(this)
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
-    private var currentCourses= mutableListOf<String>()
+    private var currentCourses= mutableListOf<ItemTypeBean>()
     private var fragments= mutableListOf<HomeworkFragment>()
     private var popWindowBeans = mutableListOf<PopupBean>()
+
+    override fun onCommitDetails(list: HomeworkCommitMessageList) {
+        HomeworkCommitDetailsDialog(requireActivity(),list.list).builder()
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework_manage
@@ -45,16 +53,20 @@ open class HomeworkManageFragment: BaseMainFragment() {
         showView(iv_manager)
 
         popWindowBeans.add(PopupBean(0, getString(R.string.homework_commit_details_str) ))
-        popWindowBeans.add(PopupBean(1, getString(R.string.homework_create_str) ))
+        popWindowBeans.add(PopupBean(1,"科目排序"))
+        popWindowBeans.add(PopupBean(2, getString(R.string.homework_create_str) ))
 
         iv_manager.setOnClickListener {
             PopupClick(requireActivity(), popWindowBeans, iv_manager, 5).builder()
                 .setOnSelectListener { item ->
                     when (item.id) {
                         0 -> {
-                            HomeworkCommitDetailsDialog(requireActivity()).builder()
+                            mPresenter.onCommitMessage()
                         }
-                        1 -> {
+                        1->{
+                            customStartActivity(Intent(requireActivity(),CourseManagerActivity::class.java))
+                        }
+                        2 -> {
                             if (currentCourses.isNotEmpty() && mUser?.grade!! >0) {
                                 fragments[mCoursePos].addContentModule()
                             }
@@ -71,13 +83,14 @@ open class HomeworkManageFragment: BaseMainFragment() {
 
     //设置头部索引
     private fun initTab() {
-        if (currentCourses!=MethodManager.getCourses()){
+        val courseItems=ItemTypeDaoManager.getInstance().queryAll(7)
+        if (currentCourses!=courseItems){
             mCoursePos = 0
             itemTabTypes.clear()
-            currentCourses=MethodManager.getCourses()
+            currentCourses=courseItems
             for (i in currentCourses.indices) {
                 itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i]
+                    title=currentCourses[i].title
                     isCheck=i==0
                 })
             }
@@ -94,8 +107,8 @@ open class HomeworkManageFragment: BaseMainFragment() {
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
-        for (course in currentCourses){
-            fragments.add(HomeworkFragment().newInstance(course))
+        for (courseItem in currentCourses){
+            fragments.add(HomeworkFragment().newInstance(courseItem.title))
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
@@ -147,8 +160,6 @@ open class HomeworkManageFragment: BaseMainFragment() {
         HomeworkBookDaoManager.getInstance().clear()
         //题卷本批改详情
         HomeworkBookCorrectDaoManager.getInstance().clear()
-        //提交详情
-        HomeworkDetailsDaoManager.getInstance().clear()
 
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
         FileUtils.deleteHomework(File(FileAddress().getPathScreen("未分类")).parent)

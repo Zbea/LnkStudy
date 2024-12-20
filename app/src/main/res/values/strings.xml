@@ -321,7 +321,7 @@
     <string name="homework_assign">作业内容</string>
     <string name="homework_state">提交状态</string>
     <string name="homework_time">提交时间</string>
-    <string name="homework_type">作业分类</string>
+    <string name="homework_type">作业本分类</string>
     <string name="homework_state_no">未提交</string>
     <string name="homework_state_yes">已提交</string>
     <string name="homework_state_complete">已完成</string>

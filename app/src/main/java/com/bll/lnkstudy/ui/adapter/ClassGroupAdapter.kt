@@ -11,11 +11,11 @@ class ClassGroupAdapter(layoutResId: Int, data: MutableList<ClassGroup>?) : Base
     override fun convert(helper: BaseViewHolder, item: ClassGroup) {
         helper.setText(R.id.tv_name,item.name)
         helper.setText(R.id.tv_groupNumber,if (item.state==1)ToolUtils.getFormatNum(item.classGroupId,"000000") else "")
-        helper.setGone(R.id.tv_course,item.state==1)
+        helper.setGone(R.id.tv_groupNumber,item.state==1)
         helper.setText(R.id.tv_teacher,item.teacher)
         helper.setText(R.id.tv_subject,item.subject)
         helper.setText(R.id.tv_num,"${item.studentCount}人")
-        helper.addOnClickListener(R.id.tv_out,R.id.tv_info,R.id.tv_course)
+        helper.addOnClickListener(R.id.tv_out,R.id.tv_info)
     }
 
 }

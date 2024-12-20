@@ -11,10 +11,8 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.NumberDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -92,11 +90,12 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         showToast(R.string.toast_commit_success)
         when (state) {
             2 -> {
-                val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(commitItem?.course, commitItem?.typeId!!)
+                val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(commitItem?.course, commitItem?.homeworkTypeId!!)
                 for (index in commitItem?.contents!!) {
                     val homework = homeworks[index]
                     homework.state = 1
                     homework.title = commitItem?.title
+                    homework.typeId=commitItem?.typeId
                     homework.contentId = commitItem?.messageId!!
                     homework.commitDate = System.currentTimeMillis()
                     homework.score=tv_total_score.text.toString().toDouble()
@@ -128,14 +127,6 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper.typeId, Gson().toJson(paper))
             }
         }
-
-        //添加提交详情
-        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            content=commitItem?.title
-            homeworkTypeStr=commitItem?.typeName
-            course=commitItem?.course
-            time=System.currentTimeMillis()
-        })
 
         //设置批改完成通知
         setResult(10001, Intent())

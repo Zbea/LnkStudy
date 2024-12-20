@@ -18,18 +18,17 @@ import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkType
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
-import com.bll.lnkstudy.mvp.model.paper.PaperList
-import com.bll.lnkstudy.mvp.model.paper.PaperType
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
@@ -271,8 +270,8 @@ interface APIService{
     /**
      * 获取考卷分类
      */
-    @GET("common/type/list")
-    fun getPaperType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperType>>
+    @GET("common/type/school")
+    fun getPaperType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<PaperTypeBean>>>
     /**
      * 学生获取考卷
      */
@@ -288,44 +287,54 @@ interface APIService{
      */
     @POST("student/task/pushGradeExam")
     fun commitExam(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 学生下载完老师发送的已批改试卷删除
-     */
-    @POST("student/task/deleteTag")
-    fun onDownloadCompletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+//    /**
+//     * 学生下载完老师发送的已批改试卷删除
+//     */
+//    @POST("student/task/deleteTag")
+//    fun onDownloadCompletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取下发考卷
      */
     @GET("student/task/list")
-    fun getPaperCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaperList>>
+    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkPaperList>>
+    /**
+     * 获取下发考卷
+     */
+    @GET("student/task/listV2")
+    fun getHomeworkPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkPaperList>>
 
+//    /**
+//     * 获取作业本分类
+//     */
+//    @GET("common/type/list")
+//    fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
     /**
      * 获取作业本分类
      */
-    @GET("common/type/list")
-    fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
+    @GET("common/type/school")
+    fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<HomeworkTypeBean>>>
     /**
      * 获取作业本所有信息
      */
     @POST("student/msg/list")
-    fun getHomeworkMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkMessage>>>
+    fun getHomeworkMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkMessageList>>>
 
     /**
      * 作业卷下载完成后 通知后台
      */
     @POST("task/group/studentDownload")
-    fun commitHomeworkLoad(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun onDownloadPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取作业卷所有信息
      */
     @POST("task/group/studentListPlus")
     fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
 
-//    /**
-//     * 获取学生提交详情
-//     */
-//    @GET("submit/message/list")
-//    fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkDetails>>
+    /**
+     * 获取学生提交详情
+     */
+    @GET("submit/message/list")
+    fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkCommitMessageList>>
     /**
      * 消息列表
      */
@@ -345,12 +354,12 @@ interface APIService{
      * 消息列表
      */
     @POST("student/job/listByIds")
-    fun getParentMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String,ParentHomeworkMessage>>>
+    fun getParentMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, ParentHomeworkMessageList>>>
     /**
-     * 消息列表
+     * 家长作业卷下发
      */
     @POST("student/job/downloadByIds")
-    fun getParentReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String,MutableList<ParentHomeworkBean>>>>
+    fun getParentReel(@Body requestBody: RequestBody): Observable<BaseResult<ParentHomeworkMessageList>>
     /**
      * 作业卷下载完成后 通知后台
      */

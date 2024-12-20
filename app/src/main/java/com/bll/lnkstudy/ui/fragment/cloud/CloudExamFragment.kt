@@ -135,7 +135,7 @@ class CloudExamFragment:BaseCloudFragment() {
     private fun download(item:PaperTypeBean){
         showLoading()
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val fileTargetPath= FileAddress().getPathTestPaper(item.typeId)
+        val fileTargetPath= FileAddress().getPathTestPaper(item.course,item.typeId)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -149,6 +149,7 @@ class CloudExamFragment:BaseCloudFragment() {
                             item.id=null//设置数据库id为null用于重新加入
                             item.date=System.currentTimeMillis()
                             item.createStatus=0
+                            item.autoState=0
                             PaperTypeDaoManager.getInstance().insertOrReplace(item)
                             //创建增量数据
                             DataUpdateManager.createDataUpdate(3,item.typeId,1,Gson().toJson(item))

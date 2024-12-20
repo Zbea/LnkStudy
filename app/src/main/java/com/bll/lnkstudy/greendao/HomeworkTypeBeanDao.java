@@ -38,9 +38,10 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         public final static Property Course = new Property(11, String.class, "course", false, "COURSE");
         public final static Property BookId = new Property(12, int.class, "bookId", false, "BOOK_ID");
         public final static Property CreateStatus = new Property(13, int.class, "createStatus", false, "CREATE_STATUS");
-        public final static Property MessageTotal = new Property(14, int.class, "messageTotal", false, "MESSAGE_TOTAL");
-        public final static Property IsCloud = new Property(15, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property AutoState = new Property(16, Integer.class, "autoState", false, "AUTO_STATE");
+        public final static Property FromStatus = new Property(14, int.class, "fromStatus", false, "FROM_STATUS");
+        public final static Property MessageTotal = new Property(15, int.class, "messageTotal", false, "MESSAGE_TOTAL");
+        public final static Property IsCloud = new Property(16, boolean.class, "isCloud", false, "IS_CLOUD");
+        public final static Property AutoState = new Property(17, int.class, "autoState", false, "AUTO_STATE");
     }
 
 
@@ -70,9 +71,10 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
                 "\"COURSE\" TEXT," + // 11: course
                 "\"BOOK_ID\" INTEGER NOT NULL ," + // 12: bookId
                 "\"CREATE_STATUS\" INTEGER NOT NULL ," + // 13: createStatus
-                "\"MESSAGE_TOTAL\" INTEGER NOT NULL ," + // 14: messageTotal
-                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 15: isCloud
-                "\"AUTO_STATE\" INTEGER);"); // 16: autoState
+                "\"FROM_STATUS\" INTEGER NOT NULL ," + // 14: fromStatus
+                "\"MESSAGE_TOTAL\" INTEGER NOT NULL ," + // 15: messageTotal
+                "\"IS_CLOUD\" INTEGER NOT NULL ," + // 16: isCloud
+                "\"AUTO_STATE\" INTEGER NOT NULL );"); // 17: autoState
     }
 
     /** Drops the underlying database table. */
@@ -126,13 +128,10 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         }
         stmt.bindLong(13, entity.getBookId());
         stmt.bindLong(14, entity.getCreateStatus());
-        stmt.bindLong(15, entity.getMessageTotal());
-        stmt.bindLong(16, entity.getIsCloud() ? 1L: 0L);
- 
-        Integer autoState = entity.getAutoState();
-        if (autoState != null) {
-            stmt.bindLong(17, autoState);
-        }
+        stmt.bindLong(15, entity.getFromStatus());
+        stmt.bindLong(16, entity.getMessageTotal());
+        stmt.bindLong(17, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(18, entity.getAutoState());
     }
 
     @Override
@@ -180,13 +179,10 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         }
         stmt.bindLong(13, entity.getBookId());
         stmt.bindLong(14, entity.getCreateStatus());
-        stmt.bindLong(15, entity.getMessageTotal());
-        stmt.bindLong(16, entity.getIsCloud() ? 1L: 0L);
- 
-        Integer autoState = entity.getAutoState();
-        if (autoState != null) {
-            stmt.bindLong(17, autoState);
-        }
+        stmt.bindLong(15, entity.getFromStatus());
+        stmt.bindLong(16, entity.getMessageTotal());
+        stmt.bindLong(17, entity.getIsCloud() ? 1L: 0L);
+        stmt.bindLong(18, entity.getAutoState());
     }
 
     @Override
@@ -211,9 +207,10 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // course
             cursor.getInt(offset + 12), // bookId
             cursor.getInt(offset + 13), // createStatus
-            cursor.getInt(offset + 14), // messageTotal
-            cursor.getShort(offset + 15) != 0, // isCloud
-            cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16) // autoState
+            cursor.getInt(offset + 14), // fromStatus
+            cursor.getInt(offset + 15), // messageTotal
+            cursor.getShort(offset + 16) != 0, // isCloud
+            cursor.getInt(offset + 17) // autoState
         );
         return entity;
     }
@@ -234,9 +231,10 @@ public class HomeworkTypeBeanDao extends AbstractDao<HomeworkTypeBean, Long> {
         entity.setCourse(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setBookId(cursor.getInt(offset + 12));
         entity.setCreateStatus(cursor.getInt(offset + 13));
-        entity.setMessageTotal(cursor.getInt(offset + 14));
-        entity.setIsCloud(cursor.getShort(offset + 15) != 0);
-        entity.setAutoState(cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16));
+        entity.setFromStatus(cursor.getInt(offset + 14));
+        entity.setMessageTotal(cursor.getInt(offset + 15));
+        entity.setIsCloud(cursor.getShort(offset + 16) != 0);
+        entity.setAutoState(cursor.getInt(offset + 17));
      }
     
     @Override

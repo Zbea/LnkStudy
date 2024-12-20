@@ -35,7 +35,7 @@ class MainRightPresenter(view: IContractView.IMainRightView, val screen: Int=0) 
                 return false
             }
             override fun success(tBaseResult: BaseResult<String>) {
-                view.onCourse(tBaseResult.data)
+                view.onCourseUrl(tBaseResult.data)
             }
         }, false)
     }

@@ -61,10 +61,13 @@ public class PaperTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().unique();
     }
 
-    public PaperTypeBean queryByName(String name,int grade) {
+    public PaperTypeBean queryByName(String name,String course,int grade) {
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Name.eq(name);
         WhereCondition whereCondition2= PaperTypeBeanDao.Properties.Grade.eq(grade);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().unique();
+        WhereCondition whereCondition3= PaperTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition4=PaperTypeBeanDao.Properties.CreateStatus.eq(1);
+        WhereCondition whereCondition5=PaperTypeBeanDao.Properties.AutoState.eq(1);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4,whereCondition5).build().unique();
     }
 
     public List<PaperTypeBean> queryAllExceptCloud() {
@@ -94,24 +97,17 @@ public class PaperTypeDaoManager {
                 .build().list();
     }
 
-    public boolean isExistPaperType(int typeId){
-        return queryById(typeId)!=null;
+    public List<PaperTypeBean> queryAllByCreate(String course,int create,int autoState){
+        WhereCondition whereCondition=PaperTypeBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=PaperTypeBeanDao.Properties.CreateStatus.eq(create);
+        WhereCondition whereCondition2=PaperTypeBeanDao.Properties.AutoState.eq(autoState);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2)
+                .build().list();
     }
 
-    /**
-     * 获取当前年级、自动生成的作业本是否已经保存
-     * @param name
-     * @param course
-     * @param grade
-     * @return
-     */
-    public boolean isExistPaperTypeAuto(String name,String course,int grade){
-        WhereCondition whereCondition=PaperTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition1=PaperTypeBeanDao.Properties.Grade.eq(grade);
-        WhereCondition whereCondition2=PaperTypeBeanDao.Properties.AutoState.eq(1);
-        WhereCondition whereCondition3=PaperTypeBeanDao.Properties.Name.eq(name);
-        List<PaperTypeBean> list=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2,whereCondition3).build().list();
-        return !list.isEmpty();
+
+    public boolean isExistPaperType(int typeId){
+        return queryById(typeId)!=null;
     }
 
     public void deleteBean(PaperTypeBean bean){

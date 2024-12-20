@@ -56,10 +56,6 @@ public class ItemTypeDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    public void queryBean(int type,int typeId){
-
-    }
-
     public void saveBookBean(int type,String title,boolean isNew) {
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(type);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Title.eq(title);

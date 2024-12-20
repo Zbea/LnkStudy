@@ -20,6 +20,7 @@ public class HomeworkContentBean {
     public String course;//科目
     public int homeworkTypeId;//作业本分组id
     public Integer typeId;
+    public int fromStatus;//1家长2老师
     public String typeName;//作业本分类
     public int contentId;//老师下发作业id
     public String title;
@@ -37,16 +38,18 @@ public class HomeworkContentBean {
     public String commitJson;//提交信息(自批时)
     public String answerUrl;
 
-    @Generated(hash = 624335388)
+    @Generated(hash = 2080023976)
     public HomeworkContentBean(Long id, long userId, String course, int homeworkTypeId, Integer typeId,
-            String typeName, int contentId, String title, int state, Long date, Long commitDate,
-            Long startDate, String path, int page, int correctMode, int scoreMode, double score,
-            String correctJson, boolean isSelfCorrect, String commitJson, String answerUrl) {
+            int fromStatus, String typeName, int contentId, String title, int state, Long date,
+            Long commitDate, Long startDate, String path, int page, int correctMode, int scoreMode,
+            double score, String correctJson, boolean isSelfCorrect, String commitJson,
+            String answerUrl) {
         this.id = id;
         this.userId = userId;
         this.course = course;
         this.homeworkTypeId = homeworkTypeId;
         this.typeId = typeId;
+        this.fromStatus = fromStatus;
         this.typeName = typeName;
         this.contentId = contentId;
         this.title = title;
@@ -192,6 +195,12 @@ public class HomeworkContentBean {
     }
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+    public int getFromStatus() {
+        return this.fromStatus;
+    }
+    public void setFromStatus(int fromStatus) {
+        this.fromStatus = fromStatus;
     }
 
 }

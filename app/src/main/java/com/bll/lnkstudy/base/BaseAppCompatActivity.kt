@@ -474,7 +474,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     fun onMessageEvent(msgFlag: String) {
         when(msgFlag){
             Constants.USER_CHANGE_EVENT->{
-                MethodManager.getUser()
+                MethodManager.refreshUser()
                 mUser= SPUtil.getObj("user", User::class.java)
                 grade=mUser?.grade!!
             }

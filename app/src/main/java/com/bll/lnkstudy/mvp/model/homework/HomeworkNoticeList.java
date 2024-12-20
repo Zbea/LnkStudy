@@ -1,5 +1,7 @@
 package com.bll.lnkstudy.mvp.model.homework;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -19,9 +21,12 @@ public class HomeworkNoticeList {
         public int subject;
         public String name;
         public int type;//1家长2老师3学校
+        @SerializedName("questionType")
         public int correctMode;//批改模式
+        @SerializedName("questionMode")
         public int scoreMode;//打分模式1打分
         public double score;//成绩
+        @SerializedName("question")
         public String correctJson;//批改详情
         public String answerUrl;
         public String correctUrl;

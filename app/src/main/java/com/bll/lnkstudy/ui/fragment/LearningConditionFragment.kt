@@ -28,10 +28,8 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
     private var coursePops= mutableListOf<PopupBean>()
     private var currentCourses= mutableListOf<String>()
     private var mCourse=""
-    private var type=0
+    private var type=1
 
-    override fun onHomeworkNotice(list: HomeworkNoticeList) {
-    }
     override fun onCorrect(list: HomeworkNoticeList) {
         setPageNumber(list.total)
         mAdapter?.setNewData(list.list)
@@ -64,7 +62,7 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
     }
 
     private fun initType(){
-        if (currentCourses!= MethodManager.getCourses()&&MethodManager.getCourses().isNotEmpty()){
+        if (MethodManager.getCourses().isNotEmpty()&&currentCourses!= MethodManager.getCourses()){
             currentCourses= MethodManager.getCourses()
             coursePops.clear()
             mCourse=currentCourses[0]
@@ -90,7 +88,7 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        type=position
+        type=position+1
         pageIndex = 1
         fetchData()
     }
@@ -123,7 +121,7 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
         map["page"]=pageIndex
         map["size"]=pageSize
         map["subject"]=DataBeanManager.getCourseId(mCourse)
-        map["type"]=type
+        map["taskType"]=type
         mPresenter.getCorrectNotice(map)
     }
 

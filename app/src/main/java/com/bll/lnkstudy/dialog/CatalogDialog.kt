@@ -92,7 +92,7 @@ class CatalogDialog(val context: Context, private val oldScreen:Int, private val
 
     interface OnDialogClickListener {
         fun onClick(position: Int)
-        fun onEdit(position: Int,title:String)
+        fun onEdit(position: Int,title:String){}
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

@@ -16,11 +16,9 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -78,16 +76,16 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map = HashMap<String, Any>()
-                    if (homeworkType?.createStatus == 1) {
+                    if (homeworkType?.createStatus == 2) {
                         map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
                         map["studentUrl"] = ToolUtils.getImagesStr(urls)
-                        map["commonTypeId"] = homeworkTypeId
+                        map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
                         map["takeTime"]=takeTime
                         mUploadPresenter.commit(map)
                     } else {
                         map["id"] = homeworkCommitInfoItem?.messageId!!
                         map["submitUrl"] = ToolUtils.getImagesStr(urls)
-                        map["commonTypeId"] = homeworkTypeId
+                        map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
                         mUploadPresenter.commitParent(map)
                     }
                 }
@@ -113,15 +111,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
             refreshDataUpdate(homework)
         }
-
-        //添加提交详情
-        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            content=homeworkCommitInfoItem?.title
-            homeworkTypeStr=homeworkType?.name
-            course=homeworkType?.course
-            time=System.currentTimeMillis()
-        })
-
         onContent()
     }
 
@@ -138,7 +127,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         course = homeworkType?.course!!
 
         when (homeworkType?.createStatus) {
-            1 -> {
+            2 -> {
                 val list = homeworkType?.messages
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
@@ -147,12 +136,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                                 id = item.studentTaskId
                                 name = item.title
                                 isSelfCorrect=item.selfBatchStatus==1
+                                typeId=item.typeId
                             })
                         }
                     }
                 }
             }
-            2 -> {
+            1 -> {
                 val list = homeworkType?.parents
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
@@ -160,6 +150,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                             messages.add(ItemList().apply {
                                 id = item.id
                                 name = item.title
+                                typeId=item.typeId
                             })
                         }
                     }
@@ -365,7 +356,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
-        if (homeworkType?.createStatus==1)
+        if (homeworkType?.createStatus==2)
             setScoreDetails(homeworkContent!!)
     }
 
@@ -442,6 +433,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.title = getString(R.string.unnamed) + (homeworks.size + 1)
         homeworkContent?.path = "$path/${DateUtils.longToString(currentTime)}.png"
         homeworkContent?.page = homeworks.size
+        homeworkContent?.fromStatus=homeworkType?.fromStatus
 
         page = homeworks.size
 
@@ -461,14 +453,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
                     for (item in homeworkType?.messages!!){
                         if(homeworkCommitInfoItem?.messageId==item.studentTaskId){
+                            homeworkCommitInfoItem?.homeworkTypeId=homeworkTypeId
                             homeworkCommitInfoItem?.correctJson=item.question
                             homeworkCommitInfoItem?.correctMode=item.questionType
                             homeworkCommitInfoItem?.scoreMode=item.questionMode
                             homeworkCommitInfoItem?.answerUrl=item.answerUrl
-                            homeworkCommitInfoItem?.typeId=homeworkTypeId
                             homeworkCommitInfoItem?.typeName=homeworkType?.name
                             homeworkCommitInfoItem?.course=homeworkType?.course
                             homeworkCommitInfoItem?.state=homeworkType?.state
+                            homeworkCommitInfoItem?.createStatus=homeworkType?.createStatus
                         }
                     }
                 }

@@ -282,6 +282,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.HomeworkNoticeListActivity" />
+        <activity android:name=".ui.activity.CourseManagerActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

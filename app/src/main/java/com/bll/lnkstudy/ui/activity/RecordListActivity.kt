@@ -13,12 +13,10 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.RecordBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -44,8 +42,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     private var currentPos = -1//当前点击位置
     private var position = 0//当前点击位置
     private var mediaPlayer: MediaPlayer? = null
-    private var messages= mutableListOf<HomeworkMessage.MessageBean>()
-    private var messageId=0
+    private var messages= mutableListOf<HomeworkMessageList.MessageBean>()
     private var messageIndex=0
     private var commitPaths= mutableListOf<String>()
 
@@ -56,9 +53,9 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
-                    map["studentTaskId"]=messageId
+                    map["studentTaskId"]=messages[messageIndex].studentTaskId
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
-                    map["commonTypeId"] = homeworkType?.typeId!!
+                    map["commonTypeId"] = messages[messageIndex].typeId
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -81,14 +78,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         mAdapter?.notifyItemChanged(position)
 
         refreshDataUpdate(recordBean)
-
-        //添加提交详情
-        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            content=messageBean.title
-            homeworkTypeStr=homeworkType?.name
-            course=this@RecordListActivity.course
-            time=System.currentTimeMillis()
-        })
     }
 
     override fun layoutId(): Int {
@@ -265,12 +254,12 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         for (item in messages){
             items.add(ItemList().apply {
                 id=item.studentTaskId
+                typeId=item.typeId
                 name=item.title
             })
         }
         HomeworkMessageSelectorDialog(this, getCurrentScreenPos(), items).builder()
             ?.setOnDialogClickListener {position,it->
-                messageId=it.id
                 messageIndex=position
                 commitPaths.add(recordBeans[position].path)
                 mUploadPresenter.getToken()

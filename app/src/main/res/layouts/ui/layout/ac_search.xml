@@ -70,7 +70,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@id/tv_search"
+            android:id="@+id/tv_search"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:gravity="center"

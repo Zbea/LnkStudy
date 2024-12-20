@@ -32,7 +32,6 @@ import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.common_fragment_title.tv_search
 import kotlinx.android.synthetic.main.common_fragment_title.tv_title
 import kotlinx.android.synthetic.main.common_page_number.btn_page_down
 import kotlinx.android.synthetic.main.common_page_number.btn_page_up
@@ -212,15 +211,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
 
     fun setTitle(titleId: Int) {
         tv_title?.setText(titleId)
-    }
-
-    fun showSearch(isShow:Boolean) {
-        if (isShow){
-            showView(tv_search)
-        }
-        else{
-            disMissView(tv_search)
-        }
     }
 
     /**

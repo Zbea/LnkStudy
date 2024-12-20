@@ -14,6 +14,7 @@ public class ItemList implements Serializable,Comparable<ItemList> {
     public String name;
     public int page;//目录页码
     public boolean isSelfCorrect;//是否自批
+    public int typeId;
     public String date;
     public Drawable icon;
     public Drawable icon_check;

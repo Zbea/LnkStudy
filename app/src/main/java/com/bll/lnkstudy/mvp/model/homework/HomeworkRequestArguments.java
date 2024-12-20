@@ -6,6 +6,7 @@ public class HomeworkRequestArguments {
     public int size;
     public int commonTypeId;
     public int grade;
+    public String name;
+    public int subject;
     public int subType;
-
 }

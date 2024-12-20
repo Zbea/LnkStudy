@@ -16,7 +16,6 @@ import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
-import com.bll.lnkstudy.manager.HomeworkDetailsDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
@@ -24,7 +23,6 @@ import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
-import com.bll.lnkstudy.mvp.model.homework.HomeworkDetailsBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -80,7 +78,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
-                    if (homeworkType?.createStatus==1){
+                    if (homeworkType?.createStatus==2){
                         map["studentTaskId"]=homeworkCommitInfoItem?.messageId!!
                         map["page"]=ToolUtils.getImagesStr(homeworkCommitInfoItem?.contents!!)
                         map["studentUrl"]= ToolUtils.getImagesStr(urls)
@@ -108,13 +106,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         showToast(R.string.toast_commit_success)
         messages.removeAt(homeworkCommitInfoItem?.index!!)
         deleteCommitDraw()
-        //添加提交详情
-        HomeworkDetailsDaoManager.getInstance().insertOrReplace(HomeworkDetailsBean().apply {
-            content=homeworkCommitInfoItem?.title
-            homeworkTypeStr=homeworkType?.name
-            course=homeworkType?.course
-            time=System.currentTimeMillis()
-        })
     }
 
     override fun layoutId(): Int {
@@ -127,7 +118,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
         bookId=homeworkType?.bookId!!
         when(homeworkType?.createStatus){
-            1->{
+            2->{
                 val list = homeworkType?.messages
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
@@ -141,7 +132,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     }
                 }
             }
-            2->{
+            1->{
                 val list = homeworkType?.parents
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
@@ -265,8 +256,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     page = position - 1
                     onContent()
                 }
-            }
-            override fun onEdit(position: Int, title: String) {
             }
         })
     }

@@ -19,8 +19,8 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
-            setVisible(R.id.ll_info, item.createStatus==1||item.createStatus==2)
-            setText(R.id.tv_grade,if (grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
+            setVisible(R.id.ll_info, !item.isCloud&&(item.createStatus==1||item.createStatus==2))
+            setText(R.id.tv_grade,if (item.fromStatus!=1&&grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
             setText(R.id.tv_name, item.name)
             val ivImage=getView<ImageView>(R.id.iv_image)
             when(item.state){

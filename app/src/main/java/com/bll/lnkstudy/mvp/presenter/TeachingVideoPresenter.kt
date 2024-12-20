@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
-import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult
@@ -34,18 +33,5 @@ class TeachingVideoPresenter(view: IContractView.ITeachingVideoView,var screen:I
                 view.onList(tBaseResult.data)
             }
         }, true)
-    }
-
-    fun getType() {
-        val list = RetrofitManager.service.getTeachType()
-        doRequest(list, object : Callback<TeachingVideoType>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<TeachingVideoType>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<TeachingVideoType>) {
-                if (tBaseResult!=null)
-                    view.onType(tBaseResult.data)
-            }
-        }, false)
     }
 }

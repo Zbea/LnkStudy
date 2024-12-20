@@ -15,7 +15,7 @@ android {
         applicationId "com.bll.lnkstudy"
         minSdk 26
         targetSdk 33
-        versionCode 11
+        versionCode 12
         versionName "V 1.0.1"
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -30,7 +30,7 @@ android {
     }
     greendao {
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 124
+        schemaVersion 132
         //dao的包名
         daoPackage 'com.bll.lnkstudy.greendao'
         //生成数据库文件的目录;

@@ -60,7 +60,7 @@ public class PaperDaoManager {
      */
     public List<PaperBean> queryAll(String course, int categoryId) {
         WhereCondition whereCondition1= PaperBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition2= PaperBeanDao.Properties.TypeId.eq(categoryId);
+        WhereCondition whereCondition2= PaperBeanDao.Properties.PaperTypeId.eq(categoryId);
         return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
     }
 

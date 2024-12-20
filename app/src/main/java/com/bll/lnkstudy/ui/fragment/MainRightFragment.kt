@@ -19,8 +19,10 @@ import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
@@ -42,6 +44,7 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_right.iv_course
@@ -77,15 +80,14 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             mMessageAdapter?.setNewData(messages)
         }
     }
-    override fun onCommitSuccess() {
-    }
+
     override fun onExam(exam: ExamItem) {
         examItem=exam
         loadPapers()
         initExamView()
     }
 
-    override fun onCourse(url: String) {
+    override fun onCourseUrl(url: String) {
         if (url!=SPUtil.getString("courseUrl")){
             SPUtil.putString("courseUrl",url)
             GlideUtils.setImageUrl(requireActivity(),url,iv_course)
@@ -112,23 +114,35 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     override fun onCourseItems(courses: MutableList<String>) {
         val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
         for (course in courses) {
+            if (!ItemTypeDaoManager.getInstance().isExist(7,course)){
+                val item= ItemTypeBean().apply {
+                    title=course
+                    type=7
+                    date=System.currentTimeMillis()
+                }
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
+
             val typeId = MethodManager.getExamTypeId(course)
             if (!otherCourse.contains(course)){
                 var path = ""
+                val name="${course}错题本"
+                val localType=HomeworkTypeDaoManager.getInstance().queryByNameGrade(name,mUser?.grade!!)
                 //创建作业错题本
-                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(typeId)) {
+                if (localType==null) {
                     val typeItem = HomeworkTypeBean()
-                    typeItem.name = "${course}错题本"
+                    typeItem.name = name
                     typeItem.course = course
                     typeItem.date = System.currentTimeMillis()
                     typeItem.grade = mUser?.grade!!
-                    typeItem.typeId = typeId
+                    typeItem.typeId = ToolUtils.getDateId()
                     typeItem.state = 5
                     typeItem.createStatus=3
+                    typeItem.fromStatus=3
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
                     path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
                 } else {
-                    path = FileAddress().getPathScreenHomework("${course}错题本", mUser?.grade!!)
+                    path = FileAddress().getPathScreenHomework(name, mUser?.grade!!)
                 }
                 FileUtils.mkdirs(path)
             }
@@ -145,7 +159,15 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
             }
         }
+
         if (courses.isNotEmpty() && courses != MethodManager.getCourses()) {
+            val courseItems=ItemTypeDaoManager.getInstance().queryAll(7)
+            //将本地不存在课本清除
+            for (item in courseItems){
+                if (!courses.contains(item.title)){
+                    ItemTypeDaoManager.getInstance().deleteBean(item)
+                }
+            }
             MethodManager.saveCourses(courses)
             EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
         }
@@ -211,7 +233,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             tv_exam_title.text=subject+"  "+name
             tv_exam_time.text=DateUtils.longToHour(time)+"  提交"
             rl_exam.setOnClickListener {
-                val pathStr = FileAddress().getPathTestPaper(commonTypeId, id)
+                val pathStr = FileAddress().getPathTestPaper(subject,commonTypeId, id)
                 val files = FileUtils.getAscFiles(pathStr)
                 if (files==null){
                     showLoading()
@@ -329,7 +351,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (examItem?.examUrl.isNullOrEmpty()){
             return
         }
-        val pathStr = FileAddress().getPathTestPaper(examItem?.commonTypeId!!, examItem?.id!!)
+        val pathStr = FileAddress().getPathTestPaper(examItem?.subject!!,examItem?.commonTypeId!!, examItem?.id!!)
         val files = FileUtils.getAscFiles(pathStr)
         val images=examItem?.examUrl!!.split(",").toMutableList()
         val paths= mutableListOf<String>()

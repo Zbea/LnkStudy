@@ -36,7 +36,7 @@ class Constants {
         const val SCREEN_RIGHT = 2//右屏
         const val SCREEN_FULL = 3//全屏
         const val STATUS_BAR_SHOW = 2147483647//永不消失
-            const val DEBUG="debug"
+        const val DEBUG="debug"
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"

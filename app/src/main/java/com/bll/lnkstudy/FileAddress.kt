@@ -82,7 +82,7 @@ class FileAddress {
      * 测试卷下载地址
      * categoryId分类id contentId内容id
      */
-    fun getPathTestPaper(categoryId:Int,contentId:Int):String{
+    fun getPathTestPaper(course:String,categoryId:Int,contentId:Int):String{
         return "$TESTPAPER_PATH/$mUserId/testPaperType$categoryId/$contentId"
     }
 
@@ -90,7 +90,7 @@ class FileAddress {
      * 测试卷分类路径
      * categoryId分类id
      */
-    fun getPathTestPaper(categoryId:Int):String{
+    fun getPathTestPaper(course:String,categoryId:Int):String{
         return "$TESTPAPER_PATH/$mUserId/testPaperType$categoryId"
     }
 
@@ -100,6 +100,7 @@ class FileAddress {
     fun getPathHomework(course:String,typeId:Int):String{
         return "$HOMEWORK_PATH/$mUserId/$course/$typeId"
     }
+
     /**
      * 作业保存路径
      */

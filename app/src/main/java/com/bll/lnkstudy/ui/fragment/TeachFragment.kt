@@ -6,23 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.dialog.PopupList
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
-import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.activity.TeachListActivity
-import com.bll.lnkstudy.ui.adapter.TeachCourseAdapter
+import com.bll.lnkstudy.ui.activity.TeachActivity
+import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.common_page_number.tv_page_current
+import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
+import kotlinx.android.synthetic.main.common_fragment_title.tv_semester
 import kotlinx.android.synthetic.main.fragment_list_tab.rv_list
 
 /**
@@ -31,20 +32,14 @@ import kotlinx.android.synthetic.main.fragment_list_tab.rv_list
 class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     private val mPresenter=TeachingVideoPresenter(this,1)
-    private var mAdapter: TeachCourseAdapter? = null
-    private var videoType:TeachingVideoType?=null
-    private var lists = mutableListOf<ItemList>()//列表数据
-    private var flags=0//0课程 1其他
-    private val map= mutableMapOf<Int,List<ItemList>>()
+    private var mAdapter: TeachListAdapter? = null
+    private var currentCourses= mutableListOf<ItemTypeBean>()
+    private var mCourse=""
+    private var semester=1
 
-    override fun onList(list: TeachingVideoList?) {
-    }
-    override fun onType(type: TeachingVideoType) {
-        if (videoType!=type){
-            videoType=type
-            SPUtil.putObj("videoType",type)
-            initTab()
-        }
+    override fun onList(list: TeachingVideoList) {
+        setPageNumber(list.total)
+        mAdapter?.setNewData(list.list)
     }
 
     override fun getLayoutId(): Int {
@@ -52,118 +47,129 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun initView() {
+        showView(tv_grade,tv_semester)
         setTitle(DataBeanManager.listTitle[7])
-        pageSize=8
+        pageSize=16
+
+        grade=mUser?.grade!!
+
+        tv_grade.text=DataBeanManager.getGradeStr(grade)
+        tv_grade.setOnClickListener {
+            PopupList(requireActivity(), DataBeanManager.popupGrades(grade), tv_grade, tv_grade.width, 5).builder().setOnSelectListener { item ->
+                grade = item.id
+                tv_grade.text = item.name
+                pageIndex = 1
+                fetchData()
+            }
+        }
+
+        val semesters=DataBeanManager.popupSemesters()
+        tv_semester.text=semesters[0].name
+        tv_semester.setOnClickListener {
+            PopupList(requireActivity(), semesters, tv_semester, tv_semester.width, 5).builder().setOnSelectListener { item ->
+                semester=item.id
+                tv_semester.text = item.name
+                pageIndex = 1
+                fetchData()
+            }
+        }
 
         initRecyclerView()
 
-        initDialog(1)
+        initTab()
     }
 
     override fun lazyLoad() {
-        pageIndex=1
-        if(NetworkUtil(requireActivity()).isNetworkConnected()){
-            mPresenter.getType()
-        }
-        else{
-            if (videoType==null&&SPUtil.getObj("videoType",TeachingVideoType::class.java)!=null){
-                videoType=SPUtil.getObj("videoType",TeachingVideoType::class.java)
-                initTab()
-            }
-        }
     }
 
     //设置头部索引
     private fun initTab() {
-        itemTabTypes.clear()
-        itemTabTypes.add(ItemTypeBean().apply {
-            title="课程"
-            isCheck=true
-        })
-        for (i in videoType?.types!!.indices) {
-            itemTabTypes.add(ItemTypeBean().apply {
-                title= videoType?.types!![i].desc
-            })
+        val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
+        if (currentCourses!=courseItems){
+            itemTabTypes.clear()
+            currentCourses=courseItems
+            mCourse=currentCourses[0].title
+            for (i in currentCourses.indices) {
+                itemTabTypes.add(ItemTypeBean().apply {
+                    title=currentCourses[i].title
+                    isCheck=i==0
+                })
+            }
+            mTabTypeAdapter?.setNewData(itemTabTypes)
+            fetchData()
         }
-        mTabTypeAdapter?.setNewData(itemTabTypes)
-
-        lists= MethodManager.getItemLists("courses")
-        pageNumberView()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
+        mCourse=currentCourses[position].title
         pageIndex=1
-        lists = if (position==0){
-            flags=0
-            MethodManager.getItemLists("courses")
-        } else{
-            flags=1
-            videoType?.subType?.get(position.toString()) as MutableList<ItemList>
-        }
-        pageNumberView()
+        fetchData()
     }
 
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(requireActivity(),30f),
-            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),30f),
             DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        mAdapter = TeachCourseAdapter(R.layout.item_teach_course, null).apply {
-            rv_list.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(activity, 4)
+        mAdapter = TeachListAdapter(R.layout.item_teach_content, null).apply {
+            //创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 25f)))
+            setEmptyView(R.layout.common_empty)
             setOnItemClickListener { _, _, position ->
                 if (!MethodManager.getSchoolPermissionAllow(1)){
-                    showToast(1,"学校不允许该时间段播放义教视频")
+                    showToast(1,"学校不允许该时间段播放视教视频")
                 }
                 else{
                     if (MethodManager.getParentPermissionAllow(1)){
-                        val intent= Intent(activity, TeachListActivity::class.java).setFlags(flags)
-                        val bundle= Bundle()
-                        bundle.putSerializable("item", data[position])
-                        intent.putExtra("bundle", bundle)
-                        customStartActivity(intent)
+                        if (NetworkUtil(requireActivity()).isWifiConnected()){
+                            val intent= Intent(requireActivity(), TeachActivity::class.java)
+                            val bundle= Bundle()
+                            bundle.putSerializable("teach", mAdapter?.data?.get(position))
+                            intent.putExtra("bundle", bundle)
+                            customStartActivity(intent)
+                        }
+                        else{
+                            showToast("WIFI未打开，无法播放视频")
+                        }
                     }
                     else{
-                        showToast(1,"家长不允许该时间段播放义教视频")
+                        showToast(1,"家长不允许该时间段播放视教视频")
                     }
                 }
             }
         }
-    }
-
-    //翻页处理
-    private fun pageNumberView(){
-        map.clear()
-        val pageTotal= lists.size
-        setPageNumber(pageTotal)
-        pageCount= kotlin.math.ceil(pageTotal.toDouble() / pageSize).toInt()
-        var toIndex=pageSize
-        for(i in 0 until pageCount){
-            val index=i*pageSize
-            if(index+pageSize>pageTotal){
-                toIndex=pageTotal-index
-            }
-            val newList = lists.subList(index,index+toIndex)
-            map[i+1]=newList
-        }
-        fetchData()
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(activity, 20f)))
     }
 
     override fun fetchData() {
-        if (map[pageIndex]!=null){
-            lists= (map[pageIndex] as MutableList<ItemList>?)!!
-            tv_page_current.text=pageIndex.toString()
-        }
-        mAdapter?.setNewData(lists)
+        val map=HashMap<String,Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["grade"] = grade
+        map["type"] = DataBeanManager.getCourseId(mCourse)
+        map["semester"] = semester
+        mPresenter.getCourseList(map)
+    }
+
+    override fun onRefreshData() {
+        fetchData()
     }
 
     override fun onNetworkConnectionSuccess() {
-        lazyLoad()
+        fetchData()
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            Constants.COURSEITEM_EVENT -> {
+                initTab()
+            }
+        }
     }
 }

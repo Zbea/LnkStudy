@@ -68,7 +68,7 @@ public class MethodManager {
 
     private static User user = SPUtil.INSTANCE.getObj("user", User.class);
 
-    public static void getUser() {
+    public static void refreshUser() {
         user = SPUtil.INSTANCE.getObj("user", User.class);
     }
 

@@ -38,17 +38,38 @@
             android:visibility="gone"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             />
+        <TextView
+            android:id="@+id/tv_grade"
+            android:layout_width="@dimen/navigation_type_width"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24"
+            android:visibility="gone"
+            android:lines="1"
+            android:ellipsize="end"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
 
         <TextView
-            android:id="@+id/tv_search"
-            android:layout_width="200dp"
+            android:id="@+id/tv_semester"
+            android:layout_width="@dimen/navigation_type_width"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
-            android:drawableStart="@mipmap/icon_search"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/dp_20"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24"
             android:visibility="gone"
+            android:lines="1"
+            android:ellipsize="end"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
         <TextView

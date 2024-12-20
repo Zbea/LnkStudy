@@ -40,12 +40,12 @@ public class HomeworkTypeBean implements Serializable {
     public String bgResId;//当前作业本背景样式id
     public String course;
     public int bookId;
-    public int createStatus=0;//自建作业本0老师创建1家长创建2自动创建错题本3
+    public int createStatus=0;//自建作业本0家长创建1老师创建2自动创建错题本3
+    public int fromStatus=0;//家长创建1老师创建2
     public int messageTotal=0;//作业消息数目
     public boolean isCloud;
     @SerializedName("addType")
-    public Integer autoState;//1生成作业本 0创建作业本
-
+    public int autoState=0;//1生成作业本 0创建作业本
     @Transient
     public int cloudId;
     @Transient
@@ -59,13 +59,13 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public boolean isMessage;//收到通知
     @Transient
-    public List<HomeworkMessage.MessageBean> messages;
+    public List<HomeworkMessageList.MessageBean> messages;
     @Transient
-    public List<ParentHomeworkBean> parents;
+    public List<ParentHomeworkMessageList.ParentHomeworkBean> parents;
 
-    @Generated(hash = 895573776)
+    @Generated(hash = 1072702211)
     public HomeworkTypeBean(Long id, long studentId, Long teacherId, String teacher, String name, int grade, int typeId, int state, long date, String contentResId,
-            String bgResId, String course, int bookId, int createStatus, int messageTotal, boolean isCloud, Integer autoState) {
+            String bgResId, String course, int bookId, int createStatus, int fromStatus, int messageTotal, boolean isCloud, int autoState) {
         this.id = id;
         this.studentId = studentId;
         this.teacherId = teacherId;
@@ -80,6 +80,7 @@ public class HomeworkTypeBean implements Serializable {
         this.course = course;
         this.bookId = bookId;
         this.createStatus = createStatus;
+        this.fromStatus = fromStatus;
         this.messageTotal = messageTotal;
         this.isCloud = isCloud;
         this.autoState = autoState;
@@ -222,6 +223,21 @@ public class HomeworkTypeBean implements Serializable {
 
     public void setAutoState(Integer autoState) {
         this.autoState = autoState;
+    }
+
+
+    public void setAutoState(int autoState) {
+        this.autoState = autoState;
+    }
+
+
+    public int getFromStatus() {
+        return this.fromStatus;
+    }
+
+
+    public void setFromStatus(int fromStatus) {
+        this.fromStatus = fromStatus;
     }
 
 }

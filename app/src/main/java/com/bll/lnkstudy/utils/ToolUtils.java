@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,17 +34,8 @@ public class ToolUtils {
      * @return
      */
     public static int getDateId(){
-        long date=System.currentTimeMillis()/1000;
-        return Long.valueOf(date).intValue();
-    }
-
-    /**
-     * 得到唯一id
-     * @return
-     */
-    public static int getDateId(long time){
-        long date=time/1000;
-        return Long.valueOf(date).intValue();
+        long currentTimeMillis = System.currentTimeMillis();
+        return (int) (currentTimeMillis % Integer.MAX_VALUE);
     }
 
     public static String getImagesStr(List<?> images){

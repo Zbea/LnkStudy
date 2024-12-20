@@ -120,21 +120,39 @@ class CloudHomeworkFragment:BaseCloudFragment(){
 
     private fun downloadItem(){
         val homeworkTypeBean=homeworkTypes[position]
-        //如果是题卷本
-        if (homeworkTypeBean.state==4){
-            if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
-                downloadBook(homeworkTypeBean)
+        when(homeworkTypeBean.state){
+            4->{
+                if (!HomeworkBookDaoManager.getInstance().isExist(homeworkTypeBean.bookId)){
+                    downloadBook(homeworkTypeBean)
+                }
+                else{
+                    showToast(R.string.toast_downloaded)
+                }
             }
-            else{
-                showToast(R.string.toast_downloaded)
+            5->{
+                val localItem=HomeworkTypeDaoManager.getInstance().queryByNameGrade(homeworkTypeBean.name,homeworkTypeBean.grade)
+                if (localItem==null){
+                    download(homeworkTypeBean)
+                }
+                else{
+                    showToast(R.string.toast_downloaded)
+                }
             }
-        }
-        else{
-            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
-                download(homeworkTypeBean)
+            2->{
+                if (!if (homeworkTypeBean.fromStatus==1) HomeworkTypeDaoManager.getInstance().isExistParentType(homeworkTypeBean.typeId) else HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
+                    download(homeworkTypeBean)
+                }
+                else{
+                    showToast(R.string.toast_downloaded)
+                }
             }
-            else{
-                showToast(R.string.toast_downloaded)
+            else->{
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
+                    download(homeworkTypeBean)
+                }
+                else{
+                    showToast(R.string.toast_downloaded)
+                }
             }
         }
     }
@@ -167,6 +185,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         override fun onFinish() {
                             item.id=null//设置数据库id为null用于重新加入
                             item.createStatus=0
+                            item.autoState=0
                             item.date=System.currentTimeMillis()
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                             if (item.state!=5){
@@ -182,7 +201,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                             DataUpdateManager.createDataUpdateState(2,paperBean.contentId,2,paperBean.typeId,1,Gson().toJson(paperBean),paperBean.filePath)
                                         }
                                     }
-                                    2->{
+                                    2,6->{
                                         val homeworks=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkContentBean>>() {}.type) as MutableList<HomeworkContentBean>
                                         for (homeworkContentBean in homeworks){
                                             homeworkContentBean.id=null//设置数据库id为null用于重新加入

@@ -17,15 +17,16 @@ import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
-import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
+import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.presenter.SystemManagerPresenter
+import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkNoticeView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
 import com.bll.lnkstudy.mvp.view.IContractView.ISystemView
 import com.bll.lnkstudy.ui.activity.HomeworkNoticeListActivity
@@ -75,9 +76,10 @@ import java.util.Random
 /**
  * 首页
  */
-class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
+class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomeworkNoticeView {
     private val mSystemPresenter = SystemManagerPresenter(this, 1)
     private val mMainLeftPresenter = MainLeftPresenter(this, 1)
+    private val mHomeworkNoticePresenter=HomeworkNoticePresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
     private var correctAdapter: MainHomeworkNoticeAdapter? = null
     private var mNoticeAdapter: MainHomeworkNoticeAdapter? = null
@@ -90,26 +92,15 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
     override fun onUpdateInfo(item: SystemUpdateInfo) {
         AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
     }
-
     override fun onAppUpdate(item: AppUpdateBean) {
         if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
             updateDialog = AppUpdateDialog(requireActivity(), 1, item).builder()
             downLoadStart(item)
         }
     }
-
-    override fun onCorrect(list: HomeworkNoticeList) {
-        correctAdapter?.setNewData(list.list)
-    }
-
-    override fun onType(type: TeachingVideoType) {
-        SPUtil.putObj("videoType", type)
-    }
-
     override fun onParentPermission(permissionParentBean: PermissionParentBean) {
         SPUtil.putObj("parentPermission", permissionParentBean)
     }
-
     override fun onSchoolPermission(permissionSchoolBean: PermissionSchoolBean) {
         if (permissionSchoolBean.config.isNotEmpty()) {
             val item = Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
@@ -118,10 +109,13 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             SPUtil.removeObj("schoolPermission")
         }
     }
-
+    override fun onCorrect(list: HomeworkNoticeList) {
+        correctAdapter?.setNewData(list.list)
+    }
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
         mNoticeAdapter?.setNewData(list.list)
     }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_left
@@ -199,13 +193,15 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
             systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
             mSystemPresenter.checkSystemUpdate(systemUpdateMap)
 
-            mMainLeftPresenter.getHomeworkNotice()
             mMainLeftPresenter.getAppUpdate()
             mMainLeftPresenter.active()
-            mMainLeftPresenter.getCorrectNotice()
-            mMainLeftPresenter.getTeachingType()
             mMainLeftPresenter.getParentPermission()
             mMainLeftPresenter.getSchoolPermission()
+
+            val map=HashMap<String,Any>()
+            map["size"]=7
+            mHomeworkNoticePresenter.getHomeworkNotice(map)
+            mHomeworkNoticePresenter.getCorrectNotice(map)
         }
     }
 
@@ -401,8 +397,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView {
                 findDataPlan()
             }
             MAIN_HOMEWORK_NOTICE_CLEAR_EVENT -> {
-                mMainLeftPresenter.deleteHomeworkNotice()
-                mMainLeftPresenter.deleteCorrectNotice()
+                mHomeworkNoticePresenter.deleteHomeworkNotice()
+                mHomeworkNoticePresenter.deleteCorrectNotice()
             }
             CALENDER_SET_EVENT -> {
                 showCalenderView()

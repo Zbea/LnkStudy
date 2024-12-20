@@ -110,7 +110,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         flags=exam?.type!!
         paths = exam?.paths!!
         pageCount = paths.size
-        pathStr = FileAddress().getPathTestPaper(exam!!.commonTypeId, exam!!.id)
+        pathStr = FileAddress().getPathTestPaper(exam?.subject!!,exam!!.commonTypeId, exam!!.id)
         commonTypeId=exam?.commonTypeId!!
 
         for (i in paths.indices){
@@ -121,7 +121,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_expand,iv_tool,iv_draft)
+        disMissView(iv_catalog,iv_expand,iv_tool)
         setViewElikUnable(iv_geometry)
 
         if (grade>4){

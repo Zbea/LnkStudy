@@ -1,11 +1,15 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
-import com.bll.lnkstudy.mvp.model.paper.PaperList
-import com.bll.lnkstudy.mvp.model.paper.PaperType
+import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.net.*
+import com.bll.lnkstudy.net.BasePresenter
+import com.bll.lnkstudy.net.BaseResult
+import com.bll.lnkstudy.net.Callback
+import com.bll.lnkstudy.net.RequestUtils
+import com.bll.lnkstudy.net.RetrofitManager
 
 class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BasePresenter<IContractView.IPaperView>(view) {
 
@@ -14,24 +18,24 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
      */
     fun getTypeList(map :HashMap<String,Any>) {
         val type = RetrofitManager.service.getPaperType(map)
-        doRequest(type, object : Callback<PaperType>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<PaperType>): Boolean {
+        doRequest(type, object : Callback<List<PaperTypeBean>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<List<PaperTypeBean>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<PaperType>) {
+            override fun success(tBaseResult: BaseResult<List<PaperTypeBean>>) {
                 if (tBaseResult.data!=null)
-                    view.onTypeList(tBaseResult.data?.list)
+                    view.onTypeList(tBaseResult.data)
             }
         }, false)
     }
 
-    fun getPaperCorrectList(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getPaperCorrectList(map)
-        doRequest(type, object : Callback<PaperList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<PaperList>): Boolean {
+    fun getPaperList(map: HashMap<String, Any>) {
+        val type = RetrofitManager.service.getPaperList(map)
+        doRequest(type, object : Callback<HomeworkPaperList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<HomeworkPaperList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<PaperList>) {
+            override fun success(tBaseResult: BaseResult<HomeworkPaperList>) {
                 view.onList(tBaseResult.data)
             }
         }, false)
@@ -42,13 +46,13 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
         val body= RequestUtils.getBody(
             Pair("studentTaskId",id)
         )
-        val commit = RetrofitManager.service.onDownloadCompletePaper(body)
+        val commit = RetrofitManager.service.onDownloadPaper(body)
         doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onDeleteSuccess()
+                view.onDownloadSuccess()
             }
         }, false)
     }
@@ -76,7 +80,7 @@ class TestPaperPresenter(view: IContractView.IPaperView,val screen:Int=0): BaseP
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onDeleteSuccess()
+                view.onDownloadSuccess()
             }
         }, false)
     }

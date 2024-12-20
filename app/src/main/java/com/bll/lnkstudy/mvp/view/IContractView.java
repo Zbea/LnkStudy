@@ -10,6 +10,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.SystemUpdateInfo;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList;
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamItem;
 import com.bll.lnkstudy.mvp.model.MessageList;
@@ -20,15 +21,13 @@ import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookStore;
 import com.bll.lnkstudy.mvp.model.book.BookStoreType;
 import com.bll.lnkstudy.mvp.model.cloud.CloudList;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessage;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkBean;
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessage;
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList;
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
 import com.bll.lnkstudy.mvp.model.painting.PaintingList;
-import com.bll.lnkstudy.mvp.model.paper.PaperList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
@@ -133,28 +132,25 @@ public interface IContractView {
     //教学视频
     interface ITeachingVideoView extends IBaseView {
         void onList(TeachingVideoList list);
-        void onType(TeachingVideoType type);//视频 其他分类
     }
 
     interface IMainLeftView extends IBaseView {
-        void onHomeworkNotice(HomeworkNoticeList list);
         void onAppUpdate(AppUpdateBean item);
-        void onCorrect(HomeworkNoticeList list);
-        void onType(TeachingVideoType type);
         void onParentPermission(PermissionParentBean permissionParentBean);
         void onSchoolPermission(PermissionSchoolBean permissionSchoolBean);
     }
 
     interface IMainRightView extends IBaseView {
         void onExam(ExamItem exam);
-        void onCourse(String url);
+        void onCourseUrl(String url);
         void onClassGroupList(List<ClassGroup> classGroups);
         void onCourseItems(List<String> courseItems);
     }
 
     interface IHomeworkNoticeView extends IBaseView {
-        void onHomeworkNotice(HomeworkNoticeList list);
-        void onCorrect(HomeworkNoticeList list);
+        default void onHomeworkNotice(HomeworkNoticeList list){}
+        default void onCorrect(HomeworkNoticeList list){}
+        default void onClearSuccess(){}
     }
 
     //公共接口
@@ -163,31 +159,26 @@ public interface IContractView {
          * 获取考卷分类
          */
         void onTypeList(List<PaperTypeBean> list);
-        void onList(PaperList paper);
-        void onDeleteSuccess();
+        void onList(HomeworkPaperList list);
+        void onDownloadSuccess();
         void onExamList(List<ExamCorrectBean> list);
     }
 
     //作业
     interface IHomeworkView extends IBaseView{
-        /**
-         * 获取作业分类
-         */
-        void onTypeList(List<HomeworkTypeBean> list);
-        void onTypeParentList(List<ParentTypeBean> list);
-        void onMessageList(Map<String, HomeworkMessage> map);
-        void onParentMessageList(Map<String, ParentHomeworkMessage> map);
-        void onListReel(Map<String, HomeworkPaperList> map);
-        void onParentReel(Map<String, List<ParentHomeworkBean>> map);
-        /**
-         * 下发作业下载成功
-         */
-        void onDownloadSuccess();
+        default void onCommitDetails(HomeworkCommitMessageList list){}
+        default void onTypeList(List<HomeworkTypeBean> list){}
+        default void onTypeParentList(List<ParentTypeBean> list) {}
+        default void onMessageList(Map<String, HomeworkMessageList> map){};
+        default void onParentMessageList(Map<String, ParentHomeworkMessageList> map){};
+        default void onPaperList(HomeworkPaperList list){};
+        default void onParentReel(ParentHomeworkMessageList list) {}
+        default void onDownloadSuccess() {}
     }
 
     interface IMessageView extends IBaseView{
         void onList(MessageList message);
-        void onCommitSuccess();
+        default void onCommitSuccess(){};
     }
 
     //云

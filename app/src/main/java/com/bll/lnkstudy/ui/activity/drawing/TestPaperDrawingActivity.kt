@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 class TestPaperDrawingActivity: BaseDrawingActivity(){
 
     private var course=""
-    private var typeId=0//分组id
+    private var paperTypeId=0//分组id
     private var daoManager: PaperDaoManager?=null
     private var papers= mutableListOf<PaperBean>()
     private var paper: PaperBean?=null
@@ -45,12 +45,12 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
 
     override fun initData() {
         course=intent.getStringExtra("course").toString()
-        typeId=intent.getIntExtra("typeId",0)
+        paperTypeId=intent.getIntExtra("typeId",0)
         currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
 
         daoManager= PaperDaoManager.getInstance()
 
-        papers= daoManager?.queryAll(course,typeId) as MutableList<PaperBean>
+        papers= daoManager?.queryAll(course,paperTypeId) as MutableList<PaperBean>
 
     }
 
@@ -82,8 +82,6 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
                     page = 0
                     onContent()
                 }
-            }
-            override fun onEdit(position: Int, title: String) {
             }
         })
     }

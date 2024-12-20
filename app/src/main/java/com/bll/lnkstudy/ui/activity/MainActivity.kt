@@ -460,9 +460,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         //题卷本
         HomeworkBookDaoManager.getInstance().clear()
         HomeworkBookCorrectDaoManager.getInstance().clear()
-        //清楚学情
-        CorrectDetailsManager.getInstance().clear()
-        HomeworkDetailsDaoManager.getInstance().clear()
 
         //删除本地考卷分类
         PaperTypeDaoManager.getInstance().clear()
@@ -479,7 +476,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         AppDaoManager.getInstance().clear()
 
         ItemTypeDaoManager.getInstance().clear()
-        HomeworkDetailsDaoManager.getInstance().clear()
         CalenderDaoManager.getInstance().clear()
 
         FileUtils.deleteFile(File(Constants.BOOK_PATH))
@@ -527,7 +523,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                                 1 -> {
                                     downloadHomeworkPaper(item)
                                 }
-                                2 -> {//作业本内容
+                                2,6 -> {//作业本内容
                                     downloadHomework(item)
                                 }
                                 3 -> {//朗读本内容
@@ -1034,10 +1030,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     private fun clearSemesterData(){
         //清除作业通知（每学期上学开始）
         EventBus.getDefault().post(Constants.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT)
-        //清除批改详情
-        CorrectDetailsManager.getInstance().clear()
-        //清除作业提交详情
-        HomeworkDetailsDaoManager.getInstance().clear()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

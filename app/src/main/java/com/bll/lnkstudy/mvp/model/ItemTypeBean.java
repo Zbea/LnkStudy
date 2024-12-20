@@ -22,7 +22,7 @@ public class ItemTypeBean implements Serializable {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
-    public int type;//1截图2笔记3画本4书法5书库分类6日记标题
+    public int type;//1截图2笔记3画本4书法5书库分类6日记标题7当前科目
     public long date;
     public String path;
     public int grade;

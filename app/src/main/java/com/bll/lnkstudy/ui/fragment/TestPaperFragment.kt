@@ -14,13 +14,11 @@ import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.manager.CorrectDetailsManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.homework.CorrectDetailsBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.mvp.model.paper.PaperList
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.TestPaperPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -51,52 +49,53 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         for (item in list) {
             //自动生成的测验卷分类
             if (item.autoState==1){
-                if (!PaperTypeDaoManager.getInstance().isExistPaperTypeAuto(item.name,mCourse,item.grade)){
+                val localItem= PaperTypeDaoManager.getInstance().queryByName(item.name,mCourse,item.grade)
+                if (localItem==null){
                     item.typeId=ToolUtils.getDateId()
-                    item.createStatus=1
-                    item.course = mCourse
-                    PaperTypeDaoManager.getInstance().insertOrReplace(item)
-                    //创建增量数据
-                    DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
+                    insertPaperType(item)
+                }
+                else{
+                    if (localItem.createStatus==0){
+                        editPaperTypeCreate(localItem,1)
+                    }
                 }
             }
             else{
                 createTypeIds.add(item.typeId)
                 if (!PaperTypeDaoManager.getInstance().isExistPaperType(item.typeId)) {
-                    item.createStatus=1
-                    item.course = mCourse
-                    PaperTypeDaoManager.getInstance().insertOrReplace(item)
-                    //创建增量数据
-                    DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
+                    insertPaperType(item)
                 }
                 else{
                     val paperTypeBean= PaperTypeDaoManager.getInstance().queryById(item.typeId)
                     if (paperTypeBean.name!=item.name){
-                        paperTypeBean.name=item.name
-                        PaperTypeDaoManager.getInstance().insertOrReplace(paperTypeBean)
-                        DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(paperTypeBean))
+                        editPaperTypeName(paperTypeBean,item.name)
                     }
                 }
             }
         }
 
-        val localTypes= PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)
+        val autoTypes= PaperTypeDaoManager.getInstance().queryAllByCreate(mCourse, 1,1)
+        for (item in autoTypes){
+            if (!isAutoExistLineType(item,list)){
+                editPaperTypeCreate(item,0)
+            }
+        }
+
+        val localTypes= PaperTypeDaoManager.getInstance().queryAllByCreate(mCourse,1,0)
         for (item in localTypes){
             if (!createTypeIds.contains(item.typeId)){
-                item.createStatus=0
-                PaperTypeDaoManager.getInstance().insertOrReplace(item)
-                DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(item))
+                editPaperTypeCreate(item,0)
             }
         }
 
         fetchData()
     }
 
-    override fun onList(paperList: PaperList?) {
-        loadPapers(paperList?.list!!)
+    override fun onList(paperList: HomeworkPaperList) {
+        loadPapers(paperList.list)
     }
 
-    override fun onDeleteSuccess() {
+    override fun onDownloadSuccess() {
     }
 
     override fun onExamList(list: MutableList<ExamCorrectBean>) {
@@ -155,7 +154,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             }
             setOnItemLongClickListener { adapter, view, position ->
                 val item = paperTypes[position]
-                if (item.createStatus!=0){
+                if (item.createStatus != 0&&!item.isCloud){
                     return@setOnItemLongClickListener true
                 }
                 CommonDialog(requireActivity()).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(
@@ -168,7 +167,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                             PaperDaoManager.getInstance().delete(item.course, item.typeId)
                             //删除增量更新
                             DataUpdateManager.deleteDateUpdate(3,item.typeId)
-                            val path = FileAddress().getPathTestPaper(item.typeId)
+                            val path = FileAddress().getPathTestPaper(mCourse,item.typeId)
                             FileUtils.deleteFile(File(path))
                             remove(position)
                         }
@@ -178,21 +177,60 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         }
     }
 
+    private fun insertPaperType(item:PaperTypeBean){
+        item.createStatus=1
+        item.course = mCourse
+        item.date=System.currentTimeMillis()
+        PaperTypeDaoManager.getInstance().insertOrReplace(item)
+        //创建增量数据
+        DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
+    }
+
+    private fun editPaperTypeName(item: PaperTypeBean,name:String){
+        item.name=name
+        PaperTypeDaoManager.getInstance().insertOrReplace(item)
+        DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(item))
+    }
+
+    private fun editPaperTypeCreate(item: PaperTypeBean,createStatus:Int){
+        item.createStatus=createStatus
+        PaperTypeDaoManager.getInstance().insertOrReplace(item)
+        DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(item))
+    }
+
+    /**
+     * 验证本地自动生成数据是否线上还存在
+     */
+    private fun isAutoExistLineType(item: PaperTypeBean, list:List<PaperTypeBean>):Boolean{
+        var isExist=false
+        for (lineItem in list){
+            if (lineItem.autoState==1){
+                if (lineItem.name==item.name&&lineItem.grade==item.grade){
+                    isExist=true
+                }
+            }
+        }
+        return isExist
+    }
+
     /**
      * 下载收到的测试卷
      */
-    private fun loadPapers(papers: MutableList<PaperList.PaperListBean>) {
+    private fun loadPapers(papers: MutableList<HomeworkPaperList.HomeworkPaperListBean>) {
         for (item in papers) {
-            var typeId=item.typeId
-            //如果是默认创建的作业本
+            var paperTypeId=item.typeId
             if (item.autoState==1){
-                val paperType=PaperTypeDaoManager.getInstance().queryByName(item.typeName,item.grade)
-                typeId=paperType.typeId
+                val homeworkTypeBean= PaperTypeDaoManager.getInstance().queryByName(item.typeName,mCourse,item.grade) ?: continue
+                paperTypeId=homeworkTypeBean.typeId
             }
-            refreshView(typeId,item)
+            else{
+                if (!PaperTypeDaoManager.getInstance().isExistPaperType(item.typeId)){
+                    continue
+                }
+            }
 
             val images = item.submitUrl.split(",").toMutableList()
-            val pathStr = FileAddress().getPathTestPaper(typeId, item.id)
+            val pathStr = FileAddress().getPathTestPaper(mCourse,paperTypeId, item.id)
             val paths = mutableListOf<String>()
             val drawPaths = mutableListOf<String>()
             for (i in images.indices) {
@@ -204,8 +242,9 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
+                        refreshView(paperTypeId,item)
                         mPresenter.downloadCompletePaper(item.id)
-                        savePaperData(typeId,paths,drawPaths,item)
+                        savePaperData(paperTypeId,paths,drawPaths,item)
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -223,10 +262,8 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             val images=item.teacherUrl.split(",").toMutableList()
             val typeId=MethodManager.getExamTypeId(mCourse)
             item.typeId=typeId
-            //刷新考试分类成绩
-            refreshExamView(item)
 
-            val pathStr = FileAddress().getPathTestPaper(item.typeId, item.id)
+            val pathStr = FileAddress().getPathTestPaper(mCourse,item.typeId, item.id)
             val paths = mutableListOf<String>()
             val drawPaths = mutableListOf<String>()
             for (i in images.indices) {
@@ -238,6 +275,9 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
+                        //刷新考试分类成绩
+                        refreshExamView(item)
+
                         mPresenter.downloadCompleteExam(item.id)
                         saveExamData(paths,drawPaths,item)
                     }
@@ -252,15 +292,15 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     /**
      *  下载完成后，将考卷保存在本地试卷里面
      */
-    private fun savePaperData(typeId: Int,paths:List<String>,drawPaths:List<String>,item:PaperList.PaperListBean){
-        val papers= PaperDaoManager.getInstance().queryAll(mCourse,typeId)
-        val path=FileAddress().getPathTestPaper(typeId, item.id)
+    private fun savePaperData(paperTypeId: Int,paths:List<String>,drawPaths:List<String>,item:HomeworkPaperList.HomeworkPaperListBean){
+        val papers= PaperDaoManager.getInstance().queryAll(mCourse,paperTypeId)
+        val path=FileAddress().getPathTestPaper(mCourse,paperTypeId, item.id)
         //保存本次考试
         val paper= PaperBean().apply {
             contentId=item.id
             course=item.subject
-            paperTypeId=typeId
-            this.typeId=typeId
+            this.paperTypeId=paperTypeId
+            this.typeId=item.typeId
             typeName=item.typeName
             grade=item.grade
             title=item.title
@@ -276,8 +316,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,paper.contentId,2,paper.paperTypeId,Gson().toJson(paper),paper.filePath)
-        //保存批改
-        saveCorrectDetails(item.typeName,item.title,item.submitUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
     }
 
     /**
@@ -295,7 +333,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             typeName="学校考试卷"
             title=item.typeName
             grade=this@TestPaperFragment.grade
-            filePath=FileAddress().getPathTestPaper(item.typeId, item.id)
+            filePath=FileAddress().getPathTestPaper(mCourse,item.typeId, item.id)
             this.paths=paths
             this.drawPaths=drawPaths
             page=papers.size
@@ -307,41 +345,20 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,paper.contentId,2,paper.paperTypeId,Gson().toJson(paper),paper.filePath)
-        //保存批改
-        saveCorrectDetails("学校考试卷",item.typeName,item.teacherUrl,item.questionType,item.questionMode,item.score,item.question,item.answerUrl)
-    }
-
-    /**
-     * 保存批改详情
-     */
-    private fun saveCorrectDetails(typeStr:String,title:String,url:String,correctMode:Int,scoreMode:Int,score: Double,correctJson:String,answerUrl:String){
-        CorrectDetailsManager.getInstance().insertOrReplace(CorrectDetailsBean().apply {
-            type=1
-            course=mCourse
-            this.typeStr=typeStr
-            this.title=title
-            date=System.currentTimeMillis()
-            this.url=url
-            this.correctMode=correctMode
-            this.scoreMode=scoreMode
-            this.score=score
-            this.correctJson=correctJson
-            this.answerUrl=answerUrl
-        })
     }
 
     /**
      * 刷新批改分 循环遍历
      */
-    private fun refreshView(typeId:Int,item: PaperList.PaperListBean) {
+    private fun refreshView(paperTypeId:Int,item: HomeworkPaperList.HomeworkPaperListBean) {
         for (ite in paperTypes) {
-            if (item.typeId == typeId) {
+            if (item.typeId == paperTypeId) {
                 ite.score = item.score
                 ite.paperTitle=item.title
                 ite.isPg = true
+                mAdapter?.notifyItemChanged(paperTypes.indexOf(ite))
             }
         }
-        mAdapter?.notifyDataSetChanged()
     }
 
     /**
@@ -361,8 +378,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private fun fetchTypes() {
         if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             val map = HashMap<String, Any>()
-            map["size"] = 100
-            map["grade"] = mUser?.grade!!
             map["type"] = 1
             map["subject"] = DataBeanManager.getCourseId(mCourse)
             mPresenter.getTypeList(map)
@@ -372,13 +387,12 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun fetchData() {
-        val types=PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse,pageIndex,pageSize)
-        if (paperTypes != types) {
-            val totalTypes = PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)
-            paperTypes=types
-            mAdapter?.setNewData(paperTypes)
-            setPageNumber(totalTypes.size)
-        }
+        val totalTypes = PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse)
+        setPageNumber(totalTypes.size)
+
+        paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse,pageIndex,pageSize)
+        mAdapter?.setNewData(paperTypes)
+
         if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
             fetchCorrectPaper()
     }
@@ -403,7 +417,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             map["sendStatus"] = 2
             map["subject"]=mCourse
             //获取测试卷批改下发列表
-            mPresenter.getPaperCorrectList(map)
+            mPresenter.getPaperList(map)
         }
     }
 

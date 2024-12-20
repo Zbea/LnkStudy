@@ -6,9 +6,9 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
@@ -23,7 +23,7 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
-    private var currentCourses= mutableListOf<String>()
+    private var currentCourses= mutableListOf<ItemTypeBean>()
     private var fragments= mutableListOf<TestPaperFragment>()
 
     override fun getLayoutId(): Int {
@@ -40,13 +40,14 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     //设置头部索引
     private fun initTab() {
-        if (currentCourses!=MethodManager.getCourses()){
+        val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
+        if (currentCourses!=courseItems){
             mCoursePos = 0
             itemTabTypes.clear()
-            currentCourses=MethodManager.getCourses()
+            currentCourses=courseItems
             for (i in currentCourses.indices) {
                 itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i]
+                    title=currentCourses[i].title
                     isCheck=i==0
                 })
             }
@@ -63,8 +64,8 @@ class TestPaperManageFragment: BaseMainFragment() {
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
-        for (course in currentCourses){
-            fragments.add(TestPaperFragment().newInstance(course))
+        for (courseItem in currentCourses){
+            fragments.add(TestPaperFragment().newInstance(courseItem.title))
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
@@ -110,7 +111,7 @@ class TestPaperManageFragment: BaseMainFragment() {
         val types = PaperTypeDaoManager.getInstance().queryAllExceptCloud()
         for (item in types) {
             val papers = PaperDaoManager.getInstance().queryAll(item.course, item.typeId)
-            val path = FileAddress().getPathTestPaper(item.typeId)
+            val path = FileAddress().getPathTestPaper(item.course,item.typeId)
             if (FileUtils.isExistContent(path)) {
                 FileUploadManager(token).apply {
                     startZipUpload(path, item.name)
@@ -148,7 +149,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     private fun clearLowGradeHomework(){
         val list= PaperTypeDaoManager.getInstance().queryAll(grade)
         for (item in list){
-            val path = FileAddress().getPathTestPaper(item.typeId)
+            val path = FileAddress().getPathTestPaper(item.course,item.typeId)
             if (!FileUtils.isExistContent(path)){
                 PaperTypeDaoManager.getInstance().deleteBean(item)
                 //删除增量更新

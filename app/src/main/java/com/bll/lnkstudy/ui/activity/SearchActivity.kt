@@ -109,12 +109,15 @@ class SearchActivity : BaseAppCompatActivity() {
                 finish()
             }
             2->{
-                val typeItem= HomeworkTypeDaoManager.getInstance().queryAllById(item.type)
+                var typeItem= HomeworkTypeDaoManager.getInstance().queryByTypeId(item.type)
+                if (item.createState==1){
+                    typeItem= HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.type)
+                }
                 when(typeItem.state){
                     1->{
                         MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page)
                     }
-                    2->{
+                    2,6->{
                         MethodManager.gotoHomeworkDrawing(this, typeItem, Constants.DEFAULT_PAGE)
                     }
                     3->{
@@ -201,6 +204,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         title=item.title
                         state=2
                         course=item.course
+                        createState=item.fromStatus
                         type=item.homeworkTypeId
                         typeStr=item.typeName
                         page=item.page
@@ -213,7 +217,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         category=2
                         title=item.title
                         state=1
-                        type=item.typeId
+                        type=item.homeworkTypeId
                         typeStr=item.typeName
                         course=item.course
                         page=item.page
@@ -226,7 +230,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         category=2
                         title=item.title
                         state=3
-                        type=item.typeId
+                        type=item.homeworkTypeId
                         typeStr=item.typeName
                         course=item.course
                         listJson= Gson().toJson(item)
@@ -252,7 +256,7 @@ class SearchActivity : BaseAppCompatActivity() {
                     searchBeans.add(SearchBean().apply {
                         category=3
                         title=item.title
-                        type=item.typeId
+                        type=item.paperTypeId
                         typeStr=item.typeName
                         course=item.course
                         page=item.page

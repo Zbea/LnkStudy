@@ -66,7 +66,7 @@ public class HomeworkPaperDaoManager {
      */
     public List<HomeworkPaperBean> queryAll(String course, int categoryId) {
         WhereCondition whereCondition1= HomeworkPaperBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition2= HomeworkPaperBeanDao.Properties.TypeId.eq(categoryId);
+        WhereCondition whereCondition2= HomeworkPaperBeanDao.Properties.HomeworkTypeId.eq(categoryId);
         return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
     }
 

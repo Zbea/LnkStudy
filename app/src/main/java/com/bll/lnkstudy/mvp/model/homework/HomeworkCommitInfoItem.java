@@ -10,10 +10,12 @@ import java.util.List;
 public class HomeworkCommitInfoItem implements Serializable {
 
     public int index;//选中作业下标
+    public int homeworkTypeId;
     public int typeId;//作业本分类id
     public String typeName;//作业本名称
     public String course;
     public int state;//1作业卷 2普通作业本 3听读本4题卷本 5错题本
+    public int createStatus;
     public int bookId;
     public int messageId;//作业消息id
     public String title;
