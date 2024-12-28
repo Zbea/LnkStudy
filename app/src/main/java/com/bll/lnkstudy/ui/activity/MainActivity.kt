@@ -78,8 +78,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
                 textbookFragment?.uploadTextBook(token)
-                homeworkFragment?.upload(token)
-                paperFragment?.uploadPaper(token)
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
                 textbookFragment?.uploadTextBook(token)
@@ -90,10 +88,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             Constants.DIARY_UPLOAD_EVENT->{
                 mainRightFragment?.uploadDiary(token,false)
             }
-//            Constants.USER_CHANGE_GRADE_EVENT->{
-//                homeworkFragment?.upload(token)
-//                paperFragment?.uploadPaper(token)
-//            }
+            Constants.USER_CHANGE_GRADE_EVENT->{
+                if (grade>0){
+                    homeworkFragment?.upload(token)
+                    paperFragment?.uploadPaper(token)
+                }
+            }
         }
 
     }
@@ -329,7 +329,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 7)
-            set(Calendar.DAY_OF_MONTH, 25)
+            set(Calendar.DAY_OF_MONTH, 30)
             set(Calendar.HOUR_OF_DAY, 13)
             set(Calendar.MINUTE, 10)
             set(Calendar.SECOND, 0)
@@ -1064,13 +1064,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 clearSemesterData()
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
-                if (!NetworkUtil(this).isNetworkConnected()){
-                    NetworkUtil(this).toggleNetwork(true)
-                }
                 eventType = Constants.USER_CHANGE_GRADE_EVENT
-                Handler().postDelayed({
-                    mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                mQiniuPresenter.getToken()
             }
             Constants.AUTO_UPLOAD_YEAR_EVENT -> {
                 if (!NetworkUtil(this).isNetworkConnected()){

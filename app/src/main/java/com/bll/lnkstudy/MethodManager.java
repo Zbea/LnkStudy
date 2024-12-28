@@ -594,6 +594,10 @@ public class MethodManager {
         if (item == null) {
             return true;
         }
+        String dayStr=DateUtils.longToStringDataNoHour(DateUtils.getStartOfDayInMillis());
+        if (item.dateMap.containsKey(dayStr)){
+            return true;
+        }
         if (type == 0) {
             if (item.isAllowBook) {
                 return isExistCurrentTime(item);

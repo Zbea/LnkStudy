@@ -26,7 +26,7 @@ public class ParentHomeworkMessageList implements Serializable {
         public int subject;
         public long time;
         @SerializedName("submitStatus")
-        public int status;
+        public int status;//1未提交2已提交3已批改
     }
 
 }

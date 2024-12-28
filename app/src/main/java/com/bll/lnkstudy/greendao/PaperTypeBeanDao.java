@@ -34,8 +34,8 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         public final static Property Date = new Property(7, long.class, "date", false, "DATE");
         public final static Property Grade = new Property(8, int.class, "grade", false, "GRADE");
         public final static Property IsCloud = new Property(9, boolean.class, "isCloud", false, "IS_CLOUD");
-        public final static Property CreateStatus = new Property(10, Integer.class, "createStatus", false, "CREATE_STATUS");
-        public final static Property AutoState = new Property(11, Integer.class, "autoState", false, "AUTO_STATE");
+        public final static Property CreateStatus = new Property(10, int.class, "createStatus", false, "CREATE_STATUS");
+        public final static Property AutoState = new Property(11, int.class, "autoState", false, "AUTO_STATE");
     }
 
 
@@ -61,8 +61,8 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
                 "\"DATE\" INTEGER NOT NULL ," + // 7: date
                 "\"GRADE\" INTEGER NOT NULL ," + // 8: grade
                 "\"IS_CLOUD\" INTEGER NOT NULL ," + // 9: isCloud
-                "\"CREATE_STATUS\" INTEGER," + // 10: createStatus
-                "\"AUTO_STATE\" INTEGER);"); // 11: autoState
+                "\"CREATE_STATUS\" INTEGER NOT NULL ," + // 10: createStatus
+                "\"AUTO_STATE\" INTEGER NOT NULL );"); // 11: autoState
     }
 
     /** Drops the underlying database table. */
@@ -100,16 +100,8 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         stmt.bindLong(8, entity.getDate());
         stmt.bindLong(9, entity.getGrade());
         stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
- 
-        Integer createStatus = entity.getCreateStatus();
-        if (createStatus != null) {
-            stmt.bindLong(11, createStatus);
-        }
- 
-        Integer autoState = entity.getAutoState();
-        if (autoState != null) {
-            stmt.bindLong(12, autoState);
-        }
+        stmt.bindLong(11, entity.getCreateStatus());
+        stmt.bindLong(12, entity.getAutoState());
     }
 
     @Override
@@ -141,16 +133,8 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         stmt.bindLong(8, entity.getDate());
         stmt.bindLong(9, entity.getGrade());
         stmt.bindLong(10, entity.getIsCloud() ? 1L: 0L);
- 
-        Integer createStatus = entity.getCreateStatus();
-        if (createStatus != null) {
-            stmt.bindLong(11, createStatus);
-        }
- 
-        Integer autoState = entity.getAutoState();
-        if (autoState != null) {
-            stmt.bindLong(12, autoState);
-        }
+        stmt.bindLong(11, entity.getCreateStatus());
+        stmt.bindLong(12, entity.getAutoState());
     }
 
     @Override
@@ -171,8 +155,8 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
             cursor.getLong(offset + 7), // date
             cursor.getInt(offset + 8), // grade
             cursor.getShort(offset + 9) != 0, // isCloud
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // createStatus
-            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11) // autoState
+            cursor.getInt(offset + 10), // createStatus
+            cursor.getInt(offset + 11) // autoState
         );
         return entity;
     }
@@ -189,8 +173,8 @@ public class PaperTypeBeanDao extends AbstractDao<PaperTypeBean, Long> {
         entity.setDate(cursor.getLong(offset + 7));
         entity.setGrade(cursor.getInt(offset + 8));
         entity.setIsCloud(cursor.getShort(offset + 9) != 0);
-        entity.setCreateStatus(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setAutoState(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+        entity.setCreateStatus(cursor.getInt(offset + 10));
+        entity.setAutoState(cursor.getInt(offset + 11));
      }
     
     @Override

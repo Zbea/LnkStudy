@@ -65,23 +65,12 @@ public class PaperTypeDaoManager {
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Name.eq(name);
         WhereCondition whereCondition2= PaperTypeBeanDao.Properties.Grade.eq(grade);
         WhereCondition whereCondition3= PaperTypeBeanDao.Properties.Course.eq(course);
-        WhereCondition whereCondition4=PaperTypeBeanDao.Properties.CreateStatus.eq(1);
         WhereCondition whereCondition5=PaperTypeBeanDao.Properties.AutoState.eq(1);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4,whereCondition5).build().unique();
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition5).build().unique();
     }
 
     public List<PaperTypeBean> queryAllExceptCloud() {
-        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.IsCloud.lt(false);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-    }
-
-    /**
-     * 获取低年级考试卷
-     * @param grade
-     * @return
-     */
-    public List<PaperTypeBean> queryAll(int grade) {
-        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Grade.lt(grade);
+        WhereCondition whereCondition1= PaperTypeBeanDao.Properties.IsCloud.eq(false);
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 

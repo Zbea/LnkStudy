@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -34,13 +33,11 @@ import kotlinx.android.synthetic.main.ac_account_info.tv_phone
 import kotlinx.android.synthetic.main.ac_account_info.tv_provinces
 import kotlinx.android.synthetic.main.ac_account_info.tv_school_name
 import kotlinx.android.synthetic.main.ac_account_info.tv_user
-import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView {
 
     private var presenter:AccountInfoPresenter?=null
     private var nickname = ""
-
     private var school=0
     private var schoolBean:SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
@@ -49,30 +46,27 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     override fun onLogout() {
     }
-
     override fun onSms() {
         showToast("短信发送成功")
     }
-
     override fun onCheckSuccess() {
         editPhone()
     }
-
     override fun onEditPhone() {
         mUser?.telNumber=phone
         tv_phone.text=phone
+        saveUser()
     }
-
     override fun onEditBirthday() {
         mUser?.birthdayTime=birthday
         tv_birthday.text=DateUtils.intToStringDataNoHour(birthday)
+        saveUser()
     }
-
     override fun onEditNameSuccess() {
         mUser?.nickname = nickname
         tv_name.text = nickname
+        saveUser()
     }
-
     override fun onEditSchool() {
         mUser?.schoolId = schoolBean?.id
         mUser?.schoolProvince=schoolBean?.province
@@ -83,12 +77,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         tv_city.text = schoolBean?.city
         tv_school_name.text = schoolBean?.schoolName
         tv_area.text = schoolBean?.area
+        saveUser()
     }
-
     override fun onEditParent() {
         mUser?.parentName=tv_parent.text.toString()
         mUser?.parentNickname=tv_parent_name.text.toString()
         mUser?.parentTel=tv_parent_phone.text.toString()
+        saveUser()
     }
 
     override fun layoutId(): Int {
@@ -213,10 +208,8 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun saveUser(){
         SPUtil.putObj("user", mUser!!)
-        EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
     }
 
 }

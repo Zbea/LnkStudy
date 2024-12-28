@@ -6,6 +6,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
@@ -52,6 +53,7 @@ class TestPaperManageFragment: BaseMainFragment() {
                 })
             }
             mTabTypeAdapter?.setNewData(itemTabTypes)
+            setLocalPaperType()
             initFragment()
         }
     }
@@ -69,6 +71,27 @@ class TestPaperManageFragment: BaseMainFragment() {
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
+        }
+    }
+
+    /**
+     * 设置本地学校考试卷
+     */
+    private fun setLocalPaperType(){
+        for (item in currentCourses){
+            val course=item.title
+            //创建学校考试卷
+            val typeId = MethodManager.getExamTypeId(course)
+            if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
+                val typeItem= PaperTypeBean()
+                typeItem.name="学校考试卷"
+                typeItem.course=course
+                typeItem.createStatus=2
+                typeItem.date=System.currentTimeMillis()
+                typeItem.grade=grade
+                typeItem.typeId=typeId
+                PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
+            }
         }
     }
 
@@ -101,7 +124,6 @@ class TestPaperManageFragment: BaseMainFragment() {
         }
     }
 
-
     /**
      * 控制上传
      */
@@ -125,39 +147,37 @@ class TestPaperManageFragment: BaseMainFragment() {
                             contentJson = Gson().toJson(papers)
                             downloadUrl = it
                         })
-                        if (cloudList.size == types.size - nullItems.size)
-                            mCloudUploadPresenter.upload(cloudList)
+                        startUpload(cloudList,nullItems)
                     }
                 }
             } else {
                 //没有考卷内容不上传
                 nullItems.add(item)
+                startUpload(cloudList,nullItems)
+            }
+        }
+    }
+
+    private fun startUpload(cloudList: MutableList<CloudListBean>, nullItems: MutableList<PaperTypeBean>){
+        if (cloudList.size == PaperTypeDaoManager.getInstance().queryAllExceptCloud().size - nullItems.size){
+            if (cloudList.size>0){
+                mCloudUploadPresenter.upload(cloudList)
+            }
+            else{
+                clearPaperType()
             }
         }
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        clearPaperType()
+    }
+
+    private fun clearPaperType(){
         setClearExamPaper()
-        for (fragment in fragments){
-            fragment.clearData()
-        }
+        setLocalPaperType()
+        onRefreshData()
     }
-
-    /**
-     * 年级变化时，清除低年级没有内容的考试卷
-     */
-    private fun clearLowGradeHomework(){
-        val list= PaperTypeDaoManager.getInstance().queryAll(grade)
-        for (item in list){
-            val path = FileAddress().getPathTestPaper(item.course,item.typeId)
-            if (!FileUtils.isExistContent(path)){
-                PaperTypeDaoManager.getInstance().deleteBean(item)
-                //删除增量更新
-                DataUpdateManager.deleteDateUpdate(3,item.typeId,1)
-            }
-        }
-    }
-
     /**
      * 清空考卷
      */
@@ -174,15 +194,10 @@ class TestPaperManageFragment: BaseMainFragment() {
         mDataUploadPresenter.onDeleteData(map)
     }
 
-
-
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
                 initTab()
-            }
-            Constants.USER_CHANGE_GRADE_EVENT->{
-                clearLowGradeHomework()
             }
         }
     }

@@ -455,11 +455,16 @@ public class FileUtils {
      * @return
      */
     public static boolean isExistContent(String path){
-        if (path==null&&path.isEmpty()){
+        File folder = new File(path);
+        if (!folder.exists() || !folder.isDirectory()) {
             return false;
         }
-        List<File> files= getAscFiles(path);
-        return !files.isEmpty();
+        // 遍历文件夹中的文件
+        File[] files = folder.listFiles();
+        if (files != null && files.length > 0) {
+            return true;
+        }
+        return false;
     }
 
 }

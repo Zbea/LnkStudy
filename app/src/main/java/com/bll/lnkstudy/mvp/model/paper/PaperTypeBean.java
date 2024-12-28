@@ -30,9 +30,9 @@ public class PaperTypeBean {
     public long date;//创建时间
     public int grade;
     public boolean isCloud;
-    public Integer createStatus;//1当前考试本
+    public int createStatus;//1当前考试本
     @SerializedName("addType")
-    public Integer autoState;//1生成作业本 0创建作业本
+    public int autoState;//1生成作业本 0创建作业本
     @Transient
     public boolean isPg;//是否批改
     @Transient
@@ -48,9 +48,9 @@ public class PaperTypeBean {
     @Transient
     public String contentSubtypeJson;
 
-    @Generated(hash = 104583001)
+    @Generated(hash = 1481021361)
     public PaperTypeBean(Long id, long studentId, long teacherId, String teacher, String name, int typeId, String course, long date, int grade,
-            boolean isCloud, Integer createStatus, Integer autoState) {
+            boolean isCloud, int createStatus, int autoState) {
         this.id = id;
         this.studentId = studentId;
         this.teacherId = teacherId;
@@ -279,6 +279,22 @@ public class PaperTypeBean {
 
 
     public void setAutoState(Integer autoState) {
+        this.autoState = autoState;
+    }
+
+
+
+
+
+    public void setCreateStatus(int createStatus) {
+        this.createStatus = createStatus;
+    }
+
+
+
+
+
+    public void setAutoState(int autoState) {
         this.autoState = autoState;
     }
     

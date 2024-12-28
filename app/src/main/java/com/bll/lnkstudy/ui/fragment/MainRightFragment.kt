@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_REFRESH_EVENT
@@ -18,17 +19,13 @@ import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
-import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
-import com.bll.lnkstudy.manager.PaperTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
-import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.presenter.MainRightPresenter
 import com.bll.lnkstudy.mvp.presenter.MessagePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -44,7 +41,6 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_right.iv_course
@@ -95,7 +91,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         var currentGrade=0
-        val oldGrade=mUser?.grade!!
+        val oldGrade=grade
         for (item in classGroups){
             if (item.state==1){
                 currentGrade=item.grade
@@ -103,16 +99,19 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
         }
         if (currentGrade!=oldGrade&&currentGrade>0){
+            grade=currentGrade
             mUser?.grade=currentGrade
             SPUtil.putObj("user", mUser!!)
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
-            //当年级变化时，清除本地其他年级作业、考卷
-            EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
+            Handler().postDelayed({
+                //当年级变化时，上传作业本
+                EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
+            },500)
         }
+        mMainPresenter.getCourseItems()
     }
 
     override fun onCourseItems(courses: MutableList<String>) {
-        val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
         for (course in courses) {
             if (!ItemTypeDaoManager.getInstance().isExist(7,course)){
                 val item= ItemTypeBean().apply {
@@ -121,42 +120,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     date=System.currentTimeMillis()
                 }
                 ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            }
-
-            val typeId = MethodManager.getExamTypeId(course)
-            if (!otherCourse.contains(course)){
-                var path = ""
-                val name="${course}错题本"
-                val localType=HomeworkTypeDaoManager.getInstance().queryByNameGrade(name,mUser?.grade!!)
-                //创建作业错题本
-                if (localType==null) {
-                    val typeItem = HomeworkTypeBean()
-                    typeItem.name = name
-                    typeItem.course = course
-                    typeItem.date = System.currentTimeMillis()
-                    typeItem.grade = mUser?.grade!!
-                    typeItem.typeId = ToolUtils.getDateId()
-                    typeItem.state = 5
-                    typeItem.createStatus=3
-                    typeItem.fromStatus=3
-                    HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
-                    path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
-                } else {
-                    path = FileAddress().getPathScreenHomework(name, mUser?.grade!!)
-                }
-                FileUtils.mkdirs(path)
-            }
-
-            //创建考卷分类
-            if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
-                val typeItem= PaperTypeBean()
-                typeItem.name="学校考试卷"
-                typeItem.course=course
-                typeItem.createStatus=2
-                typeItem.date=System.currentTimeMillis()
-                typeItem.grade=mUser?.grade!!
-                typeItem.typeId=typeId
-                PaperTypeDaoManager.getInstance().insertOrReplace(typeItem)
             }
         }
 
@@ -208,7 +171,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             fetchExam()
             mMainPresenter.getTeacherCourse()
             mMainPresenter.getClassGroupList(false)
-            mMainPresenter.getCourseItems()
         }
     }
 
@@ -388,7 +350,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             CLASSGROUP_REFRESH_EVENT->{
                 mMainPresenter.getTeacherCourse()
                 mMainPresenter.getClassGroupList(false)
-                mMainPresenter.getCourseItems()
             }
         }
     }

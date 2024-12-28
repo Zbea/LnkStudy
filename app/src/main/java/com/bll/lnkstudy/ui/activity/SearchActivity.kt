@@ -111,7 +111,7 @@ class SearchActivity : BaseAppCompatActivity() {
             2->{
                 var typeItem= HomeworkTypeDaoManager.getInstance().queryByTypeId(item.type)
                 if (item.createState==1){
-                    typeItem= HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.type)
+                    typeItem= HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.type,grade)
                 }
                 when(typeItem.state){
                     1->{

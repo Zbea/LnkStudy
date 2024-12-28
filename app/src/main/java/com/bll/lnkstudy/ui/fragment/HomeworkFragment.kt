@@ -72,7 +72,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         for (item in list) {
             //是否是自动生成的作业本，自动生成的作业本不同老师公用
             if (item.autoState == 1) {
-                val localItem = HomeworkTypeDaoManager.getInstance().queryByName(item.name, mCourse, item.grade)
+                val localItem = HomeworkTypeDaoManager.getInstance().queryByAutoName(item.name, mCourse, item.grade)
                 if (localItem == null) {
                     item.typeId = ToolUtils.getDateId()
                     insertHomeworkType(item)
@@ -108,7 +108,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
 
-        //验证本地自动生成作业本，线上是否还存在
+        //验证本地老师自动生成作业本，线上是否还存在，不存在转为非线上状态
         val autoTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2, 1)
         for (item in autoTypes) {
             if (!isAutoExistLineType(item, list)) {
@@ -116,7 +116,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
 
-        //验证本地老师创建作业本，线上是否还存在
+        //验证本地老师创建作业本，线上是否还存在，不存在转为非线上状态
         val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2, 0)
         for (item in localTypes) {
             if (!createTypeIds.contains(item.typeId)) {
@@ -131,14 +131,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         val createTypeIds = mutableListOf<Int>()
         for (item in list) {
             createTypeIds.add(item.id)
-            if (!HomeworkTypeDaoManager.getInstance().isExistParentType(item.id)) {
+            val localTypeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.id,grade)
+            if (localTypeBean==null) {
                 val homeworkTypeBean = HomeworkTypeBean().apply {
                     teacherId = item.parentId
                     name = item.name
+                    grade = this@HomeworkFragment.grade
                     typeId = item.id
                     state = if (item.type == 1) 2 else 4
                     date = System.currentTimeMillis()
-                    contentResId = if (item.type == 1) DataBeanManager.getHomeWorkContentStr(mCourse, mUser?.grade!!) else ""
+                    contentResId = if (item.type == 1) DataBeanManager.getHomeWorkContentStr(mCourse, this@HomeworkFragment.grade) else ""
                     course = mCourse
                     bgResId = item.imageUrl
                     bookId = item.bookId
@@ -149,18 +151,24 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 //创建增量数据
                 DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1, Gson().toJson(homeworkTypeBean))
             } else {
-                val homeworkTypeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.id)
-                if (homeworkTypeBean.createStatus==0){
-                    editHomeworkTypeCreate(homeworkTypeBean,1)
+                if (localTypeBean.createStatus==0){
+                    editHomeworkTypeCreate(localTypeBean,1)
                 }
                 else{
-                    if (homeworkTypeBean.name != item.name) {
-                        editHomeworkTypeName(homeworkTypeBean,item.name)
+                    if (localTypeBean.name != item.name) {
+                        editHomeworkTypeName(localTypeBean,item.name)
                     }
                 }
             }
         }
 
+        //把所有除开当前年级的家长作业本改为非在线状态
+        val allTypes=HomeworkTypeDaoManager.getInstance().queryAllParentByExceptGrade(grade)
+        for (item in allTypes){
+            editHomeworkTypeCreate(item,0)
+        }
+
+        //判断所有当前在线状态的家长作业本是线上还存在，不存在改为非线上状态
         val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 1, 0)
         for (item in localTypes) {
             if (!createTypeIds.contains(item.typeId)) {
@@ -286,23 +294,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     item.isPg = false
                     notifyItemChanged(position)
                 }
-                if (item.isMessage) {
-                    item.isMessage = false
-                    notifyItemChanged(position)
-                }
                 when (item.state) {
                     1 -> {
                         MethodManager.gotoHomeworkReelDrawing(requireActivity(), item, Constants.DEFAULT_PAGE)
                     }
-
-                    2 -> {
+                    2,6 -> {
                         MethodManager.gotoHomeworkDrawing(requireActivity(), item, Constants.DEFAULT_PAGE)
                     }
-
                     3 -> {
                         MethodManager.gotoHomeworkRecord(requireActivity(), item)
                     }
-
                     4 -> {
                         if (HomeworkBookDaoManager.getInstance().isExist(item.bookId)) {
                             MethodManager.gotoHomeworkBookDetails(requireActivity(), item)
@@ -312,7 +313,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             customStartActivity(intent)
                         }
                     }
-
                     5 -> {
                         customStartActivity(
                             Intent(requireActivity(), FileDrawingActivity::class.java)
@@ -401,7 +401,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 查询本地是否存在题卷本
      */
     private fun getLocalHomeworkBookType(item: HomeworkTypeBean): HomeworkTypeBean? {
-        val types = HomeworkTypeDaoManager.getInstance().queryAllByState(mCourse, item.grade, 4)
+        val types = HomeworkTypeDaoManager.getInstance().queryAllByBook(mCourse, item.grade)
         var homeworkTypeBean: HomeworkTypeBean? = null
         for (homeTypeBean in types) {
             if (homeTypeBean.name == item.name && homeTypeBean.bookId == item.bookId) {
@@ -487,7 +487,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     DataUpdateManager.deleteDateUpdate(2, paper.contentId, 2, paper.typeId)
                 }
             }
-
             2 -> {
                 //删除作本内容
                 val items = HomeworkContentDaoManager.getInstance().queryAllByType(mCourse, item.typeId)
@@ -502,7 +501,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     DataUpdateManager.deleteDateUpdate(2, homeContent.id.toInt(), 2, item.typeId)
                 }
             }
-
             3 -> {
                 val recordBeans = RecordDaoManager.getInstance().queryAllByCourse(mCourse, item.typeId)
                 val path = FileAddress().getPathHomework(mCourse, item.typeId)
@@ -513,7 +511,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     DataUpdateManager.deleteDateUpdate(2, bean.id.toInt(), 2, item.typeId)
                 }
             }
-
             4 -> {
                 val homeworkBook = HomeworkBookDaoManager.getInstance().queryBookByID(item.bookId)
                 if (homeworkBook != null) {
@@ -526,7 +523,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     DataUpdateManager.deleteDateUpdate(7, item.bookId, 2)
                 }
             }
-
             5 -> {
                 FileUtils.deleteFileSkipMy(File(FileAddress().getPathScreenHomework(item.name, item.grade)))
             }
@@ -540,15 +536,15 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     fun addContentModule() {
         val list = when (mCourse) {
             "语文" -> {
-                DataBeanManager.getYw(mUser?.grade!!)
+                DataBeanManager.getYw(grade)
             }
 
             "数学" -> {
-                DataBeanManager.getSx(mUser?.grade!!)
+                DataBeanManager.getSx(grade)
             }
 
             "英语" -> {
-                DataBeanManager.getYy(mUser?.grade!!)
+                DataBeanManager.getYy(grade)
             }
 
             else -> {
@@ -580,7 +576,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     course = mCourse
                     createStatus = 0
                     state = 2
-                    grade = mUser?.grade!!
+                    grade = this@HomeworkFragment.grade
                 }
                 HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                 //创建增量数据
@@ -596,7 +592,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 下载家长作业本图片
      */
     private fun loadParentHomeworkImage(item: ParentHomeworkMessageList.ParentHomeworkBean) {
-        if (!HomeworkTypeDaoManager.getInstance().isExistParentType(item.typeId)){
+        if (!HomeworkTypeDaoManager.getInstance().isExistParentType(item.typeId,grade)){
             return
         }
         val homeworkContents = HomeworkContentDaoManager.getInstance().queryAllById(item.id, item.typeId)
@@ -638,7 +634,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 题卷本 下载图片
      */
     private fun loadParentHomeworkBook(item: ParentHomeworkMessageList.ParentHomeworkBean) {
-        val typeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.typeId)
+        val typeBean = HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.typeId,grade)
         val homeworkBookBean = HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId) ?: return
         //拿到对应作业的所有本地图片地址
         val paths = mutableListOf<String>()
@@ -767,7 +763,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         var homeworkTypeId=item.typeId
         //如果是默认创建的作业本,拿到本地作业本
         if (item.autoState==1){
-            val homeworkTypeBean= HomeworkTypeDaoManager.getInstance().queryByName(item.typeName,mCourse,item.grade) ?: return
+            val homeworkTypeBean= HomeworkTypeDaoManager.getInstance().queryByAutoName(item.typeName,mCourse,item.grade) ?: return
             homeworkTypeId=homeworkTypeBean.typeId
         }
         else{
@@ -825,7 +821,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 创建本地作业本
      */
     private fun newHomeWorkContent(createStatus: Int,homeworkTypeId:Int,contentId:Int,typeId: Int):HomeworkContentBean {
-        val homeworkTypeBean=if (createStatus==2)HomeworkTypeDaoManager.getInstance().queryByTypeId(homeworkTypeId) else HomeworkTypeDaoManager.getInstance().queryByParentTypeId(homeworkTypeId)
+        val homeworkTypeBean=if (createStatus==2)HomeworkTypeDaoManager.getInstance().queryByTypeId(homeworkTypeId) else HomeworkTypeDaoManager.getInstance().queryByParentTypeId(homeworkTypeId,grade)
         val homeworks=HomeworkContentDaoManager.getInstance().queryAllByType(homeworkTypeBean.course,homeworkTypeId)
         val path = FileAddress().getPathHomework(homeworkTypeBean.course, homeworkTypeId, homeworks.size+1)
         val currentTime=System.currentTimeMillis()
@@ -854,7 +850,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         var homeworkTypeId=item.typeId
         //如果是默认创建的作业本
         if (item.autoState==1){
-            val homeworkTypeBean= HomeworkTypeDaoManager.getInstance().queryByName(item.typeName,mCourse,item.grade) ?: return
+            val homeworkTypeBean= HomeworkTypeDaoManager.getInstance().queryByAutoName(item.typeName,mCourse,item.grade) ?: return
             homeworkTypeId=homeworkTypeBean.typeId
         }
         else{
@@ -958,7 +954,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 请求作业分类
      */
     private fun fetchHomeworkType() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0) {
             countDownTasks = CountDownLatch(2)
             val map = HashMap<String, Any>()
             map["type"] = 2

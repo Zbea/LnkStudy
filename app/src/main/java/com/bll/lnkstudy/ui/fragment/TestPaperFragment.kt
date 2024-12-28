@@ -376,7 +376,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     private fun fetchTypes() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0) {
             val map = HashMap<String, Any>()
             map["type"] = 1
             map["subject"] = DataBeanManager.getCourseId(mCourse)

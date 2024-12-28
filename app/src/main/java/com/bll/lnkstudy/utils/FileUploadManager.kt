@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.utils
 
 import android.util.Log
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
@@ -34,7 +35,7 @@ class FileUploadManager(private val uploadToken:String) {
                 upload(path,0)
             }
             override fun onError(msg: String?) {
-                Log.d("debug","onError ${fileName}:$msg")
+                Log.d(Constants.DEBUG,"onError ${fileName}:$msg")
             }
         })
     }
