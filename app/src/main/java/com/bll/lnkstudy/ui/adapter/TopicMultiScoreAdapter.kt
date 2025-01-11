@@ -11,6 +11,8 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 class TopicMultiScoreAdapter(layoutResId: Int, var scoreType: Int, data: List<ExamScoreItem>?) : BaseQuickAdapter<ExamScoreItem, BaseViewHolder>(layoutResId, data) {
 
+    private var isShow=true
+
     override fun convert(helper: BaseViewHolder, item: ExamScoreItem) {
         helper.setText(R.id.tv_sort, ToolUtils.numbers[item.sort+1])
         helper.setText(R.id.tv_score,if (scoreType==1) item.score.toString() else if (item.result==1)"对" else "错")
@@ -26,17 +28,23 @@ class TopicMultiScoreAdapter(layoutResId: Int, var scoreType: Int, data: List<Ex
             listener?.onClick(helper.adapterPosition, view, position)
         }
         mAdapter.setScoreMode(scoreType)
+        mAdapter.setResultView(isShow)
+
+        helper.setGone(R.id.iv_result,isShow)
 
         helper.addOnClickListener(R.id.iv_result)
     }
 
     class ChildAdapter(layoutResId: Int, private var scoreType: Int, data: List<ExamScoreItem>?) : BaseQuickAdapter<ExamScoreItem, BaseViewHolder>(layoutResId, data) {
+        private var isShow=true
+
         override fun convert(helper: BaseViewHolder, item: ExamScoreItem) {
             helper.apply {
                 helper.setText(R.id.tv_sort, "${item.sort+1}")
                 helper.setText(R.id.tv_score, item.score.toString())
                 helper.setText(R.id.tv_score, if (scoreType == 1) item.score.toString() else if (item.result == 1) "对" else "错")
                 helper.setImageResource(R.id.iv_result, if (item.result == 1) R.mipmap.icon_correct_right else R.mipmap.icon_correct_wrong)
+                helper.setGone(R.id.iv_result,isShow)
                 addOnClickListener(R.id.tv_score, R.id.iv_result)
             }
         }
@@ -48,6 +56,12 @@ class TopicMultiScoreAdapter(layoutResId: Int, var scoreType: Int, data: List<Ex
             scoreType=mode
             notifyDataSetChanged()
         }
+
+        fun setResultView(boolean: Boolean){
+            isShow=boolean
+            notifyDataSetChanged()
+        }
+
     }
 
     /**
@@ -55,6 +69,11 @@ class TopicMultiScoreAdapter(layoutResId: Int, var scoreType: Int, data: List<Ex
      */
     fun setScoreMode(mode:Int){
         scoreType=mode
+        notifyDataSetChanged()
+    }
+
+    fun setResultView(boolean: Boolean){
+        isShow=boolean
         notifyDataSetChanged()
     }
 

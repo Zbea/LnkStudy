@@ -52,16 +52,21 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     private var exam: ExamItem?=null
     private var paths = mutableListOf<String>()
     private var drawPaths = mutableListOf<String>()
-    private val commitItems = mutableListOf<ItemList>()
-
     private var page = 0 //当前页码
     private var alarmManager:AlarmManager?=null
     private var pendingIntent:PendingIntent?=null
 
     override fun onToken(token: String) {
-        val commitPaths = mutableListOf<String>()
-        for (item in commitItems) {
-            commitPaths.add(item.url)
+        //获取合图的图片，没有手写的页面那原图
+        val commitPaths= mutableListOf<String>()
+        for (i in paths.indices){
+            val mergePath=getPathMergeStr(i+1)
+            if (File(mergePath).exists()){
+                commitPaths.add(mergePath)
+            }
+            else{
+                commitPaths.add(paths[i])
+            }
         }
         FileImageUploadManager(token, commitPaths).apply {
             startUpload()
@@ -169,14 +174,13 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
         val selectLong = mCalendar.timeInMillis
         if (currentTimeMillisLong > selectLong) {
-            showToast("已过提交时间")
             return
         }
         val intent = Intent(this, MyBroadcastReceiver::class.java)
         intent.action = Constants.ACTION_EXAM_TIME
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager?.set(AlarmManager.RTC_WAKEUP,selectLong,pendingIntent)
+        alarmManager?.set(AlarmManager.SYS_RTC_WAKEUP,selectLong,pendingIntent)
     }
 
 
@@ -216,30 +220,32 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         elik.setLoadFilePath(drawPaths[index],true)
     }
 
+    override fun onElikSava_a() {
+        Thread {
+            BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page+1))
+        }.start()
+    }
+
+    override fun onElikSava_b() {
+        Thread {
+            BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1+1))
+        }.start()
+    }
+
     /**
      * 提交
      */
     private fun commit(){
-        commitItems.clear()
         showLoading()
-        for (i in paths.indices) {
-            Thread{
-                val path = paths[i] //当前原图路径
-                val drawPath = drawPaths[i] //当前绘图路径
-                drawPaths.add(drawPath)
-                BitmapUtils.mergeBitmap(path,drawPath)
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = path
-                })
-                if (commitItems.size==paths.size){
-                    commitItems.sort()
-                    mUploadPresenter.getToken()
-                }
-            }.start()
-        }
+        mUploadPresenter.getToken()
     }
 
+    /**
+     * 得到当前合图地址
+     */
+    private fun getPathMergeStr(index: Int):String{
+        return pathStr+"/merge/${index}.png"//手绘地址
+    }
 
     override fun onBackPressed() {
     }

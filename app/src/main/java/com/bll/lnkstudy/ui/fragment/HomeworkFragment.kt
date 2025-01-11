@@ -954,7 +954,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 请求作业分类
      */
     private fun fetchHomeworkType() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0&&DataBeanManager.getCourseId(mCourse)>0) {
             countDownTasks = CountDownLatch(2)
             val map = HashMap<String, Any>()
             map["type"] = 2
@@ -988,11 +988,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
         if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
             fetchMessage()
-    }
-
-    fun clearData() {
-        homeworkTypes.clear()
-        mAdapter?.setNewData(homeworkTypes)
     }
 
     /**

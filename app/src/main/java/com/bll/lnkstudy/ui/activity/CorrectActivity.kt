@@ -8,7 +8,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.NumberDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
@@ -171,11 +170,11 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             }
         }
 
-        tv_total_score.setOnClickListener {
-            NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
-                tv_total_score.text= it.toString()
-            }
-        }
+//        tv_total_score.setOnClickListener {
+//            NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
+//                tv_total_score.text= it.toString()
+//            }
+//        }
 
         setAnswerView()
         initRecyclerViewScore()
@@ -243,22 +242,22 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                     val childItem=scoreItem.childScores[childPos]
                     when(view.id){
                         R.id.tv_score->{
-                            if (scoreMode==1){
-                                NumberDialog(this@CorrectActivity,2,"最大${childItem.label}",childItem.label).builder().setDialogClickListener{
-                                    if (childItem.label!=it){
-                                        childItem.result=0
-                                    }
-                                    childItem.score= it
-                                    //获取小题总分
-                                    var scoreTotal=0.0
-                                    for (item in scoreItem.childScores){
-                                        scoreTotal+=item.score
-                                    }
-                                    scoreItem.score=scoreTotal
-                                    notifyItemChanged(position)
-                                    setTotalScore()
-                                }
-                            }
+//                            if (scoreMode==1){
+//                                NumberDialog(this@CorrectActivity,2,"最大${childItem.label}",childItem.label).builder().setDialogClickListener{
+//                                    if (childItem.label!=it){
+//                                        childItem.result=0
+//                                    }
+//                                    childItem.score= it
+//                                    //获取小题总分
+//                                    var scoreTotal=0.0
+//                                    for (item in scoreItem.childScores){
+//                                        scoreTotal+=item.score
+//                                    }
+//                                    scoreItem.score=scoreTotal
+//                                    notifyItemChanged(position)
+//                                    setTotalScore()
+//                                }
+//                            }
                         }
                         R.id.iv_result->{
                             if (childItem.result==0){
@@ -302,21 +301,21 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         val item=currentScores[position]
         when(view.id){
             R.id.tv_score->{
-                if (scoreMode==1){
-                    NumberDialog(this,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
-                        if (item.label!=it){
-                            item.result=0
-                        }
-                        item.score= it
-                        setTotalScore()
-                        if (correctMode<3){
-                            mTopicScoreAdapter?.notifyItemChanged(position)
-                        }
-                        else{
-                            mTopicMultiAdapter?.notifyItemChanged(position)
-                        }
-                    }
-                }
+//                if (scoreMode==1){
+//                    NumberDialog(this,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
+//                        if (item.label!=it){
+//                            item.result=0
+//                        }
+//                        item.score= it
+//                        setTotalScore()
+//                        if (correctMode<3){
+//                            mTopicScoreAdapter?.notifyItemChanged(position)
+//                        }
+//                        else{
+//                            mTopicMultiAdapter?.notifyItemChanged(position)
+//                        }
+//                    }
+//                }
             }
             R.id.iv_result->{
                 if (item.result==0){

@@ -187,11 +187,13 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             mTopicScoreAdapter?.setNewData(currentScores)
             mTopicScoreAdapter?.setCorrectMode(correctMode)
             mTopicScoreAdapter?.setScoreMode(scoreMode)
+            mTopicScoreAdapter?.setResultView(false)
         } else {
             showView(rv_list_multi)
             disMissView(rv_list_score)
             mTopicMultiAdapter?.setNewData(currentScores)
             mTopicMultiAdapter?.setScoreMode(scoreMode)
+            mTopicMultiAdapter?.setResultView(false)
         }
     }
 

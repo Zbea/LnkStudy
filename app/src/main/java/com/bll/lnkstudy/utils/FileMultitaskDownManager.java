@@ -53,14 +53,11 @@ public class FileMultitaskDownManager {
         FileDownloadListener fileDownloadListener=new FileDownloadListener() {
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
             }
-
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 //                multitaskCallBack.progress(task, soFarBytes, totalBytes);
             }
-
             @Override
             protected void completed(BaseDownloadTask task) {
                 num+=1;
@@ -68,20 +65,17 @@ public class FileMultitaskDownManager {
                     multitaskCallBack.completed(task);
                 }
             }
-
             @Override
             protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 //                multitaskCallBack.paused(task, soFarBytes, totalBytes);
             }
-
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
+                num+=1;
                 multitaskCallBack.error(task, e);
             }
-
             @Override
             protected void warn(BaseDownloadTask task) {
-
             }
         };
 

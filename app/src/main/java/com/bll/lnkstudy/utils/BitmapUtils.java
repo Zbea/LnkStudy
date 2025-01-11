@@ -1,10 +1,12 @@
 package com.bll.lnkstudy.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,6 +14,7 @@ import android.media.SRTRenderer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 
 import com.bll.lnkstudy.MyApplication;
 
@@ -205,15 +208,16 @@ public class BitmapUtils {
      * @param path 保存路径
      */
     public static void saveBmpGallery(Context context,Bitmap bmp, String path)  {
-        File file = null;
-        File paf=new File(path);
-        if (!paf.exists()){
-            paf.getParentFile().mkdirs();
+        File file=new File(path);
+        if (!file.exists()){
+            file.getParentFile().mkdirs();
         }
         // 声明输出流
         FileOutputStream outStream = null;
         try {
-            file = new File(paf.getParent(),paf.getName());
+            if (!file.exists()){
+                file.createNewFile();
+            }
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
@@ -258,6 +262,28 @@ public class BitmapUtils {
             return null;
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
         return new BitmapDrawable(bitmap);
+    }
+
+    /**
+     * 截图
+     * @param context
+     * @param view
+     * @param path
+     */
+    public static void saveScreenShot(Activity context, View view, String path) {
+        Bitmap bitmap = loadBitmapFromViewByCanvas(view);
+        saveBmpGallery(context,bitmap, path);
+    }
+
+    private static Bitmap loadBitmapFromViewByCanvas(View view) {
+        int w = view.getWidth();
+        int h = view.getHeight();
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bitmap);
+        //如果不设置canvas画布为白色，则生成透明
+        c.drawColor(Color.WHITE);
+        view.draw(c);
+        return bitmap;
     }
 
 }

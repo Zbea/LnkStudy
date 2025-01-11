@@ -352,7 +352,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      */
     private fun refreshView(paperTypeId:Int,item: HomeworkPaperList.HomeworkPaperListBean) {
         for (ite in paperTypes) {
-            if (item.typeId == paperTypeId) {
+            if (ite.typeId == paperTypeId) {
                 ite.score = item.score
                 ite.paperTitle=item.title
                 ite.isPg = true
@@ -376,7 +376,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     private fun fetchTypes() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0&&DataBeanManager.getCourseId(mCourse)>0) {
             val map = HashMap<String, Any>()
             map["type"] = 1
             map["subject"] = DataBeanManager.getCourseId(mCourse)
@@ -395,11 +395,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
 
         if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
             fetchCorrectPaper()
-    }
-
-    fun clearData(){
-        paperTypes.clear()
-        mAdapter?.setNewData(paperTypes)
     }
 
     /**

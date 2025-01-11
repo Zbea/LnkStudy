@@ -13,7 +13,6 @@ import com.bll.lnkstudy.dialog.ClassGroupAddDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.mvp.model.ClassGroup
-import com.bll.lnkstudy.mvp.model.ClassGroupUserList
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.ClassGroupAdapter
@@ -45,8 +44,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     override fun onQuit() {
         EventBus.getDefault().post(Constants.CLASSGROUP_REFRESH_EVENT)
         presenter.getClassGroupList(false)
-    }
-    override fun onUser(userList: ClassGroupUserList?) {
     }
 
     override fun layoutId(): Int {

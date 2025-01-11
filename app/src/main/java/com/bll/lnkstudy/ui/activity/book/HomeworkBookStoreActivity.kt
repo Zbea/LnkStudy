@@ -12,7 +12,7 @@ import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.mvp.presenter.TextbookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -116,26 +116,21 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         if (targetFile.exists()) {
             targetFile.delete()
         }
-        val download = FileDownManager.with(this).create(url).setPath(zipPath)
+        val download = FileBigDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
+                FileBigDownManager.SingleTaskCallBack {
 
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                     if (task != null && task.isRunning) {
                         runOnUiThread {
-                            val s = getFormatNum(
-                                soFarBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M/" + getFormatNum(
-                                totalBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M"
+                            val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0") + "M/" +
+                                    getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0") + "M"
                             btn_ok?.text=s
                         }
                     }
                 }
 
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun paused(task: BaseDownloadTask?,soFarBytes: Long, totalBytes: Long) {
                 }
 
                 override fun completed(task: BaseDownloadTask?) {

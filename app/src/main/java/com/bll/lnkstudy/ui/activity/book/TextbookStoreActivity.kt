@@ -25,7 +25,7 @@ import com.bll.lnkstudy.mvp.presenter.TextbookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TextbookStoreAdapter
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
@@ -43,6 +43,7 @@ import kotlinx.android.synthetic.main.common_title.tv_province
 import kotlinx.android.synthetic.main.common_title.tv_semester
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.concurrent.CountDownLatch
 
 /**
  * 教材书城
@@ -51,7 +52,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     private var tabId = 0 //课本分类
     private var tabStr=""
-    private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private lateinit var presenter :TextbookStorePresenter
     private var books = mutableListOf<TextbookBean>()
     private var mAdapter: TextbookStoreAdapter? = null
@@ -62,7 +62,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var courseId=0//科目
     private var bookDetailsDialog: DownloadTextbookDialog? = null
     private var position=0
-
+    private var countDownTasks: CountDownLatch? = null //异步完成后操作
     private var subjectList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var provinceList = mutableListOf<PopupBean>()
@@ -70,11 +70,18 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     override fun onTextbook(bookStore: TextbookStore) {
         setPageNumber(bookStore.total)
-        books = bookStore.list
+        books.clear()
         if (tabId==0){
-            for (book in books){
+            for (book in bookStore.list){
                 book.typeStr=getString(R.string.textbook_tab_my)
+                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
+                if (localBook==null||localBook.typeStr!=getString(R.string.textbook_tab_my)){
+                    books.add(book)
+                }
             }
+        }
+        else{
+            books=bookStore.list
         }
         mAdapter?.setNewData(books)
     }
@@ -131,13 +138,10 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
         tv_download?.setOnClickListener {
             if (tabId == 0) {
-                val localBooks=TextbookGreenDaoManager.getInstance().queryAllTextBook(tabStr)
-                if (localBooks.size==books.size){
-                    showToast(R.string.toast_downloaded)
-                    return@setOnClickListener
-                }
-                for (item in books) {
-                    val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(item.bookId)
+                //需要下载课本
+                val downloadBooks= mutableListOf<TextbookBean>()
+                for (book in books) {
+                    val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                     if (localBook!=null){
                         //预习课本转移到我的课本中
                         if (localBook.typeStr!=tabStr){
@@ -147,10 +151,16 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                         }
                     }
                     else{
-                        val downloadTask = downLoadStart(item.downloadUrl, item)
-                        mDownMapPool[item.bookId] = downloadTask!!
+                        downloadBooks.add(book)
                     }
                 }
+
+                if (downloadBooks.size==0){
+                    showToast("已下载")
+                    return@setOnClickListener
+                }
+
+                startBooks(downloadBooks)
             }
         }
 
@@ -269,13 +279,11 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             if (book.buyStatus == 1) {
                 val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                 if (localBook == null) {
-                    val downloadTask = downLoadStart(book.downloadUrl, book)
-                    mDownMapPool[book.bookId] = downloadTask!!
+                    startBooks(mutableListOf(book))
                 } else {
                     book.loadSate = 2
                     showToast(R.string.toast_downloaded)
                     bookDetailsDialog?.setDissBtn()
-                    mAdapter?.notifyDataSetChanged()
                 }
             } else {
                 val map = HashMap<String, Any>()
@@ -286,35 +294,58 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         }
     }
 
+    /**
+     * 开始下载书籍
+     */
+    private fun startBooks(books:MutableList<TextbookBean>){
+        countDownTasks = CountDownLatch(books.size)
+        showLoading()
+        for (book in books){
+            Handler().postDelayed({
+                downLoadStart(book.downloadUrl, book)
+            },500)
+        }
+        //等待两个请求完成后刷新列表
+        Thread {
+            countDownTasks?.await()
+            runOnUiThread {
+                hideLoading()
+                if (tabId>2){
+                    EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
+                }
+                else{
+                    EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
+                }
+                //刷新列表
+                if (tabId==0)
+                    fetchData()
+            }
+            countDownTasks = null
+        }.start()
+    }
+
     //下载book
     private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
-        showLoading()
         val fileName = book.bookId.toString()//文件名
         val path = if (tabId>2){
             FileAddress().getPathZip(fileName)
         } else{
             FileAddress().getPathTextBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
-        val download = FileDownManager.with(this).create(url).setPath(path)
+        val download = FileBigDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
+                FileBigDownManager.SingleTaskCallBack {
 
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                    if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
-                             ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                             bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
                 }
-
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-
                 override fun completed(task: BaseDownloadTask?) {
-                    //删除缓存 poolmap
-                    deleteDoneTask(task)
                     if (tabId>2){
                         val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
                         unzip(book, path, fileTargetPath)
@@ -332,14 +363,13 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                         //创建增量更新
                         DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
                     }
-                    refreshView(book, path)
+                    refreshView(book)
                 }
-
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
-                    hideLoading()
                     showToast(book.bookName+getString(R.string.book_download_fail))
-                    deleteDoneTask(task)
+                    countDownTasks?.countDown()
                 }
             })
         return download
@@ -387,17 +417,17 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 }
                 HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)
                 book.loadSate=2
-                refreshView(book, zipPath)
+                //删除zip文件
+                FileUtils.deleteFile(File(zipPath))
+                refreshView(book)
             }
 
             override fun onProgress(percentDone: Int) {
             }
 
             override fun onError(msg: String?) {
-                if (mDownMapPool.entries.size == 0) {
-                    hideLoading()
-                }
                 showToast(book.bookName+msg!!)
+                countDownTasks?.countDown()
             }
 
             override fun onStart() {
@@ -406,45 +436,13 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         })
     }
 
-    private fun refreshView(book: TextbookBean, zipPath: String){
-        //更新列表
-        mAdapter?.notifyItemChanged(books.indexOf(book))
+    //更新列表
+    private fun refreshView(book: TextbookBean){
         bookDetailsDialog?.dismiss()
-        Handler().postDelayed({
-            if (tabId>2){
-                //删除zip文件
-                FileUtils.deleteFile(File(zipPath))
-                EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
-            }
-            else{
-                EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-            }
-            showToast(book.bookName+getString(R.string.book_download_success))
-        },500)
-        if (mDownMapPool.entries.size == 0) {
-            hideLoading()
-        }
+        showToast(book.bookName+getString(R.string.book_download_success))
+        countDownTasks?.countDown()
     }
 
-    /**
-     * 下载完成 需要删除列表
-     */
-    private fun deleteDoneTask(task: BaseDownloadTask?) {
-        if (mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-
-            val iterator = entries.iterator();
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val entity = entry.value
-                if (task == entity) {
-                    iterator.remove()
-                }
-            }
-
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -481,6 +479,5 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     override fun onNetworkConnectionSuccess() {
         fetchData()
     }
-
 
 }

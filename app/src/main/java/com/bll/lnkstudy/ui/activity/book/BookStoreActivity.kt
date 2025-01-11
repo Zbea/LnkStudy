@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.activity.book
 
-import android.os.Handler
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants
@@ -23,7 +22,7 @@ import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
-import com.bll.lnkstudy.utils.FileDownManager
+import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -42,7 +41,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
 
     private var type=0
     private var typeStr = ""//类别
-    private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private lateinit var presenter : BookStorePresenter
     private var books = mutableListOf<BookBean>()
     private var mAdapter: BookStoreAdapter? = null
@@ -182,12 +180,10 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
             if (book.buyStatus==1){
                 val localBook = BookGreenDaoManager.getInstance().queryBookByID(book.bookId)
                 if (localBook == null) {
-                    val downloadTask = downLoadStart(book.downloadUrl,book)
-                    mDownMapPool[book.bookId] = downloadTask!!
+                    downLoadStart(book.downloadUrl,book)
                 } else {
                     book.loadSate =2
                     showToast(R.string.toast_downloaded)
-                    mAdapter?.notifyDataSetChanged()
                     downloadBookDialog?.setDissBtn()
                 }
             }
@@ -205,12 +201,12 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         showLoading()
         val fileName = book.bookId.toString()//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.downloadUrl))
-        val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
+        val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
+                FileBigDownManager.SingleTaskCallBack {
 
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                    if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
                                     ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
@@ -219,12 +215,10 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                     }
                 }
 
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun paused(task: BaseDownloadTask?,soFarBytes: Long, totalBytes: Long) {
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    //删除缓存 poolmap
-                    deleteDoneTask(task)
                     book.apply {
                         subtypeStr = when (typeStr) {
                             "思维科学", "自然科学" -> {
@@ -249,46 +243,20 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
-                    //更新列表
-                    mAdapter?.notifyDataSetChanged()
                     downloadBookDialog?.dismiss()
                     EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
                     EventBus.getDefault().post(Constants.BOOK_EVENT)
+                    showToast(book.bookName+getString(R.string.book_download_success))
                     hideLoading()
-                    Handler().postDelayed({
-                        showToast(book.bookName+getString(R.string.book_download_success))
-                    },500)
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     showLog(e?.message.toString())
-                    //删除缓存 poolmap
                     hideLoading()
                     showToast(book.bookName+getString(R.string.book_download_fail))
-                    deleteDoneTask(task)
                 }
             })
         return download
-    }
-
-    /**
-     * 下载完成 需要删除列表
-     */
-    private fun deleteDoneTask(task: BaseDownloadTask?) {
-
-        if (mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-            val iterator = entries.iterator()
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val entity = entry.value
-                if (task == entity) {
-                    iterator.remove()
-                }
-            }
-
-        }
     }
 
     override fun onDestroy() {
