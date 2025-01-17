@@ -9,7 +9,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import java.util.Objects;
 
 /**
- * 数据增量更新 1课本2作业3考卷4笔记5画本6书架7题卷本8日记
+ * 数据增量更新 1课本2作业3考卷4笔记5画本6书架7题卷本
  *  type为1时：1内容2手写
  *  type为2时：1作业分类2作业内容3本次作业卷内容；
  *  type为3时：1考卷分类2考试3本次考试内容；

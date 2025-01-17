@@ -84,8 +84,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onCourseUrl(url: String) {
-        if (url!=SPUtil.getString("courseUrl")){
-            SPUtil.putString("courseUrl",url)
+        if (url!=SPUtil.getString(Constants.SP_COURSE_URL)){
+            SPUtil.putString(Constants.SP_COURSE_URL,url)
             GlideUtils.setImageUrl(requireActivity(),url,iv_course)
         }
     }
@@ -101,6 +101,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (currentGrade!=oldGrade&&currentGrade>0){
             grade=currentGrade
             mUser?.grade=currentGrade
+            showLog("主页："+grade.toString())
             SPUtil.putObj("user", mUser!!)
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
             Handler().postDelayed({
@@ -141,8 +142,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun initView() {
-        initMessageView()
-
         ll_message.setOnClickListener {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
@@ -160,8 +159,10 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             return@setOnLongClickListener true
         }
 
-        val url=SPUtil.getString("courseUrl")
+        val url=SPUtil.getString(Constants.SP_COURSE_URL)
         GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+
+        initMessageView()
     }
 
     override fun lazyLoad() {

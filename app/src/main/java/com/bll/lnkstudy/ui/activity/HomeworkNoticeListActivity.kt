@@ -62,7 +62,7 @@ class HomeworkNoticeListActivity:BaseAppCompatActivity(),IContractView.IHomework
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = HomeworkNoticeAdapter(R.layout.item_homework_notice, null).apply {
+        mAdapter = HomeworkNoticeAdapter(R.layout.item_homework_notice, flags,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

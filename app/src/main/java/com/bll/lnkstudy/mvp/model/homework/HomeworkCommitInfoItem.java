@@ -28,5 +28,4 @@ public class HomeworkCommitInfoItem implements Serializable {
     public String correctJson;//批改详情
     public String answerUrl;
     public List<String> paths=new ArrayList<>();
-
 }

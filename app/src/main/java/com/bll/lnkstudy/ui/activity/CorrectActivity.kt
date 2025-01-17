@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
+import android.os.Handler
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
@@ -46,6 +48,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import java.io.File
 
 class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
 
@@ -124,6 +127,18 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 HomeworkPaperDaoManager.getInstance()?.insertOrReplace(paper)
                 //更新目录增量数据
                 DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper.typeId, Gson().toJson(paper))
+
+                //替换本地图片，删除合图以及手写
+                for (i in paper.paths.indices){
+                    val mergePath=paper.filePath+"/merge/${i+1}.png"
+                    if (File(mergePath).exists()){
+                        FileUtils.replaceFileContents(mergePath,paper.paths[i])
+                    }
+                }
+                Handler().postDelayed({
+                    FileUtils.deleteFile(File(paper.filePath+"/draw/"))
+                    FileUtils.deleteFile(File(paper.filePath+"/merge/"))
+                },500)
             }
         }
 

@@ -14,7 +14,7 @@ class CorrectDetailsAdapter(layoutResId: Int, data: List<HomeworkNoticeList.Home
         helper.setGone(R.id.tv_answer,item.answerUrl.isNotEmpty())
         helper.setText(R.id.tv_score,"${item.score}" + if (item.scoreMode==1) "分" else "题" )
         helper.setGone(R.id.tv_score,item.score!=0.0)
-        helper.setText(R.id.tv_date,"下发时间"+DateUtils.longToStringWeek(item.time))
+        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.time))
 
         helper.addOnClickListener(R.id.tv_answer)
     }

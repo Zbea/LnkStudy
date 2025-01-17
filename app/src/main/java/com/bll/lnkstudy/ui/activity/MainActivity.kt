@@ -106,7 +106,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         Collections.sort(list, Comparator { p0, p1 ->
             return@Comparator p0.type - p1.type
         })
-        clearData(1)
+        clearDataUpdate()
         download(list)
     }
 
@@ -115,7 +115,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
-
         val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
         val type = object : TypeToken<List<Area>>() {}.type
         DataBeanManager.provinces = Gson().fromJson(areaJson, type)
@@ -124,6 +123,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initView() {
+
         val intentFilter=IntentFilter()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
@@ -251,8 +251,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         //创建截屏默认文件夹
         val path = FileAddress().getPathScreen("未分类")
         if (!File(path).exists()) {
-            File(path).parentFile?.mkdir()
-            File(path).mkdirs()
+            FileUtils.mkdirs(path)
         }
     }
 
@@ -433,15 +432,18 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 一键清除(type=0) 一键下载type=1
+     * 一键清除
      */
-    private fun clearData(type: Int) {
+    private fun clearData() {
         SPUtil.removeObj(Constants.SP_PRIVACY_PW_DIARY)
         SPUtil.removeObj(Constants.SP_PRIVACY_PW_NOTE)
+        SPUtil.removeObj(Constants.SP_SCHOOL_PERMISSION)
+        SPUtil.removeObj(Constants.SP_PARENT_PERMISSION)
         SPUtil.putListInt(Constants.SP_WEEK_DATE_LIST, mutableListOf())
         SPUtil.putListLong(Constants.SP_DATE_LIST, mutableListOf())
         SPUtil.putBoolean(Constants.SP_PAINTING_RULE_SET,false)
         SPUtil.putString(Constants.SP_DIARY_BG_SET,"")
+        SPUtil.putString(Constants.SP_COURSE_URL,"")
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()
@@ -482,17 +484,55 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
 
-        if (type==0){
-            Glide.get(this).clearMemory()
-            Thread{
-                Glide.get(this).clearDiskCache()
-            }.start()
-            MethodManager.logout(this)
-        }
-        else{
-            //清空后恢复
-            initStartDate()
-        }
+        Glide.get(this).clearMemory()
+        Thread{
+            Glide.get(this).clearDiskCache()
+        }.start()
+        MethodManager.logout(this)
+    }
+
+    /**
+     * 清除增量更新
+     */
+    private fun clearDataUpdate(){
+        DataUpdateDaoManager.getInstance().clear()
+
+        BookGreenDaoManager.getInstance().clear()
+        TextbookGreenDaoManager.getInstance().clear()
+
+        HomeworkTypeDaoManager.getInstance().clear()
+        //删除所有作业
+        HomeworkContentDaoManager.getInstance().clear()
+        //删除所有录音
+        RecordDaoManager.getInstance().clear()
+        //删除所有作业卷内容
+        HomeworkPaperDaoManager.getInstance().clear()
+        //题卷本
+        HomeworkBookDaoManager.getInstance().clear()
+        HomeworkBookCorrectDaoManager.getInstance().clear()
+
+        //删除本地考卷分类
+        PaperTypeDaoManager.getInstance().clear()
+        //删除所有考卷内容
+        PaperDaoManager.getInstance().clear()
+
+        NoteDaoManager.getInstance().clear()
+        NoteContentDaoManager.getInstance().clear()
+
+        PaintingDrawingDaoManager.getInstance().clear()
+
+        //删除笔记分类
+        ItemTypeDaoManager.getInstance().clear(2)
+        //删除画本分类
+        ItemTypeDaoManager.getInstance().clear(3)
+        //删除书法分类
+        ItemTypeDaoManager.getInstance().clear(4)
+
+        FileUtils.deleteFile(File(Constants.BOOK_PATH))
+        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
+        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
+        FileUtils.deleteFile(File(Constants.NOTE_PATH))
+        FileUtils.deleteFile(File(Constants.PAINTING_PATH))
     }
 
     /**
@@ -969,7 +1009,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 每天上传增量数据
      */
     private fun uploadDataUpdate(token: String) {
-        showLog("开始增量更新")
         val items=DataUpdateDaoManager.getInstance().queryList()
         for (item in items) {
             if (item.isDelete) {
@@ -1089,7 +1128,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 mDataUpdatePresenter.onList(map)
             }
             Constants.SETTING_CLEAT_EVENT -> {
-                clearData(0)
+                clearData()
             }
         }
     }

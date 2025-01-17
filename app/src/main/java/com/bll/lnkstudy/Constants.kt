@@ -40,7 +40,8 @@ class Constants {
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
-        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+//        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
 
         //
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
@@ -123,13 +124,11 @@ class Constants {
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkstudy.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkstudy.account.logout"
         const val EXAM_MODE_BROADCAST_EVENT = "com.bll.lnkstudy.exam.mode"
-
-        //全局刷新
         const val APP_NET_REFRESH = "com.htfyun.blackwhitebar.refresh"
-
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
         const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"
+
 
         const val INTENT_SCREEN_LABEL = "android.intent.extra.LAUNCH_SCREEN"//打开页面在那个屏
         const val INTENT_DRAWING_FOCUS = "android.intent.extra.KEEP_FOCUS"//手写设置焦点
@@ -145,8 +144,11 @@ class Constants {
         const val SP_WEEK_DATE_LIST = "weekDateEvent"//学习计划星期所选
         const val SP_DATE_LIST = "dateDateEvent"//学习计划日期所选
         const val SP_PAINTING_RULE_SET = "PaintingRuleSet"//规矩图设置
-            const val SP_PAINTING_DRAW_TYPE = "PaintingDrawTYpe"//画笔类型
+        const val SP_PAINTING_DRAW_TYPE = "PaintingDrawTYpe"//画笔类型
         const val SP_DIARY_BG_SET ="dirayBgRes"//日记
+        const val SP_COURSE_URL ="courseUrl"//课程表地址
+        const val SP_PARENT_PERMISSION ="parentPermission"//家长权限设置
+        const val SP_SCHOOL_PERMISSION ="schoolPermission"//学校权限设置
     }
 
 }

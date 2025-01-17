@@ -43,8 +43,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         intent.putExtra("userId", user.accountId)
         intent.action = Constants.LOGIN_BROADCAST_EVENT
         sendBroadcast(intent)
-        //刷新公共方法中的登录信息
-        MethodManager.refreshUser()
+
         gotoMainActivity()
     }
 

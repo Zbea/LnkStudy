@@ -33,6 +33,7 @@
             android:layout_marginStart="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
+            android:textSize="@dimen/sp_20" />
     </LinearLayout>
 
 </LinearLayout>

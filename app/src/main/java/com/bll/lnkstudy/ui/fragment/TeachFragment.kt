@@ -20,7 +20,9 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.TeachActivity
 import com.bll.lnkstudy.ui.adapter.TeachListAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
 import kotlinx.android.synthetic.main.common_fragment_title.tv_semester
@@ -63,10 +65,10 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             }
         }
 
-        val semesters=DataBeanManager.popupSemesters()
-        tv_semester.text=semesters[0].name
+        semester=getSemester()
+        tv_semester.text=DataBeanManager.popupSemesters()[semester-1].name
         tv_semester.setOnClickListener {
-            PopupList(requireActivity(), semesters, tv_semester, tv_semester.width, 5).builder().setOnSelectListener { item ->
+            PopupList(requireActivity(), DataBeanManager.popupSemesters(semester), tv_semester, tv_semester.width, 5).builder().setOnSelectListener { item ->
                 semester=item.id
                 tv_semester.text = item.name
                 pageIndex = 1
@@ -135,7 +137,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
                             customStartActivity(intent)
                         }
                         else{
-                            showToast("WIFI未打开，无法播放视频")
+                            SToast.showTextLong(1,"WIFI未打开，无法播放视频")
                         }
                     }
                     else{
@@ -145,6 +147,13 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             }
         }
         rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(activity, 20f)))
+    }
+
+    /**
+     * 设置课本学期（月份为9月份之前为下学期）
+     */
+    private fun getSemester():Int{
+        return if (DateUtils.getMonth()<9) 2 else 1
     }
 
     override fun fetchData() {

@@ -52,7 +52,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var mUser=SPUtil.getObj("user",User::class.java)
+    var mUser:User?=null
     var grade=0
 
     var pageIndex=1 //当前页码
@@ -125,6 +125,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         EventBus.getDefault().register(this)
         screenPos=getCurrentScreenPos()
 
+        mUser= MethodManager.getUser()
         if (mUser!=null)
             grade=mUser?.grade!!
 
@@ -474,8 +475,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     fun onMessageEvent(msgFlag: String) {
         when(msgFlag){
             Constants.USER_CHANGE_EVENT->{
-                MethodManager.refreshUser()
-                mUser= SPUtil.getObj("user", User::class.java)
+                mUser= MethodManager.getUser()
                 grade=mUser?.grade!!
             }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{

@@ -28,7 +28,6 @@ import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
@@ -61,10 +60,9 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mUser=SPUtil.getObj("user",User::class.java)
-    var accountId=SPUtil.getObj("user",User::class.java)?.accountId
+    var mUser:User?=null
+    var grade=0
     var screenPos=1
-    var grade=mUser?.grade!!
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -112,6 +110,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         EventBus.getDefault().register(this)
         isViewPrepare = true
         initCommonTitle()
+
+        mUser= MethodManager.getUser()
+        if (mUser!=null)
+            grade=mUser?.grade!!
 
         if (rv_tab!=null){
             initTabView()
@@ -369,13 +371,12 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
     open fun onRefreshData(){
     }
 
-
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         when(msgFlag){
             Constants.USER_CHANGE_EVENT->{
-                mUser= SPUtil.getObj("user", User::class.java)
+                mUser= MethodManager.getUser()
                 grade=mUser?.grade!!
             }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{

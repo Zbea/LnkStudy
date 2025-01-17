@@ -32,10 +32,22 @@
         android:textSize="24sp"
         android:inputType="number"
         android:textColor="@color/black"
-        android:layout_marginBottom="35dp"
         android:layout_marginTop="30dp"
         android:padding="5dp"
-        tools:ignore="RtlSymmetry" />
+        />
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:lines="1"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        />
 
 
     <include

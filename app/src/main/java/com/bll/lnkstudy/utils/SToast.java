@@ -17,6 +17,8 @@ import androidx.annotation.StringRes;
 import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.net.ExceptionHandle;
 
+import java.util.Objects;
+
 
 /**
  * 取名 super Toast 的意思
@@ -65,7 +67,7 @@ public class SToast {
             toast = Toast.makeText(ctx, str, Toast.LENGTH_SHORT);
         }
         if (Build.VERSION.SDK_INT < 30) {
-            TextView text = toast.getView().findViewById(android.R.id.message);
+            TextView text = Objects.requireNonNull(toast.getView()).findViewById(android.R.id.message);
             text.setWidth(400);
             text.setGravity(Gravity.CENTER);
             text.setTextColor(Color.WHITE);
@@ -74,14 +76,64 @@ public class SToast {
             toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
         }
         if (screen==1){
-            toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 500, 200);
+            toast.setGravity(Gravity.BOTTOM|Gravity.START, 500, 200);
         }
         else {
-            toast.setGravity(Gravity.BOTTOM|Gravity.RIGHT, 500, 200);
+            toast.setGravity(Gravity.BOTTOM|Gravity.END, 500, 200);
         }
         toast.setText(str);
         toast.show();
     }
+
+    public static void showTextLong(@StringRes int res) {
+        showTextLong(1,ctx.getString(res));
+    }
+
+    public static void showTextLong( final CharSequence str) {
+        if (Thread.currentThread().getId() != 1) {
+            // 在子线程
+            handler.post(() -> finalShowLong(1,str));
+        } else {
+            finalShowLong(1,str);
+        }
+    }
+
+    public static void showTextLong(int screen,@StringRes int res) {
+        showTextLong(screen,ctx.getString(res));
+    }
+
+    public static void showTextLong(int screen, final CharSequence str) {
+        if (Thread.currentThread().getId() != 1) {
+            // 在子线程
+            handler.post(() -> finalShowLong(screen,str));
+        } else {
+            finalShowLong(screen,str);
+        }
+    }
+
+    private static void finalShowLong(int screen, CharSequence str) {
+        if (toast == null) {
+            toast = Toast.makeText(ctx, str, Toast.LENGTH_LONG);
+        }
+        if (Build.VERSION.SDK_INT < 30) {
+            TextView text = Objects.requireNonNull(toast.getView()).findViewById(android.R.id.message);
+            text.setWidth(400);
+            text.setGravity(Gravity.CENTER);
+            text.setTextColor(Color.WHITE);
+            text.setTextSize(20);
+            text.setPadding(30, 20, 30, 20);
+            toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
+        }
+        if (screen==1){
+            toast.setGravity(Gravity.BOTTOM|Gravity.START, 500, 200);
+        }
+        else {
+            toast.setGravity(Gravity.BOTTOM|Gravity.END, 500, 200);
+        }
+        toast.setText(str);
+        toast.show();
+    }
+
 
     /**
      * 取消显示

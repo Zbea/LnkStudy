@@ -5,6 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
+import com.bll.lnkstudy.utils.SToast
 import kotlinx.android.synthetic.main.ac_teach.tv_info
 import kotlinx.android.synthetic.main.ac_teach.videoplayer
 
@@ -43,7 +44,7 @@ class TeachActivity:BaseAppCompatActivity() {
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.WIFI_CONNECTION_FAIL_EVENT){
-            showToast("WIFI已关闭，无法播放视频")
+            SToast.showTextLong("WIFI未打开，无法播放视频")
             finish()
         }
     }

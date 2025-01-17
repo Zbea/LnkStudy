@@ -123,7 +123,8 @@ public interface IContractView {
 
     //班群管理
     interface IClassGroupView extends IBaseView {
-        default void onInsert(){};
+        default void onInsert(){}
+        default void onClassInfo(ClassGroup classGroup){}
         default void onClassGroupList(List<ClassGroup> classGroups) {}
         default void onQuit(){}
         default void onUser(ClassGroupUserList userList){}

@@ -42,7 +42,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     //设置头部索引
     private fun initTab() {
         val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
-        if (currentCourses!=courseItems){
+        if (grade>0&&currentCourses!=courseItems){
             mCoursePos = 0
             itemTabTypes.clear()
             currentCourses=courseItems
@@ -78,6 +78,9 @@ class TestPaperManageFragment: BaseMainFragment() {
      * 设置本地学校考试卷
      */
     private fun setLocalPaperType(){
+        if (grade==0){
+            return
+        }
         for (item in currentCourses){
             val course=item.title
             //创建学校考试卷

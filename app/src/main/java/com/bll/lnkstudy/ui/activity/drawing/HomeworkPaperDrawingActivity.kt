@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,16 +60,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var currentPosition=0
     private var oldPosition=-1
     private var page = 0//页码
-    private val commitItems = mutableListOf<ItemList>()
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
     private var takeTime=0L
 
     override fun onToken(token: String) {
-        val commitPaths = mutableListOf<String>()
-        for (item in commitItems) {
-            commitPaths.add(item.url)
-        }
-        FileImageUploadManager(token, commitPaths).apply {
+        FileImageUploadManager(token, getCommitPaths()).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
@@ -97,9 +93,20 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         daoManager?.insertOrReplace(paper)
         refreshDataUpdate()
 
-        //刷新当前paper
-        oldPosition=-1
-        onContent()
+        //替换本地图片，删除合图以及手写
+        for (i in paper?.paths!!.indices){
+            val mergePath=getPathMergeStr(i+1)
+            if (File(mergePath).exists()){
+                FileUtils.replaceFileContents(mergePath,paper?.paths!![i])
+            }
+        }
+        Handler().postDelayed({
+            FileUtils.deleteFile(File(getPathDraw()))
+            FileUtils.deleteFile(File(getPathMerge()))
+            //刷新当前paper
+            oldPosition=-1
+            onContent()
+        },500)
     }
 
 
@@ -142,6 +149,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 showToast(R.string.net_work_error)
                 return@setOnClickListener
             }
+            if (!FileUtils.isExistContent(getPathMerge())){
+                showToast("未填写答案,无法提交")
+                return@setOnClickListener
+            }
             if (paper?.state==1&&paper?.isSelfCorrect==true&&!paper?.commitJson.isNullOrEmpty()){
                 homeworkCommitInfoItem=Gson().fromJson(paper?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
@@ -152,7 +163,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     override fun cancel() {
                     }
                     override fun ok() {
-                        showLoading()
                         commit()
                     }
                 })
@@ -181,12 +191,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onPageDown() {
-        if (isExpand&&page<pageCount-1){
-            page+=2
-            onContent()
-        }
-        else if (!isExpand&&page<pageCount-1){
-            page+=1
+        val count=if (isExpand) pageCount-2 else pageCount-1
+        if (page<count){
+            page+=if (isExpand)2 else 1
             onContent()
         }
         else{
@@ -199,12 +206,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onPageUp() {
-        if (isExpand&&page>0){
-            page-=2
-            onContent()
-        }
-        else if (!isExpand&&page>0){
-            page-=1
+        if (page>0){
+            page-=if (isExpand)2 else 1
             onContent()
         }
         else{
@@ -217,14 +220,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onChangeExpandContent() {
+        //单屏时只有一页无法展开
+        if (!isExpand&&pageCount==1)
+            return
         changeErasure()
         isExpand=!isExpand
-        //展屏时，如果当前page内容为最后一张且这次目录内容不止1张，则页码前移一位
-        if (isExpand){
-            if (page==pageCount-1&&pageCount>1){
-                page-=1
-            }
-        }
         moveToScreen(isExpand)
         onChangeExpandView()
         onContent()
@@ -236,42 +236,36 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         paper=papers[currentPosition]
         pageCount=paper!!.paths.size
 
-        if (page<0){
+        if (isExpand&&pageCount==1){
+            onChangeExpandContent()
+            return
+        }
+
+        if (isExpand&&page>pageCount-2)
+            page=pageCount-2
+        if (page<0)
             page=0
-        }
-        if (page>pageCount-1){
-            page=pageCount-1
-        }
-
-        if (isExpand){
-            setElikLoadPath(page,elik_a!!,v_content_a!!)
-            if (page+1<pageCount){
-                elik_b?.disablePWInput(false)
-                setElikLoadPath(page+1,elik_b!!,v_content_b!!)
-            }
-            else{
-                elik_b?.disablePWInput(true)
-                //不显示 ，不能手写
-                v_content_b?.setImageResource(R.color.white)
-            }
-
-            if (screenPos==Constants.SCREEN_LEFT){
-                tv_page.text="${page+1}"
-                tv_page_a.text=if (page+1<pageCount)"${page+1+1}" else ""
-            }
-            if (screenPos==Constants.SCREEN_RIGHT){
-                tv_page_a.text="${page+1}"
-                tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
-            }
-        }
-        else{
-            elik_b?.disablePWInput(false)
-            setElikLoadPath(page,elik_b!!,v_content_b!!)
-            tv_page.text="${page+1}"
-        }
 
         tv_page_total.text="$pageCount"
         tv_page_total_a.text="$pageCount"
+
+        if (isExpand){
+            setElikLoadPath(page,elik_a!!,v_content_a!!)
+            setElikLoadPath(page+1,elik_b!!,v_content_b!!)
+
+            if (screenPos==Constants.SCREEN_LEFT){
+                tv_page.text="${page+1}"
+                tv_page_a.text="${page+1+1}"
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text="${page+1}"
+                tv_page.text="${page+1+1}"
+            }
+        }
+        else{
+            setElikLoadPath(page,elik_b!!,v_content_b!!)
+            tv_page.text="${page+1}"
+        }
 
         //云书库下载无法手写
         setDisableTouchInput(homeworkType?.isCloud!!||paper?.state==1)
@@ -347,10 +341,27 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onElikSava_a() {
+        if (paper?.endTime!!>0&&paper?.state!=2&&isExpand){
+            Thread {
+                BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page+1))
+            }.start()
+        }
         refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
+        if (paper?.endTime!!>0&&paper?.state!=2){
+            if (isExpand){
+                Thread {
+                    BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1+1))
+                }.start()
+            }
+            else{
+                Thread {
+                    BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
+                }.start()
+            }
+        }
         refreshDataUpdate()
     }
 
@@ -385,38 +396,63 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             homeworkCommitInfoItem?.typeName=homeworkType?.name
             homeworkCommitInfoItem?.course=homeworkType?.course
             homeworkCommitInfoItem?.state=homeworkType?.state
+            homeworkCommitInfoItem?.paths=getCommitPaths()
         }
-        commitItems.clear()
-        for (i in 0 until pageCount) {
-            val path=paper!!.paths[i]
-            val drawPath=paper!!.drawPaths[i]
-            homeworkCommitInfoItem?.paths?.add(path)
-            Thread {
-                BitmapUtils.mergeBitmap(path, drawPath)
-                FileUtils.deleteFile(File(drawPath))
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = path
-                })
-                if (commitItems.size == pageCount) {
-                    takeTime=System.currentTimeMillis()- paper?.startTime!!
-                    homeworkCommitInfoItem?.takeTime=takeTime
-                    if (paper?.isSelfCorrect == true){
-                        //修改当前paper状态
-                        paper?.state = 1
-                        paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
-                        daoManager?.insertOrReplace(paper)
-                        refreshDataUpdate()
 
-                        gotoSelfCorrect()
-                    }
-                    else{
-                        commitItems.sort()
-                        mUploadPresenter.getToken()
-                    }
-                }
-            }.start()
+        takeTime=System.currentTimeMillis()- paper?.startTime!!
+        if (paper?.isSelfCorrect == true){
+            homeworkCommitInfoItem?.takeTime=takeTime
+            //修改当前paper状态
+            paper?.state = 1
+            paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
+            daoManager?.insertOrReplace(paper)
+            refreshDataUpdate()
+
+            gotoSelfCorrect()
         }
+        else{
+            showLoading()
+            mUploadPresenter.getToken()
+        }
+    }
+
+    /**
+     * 获取提交图片地址
+     */
+    private fun getCommitPaths():List<String>{
+        //获取合图的图片，没有手写的页面那原图
+        val paths= mutableListOf<String>()
+        for (i in paper!!.paths.indices){
+            val mergePath=getPathMergeStr(i+1)
+            if (File(mergePath).exists()){
+                paths.add(mergePath)
+            }
+            else{
+                paths.add(paper!!.paths[i])
+            }
+        }
+        return paths
+    }
+
+    /**
+     * 得到当前手写地址
+     */
+    private fun getPathDraw():String{
+        return paper?.filePath+"/draw/"
+    }
+
+    /**
+     * 得到当前合图地址
+     */
+    private fun getPathMerge():String{
+        return paper?.filePath+"/merge/"
+    }
+
+    /**
+     * 得到当前合图地址
+     */
+    private fun getPathMergeStr(index: Int):String{
+        return paper?.filePath+"/merge/${index}.png"
     }
 
     /**

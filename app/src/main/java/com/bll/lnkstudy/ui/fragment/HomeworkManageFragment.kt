@@ -86,7 +86,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     //设置头部索引
     private fun initTab() {
         val courseItems=ItemTypeDaoManager.getInstance().queryAll(7)
-        if (currentCourses!=courseItems){
+        if (grade>0&&currentCourses!=courseItems){
             mCoursePos = 0
             itemTabTypes.clear()
             currentCourses=courseItems
@@ -122,6 +122,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
      * 设置本地错题本
      */
     private fun setLocalHomeworkType(){
+        if (grade==0){
+            return
+        }
         for (item in currentCourses){
             val course=item.title
             //添加错题本
@@ -394,6 +397,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     }
 
     override fun onRefreshData() {
+        lazyLoad()
         for (fragment in fragments){
             fragment.onRefreshData()
         }

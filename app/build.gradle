@@ -15,7 +15,7 @@ android {
         applicationId "com.bll.lnkstudy"
         minSdk 26
         targetSdk 33
-        versionCode 12
+        versionCode 13
         versionName "V 1.0.1"
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -155,6 +155,12 @@ dependencies {
     implementation("net.lingala.zip4j:zip4j:2.11.1")
     implementation 'com.qiniu:qiniu-android-sdk:8.4.+'
     implementation 'com.haibin:calendarview:3.7.1'
+}
+
+def buildTime() {
+    def date = new Date()
+    def formattedDate = date.format('yyMMdd')
+    return formattedDate
 }
 
 preBuild {

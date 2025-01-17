@@ -83,7 +83,7 @@ class FileAddress {
      * categoryId分类id contentId内容id
      */
     fun getPathTestPaper(course:String,categoryId:Int,contentId:Int):String{
-        return "$TESTPAPER_PATH/$mUserId/testPaperType$categoryId/$contentId"
+        return "$TESTPAPER_PATH/$mUserId/$course/$categoryId/$contentId"
     }
 
     /**
@@ -91,7 +91,7 @@ class FileAddress {
      * categoryId分类id
      */
     fun getPathTestPaper(course:String,categoryId:Int):String{
-        return "$TESTPAPER_PATH/$mUserId/testPaperType$categoryId"
+        return "$TESTPAPER_PATH/$mUserId/$course/$categoryId"
     }
 
     /**
@@ -113,10 +113,6 @@ class FileAddress {
      */
     fun getPathNote(type: String?,noteBookStr: String?):String{
         return "$NOTE_PATH/$mUserId/$type/$noteBookStr"
-    }
-
-    fun getPathImage(type:String):String{
-        return "$IMAGE_PATH/$mUserId/$type"
     }
 
     /**

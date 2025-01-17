@@ -15,20 +15,20 @@
         >
 
         <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_course"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:ellipsize="end"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24" />
 
         <TextView
-            android:id="@+id/tv_course"
+            android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:lines="1"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/dp_20"
+            android:ellipsize="end"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24" />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_22" />
     </LinearLayout>
 
     <LinearLayout
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_22" />
     </LinearLayout>
 
 </LinearLayout>

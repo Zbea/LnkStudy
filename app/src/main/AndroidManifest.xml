@@ -169,7 +169,6 @@
         <activity
             android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
-            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.RecordActivity"
             android:windowSoftInputMode="adjustPan"
@@ -192,7 +191,7 @@
             />
         <activity
             android:name=".ui.activity.drawing.TestPaperDrawingActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
         <activity
             android:name=".ui.activity.WalletActivity"

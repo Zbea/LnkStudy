@@ -30,12 +30,24 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     private var mAdapter: ClassGroupAdapter? = null
     private var groups = mutableListOf<ClassGroup>()
     private var positionGroup = 0
+    private var classGroupAddDialog:ClassGroupAddDialog?=null
 
     override fun onInsert() {
         showToast(R.string.toast_add_classGroup_success)
         EventBus.getDefault().post(Constants.CLASSGROUP_REFRESH_EVENT)
         presenter.getClassGroupList(true)
     }
+
+    override fun onClassInfo(classGroup: ClassGroup) {
+        if (classGroup.name==null){
+            classGroupAddDialog?.setTextInfo("")
+        }
+        else{
+            val info="班级信息：${classGroup.name} ${classGroup.teacher}"
+            classGroupAddDialog?.setTextInfo(info)
+        }
+    }
+
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         MethodManager.saveClassGroups(classGroups)
         groups = classGroups
@@ -119,13 +131,15 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
 
     //加入班群
     private fun addGroup() {
-        ClassGroupAddDialog(this).builder()?.setOnDialogClickListener { code ->
-            presenter.onInsertClassGroup(code)
-        }
-    }
-
-    override fun onNetworkConnectionSuccess() {
-        presenter.getClassGroupList(true)
+        classGroupAddDialog=ClassGroupAddDialog(this).builder()
+        classGroupAddDialog?.setOnDialogClickListener (object : ClassGroupAddDialog.OnDialogClickListener {
+            override fun onClick(code: Int) {
+                presenter.onInsertClassGroup(code)
+            }
+            override fun onEditTextCode(code: Int) {
+                presenter.onClassGroupInfo(code)
+            }
+        })
     }
 
 }

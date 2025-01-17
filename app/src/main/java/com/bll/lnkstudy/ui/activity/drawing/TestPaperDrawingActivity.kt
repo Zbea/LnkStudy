@@ -87,12 +87,8 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
     }
 
     override fun onPageUp() {
-        if (isExpand&&page>0){
-            page-=2
-            onContent()
-        }
-        else if (!isExpand&&page>0){
-            page-=1
+        if (page>0){
+            page-=if (isExpand)2 else 1
             onContent()
         }
         else{
@@ -105,31 +101,26 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
     }
 
     override fun onPageDown() {
-        if (isExpand&&page<pageCount-1){
-            page+=2
-            onContent()
-        }
-        else if(!isExpand&&page<pageCount-1){
-            page+=1
+        val count=if (isExpand) pageCount-2 else pageCount-1
+        if (page<count){
+            page+=if (isExpand)2 else 1
             onContent()
         }
         else{
-            //切换目录
-            currentPosition+=1
-            page=0
-            onContent()
+            if (currentPosition<papers.size-1){
+                currentPosition+=1
+                page=0
+                onContent()
+            }
         }
     }
 
     override fun onChangeExpandContent() {
+        //单屏时只有一页无法展开
+        if (!isExpand&&pageCount==1)
+            return
         changeErasure()
         isExpand=!isExpand
-        //展屏时，如果当前考卷内容为最后一张且这次目录内容不止1张，则页码前移一位
-        if (isExpand){
-            if (page==pageCount-1&&pageCount>1){
-                page-=1
-            }
-        }
         moveToScreen(isExpand)
         onChangeExpandView()
         onContent()
@@ -141,47 +132,42 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         paper=papers[currentPosition]
         pageCount=paper?.paths!!.size
 
+        if (isExpand&&pageCount==1){
+            onChangeExpandContent()
+            return
+        }
+
+        if (isExpand&&page>pageCount-2)
+            page=pageCount-2
+        if (page<0)
+            page=0
+
         if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
             page=0
         }
         oldPosition=currentPosition
 
-        if (page<0){
-            page=0
-        }
-        if (page>pageCount-1){
-            page=pageCount-1
-        }
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
 
         if (isExpand){
             setElikLoadPath(elik_a!!,page,v_content_a!!)
-            if (page+1<pageCount){
-                setElikLoadPath(elik_b!!,page+1,v_content_b!!)
-                elik_b?.disablePWInput(false)
-            }
-            else{
-                //不显示 ，不能手写
-                v_content_b?.setImageResource(0)
-                elik_b?.disablePWInput(true)
-            }
+            setElikLoadPath(elik_b!!,page+1,v_content_b!!)
+
             if (screenPos== Constants.SCREEN_LEFT){
                 tv_page.text="${page+1}"
-                tv_page_a.text=if (page+1<pageCount)"${page+1+1}" else ""
+                tv_page_a.text="${page+1+1}"
             }
             if (screenPos== Constants.SCREEN_RIGHT){
                 tv_page_a.text="${page+1}"
-                tv_page.text=if (page+1<pageCount)"${page+1+1}" else ""
+                tv_page.text="${page+1+1}"
             }
         }
         else{
             setElikLoadPath(elik_b!!,page,v_content_b!!)
-            elik_b?.disablePWInput(false)
             tv_page.text="${page+1}"
         }
-
-        tv_page_total.text="$pageCount"
-        tv_page_total_a.text="$pageCount"
     }
 
     /**

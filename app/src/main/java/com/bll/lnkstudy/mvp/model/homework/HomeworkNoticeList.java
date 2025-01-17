@@ -18,6 +18,7 @@ public class HomeworkNoticeList {
         public String typeName;//作业分类
         public long endTime;//是否需要提交的时间
         public long time;//布置时间
+        public String startTime;//创建时间
         public int subject;
         public String name;
         public int type;//1家长2老师3学校

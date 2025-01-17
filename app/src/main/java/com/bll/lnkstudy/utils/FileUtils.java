@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -32,8 +33,6 @@ public class FileUtils {
 
     /**
      * 读取文本内容String
-     *
-     * @param inputStream
      * @return 读取文本内容String
      */
     public static String readFileContent(InputStream inputStream) {
@@ -414,25 +413,47 @@ public class FileUtils {
             }
             Files.copy(Paths.get(oldPathName) ,Paths.get(newPathName) , StandardCopyOption.REPLACE_EXISTING);
             oldFile.delete();
-//            File newFile = new File(newPathName);
-//            if (!newFile.exists()){
-//                newFile.getParentFile().mkdirs();
-//                newFile.createNewFile();
-//            }
-//            FileInputStream fileInputStream = new FileInputStream(oldPathName);
-//            FileOutputStream fileOutputStream = new FileOutputStream(newPathName);
-//            byte[] buffer = new byte[1024];
-//            int byteRead;
-//            while (-1 != (byteRead = fileInputStream.read(buffer))) {
-//                fileOutputStream.write(buffer, 0, byteRead);
-//            }
-//            fileInputStream.close();
-//            fileOutputStream.flush();
-//            fileOutputStream.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * 指定内容替换原来内容
+     * @param sourcePath
+     * @param targetPath
+     */
+    public static void replaceFileContents(String sourcePath,String targetPath){
+        File sourceFile=new File(sourcePath);
+        File targetFile=new File(targetPath);
+        // 确保目标文件存在
+        if (!sourceFile.exists()) {
+            return;
+        }
+        try {
+            if (!targetFile.exists()){
+                targetFile.getParentFile().mkdirs();
+                targetFile.createNewFile();
+            }
+            // 打开源文件和目标文件的输入输出流
+            FileInputStream fis = new FileInputStream(sourceFile);
+            FileOutputStream fos = new FileOutputStream(targetFile);
+
+            // 通过文件输入输出流获取文件通道
+            FileChannel sourceChannel = fis.getChannel();
+            FileChannel targetChannel = fos.getChannel();
+
+            // 将源文件的内容写入目标文件，覆盖其内容
+            sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);
+            // 关闭文件通道和流
+            sourceChannel.close();
+            targetChannel.close();
+            fis.close();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

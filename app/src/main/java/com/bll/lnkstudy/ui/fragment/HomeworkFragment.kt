@@ -294,6 +294,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     item.isPg = false
                     notifyItemChanged(position)
                 }
+                if (item.isMessage) {
+                    item.isMessage = false
+                    notifyItemChanged(position)
+                }
                 when (item.state) {
                     1 -> {
                         MethodManager.gotoHomeworkReelDrawing(requireActivity(), item, Constants.DEFAULT_PAGE)
@@ -317,8 +321,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         customStartActivity(
                             Intent(requireActivity(), FileDrawingActivity::class.java)
                                 .putExtra("pageIndex", Constants.DEFAULT_PAGE)
-                                .putExtra("pagePath", FileAddress().getPathScreenHomework(item.name, item.grade))
-                        )
+                                .putExtra("pagePath", FileAddress().getPathScreenHomework(item.name, item.grade)))
                     }
                 }
             }
@@ -870,7 +873,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         val drawPaths = mutableListOf<String>()
         for (i in images.indices) {
             paths.add("$pathStr/${i + 1}.png")
-            drawPaths.add("$pathStr/${i + 1}draw.png")
+            drawPaths.add("$pathStr/draw/${i + 1}.png")
         }
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
             .startMultiTaskDownLoad(

@@ -200,6 +200,11 @@ interface APIService{
     @GET("class/list")
     fun groupList(): Observable<BaseResult<List<ClassGroup>>>
     /**
+     * 班群信息
+     */
+    @GET("class/group/infoV2")
+    fun groupInfo(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ClassGroup>>
+    /**
      * 退出班群
      */
     @POST("class/group/studentQuit")

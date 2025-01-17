@@ -5,7 +5,8 @@ import com.bll.lnkstudy.mvp.presenter.CloudPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 
 
-abstract class BaseCloudFragment : BaseFragment(), IContractView.ICloudView  {
+abstract class
+BaseCloudFragment : BaseFragment(), IContractView.ICloudView  {
 
     var mCloudPresenter= CloudPresenter(this,getScreenPosition())
     var types= mutableListOf<String>()

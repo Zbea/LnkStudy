@@ -1,6 +1,8 @@
 package com.bll.lnkstudy;
 
 import static com.bll.lnkstudy.Constants.BOOK_EVENT;
+import static com.bll.lnkstudy.Constants.SP_PARENT_PERMISSION;
+import static com.bll.lnkstudy.Constants.SP_SCHOOL_PERMISSION;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -66,15 +68,13 @@ import java.util.Objects;
 
 public class MethodManager {
 
-    private static User user = SPUtil.INSTANCE.getObj("user", User.class);
-
-    public static void refreshUser() {
-        user = SPUtil.INSTANCE.getObj("user", User.class);
+    public static User getUser(){
+        return SPUtil.INSTANCE.getObj("user", User.class);
     }
 
     public static boolean isLogin(){
         String tokenStr=SPUtil.INSTANCE.getString("token");
-        return !TextUtils.isEmpty(tokenStr) && user!=null;
+        return !TextUtils.isEmpty(tokenStr) && getUser()!=null;
     }
 
     /**
@@ -182,7 +182,7 @@ public class MethodManager {
         intent.putExtra("key_book_id", bookBean.bookId + "");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool", result.toString());
-        intent.putExtra("userId", user.accountId);
+        intent.putExtra("userId", getUser().accountId);
         intent.putExtra("type", 1);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
         intent.putExtra("key_book_type", key_type);
@@ -227,7 +227,7 @@ public class MethodManager {
         intent.putExtra("key_book_id", textbookBean.bookId + "");
         intent.putExtra("bookName", textbookBean.bookName);
         intent.putExtra("tool", result.toString());
-        intent.putExtra("userId", user.accountId);
+        intent.putExtra("userId", getUser().accountId);
         intent.putExtra("type", 2);
         intent.putExtra("drawPath", textbookBean.bookDrawPath);
         intent.putExtra("key_book_type", 2);
@@ -529,7 +529,7 @@ public class MethodManager {
         boolean isAllow = true;
         long currentTime = DateUtils.getCurrentHourInMillis();
         int week = DateUtils.getWeek(System.currentTimeMillis());
-        PermissionParentBean permissionParentBean = SPUtil.INSTANCE.getObj("parentPermission", PermissionParentBean.class);
+        PermissionParentBean permissionParentBean = SPUtil.INSTANCE.getObj(SP_PARENT_PERMISSION, PermissionParentBean.class);
         if (permissionParentBean == null) {
             return true;
         }
@@ -590,7 +590,7 @@ public class MethodManager {
      * @return
      */
     public static boolean getSchoolPermissionAllow(int type) {
-        PermissionSchoolItemBean item = SPUtil.INSTANCE.getObj("schoolPermission", PermissionSchoolItemBean.class);
+        PermissionSchoolItemBean item = SPUtil.INSTANCE.getObj(SP_SCHOOL_PERMISSION, PermissionSchoolItemBean.class);
         if (item == null) {
             return true;
         }
@@ -644,7 +644,7 @@ public class MethodManager {
      * @return
      */
     public static int getExamTypeId(String subject) {
-        String idStr = DataBeanManager.INSTANCE.getCourseId(subject) + String.valueOf(user.grade);
+        String idStr = DataBeanManager.INSTANCE.getCourseId(subject) + String.valueOf(getUser().grade);
         return Integer.parseInt(idStr);
     }
 

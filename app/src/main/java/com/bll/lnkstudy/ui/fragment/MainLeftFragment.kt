@@ -99,14 +99,14 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
         }
     }
     override fun onParentPermission(permissionParentBean: PermissionParentBean) {
-        SPUtil.putObj("parentPermission", permissionParentBean)
+        SPUtil.putObj(Constants.SP_PARENT_PERMISSION, permissionParentBean)
     }
     override fun onSchoolPermission(permissionSchoolBean: PermissionSchoolBean) {
         if (permissionSchoolBean.config.isNotEmpty()) {
             val item = Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
-            SPUtil.putObj("schoolPermission", item)
+            SPUtil.putObj(Constants.SP_SCHOOL_PERMISSION, item)
         } else {
-            SPUtil.removeObj("schoolPermission")
+            SPUtil.removeObj(Constants.SP_SCHOOL_PERMISSION)
         }
     }
     override fun onCorrect(list: HomeworkNoticeList) {
@@ -122,12 +122,13 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
     }
 
     override fun initView() {
+
         setTitle(DataBeanManager.listTitle[0])
         initDialog(1)
 
         initPlanView()
         initNoticeView()
-        initCorrect()
+        initCorrectView()
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
@@ -294,30 +295,12 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
         }
         mNoticeAdapter?.setOnItemClickListener { adapter, view, position ->
             showView(ll_notice)
-            setNoticeShow(mNoticeAdapter?.getItem(position)!!)
+            setNoticeShow(0,mNoticeAdapter?.getItem(position)!!)
         }
     }
-
-    /**
-     * 展示作业详情
-     */
-    private fun setNoticeShow(item: HomeworkNoticeList.HomeworkNoticeBean) {
-        tv_notice_name?.text = "${item.typeName}   ${DataBeanManager.getCourseStr(item.subject)}"
-        tv_notice_time?.text = "布置时间：" + DateUtils.longToStringNoYear(item.time)
-        if (item.endTime > 0) {
-            showView(tv_notice_end_time)
-            tv_notice_end_time?.text = "提交时间：" + DateUtils.longToStringWeek(item.endTime)
-        }
-        tv_notice_content?.text = "通知内容：${item.title}"
-
-        iv_close.setOnClickListener {
-            disMissView(ll_notice)
-        }
-    }
-
 
     //批改详情
-    private fun initCorrect() {
+    private fun initCorrectView() {
         correctAdapter = MainHomeworkNoticeAdapter(R.layout.item_main_homework_notice, null).apply {
             rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_main_note.adapter = this
@@ -325,7 +308,27 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
         }
         correctAdapter?.setOnItemClickListener { adapter, view, position ->
             showView(ll_notice)
-            setNoticeShow(correctAdapter?.getItem(position)!!)
+            setNoticeShow(1,correctAdapter?.getItem(position)!!)
+        }
+    }
+
+    /**
+     * 展示作业详情
+     */
+    private fun setNoticeShow(type:Int,item: HomeworkNoticeList.HomeworkNoticeBean) {
+        tv_notice_name?.text = "${DataBeanManager.getCourseStr(item.subject)}   ${item.typeName} "
+        tv_notice_time?.text = "${if (type==0)"布置时间：" else "批改时间："}" + DateUtils.longToStringWeek1(item.time)
+        if (item.endTime > 0) {
+            showView(tv_notice_end_time)
+            tv_notice_end_time?.text = "提交时间：" + DateUtils.longToStringWeek(item.endTime)
+        }
+        else{
+            disMissView(tv_notice_end_time)
+        }
+        tv_notice_content?.text = "通知内容：${item.title}"
+
+        iv_close.setOnClickListener {
+            disMissView(ll_notice)
         }
     }
 

@@ -13,7 +13,7 @@ class MainHomeworkNoticeAdapter(layoutResId: Int, data: List<HomeworkNoticeList.
         helper.apply {
             setText(R.id.tv_name,item.typeName)
             setText(R.id.tv_course,DataBeanManager.getCourseStr(item.subject))
-            setText(R.id.tv_date, DateUtils.longToStringNoYear(item.time))
+            setText(R.id.tv_date, DateUtils.longToStringWeek(item.time))
             setText(R.id.tv_content,item.title)
         }
     }
