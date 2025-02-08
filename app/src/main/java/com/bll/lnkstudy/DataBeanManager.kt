@@ -4,18 +4,10 @@ import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
-import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import java.util.*
 
 object DataBeanManager {
-
-    var provinces= mutableListOf<Area>()
-    var schools= mutableListOf<SchoolBean>()
-//    var grades= mutableListOf<ItemList>()
-//    var typeGrades= mutableListOf<ItemList>()
-//    var courses= mutableListOf<ItemList>()
-//    var bookVersion= mutableListOf<ItemList>()
 
      val listTitle = arrayOf(
         "首页","书架",
@@ -152,7 +144,7 @@ object DataBeanManager {
      */
     fun popupTypePos(): Int
     {
-        val grade=SPUtil.getObj("user",User::class.java)?.grade!!
+        val grade=MethodManager.getUser()?.grade!!
         val type=if (grade<4){
             0
         }

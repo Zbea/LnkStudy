@@ -27,10 +27,6 @@ object RetrofitManager{
         getRetrofit().create(APIService::class.java)
     }
 
-    val service1: APIService by lazy (LazyThreadSafetyMode.SYNCHRONIZED){
-        getRetrofit1().create(APIService::class.java)
-    }
-
     /**
      * 设置公共参数
      */
@@ -150,18 +146,6 @@ object RetrofitManager{
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
-    }
-
-    private fun getRetrofit1(): Retrofit {
-        // 获取retrofit的实例
-        return Retrofit.Builder()
-            .baseUrl(Constants.RELEASE_BASE_URL)  //自己配置
-            .client(getOkHttpClient())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
     }
 
 }

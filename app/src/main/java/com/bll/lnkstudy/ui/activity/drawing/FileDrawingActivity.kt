@@ -6,6 +6,8 @@ import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
+import com.bll.lnkstudy.dialog.CatalogDialog
+import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
@@ -28,14 +30,38 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         pageIndex = intent.getIntExtra("pageIndex", 0)
         path= intent.getStringExtra("pagePath").toString()
         pageCount=FileUtils.getAscFiles(path).size
-        if (pageIndex==Constants.DEFAULT_PAGE)
+        if (pageIndex==Constants.DEFAULT_PAGE){
             pageIndex=pageCount-1
+        }
+        else{
+            disMissView(iv_catalog)
+        }
     }
 
     override fun initView() {
-        disMissView(iv_draft,iv_btn,iv_catalog)
+        disMissView(iv_draft,iv_btn)
 
         onContent()
+    }
+
+    override fun onCatalog() {
+        val files = FileUtils.getAscFiles(path)
+        val list= mutableListOf<ItemList>()
+        for (file in files){
+            val itemList= ItemList()
+            itemList.name=file.name.replace(".png","")
+            itemList.page=files.indexOf(file)
+            itemList.isEdit=false
+            list.add(itemList)
+        }
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (pageIndex!=list[position].page){
+                    pageIndex = list[position].page
+                    onContent()
+                }
+            }
+        })
     }
 
     override fun onPageUp() {

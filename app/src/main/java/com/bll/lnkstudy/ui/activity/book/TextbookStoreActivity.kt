@@ -39,7 +39,6 @@ import kotlinx.android.synthetic.main.ac_bookstore.rv_list
 import kotlinx.android.synthetic.main.ac_bookstore.tv_download
 import kotlinx.android.synthetic.main.common_title.tv_course
 import kotlinx.android.synthetic.main.common_title.tv_grade
-import kotlinx.android.synthetic.main.common_title.tv_province
 import kotlinx.android.synthetic.main.common_title.tv_semester
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -65,7 +64,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var countDownTasks: CountDownLatch? = null //异步完成后操作
     private var subjectList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
-    private var provinceList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
     override fun onTextbook(bookStore: TextbookStore) {
@@ -104,10 +102,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
         getSemester()
 
-        provinceStr= mUser?.schoolProvince.toString()
-        for (i in DataBeanManager.provinces.indices){
-            provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
-        }
+        provinceStr= mUser?.schoolCity.toString()
         gradeId = mUser?.grade!!
         onCommonData()
         if (NetworkUtil(this).isNetworkConnected()){
@@ -215,18 +210,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
      * 设置分类选择
      */
     private fun initSelectorView() {
-
-        tv_province.text = provinceStr
-        tv_province.setOnClickListener {
-            PopupList(this, provinceList, tv_province, tv_province.width, 5).builder()
-                .setOnSelectListener { item ->
-                    provinceStr = item.name
-                    tv_province.text = provinceStr
-                    pageIndex = 1
-                    fetchData()
-                }
-        }
-
         tv_grade.text =DataBeanManager.getGradeStr(gradeId)
         tv_grade.setOnClickListener {
             PopupList(this, gradeList, tv_grade, tv_grade.width, 5).builder()

@@ -3,7 +3,6 @@ package com.bll.lnkstudy
 import com.bll.lnkstudy.mvp.model.AccountOrder
 import com.bll.lnkstudy.mvp.model.AccountQdBean
 import com.bll.lnkstudy.mvp.model.AppList
-import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.CalenderList
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.ClassGroupUserList
@@ -11,7 +10,6 @@ import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.SchoolBean
-import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.User
@@ -33,7 +31,6 @@ import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
-import com.bll.lnkstudy.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -47,16 +44,6 @@ import retrofit2.http.QueryMap
 
 interface APIService{
 
-    /**
-     * 检查系统更新
-     */
-    @POST("Device/CheckUpdate")
-    fun RELEASE_CHECK_UPDATE(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
-    /**
-     * 检查系统更新
-     */
-    @POST("Device/UpdateInfo")
-    fun RELEASE_UPDATE_INFO(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
 
     @POST("cloud/data/insert")
     fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
@@ -70,11 +57,6 @@ interface APIService{
      */
     @GET("accounts/active")
     fun active(): Observable<BaseResult<Any>>
-    /**
-     * 获取更新
-     */
-    @GET("app/info/one?type=1")
-    fun onAppUpdate(): Observable<BaseResult<AppUpdateBean>>
     /**
      * 获取增量更新列表F
      */
@@ -454,5 +436,5 @@ interface APIService{
      * 获取学校的权限控制
      */
     @GET("student/data/rule")
-    fun getPermissionSchoolAllow(): Observable<BaseResult<PermissionSchoolBean>>
+    fun getPermissionSchoolAllow(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PermissionSchoolBean>>
 }

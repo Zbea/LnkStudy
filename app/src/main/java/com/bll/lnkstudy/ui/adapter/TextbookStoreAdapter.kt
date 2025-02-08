@@ -12,9 +12,9 @@ class TextbookStoreAdapter(layoutResId: Int, data: List<TextbookBean>?) : BaseQu
         helper.setText(R.id.tv_name,item.bookName)
         val image=helper.getView<ImageView>(R.id.iv_image)
         if (item.pageUrl.isNullOrEmpty()) {
-            GlideUtils.setImageRoundUrl(mContext, item.imageUrl, image, 10)
+            GlideUtils.setImageRoundUrl(mContext, item.imageUrl, image, 8)
         } else {
-            GlideUtils.setImageRoundUrl(mContext, item.pageUrl, image, 10)
+            GlideUtils.setImageRoundUrl(mContext, item.pageUrl, image, 8)
         }
     }
 }

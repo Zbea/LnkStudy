@@ -9,14 +9,10 @@ import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
 import com.bll.lnkstudy.DataBeanManager
-import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.manager.CalenderDaoManager
 import com.bll.lnkstudy.manager.DateEventGreenDaoManager
-import com.bll.lnkstudy.mvp.model.AppUpdateBean
-import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
 import com.bll.lnkstudy.mvp.model.date.DateBean
 import com.bll.lnkstudy.mvp.model.date.DateEventBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
@@ -25,10 +21,8 @@ import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
 import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
-import com.bll.lnkstudy.mvp.presenter.SystemManagerPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkNoticeView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
-import com.bll.lnkstudy.mvp.view.IContractView.ISystemView
 import com.bll.lnkstudy.ui.activity.HomeworkNoticeListActivity
 import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
@@ -37,19 +31,13 @@ import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
-import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.DateUtils
-import com.bll.lnkstudy.utils.DeviceUtil
-import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
-import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.date.CalenderUtils
 import com.google.gson.Gson
-import com.htfy.params.ServerParams
-import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
 import kotlinx.android.synthetic.main.fragment_main_left.iv_close
 import kotlinx.android.synthetic.main.fragment_main_left.iv_date_more
@@ -76,8 +64,7 @@ import java.util.Random
 /**
  * 首页
  */
-class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomeworkNoticeView {
-    private val mSystemPresenter = SystemManagerPresenter(this, 1)
+class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
     private val mMainLeftPresenter = MainLeftPresenter(this, 1)
     private val mHomeworkNoticePresenter=HomeworkNoticePresenter(this,1)
     private var mPlanAdapter: MainDatePlanAdapter? = null
@@ -87,17 +74,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
     private var nowDayPos = 1
     private var calenderPath = ""
     private var dateEvents = mutableListOf<DateEventBean>()
-    private var updateDialog: AppUpdateDialog? = null
 
-    override fun onUpdateInfo(item: SystemUpdateInfo) {
-        AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
-    }
-    override fun onAppUpdate(item: AppUpdateBean) {
-        if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
-            updateDialog = AppUpdateDialog(requireActivity(), 1, item).builder()
-            downLoadStart(item)
-        }
-    }
     override fun onParentPermission(permissionParentBean: PermissionParentBean) {
         SPUtil.putObj(Constants.SP_PARENT_PERMISSION, permissionParentBean)
     }
@@ -186,18 +163,11 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
     }
 
     override fun fetchData() {
-        fetchCommonData()
+        onCheckUpdate()
         if (NetworkUtil(requireActivity()).isNetworkConnected()) {
-            val systemUpdateMap = HashMap<String, String>()
-            systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
-            systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
-            systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
-            mSystemPresenter.checkSystemUpdate(systemUpdateMap)
-
-            mMainLeftPresenter.getAppUpdate()
             mMainLeftPresenter.active()
             mMainLeftPresenter.getParentPermission()
-            mMainLeftPresenter.getSchoolPermission()
+            mMainLeftPresenter.getSchoolPermission(grade)
 
             val map=HashMap<String,Any>()
             map["size"]=7
@@ -330,35 +300,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView, ISystemView,IHomewor
         iv_close.setOnClickListener {
             disMissView(ll_notice)
         }
-    }
-
-    //下载应用
-    private fun downLoadStart(bean: AppUpdateBean) {
-        val targetFileStr = FileAddress().getPathApk("lnkstudy")
-        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                if (task != null && task.isRunning) {
-                    requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
-                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                        updateDialog?.setUpdateBtn(s)
-                    }
-                }
-            }
-
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-
-            override fun completed(task: BaseDownloadTask?) {
-                updateDialog?.dismiss()
-                AppUtils.installApp(requireActivity(), targetFileStr)
-            }
-
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                updateDialog?.dismiss()
-            }
-        })
     }
 
     /**

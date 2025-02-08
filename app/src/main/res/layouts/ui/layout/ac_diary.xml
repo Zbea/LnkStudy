@@ -55,13 +55,13 @@
 
     <TextView
         android:id="@+id/tv_digest"
-        android:layout_width="80dp"
+        android:layout_width="110dp"
         android:layout_height="@dimen/dp_40"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="120dp"
+        android:layout_marginEnd="110dp"
         android:layout_marginTop="@dimen/dp_20"
         android:gravity="center"
-        android:text="摘要"
+        android:text="搜索编辑"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_25"

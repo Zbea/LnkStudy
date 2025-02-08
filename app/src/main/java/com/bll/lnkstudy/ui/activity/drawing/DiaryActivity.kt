@@ -171,13 +171,12 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun onChangeExpandContent() {
-        changeErasure()
         //云书库下载日记，如果只存在一页不能全屏
         if (uploadId>0&&images.size==1){
             return
         }
+        //本地日记:如果在一页时全屏，已写则默认创建新页，否则无法全屏
         if (images.size==1){
-            //如果最后一张已写,则可以在全屏时创建新的
             if (File(images[posImage]).exists()){
                 images.add(getPath(posImage+1))
             }
@@ -185,9 +184,8 @@ class DiaryActivity:BaseDrawingActivity() {
                 return
             }
         }
-        if (posImage==0){
-            posImage=1
-        }
+
+        changeErasure()
         isExpand = !isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
@@ -196,33 +194,36 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun onPageDown() {
         val total=images.size-1
-        if(isExpand){
-            if (posImage<total-1){
-                posImage+=2
-                onContent()
-            }
-            else if (posImage==total-1){
-                if (isDrawLastContent()){
-                    images.add(getPath(images.size))
-                    posImage=images.size-1
+        if (posImage>total){
+            posImage=total
+            onContent()
+        }
+        else{
+            if(isExpand){
+                if (posImage<total-1){
+                    posImage+=2
                     onContent()
                 }
                 else{
-                    posImage=total
+                    if (isDrawLastContent()){
+                        images.add(getPath(images.size))
+                    }
+                    posImage=images.size-1
                     onContent()
                 }
             }
-        }
-        else{
-            if (posImage ==total) {
-                if (isDrawLastContent()){
-                    images.add(getPath(images.size))
-                    posImage+=1
+            else{
+                if (posImage<total){
+                    posImage += 1
                     onContent()
                 }
-            } else {
-                posImage += 1
-                onContent()
+                else{
+                    if (isDrawLastContent()){
+                        images.add(getPath(images.size))
+                        posImage+=1
+                        onContent()
+                    }
+                }
             }
         }
     }
@@ -249,6 +250,10 @@ class DiaryActivity:BaseDrawingActivity() {
      * 显示内容
      */
     override fun onContent() {
+        if (isExpand&&posImage==0){
+            posImage=1
+        }
+
         val path = getPath(posImage)
         setEinkImage(elik_b!!,path)
         tv_page.text = "${posImage + 1}"

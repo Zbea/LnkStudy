@@ -43,7 +43,6 @@ class Constants {
 //        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
         const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
 
-        //
         const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
 
@@ -149,6 +148,7 @@ class Constants {
         const val SP_COURSE_URL ="courseUrl"//课程表地址
         const val SP_PARENT_PERMISSION ="parentPermission"//家长权限设置
         const val SP_SCHOOL_PERMISSION ="schoolPermission"//学校权限设置
+        const val SP_EXAM_MODE ="examMode"//考试模式
     }
 
 }

@@ -25,6 +25,7 @@ import com.bll.lnkstudy.manager.NoteDaoManager;
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager;
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager;
 import com.bll.lnkstudy.mvp.model.AppBean;
+import com.bll.lnkstudy.mvp.model.Area;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ItemList;
 import com.bll.lnkstudy.mvp.model.ItemTypeBean;
@@ -54,6 +55,8 @@ import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.FileUtils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -61,6 +64,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -122,7 +126,16 @@ public class MethodManager {
         return SPUtil.INSTANCE.getClassGroupItems("classGroups");
     }
 
-
+    /**
+     * 获取省
+     * @param context
+     * @return
+     * @throws IOException
+     */
+    public static List<Area> getProvinces(Context context) throws IOException {
+        String areaJson = FileUtils.readFileContent(context.getResources().getAssets().open("city.json"));
+        return new Gson().fromJson(areaJson, new TypeToken<List<Area>>(){}.getType());
+    }
     /**
      * 退出登录
      *

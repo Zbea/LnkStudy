@@ -115,10 +115,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
-        val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
-        val type = object : TypeToken<List<Area>>() {}.type
-        DataBeanManager.provinces = Gson().fromJson(areaJson, type)
-
         initStartDate()
     }
 
@@ -444,6 +440,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         SPUtil.putBoolean(Constants.SP_PAINTING_RULE_SET,false)
         SPUtil.putString(Constants.SP_DIARY_BG_SET,"")
         SPUtil.putString(Constants.SP_COURSE_URL,"")
+        SPUtil.putBoolean(Constants.SP_EXAM_MODE,false)
 
         MyApplication.mDaoSession?.clear()
         DataUpdateDaoManager.getInstance().clear()

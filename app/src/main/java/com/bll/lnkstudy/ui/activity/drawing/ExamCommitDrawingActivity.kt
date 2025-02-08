@@ -9,6 +9,7 @@ import android.view.KeyEvent
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -24,6 +25,7 @@ import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -100,6 +102,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         //删除本地考试卷以及手写
         FileUtils.deleteFile(File(pathStr))
         EventBus.getDefault().post(Constants.EXAM_COMMIT_EVENT)
+        SPUtil.putBoolean(Constants.SP_EXAM_MODE,false)
         finish()
     }
 
@@ -108,7 +111,10 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun initData() {
+        //设置考试模式
         setExamMode(true)
+        SPUtil.putBoolean(Constants.SP_EXAM_MODE,true)
+
         screenPos=Constants.SCREEN_RIGHT
         isExpand=true
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem

@@ -3,19 +3,17 @@ package com.bll.lnkstudy.dialog
 import android.app.Dialog
 import android.content.Context
 import android.widget.TextView
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.Area
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SchoolBean
-import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.SToast
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 /**
  * 学校选择
  */
-class SchoolSelectDialog(val context: Context,val screenPos:Int,private val beans:MutableList<SchoolBean>){
+class SchoolSelectDialog(val context: Context,private val beans:MutableList<SchoolBean>){
 
     private var dialog:Dialog?=null
     private var provincePops= mutableListOf<PopupBean>()
@@ -34,11 +32,10 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_school)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setCanceledOnTouchOutside(false)
         dialog?.show()
 
-        val areaJson = FileUtils.readFileContent(context.resources.assets.open("city.json"))
-        val type= object : TypeToken<List<Area>>() {}.type
-        provinces= Gson().fromJson(areaJson, type)
+        provinces= MethodManager.getProvinces(context)
 
         for (i in provinces.indices){
             provincePops.add(PopupBean(i,provinces[i].value,i==0))
@@ -133,7 +130,7 @@ class SchoolSelectDialog(val context: Context,val screenPos:Int,private val bean
                 onClickListener?.onSelect(school!!)
             }
             else{
-                SToast.showText(screenPos,"请选择学校")
+                SToast.showText("请选择学校")
             }
         }
         return this

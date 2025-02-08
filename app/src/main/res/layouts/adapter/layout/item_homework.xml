@@ -60,19 +60,16 @@
     <LinearLayout
         android:id="@+id/ll_info"
         android:layout_width="220dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_35"
         android:layout_marginTop="@dimen/dp_5"
-        android:paddingStart="@dimen/dp_5"
-        android:paddingEnd="@dimen/dp_5"
         android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/ll_message"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:background="@drawable/click_btn_line_black_5dp"
-            android:padding="5dp"
             android:orientation="horizontal">
             <ImageView
                 android:layout_width="wrap_content"
@@ -83,24 +80,23 @@
                 android:id="@+id/tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginStart="3dp"
                 android:textColor="@color/black_30"
-                android:textSize="@dimen/sp_14"
+                android:textSize="17sp"
                 android:text="收到作业"/>
         </LinearLayout>
 
         <View
-            android:layout_width="@dimen/dp_20"
+            android:layout_width="@dimen/dp_10"
             android:layout_height="0dp"/>
 
         <LinearLayout
             android:id="@+id/ll_pg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:background="@drawable/bg_black_stroke_5dp_corner"
-            android:padding="5dp"
             android:orientation="horizontal">
             <ImageView
                 android:layout_width="wrap_content"
@@ -111,9 +107,9 @@
                 android:id="@+id/tv_pg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_5"
                 android:textColor="@color/black_30"
-                android:textSize="@dimen/sp_14"
+                android:layout_marginStart="3dp"
+                android:textSize="17sp"
                 android:text="收到批改"/>
         </LinearLayout>
     </LinearLayout>

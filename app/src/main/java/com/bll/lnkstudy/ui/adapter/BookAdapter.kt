@@ -14,7 +14,7 @@ class BookAdapter(layoutResId: Int, data: List<BookBean>?) :
         helper.apply {
             setText(R.id.tv_name, item.bookName)
             val image = getView<ImageView>(R.id.iv_image)
-            GlideUtils.setImageRoundUrl(mContext, item.imageUrl, image, 10)
+            GlideUtils.setImageRoundUrl(mContext, item.imageUrl, image, 8)
         }
     }
 

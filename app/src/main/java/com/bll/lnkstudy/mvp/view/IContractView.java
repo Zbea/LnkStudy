@@ -39,10 +39,6 @@ import java.util.Map;
 
 public interface IContractView {
 
-    interface ISystemView extends IBaseView{
-        void onUpdateInfo(SystemUpdateInfo item);
-    }
-
     //文件上传
     interface IFileUploadView extends IBaseView{
         void onToken(String token);
@@ -136,7 +132,6 @@ public interface IContractView {
     }
 
     interface IMainLeftView extends IBaseView {
-        void onAppUpdate(AppUpdateBean item);
         void onParentPermission(PermissionParentBean permissionParentBean);
         void onSchoolPermission(PermissionSchoolBean permissionSchoolBean);
     }
@@ -191,8 +186,8 @@ public interface IContractView {
 
     //公共接口
     interface ICommonView extends IBaseView {
-        void onList(CommonData commonData);
-        void onListSchools(List<SchoolBean> list);
+        default void onList(CommonData commonData){};
+        default void onListSchools(List<SchoolBean> list){};
     }
 
     interface ICalenderView extends IBaseView {

@@ -44,7 +44,7 @@ class TeachActivity:BaseAppCompatActivity() {
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.WIFI_CONNECTION_FAIL_EVENT){
-            SToast.showTextLong("WIFI未打开，无法播放视频")
+            SToast.showTextLong("WIFI已关闭，无法播放视教")
             finish()
         }
     }

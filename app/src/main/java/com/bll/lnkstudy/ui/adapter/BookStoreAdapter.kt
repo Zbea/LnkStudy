@@ -11,6 +11,6 @@ class BookStoreAdapter(layoutResId: Int, data: List<BookBean>?) : BaseQuickAdapt
     override fun convert(helper: BaseViewHolder, item: BookBean) {
         helper.setText(R.id.tv_name,item.bookName)
         val image=helper.getView<ImageView>(R.id.iv_image)
-        GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,10)
+        GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,8)
     }
 }

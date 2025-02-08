@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -11,20 +10,6 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 
 class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : BasePresenter<IContractView.IMainLeftView>(view) {
-
-    //获取更新信息
-    fun getAppUpdate() {
-        val list= RetrofitManager.service.onAppUpdate()
-        doRequest(list, object : Callback<AppUpdateBean>(view,screen,false) {
-            override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AppUpdateBean>) {
-                if (tBaseResult.data!=null)
-                    view.onAppUpdate(tBaseResult.data)
-            }
-        }, false)
-    }
 
     fun active() {
         val type = RetrofitManager.service.active()
@@ -50,8 +35,10 @@ class MainLeftPresenter(view: IContractView.IMainLeftView, val screen: Int=0) : 
         }, false)
     }
 
-    fun getSchoolPermission() {
-        val type = RetrofitManager.service.getPermissionSchoolAllow()
+    fun getSchoolPermission(grade:Int) {
+        val map=HashMap<String,Any>()
+        map["grade"]=grade
+        val type = RetrofitManager.service.getPermissionSchoolAllow(map)
         doRequest(type, object : Callback<PermissionSchoolBean>(view,screen,false) {
             override fun failed(tBaseResult: BaseResult<PermissionSchoolBean>): Boolean {
                 return false

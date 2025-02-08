@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
-import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -27,7 +25,6 @@ import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.KeyboardUtils
-import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
@@ -83,10 +80,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (!commonData.version.isNullOrEmpty()&&commonData.version!=MethodManager.getItemLists("bookVersions")){
             MethodManager.saveItemLists("bookVersions",commonData.version)
         }
-    }
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        if (list.size!= DataBeanManager.schools.size)
-            DataBeanManager.schools=list
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -272,12 +265,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         return screenPos
     }
 
-    protected fun fetchCommonData(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mCommonPresenter.getCommon()
-            mCommonPresenter.getCommonSchool()
-        }
-    }
 
     private fun initTabView(){
         rv_tab.layoutManager = FlowLayoutManager()//创建布局管理

@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.annotation.SuppressLint
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -43,6 +42,10 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
     private var birthday=0L
+
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
 
     override fun onLogout() {
     }
@@ -91,7 +94,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
 
     override fun initData() {
-        fetchCommonData()
         initChangeScreenData()
         school=mUser?.schoolId!!
         birthday=mUser?.birthdayTime!!
@@ -124,7 +126,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         }
 
         btn_edit_school.setOnClickListener {
-            editSchool()
+            mCommonPresenter.getCommonSchool()
         }
 
         btn_edit_birthday.setOnClickListener {
@@ -168,13 +170,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     /**
      * 修改学校
      */
-    private fun editSchool() {
+    private fun selectorSchool(schools:MutableList<SchoolBean>) {
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),DataBeanManager.schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
                 presenter?.editSchool(it.id)
-                for (item in DataBeanManager.schools){
+                for (item in schools){
                     if (item.id==school)
                         schoolBean=item
                 }

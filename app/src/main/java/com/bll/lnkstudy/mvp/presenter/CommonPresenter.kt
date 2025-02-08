@@ -37,7 +37,7 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
                 if (tBaseResult.data!=null)
                     view.onListSchools(tBaseResult.data)
             }
-        }, false)
+        }, true)
     }
 
 }

@@ -42,7 +42,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 4->{
                     setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
                     setGone(R.id.tv_grade,!item.isCloud)
-                    setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
+                    setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
                     setText(R.id.tv_name, "")
                     GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
                 }

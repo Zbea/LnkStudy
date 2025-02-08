@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.MD5Utils
@@ -48,6 +48,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
     private var brithday=0L
     private var school=0
     private var schoolSelectDialog:SchoolSelectDialog?=null
+
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
 
     override fun onSms() {
         showToast(R.string.toast_message_code_success)
@@ -122,7 +126,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         }
 
         tv_school.setOnClickListener {
-            selectorSchool()
+            mCommonPresenter.getCommonSchool()
         }
 
         btn_register.setOnClickListener {
@@ -251,9 +255,9 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
     /**
      * 选择学校
      */
-    private fun selectorSchool(){
+    private fun selectorSchool(schools:MutableList<SchoolBean>){
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,getCurrentScreenPos(),DataBeanManager.schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
                 tv_school.text=it.name

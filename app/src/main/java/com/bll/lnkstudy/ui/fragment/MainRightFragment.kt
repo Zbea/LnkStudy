@@ -101,7 +101,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (currentGrade!=oldGrade&&currentGrade>0){
             grade=currentGrade
             mUser?.grade=currentGrade
-            showLog("主页："+grade.toString())
             SPUtil.putObj("user", mUser!!)
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
             Handler().postDelayed({
@@ -166,14 +165,16 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun lazyLoad() {
-        fetchCommonData()
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            findMessages()
-            fetchExam()
-            mMainPresenter.getTeacherCourse()
-            mMainPresenter.getClassGroupList(false)
+        if (examItem!=null){
+            if (DateUtils.date10ToDate13(examItem?.time!!)<System.currentTimeMillis()){
+                disExam()
+            }
         }
+        onCheckUpdate()
+        fetchData()
     }
+
+
 
     //消息相关处理
     private fun initMessageView() {
@@ -209,16 +210,20 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     return@setOnClickListener
                 }
                 if (files.size >= paths.size) {
-                    val bundle = Bundle()
-                    bundle.putSerializable("exam", this)
-                    val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
-                    intent.putExtra("bundle", bundle)
-                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
-                    intent.putExtra(Constants.INTENT_DRAWING_FOCUS,true)
-                    customStartActivity(intent)
+                    startExam()
                 }
             }
         }
+    }
+
+    private fun startExam(){
+        val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("exam", examItem)
+        intent.putExtra("bundle", bundle)
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS,true)
+        customStartActivity(intent)
     }
 
     /**
@@ -294,6 +299,15 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         }
     }
 
+    override fun fetchData() {
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            findMessages()
+            fetchExam()
+            mMainPresenter.getTeacherCourse()
+            mMainPresenter.getClassGroupList(false)
+        }
+    }
+
     /**
      * 获取当前考试
      */
@@ -322,7 +336,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             paths.add("$pathStr/${i+1}.png")
         }
         examItem?.paths=paths
-        if (files == null || files.size != images.size) {
+        if (files == null) {
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
@@ -337,13 +351,25 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                     }
                 })
         }
+        else{
+            if (SPUtil.getBoolean(Constants.SP_EXAM_MODE)){
+                startExam()
+            }
+        }
+    }
+
+    /**
+     * 关闭考试
+     */
+    private fun disExam(){
+        examItem=null
+        disMissView(rl_exam)
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             EXAM_COMMIT_EVENT -> {
-                examItem=null
-                disMissView(rl_exam)
+                disExam()
             }
             MESSAGE_COMMIT_EVENT -> {
                 findMessages()
@@ -356,16 +382,11 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onNetworkConnectionSuccess() {
-        lazyLoad()
+        fetchData()
     }
 
     override fun onRefreshData() {
         lazyLoad()
-        if (examItem!=null){
-            if (DateUtils.date10ToDate13(examItem?.time!!)<System.currentTimeMillis()){
-                disMissView(rl_exam)
-            }
-        }
     }
 
     /**

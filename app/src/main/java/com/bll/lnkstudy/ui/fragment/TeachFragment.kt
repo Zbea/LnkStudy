@@ -125,7 +125,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { _, _, position ->
                 if (!MethodManager.getSchoolPermissionAllow(1)){
-                    showToast(1,"学校不允许该时间段播放视教视频")
+                    showToast(1,"学校不允许该时间段播放视教")
                 }
                 else{
                     if (MethodManager.getParentPermissionAllow(1)){
@@ -137,11 +137,11 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
                             customStartActivity(intent)
                         }
                         else{
-                            SToast.showTextLong(1,"WIFI未打开，无法播放视频")
+                            SToast.showTextLong(1,"WIFI未连接，无法播放视教")
                         }
                     }
                     else{
-                        showToast(1,"家长不允许该时间段播放视教视频")
+                        showToast(1,"家长不允许该时间段播放视教")
                     }
                 }
             }
