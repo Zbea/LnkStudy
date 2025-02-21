@@ -23,23 +23,24 @@ public class BookBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     @Unique
-    @SerializedName("bookPlusId")
     public int bookId;
-    public int typeId;//1古籍2自然科学3社会科学4思维科学5运动才艺
+    public int type;//1古籍2自然科学3社会科学4思维科学5运动才艺
     public String subtypeStr;//子分类
     public String imageUrl;
     public String bookName;//书名
-    public String bookDesc;//描述
     public int price;//书的价格
     public int grade; //年级
-    public String version;  //版本
-    public String supply ;  //官方
+    public int supply ;  //官方
     @SerializedName("bodyUrl")
     public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径
     public String bookDrawPath;  //book书的手写路径
     public long time;//观看时间
     public boolean isLook;//是否打开
+    @Transient
+    public String version;//版本
+    @Transient
+    public String bookDesc;//描述
     @Transient
     public String drawUrl;//云存储的手写下载地址
     @Transient
@@ -48,22 +49,19 @@ public class BookBean {
     public int buyStatus;//1已购买
     @Transient
     public int cloudId;
-
-    @Generated(hash = 906519533)
-    public BookBean(Long id, long userId, int bookId, int typeId, String subtypeStr, String imageUrl,
-            String bookName, String bookDesc, int price, int grade, String version, String supply,
-            String downloadUrl, String bookPath, String bookDrawPath, long time, boolean isLook) {
+    @Generated(hash = 420199388)
+    public BookBean(Long id, long userId, int bookId, int type, String subtypeStr, String imageUrl,
+            String bookName, int price, int grade, int supply, String downloadUrl, String bookPath,
+            String bookDrawPath, long time, boolean isLook) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
-        this.typeId = typeId;
+        this.type = type;
         this.subtypeStr = subtypeStr;
         this.imageUrl = imageUrl;
         this.bookName = bookName;
-        this.bookDesc = bookDesc;
         this.price = price;
         this.grade = grade;
-        this.version = version;
         this.supply = supply;
         this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
@@ -92,11 +90,11 @@ public class BookBean {
     public void setBookId(int bookId) {
         this.bookId = bookId;
     }
-    public int getTypeId() {
-        return this.typeId;
+    public int getType() {
+        return this.type;
     }
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setType(int type) {
+        this.type = type;
     }
     public String getSubtypeStr() {
         return this.subtypeStr;
@@ -116,12 +114,6 @@ public class BookBean {
     public void setBookName(String bookName) {
         this.bookName = bookName;
     }
-    public String getBookDesc() {
-        return this.bookDesc;
-    }
-    public void setBookDesc(String bookDesc) {
-        this.bookDesc = bookDesc;
-    }
     public int getPrice() {
         return this.price;
     }
@@ -134,16 +126,10 @@ public class BookBean {
     public void setGrade(int grade) {
         this.grade = grade;
     }
-    public String getVersion() {
-        return this.version;
-    }
-    public void setVersion(String version) {
-        this.version = version;
-    }
-    public String getSupply() {
+    public int getSupply() {
         return this.supply;
     }
-    public void setSupply(String supply) {
+    public void setSupply(int supply) {
         this.supply = supply;
     }
     public String getDownloadUrl() {
@@ -176,5 +162,4 @@ public class BookBean {
     public void setIsLook(boolean isLook) {
         this.isLook = isLook;
     }
-
 }

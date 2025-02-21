@@ -129,9 +129,6 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.TeachListActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity
             android:name=".ui.activity.TeachActivity"
             android:turnScreenOn="true"
@@ -233,7 +230,11 @@
             android:theme="@style/activityCustom"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.HomeworkBookDetailsActivity"
+        <activity android:name=".ui.activity.book.TextBookDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.book.HomeworkBookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
@@ -248,6 +249,14 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ResourceCenterActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.OperatingGuideActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.RemoteSchoolActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />

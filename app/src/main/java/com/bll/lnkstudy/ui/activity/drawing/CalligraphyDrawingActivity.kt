@@ -9,7 +9,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
-import com.bll.lnkstudy.dialog.ModuleAddDialog
+import com.bll.lnkstudy.dialog.ModuleItemDialog
 import com.bll.lnkstudy.manager.PaintingDrawingDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
@@ -63,7 +63,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         setDisableTouchInput(typeId!=0)
 
         iv_btn.setOnClickListener {
-            ModuleAddDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
+            ModuleItemDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     paintingDrawingBean?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)

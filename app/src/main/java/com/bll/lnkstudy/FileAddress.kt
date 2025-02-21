@@ -1,5 +1,6 @@
 package com.bll.lnkstudy
 
+import com.bll.lnkstudy.Constants.Companion.APK_PATH
 import com.bll.lnkstudy.Constants.Companion.BOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.DIARY_PATH
 import com.bll.lnkstudy.Constants.Companion.FREE_NOTE_PATH
@@ -9,12 +10,10 @@ import com.bll.lnkstudy.Constants.Companion.NOTE_PATH
 import com.bll.lnkstudy.Constants.Companion.PAINTING_PATH
 import com.bll.lnkstudy.Constants.Companion.SCREEN_PATH
 import com.bll.lnkstudy.Constants.Companion.TESTPAPER_PATH
-import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CATALOG_TXT
-import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_CONTENTS
+import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.ZIP_PATH
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.SPUtil
-import java.io.File
 
 class FileAddress {
 
@@ -31,14 +30,14 @@ class FileAddress {
     /**
      * 教材目录地址
      */
-    fun getPathHomeworkBookCatalog(path:String):String{
-        return path + File.separator + TEXTBOOK_CATALOG_TXT
+    fun getPathBookCatalog(path:String):String{
+        return "$path/catalog.txt"
     }
     /**
      * 教材图片地址
      */
-    fun getPathHomeworkBookPicture(path:String):String{
-        return path + File.separator + TEXTBOOK_CONTENTS
+    fun getPathBookPicture(path:String):String{
+        return "$path/contents"
     }
 
     /**
@@ -46,7 +45,7 @@ class FileAddress {
      * ///storage/emulated/0/Android/data/yourPackageName/files/Zip/fileName.zip
      */
     fun getPathZip(fileName:String):String{
-        return ZIP_PATH+File.separator + fileName + ".zip"
+        return "$ZIP_PATH/$fileName.zip"
     }
 
     /**
@@ -65,17 +64,17 @@ class FileAddress {
     }
 
     fun getPathTextBook(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/textbook/$fileName"
+        return "$TEXTBOOK_PATH/$mUserId/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/textbook/${fileName}draw"
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}draw"
     }
 
     /**
      * apk下载地址
      */
     fun getPathApk(fileName: String):String{
-        return Constants.APK_PATH+ File.separator + fileName + ".apk"
+        return "$APK_PATH/$fileName.apk"
     }
 
     /**

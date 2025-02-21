@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class PermissionSchoolItemBean implements Serializable {
 
+    public boolean enable;
     public boolean isAllowBook;
     public boolean isAllowVideo;
     public boolean isAllowPainting;

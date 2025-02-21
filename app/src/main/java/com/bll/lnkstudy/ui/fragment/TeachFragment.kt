@@ -42,6 +42,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     override fun onList(list: TeachingVideoList) {
         setPageNumber(list.total)
         mAdapter?.setNewData(list.list)
+        hideLoading()
     }
 
     override fun getLayoutId(): Int {
@@ -52,6 +53,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
         showView(tv_grade,tv_semester)
         setTitle(DataBeanManager.listTitle[7])
         pageSize=16
+        initDialog(1)
 
         grade=mUser?.grade!!
 

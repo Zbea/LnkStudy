@@ -21,7 +21,7 @@ import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
+import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
@@ -32,6 +32,7 @@ import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.rv_list
 import kotlinx.android.synthetic.main.ac_bookstore.tv_download
 import kotlinx.android.synthetic.main.common_title.tv_subgrade
+import kotlinx.android.synthetic.main.common_title.tv_supply
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -43,14 +44,15 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     private var typeStr = ""//类别
     private lateinit var presenter : BookStorePresenter
     private var books = mutableListOf<BookBean>()
-    private var mAdapter: BookStoreAdapter? = null
+    private var mAdapter: BookAdapter? = null
     private var subTypeStr=""
     private var subtype=0
     private var downloadBookDialog: DownloadBookDialog? = null
     private var position=0
-
-    private var gradeList = mutableListOf<PopupBean>()
+    private var popSupplys = mutableListOf<PopupBean>()
+    private var popGrades = mutableListOf<PopupBean>()
     private var subTypeList = mutableListOf<ItemList>()
+    private var supply=0
 
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
@@ -59,7 +61,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     }
 
     override fun onType(bookStoreType: BookStoreType) {
-        //子分类
         val types = bookStoreType.subType[typeStr]
         if (!types.isNullOrEmpty()){
             subTypeList=types
@@ -87,18 +88,12 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         type = intent.flags
         typeStr=DataBeanManager.bookStoreTypes()[type-1].desc
 
-        onCommonData()
+        popGrades=DataBeanManager.popupTypeGrades()
+        popSupplys=DataBeanManager.supplys
+        supply=popSupplys[0].id
 
         if (NetworkUtil(this).isNetworkConnected()){
             presenter.getBookType()
-        }
-    }
-
-    override fun onCommonData() {
-        if (DataBeanManager.popupTypeGrades().size>0){
-            gradeList=DataBeanManager.popupTypeGrades()
-            grade=gradeList[DataBeanManager.popupTypePos()].id
-            initSelectorView()
         }
     }
 
@@ -108,34 +103,40 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
 
     override fun initView() {
         setPageTitle(typeStr)
-        showView(tv_subgrade)
+        showView(tv_subgrade,tv_supply)
         disMissView(tv_download)
 
-        initRecyclerView()
+        if (popGrades.size>0){
+            grade = popGrades[DataBeanManager.getTypeGradePos()].id
+            initSelectorView()
+        }
 
+        initRecyclerView()
     }
 
     /**
      * 设置分类选择
      */
     private fun initSelectorView() {
-        tv_subgrade.text = gradeList[DataBeanManager.popupTypePos()].name
+        tv_subgrade.text = popGrades[DataBeanManager.getTypeGradePos()].name
         tv_subgrade.setOnClickListener {
-            PopupList(this, gradeList, tv_subgrade,tv_subgrade.width, 5).builder()
+            PopupList(this, popGrades, tv_subgrade,tv_subgrade.width, 5).builder()
             .setOnSelectListener { item ->
                 grade = item.id
                 tv_subgrade.text = item.name
                 typeFindData()
             }
         }
-    }
 
-    /**
-     * 分类查找上
-     */
-    private fun typeFindData(){
-        pageIndex = 1
-        fetchData()
+        tv_supply.text = popSupplys[0].name
+        tv_supply.setOnClickListener {
+            PopupList(this, popSupplys, tv_supply,tv_supply.width, 5).builder()
+                .setOnSelectListener { item ->
+                    supply = item.id
+                    tv_supply.text = item.name
+                    typeFindData()
+                }
+        }
     }
 
     private fun initTab(){
@@ -158,7 +159,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
 
     private fun initRecyclerView() {
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = BookStoreAdapter(R.layout.item_bookstore, null)
+        mAdapter = BookAdapter(R.layout.item_bookstore, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
@@ -232,7 +233,6 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                             }
                         }
                         loadSate = 2
-                        typeId=type
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)
@@ -264,6 +264,11 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         FileDownloader.getImpl().pauseAll()
     }
 
+    private fun typeFindData(){
+        pageIndex = 1
+        fetchData()
+    }
+
     override fun fetchData() {
         books.clear()
         mAdapter?.notifyDataSetChanged()
@@ -273,11 +278,8 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         map["grade"] = grade
         map["subType"] = subtype
         map["type"] = type
+        map["supply"]=supply
         presenter.getBooks(map)
-    }
-
-    override fun onNetworkConnectionSuccess() {
-        presenter.getBookType()
     }
 
 }

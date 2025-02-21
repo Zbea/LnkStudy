@@ -12,8 +12,8 @@ import com.bll.lnkstudy.base.BaseCloudFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.mvp.model.book.TextbookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
@@ -134,6 +134,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
         ids.add(books[position].cloudId)
         mCloudPresenter.deleteCloud(ids)
     }
+
     /**
      * 下载完成
      */
@@ -168,6 +169,42 @@ class CloudTextbookFragment:BaseCloudFragment() {
     }
 
     /**
+     * 下载书籍
+     */
+    private fun downloadBook(book: TextbookBean){
+        val fileName = book.bookId.toString()//文件名
+        val zipPath = FileAddress().getPathZip(fileName)
+        FileDownManager.with(activity).create(book.downloadUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
+                        override fun onFinish() {
+                            book.id=null
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                        }
+                        override fun onStart() {
+                        }
+                    })
+                    countDownTasks?.countDown()
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    countDownTasks?.countDown()
+                }
+            })
+    }
+
+
+    /**
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: TextbookBean){
@@ -192,27 +229,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
                         override fun onStart() {
                         }
                     })
-                    countDownTasks?.countDown()
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    countDownTasks?.countDown()
-                }
-            })
-    }
-
-    /**
-     * 下载书籍
-     */
-    private fun downloadBook(book: TextbookBean) {
-        FileDownManager.with(activity).create(book.downloadUrl).setPath(book.bookPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    book.id=null
-                    TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {

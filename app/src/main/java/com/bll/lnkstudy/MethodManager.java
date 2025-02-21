@@ -37,13 +37,14 @@ import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean;
+import com.bll.lnkstudy.mvp.model.book.TextbookBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
 import com.bll.lnkstudy.ui.activity.PaintingImageActivity;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
+import com.bll.lnkstudy.ui.activity.book.TextBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity;
-import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.book.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity;
@@ -208,6 +209,23 @@ public class MethodManager {
                 ,3000);
     }
 
+    private static JSONArray getJsonArray(List<AppBean> toolApps) {
+        JSONArray result = new JSONArray();
+        for (AppBean item : toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("appName", item.appName);
+                jsonObject.put("packageName", item.packageName);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            result.put(jsonObject);
+        }
+        return result;
+    }
+
     /**
      * 删除书籍
      * @param book
@@ -228,23 +246,10 @@ public class MethodManager {
      * 跳转课本详情
      */
     public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
-        AppUtils.stopApp(context, Constants.PACKAGE_READER);
-
-        List<AppBean> toolApps = getAppTools(context, 1);
-        JSONArray result = getJsonArray(toolApps);
-
-        Intent intent = new Intent();
-        intent.setAction("com.geniatech.reader.action.VIEW_BOOK_PATH");
-        intent.setPackage(Constants.PACKAGE_READER);
-        intent.putExtra("path", textbookBean.bookPath);
-        intent.putExtra("key_book_id", textbookBean.bookId + "");
-        intent.putExtra("bookName", textbookBean.bookName);
-        intent.putExtra("tool", result.toString());
-        intent.putExtra("userId", getUser().accountId);
-        intent.putExtra("type", 2);
-        intent.putExtra("drawPath", textbookBean.bookDrawPath);
-        intent.putExtra("key_book_type", 2);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityManager.getInstance().checkTextBookIsExist(textbookBean);
+        Intent intent = new Intent(context, TextBookDetailsActivity.class);
+        intent.putExtra("bookId",textbookBean.bookId);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
@@ -260,23 +265,6 @@ public class MethodManager {
         //删除增量更新
         DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,1);
         DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,2);
-    }
-
-    private static JSONArray getJsonArray(List<AppBean> toolApps) {
-        JSONArray result = new JSONArray();
-        for (AppBean item : toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
-                continue;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("appName", item.appName);
-                jsonObject.put("packageName", item.packageName);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            result.put(jsonObject);
-        }
-        return result;
     }
 
     /**
@@ -589,7 +577,7 @@ public class MethodManager {
      * @return
      */
     private static List<Integer> getStringArrayToIntArray(String[] strings) {
-        List<Integer> weeks = new ArrayList();
+        List<Integer> weeks = new ArrayList<>();
         for (String str : strings) {
             weeks.add(Integer.valueOf(str));
         }
@@ -607,8 +595,7 @@ public class MethodManager {
         if (item == null) {
             return true;
         }
-        String dayStr=DateUtils.longToStringDataNoHour(DateUtils.getStartOfDayInMillis());
-        if (item.dateMap.containsKey(dayStr)){
+        if (!item.enable){
             return true;
         }
         if (type == 0) {
@@ -633,6 +620,10 @@ public class MethodManager {
     }
 
     private static boolean isExistCurrentTime(PermissionSchoolItemBean item) {
+        String dayStr=DateUtils.longToStringDataNoHour(DateUtils.getStartOfDayInMillis());
+        if (item.dateMap!=null&&item.dateMap.containsKey(dayStr)){
+            return true;
+        }
         boolean isAllow = true;
         long currentTime = DateUtils.getCurrentHourInMillis();
         int week = DateUtils.getWeek(System.currentTimeMillis());

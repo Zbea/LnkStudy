@@ -22,7 +22,7 @@ import com.bll.lnkstudy.mvp.model.note.NoteContentBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingDrawingBean
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
+import com.bll.lnkstudy.mvp.model.book.TextbookBean
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -35,7 +35,6 @@ import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
@@ -713,47 +712,56 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 下载课本(课本item.path为null，手写item.path不为null)
+     * 下载课本
      */
     private fun downloadTextBook(item: DataUpdateBean) {
+        val fileName = item.uid.toString()
+        val zipPath = FileAddress().getPathZip(fileName)
         val bookBean = Gson().fromJson(item.listJson, TextbookBean::class.java)
-        FileDownManager.with(this).create(item.downloadUrl).setPath(bookBean.bookPath)
+        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
-                    TextbookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
-                    //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(1,item.uid,1,Gson().toJson(bookBean),bookBean.downloadUrl)
-                    //更改为已上传
-                    DataUpdateManager.editDataUpdateUpload(1,item.uid, item.contentType)
+                    ZipUtils.unzip(zipPath, bookBean.bookPath, object : IZipCallback {
+                        override fun onFinish() {
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
+                            //创建增量更新
+                            DataUpdateManager.createDataUpdateSource(1,item.uid,1,Gson().toJson(bookBean),bookBean.downloadUrl)
+                            //更改为已上传
+                            DataUpdateManager.editDataUpdateUpload(1,item.uid, item.contentType)
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                        }
+                        override fun onStart() {
+                        }
+                    })
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
     }
 
     /**
-     * 下载课本(课本item.path为null，手写item.path不为null)
+     * 下载课本手写
      */
     private fun downloadTextBookDrawing(item: DataUpdateBean) {
         val fileName = item.uid.toString()
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(fileName+"draw")
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
@@ -764,18 +772,14 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }
-
                         override fun onProgress(percentDone: Int) {
                         }
-
                         override fun onError(msg: String?) {
                         }
-
                         override fun onStart() {
                         }
                     })
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -793,31 +797,24 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath,  item.path , object : IZipCallback {
                         override fun onFinish() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
-
                             DataUpdateManager.createDataUpdateDrawing(7,item.uid,1,item.path)
                             DataUpdateManager.editDataUpdateUpload(7,item.uid,1)
                         }
-
                         override fun onProgress(percentDone: Int) {
                         }
-
                         override fun onError(msg: String?) {
                         }
-
                         override fun onStart() {
                         }
                     })
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -833,10 +830,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
@@ -857,7 +852,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         }
                     })
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -894,10 +888,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     val bean = Gson().fromJson(item.listJson, RecordBean::class.java)
                     RecordDaoManager.getInstance().insertOrReplace(bean)
@@ -905,7 +897,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     DataUpdateManager.createDataUpdateState(2, item.uid, 2,item.typeId ,item.state, item.listJson, item.path)
                     DataUpdateManager.editDataUpdateUpload(2,item.uid,2,item.typeId)
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -921,10 +912,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
@@ -935,18 +924,14 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                         }
-
                         override fun onProgress(percentDone: Int) {
                         }
-
                         override fun onError(msg: String?) {
                         }
-
                         override fun onStart() {
                         }
                     })
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -961,7 +946,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
@@ -986,7 +970,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {

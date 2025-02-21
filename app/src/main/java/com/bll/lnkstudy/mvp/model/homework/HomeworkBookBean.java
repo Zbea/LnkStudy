@@ -25,7 +25,6 @@ public class HomeworkBookBean  {
     public int type;
     public String imageUrl;
     public String bookName;//书名
-    public String bookDesc;//描述
     public int price;//书的价格
     public int semester;//学期
     public String area;//地区
@@ -33,8 +32,6 @@ public class HomeworkBookBean  {
     @SerializedName("subjectName")
     public int subject;//课目
     public int version;  //版本
-    public String supply ;  //官方
-    @Unique
     @SerializedName("bodyUrl")
     public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径
@@ -44,26 +41,25 @@ public class HomeworkBookBean  {
     public String pageUrl;//当前页路径
     @Transient
     public String drawUrl;//云存储的手写下载地址
-
-    @Generated(hash = 697657062)
+    @Transient
+    public String bookDesc;//描述
+    @Generated(hash = 906120276)
     public HomeworkBookBean(Long id, long userId, int bookId, int type, String imageUrl,
-            String bookName, String bookDesc, int price, int semester, String area, int grade,
-            int subject, int version, String supply, String downloadUrl, String bookPath,
-            String bookDrawPath, long time, int pageIndex, String pageUrl) {
+            String bookName, int price, int semester, String area, int grade, int subject, int version,
+            String downloadUrl, String bookPath, String bookDrawPath, long time, int pageIndex,
+            String pageUrl) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
         this.type = type;
         this.imageUrl = imageUrl;
         this.bookName = bookName;
-        this.bookDesc = bookDesc;
         this.price = price;
         this.semester = semester;
         this.area = area;
         this.grade = grade;
         this.subject = subject;
         this.version = version;
-        this.supply = supply;
         this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
         this.bookDrawPath = bookDrawPath;
@@ -110,12 +106,6 @@ public class HomeworkBookBean  {
     public void setBookName(String bookName) {
         this.bookName = bookName;
     }
-    public String getBookDesc() {
-        return this.bookDesc;
-    }
-    public void setBookDesc(String bookDesc) {
-        this.bookDesc = bookDesc;
-    }
     public int getPrice() {
         return this.price;
     }
@@ -151,12 +141,6 @@ public class HomeworkBookBean  {
     }
     public void setVersion(int version) {
         this.version = version;
-    }
-    public String getSupply() {
-        return this.supply;
-    }
-    public void setSupply(String supply) {
-        this.supply = supply;
     }
     public String getDownloadUrl() {
         return this.downloadUrl;
@@ -194,5 +178,4 @@ public class HomeworkBookBean  {
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
     }
-   
 }

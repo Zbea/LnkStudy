@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
+import com.bll.lnkstudy.mvp.model.book.TextbookBean
 import com.bll.lnkstudy.utils.GlideUtils
 
 
@@ -24,7 +24,7 @@ class DownloadTextbookDialog(private val context: Context, private val book: Tex
         dialog?.show()
 
         btn_ok = dialog?.findViewById(R.id.btn_ok)
-        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_back)
+        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         val iv_book = dialog?.findViewById<ImageView>(R.id.iv_book)
         val tv_price = dialog?.findViewById<TextView>(R.id.tv_price)
         val tv_course = dialog?.findViewById<TextView>(R.id.tv_course)
@@ -32,11 +32,11 @@ class DownloadTextbookDialog(private val context: Context, private val book: Tex
         val tv_info = dialog?.findViewById<TextView>(R.id.tv_info)
         val tv_book_name = dialog?.findViewById<TextView>(R.id.tv_book_name)
 
-        GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
+        GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,5)
 
-        tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters()[book.semester-1].name
+        tv_book_name?.text = book.bookName+"-"+ DataBeanManager.popupSemesters()[book.semester-1].name
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
-        tv_version?.text =context.getString(R.string.press)+"： " + DataBeanManager.getBookVersionStr(book!!.version)
+        tv_version?.text =context.getString(R.string.press)+"： " + DataBeanManager.getBookVersionStr(book.version)
         tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
         tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.getCourseStr(book.subject)
 

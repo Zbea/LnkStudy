@@ -134,7 +134,7 @@ object DataBeanManager {
             val typeGrades=MethodManager.getItemLists("typeGrades")
             val list= mutableListOf<PopupBean>()
             for (i in typeGrades.indices){
-                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == popupTypePos()))
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == getTypeGradePos()))
             }
             return list
         }
@@ -142,7 +142,7 @@ object DataBeanManager {
     /**
      * 获取位置
      */
-    fun popupTypePos(): Int
+    fun getTypeGradePos(): Int
     {
         val grade=MethodManager.getUser()?.grade!!
         val type=if (grade<4){

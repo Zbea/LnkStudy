@@ -26,7 +26,7 @@ import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.SearchBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
+import com.bll.lnkstudy.mvp.model.book.TextbookBean
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.SearchAdapter
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1

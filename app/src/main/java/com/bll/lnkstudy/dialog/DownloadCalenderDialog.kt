@@ -30,7 +30,7 @@ class DownloadCalenderDialog(private val context: Context, private val item: Cal
             val tv_title = findViewById<TextView>(R.id.tv_title)
             val tv_year = findViewById<TextView>(R.id.tv_year)
 
-            GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,10)
+            GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,5)
 
             tv_title?.text = item.title
             tv_year?.text=context.getString(R.string.years)+"： "+item.year

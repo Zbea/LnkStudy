@@ -91,9 +91,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         if (!commonData.version.isNullOrEmpty()&&commonData.version!=MethodManager.getItemLists("bookVersions")){
             MethodManager.saveItemLists("bookVersions",commonData.version)
         }
-        onCommonData()
-    }
-    open fun onCommonData(){
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

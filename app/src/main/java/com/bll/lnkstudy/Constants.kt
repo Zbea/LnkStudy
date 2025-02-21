@@ -38,13 +38,10 @@ class Constants {
         const val STATUS_BAR_SHOW = 2147483647//永不消失
         const val DEBUG="debug"
 
-//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
-//        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
-        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
-
-        const val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
-        const val TEXTBOOK_CONTENTS = "contents" //图片资源的最确路径
+                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+//        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
 
         //storage/sdcard/0
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
@@ -55,7 +52,8 @@ class Constants {
 
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")!!.path
-
+            //课本作业
+        val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBook")!!.path
         //收到题卷地址
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")!!.path
 
@@ -149,6 +147,7 @@ class Constants {
         const val SP_PARENT_PERMISSION ="parentPermission"//家长权限设置
         const val SP_SCHOOL_PERMISSION ="schoolPermission"//学校权限设置
         const val SP_EXAM_MODE ="examMode"//考试模式
+            const val SP_MESSAGE_TOTAL ="messageTotal"//考试模式
     }
 
 }

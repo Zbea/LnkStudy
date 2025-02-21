@@ -27,7 +27,7 @@ import com.chad.library.adapter.base.BaseViewHolder
  * pageStart 为课辅作业的 页码开始值
  *
  */
-class DrawingCommitDialog(val context: Context, val screenPos: Int, private val pageStart: Int, private val countSize: Int, var items: MutableList<ItemList>) {
+class DrawingCommitDialog(val context: Context, val screenPos: Int, private val startCount: Int, private val countSize: Int, var items: MutableList<ItemList>) {
 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
@@ -160,7 +160,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
                 //设置题卷本初始页码不为1的情况
                 val realPageIndexs= mutableListOf<Int>()
                 for (page in pages){
-                    realPageIndexs.add(page+pageStart-1)
+                    realPageIndexs.add(page+startCount-1)
                 }
 
                 if (realPageIndexs.last()>=countSize){

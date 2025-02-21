@@ -9,7 +9,7 @@ import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogFreeNoteDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.ModuleAddDialog
+import com.bll.lnkstudy.dialog.ModuleItemDialog
 import com.bll.lnkstudy.manager.FreeNoteDaoManager
 import com.bll.lnkstudy.mvp.model.FreeNoteBean
 import com.bll.lnkstudy.utils.DateUtils
@@ -67,7 +67,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
         }
 
         iv_expand.setOnClickListener {
-            ModuleAddDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
+            ModuleItemDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     MethodManager.setImageResource(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage] = ToolUtils.getImageResStr(this, moduleBean.resContentId)

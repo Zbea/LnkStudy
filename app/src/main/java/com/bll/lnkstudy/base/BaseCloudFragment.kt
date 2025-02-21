@@ -11,8 +11,8 @@ BaseCloudFragment : BaseFragment(), IContractView.ICloudView  {
     var mCloudPresenter= CloudPresenter(this,getScreenPosition())
     var types= mutableListOf<String>()
 
-    override fun onList(item: CloudList) {
-        onCloudList(item)
+    override fun onList(cloudListBean: CloudList) {
+        onCloudList(cloudListBean)
     }
     override fun onType(types: MutableList<String>) {
         onCloudType(types)

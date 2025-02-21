@@ -16,7 +16,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
-import com.bll.lnkstudy.dialog.ModuleAddDialog
+import com.bll.lnkstudy.dialog.ModuleItemDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
@@ -180,7 +180,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
         }
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            ModuleAddDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBook).builder()
+            ModuleItemDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBook).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     resId= ToolUtils.getImageResStr(activity, moduleBean.resContentId)
                     createNote()

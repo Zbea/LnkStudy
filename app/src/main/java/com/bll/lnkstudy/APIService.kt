@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
+import com.bll.lnkstudy.mvp.model.book.TextbookStore
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
@@ -29,7 +30,6 @@ import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
-import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.RequestBody
@@ -311,11 +311,6 @@ interface APIService{
      */
     @POST("task/group/studentDownload")
     fun onDownloadPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 获取作业卷所有信息
-     */
-    @POST("task/group/studentListPlus")
-    fun getHomeworkReel(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkPaperList>>>
 
     /**
      * 获取学生提交详情

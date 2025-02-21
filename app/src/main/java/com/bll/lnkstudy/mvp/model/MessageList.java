@@ -15,7 +15,7 @@ public class MessageList {
         @SerializedName("title")
         public String content;
         public long date;
-        public int sendType;
+        public int sendType;//2发送给老师
         public int msgId;
 
     }

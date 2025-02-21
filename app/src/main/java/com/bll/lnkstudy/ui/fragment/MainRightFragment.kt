@@ -15,6 +15,7 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CloudDownloadListDialog
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.DiaryManageDialog
+import com.bll.lnkstudy.dialog.MessageTipsDialog
 import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
@@ -58,76 +59,95 @@ import java.io.File
 /**
  * 首页
  */
-class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, IContractView.IMessageView{
+class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, IContractView.IMessageView {
 
-    private val mMainPresenter = MainRightPresenter(this,2)
-    private val mMessagePresenter=MessagePresenter(this,2)
-    private var messages= mutableListOf<MessageList.MessageBean>()
-    private var mMessageAdapter:MessageAdapter?=null
-    private var privacyPassword=MethodManager.getPrivacyPassword(0)
-    private var examItem: ExamItem?=null
-    private var diaryStartLong=0L
-    private var diaryEndLong=0L
-    private var diaryUploadTitleStr=""
+    private val mMainPresenter = MainRightPresenter(this, 2)
+    private val mMessagePresenter = MessagePresenter(this, 2)
+    private var messages = mutableListOf<MessageList.MessageBean>()
+    private var mMessageAdapter: MessageAdapter? = null
+    private var privacyPassword = MethodManager.getPrivacyPassword(0)
+    private var examItem: ExamItem? = null
+    private var diaryStartLong = 0L
+    private var diaryEndLong = 0L
+    private var diaryUploadTitleStr = ""
 
     override fun onList(message: MessageList) {
-        if (message.list.isNotEmpty()){
-            messages=message.list
-            mMessageAdapter?.setNewData(messages)
+        messages = message.list
+        mMessageAdapter?.setNewData(messages)
+
+        if (SPUtil.getInt(Constants.SP_MESSAGE_TOTAL) < message.total) {
+            SPUtil.putInt(Constants.SP_MESSAGE_TOTAL, message.total)
+            val item = messages[0]
+            when (item.sendType) {
+                1 -> {
+                    MessageTipsDialog(requireActivity(), item).builder()
+                }
+                3 -> {
+                    MessageTipsDialog(requireActivity(), item).builder()
+                }
+                4 -> {
+                    if (item.msgId != 0)
+                        MessageTipsDialog(requireActivity(), item).builder()
+                }
+                5 -> {
+                    MessageTipsDialog(requireActivity(), item).builder()
+                }
+            }
         }
     }
 
     override fun onExam(exam: ExamItem) {
-        examItem=exam
+        examItem = exam
         loadPapers()
         initExamView()
     }
 
     override fun onCourseUrl(url: String) {
-        if (url!=SPUtil.getString(Constants.SP_COURSE_URL)){
-            SPUtil.putString(Constants.SP_COURSE_URL,url)
-            GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+        if (url != SPUtil.getString(Constants.SP_COURSE_URL)) {
+            SPUtil.putString(Constants.SP_COURSE_URL, url)
+            GlideUtils.setImageUrl(requireActivity(), url, iv_course)
         }
     }
+
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        var currentGrade=0
-        val oldGrade=grade
-        for (item in classGroups){
-            if (item.state==1){
-                currentGrade=item.grade
+        var currentGrade = 0
+        val oldGrade = grade
+        for (item in classGroups) {
+            if (item.state == 1) {
+                currentGrade = item.grade
                 break
             }
         }
-        if (currentGrade!=oldGrade&&currentGrade>0){
-            grade=currentGrade
-            mUser?.grade=currentGrade
+        if (currentGrade != oldGrade && currentGrade > 0) {
+            grade = currentGrade
+            mUser?.grade = currentGrade
             SPUtil.putObj("user", mUser!!)
             EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
             Handler().postDelayed({
                 //当年级变化时，上传作业本
                 EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
-            },500)
+            }, 500)
         }
         mMainPresenter.getCourseItems()
     }
 
     override fun onCourseItems(courses: MutableList<String>) {
         for (course in courses) {
-            if (!ItemTypeDaoManager.getInstance().isExist(7,course)){
-                val item= ItemTypeBean().apply {
-                    title=course
-                    type=7
-                    date=System.currentTimeMillis()
+            if (!ItemTypeDaoManager.getInstance().isExist(7, course)) {
+                val item = ItemTypeBean().apply {
+                    title = course
+                    type = 7
+                    date = System.currentTimeMillis()
                 }
                 ItemTypeDaoManager.getInstance().insertOrReplace(item)
             }
         }
 
         if (courses.isNotEmpty() && courses != MethodManager.getCourses()) {
-            val courseItems=ItemTypeDaoManager.getInstance().queryAll(7)
+            val courseItems = ItemTypeDaoManager.getInstance().queryAll(7)
             //将本地不存在课本清除
-            for (item in courseItems){
-                if (!courses.contains(item.title)){
+            for (item in courseItems) {
+                if (!courses.contains(item.title)) {
                     ItemTypeDaoManager.getInstance().deleteBean(item)
                 }
             }
@@ -146,7 +166,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         }
 
         tv_free_note.setOnClickListener {
-            customStartActivity(Intent(activity,FreeNoteActivity::class.java))
+            customStartActivity(Intent(activity, FreeNoteActivity::class.java))
         }
 
         tv_diary_btn.setOnClickListener {
@@ -158,15 +178,15 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             return@setOnLongClickListener true
         }
 
-        val url=SPUtil.getString(Constants.SP_COURSE_URL)
-        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+        val url = SPUtil.getString(Constants.SP_COURSE_URL)
+        GlideUtils.setImageUrl(requireActivity(), url, iv_course)
 
         initMessageView()
     }
 
     override fun lazyLoad() {
-        if (examItem!=null){
-            if (DateUtils.date10ToDate13(examItem?.time!!)<System.currentTimeMillis()){
+        if (examItem != null) {
+            if (DateUtils.date10ToDate13(examItem?.time!!) < System.currentTimeMillis()) {
                 disExam()
             }
         }
@@ -175,10 +195,9 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
 
-
     //消息相关处理
     private fun initMessageView() {
-        mMessageAdapter=MessageAdapter(R.layout.item_main_message, null).apply {
+        mMessageAdapter = MessageAdapter(R.layout.item_main_message, null).apply {
             rv_list_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list_message.adapter = this
             bindToRecyclerView(rv_list_message)
@@ -188,24 +207,24 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
 
     //作业相关
     private fun initExamView() {
-        if (examItem?.examUrl.isNullOrEmpty()){
+        if (examItem?.examUrl.isNullOrEmpty()) {
             disMissView(rl_exam)
             return
         }
         showView(rl_exam)
         examItem?.apply {
-            tv_exam_title.text=subject+"  "+name
-            tv_exam_time.text=DateUtils.longToHour(time)+"  提交"
+            tv_exam_title.text = subject + "  " + name
+            tv_exam_time.text = DateUtils.longToHour(time) + "  提交"
             rl_exam.setOnClickListener {
-                val pathStr = FileAddress().getPathTestPaper(subject,commonTypeId, id)
+                val pathStr = FileAddress().getPathTestPaper(subject, commonTypeId, id)
                 val files = FileUtils.getAscFiles(pathStr)
-                if (files==null){
+                if (files == null) {
                     showLoading()
                     loadPapers()
                     return@setOnClickListener
                 }
-                if (DateUtils.date10ToDate13(time)<System.currentTimeMillis()){
-                    showToast("已超时")
+                if (DateUtils.date10ToDate13(time) < System.currentTimeMillis()) {
+                    showToast(2,"已超时")
                     disMissView(rl_exam)
                     return@setOnClickListener
                 }
@@ -214,84 +233,81 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 }
             }
         }
+
     }
 
-    private fun startExam(){
+    private fun startExam() {
         val intent = Intent(activity, ExamCommitDrawingActivity::class.java)
         val bundle = Bundle()
         bundle.putSerializable("exam", examItem)
         intent.putExtra("bundle", bundle)
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
-        intent.putExtra(Constants.INTENT_DRAWING_FOCUS,true)
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true)
         customStartActivity(intent)
     }
 
     /**
      * 跳转日记
      */
-    private fun startDiaryActivity(typeId:Int){
-        if (privacyPassword!=null&&privacyPassword?.isSet==true){
-            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+    private fun startDiaryActivity(typeId: Int) {
+        if (privacyPassword != null && privacyPassword?.isSet == true) {
+            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener {
+                customStartActivity(Intent(activity, DiaryActivity::class.java).setFlags(typeId))
             }
-        }
-        else{
-            customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+        } else {
+            customStartActivity(Intent(activity, DiaryActivity::class.java).setFlags(typeId))
         }
     }
 
     /**
      * 长按日记管理
      */
-    private fun onLongDiary(){
-        val pops= mutableListOf<PopupBean>()
-        if (privacyPassword==null){
-            pops.add(PopupBean(1,"设置密码"))
-        }
-        else{
-            if (privacyPassword?.isSet==true){
-                pops.add(PopupBean(1,"取消密码"))
-            }
-            else{
-                pops.add(PopupBean(1,"设置密码"))
+    private fun onLongDiary() {
+        val pops = mutableListOf<PopupBean>()
+        if (privacyPassword == null) {
+            pops.add(PopupBean(1, "设置密码"))
+        } else {
+            if (privacyPassword?.isSet == true) {
+                pops.add(PopupBean(1, "取消密码"))
+            } else {
+                pops.add(PopupBean(1, "设置密码"))
             }
         }
-        pops.add(PopupBean(2,"结集保存"))
-        pops.add(PopupBean(3,"云库日记"))
-        PopupClick(requireActivity(),pops,tv_diary_btn,0).builder().setOnSelectListener{
-            when(it.id){
-                1->{
-                    if (privacyPassword==null){
-                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                            privacyPassword=it
+        pops.add(PopupBean(2, "结集保存"))
+        pops.add(PopupBean(3, "云库日记"))
+        PopupClick(requireActivity(), pops, tv_diary_btn, 0).builder().setOnSelectListener {
+            when (it.id) {
+                1 -> {
+                    if (privacyPassword == null) {
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener {
+                            privacyPassword = it
                             showToast("日记密码设置成功")
                         }
-                    }
-                    else{
-                        val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                    } else {
+                        val titleStr = if (privacyPassword?.isSet == true) "确定取消密码？" else "确定设置密码？"
                         CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
+
                             override fun ok() {
-                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                                    privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                    MethodManager.savePrivacyPassword(0,privacyPassword)
+                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener {
+                                    privacyPassword!!.isSet = !privacyPassword!!.isSet
+                                    MethodManager.savePrivacyPassword(0, privacyPassword)
                                 }
                             }
                         })
                     }
                 }
-                2->{
-                    DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                            titleStr,startLong,endLong->
-                        diaryStartLong=startLong
-                        diaryEndLong=endLong
-                        diaryUploadTitleStr=titleStr
+                2 -> {
+                    DiaryManageDialog(requireActivity(), 1).builder().setOnDialogClickListener { titleStr, startLong, endLong ->
+                        diaryStartLong = startLong
+                        diaryEndLong = endLong
+                        diaryUploadTitleStr = titleStr
                         EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
                     }
                 }
-                3->{
-                    CloudDownloadListDialog(requireActivity(),6).builder().setOnDialogClickListener{ typeId->
+                3 -> {
+                    CloudDownloadListDialog(requireActivity(), 6).builder().setOnDialogClickListener { typeId ->
                         startDiaryActivity(typeId)
                     }
                 }
@@ -300,7 +316,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             findMessages()
             fetchExam()
             mMainPresenter.getTeacherCourse()
@@ -315,31 +331,31 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         mMainPresenter.getExam()
     }
 
-    private fun findMessages(){
-        val map=HashMap<String,Any>()
-        map["page"]=1
-        map["size"]=4
-        map["type"]=2
-        mMessagePresenter.getList(map,false)
+    private fun findMessages() {
+        val map = HashMap<String, Any>()
+        map["page"] = 1
+        map["size"] = 4
+        map["type"] = 2
+        mMessagePresenter.getList(map, false)
     }
 
     //下载收到的图片
     private fun loadPapers() {
-        if (examItem?.examUrl.isNullOrEmpty()){
+        if (examItem?.examUrl.isNullOrEmpty()) {
             return
         }
-        val pathStr = FileAddress().getPathTestPaper(examItem?.subject!!,examItem?.commonTypeId!!, examItem?.id!!)
+        val pathStr = FileAddress().getPathTestPaper(examItem?.subject!!, examItem?.commonTypeId!!, examItem?.id!!)
         val files = FileUtils.getAscFiles(pathStr)
-        val images=examItem?.examUrl!!.split(",").toMutableList()
-        val paths= mutableListOf<String>()
-        for (i in images.indices){
-            paths.add("$pathStr/${i+1}.png")
+        val images = examItem?.examUrl!!.split(",").toMutableList()
+        val paths = mutableListOf<String>()
+        for (i in images.indices) {
+            paths.add("$pathStr/${i + 1}.png")
         }
-        examItem?.paths=paths
-        if (files == null) {
+        examItem?.paths = paths
+        if (files.isNullOrEmpty()) {
             FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         hideLoading()
@@ -350,9 +366,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                         hideLoading()
                     }
                 })
-        }
-        else{
-            if (SPUtil.getBoolean(Constants.SP_EXAM_MODE)){
+        } else {
+            if (SPUtil.getBoolean(Constants.SP_EXAM_MODE)) {
                 startExam()
             }
         }
@@ -361,8 +376,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     /**
      * 关闭考试
      */
-    private fun disExam(){
-        examItem=null
+    private fun disExam() {
+        examItem = null
         disMissView(rl_exam)
     }
 
@@ -371,10 +386,12 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             EXAM_COMMIT_EVENT -> {
                 disExam()
             }
+
             MESSAGE_COMMIT_EVENT -> {
                 findMessages()
             }
-            CLASSGROUP_REFRESH_EVENT->{
+
+            CLASSGROUP_REFRESH_EVENT -> {
                 mMainPresenter.getTeacherCourse()
                 mMainPresenter.getClassGroupList(false)
             }
@@ -392,33 +409,33 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     /**
      * 每年上传日记
      */
-    fun uploadDiary(token: String,isAuto:Boolean) {
+    fun uploadDiary(token: String, isAuto: Boolean) {
         val cloudList = mutableListOf<CloudListBean>()
         //每年自动上传
-        if (isAuto){
-            val oldYear=DateUtils.getYear()-1
-            diaryUploadTitleStr="${oldYear}年日记自动上传"
-            diaryStartLong=DateUtils.dateToStamp(oldYear,1,1)
-            diaryEndLong=DateUtils.dateToStamp(oldYear,12,31)
+        if (isAuto) {
+            val oldYear = DateUtils.getYear() - 1
+            diaryUploadTitleStr = "${oldYear}年日记自动上传"
+            diaryStartLong = DateUtils.dateToStamp(oldYear, 1, 1)
+            diaryEndLong = DateUtils.dateToStamp(oldYear, 12, 31)
         }
-        val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
-        if (diarys.isNotEmpty()){
-            val paths= mutableListOf<String>()
-            for (item in diarys){
+        val diarys = DiaryDaoManager.getInstance().queryList(diaryStartLong, diaryEndLong)
+        if (diarys.isNotEmpty()) {
+            val paths = mutableListOf<String>()
+            for (item in diarys) {
                 paths.add(FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date)))
             }
-            val time=System.currentTimeMillis()
+            val time = System.currentTimeMillis()
             FileUploadManager(token).apply {
-                startZipUpload(paths,DateUtils.longToString(time))
-                setCallBack{
+                startZipUpload(paths, DateUtils.longToString(time))
+                setCallBack {
                     cloudList.add(CloudListBean().apply {
-                        type=7
-                        title=diaryUploadTitleStr
-                        subTypeStr="我的日记"
-                        year=DateUtils.getYear()
-                        date=time
-                        listJson= Gson().toJson(diarys)
-                        downloadUrl=it
+                        type = 7
+                        title = diaryUploadTitleStr
+                        subTypeStr = "我的日记"
+                        year = DateUtils.getYear()
+                        date = time
+                        listJson = Gson().toJson(diarys)
+                        downloadUrl = it
                     })
                     mCloudUploadPresenter.upload(cloudList)
                 }
@@ -428,9 +445,9 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
-        for (item in diarys){
-            val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
+        val diarys = DiaryDaoManager.getInstance().queryList(diaryStartLong, diaryEndLong)
+        for (item in diarys) {
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
             FileUtils.deleteFile(File(path))
             DiaryDaoManager.getInstance().delete(item)
         }

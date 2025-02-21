@@ -56,7 +56,6 @@ class ScreenshotManagerActivity : BaseAppCompatActivity() {
                     R.id.iv_edit -> {
                         InputContentDialog(this@ScreenshotManagerActivity, item.title).builder().setOnDialogClickListener {
                             if (ItemTypeDaoManager.getInstance().isExist(1,it)) {
-                                //创建文件夹
                                 showToast("已存在")
                                 return@setOnDialogClickListener
                             }
@@ -69,6 +68,10 @@ class ScreenshotManagerActivity : BaseAppCompatActivity() {
                         }
                     }
                     R.id.iv_delete -> {
+                        if (FileUtils.isExist(item.path)){
+                            showToast("分类存在截图，无法删除")
+                            return@setOnItemChildClickListener
+                        }
                         CommonDialog(this@ScreenshotManagerActivity).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }

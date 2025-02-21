@@ -28,8 +28,8 @@ import kotlinx.android.synthetic.main.ac_account_register.et_parent_phone
 import kotlinx.android.synthetic.main.ac_account_register.ll_date_resiter
 import kotlinx.android.synthetic.main.ac_account_register.ll_name
 import kotlinx.android.synthetic.main.ac_account_register.ll_school
-import kotlinx.android.synthetic.main.ac_account_register.ll_user
 import kotlinx.android.synthetic.main.ac_account_register.tv_date
+import kotlinx.android.synthetic.main.ac_account_register.tv_password
 import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
@@ -63,11 +63,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         setIntent()
     }
     override fun onFindPsd() {
-        showToast(R.string.toast_set_password_success)
-        setIntent()
-    }
-
-    override fun onEditPsd() {
         showToast(R.string.toast_edit_password_success)
         setIntent()
     }
@@ -93,14 +88,10 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
 
     override fun initView() {
         when (flags) {
-            2 -> {
-                setPageTitle(R.string.edit_password)
-                disMissView(ll_name,ll_date_resiter,ll_user,ll_school)
-                btn_register.setText(R.string.commit)
-            }
             1 -> {
-                setPageTitle(R.string.find_password)
+                setPageTitle(R.string.edit_password)
                 ed_user.setText(SPUtil.getString("account"))
+                tv_password.setText(R.string.edit_password)
                 disMissView(ll_name,ll_date_resiter,ll_school)
                 btn_register.setText(R.string.commit)
             }
@@ -219,9 +210,6 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
                         return@setOnClickListener
                     }
                     presenter?.findPsd("2",account,MD5Utils.digest(psd),phone, code)
-                }
-                else -> {
-                    presenter?.editPsd(MD5Utils.digest(psd),code)
                 }
             }
 

@@ -30,6 +30,7 @@
         android:layout_weight="1"
         android:lines="1"
         android:ellipsize="end"
+        android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
         />

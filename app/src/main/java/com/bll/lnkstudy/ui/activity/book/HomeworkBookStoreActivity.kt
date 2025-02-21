@@ -7,9 +7,9 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
+import com.bll.lnkstudy.mvp.model.book.TextbookBean
+import com.bll.lnkstudy.mvp.model.book.TextbookStore
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean
-import com.bll.lnkstudy.mvp.model.textbook.TextbookStore
 import com.bll.lnkstudy.mvp.presenter.TextbookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.FileBigDownManager
@@ -37,7 +37,7 @@ import java.text.DecimalFormat
 class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookStoreView {
 
     private lateinit var presenter :TextbookStorePresenter
-    private var book:TextbookBean?=null
+    private var book: TextbookBean?=null
     private var bookId =0
 
     override fun onTextbook(bookStore: TextbookStore) {
@@ -95,8 +95,8 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
     private fun showBooks() {
         showView(btn_ok)
         GlideUtils.setImageUrl(this@HomeworkBookStoreActivity,book?.imageUrl,iv_book)
-        tv_book_name?.text = book?.bookName+if (book?.semester==0) "" else "-"+ DataBeanManager.popupSemesters()[book!!.semester-1].name
-        tv_price?.text = getString(R.string.price)+"： " + if (book?.price==0) getString(R.string.free) else book!!.price
+        tv_book_name?.text = book?.bookName+"-"+ DataBeanManager.popupSemesters()[book!!.semester-1].name
+        tv_price?.text = getString(R.string.price)+"： " + if (book?.price==0) getString(R.string.free) else book?.price
         tv_version?.text =getString(R.string.press)+"： " + DataBeanManager.getBookVersionStr(book!!.version)
         tv_info?.text = getString(R.string.introduction)+"： " + book?.bookDesc
         tv_course?.text = getString(R.string.subject)+"： " + DataBeanManager.getCourseStr(book!!.subject)
@@ -166,7 +166,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                     area=book.area
                     grade=book.grade
                     subject=book.subject
-                    supply=book.supply
                     downloadUrl=book.downloadUrl
                     bookPath=fileTargetPath
                     bookDrawPath=FileAddress().getPathHomeworkBookDraw(File(fileTargetPath).name)

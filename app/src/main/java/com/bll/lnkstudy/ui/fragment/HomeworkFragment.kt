@@ -16,7 +16,7 @@ import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.HomeworkMessageDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.LongClickManageDialog
-import com.bll.lnkstudy.dialog.ModuleAddDialog
+import com.bll.lnkstudy.dialog.ModuleItemDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
@@ -555,7 +555,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
         if (list.size > 1) {
-            ModuleAddDialog(requireContext(), screenPos, getString(R.string.homework_module_str), list).builder()
+            ModuleItemDialog(requireContext(), screenPos, getString(R.string.homework_module_str), list).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     val item = HomeworkTypeBean()
                     item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
@@ -754,8 +754,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 获得题卷本图片地址
      */
     private fun getIndexFile(bookBean: HomeworkBookBean, page: Int): File? {
-        val path = FileAddress().getPathHomeworkBookPicture(bookBean.bookPath)
-        val listFiles = FileUtils.getAscFiles(path)
+        val path = FileAddress().getPathBookPicture(bookBean.bookPath)
+        val listFiles = FileUtils.getFiles(path)
         return if (listFiles.size > page) listFiles[page] else null
     }
 

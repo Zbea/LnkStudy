@@ -30,20 +30,18 @@ public class HomeworkBookBeanDao extends AbstractDao<HomeworkBookBean, Long> {
         public final static Property Type = new Property(3, int.class, "type", false, "TYPE");
         public final static Property ImageUrl = new Property(4, String.class, "imageUrl", false, "IMAGE_URL");
         public final static Property BookName = new Property(5, String.class, "bookName", false, "BOOK_NAME");
-        public final static Property BookDesc = new Property(6, String.class, "bookDesc", false, "BOOK_DESC");
-        public final static Property Price = new Property(7, int.class, "price", false, "PRICE");
-        public final static Property Semester = new Property(8, int.class, "semester", false, "SEMESTER");
-        public final static Property Area = new Property(9, String.class, "area", false, "AREA");
-        public final static Property Grade = new Property(10, int.class, "grade", false, "GRADE");
-        public final static Property Subject = new Property(11, int.class, "subject", false, "SUBJECT");
-        public final static Property Version = new Property(12, int.class, "version", false, "VERSION");
-        public final static Property Supply = new Property(13, String.class, "supply", false, "SUPPLY");
-        public final static Property DownloadUrl = new Property(14, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property BookPath = new Property(15, String.class, "bookPath", false, "BOOK_PATH");
-        public final static Property BookDrawPath = new Property(16, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
-        public final static Property Time = new Property(17, long.class, "time", false, "TIME");
-        public final static Property PageIndex = new Property(18, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PageUrl = new Property(19, String.class, "pageUrl", false, "PAGE_URL");
+        public final static Property Price = new Property(6, int.class, "price", false, "PRICE");
+        public final static Property Semester = new Property(7, int.class, "semester", false, "SEMESTER");
+        public final static Property Area = new Property(8, String.class, "area", false, "AREA");
+        public final static Property Grade = new Property(9, int.class, "grade", false, "GRADE");
+        public final static Property Subject = new Property(10, int.class, "subject", false, "SUBJECT");
+        public final static Property Version = new Property(11, int.class, "version", false, "VERSION");
+        public final static Property DownloadUrl = new Property(12, String.class, "downloadUrl", false, "DOWNLOAD_URL");
+        public final static Property BookPath = new Property(13, String.class, "bookPath", false, "BOOK_PATH");
+        public final static Property BookDrawPath = new Property(14, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
+        public final static Property Time = new Property(15, long.class, "time", false, "TIME");
+        public final static Property PageIndex = new Property(16, int.class, "pageIndex", false, "PAGE_INDEX");
+        public final static Property PageUrl = new Property(17, String.class, "pageUrl", false, "PAGE_URL");
     }
 
 
@@ -65,20 +63,18 @@ public class HomeworkBookBeanDao extends AbstractDao<HomeworkBookBean, Long> {
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
                 "\"IMAGE_URL\" TEXT," + // 4: imageUrl
                 "\"BOOK_NAME\" TEXT," + // 5: bookName
-                "\"BOOK_DESC\" TEXT," + // 6: bookDesc
-                "\"PRICE\" INTEGER NOT NULL ," + // 7: price
-                "\"SEMESTER\" INTEGER NOT NULL ," + // 8: semester
-                "\"AREA\" TEXT," + // 9: area
-                "\"GRADE\" INTEGER NOT NULL ," + // 10: grade
-                "\"SUBJECT\" INTEGER NOT NULL ," + // 11: subject
-                "\"VERSION\" INTEGER NOT NULL ," + // 12: version
-                "\"SUPPLY\" TEXT," + // 13: supply
-                "\"DOWNLOAD_URL\" TEXT UNIQUE ," + // 14: downloadUrl
-                "\"BOOK_PATH\" TEXT," + // 15: bookPath
-                "\"BOOK_DRAW_PATH\" TEXT," + // 16: bookDrawPath
-                "\"TIME\" INTEGER NOT NULL ," + // 17: time
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 18: pageIndex
-                "\"PAGE_URL\" TEXT);"); // 19: pageUrl
+                "\"PRICE\" INTEGER NOT NULL ," + // 6: price
+                "\"SEMESTER\" INTEGER NOT NULL ," + // 7: semester
+                "\"AREA\" TEXT," + // 8: area
+                "\"GRADE\" INTEGER NOT NULL ," + // 9: grade
+                "\"SUBJECT\" INTEGER NOT NULL ," + // 10: subject
+                "\"VERSION\" INTEGER NOT NULL ," + // 11: version
+                "\"DOWNLOAD_URL\" TEXT," + // 12: downloadUrl
+                "\"BOOK_PATH\" TEXT," + // 13: bookPath
+                "\"BOOK_DRAW_PATH\" TEXT," + // 14: bookDrawPath
+                "\"TIME\" INTEGER NOT NULL ," + // 15: time
+                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 16: pageIndex
+                "\"PAGE_URL\" TEXT);"); // 17: pageUrl
     }
 
     /** Drops the underlying database table. */
@@ -108,47 +104,37 @@ public class HomeworkBookBeanDao extends AbstractDao<HomeworkBookBean, Long> {
         if (bookName != null) {
             stmt.bindString(6, bookName);
         }
- 
-        String bookDesc = entity.getBookDesc();
-        if (bookDesc != null) {
-            stmt.bindString(7, bookDesc);
-        }
-        stmt.bindLong(8, entity.getPrice());
-        stmt.bindLong(9, entity.getSemester());
+        stmt.bindLong(7, entity.getPrice());
+        stmt.bindLong(8, entity.getSemester());
  
         String area = entity.getArea();
         if (area != null) {
-            stmt.bindString(10, area);
+            stmt.bindString(9, area);
         }
-        stmt.bindLong(11, entity.getGrade());
-        stmt.bindLong(12, entity.getSubject());
-        stmt.bindLong(13, entity.getVersion());
- 
-        String supply = entity.getSupply();
-        if (supply != null) {
-            stmt.bindString(14, supply);
-        }
+        stmt.bindLong(10, entity.getGrade());
+        stmt.bindLong(11, entity.getSubject());
+        stmt.bindLong(12, entity.getVersion());
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(15, downloadUrl);
+            stmt.bindString(13, downloadUrl);
         }
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(16, bookPath);
+            stmt.bindString(14, bookPath);
         }
  
         String bookDrawPath = entity.getBookDrawPath();
         if (bookDrawPath != null) {
-            stmt.bindString(17, bookDrawPath);
+            stmt.bindString(15, bookDrawPath);
         }
-        stmt.bindLong(18, entity.getTime());
-        stmt.bindLong(19, entity.getPageIndex());
+        stmt.bindLong(16, entity.getTime());
+        stmt.bindLong(17, entity.getPageIndex());
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(20, pageUrl);
+            stmt.bindString(18, pageUrl);
         }
     }
 
@@ -173,47 +159,37 @@ public class HomeworkBookBeanDao extends AbstractDao<HomeworkBookBean, Long> {
         if (bookName != null) {
             stmt.bindString(6, bookName);
         }
- 
-        String bookDesc = entity.getBookDesc();
-        if (bookDesc != null) {
-            stmt.bindString(7, bookDesc);
-        }
-        stmt.bindLong(8, entity.getPrice());
-        stmt.bindLong(9, entity.getSemester());
+        stmt.bindLong(7, entity.getPrice());
+        stmt.bindLong(8, entity.getSemester());
  
         String area = entity.getArea();
         if (area != null) {
-            stmt.bindString(10, area);
+            stmt.bindString(9, area);
         }
-        stmt.bindLong(11, entity.getGrade());
-        stmt.bindLong(12, entity.getSubject());
-        stmt.bindLong(13, entity.getVersion());
- 
-        String supply = entity.getSupply();
-        if (supply != null) {
-            stmt.bindString(14, supply);
-        }
+        stmt.bindLong(10, entity.getGrade());
+        stmt.bindLong(11, entity.getSubject());
+        stmt.bindLong(12, entity.getVersion());
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(15, downloadUrl);
+            stmt.bindString(13, downloadUrl);
         }
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(16, bookPath);
+            stmt.bindString(14, bookPath);
         }
  
         String bookDrawPath = entity.getBookDrawPath();
         if (bookDrawPath != null) {
-            stmt.bindString(17, bookDrawPath);
+            stmt.bindString(15, bookDrawPath);
         }
-        stmt.bindLong(18, entity.getTime());
-        stmt.bindLong(19, entity.getPageIndex());
+        stmt.bindLong(16, entity.getTime());
+        stmt.bindLong(17, entity.getPageIndex());
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(20, pageUrl);
+            stmt.bindString(18, pageUrl);
         }
     }
 
@@ -231,20 +207,18 @@ public class HomeworkBookBeanDao extends AbstractDao<HomeworkBookBean, Long> {
             cursor.getInt(offset + 3), // type
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // imageUrl
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // bookName
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bookDesc
-            cursor.getInt(offset + 7), // price
-            cursor.getInt(offset + 8), // semester
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // area
-            cursor.getInt(offset + 10), // grade
-            cursor.getInt(offset + 11), // subject
-            cursor.getInt(offset + 12), // version
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // supply
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // downloadUrl
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // bookPath
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // bookDrawPath
-            cursor.getLong(offset + 17), // time
-            cursor.getInt(offset + 18), // pageIndex
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19) // pageUrl
+            cursor.getInt(offset + 6), // price
+            cursor.getInt(offset + 7), // semester
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // area
+            cursor.getInt(offset + 9), // grade
+            cursor.getInt(offset + 10), // subject
+            cursor.getInt(offset + 11), // version
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // downloadUrl
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // bookPath
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // bookDrawPath
+            cursor.getLong(offset + 15), // time
+            cursor.getInt(offset + 16), // pageIndex
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // pageUrl
         );
         return entity;
     }
@@ -257,20 +231,18 @@ public class HomeworkBookBeanDao extends AbstractDao<HomeworkBookBean, Long> {
         entity.setType(cursor.getInt(offset + 3));
         entity.setImageUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setBookName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setBookDesc(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setPrice(cursor.getInt(offset + 7));
-        entity.setSemester(cursor.getInt(offset + 8));
-        entity.setArea(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setGrade(cursor.getInt(offset + 10));
-        entity.setSubject(cursor.getInt(offset + 11));
-        entity.setVersion(cursor.getInt(offset + 12));
-        entity.setSupply(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setDownloadUrl(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setBookPath(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setBookDrawPath(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setTime(cursor.getLong(offset + 17));
-        entity.setPageIndex(cursor.getInt(offset + 18));
-        entity.setPageUrl(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setPrice(cursor.getInt(offset + 6));
+        entity.setSemester(cursor.getInt(offset + 7));
+        entity.setArea(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setGrade(cursor.getInt(offset + 9));
+        entity.setSubject(cursor.getInt(offset + 10));
+        entity.setVersion(cursor.getInt(offset + 11));
+        entity.setDownloadUrl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setBookPath(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setBookDrawPath(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setTime(cursor.getLong(offset + 15));
+        entity.setPageIndex(cursor.getInt(offset + 16));
+        entity.setPageUrl(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     @Override

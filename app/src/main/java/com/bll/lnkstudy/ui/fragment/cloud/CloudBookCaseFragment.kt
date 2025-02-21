@@ -16,7 +16,7 @@ import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.ui.adapter.BookStoreAdapter
+import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -35,7 +35,7 @@ import java.util.concurrent.CountDownLatch
 class CloudBookCaseFragment:BaseCloudFragment() {
 
     private var countDownTasks: CountDownLatch?=null //异步完成后操作
-    private var mAdapter:BookStoreAdapter?=null
+    private var mAdapter: BookAdapter?=null
     private var bookTypeStr=""
     private val books= mutableListOf<BookBean>()
     private var position=0
@@ -84,7 +84,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
-        mAdapter = BookStoreAdapter(R.layout.item_bookstore, null).apply {
+        mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->

@@ -2,11 +2,10 @@ package com.bll.lnkstudy.manager;
 
 
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.TextbookBeanDao;
 import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.mvp.model.textbook.TextbookBean;
+import com.bll.lnkstudy.mvp.model.book.TextbookBean;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;

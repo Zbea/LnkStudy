@@ -3,20 +3,17 @@ package com.bll.lnkstudy.mvp.view;
 import com.bll.lnkstudy.mvp.model.AccountOrder;
 import com.bll.lnkstudy.mvp.model.AccountQdBean;
 import com.bll.lnkstudy.mvp.model.AppList;
-import com.bll.lnkstudy.mvp.model.AppUpdateBean;
 import com.bll.lnkstudy.mvp.model.CalenderList;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
-import com.bll.lnkstudy.mvp.model.SystemUpdateInfo;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList;
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamItem;
 import com.bll.lnkstudy.mvp.model.MessageList;
 import com.bll.lnkstudy.mvp.model.SchoolBean;
 import com.bll.lnkstudy.mvp.model.TeachingVideoList;
-import com.bll.lnkstudy.mvp.model.TeachingVideoType;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.mvp.model.book.BookStore;
 import com.bll.lnkstudy.mvp.model.book.BookStoreType;
@@ -31,7 +28,7 @@ import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean;
-import com.bll.lnkstudy.mvp.model.textbook.TextbookStore;
+import com.bll.lnkstudy.mvp.model.book.TextbookStore;
 import com.bll.lnkstudy.net.IBaseView;
 
 import java.util.List;
@@ -69,7 +66,6 @@ public interface IContractView {
         void onSms();
         void onRegister();
         void onFindPsd();
-        void onEditPsd();
     }
 
     //账户页面回调

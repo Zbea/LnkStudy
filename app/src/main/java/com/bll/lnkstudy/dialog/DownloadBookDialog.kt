@@ -23,7 +23,7 @@ class DownloadBookDialog(private val context: Context, private val book: BookBea
         dialog?.show()
 
         btn_ok = dialog?.findViewById(R.id.btn_ok)
-        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_back)
+        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         val iv_book = dialog?.findViewById<ImageView>(R.id.iv_book)
         val tv_price = dialog?.findViewById<TextView>(R.id.tv_price)
         val tv_course = dialog?.findViewById<TextView>(R.id.tv_course)
@@ -32,7 +32,7 @@ class DownloadBookDialog(private val context: Context, private val book: BookBea
         val tv_book_name = dialog?.findViewById<TextView>(R.id.tv_book_name)
         tv_course?.visibility=View.GONE
 
-        GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
+        GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,5)
 
         tv_book_name?.text = book.bookName
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price

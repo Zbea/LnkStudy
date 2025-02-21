@@ -37,8 +37,8 @@ class TeachActivity:BaseAppCompatActivity() {
         super.onBackPressed()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
         Jzvd.releaseAllVideos()
     }
 

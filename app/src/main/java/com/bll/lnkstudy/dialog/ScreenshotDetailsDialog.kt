@@ -75,7 +75,7 @@ class ScreenshotDetailsDialog(val context: Context) {
 
         override fun convert(helper: BaseViewHolder, item: ItemDetailsBean) {
             helper.setText(R.id.tv_book_type,item.typeStr)
-            helper.setText(R.id.tv_book_num,"小计："+item.num+"条")
+            helper.setText(R.id.tv_book_num,"(${item.num}条)")
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
