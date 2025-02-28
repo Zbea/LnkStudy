@@ -168,7 +168,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
      */
     private fun download(item: HomeworkTypeBean){
         showLoading()
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         val fileTargetPath=when(item.state){
             5->FileAddress().getPathScreenHomework(item.name,item.grade)
             else->FileAddress().getPathHomework(item.course,item.typeId)
@@ -256,7 +256,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     private fun downloadBook(homeworkTypeBean: HomeworkTypeBean){
         showLoading()
         val book= Gson().fromJson(homeworkTypeBean.contentJson, HomeworkBookBean::class.java)
-        val zipPath = FileAddress().getPathZip(book.bookId.toString())
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(homeworkTypeBean.downloadUrl))
         FileDownManager.with(activity).create(homeworkTypeBean.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

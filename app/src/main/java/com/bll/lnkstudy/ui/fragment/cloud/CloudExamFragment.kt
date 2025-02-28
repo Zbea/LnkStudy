@@ -134,7 +134,7 @@ class CloudExamFragment:BaseCloudFragment() {
      */
     private fun download(item:PaperTypeBean){
         showLoading()
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         val fileTargetPath= FileAddress().getPathTestPaper(item.course,item.typeId)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :

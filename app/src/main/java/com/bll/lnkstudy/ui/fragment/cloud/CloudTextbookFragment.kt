@@ -172,8 +172,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
      * 下载书籍
      */
     private fun downloadBook(book: TextbookBean){
-        val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.downloadUrl))
         FileDownManager.with(activity).create(book.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -208,8 +207,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: TextbookBean){
-        val fileName = book.bookId.toString()+"draw"//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.drawUrl))
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

@@ -74,10 +74,10 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             itemList.page=item.page
             list.add(itemList)
         }
-        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (currentPosition!=papers[position].page){
-                    currentPosition = papers[position].page
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (currentPosition!=pageNumber){
+                    currentPosition = pageNumber
                     oldPosition=-1
                     page = 0
                     onContent()
@@ -154,14 +154,13 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         if (isExpand){
             setElikLoadPath(elik_a!!,page,v_content_a!!)
             setElikLoadPath(elik_b!!,page+1,v_content_b!!)
-
-            if (screenPos== Constants.SCREEN_LEFT){
-                tv_page.text="${page+1}"
-                tv_page_a.text="${page+1+1}"
-            }
             if (screenPos== Constants.SCREEN_RIGHT){
                 tv_page_a.text="${page+1}"
                 tv_page.text="${page+1+1}"
+            }
+            else{
+                tv_page.text="${page+1}"
+                tv_page_a.text="${page+1+1}"
             }
         }
         else{

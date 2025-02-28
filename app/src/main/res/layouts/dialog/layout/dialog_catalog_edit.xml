@@ -7,20 +7,20 @@
     android:padding="@dimen/dp_40"
     >
 
-    <TextView
-        android:id="@+id/tv_selector"
+    <EditText
+        android:id="@+id/et_name"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_10"
-        android:drawableEnd="@mipmap/icon_arrow_right"
-        android:text="@string/homework_selector"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textColorHint="@color/color_text_hint"
+        android:background="@drawable/bg_black_stroke_5dp_corner"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:hint="请输入目录标题"
         android:lines="1"
         android:ellipsize="end"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:background="@drawable/click_btn_line_black_5dp"
+        android:padding="5dp"
         />
 
     <RadioGroup
@@ -114,8 +114,6 @@
                 />
         </LinearLayout>
     </RelativeLayout>
-
-
 
     <include
         layout="@layout/common_dialog_ok"

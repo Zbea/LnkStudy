@@ -15,8 +15,8 @@ import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.rv_list
 import kotlinx.android.synthetic.main.ac_app_list.rv_list_tool
-import kotlinx.android.synthetic.main.ac_app_list.tv_add
 import kotlinx.android.synthetic.main.ac_app_list.tv_out
+import kotlinx.android.synthetic.main.common_title.tv_setting
 
 /**
  * 应用工具
@@ -39,6 +39,7 @@ class AppToolActivity:BaseAppCompatActivity() {
                 appName="几何绘图"
                 imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
                 packageName=Constants.PACKAGE_GEOMETRY
+                time=System.currentTimeMillis()
                 isTool=false
             })
         }
@@ -47,11 +48,13 @@ class AppToolActivity:BaseAppCompatActivity() {
 
     override fun initView() {
         setPageTitle(DataBeanManager.resources[0])
+        showView(tv_setting)
+        tv_setting.text="添加"
 
         initRecyclerView()
         initRecyclerTool()
 
-        tv_add.setOnClickListener {
+        tv_setting.setOnClickListener {
             for (item in apps){
                 if (item.isCheck){
                     item.isTool=true

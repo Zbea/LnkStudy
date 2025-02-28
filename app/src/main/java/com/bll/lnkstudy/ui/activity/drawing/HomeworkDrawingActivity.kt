@@ -212,18 +212,20 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 list.add(itemList)
             }
         }
-        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=list[position].page){
-                    page = list[position].page
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (page!=pageNumber){
+                    page = pageNumber
                     onContent()
                 }
             }
-            override fun onEdit(position: Int, title: String) {
-                val item=homeworks[position]
-                item.title=title
-                HomeworkContentDaoManager.getInstance().insertOrReplace(item)
-                refreshDataUpdate(item)
+            override fun onEdit(title: String, pages: List<Int>) {
+                for (page in pages){
+                    val item=homeworks[page]
+                    item.title=title
+                    HomeworkContentDaoManager.getInstance().insertOrReplace(item)
+                    refreshDataUpdate(item)
+                }
             }
         })
     }
@@ -346,13 +348,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     setElikLoadPath(elik_b!!, drawPath)
                 }
             }
-            if (screenPos==Constants.SCREEN_LEFT){
-                tv_page.text = "$page"
-                tv_page_a.text = "${page + 1}"
-            }
             if (screenPos==Constants.SCREEN_RIGHT){
                 tv_page_a.text = "$page"
-                tv_page.text = "${page + 1}"
+            }
+            else{
+                tv_page.text = "$page"
+                tv_page_a.text = "${page + 1}"
             }
         }
 
@@ -441,13 +442,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.id = id
         homeworks.add(homeworkContent!!)
 
-        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,homeworkType?.state!!, Gson().toJson(homeworkContent), homeworkContent?.path!!)
+        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,homeworkType?.state!!, Gson().toJson(homeworkContent), path)
     }
 
 
     //作业提交
     private fun commit() {
-        DrawingCommitDialog(this, getCurrentScreenPos(),0,homeworks.size, messages).builder()
+        DrawingCommitDialog(this, getCurrentScreenPos(),0,homeworks.last().page+1, messages).builder()
             .setOnDialogClickListener {
                 homeworkCommitInfoItem = it
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
@@ -552,13 +553,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if (it.resultCode==10001){
-            val iterator=messages.iterator()
-            while (iterator.hasNext()){
-                val item=iterator.next()
-                if (item.id==homeworkCommitInfoItem?.messageId){
-                    iterator.remove()
-                }
-            }
+            messages.removeIf{item->item.id==homeworkCommitInfoItem?.messageId}
             homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(course, homeworkTypeId)
             onContent()
         }

@@ -111,7 +111,7 @@ class CloudNoteFragment: BaseCloudFragment() {
      */
     private fun downloadNote(item: Note){
         showLoading()
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         val fileTargetPath=FileAddress().getPathNote(item.typeStr,item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :

@@ -653,17 +653,14 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
                     //创建增量更新
                     DataUpdateManager.createDataUpdateSource(6,item.uid,1, item.listJson,item.downloadUrl)
                     DataUpdateManager.editDataUpdateUpload(6,item.uid,1)
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -673,20 +670,16 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 书籍手写
      */
     private fun downloadBookDraw(item: DataUpdateBean) {
-        val fileName = item.uid.toString()
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
-                    val path = item.path
-                    ZipUtils.unzip(zipPath, path, object : IZipCallback {
+                    ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
@@ -694,18 +687,14 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                             DataUpdateManager.createDataUpdateDrawing(6,item.uid,2,item.downloadUrl)
                             DataUpdateManager.editDataUpdateUpload(6,item.uid,2)
                         }
-
                         override fun onProgress(percentDone: Int) {
                         }
-
                         override fun onError(msg: String?) {
                         }
-
                         override fun onStart() {
                         }
                     })
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
             })
@@ -715,8 +704,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载课本
      */
     private fun downloadTextBook(item: DataUpdateBean) {
-        val fileName = item.uid.toString()
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         val bookBean = Gson().fromJson(item.listJson, TextbookBean::class.java)
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
@@ -753,8 +741,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载课本手写
      */
     private fun downloadTextBookDrawing(item: DataUpdateBean) {
-        val fileName = item.uid.toString()
-        val zipPath = FileAddress().getPathZip(fileName+"draw")
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -790,8 +777,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载题卷本
      */
     private fun downloadHomeworkBookDrawing(item: DataUpdateBean) {
-        val fileName = item.uid.toString()
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -824,7 +810,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载作业卷内容
      */
     private fun downloadHomeworkPaper(item: DataUpdateBean) {
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -861,7 +847,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载作业内容
      */
     private fun downloadHomework(item: DataUpdateBean) {
-        FileDownManager.with(this).create(item.downloadUrl).setPath(item.path)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
+        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -869,10 +856,22 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    val bean = Gson().fromJson(item.listJson, HomeworkContentBean::class.java)
-                    HomeworkContentDaoManager.getInstance().insertOrReplace(bean)
-                    DataUpdateManager.createDataUpdateState(2, item.uid, 2,item.typeId ,item.state, item.listJson, item.path)
-                    DataUpdateManager.editDataUpdateUpload(2,item.uid,2,item.typeId)
+                    ZipUtils.unzip(zipPath, item.path, object : IZipCallback {
+                        override fun onFinish() {
+                            val bean = Gson().fromJson(item.listJson, HomeworkContentBean::class.java)
+                            HomeworkContentDaoManager.getInstance().insertOrReplace(bean)
+                            DataUpdateManager.createDataUpdateState(2, item.uid, 2,item.typeId ,item.state, item.listJson, item.path)
+                            DataUpdateManager.editDataUpdateUpload(2,item.uid,2,item.typeId)
+                            //删掉本地zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                        }
+                        override fun onStart() {
+                        }
+                    })
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 }
@@ -906,7 +905,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载考卷内容
      */
     private fun downloadPaper(item: DataUpdateBean) {
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {

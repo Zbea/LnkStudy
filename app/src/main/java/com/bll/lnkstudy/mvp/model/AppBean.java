@@ -28,18 +28,19 @@ public class AppBean {
     public String packageName;
     public byte[] imageByte;
     public boolean isTool;
+    public long time;
     @Transient
     public boolean isCheck=false;
-
-    @Generated(hash = 867208658)
+    @Generated(hash = 233552212)
     public AppBean(Long id, long userId, String appName, String packageName, byte[] imageByte,
-            boolean isTool) {
+            boolean isTool, long time) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
         this.packageName = packageName;
         this.imageByte = imageByte;
         this.isTool = isTool;
+        this.time = time;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -80,5 +81,12 @@ public class AppBean {
     public void setIsTool(boolean isTool) {
         this.isTool = isTool;
     }
+    public long getTime() {
+        return this.time;
+    }
+    public void setTime(long time) {
+        this.time = time;
+    }
 
+  
 }

@@ -178,10 +178,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             list.add(itemList)
         }
 
-        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (currentPosition!=list[position].page){
-                    currentPosition = papers[position].page
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (currentPosition!=pageNumber){
+                    currentPosition = pageNumber
                     oldPosition=-1
                     page = 0
                     onContent()
@@ -252,14 +252,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         if (isExpand){
             setElikLoadPath(page,elik_a!!,v_content_a!!)
             setElikLoadPath(page+1,elik_b!!,v_content_b!!)
-
-            if (screenPos==Constants.SCREEN_LEFT){
-                tv_page.text="${page+1}"
-                tv_page_a.text="${page+1+1}"
-            }
             if (screenPos==Constants.SCREEN_RIGHT){
                 tv_page_a.text="${page+1}"
                 tv_page.text="${page+1+1}"
+            }
+            else{
+                tv_page.text="${page+1}"
+                tv_page_a.text="${page+1+1}"
             }
         }
         else{

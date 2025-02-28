@@ -84,26 +84,32 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun onCatalog() {
+        var titleStr = ""
         val list= mutableListOf<ItemList>()
         for (item in paintingLists){
             val itemList= ItemList()
             itemList.name=item.title
             itemList.page=item.page
             itemList.isEdit=true
-            list.add(itemList)
+            if (titleStr != item.title) {
+                titleStr = item.title
+                list.add(itemList)
+            }
         }
-        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=paintingLists[position].page){
-                    page = paintingLists[position].page
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (page!=pageNumber){
+                    page = pageNumber
                     onContent()
                 }
             }
-            override fun onEdit(position: Int, title: String) {
-                val item=paintingLists[position]
-                item.title=title
-                PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
-                editDataUpdate(item)
+            override fun onEdit(title: String, pages: List<Int>) {
+                for (page in pages){
+                    val item=paintingLists[page]
+                    item.title=title
+                    PaintingDrawingDaoManager.getInstance().insertOrReplace(item)
+                    editDataUpdate(item)
+                }
             }
         })
     }
@@ -207,18 +213,16 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         setBg_b()
         setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
         tv_page.text = "${page+1}"
-
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()
             setElikLoadPath(elik_a!!, paintingDrawingBean_a!!.path)
-            if (screenPos== Constants.SCREEN_LEFT){
-                tv_page.text="$page"
-                tv_page_a.text="${page+1}"
-            }
             if (screenPos== Constants.SCREEN_RIGHT){
                 tv_page_a.text="$page"
-                tv_page.text="${page+1}"
+            }
+            else{
+                tv_page.text="$page"
+                tv_page_a.text="${page+1}"
             }
         }
     }

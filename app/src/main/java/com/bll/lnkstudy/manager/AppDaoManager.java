@@ -67,13 +67,13 @@ public class AppDaoManager {
 
     public List<AppBean> queryToolAll() {
         WhereCondition whereCondition=AppBeanDao.Properties.IsTool.eq(true);
-        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition).build().list();
     }
 
     public boolean isTool(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
         WhereCondition whereCondition1=AppBeanDao.Properties.IsTool.eq(true);
-        AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
+        AppBean appBean=dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition,whereCondition1).build().unique();
         return appBean!=null;
     }
 

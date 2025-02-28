@@ -273,39 +273,22 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                         nullItems.add(typeBean)
                         startUpload(cloudList, nullItems)
                     } else {
-                        //判读是否存在手写内容
-                        if (FileUtils.isExistContent(homeworkBook.bookPath)) {
-                            FileUploadManager(token).apply {
-                                startZipUpload(homeworkBook.bookPath, File(homeworkBook.bookPath).name)
-                                setCallBack {
-                                    cloudList.add(CloudListBean().apply {
-                                        this.type = 2
-                                        subTypeStr = typeBean.course
-                                        date = typeBean.date
-                                        grade = typeBean.grade
-                                        listJson = Gson().toJson(typeBean)
-                                        contentJson = Gson().toJson(homeworkBook)
-                                        contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
-                                        downloadUrl = it
-                                        zipUrl = homeworkBook.downloadUrl
-                                        bookId = typeBean.bookId
-                                    })
-                                    startUpload(cloudList, nullItems)
-                                }
+                        FileUploadManager(token).apply {
+                            startZipUpload(homeworkBook.bookPath, File(homeworkBook.bookPath).name)
+                            setCallBack {
+                                cloudList.add(CloudListBean().apply {
+                                    this.type = 2
+                                    subTypeStr = typeBean.course
+                                    date = typeBean.date
+                                    grade = typeBean.grade
+                                    listJson = Gson().toJson(typeBean)
+                                    contentJson = Gson().toJson(homeworkBook)
+                                    contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
+                                    downloadUrl = it
+                                    bookId = typeBean.bookId
+                                })
+                                startUpload(cloudList, nullItems)
                             }
-                        } else {
-                            cloudList.add(CloudListBean().apply {
-                                this.type = 2
-                                subTypeStr = typeBean.course
-                                date = typeBean.date
-                                grade = typeBean.grade
-                                listJson = Gson().toJson(typeBean)
-                                contentJson = Gson().toJson(homeworkBook)
-                                contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
-                                downloadUrl = homeworkBook.downloadUrl
-                                bookId = typeBean.bookId
-                            })
-                            startUpload(cloudList, nullItems)
                         }
                     }
                 }

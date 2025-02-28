@@ -9,7 +9,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
-import com.bll.lnkstudy.dialog.CatalogDialog
+import com.bll.lnkstudy.dialog.CatalogBookDialog
 import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.book.TextbookBean
@@ -54,10 +54,7 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
         if (FileUtils.isExist(catalogFilePath))
         {
             val catalogMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(catalogFilePath)))
-            try {
-                catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
-            } catch (e: Exception) {
-            }
+            catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
             if (catalogMsg!=null){
                 for (item in catalogMsg?.contents!!) {
                     val catalogParent = CatalogParent()
@@ -76,7 +73,7 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
                     catalogs.add(catalogParent)
                 }
                 pageCount =  catalogMsg?.totalCount!!
-                startCount =  catalogMsg?.startCount!!-1
+                startCount =  if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1
             }
         }
     }
@@ -124,14 +121,12 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     }
 
     override fun onCatalog() {
-        CatalogDialog(this,screenPos, getCurrentScreenPos(),catalogs, 1, startCount).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=position-1){
-                    page = position - 1
-                    onContent()
-                }
+        CatalogBookDialog(this,screenPos, getCurrentScreenPos(),catalogs, startCount).builder().setOnDialogClickListener { pageNumber ->
+            if (page != pageNumber - 1) {
+                page = pageNumber - 1
+                onContent()
             }
-        })
+        }
     }
 
     override fun onChangeExpandContent() {
@@ -169,8 +164,6 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
                 setPageCurrent(page,tv_page_a,tv_page_total_a)
             }
         }
-        //设置当前展示页
-        book?.pageUrl = getIndexFile(page)?.path
     }
 
     /**
@@ -183,19 +176,12 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
 
     //加载图片
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
-        val showFile = getIndexFile(index)
+        val showFile = FileUtils.getIndexFile(book?.bookPath,index)
         if (showFile != null) {
             GlideUtils.setImageCacheUrl(this, showFile.path, view)
             val drawPath = book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath, true)
         }
-    }
-
-    //获得图片地址
-    private fun getIndexFile(index: Int): File? {
-        val path = FileAddress().getPathBookPicture(book?.bookPath!!)
-        val listFiles = FileUtils.getFiles(path)
-        return if (listFiles.size>index) listFiles[index] else null
     }
 
     override fun onElikSava_a() {
@@ -222,6 +208,7 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     override fun onDestroy() {
         super.onDestroy()
         book?.pageIndex = page
+        book?.pageUrl = FileUtils.getIndexFile(book?.bookPath,page).path
         TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }

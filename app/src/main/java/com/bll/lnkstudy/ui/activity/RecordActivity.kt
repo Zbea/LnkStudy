@@ -14,18 +14,19 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_record.et_title
 import kotlinx.android.synthetic.main.ac_record.iv_play
-import kotlinx.android.synthetic.main.ac_record.iv_record
 import kotlinx.android.synthetic.main.ac_record.ll_record
 import kotlinx.android.synthetic.main.ac_record.ll_record_backward
 import kotlinx.android.synthetic.main.ac_record.ll_record_forward
 import kotlinx.android.synthetic.main.ac_record.ll_record_play
 import kotlinx.android.synthetic.main.ac_record.ll_record_stop
 import kotlinx.android.synthetic.main.ac_record.tv_play
+import kotlinx.android.synthetic.main.ac_record.tv_time
 import kotlinx.android.synthetic.main.common_title.iv_back
 import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.io.IOException
+import java.util.Timer
+import java.util.TimerTask
 
 class RecordActivity : BaseAppCompatActivity() {
 
@@ -36,6 +37,8 @@ class RecordActivity : BaseAppCompatActivity() {
     private var mRecorder: MediaRecorder? = null
     private var recordBean: RecordBean? = null
     private var isSave=false
+    private var second=0
+    private var timer: Timer?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_record
@@ -47,7 +50,6 @@ class RecordActivity : BaseAppCompatActivity() {
         if (!File(path).exists())
             File(path).mkdirs()
         pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
-        File(pathFile).createNewFile()
     }
 
     override fun initView() {
@@ -84,18 +86,23 @@ class RecordActivity : BaseAppCompatActivity() {
 
         ll_record.setOnClickListener {
             hideKeyboard()
-            iv_record.setImageResource(R.mipmap.icon_record_show)
-            mRecorder = MediaRecorder().apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-                setOutputFile(pathFile)
-                setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-                try {
+            if (mPlayer?.isPlaying==true){
+                iv_play.setImageResource(R.mipmap.icon_record_play)
+                tv_play.setText(R.string.play)
+                releaseMediaPlayer()
+                timer?.cancel()
+            }
+            if (mRecorder==null){
+                mRecorder = MediaRecorder().apply {
+                    setAudioSource(MediaRecorder.AudioSource.MIC)
+                    setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                    setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+                    setOutputFile(pathFile)
                     prepare()//准备
                     start()//开始录音
-                } catch (e: IOException) {
-                    e.printStackTrace();
                 }
+                second=0
+                startTimer(1)
             }
         }
 
@@ -103,15 +110,9 @@ class RecordActivity : BaseAppCompatActivity() {
             if (mRecorder==null){
                 return@setOnClickListener
             }
-            iv_record.setImageResource(R.mipmap.icon_record_file)
-            mRecorder?.apply {
-                try {
-                    release()
-                    mRecorder=null
-                } catch (e: IOException) {
-                    e.printStackTrace();
-                }
-            }
+            recordBean?.second=second
+            releaseRecorder()
+            timer?.cancel()
         }
 
         ll_record_play.setOnClickListener {
@@ -120,62 +121,110 @@ class RecordActivity : BaseAppCompatActivity() {
                 return@setOnClickListener
             }
             if (mPlayer==null){
-                startPrepare()
+                mPlayer = MediaPlayer().apply {
+                    setDataSource(pathFile)
+                    setOnCompletionListener {
+                        iv_play.setImageResource(R.mipmap.icon_record_play)
+                        tv_play.setText(R.string.play)
+                        second=recordBean?.second!!
+                        tv_time.text= DateUtils.secondToString(second)
+                        timer?.cancel()
+                    }
+                    prepare()
+                }
             }
+
             mPlayer?.apply {
                 if (isPlaying){
                     iv_play.setImageResource(R.mipmap.icon_record_play)
                     tv_play.setText(R.string.play)
                     pause()
+                    timer?.cancel()
                 }
                 else{
                     iv_play.setImageResource(R.mipmap.icon_record_pause)
                     tv_play.setText(R.string.pause)
                     start()
+                    startTimer(2)
                 }
             }
         }
 
         ll_record_backward.setOnClickListener {
+            if(mRecorder!=null){
+                showToast(R.string.toast_recording)
+                return@setOnClickListener
+            }
             backWard()
         }
 
         ll_record_forward.setOnClickListener {
+            if(mRecorder!=null){
+                showToast(R.string.toast_recording)
+                return@setOnClickListener
+            }
             forWard()
         }
 
     }
 
-    //播放更新准备
-    private fun startPrepare(){
-        mPlayer = MediaPlayer().apply {
-            setDataSource(pathFile)
-            setOnCompletionListener {
-                iv_play.setImageResource(R.mipmap.icon_record_play)
-                tv_play.setText(R.string.play)
-            }
-            prepare()
+    private fun startTimer(type:Int){
+        Thread {
+            timer= Timer()
+            timer!!.schedule(object: TimerTask() {
+                override fun run() {
+                    if (type==1){
+                        second+=1
+                    }
+                    else{
+                        second-=1
+                    }
+                    runOnUiThread {
+                        tv_time.text= DateUtils.secondToString(second)
+                    }
+                }
+            } ,1000,1000)
+        }.start()
+    }
+
+    private fun releaseRecorder(){
+        if (mRecorder!=null){
+            mRecorder?.stop()
+            mRecorder?.release()
+            mRecorder=null
+        }
+    }
+
+    private fun releaseMediaPlayer(){
+        if (mPlayer!=null){
+            mPlayer?.pause()
+            mPlayer?.release()
+            mPlayer=null
         }
     }
 
     //快进1秒
     private fun forWard(){
-        mPlayer?.apply {
-            if (isPlaying) seekTo(currentPosition + 1000)
+        if (mPlayer?.isPlaying==true){
+            if (second>1){
+                timer?.cancel()
+                mPlayer?.seekTo(mPlayer?.currentPosition!!+ 1000)
+                second-=1
+                tv_time.text=DateUtils.secondToString(second)
+                startTimer(2)
+            }
         }
     }
 
     //后退一秒
     private fun backWard(){
-        mPlayer?.apply {
-            if (isPlaying){
-                var position = currentPosition
-                if(position > 1000){
-                    position-=1000
-                }else{
-                    position = 0
-                }
-                seekTo(position)
+        if (mPlayer?.isPlaying==true){
+            if (second<recordBean?.second!!){
+                timer?.cancel()
+                mPlayer?.seekTo(mPlayer?.currentPosition!! -1000)
+                second+=1
+                tv_time.text=DateUtils.secondToString(second)
+                startTimer(2)
             }
         }
     }
@@ -187,16 +236,9 @@ class RecordActivity : BaseAppCompatActivity() {
         if (!isSave){
             FileUtils.deleteFile(File(pathFile))
         }
-        mRecorder?.run {
-            stop()
-            release()
-            null
-        }
-
-        mPlayer?.run {
-            release()
-            null
-        }
+        timer?.cancel()
+        releaseRecorder()
+        releaseMediaPlayer()
     }
 
 }

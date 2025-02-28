@@ -30,6 +30,7 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         public final static Property PackageName = new Property(3, String.class, "packageName", false, "PACKAGE_NAME");
         public final static Property ImageByte = new Property(4, byte[].class, "imageByte", false, "IMAGE_BYTE");
         public final static Property IsTool = new Property(5, boolean.class, "isTool", false, "IS_TOOL");
+        public final static Property Time = new Property(6, long.class, "time", false, "TIME");
     }
 
 
@@ -50,7 +51,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
                 "\"APP_NAME\" TEXT," + // 2: appName
                 "\"PACKAGE_NAME\" TEXT," + // 3: packageName
                 "\"IMAGE_BYTE\" BLOB," + // 4: imageByte
-                "\"IS_TOOL\" INTEGER NOT NULL );"); // 5: isTool
+                "\"IS_TOOL\" INTEGER NOT NULL ," + // 5: isTool
+                "\"TIME\" INTEGER NOT NULL );"); // 6: time
     }
 
     /** Drops the underlying database table. */
@@ -84,6 +86,7 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
             stmt.bindBlob(5, imageByte);
         }
         stmt.bindLong(6, entity.getIsTool() ? 1L: 0L);
+        stmt.bindLong(7, entity.getTime());
     }
 
     @Override
@@ -111,6 +114,7 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
             stmt.bindBlob(5, imageByte);
         }
         stmt.bindLong(6, entity.getIsTool() ? 1L: 0L);
+        stmt.bindLong(7, entity.getTime());
     }
 
     @Override
@@ -126,7 +130,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // appName
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // packageName
             cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4), // imageByte
-            cursor.getShort(offset + 5) != 0 // isTool
+            cursor.getShort(offset + 5) != 0, // isTool
+            cursor.getLong(offset + 6) // time
         );
         return entity;
     }
@@ -139,6 +144,7 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         entity.setPackageName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setImageByte(cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4));
         entity.setIsTool(cursor.getShort(offset + 5) != 0);
+        entity.setTime(cursor.getLong(offset + 6));
      }
     
     @Override

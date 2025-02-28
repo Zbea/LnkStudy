@@ -263,18 +263,15 @@ class DiaryActivity:BaseDrawingActivity() {
         val path = getPath(posImage)
         setEinkImage(elik_b!!,path)
         tv_page.text = "${posImage + 1}"
-
         if (isExpand){
             val path_a =getPath(posImage-1)
             setEinkImage(elik_a!!,path_a)
-
-            if (screenPos== Constants.SCREEN_LEFT){
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text = "$posImage"
+            }
+            else{
                 tv_page_a.text = "${posImage + 1}"
                 tv_page.text = "$posImage"
-            }
-            if (screenPos==Constants.SCREEN_RIGHT){
-                tv_page.text = "${posImage + 1}"
-                tv_page_a.text = "$posImage"
             }
         }
 

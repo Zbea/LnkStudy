@@ -24,7 +24,6 @@ import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
@@ -642,7 +641,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         //拿到对应作业的所有本地图片地址
         val paths = mutableListOf<String>()
         for (i in item.pageStr.split(",")) {
-            val path = getIndexFile(homeworkBookBean, i.toInt() - 1)?.path!!
+            val path=FileUtils.getIndexFile(homeworkBookBean.bookPath,i.toInt() - 1).path
             paths.add(path)
         }
         //获得下载地址
@@ -697,7 +696,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         //拿到对应作业的所有本地图片地址
         val paths = mutableListOf<String>()
         for (page in item.page.split(",")) {
-            paths.add(getIndexFile(homeworkBookBean, page.toInt())?.path!!)
+            paths.add(FileUtils.getIndexFile(homeworkBookBean.bookPath,page.toInt()).path)
         }
         //获得下载地址
         val images = item.submitUrl.split(",").toMutableList()
@@ -748,15 +747,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     }
                 })
-    }
-
-    /**
-     * 获得题卷本图片地址
-     */
-    private fun getIndexFile(bookBean: HomeworkBookBean, page: Int): File? {
-        val path = FileAddress().getPathBookPicture(bookBean.bookPath)
-        val listFiles = FileUtils.getFiles(path)
-        return if (listFiles.size > page) listFiles[page] else null
     }
 
     /**
@@ -842,7 +832,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
         val id = HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContent)
         homeworkContent.id=id
-        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,homeworkTypeBean.state, Gson().toJson(homeworkContent), homeworkContent.path)
+        DataUpdateManager.createDataUpdateState(2, id.toInt(), 2,homeworkTypeId ,homeworkTypeBean.state, Gson().toJson(homeworkContent), path)
         return homeworkContent
     }
 

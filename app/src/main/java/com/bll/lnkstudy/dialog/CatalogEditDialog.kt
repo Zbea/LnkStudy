@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.ItemList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SToast
@@ -22,25 +21,16 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-/**
- * type 1作业本 2作业卷
- * pageStart 为课辅作业的 页码开始值
- */
-class DrawingCommitDialog(val context: Context, val screenPos: Int, private val startCount: Int, private val countSize: Int, var items: MutableList<ItemList>) {
+
+class CatalogEditDialog(val context: Context, val screenPos: Int,  private val countSize: Int) {
 
     private var dialog: Dialog? = null
     private var pages = mutableListOf<Int>()
-    private var messageId = 0
-    private var typeId=0
-    private var messageTitle = ""
-    private var postion = 0
-    private var isCorrect = false
     private var type = 1
 
-    fun builder(): DrawingCommitDialog {
-
+    fun builder(): CatalogEditDialog {
         dialog = Dialog(context)
-        dialog?.setContentView(R.layout.dialog_drawing_commit)
+        dialog?.setContentView(R.layout.dialog_catalog_edit)
         dialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window = dialog?.window
         val layoutParams = window?.attributes
@@ -56,19 +46,12 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
 
         val tv_cancel = dialog?.findViewById<TextView>(R.id.tv_cancel)
         val tv_ok = dialog?.findViewById<TextView>(R.id.tv_ok)
-        val tv_selector = dialog?.findViewById<TextView>(R.id.tv_selector)
+        val et_name = dialog?.findViewById<EditText>(R.id.et_name)
         val rvList = dialog?.findViewById<RecyclerView>(R.id.rv_list)
         val et_page_start = dialog?.findViewById<EditText>(R.id.et_page_start)
         val et_page_end = dialog?.findViewById<EditText>(R.id.et_page_end)
         val ll_batch = dialog?.findViewById<LinearLayout>(R.id.ll_batch)
 
-        if (items.size == 1) {
-            messageId = items[0].id
-            messageTitle = items[0].name
-            isCorrect = items[0].isSelfCorrect
-            typeId=items[0].typeId
-            tv_selector?.text = messageTitle
-        }
 
         val list = mutableListOf<ItemList>()
         val pageItem1 = ItemList()
@@ -79,19 +62,6 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
         pageItem2.isAdd = true
         list.add(pageItem2)
 
-        tv_selector?.setOnClickListener {
-            if (items.size > 1) {
-                HomeworkMessageSelectorDialog(context, screenPos, items).builder()
-                    ?.setOnDialogClickListener { postion, it ->
-                        this.postion = postion
-                        messageId = it.id
-                        messageTitle = it.name
-                        isCorrect = it.isSelfCorrect
-                        typeId=it.typeId
-                        tv_selector.text = messageTitle
-                    }
-            }
-        }
 
         val rg_group = dialog?.findViewById<RadioGroup>(R.id.rg_group)
         rg_group?.setOnCheckedChangeListener { radioGroup, i ->
@@ -128,58 +98,51 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
         }
 
         tv_ok?.setOnClickListener {
-            if (messageId > 0) {
-                pages.clear()
-                if (type == 1) {
-                    for (item in list) {
-                        if (item.page > 0) {
-                            if (!pages.contains(item.page))
-                                pages.add(item.page)
-                        }
-                    }
-                } else {
-                    if (!et_page_start?.text.isNullOrEmpty() && !et_page_end?.text.isNullOrEmpty()) {
-                        val pageStart = et_page_start?.text.toString().toInt()
-                        val pageEnd = et_page_end?.text.toString().toInt()
-                        if (pageEnd > pageStart) {
-                            for (i in pageStart..pageEnd) {
-                                if (!pages.contains(i))
-                                    pages.add(i)
-                            }
-                        }
-                    }
-                }
-                pages.sort()
-
-                if (pages.size==0){
-                    showToast("请输入页码")
-                    return@setOnClickListener
-                }
-
-                //设置题卷本初始页码不为1的情况
-                val realPageIndexs= mutableListOf<Int>()
-                for (page in pages){
-                    realPageIndexs.add(page+startCount-1)
-                }
-
-                if (realPageIndexs.last()>countSize){
-                    showToast("输入的页码超出")
-                    return@setOnClickListener
-                }
-
-                val item = HomeworkCommitInfoItem()
-                item.index=postion
-                item.messageId = messageId
-                item.typeId=typeId
-                item.title = messageTitle
-                item.contents = realPageIndexs
-                item.isSelfCorrect=isCorrect
-                listener?.onClick(item)
-                dismiss()
-            } else {
-                showToast("请选择提交的作业")
+            val contentStr=et_name?.text.toString()
+            if (contentStr.isEmpty()){
+                showToast("请输入目录标题")
+                return@setOnClickListener
             }
 
+            pages.clear()
+            if (type == 1) {
+                for (item in list) {
+                    if (item.page > 0) {
+                        if (!pages.contains(item.page))
+                            pages.add(item.page)
+                    }
+                }
+            } else {
+                if (!et_page_start?.text.isNullOrEmpty() && !et_page_end?.text.isNullOrEmpty()) {
+                    val pageStart = et_page_start?.text.toString().toInt()
+                    val pageEnd = et_page_end?.text.toString().toInt()
+                    if (pageEnd > pageStart) {
+                        for (i in pageStart..pageEnd) {
+                            if (!pages.contains(i))
+                                pages.add(i)
+                        }
+                    }
+                }
+            }
+            pages.sort()
+
+            if (pages.size==0){
+                showToast("请输入页码")
+                return@setOnClickListener
+            }
+
+            if (pages.last()>countSize){
+                showToast("输入的页码超出")
+                return@setOnClickListener
+            }
+
+            val realPages= mutableListOf<Int>()
+            for (pageNumber in pages){
+                realPages.add(pageNumber-1)
+            }
+
+            listener?.onClick(contentStr, realPages)
+            dismiss()
         }
 
         return this
@@ -202,7 +165,7 @@ class DrawingCommitDialog(val context: Context, val screenPos: Int, private val 
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: HomeworkCommitInfoItem)
+        fun onClick(contentStr:String,pages:List<Int> )
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

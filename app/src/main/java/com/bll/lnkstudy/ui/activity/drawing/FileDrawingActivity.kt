@@ -54,10 +54,10 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             itemList.isEdit=false
             list.add(itemList)
         }
-        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (pageIndex!=list[position].page){
-                    pageIndex = list[position].page
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (pageIndex!=pageNumber){
+                    pageIndex = pageNumber
                     onContent()
                 }
             }
@@ -130,13 +130,12 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         loadPicture(pageIndex, elik_b!!, v_content_b!!)
         if (isExpand) {
             loadPicture(pageIndex-1, elik_a!!, v_content_a!!)
-            if (screenPos==Constants.SCREEN_LEFT){
-                tv_page.text = "$pageIndex"
-                tv_page_a.text = "${pageIndex+1}"
-            }
             if (screenPos==Constants.SCREEN_RIGHT){
                 tv_page_a.text = "$pageIndex"
-                tv_page.text = "${pageIndex+1}"
+            }
+            else{
+                tv_page.text = "$pageIndex"
+                tv_page_a.text = "${pageIndex+1}"
             }
         }
 

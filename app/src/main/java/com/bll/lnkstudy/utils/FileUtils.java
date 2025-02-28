@@ -2,6 +2,8 @@ package com.bll.lnkstudy.utils;
 
 import android.util.Log;
 
+import com.bll.lnkstudy.FileAddress;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -25,6 +27,22 @@ import java.util.regex.Pattern;
 
 public class FileUtils {
 
+    /**
+     * 获取书籍当页页码
+     * @param path
+     * @param index
+     * @return
+     */
+    public static File getIndexFile(String path,int index){
+        String bookContentPath=new FileAddress().getPathBookPicture(path);
+        List<File> listFiles=getFiles(bookContentPath);
+        if (listFiles.size()>index){
+            return listFiles.get(index);
+        }
+        else {
+            return null;
+        }
+    }
 
     public static void mkdirs(String path){
         if (!FileUtils.isExist(path)){
@@ -255,27 +273,6 @@ public class FileUtils {
         return files;
     }
 
-    /**
-     * 获取目录下文件夹
-     * @param path
-     * @return
-     */
-    public static List<File> getDirectorys(String path){
-        List<File> files = new ArrayList<>();
-        if(path==null||path.isEmpty()){
-            return files;
-        }
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-        if (tempList==null) return files;
-        for (int i = 0; i < tempList.length; i++) {
-            if (tempList[i].isDirectory()) {
-                files.add(tempList[i]);
-            }
-        }
-        return files;
-    }
-
 
     /**
      * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录（降序）
@@ -300,6 +297,28 @@ public class FileUtils {
         //文件排序
         sortAscFiles(files);
         return files;
+    }
+
+    /**
+     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
+     * @param files
+     */
+    public static void sortAscFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort(Comparator.naturalOrder());
+    }
+
+    /**
+     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最前面
+     * @param files
+     */
+    public static void sortDescFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort(Comparator.reverseOrder());
     }
 
     /**
@@ -387,28 +406,6 @@ public class FileUtils {
     }
 
     /**
-     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
-     * @param files
-     */
-    public static void sortAscFiles(List<File> files) {
-        if (files==null){
-            return;
-        }
-        files.sort(Comparator.naturalOrder());
-    }
-
-    /**
-     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最前面
-     * @param files
-     */
-    public static void sortDescFiles(List<File> files) {
-        if (files==null){
-            return;
-        }
-        files.sort(Comparator.reverseOrder());
-    }
-
-    /**
      * 复制文件到指定文件夹
      * @param oldPathName
      * @param newPathName
@@ -479,6 +476,17 @@ public class FileUtils {
      * @return
      */
     public static String getFileName(String fileNameStr){
+        return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
+    }
+
+    /**
+     * url   -> name1
+     * @param url
+     * @return
+     */
+    public static String getUrlName(String url){
+        File file=new File(url);
+        String fileNameStr=file.getName();
         return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
     }
 

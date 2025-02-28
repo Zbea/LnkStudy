@@ -20,13 +20,6 @@ class FileAddress {
     private val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
 
 
-    fun getPathHomeworkBook(fileName: String):String{
-        return "$HOMEWORK_PATH/$mUserId/homeworkBook/$fileName"
-    }
-    fun getPathHomeworkBookDraw(fileName: String):String{
-        return "$HOMEWORK_PATH/$mUserId/homeworkBook/${fileName}/drawContent"
-    }
-
     /**
      * 教材目录地址
      */
@@ -38,6 +31,13 @@ class FileAddress {
      */
     fun getPathBookPicture(path:String):String{
         return "$path/contents"
+    }
+
+    fun getPathHomeworkBook(fileName: String):String{
+        return "$HOMEWORK_PATH/$mUserId/homeworkBook/$fileName"
+    }
+    fun getPathHomeworkBookDraw(fileName: String):String{
+        return "$HOMEWORK_PATH/$mUserId/homeworkBook/${fileName}/drawContent"
     }
 
     /**

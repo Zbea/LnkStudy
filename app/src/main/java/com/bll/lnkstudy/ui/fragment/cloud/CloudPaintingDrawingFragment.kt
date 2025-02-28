@@ -132,7 +132,7 @@ class CloudPaintingDrawingFragment : BaseCloudFragment() {
         val typeBean = Gson().fromJson(item.listJson, ItemTypeBean::class.java)
         typeBean.typeId=item.id
         val path=FileAddress().getPathPaintingDraw(if (typeStr=="我的画本")0 else 1,typeBean.typeId)
-        val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {

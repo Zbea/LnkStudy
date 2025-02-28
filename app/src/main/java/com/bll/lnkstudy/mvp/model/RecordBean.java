@@ -32,6 +32,8 @@ public class RecordBean implements Serializable {
     public boolean isCommit;
     @Transient
     public int state=0;//播放状态
+    @Transient
+    public int second;
 
     @Generated(hash = 1221133260)
     public RecordBean(Long id, long userId, int homeworkTypeId, int typeId, String typeName,

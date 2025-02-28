@@ -83,18 +83,20 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 list.add(itemList)
             }
         }
-        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=noteContents[position].page){
-                    page = noteContents[position].page
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (page!=pageNumber){
+                    page = pageNumber
                     onContent()
                 }
             }
-            override fun onEdit(position: Int, title: String) {
-                val item=noteContents[position]
-                item.title=title
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
-                DataUpdateManager.editDataUpdate(4,item.id.toInt(),3,Gson().toJson(item))
+            override fun onEdit(title: String, pages: List<Int>) {
+                for (page in pages){
+                    val item=noteContents[page]
+                    item.title=title
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
+                    DataUpdateManager.editDataUpdate(4,item.id.toInt(),3,Gson().toJson(item))
+                }
             }
         })
     }
@@ -188,13 +190,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         tv_page.text = "${page+1}"
         if (isExpand) {
             setElikLoadPath(elik_a!!, note_Content_a!!.filePath)
-            if (screenPos==Constants.SCREEN_LEFT){
-                tv_page.text="$page"
-                tv_page_a.text="${page+1}"
-            }
             if (screenPos==Constants.SCREEN_RIGHT){
                 tv_page_a.text="$page"
-                tv_page.text="${page+1}"
+            }
+            else{
+                tv_page.text="$page"
+                tv_page_a.text="${page+1}"
             }
         }
     }

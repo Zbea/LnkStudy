@@ -173,7 +173,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         val path=recordBeans[position].path
         if (!File(path).exists())return
         if (currentPos == position) {
-            if (mediaPlayer?.isPlaying == true) {
+            if (mediaPlayer!!.isPlaying) {
                 pause(position)
             } else {
                 mediaPlayer?.start()
@@ -181,10 +181,12 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 mAdapter?.notifyItemChanged(position)//刷新为播放状态
             }
         } else {
-            if (mediaPlayer?.isPlaying == true) {
-                pause(currentPos)
+            if (currentPos!=-1){
+                if (mediaPlayer!!.isPlaying) {
+                    pause(currentPos)
+                }
+                release()
             }
-            release()
             play(path)
         }
         currentPos = position

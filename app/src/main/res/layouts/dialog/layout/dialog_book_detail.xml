@@ -24,7 +24,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/iv_cancel"
+            android:id="@+id/iv_back"
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
             android:src="@mipmap/icon_close"
