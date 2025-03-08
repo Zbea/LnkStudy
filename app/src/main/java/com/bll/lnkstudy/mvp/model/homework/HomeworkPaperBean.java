@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.homework;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.greendao.StringConverter;
@@ -21,7 +22,7 @@ public class HomeworkPaperBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     @Unique
     public int contentId;//这次作业id
     public String course;//科目

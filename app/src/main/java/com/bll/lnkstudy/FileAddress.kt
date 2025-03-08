@@ -108,6 +108,13 @@ class FileAddress {
     }
 
     /**
+     * 作业保存路径
+     */
+    fun getPathHomework(course:String, typeId:Int?, contentId: Int?,index:Int):String{
+        return "$HOMEWORK_PATH/$mUserId/$course/$typeId/$contentId/$index"
+    }
+
+    /**
      * 笔记文件夹地址
      */
     fun getPathNote(type: String?,noteBookStr: String?):String{

@@ -160,9 +160,9 @@ class CloudDiaryFragment: BaseCloudFragment() {
     }
 
     override fun onCloudList(cloudList: CloudList) {
-        setPageNumber(cloudList.total)
         items=cloudList.list
         mAdapter?.setNewData(items)
+        setPageNumber(cloudList.total)
     }
 
     override fun onCloudDelete() {

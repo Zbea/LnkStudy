@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.painting;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.greendao.StringConverter;
@@ -24,7 +25,7 @@ public class PaintingBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int contentId;//内容id
     public int type;//1壁纸2书画
 
@@ -45,10 +46,6 @@ public class PaintingBean {
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;//图片保存地址
     public long date;//下载时间
-    @Transient
-    public boolean isLeft;
-    @Transient
-    public boolean isRight;
     @Transient
     public int cloudId;
     @Transient

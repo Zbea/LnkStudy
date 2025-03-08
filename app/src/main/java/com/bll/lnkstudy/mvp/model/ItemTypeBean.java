@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -20,7 +21,7 @@ public class ItemTypeBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public String title;
     public int type;//1截图2笔记3画本4书法5书库分类6日记标题7当前科目
     public long date;

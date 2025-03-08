@@ -19,6 +19,9 @@
     <dimen name="login_btn_height">60dp</dimen>
     <dimen name="click_line_width">2dp</dimen>
 
+    <dimen name="image_width">195dp</dimen>
+    <dimen name="image_height">260dp</dimen>
+
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_15">15dp</dimen>

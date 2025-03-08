@@ -5,58 +5,39 @@
     android:layout_height="wrap_content"
     android:gravity="center">
 
-    <ImageView
-        android:id="@+id/iv_image"
-        android:layout_width="205dp"
-        android:layout_height="274dp"
-        android:padding="1dp"
-        android:background="@drawable/bg_black_stroke_5dp_corner"
-        />
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         >
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:lines="1"
-            android:ellipsize="end"
-            android:layout_marginTop="@dimen/dp_10"
-            android:textColor="@color/black"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:orientation="horizontal"
-            >
-
-            <CheckBox
-                android:id="@+id/cb_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/bg_check_selector"
-                android:text="  左屏"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20" />
-
-            <CheckBox
-                android:id="@+id/cb_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:button="@drawable/bg_check_selector"
-                android:text="  右屏"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20" />
-
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/iv_image_left"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_height"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:padding="1dp"
+            />
+        <ImageView
+            android:id="@+id/iv_image_right"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_height"
+            android:layout_marginStart="1px"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:padding="1dp"
+            />
 
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cb_check"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:button="@drawable/bg_check_selector"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/black"/>
 
 
 </LinearLayout>

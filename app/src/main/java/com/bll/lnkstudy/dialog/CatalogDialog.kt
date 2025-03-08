@@ -33,7 +33,7 @@ class CatalogDialog(val context: Context, private val oldScreen:Int, private val
 
         val rv_list = dialog.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter= CatalogAdapter(R.layout.item_catalog_parent, false,list)
+        val mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener  { adapter, view, position ->
@@ -71,12 +71,12 @@ class CatalogDialog(val context: Context, private val oldScreen:Int, private val
         this.listener = listener
     }
 
-    class CatalogAdapter(layoutResId: Int,val isEidt: Boolean, data: List<ItemList>) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
+    class CatalogAdapter(layoutResId: Int, data: List<ItemList>) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name, item.name)
             helper.setText(R.id.tv_page, (item.page+1).toString())
-            helper.setGone(R.id.iv_edit,isEidt)
+            helper.setGone(R.id.iv_edit,item.isEdit)
             helper.addOnClickListener(R.id.iv_edit)
         }
 

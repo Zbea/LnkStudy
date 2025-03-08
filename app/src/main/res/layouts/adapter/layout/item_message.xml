@@ -14,15 +14,16 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:lineSpacingExtra="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25" />
+        android:textSize="@dimen/sp_24"
+        />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_30"
         android:gravity="end|center_vertical"
         >
 
@@ -31,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
+            android:textSize="@dimen/sp_24" />
 
         <TextView
             android:id="@+id/tv_message_name"
@@ -41,7 +42,7 @@
             android:ellipsize="end"
             android:layout_marginTop="8dp"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
+            android:textSize="@dimen/sp_24" />
 
     </LinearLayout>
 

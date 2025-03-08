@@ -70,7 +70,7 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),40f),
             DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams

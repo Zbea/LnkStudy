@@ -35,9 +35,6 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
     override fun onList(bean: PaintingList) {
         setPageNumber(bean.total)
         items=bean.list
-        for (item in items){
-            item.imageUrl=item.bodyUrl.split(",")[0]
-        }
         mAdapter?.setNewData(items)
     }
 
@@ -65,14 +62,14 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
     private fun initRecyclerView(){
         val distance= DP2PX.dip2px(requireActivity(),30f)
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(distance, DP2PX.dip2px(requireActivity(),60f),distance,0)
+        layoutParams.setMargins(distance, DP2PX.dip2px(requireActivity(),40f),distance,0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(),2)//创建布局管理
         mAdapter = DownloadPaintingAdapter(R.layout.item_download_painting, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco1(2,distance,100))
+        rv_list.addItemDecoration(SpaceGridItemDeco1(2,30,85))
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
@@ -132,7 +129,7 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
                     bean.paintingTypeStr=DataBeanManager.popupPainting()[painting-1].name
                     bean.info=item.drawDesc
                     bean.price=item.price
-                    bean.imageUrl=item.imageUrl
+                    bean.imageUrl=item.bodyUrl
                     bean.author=item.author
                     bean.publisher=item.publisher
                     bean.supply=item.supply

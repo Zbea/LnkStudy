@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.paper;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.greendao.DateWeekConverter;
@@ -22,7 +23,7 @@ public class PaperBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int contentId;//这次考卷id
     public String course;//科目
     public int paperTypeId;//本地测卷分类id

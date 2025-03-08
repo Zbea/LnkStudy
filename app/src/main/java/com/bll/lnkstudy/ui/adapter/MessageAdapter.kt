@@ -22,7 +22,7 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList.MessageBean
                     typeNameStr="学校通知"
                 }
                 4->{
-                    typeNameStr = (if (item.msgId==0) "发送：" else "来自：") +item.teacherName
+                    typeNameStr = (if (item.msgId==0) "发送：家长" else "来自：家长")
                 }
                 5->{
                     typeNameStr="年级通知"

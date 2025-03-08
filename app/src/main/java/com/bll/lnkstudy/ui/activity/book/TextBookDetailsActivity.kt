@@ -34,8 +34,6 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     private var book: TextbookBean? = null
     private var catalogMsg: CatalogMsg? = null
     private var catalogs = mutableListOf<MultiItemEntity>()
-    private var parentItems = mutableListOf<CatalogParent>()
-    private var childItems = mutableListOf<CatalogChild>()
     private var startCount=0
     private var page = 0 //当前页码
     private var bookId=0
@@ -67,9 +65,7 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
                         catalogChild.pageNumber = ite.pageNumber
                         catalogChild.picName = ite.picName
                         catalogParent.addSubItem(catalogChild)
-                        childItems.add(catalogChild)
                     }
-                    parentItems.add(catalogParent)
                     catalogs.add(catalogParent)
                 }
                 pageCount =  catalogMsg?.totalCount!!

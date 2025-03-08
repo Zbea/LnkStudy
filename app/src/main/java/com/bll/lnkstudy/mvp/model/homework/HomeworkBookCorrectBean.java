@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.homework;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -16,7 +17,7 @@ public class HomeworkBookCorrectBean {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int bookId;
     public String homeworkTitle;//本次作业标题
     public int page;//下标页码

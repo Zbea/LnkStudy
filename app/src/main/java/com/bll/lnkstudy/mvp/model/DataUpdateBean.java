@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -23,7 +24,7 @@ public class DataUpdateBean {
 
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int uid;//标识
     public int type;//类型1课本2作业3考卷4笔记5画本6书架7题卷本
     public int typeId;//用来防止重复

@@ -146,7 +146,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         iv_btn.setOnClickListener {
             if (!NetworkUtil(this).isNetworkConnected()){
-                showToast(R.string.net_work_error)
+                showToast("网络连接失败，无法提交")
                 return@setOnClickListener
             }
             if (!FileUtils.isExistContent(getPathMerge())){
@@ -177,7 +177,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             itemList.page=item.page
             list.add(itemList)
         }
-
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (currentPosition!=pageNumber){
@@ -194,13 +193,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         val count=if (isExpand) pageCount-2 else pageCount-1
         if (page<count){
             page+=if (isExpand)2 else 1
-            onContent()
+            Handler().postDelayed({
+                onContent()
+            },if (paper?.state==0)300 else 0)
         }
         else{
             if (currentPosition<papers.size-1){
                 currentPosition+=1
                 page=0
-                onContent()
+                Handler().postDelayed({
+                    onContent()
+                },if (paper?.state==0)300 else 0)
             }
         }
     }
@@ -208,13 +211,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onPageUp() {
         if (page>0){
             page-=if (isExpand)2 else 1
-            onContent()
+            Handler().postDelayed({
+                onContent()
+            },if (paper?.state==0)300 else 0)
         }
         else{
             if (currentPosition>0){
                 currentPosition-=1
                 page=0
-                onContent()
+                Handler().postDelayed({
+                    onContent()
+                },if (paper?.state==0)300 else 0)
             }
         }
     }
@@ -335,7 +342,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
         val path=paper!!.paths[index]
-        GlideUtils.setImageCacheUrl(this,path,view, paper?.state!!)
+        if (paper?.state==1){
+            GlideUtils.setImageNoCacheUrl(this,path,view)
+        }
+        else{
+            GlideUtils.setImageCacheUrl(this,path,view, paper?.state!!)
+        }
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 
@@ -406,7 +418,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
             daoManager?.insertOrReplace(paper)
             refreshDataUpdate()
-
+            //云书库下载无法手写
+            setDisableTouchInput(true)
             gotoSelfCorrect()
         }
         else{

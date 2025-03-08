@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.homework;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
@@ -19,7 +20,7 @@ public class HomeworkBookBean  {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     @Unique
     public int bookId;
     public int type;

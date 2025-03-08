@@ -299,7 +299,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (ll_page_number!=null){
             pageCount = ceil(total.toDouble() / pageSize).toInt()
             if (total == 0) {
-                disMissView(ll_page_number)
+                ll_page_number.visibility=View.INVISIBLE
             } else {
                 tv_page_current.text = pageIndex.toString()
                 tv_page_total_bottom.text = pageCount.toString()

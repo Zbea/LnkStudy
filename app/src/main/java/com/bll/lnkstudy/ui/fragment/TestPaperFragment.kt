@@ -230,7 +230,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             }
 
             val images = item.submitUrl.split(",").toMutableList()
-            val pathStr = FileAddress().getPathTestPaper(mCourse,paperTypeId, item.id)
+            val pathStr = FileAddress().getPathTestPaper(mCourse,paperTypeId, item.contendId)
             val paths = mutableListOf<String>()
             val drawPaths = mutableListOf<String>()
             for (i in images.indices) {
@@ -243,7 +243,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         refreshView(paperTypeId,item)
-                        mPresenter.downloadCompletePaper(item.id)
+                        mPresenter.downloadCompletePaper(item.contendId)
                         savePaperData(paperTypeId,paths,drawPaths,item)
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -294,10 +294,10 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      */
     private fun savePaperData(paperTypeId: Int,paths:List<String>,drawPaths:List<String>,item:HomeworkPaperList.HomeworkPaperListBean){
         val papers= PaperDaoManager.getInstance().queryAll(mCourse,paperTypeId)
-        val path=FileAddress().getPathTestPaper(mCourse,paperTypeId, item.id)
+        val path=FileAddress().getPathTestPaper(mCourse,paperTypeId, item.contendId)
         //保存本次考试
         val paper= PaperBean().apply {
-            contentId=item.id
+            contentId=item.contendId
             course=item.subject
             this.paperTypeId=paperTypeId
             this.typeId=item.typeId

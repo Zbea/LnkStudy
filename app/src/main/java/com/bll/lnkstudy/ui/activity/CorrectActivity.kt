@@ -48,6 +48,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
@@ -92,16 +93,16 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         showToast(R.string.toast_commit_success)
         when (state) {
             2 -> {
-                val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(commitItem?.course, commitItem?.homeworkTypeId!!)
-                for (index in commitItem?.contents!!) {
-                    val homework = homeworks[index]
-                    homework.state = 1
-                    homework.title = commitItem?.title
-                    homework.typeId=commitItem?.typeId
-                    homework.contentId = commitItem?.messageId!!
-                    homework.commitDate = System.currentTimeMillis()
+                val localHomeworks=HomeworkContentDaoManager.getInstance().queryAllByLocalContent(commitItem?.course, commitItem?.homeworkTypeId!!)
+                val homeworks = HomeworkContentDaoManager.getInstance().queryAllByContentId(commitItem?.homeworkTypeId!!,commitItem?.messageId!!)
+                for (homework in homeworks) {
+                    homework.isHomework=false
+                    homework.page=localHomeworks.size+homeworks.indexOf(homework)
                     homework.score=tv_total_score.text.toString().toDouble()
                     homework.correctJson=Gson().toJson(currentScores)
+                    homework.answerUrl=commitItem?.answerUrl
+                    homework.correctMode=commitItem?.correctMode!!
+                    homework.scoreMode=commitItem?.scoreMode!!
                     homework.commitJson=""
                     HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
                     DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2,homework.homeworkTypeId, Gson().toJson(homework))
@@ -141,9 +142,9 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
                 },500)
             }
         }
-
         //设置批改完成通知
-        setResult(10001, Intent())
+        EventBus.getDefault().post(Constants.HOMEWORK_MESSAGE_COMMIT_EVENT)
+        setResult(Constants.RESULT_10001, Intent())
         finish()
     }
 
@@ -391,9 +392,9 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
         tv_page_total_a.text="${getImageSize()}"
 
         if (isExpand){
-            GlideUtils.setImageCacheUrl(this, images[posImage],v_content_a)
+            GlideUtils.setImageNoCacheUrl(this, images[posImage],v_content_a)
             if (posImage+1<getImageSize()){
-                GlideUtils.setImageCacheUrl(this,images[posImage+1],v_content_b)
+                GlideUtils.setImageNoCacheUrl(this,images[posImage+1],v_content_b)
             }
             else{
                 v_content_b?.setImageResource(0)
@@ -402,7 +403,7 @@ class CorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadView {
             tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
-            GlideUtils.setImageCacheUrl(this, images[posImage],v_content_b)
+            GlideUtils.setImageNoCacheUrl(this, images[posImage],v_content_b)
             tv_page.text="${posImage+1}"
         }
     }

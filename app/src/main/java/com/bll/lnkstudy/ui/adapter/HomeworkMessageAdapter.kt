@@ -1,0 +1,41 @@
+package com.bll.lnkstudy.ui.adapter
+
+import com.bll.lnkstudy.R
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
+import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
+import com.bll.lnkstudy.utils.DateUtils
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
+
+class HomeworkMessageAdapter(layoutResId: Int, data: List<Any>, private val createStatus: Int) : BaseQuickAdapter<Any, BaseViewHolder>(layoutResId, data) {
+
+    override fun convert(helper: BaseViewHolder, ite: Any) {
+        if (createStatus==2){
+            val item=ite as HomeworkMessageList.MessageBean
+            helper.setText(R.id.tv_title,item.title)
+            helper.setGone(R.id.tv_correct,item.selfBatchStatus==1)
+            helper.setText(R.id.tv_assign_date, "布置时间："+DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
+            if (item.submitState==0){
+                helper.setText(R.id.tv_end_date, "提交时间："+DateUtils.longToStringWeek(item.endTime))
+                helper.setText(R.id.tv_state,"未提交")
+            }
+            else{
+                helper.setText(R.id.tv_state,"未完成")
+            }
+        }
+        else{
+            val item=ite as ParentHomeworkMessageList.ParentMessageBean
+            helper.setText(R.id.tv_title,item.title)
+            helper.setGone(R.id.tv_correct,false)
+            helper.setText(R.id.tv_assign_date, "布置时间："+DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
+            if (item.endTime>0){
+                helper.setText(R.id.tv_end_date, "提交时间："+DateUtils.longToStringWeek(item.endTime))
+                helper.setText(R.id.tv_state,"未提交")
+            }
+            else{
+                helper.setText(R.id.tv_state,"未完成")
+            }
+        }
+    }
+
+}

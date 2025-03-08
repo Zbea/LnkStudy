@@ -40,6 +40,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.book.TextbookBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
 import com.bll.lnkstudy.ui.activity.PaintingImageActivity;
+import com.bll.lnkstudy.ui.activity.RecordActivity;
 import com.bll.lnkstudy.ui.activity.RecordListActivity;
 import com.bll.lnkstudy.ui.activity.book.TextBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
@@ -80,6 +81,16 @@ public class MethodManager {
     public static boolean isLogin(){
         String tokenStr=SPUtil.INSTANCE.getString("token");
         return !TextUtils.isEmpty(tokenStr) && getUser()!=null;
+    }
+
+    public static long getAccountId(){
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
+        if (user==null){
+            return 0L;
+        }
+        else {
+            return user.accountId;
+        }
     }
 
     /**
@@ -280,21 +291,46 @@ public class MethodManager {
         context.startActivity(intent);
     }
 
+    public static void setHomeworkTypeBundle(Intent intent, HomeworkTypeBean item){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("homework", item);
+        intent.putExtra("homeworkBundle", bundle);
+    }
+
+    public static HomeworkTypeBean getHomeworkTypeBundle(Intent intent){
+        Bundle bundle = intent.getBundleExtra("homeworkBundle");
+        return bundle.getSerializable("homework", HomeworkTypeBean.class);
+    }
+
     /**
      * 转跳作业本
      *
      * @param context
      * @param item    作业分类
      * @param page    调转指定页码（正常-1跳转最后一页）
+     * @param messageIndex 选中作业下标
      */
-    public static void gotoHomeworkDrawing(Context context, HomeworkTypeBean item, int page) {
+    public static void gotoHomeworkDrawing(Context context, HomeworkTypeBean item, int page,int messageIndex) {
         ActivityManager.getInstance().checkHomeworkDrawingIsExist(item);
         Intent intent = new Intent(context, HomeworkDrawingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("homework", item);
-        intent.putExtra("homeworkBundle", bundle);
+        setHomeworkTypeBundle(intent,item);
         intent.putExtra("page", page);
+        intent.putExtra("messageIndex", messageIndex);
         intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 转跳朗读本
+     * @param context
+     * @param item    作业分类
+     * @param messageIndex 选中作业下标
+     */
+    public static void gotoHomeworkRecord(Context context, HomeworkTypeBean item, int messageIndex) {
+        ActivityManager.getInstance().finishActivity(RecordActivity.class.getName());
+        Intent intent = new Intent(context, RecordActivity.class);
+        setHomeworkTypeBundle(intent,item);
+        intent.putExtra("messageIndex", messageIndex);
         context.startActivity(intent);
     }
 

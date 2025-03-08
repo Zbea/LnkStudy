@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.KeyEvent
 import android.widget.ImageView
@@ -150,7 +151,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
         iv_btn.setOnClickListener {
             if (!NetworkUtil(this).isNetworkConnected()){
-                showToast(R.string.net_work_error)
+                showToast("网络连接失败，无法提交")
                 return@setOnClickListener
             }
             CommonDialog(this,screenPos).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
@@ -194,14 +195,19 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         if (page<pageCount-1){
             page+=2
         }
-        onChangeContent()
+        Handler().postDelayed({
+            onChangeContent()
+        },300)
     }
 
     override fun onPageUp() {
         if (page>0){
             page-=2
         }
-        onChangeContent()
+        //页面切换是延迟已支持手写保存
+        Handler().postDelayed({
+            onChangeContent()
+        },300)
     }
 
     private fun onChangeContent(){
@@ -242,6 +248,10 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      * 提交
      */
     private fun commit(){
+        if (!NetworkUtil(this).isNetworkConnected()){
+            showToast("网络连接失败，无法提交")
+            return
+        }
         showLoading()
         mUploadPresenter.getToken()
     }

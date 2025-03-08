@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.note;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -19,7 +20,7 @@ public class NoteContentBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public String typeStr;//分类
     public String noteTitle;
     public long date;//创建时间

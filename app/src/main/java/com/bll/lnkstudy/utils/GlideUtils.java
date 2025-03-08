@@ -70,6 +70,31 @@ public class GlideUtils {
 
     }
 
+    public static final void setImageNoCacheUrl(Context mContext,String url, ImageView imageView){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+
+        CustomTarget<Drawable> object=new CustomTarget<Drawable>() {
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                imageView.setBackground(resource);
+            }
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+            }
+        };
+
+        Glide.with(mContext)
+                .load(url)
+                .apply(requestOptions)
+                .into(object);
+
+
+    }
+
     public static void setImageRoundUrl(Context mContext, String url, ImageView imageView, int round){
 
         RequestOptions requestOptions=new RequestOptions();

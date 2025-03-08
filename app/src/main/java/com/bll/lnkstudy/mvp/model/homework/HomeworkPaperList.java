@@ -14,7 +14,7 @@ public class HomeworkPaperList implements Serializable {
 
     public static class HomeworkPaperListBean {
         @SerializedName("studentTaskId")
-        public int id;
+        public int contendId;
         public String title;//作业标题
         public String subject;//科目
         @SerializedName("commonTypeId")

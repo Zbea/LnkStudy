@@ -78,7 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="点击打开管理中心仔细阅读操机技巧"
+                android:text="点击打开管理中心仔细阅读操作手册"
                 android:lineSpacingExtra="@dimen/dp_5"
                 android:padding="@dimen/dp_10"
                 android:background="@drawable/bg_tips"

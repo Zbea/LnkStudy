@@ -19,11 +19,15 @@ public class HomeworkMessageList implements Serializable {
         public String typeName;
         @SerializedName("commonTypeId")
         public int typeId;
+        public String createTime;
         public long endTime;
+        public int submitState;//0提交 1不提交
         public String subject;
         public int grade;
         public int status;//3未提交 1已提交 2已完成
-        public int studentTaskId;
+        @SerializedName("studentTaskId")
+        public int contendId;
+        public String examUrl;
         public String question;
         public int questionType;//-1未加入模板0空模板
         public int questionMode;//1打分

@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class CatalogChild implements Serializable, MultiItemEntity {
 
     public String title;
+    public int parentPosition;
     public int pageNumber;
     public String picName;
 

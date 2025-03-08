@@ -66,15 +66,16 @@ class MessageListActivity:BaseAppCompatActivity(),IContractView.IMessageView {
 
     }
     private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this@MessageListActivity,50f),
+            DP2PX.dip2px(this@MessageListActivity,40f),
+            DP2PX.dip2px(this@MessageListActivity,50f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MessageAdapter(R.layout.item_message, null).apply {
-            val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            layoutParams.setMargins(
-                DP2PX.dip2px(this@MessageListActivity,50f),
-                DP2PX.dip2px(this@MessageListActivity,40f),
-                DP2PX.dip2px(this@MessageListActivity,50f),0)
-            layoutParams.weight=1f
-            rv_list.layoutParams= layoutParams
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.manager;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -43,7 +44,7 @@ public class PaperDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= PaperBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }

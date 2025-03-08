@@ -14,8 +14,8 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
+import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.RecordBean
@@ -23,8 +23,8 @@ import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.ui.adapter.CloudHomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
@@ -193,10 +193,10 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                 DataUpdateManager.createDataUpdate(2,item.typeId,1,Gson().toJson(item))
                                 when(item.state){
                                     1->{
-                                        val papers=Gson().fromJson(item.contentJson, object : TypeToken<List<PaperBean>>() {}.type) as MutableList<PaperBean>
+                                        val papers=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkPaperBean>>() {}.type) as MutableList<HomeworkPaperBean>
                                         for (paperBean in papers){
                                             paperBean.id=null//设置数据库id为null用于重新加入
-                                            PaperDaoManager.getInstance().insertOrReplace(paperBean)
+                                            HomeworkPaperDaoManager.getInstance().insertOrReplace(paperBean)
                                             //创建增量数据
                                             DataUpdateManager.createDataUpdateState(2,paperBean.contentId,2,paperBean.typeId,1,Gson().toJson(paperBean),paperBean.filePath)
                                         }
@@ -305,7 +305,6 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                     })
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
                     hideLoading()
                     //下载失败删掉已下载手写内容
                     FileUtils.deleteFile(File(book.bookDrawPath))
@@ -331,7 +330,6 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     }
 
     override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
         homeworkTypes.clear()
         for (type in item.list){
             if (type.listJson.isNotEmpty()){
@@ -345,6 +343,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
             }
         }
         mAdapter?.setNewData(homeworkTypes)
+        setPageNumber(item.total)
     }
 
     override fun onCloudDelete() {

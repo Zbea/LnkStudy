@@ -37,11 +37,13 @@ class Constants {
         const val SCREEN_FULL = 3//全屏
         const val STATUS_BAR_SHOW = 2147483647//永不消失
         const val DEBUG="debug"
+        const val RESULT_10001=10001//自批成功回调
+            const val RESULT_10002=10002//消息提交成功回调
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
-        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
-//        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
+//        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
 
         //storage/sdcard/0
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
@@ -108,6 +110,7 @@ class Constants {
         const val SETTING_RENT_EVENT = "DataRent"
         const val SETTING_CLEAT_EVENT = "DataClear"
         const val PAINTING_RULE_IMAGE_SET_EVENT = "PaintingRuleImageSetEvent"//规矩图设置
+        const val HOMEWORK_MESSAGE_COMMIT_EVENT = "HomeworkMessageCommitEvent"//作业消息提交成功
 
         //定时任务标识
         const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新
@@ -126,11 +129,8 @@ class Constants {
         const val PACKAGE_GEOMETRY = "com.geometry"
         const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"
 
-
         const val INTENT_SCREEN_LABEL = "android.intent.extra.LAUNCH_SCREEN"//打开页面在那个屏
         const val INTENT_DRAWING_FOCUS = "android.intent.extra.KEEP_FOCUS"//手写设置焦点
-
-        //OTA SN前缀
         const val PERSIST_OTA_SN_PREFIX = "persist.ota.sn.prefix"
         const val SN = "SN"
         const val KEY = "Key"
@@ -147,7 +147,7 @@ class Constants {
         const val SP_PARENT_PERMISSION ="parentPermission"//家长权限设置
         const val SP_SCHOOL_PERMISSION ="schoolPermission"//学校权限设置
         const val SP_EXAM_MODE ="examMode"//考试模式
-            const val SP_MESSAGE_TOTAL ="messageTotal"//考试模式
+        const val SP_MESSAGE_TOTAL ="messageTotal"//考试模式
     }
 
 }

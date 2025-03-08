@@ -26,7 +26,7 @@ import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import java.io.File
@@ -154,9 +154,8 @@ class CloudExamFragment:BaseCloudFragment() {
                             //创建增量数据
                             DataUpdateManager.createDataUpdate(3,item.typeId,1,Gson().toJson(item))
 
-                            val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                            for (json in jsonArray){
-                                val paperBean=Gson().fromJson(json, PaperBean::class.java)
+                            val papers=Gson().fromJson(item.contentJson, object : TypeToken<List<PaperBean>>() {}.type) as MutableList<PaperBean>
+                            for (paperBean in papers){
                                 paperBean.id=null//设置数据库id为null用于重新加入
                                 PaperDaoManager.getInstance().insertOrReplace(paperBean)
                                 //创建增量数据
@@ -207,7 +206,6 @@ class CloudExamFragment:BaseCloudFragment() {
     }
 
     override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
         paperTypes.clear()
         for (type in item.list){
             if (type.listJson.isNotEmpty()){
@@ -221,6 +219,7 @@ class CloudExamFragment:BaseCloudFragment() {
             }
         }
         mAdapter?.setNewData(paperTypes)
+        setPageNumber(item.total)
     }
 
     override fun onCloudDelete() {

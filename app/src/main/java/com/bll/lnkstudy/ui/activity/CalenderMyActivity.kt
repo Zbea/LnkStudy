@@ -53,8 +53,8 @@ class CalenderMyActivity:BaseAppCompatActivity(){
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,28f), DP2PX.dip2px(this,60f),
-            DP2PX.dip2px(this,28f),0)
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,60f),
+            DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -74,7 +74,7 @@ class CalenderMyActivity:BaseAppCompatActivity(){
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this, 60f)))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this, 90f)))
     }
 
     private fun onLongClick() {

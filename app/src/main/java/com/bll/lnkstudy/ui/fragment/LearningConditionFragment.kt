@@ -18,6 +18,7 @@ import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.CorrectDetailsAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.rv_list
 import kotlinx.android.synthetic.main.common_fragment_title.tv_course
@@ -117,12 +118,14 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
     }
 
     override fun fetchData() {
-        val map=HashMap<String,Any>()
-        map["page"]=pageIndex
-        map["size"]=pageSize
-        map["subject"]=DataBeanManager.getCourseId(mCourse)
-        map["taskType"]=type
-        mPresenter.getCorrectNotice(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            val map=HashMap<String,Any>()
+            map["page"]=pageIndex
+            map["size"]=pageSize
+            map["subject"]=DataBeanManager.getCourseId(mCourse)
+            map["taskType"]=type
+            mPresenter.getCorrectNotice(map)
+        }
     }
 
     override fun onRefreshData() {

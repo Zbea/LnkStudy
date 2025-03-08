@@ -1,40 +1,30 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.content.Intent
 import android.media.MediaPlayer
-import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.HomeworkMessageSelectorDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.RecordDaoManager
-import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.RecordBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
-import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.RecordAdapter
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_page_number.ll_page_number
 import kotlinx.android.synthetic.main.common_title.iv_manager
 import java.io.File
 
-class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadView{
+class RecordListActivity : BaseAppCompatActivity(){
 
-    private lateinit var mUploadPresenter:FileUploadPresenter
     private var mAdapter: RecordAdapter? = null
     private var course = ""
     private var homeworkType: HomeworkTypeBean? = null
@@ -42,43 +32,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
     private var currentPos = -1//当前点击位置
     private var position = 0//当前点击位置
     private var mediaPlayer: MediaPlayer? = null
-    private var messages= mutableListOf<HomeworkMessageList.MessageBean>()
-    private var messageIndex=0
-    private var commitPaths= mutableListOf<String>()
-
-    override fun onToken(token: String) {
-        showLoading()
-        FileImageUploadManager(token,commitPaths).apply {
-            startUpload()
-            setCallBack(object : FileImageUploadManager.UploadCallBack {
-                override fun onUploadSuccess(urls: List<String>) {
-                    val map= HashMap<String, Any>()
-                    map["studentTaskId"]=messages[messageIndex].studentTaskId
-                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
-                    map["commonTypeId"] = messages[messageIndex].typeId
-                    mUploadPresenter.commit(map)
-                }
-                override fun onUploadFail() {
-                    hideLoading()
-                    showToast(R.string.upload_fail)
-                }
-            })
-        }
-    }
-
-    override fun onCommitSuccess() {
-        showToast(R.string.toast_commit_success)
-
-        val messageBean=messages[messageIndex]
-        messages.removeAt(messageIndex)
-
-        val recordBean=recordBeans[position]
-        recordBean.isCommit=true
-        recordBean.typeId=messageBean.typeId
-        mAdapter?.notifyItemChanged(position)
-
-        refreshDataUpdate(recordBean)
-    }
 
     override fun layoutId(): Int {
         return R.layout.ac_list
@@ -86,25 +39,10 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
 
     override fun initData() {
         pageSize=12
-        initChangeScreenData()
-        val bundle = intent.getBundleExtra("homeworkBundle")
-        homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
+        homeworkType = MethodManager.getHomeworkTypeBundle(intent)
         course=homeworkType?.course!!
-        val list=homeworkType?.messages
-
-        if (!list.isNullOrEmpty()){
-            for (item in list){
-                if (item.endTime>0&&item.status==3){
-                    messages.add(item)
-                }
-            }
-        }
-
     }
 
-    override fun initChangeScreenData() {
-        mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
-    }
 
     override fun initView() {
         setPageTitle(course+getString(R.string.record_read))
@@ -112,7 +50,7 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         setImageManager(R.mipmap.icon_add)
 
         iv_manager.setOnClickListener {
-            addRecord()
+            MethodManager.gotoHomeworkRecord(this,homeworkType,Constants.DEFAULT_PAGE)
         }
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -131,16 +69,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                 R.id.iv_record->{
                     setPlay()
                 }
-                R.id.tv_save->{
-                    if (messages.size==0)
-                        return@setOnItemChildClickListener
-                    if (NetworkUtil(this).isNetworkConnected()){
-                        commit()
-                    }
-                    else{
-                        showToast(R.string.net_work_error)
-                    }
-                }
                 R.id.iv_edit->{
                     edit()
                 }
@@ -151,21 +79,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
         }
 
         fetchData()
-    }
-
-
-    //添加听读
-    private fun addRecord() {
-        val time = System.currentTimeMillis()
-        val item = RecordBean()
-        item.date = time
-        item.course = course
-        item.homeworkTypeId=homeworkType?.typeId!!
-        item.typeName=homeworkType?.name
-
-        val bundle = Bundle()
-        bundle.putSerializable("record", item)
-        customStartActivity(Intent(this@RecordListActivity, RecordActivity::class.java).putExtra("recordBundle", bundle))
     }
 
     //点击播放
@@ -245,27 +158,6 @@ class RecordListActivity : BaseAppCompatActivity() , IContractView.IFileUploadVi
                     DataUpdateManager.deleteDateUpdate(2,recordBean.id.toInt(),2,homeworkType?.typeId!!)
                 }
             })
-    }
-
-    /**
-     * 提交录音
-     */
-    private fun commit(){
-        commitPaths.clear()
-        val items= mutableListOf<ItemList>()
-        for (item in messages){
-            items.add(ItemList().apply {
-                id=item.studentTaskId
-                typeId=item.typeId
-                name=item.title
-            })
-        }
-        HomeworkMessageSelectorDialog(this, getCurrentScreenPos(), items).builder()
-            ?.setOnDialogClickListener {position,it->
-                messageIndex=position
-                commitPaths.add(recordBeans[position].path)
-                mUploadPresenter.getToken()
-            }
     }
 
     /**

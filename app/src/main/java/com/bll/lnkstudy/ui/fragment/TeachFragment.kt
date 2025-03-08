@@ -159,13 +159,15 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun fetchData() {
-        val map=HashMap<String,Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["grade"] = grade
-        map["type"] = DataBeanManager.getCourseId(mCourse)
-        map["semester"] = semester
-        mPresenter.getCourseList(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            val map=HashMap<String,Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["grade"] = grade
+            map["type"] = DataBeanManager.getCourseId(mCourse)
+            map["semester"] = semester
+            mPresenter.getCourseList(map)
+        }
     }
 
     override fun onRefreshData() {

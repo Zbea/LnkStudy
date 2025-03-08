@@ -1,17 +1,14 @@
 package com.bll.lnkstudy.manager;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
-import com.bll.lnkstudy.greendao.BookBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkContentBeanDao;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean;
-import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
-import java.util.Objects;
 
 public class HomeworkContentDaoManager {
 
@@ -49,7 +46,7 @@ public class HomeworkContentDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= HomeworkContentBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
@@ -64,21 +61,38 @@ public class HomeworkContentDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
+    /**
+     * 获取当前课本、作业本的本地作业
+     */
+    public List<HomeworkContentBean> queryAllByLocalContent(String course, int homeworkTypeId) {
+        WhereCondition whereCondition= HomeworkContentBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
+        WhereCondition whereCondition2=HomeworkContentBeanDao.Properties.IsHomework.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).orderAsc(HomeworkContentBeanDao.Properties.Date).build().list();
+    }
+
+    /**
+     * 获取当前课本、作业本全部作业
+     * @param course
+     * @param homeworkTypeId
+     * @return
+     */
     public List<HomeworkContentBean> queryAllByType(String course, int homeworkTypeId) {
         WhereCondition whereCondition= HomeworkContentBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(HomeworkContentBeanDao.Properties.Date).build().list();
     }
 
-    public List<HomeworkContentBean> queryAllById(int contentId,int typeId) {
+    public List<HomeworkContentBean> queryAllByContentId(int homeworkTypeId, int contentId) {
         WhereCondition whereCondition=HomeworkContentBeanDao.Properties.ContentId.eq(contentId);
-        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(typeId);
+        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.HomeworkTypeId.eq(homeworkTypeId);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(HomeworkContentBeanDao.Properties.Date).build().list();
     }
 
     public List<HomeworkContentBean> search(String title) {
         WhereCondition whereCondition=HomeworkContentBeanDao.Properties.Title.like("%"+title+"%");
-        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        WhereCondition whereCondition1=HomeworkContentBeanDao.Properties.IsHomework.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
 

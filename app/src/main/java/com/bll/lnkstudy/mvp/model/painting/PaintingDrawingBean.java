@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.painting;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -17,7 +18,7 @@ public class PaintingDrawingBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int type;//类型
     public long date;//开始时间
     public String path;//图片路径

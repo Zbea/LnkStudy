@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.book;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
@@ -21,7 +22,7 @@ public class BookBean {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     @Unique
     public int bookId;
     public int type;//1古籍2自然科学3社会科学4思维科学5运动才艺

@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -21,33 +22,34 @@ public class RecordBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int homeworkTypeId;
-    public int typeId;//作业分组id
     public String typeName;//作业分组标题
+    public String course;
     public String title;
+    public int contendId;
     public long date;
     public String path;
-    public String course;
-    public boolean isCommit;
+    public int second;
+    public boolean isHomework=false;
     @Transient
     public int state=0;//播放状态
-    @Transient
-    public int second;
 
-    @Generated(hash = 1221133260)
-    public RecordBean(Long id, long userId, int homeworkTypeId, int typeId, String typeName,
-            String title, long date, String path, String course, boolean isCommit) {
+    @Generated(hash = 1605661616)
+    public RecordBean(Long id, long userId, int homeworkTypeId, String typeName,
+            String course, String title, int contendId, long date, String path,
+            int second, boolean isHomework) {
         this.id = id;
         this.userId = userId;
         this.homeworkTypeId = homeworkTypeId;
-        this.typeId = typeId;
         this.typeName = typeName;
+        this.course = course;
         this.title = title;
+        this.contendId = contendId;
         this.date = date;
         this.path = path;
-        this.course = course;
-        this.isCommit = isCommit;
+        this.second = second;
+        this.isHomework = isHomework;
     }
     @Generated(hash = 96196931)
     public RecordBean() {
@@ -64,11 +66,35 @@ public class RecordBean implements Serializable {
     public void setUserId(long userId) {
         this.userId = userId;
     }
+    public int getHomeworkTypeId() {
+        return this.homeworkTypeId;
+    }
+    public void setHomeworkTypeId(int homeworkTypeId) {
+        this.homeworkTypeId = homeworkTypeId;
+    }
+    public String getTypeName() {
+        return this.typeName;
+    }
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+    public String getCourse() {
+        return this.course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
+    }
     public String getTitle() {
         return this.title;
     }
     public void setTitle(String title) {
         this.title = title;
+    }
+    public int getContendId() {
+        return this.contendId;
+    }
+    public void setContendId(int contendId) {
+        this.contendId = contendId;
     }
     public long getDate() {
         return this.date;
@@ -82,35 +108,18 @@ public class RecordBean implements Serializable {
     public void setPath(String path) {
         this.path = path;
     }
-    public String getCourse() {
-        return this.course;
+    public int getSecond() {
+        return this.second;
     }
-    public void setCourse(String course) {
-        this.course = course;
+    public void setSecond(int second) {
+        this.second = second;
     }
-    public boolean getIsCommit() {
-        return this.isCommit;
+    public boolean getIsHomework() {
+        return this.isHomework;
     }
-    public void setIsCommit(boolean isCommit) {
-        this.isCommit = isCommit;
+    public void setIsHomework(boolean isHomework) {
+        this.isHomework = isHomework;
     }
-    public int getTypeId() {
-        return this.typeId;
-    }
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-    public int getHomeworkTypeId() {
-        return this.homeworkTypeId;
-    }
-    public void setHomeworkTypeId(int homeworkTypeId) {
-        this.homeworkTypeId = homeworkTypeId;
-    }
-    public String getTypeName() {
-        return this.typeName;
-    }
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-    
+
+
 }

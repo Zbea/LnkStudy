@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.mvp.model.note;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 
@@ -19,7 +20,7 @@ public class Note implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    public long userId= MethodManager.getAccountId();
     public String title;
     public String typeStr;//分类
     public long date; //创建时间

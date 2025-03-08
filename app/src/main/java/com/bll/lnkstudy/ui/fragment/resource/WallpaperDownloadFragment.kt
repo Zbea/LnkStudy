@@ -46,7 +46,7 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
 
     override fun initView() {
         initChangeScreenData()
-        pageSize=12
+        pageSize=6
         initRecyclerView()
     }
 
@@ -65,14 +65,14 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(requireActivity(),2)//创建布局管理
         mAdapter = DownloadWallpaperAdapter(R.layout.item_download_wallpaper, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco(4,30))
+        rv_list.addItemDecoration(SpaceGridItemDeco(2,30))
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            ImageDialog(requireActivity(), arrayListOf(items[position].bodyUrl) ).builder()
+            ImageDialog(requireActivity(), items[position].bodyUrl.split(",")).builder()
         }
         mAdapter?.setOnItemChildClickListener{ adapter, view, position ->
             this.position=position
@@ -105,8 +105,8 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         val item=items[position]
         showLoading()
         val pathStr= FileAddress().getPathImage("wallpaper",item.fontDrawId)
-        val images = mutableListOf(item.bodyUrl)
-        val savePaths= arrayListOf("$pathStr/1.png")
+        val images = item.bodyUrl.split(",")
+        val savePaths= arrayListOf("$pathStr/1.png","$pathStr/2.png")
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
@@ -155,6 +155,7 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         map["size"] = pageSize
         map["supply"]=supply
         map["type"]=1
+        map["imgType"]=2
         presenter.getList(map)
     }
 

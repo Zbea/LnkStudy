@@ -2,6 +2,7 @@ package com.bll.lnkstudy.mvp.model.paper;
 
 import androidx.annotation.Nullable;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.User;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
@@ -20,7 +21,7 @@ public class PaperTypeBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long studentId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long studentId = MethodManager.getAccountId();
     public long teacherId;//老师id
     public String teacher;
     public String name;//考卷分类

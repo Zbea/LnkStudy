@@ -51,7 +51,6 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             val itemList= ItemList()
             itemList.name=file.name.replace(".png","")
             itemList.page=files.indexOf(file)
-            itemList.isEdit=false
             list.add(itemList)
         }
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {

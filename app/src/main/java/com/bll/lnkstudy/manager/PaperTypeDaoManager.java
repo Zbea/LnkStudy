@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.manager;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
@@ -47,7 +48,7 @@ public class PaperTypeDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= PaperTypeBeanDao.Properties.StudentId.eq(userId);
         return mDbController;
     }
@@ -82,7 +83,7 @@ public class PaperTypeDaoManager {
     public List<PaperTypeBean> queryAllByCourse(String course,int page, int pageSize){
         WhereCondition whereCondition1= PaperTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition1)
-                .offset((page-1)*pageSize).limit(pageSize).orderDesc(PaperTypeBeanDao.Properties.CreateStatus)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(PaperTypeBeanDao.Properties.CreateStatus).orderDesc(PaperTypeBeanDao.Properties.AutoState)
                 .build().list();
     }
 

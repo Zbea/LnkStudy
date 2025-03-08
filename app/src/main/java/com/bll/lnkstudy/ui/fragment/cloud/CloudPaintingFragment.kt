@@ -142,7 +142,6 @@ class CloudPaintingFragment : BaseCloudFragment() {
     }
 
     override fun onCloudList(cloudList: CloudList) {
-        setPageNumber(cloudList.total)
         paintings.clear()
         for (item in cloudList.list){
             val paintingBean= Gson().fromJson(item.listJson, PaintingBean::class.java)
@@ -151,6 +150,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
             paintings.add(paintingBean)
         }
         mAdapter?.setNewData(paintings)
+        setPageNumber(cloudList.total)
     }
 
     override fun onCloudDelete() {

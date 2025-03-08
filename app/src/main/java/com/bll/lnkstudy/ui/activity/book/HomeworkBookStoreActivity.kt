@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.activity.book
 
 import android.os.Handler
-import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
@@ -27,7 +26,6 @@ import kotlinx.android.synthetic.main.dialog_book_detail.tv_course
 import kotlinx.android.synthetic.main.dialog_book_detail.tv_info
 import kotlinx.android.synthetic.main.dialog_book_detail.tv_price
 import kotlinx.android.synthetic.main.dialog_book_detail.tv_version
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
 
@@ -176,8 +174,8 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                 disMissView(btn_ok)
 
                 Handler().postDelayed({
-                    EventBus.getDefault().post(Constants.HOMEWORK_BOOK_EVENT)
                     showToast(book.bookName+getString(R.string.book_download_success))
+                    finish()
                 },500)
 
                 hideLoading()

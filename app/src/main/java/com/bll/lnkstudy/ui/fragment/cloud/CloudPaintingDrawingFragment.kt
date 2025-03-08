@@ -200,9 +200,9 @@ class CloudPaintingDrawingFragment : BaseCloudFragment() {
     }
 
     override fun onCloudList(item: CloudList) {
-        setPageNumber(item.total)
         cloudLists=item.list
         mLocalAdapter?.setNewData(cloudLists)
+        setPageNumber(item.total)
     }
 
     override fun onCloudDelete() {

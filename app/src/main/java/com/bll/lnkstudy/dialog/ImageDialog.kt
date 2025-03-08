@@ -72,7 +72,7 @@ class ImageDialog(val context: Context,private val screenPos:Int, private val im
     private fun setChange(){
         if (bgRes.isNotEmpty())
             ivBgImage?.setBackgroundResource(ToolUtils.getImageResId(context,bgRes[page]))
-        GlideUtils.setImageUrl(context,images[page],ivImage)
+        GlideUtils.setImageCacheUrl(context,images[page],ivImage)
         tvPage?.text="${page+1}/${total+1}"
     }
 

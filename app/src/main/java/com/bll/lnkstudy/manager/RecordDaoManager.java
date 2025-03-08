@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.manager;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.RecordBeanDao;
@@ -42,7 +43,7 @@ public class RecordDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= RecordBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
@@ -57,20 +58,9 @@ public class RecordDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    /**
-     * 随笔录音
-     * @return
-     */
-    public List<RecordBean> queryAllRecord() {
-        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(0);
-        return recordBeanDao.queryBuilder().where(whereUser,whereCondition1)
-                .orderDesc(RecordBeanDao.Properties.Date).build().list();
-    }
-
-    public List<RecordBean> queryAllRecord(int page, int pageSize) {
-        WhereCondition whereCondition1=RecordBeanDao.Properties.TypeId.eq(0);
-        return recordBeanDao.queryBuilder().where(whereUser,whereCondition1)
-                .orderDesc(RecordBeanDao.Properties.Date).offset((page-1)*pageSize).limit(pageSize).build().list();
+    public RecordBean queryByContendId(int contendId) {
+        WhereCondition whereCondition=RecordBeanDao.Properties.ContendId.eq(contendId);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
     /**
@@ -82,7 +72,8 @@ public class RecordDaoManager {
     public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);
-        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+        WhereCondition whereCondition2=RecordBeanDao.Properties.IsHomework.eq(false);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2)
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
     }
 
@@ -95,7 +86,8 @@ public class RecordDaoManager {
     public List<RecordBean> queryAllByCourse(String course,int typeId,int page, int pageSize) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);
-        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+        WhereCondition whereCondition2=RecordBeanDao.Properties.IsHomework.eq(false);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2)
                 .orderDesc(RecordBeanDao.Properties.Date).offset((page-1)*pageSize).limit(pageSize).build().list();
     }
 

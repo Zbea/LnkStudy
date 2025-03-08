@@ -246,7 +246,6 @@ class CloudTextbookFragment:BaseCloudFragment() {
     }
 
     override fun onCloudList(cloudListBean: CloudList) {
-        setPageNumber(cloudListBean.total)
         books.clear()
         for (item in cloudListBean.list){
             val bookBean= Gson().fromJson(item.listJson, TextbookBean::class.java)
@@ -256,6 +255,7 @@ class CloudTextbookFragment:BaseCloudFragment() {
             books.add(bookBean)
         }
         mAdapter?.setNewData(books)
+        setPageNumber(cloudListBean.total)
     }
 
     override fun onCloudDelete() {

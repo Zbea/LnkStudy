@@ -118,7 +118,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page)
                     }
                     2,6->{
-                        MethodManager.gotoHomeworkDrawing(this, typeItem, Constants.DEFAULT_PAGE)
+                        MethodManager.gotoHomeworkDrawing(this, typeItem, item.page,Constants.DEFAULT_PAGE)
                     }
                     3->{
                         MethodManager.gotoHomeworkRecord(this,typeItem)

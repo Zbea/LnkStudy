@@ -12,6 +12,9 @@ import com.bll.lnkstudy.ui.adapter.HomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import kotlinx.android.synthetic.main.ac_list.rv_list
 
+/**
+ * 主页作业通知
+ */
 class HomeworkNoticeListActivity:BaseAppCompatActivity(),IContractView.IHomeworkNoticeView {
 
     private lateinit var mPresenter:HomeworkNoticePresenter

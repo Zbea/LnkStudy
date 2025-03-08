@@ -60,8 +60,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var book: HomeworkBookBean? = null
     private var catalogMsg: CatalogMsg? = null
     private var catalogs = mutableListOf<MultiItemEntity>()
-    private var parentItems = mutableListOf<CatalogParent>()
-    private var childItems = mutableListOf<CatalogChild>()
     private var startCount=0
     private var page = 0 //当前页码
     private var bookId=0
@@ -121,9 +119,9 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 val list = homeworkType?.messages
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
-                        if (item.endTime > 0 && item.status == 3) {
+                        if (item.submitState==0&& item.status == 3) {
                             messages.add(ItemList().apply {
-                                id=item.studentTaskId
+                                id=item.contendId
                                 name=item.title
                                 isSelfCorrect=item.selfBatchStatus==1
                             })
@@ -137,7 +135,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     for (item in list) {
                         if (item.endTime > 0 && item.status == 1) {
                             messages.add(ItemList().apply {
-                                id=item.id
+                                id=item.contendId
                                 name=item.title
                             })
                         }
@@ -166,9 +164,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                         catalogChild.pageNumber = ite.pageNumber
                         catalogChild.picName = ite.picName
                         catalogParent.addSubItem(catalogChild)
-                        childItems.add(catalogChild)
                     }
-                    parentItems.add(catalogParent)
                     catalogs.add(catalogParent)
                 }
                 pageCount =  catalogMsg?.totalCount!!
@@ -188,8 +184,10 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         }
 
         iv_btn.setOnClickListener {
-            if (messages.size==0)
+            if (messages.size==0){
+                showToast("老师暂无布置作业,无法提交")
                 return@setOnClickListener
+            }
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
             if (correctBean!=null&&correctBean.state==1&&!correctBean.commitJson.isNullOrEmpty()){
                 val item=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
@@ -201,7 +199,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 commit()
             }
             else {
-                showToast("网络连接失败")
+                showToast("网络连接失败，无法提交")
             }
         }
 
@@ -403,7 +401,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             homeworkCommitInfoItem=it
             if (homeworkCommitInfoItem?.isSelfCorrect==true){
                 for (item in homeworkType?.messages!!){
-                    if(homeworkCommitInfoItem?.messageId==item.studentTaskId){
+                    if(homeworkCommitInfoItem?.messageId==item.contendId){
                         homeworkCommitInfoItem?.correctJson=item.question
                         homeworkCommitInfoItem?.correctMode=item.questionType
                         homeworkCommitInfoItem?.scoreMode=item.questionMode

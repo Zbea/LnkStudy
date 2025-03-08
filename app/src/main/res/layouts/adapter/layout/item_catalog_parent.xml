@@ -32,7 +32,7 @@
         android:layout_height="@dimen/dp_40"
         android:scaleType="centerInside"
         android:src="@mipmap/icon_setting_edit"
-        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_10"
         android:padding="@dimen/dp_5"
         android:visibility="gone"
         android:background="@drawable/click_btn_transparent_line_black"

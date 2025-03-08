@@ -10,11 +10,11 @@ class MyWallpaperAdapter(layoutResId: Int, data: List<PaintingBean>?) : BaseQuic
 
     override fun convert(helper: BaseViewHolder, item: PaintingBean) {
         helper.apply {
-            setText(R.id.tv_name,item.title)
-            GlideUtils.setImageRoundUrl(mContext,item.paths[0],getView(R.id.iv_image),5)
-            setChecked(R.id.cb_left,item.isLeft)
-            setChecked(R.id.cb_right,item.isRight)
-            addOnClickListener(R.id.cb_left,R.id.cb_right)
+            setText(R.id.cb_check,"  "+item.title)
+            setChecked(R.id.cb_check,item.isCheck)
+            GlideUtils.setImageRoundUrl(mContext,item.paths[0],getView(R.id.iv_image_left),8)
+            GlideUtils.setImageRoundUrl(mContext,item.paths[1],getView(R.id.iv_image_right),8)
+            addOnClickListener(R.id.cb_check)
         }
     }
 

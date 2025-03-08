@@ -3,18 +3,19 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.Constants.Companion.RESULT_10001
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
-import com.bll.lnkstudy.dialog.DrawingCommitDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
@@ -42,6 +43,7 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Collections
 
@@ -55,13 +57,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
     private var homeworkType: HomeworkTypeBean? = null
+    private var isHomework=false//false本地作业 true老师布置作业
+    private var itemMessageBean:ItemList?=null
     private var homeworkContent: HomeworkContentBean? = null//当前作业内容
     private var homeworkContent_a: HomeworkContentBean? = null//a屏作业
-
     private var homeworks = mutableListOf<HomeworkContentBean>() //所有作业内容
-
     private var page = 0//页码
-    private var messages = mutableListOf<ItemList>()
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem? = null
     private val commitItems = mutableListOf<ItemList>()
     private var takeTime=0L
@@ -77,15 +78,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 override fun onUploadSuccess(urls: List<String>) {
                     val map = HashMap<String, Any>()
                     if (homeworkType?.createStatus == 2) {
-                        map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
+                        map["studentTaskId"] = itemMessageBean?.id!!
                         map["studentUrl"] = ToolUtils.getImagesStr(urls)
-                        map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
+                        map["commonTypeId"] = itemMessageBean?.typeId!!
                         map["takeTime"]=takeTime
                         mUploadPresenter.commit(map)
                     } else {
-                        map["id"] = homeworkCommitInfoItem?.messageId!!
+                        map["id"] = itemMessageBean?.id!!
                         map["submitUrl"] = ToolUtils.getImagesStr(urls)
-                        map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
+                        map["commonTypeId"] = itemMessageBean?.typeId!!
                         mUploadPresenter.commitParent(map)
                     }
                 }
@@ -99,19 +100,18 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun onCommitSuccess() {
-        showToast(R.string.toast_commit_success)
-        messages.removeAt(homeworkCommitInfoItem?.index!!)
-        for (index in homeworkCommitInfoItem?.contents!!) {
-            val homework = homeworks[index]
-            homework.state = 1
-            homework.typeId=homeworkCommitInfoItem?.typeId
-            homework.title = homeworkCommitInfoItem?.title
-            homework.contentId = homeworkCommitInfoItem?.messageId!!
-            homework.commitDate = System.currentTimeMillis()
+        showToast(if (itemMessageBean?.submitState==0)"作业提交成功" else "作业已完成")
+        val localHomeworks=HomeworkContentDaoManager.getInstance().queryAllByLocalContent(course, homeworkTypeId)
+        for (homework in homeworks) {
+            if (itemMessageBean?.submitState==1)
+                homework.title=itemMessageBean?.name//不提交成功后改标题
+            homework.isHomework=false//提交成功后改变作业为本地
+            homework.page=localHomeworks.size+homeworks.indexOf(homework)//改变本地页码
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
             refreshDataUpdate(homework)
         }
-        onContent()
+        EventBus.getDefault().post(Constants.HOMEWORK_MESSAGE_COMMIT_EVENT)
+        finish()
     }
 
     override fun layoutId(): Int {
@@ -120,45 +120,42 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun initData() {
         initChangeScreenData()
-        val bundle = intent.getBundleExtra("homeworkBundle")
-        homeworkType = bundle?.getSerializable("homework") as HomeworkTypeBean
+        homeworkType = MethodManager.getHomeworkTypeBundle(intent)
+        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
+        isHomework=index>=0
         page = intent.getIntExtra("page", DEFAULT_PAGE)
         homeworkTypeId =homeworkType?.typeId!!
         course = homeworkType?.course!!
+        if (isHomework){
+            when (homeworkType?.createStatus) {
+                2 -> {
+                    val item=homeworkType!!.messages[index]
+                    itemMessageBean=ItemList().apply {
+                        id =item.contendId
+                        name = item.title
+                        typeId=item.typeId
+                        isSelfCorrect=item.selfBatchStatus==1
+                        question=item.question
+                        questionType=item.questionType
+                        questionMode=item.questionMode
+                        answerUrl=item.answerUrl
+                        submitState=item.submitState
+                    }
+                }
+                1 -> {
+                    val item =homeworkType!!.parents[index]
+                    itemMessageBean=ItemList().apply {
+                        id = item.contendId
+                        name = item.title
+                        typeId=item.typeId
+                    }
+                }
+            }
 
-        when (homeworkType?.createStatus) {
-            2 -> {
-                val list = homeworkType?.messages
-                if (!list.isNullOrEmpty()) {
-                    for (item in list) {
-                        if (item.endTime > 0 && item.status == 3) {
-                            messages.add(ItemList().apply {
-                                id = item.studentTaskId
-                                name = item.title
-                                isSelfCorrect=item.selfBatchStatus==1
-                                typeId=item.typeId
-                            })
-                        }
-                    }
-                }
-            }
-            1 -> {
-                val list = homeworkType?.parents
-                if (!list.isNullOrEmpty()) {
-                    for (item in list) {
-                        if (item.endTime > 0 && item.status == 1) {
-                            messages.add(ItemList().apply {
-                                id = item.id
-                                name = item.title
-                                typeId=item.typeId
-                            })
-                        }
-                    }
-                }
-            }
+            homeworks =  HomeworkContentDaoManager.getInstance().queryAllByContentId(homeworkTypeId,itemMessageBean?.id!!)
+        } else{
+            homeworks =  HomeworkContentDaoManager.getInstance().queryAllByLocalContent(course, homeworkTypeId)
         }
-
-        homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(course, homeworkTypeId)
 
         if (homeworks.size > 0) {
             if (page == DEFAULT_PAGE)
@@ -176,23 +173,31 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun initView() {
         //云书库没有提交按钮
-        if (homeworkType?.isCloud!!){
+        if (homeworkType?.isCloud!!||!isHomework){
             disMissView(iv_btn)
         }
 
         iv_btn.setOnClickListener {
-            if (messages.size == 0)
-                return@setOnClickListener
-            //开启自批
-            if (homeworkContent?.isSelfCorrect==true && homeworkContent?.state==1&&!homeworkContent?.commitJson.isNullOrEmpty()){
+            if (getSelfCorrect()){
                 homeworkCommitInfoItem=Gson().fromJson(homeworkContent?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
                 return@setOnClickListener
             }
             if (NetworkUtil(this).isNetworkConnected()) {
-                commit()
+                showLoading()
+                if (itemMessageBean?.submitState==0){
+                    Handler().postDelayed({
+                        commit()
+                    },500)
+                }
+                else{
+                    //不提交作业直接完成
+                    val map = HashMap<String, Any>()
+                        map["studentTaskId"] = itemMessageBean?.id!!
+                        mUploadPresenter.commitHomework(map)
+                }
             } else {
-                showToast("网络连接失败")
+                showToast("网络连接失败，无法提交")
             }
         }
 
@@ -306,6 +311,13 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         return File(contentBean.path).exists()
     }
 
+    /**
+     * 获取当前作业是否处于已提交自批状态
+     */
+    private fun getSelfCorrect():Boolean{
+        return itemMessageBean?.isSelfCorrect == true &&homeworkContent?.state==1 && !homeworkContent?.commitJson.isNullOrEmpty()
+    }
+
     override fun onContent() {
         homeworkContent = homeworks[page]
         if (isExpand)
@@ -314,7 +326,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         tv_page_total.text="${homeworks.size}"
         tv_page_total_a.text="${homeworks.size}"
 
-        if (homeworkContent?.isSelfCorrect == true &&homeworkContent?.state==1 && !homeworkContent?.commitJson.isNullOrEmpty()){
+        if (getSelfCorrect()){
             showToast("请及时自批改后提交")
         }
 
@@ -326,7 +338,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 MethodManager.setImageResource(this,ToolUtils.getImageResId(this, homeworkType?.contentResId),v_content_b)
             }
             else->{
-                GlideUtils.setImageUrl(this, homeworkContent?.path, v_content_b,homeworkContent?.state!!)
+                GlideUtils.setImageCacheUrl(this, homeworkContent?.path, v_content_b,homeworkContent?.state!!)
                 val file=File(homeworkContent?.path)
                 val drawPath=file.parent+"/draw.png"
                 setElikLoadPath(elik_b!!, drawPath)
@@ -342,7 +354,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     MethodManager.setImageResource(this,ToolUtils.getImageResId(this, homeworkType?.contentResId),v_content_a)
                 }
                 else->{
-                    GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
+                    GlideUtils.setImageCacheUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
                     val file=File(homeworkContent_a?.path)
                     val drawPath=file.parent+"/draw.png"
                     setElikLoadPath(elik_b!!, drawPath)
@@ -397,10 +409,27 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun onElikSava_a() {
+//        if (isHomework){
+//            Thread {
+//                BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page+1))
+//            }.start()
+//        }
         refreshDataUpdate(homeworkContent_a!!)
     }
 
     override fun onElikSava_b() {
+//        if (isHomework){
+//            if (isExpand){
+//                Thread {
+//                    BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1+1))
+//                }.start()
+//            }
+//            else{
+//                Thread {
+//                    BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
+//                }.start()
+//            }
+//        }
         refreshDataUpdate(homeworkContent!!)
     }
 
@@ -423,8 +452,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //创建新的作业内容
     private fun newHomeWorkContent() {
-        val path = FileAddress().getPathHomework(course, homeworkTypeId, homeworks.size+1)
         val currentTime=System.currentTimeMillis()
+        val contendId=if (isHomework) itemMessageBean?.id else ToolUtils.getDateId()
+        val path = if (isHomework)FileAddress().getPathHomework(course, homeworkTypeId, contendId,homeworks.size+1) else FileAddress().getPathHomework(course, homeworkTypeId, contendId)
 
         homeworkContent = HomeworkContentBean()
         homeworkContent?.course = course
@@ -433,11 +463,15 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkContent?.typeName = homeworkType?.name
         homeworkContent?.title = getString(R.string.unnamed) + (homeworks.size + 1)
         homeworkContent?.path = "$path/${DateUtils.longToString(currentTime)}.png"
-        homeworkContent?.page = homeworks.size
         homeworkContent?.fromStatus=homeworkType?.fromStatus
-
+        homeworkContent?.isHomework=isHomework
+        if (isHomework){
+            homeworkContent?.contentId=contendId
+        }
+        else{
+            homeworkContent?.page=homeworks.size
+        }
         page = homeworks.size
-
         val id = HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContent)
         homeworkContent?.id = id
         homeworks.add(homeworkContent!!)
@@ -448,66 +482,69 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //作业提交
     private fun commit() {
-        DrawingCommitDialog(this, getCurrentScreenPos(),0,homeworks.last().page+1, messages).builder()
-            .setOnDialogClickListener {
-                homeworkCommitInfoItem = it
-                if (homeworkCommitInfoItem?.isSelfCorrect==true){
-                    for (item in homeworkType?.messages!!){
-                        if(homeworkCommitInfoItem?.messageId==item.studentTaskId){
-                            homeworkCommitInfoItem?.homeworkTypeId=homeworkTypeId
-                            homeworkCommitInfoItem?.correctJson=item.question
-                            homeworkCommitInfoItem?.correctMode=item.questionType
-                            homeworkCommitInfoItem?.scoreMode=item.questionMode
-                            homeworkCommitInfoItem?.answerUrl=item.answerUrl
-                            homeworkCommitInfoItem?.typeName=homeworkType?.name
-                            homeworkCommitInfoItem?.course=homeworkType?.course
-                            homeworkCommitInfoItem?.state=homeworkType?.state
-                            homeworkCommitInfoItem?.createStatus=homeworkType?.createStatus
-                        }
+        setDisableTouchInput(true)
+        commitItems.clear()
+        if (itemMessageBean?.isSelfCorrect==true){
+            homeworkCommitInfoItem=HomeworkCommitInfoItem()
+            homeworkCommitInfoItem?.homeworkTypeId=homeworkTypeId
+            homeworkCommitInfoItem?.typeName=homeworkType?.name
+            homeworkCommitInfoItem?.course=homeworkType?.course
+            homeworkCommitInfoItem?.state=homeworkType?.state
+            homeworkCommitInfoItem?.createStatus=homeworkType?.createStatus
+            homeworkCommitInfoItem?.messageId=itemMessageBean?.id
+            homeworkCommitInfoItem?.typeId=itemMessageBean?.typeId
+            homeworkCommitInfoItem?.correctJson=itemMessageBean?.question
+            homeworkCommitInfoItem?.correctMode=itemMessageBean?.questionType
+            homeworkCommitInfoItem?.scoreMode=itemMessageBean?.questionMode
+            homeworkCommitInfoItem?.answerUrl=itemMessageBean?.answerUrl
+        }
+        for (homework in homeworks) {
+            if (itemMessageBean?.isSelfCorrect==true){
+                homeworkCommitInfoItem?.paths?.add(homework.path)
+                homework.commitJson=Gson().toJson(homeworkCommitInfoItem)
+            }
+            //提交后改变作业状态以及标题
+            homework.title=itemMessageBean?.name
+            homework.state=1
+            HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
+            refreshDataUpdate(homework)
+
+            //异步合图后排序
+            Thread {
+                val path = saveImage(homework)
+                commitItems.add(ItemList().apply {
+                    id = homeworks.indexOf(homework)
+                    url = path
+                })
+                if (commitItems.size == homeworks.size) {
+                    takeTime=getTakeTime()
+                    homeworkCommitInfoItem?.takeTime=takeTime
+                    if (itemMessageBean?.isSelfCorrect == true){
+                        gotoSelfCorrect()
+                    }
+                    else{
+                        commitItems.sort()
+                        mUploadPresenter.getToken()
                     }
                 }
-                showLoading()
-                commitItems.clear()
-                for (index in homeworkCommitInfoItem?.contents!!) {
-                    val homework = homeworks[index]
-                    homeworkCommitInfoItem?.paths?.add(homework.path)
-                    //异步合图后排序
-                    Thread {
-                        val path = saveImage(homework)
-                        commitItems.add(ItemList().apply {
-                            id = index
-                            url = path
-                        })
-                        if (commitItems.size == homeworkCommitInfoItem?.contents!!.size) {
-                            takeTime=System.currentTimeMillis()-getStartTime(homeworkCommitInfoItem?.contents!!)
-                            homeworkCommitInfoItem?.takeTime=takeTime
-                            if (homeworkCommitInfoItem?.isSelfCorrect == true){
-                                gotoSelfCorrect()
-                            }
-                            else{
-                                commitItems.sort()
-                                mUploadPresenter.getToken()
-                            }
-                        }
-                    }.start()
-                }
-            }
+            }.start()
+        }
     }
 
     /**
-     * 获取开始时间
+     * 获取用时
      */
-    private fun getStartTime(pages:List<Int>):Long{
+    private fun getTakeTime():Long{
         val times = mutableListOf<Long>()
-        for (page in pages){
-            if (homeworks[page].startDate>0){
-                times.add(homeworks[page].startDate)
+        for (homework in homeworks){
+            if (homework.startDate>0){
+                times.add(homework.startDate)
             }
         }
         if (times.size==0){
             return 0
         }
-        return Collections.min(times)
+        return System.currentTimeMillis()-Collections.min(times)
     }
 
     /**
@@ -515,22 +552,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private fun gotoSelfCorrect(){
         hideLoading()
-        for (index  in homeworkCommitInfoItem?.contents!!){
-            val homework=homeworks[index]
-            if (!homework.isSelfCorrect){
-                homework.commitJson=Gson().toJson(homeworkCommitInfoItem)
-                homework.state=1
-                homework.isSelfCorrect=true
-                homework.contentId=homeworkCommitInfoItem?.messageId!!
-                homework.answerUrl=homeworkCommitInfoItem?.answerUrl
-                homework.scoreMode=homeworkCommitInfoItem?.scoreMode!!
-                homework.correctMode=homeworkCommitInfoItem?.correctMode!!
-                HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-
-                refreshDataUpdate(homework)
-            }
-        }
-
         val intent = Intent(this, CorrectActivity::class.java)
         val bundle = Bundle()
         bundle.putSerializable("homeworkCommit", homeworkCommitInfoItem)
@@ -538,8 +559,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.putExtra("android.intent.extra.KEEP_FOCUS", true)
         activityResultLauncher.launch(intent)
-
     }
+
+
 
     /**
      * 刷新增量更新
@@ -552,10 +574,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
      * 开始通知回调
      */
     private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        if (it.resultCode==10001){
-            messages.removeIf{item->item.id==homeworkCommitInfoItem?.messageId}
-            homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(course, homeworkTypeId)
-            onContent()
+        if (it.resultCode== RESULT_10001){
+            finish()
         }
     }
 
@@ -573,6 +593,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (drawBitmap != null) {
             val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
             BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
+        }
+        else{
+            BitmapUtils.saveBmpGallery(this,oldBitmap,drawPath)
         }
         return drawPath
     }

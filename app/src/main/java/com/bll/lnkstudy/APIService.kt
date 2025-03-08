@@ -270,6 +270,11 @@ interface APIService{
     @POST("student/task/pushExamWork")
     fun commitPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 学生完成不提交作业
+     */
+    @POST("student/task/updateStatus")
+    fun commitHomework(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 学生提交年级考卷
      */
     @POST("student/task/pushGradeExam")

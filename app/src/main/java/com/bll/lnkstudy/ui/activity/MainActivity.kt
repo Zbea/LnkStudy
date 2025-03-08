@@ -313,7 +313,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年8月25 9点执行
+     * 每年8月31 13点执行
      */
     private fun startRemind9Month() {
         val allDay = if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
@@ -323,7 +323,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 7)
-            set(Calendar.DAY_OF_MONTH, 30)
+            set(Calendar.DAY_OF_MONTH, 31)
             set(Calendar.HOUR_OF_DAY, 13)
             set(Calendar.MINUTE, 10)
             set(Calendar.SECOND, 0)
@@ -348,7 +348,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     /**
-     * 每年1月初10 9点执行
+     * 每年1月初10 13点执行
      */
     private fun startRemind1Month() {
         val allDay = if (DateUtils().isYear(DateUtils.getYear())) 366 else 365

@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.manager;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.HomeworkPaperBeanDao;
@@ -43,7 +44,7 @@ public class HomeworkTypeDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= HomeworkTypeBeanDao.Properties.StudentId.eq(userId);
         return mDbController;
     }
@@ -120,7 +121,7 @@ public class HomeworkTypeDaoManager {
     public List<HomeworkTypeBean> queryAllByCourse(String course,int page, int pageSize) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition)
-                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.CreateStatus).orderAsc(HomeworkTypeBeanDao.Properties.Date)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.CreateStatus).orderDesc(HomeworkTypeBeanDao.Properties.AutoState).orderAsc(HomeworkTypeBeanDao.Properties.Date)
                 .build().list();
     }
 

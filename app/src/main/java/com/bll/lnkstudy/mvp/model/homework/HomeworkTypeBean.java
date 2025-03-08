@@ -2,8 +2,7 @@ package com.bll.lnkstudy.mvp.model.homework;
 
 import androidx.annotation.Nullable;
 
-import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.utils.SPUtil;
+import com.bll.lnkstudy.MethodManager;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -26,7 +25,7 @@ public class HomeworkTypeBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long studentId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long studentId = MethodManager.getAccountId();
     @SerializedName("userId")
     public Long teacherId;
     public String teacher;
@@ -61,7 +60,7 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public List<HomeworkMessageList.MessageBean> messages;
     @Transient
-    public List<ParentHomeworkMessageList.ParentHomeworkBean> parents;
+    public List<ParentHomeworkMessageList.ParentMessageBean> parents;
 
     @Generated(hash = 1072702211)
     public HomeworkTypeBean(Long id, long studentId, Long teacherId, String teacher, String name, int grade, int typeId, int state, long date, String contentResId,

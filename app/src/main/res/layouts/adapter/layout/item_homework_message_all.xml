@@ -1,47 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="90dp"
     android:gravity="center_vertical"
+    android:background="@drawable/bg_line_bottom"
     >
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/tv_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/tv_correct"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_correct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:textSize="@dimen/sp_24"
+            android:text="自批"
+            android:visibility="gone"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tv_assign_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:text="自批"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black" />
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:gravity="center" />
-
-    <TextView
-        android:id="@+id/tv_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:gravity="center"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black" />
-
+        <TextView
+            android:id="@+id/tv_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black" />
+    </LinearLayout>
 
 </LinearLayout>

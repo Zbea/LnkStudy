@@ -3,14 +3,23 @@ package com.bll.lnkstudy.ui.activity
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList.MessageBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_record.et_title
 import kotlinx.android.synthetic.main.ac_record.iv_play
@@ -21,15 +30,18 @@ import kotlinx.android.synthetic.main.ac_record.ll_record_play
 import kotlinx.android.synthetic.main.ac_record.ll_record_stop
 import kotlinx.android.synthetic.main.ac_record.tv_play
 import kotlinx.android.synthetic.main.ac_record.tv_time
-import kotlinx.android.synthetic.main.common_title.iv_back
 import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Timer
 import java.util.TimerTask
 
-class RecordActivity : BaseAppCompatActivity() {
+class RecordActivity : BaseAppCompatActivity(), IContractView.IFileUploadView {
 
+    private lateinit var mUploadPresenter: FileUploadPresenter
+    private var homeworkType: HomeworkTypeBean? = null
+    private var isHomework=false
+    private var messageBean:MessageBean?=null
     //语音文件保存路径
     private var pathFile: String? = null
     //语音操作对象
@@ -39,27 +51,85 @@ class RecordActivity : BaseAppCompatActivity() {
     private var isSave=false
     private var second=0
     private var timer: Timer?=null
+    private var commitPaths= mutableListOf<String>()
+
+    override fun onToken(token: String) {
+        showLoading()
+        FileImageUploadManager(token,commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    val map= HashMap<String, Any>()
+                    map["studentTaskId"]=messageBean?.contendId!!
+                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    map["commonTypeId"] = messageBean?.typeId!!
+                    mUploadPresenter.commit(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast(R.string.upload_fail)
+                }
+            })
+        }
+    }
+
+    override fun onCommitSuccess() {
+        showToast(R.string.toast_commit_success)
+        recordBean?.isHomework=false
+        val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+        //创建增量数据
+        DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.homeworkTypeId!!,3,Gson().toJson(recordBean),pathFile!!)
+        EventBus.getDefault().post(Constants.HOMEWORK_MESSAGE_COMMIT_EVENT)
+        finish()
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_record
     }
 
     override fun initData() {
-        recordBean = intent.getBundleExtra("recordBundle")?.getSerializable("record") as RecordBean
-        val path=FileAddress().getPathHomework(recordBean?.course!!,recordBean?.homeworkTypeId!!)
-        if (!File(path).exists())
-            File(path).mkdirs()
-        pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
+        initChangeScreenData()
+        homeworkType = MethodManager.getHomeworkTypeBundle(intent)
+        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
+        isHomework=index>=0
+        if (isHomework){
+            messageBean=homeworkType?.messages!![index]
+            recordBean=RecordDaoManager.getInstance().queryByContendId(messageBean?.contendId!!)
+        }
+
+        if (recordBean!=null){
+            pathFile=recordBean?.path
+            second= recordBean?.second!!
+        }
+        else{
+            val time = System.currentTimeMillis()
+            recordBean = RecordBean()
+            recordBean?.date = time
+            recordBean?.course = homeworkType?.course!!
+            recordBean?.homeworkTypeId=homeworkType?.typeId!!
+            recordBean?.typeName=homeworkType?.name
+            if (isHomework){
+                recordBean?.isHomework=true
+                recordBean?.title=messageBean?.title
+                recordBean?.contendId= messageBean?.contendId
+            }
+            val path=FileAddress().getPathHomework(recordBean?.course!!,recordBean?.homeworkTypeId!!)
+            if (!File(path).exists())
+                File(path).mkdirs()
+            pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
+            recordBean?.path=pathFile
+        }
+    }
+
+    override fun initChangeScreenData() {
+        mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
         setPageTitle(R.string.record_title_str)
-        setPageSetting(R.string.save)
-
-        iv_back?.setOnClickListener {
-            finish()
-            FileUtils.deleteFile(File(pathFile))
-        }
+        setPageSetting(if (isHomework) "提交" else "保存")
+        et_title.setText(recordBean?.title)
+        tv_time.text= DateUtils.secondToString(second)
 
         tv_setting?.setOnClickListener {
             hideKeyboard()
@@ -73,15 +143,32 @@ class RecordActivity : BaseAppCompatActivity() {
                 return@setOnClickListener
             }
 
-            isSave=true
-            recordBean?.title=title
-            recordBean?.path = pathFile
-            val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
-            //创建增量数据
-            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.homeworkTypeId!!,3,Gson().toJson(recordBean),pathFile!!)
-
-            EventBus.getDefault().post(Constants.RECORD_EVENT)
-            finish()
+            if (isHomework){
+                if (NetworkUtil(this).isNetworkConnected()) {
+                    showLoading()
+                    if (messageBean?.submitState==0){
+                        commitPaths.add(pathFile!!)
+                        mUploadPresenter.getToken()
+                    }
+                    else{
+                        //不提交作业直接完成
+                        val map = HashMap<String, Any>()
+                        map["studentTaskId"] = messageBean?.contendId!!
+                        mUploadPresenter.commitHomework(map)
+                    }
+                } else {
+                    showToast("网络连接失败，无法提交")
+                }
+            }
+            else{
+                isSave=true
+                recordBean?.title=title
+                val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+                //创建增量数据
+                DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.homeworkTypeId!!,3,Gson().toJson(recordBean),pathFile!!)
+                EventBus.getDefault().post(Constants.RECORD_EVENT)
+                finish()
+            }
         }
 
         ll_record.setOnClickListener {
@@ -232,9 +319,17 @@ class RecordActivity : BaseAppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //未保存清理掉录音原件
-        if (!isSave){
-            FileUtils.deleteFile(File(pathFile))
+        if (isHomework){
+            if (FileUtils.isExist(pathFile)){
+                val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+                //创建增量数据
+                DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean?.homeworkTypeId!!,3,Gson().toJson(recordBean),pathFile!!)
+            }
+        }
+        else{
+            if (!isSave){
+                FileUtils.deleteFile(File(pathFile))
+            }
         }
         timer?.cancel()
         releaseRecorder()

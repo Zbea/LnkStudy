@@ -89,8 +89,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <include
-        layout="@layout/common_page_number"
+    <include layout="@layout/common_page_number"
+        android:visibility="invisible"
         />
 
 </LinearLayout>

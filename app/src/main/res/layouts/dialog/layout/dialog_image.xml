@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="800dp"
-    android:layout_height="1000dp"
+    android:layout_height="1100dp"
     android:background="@drawable/dialog_bg"
     android:orientation="vertical"
     android:padding="10dp">
@@ -16,7 +16,7 @@
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
         android:layout_marginBottom="@dimen/dp_45"/>
 
     <ImageView
@@ -37,7 +37,6 @@
         android:id="@+id/rl_page"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
-        android:visibility="gone"
         android:layout_alignParentBottom="true">
 
         <ImageView

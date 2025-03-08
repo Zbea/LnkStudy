@@ -46,6 +46,7 @@
         android:layout_weight="1"/>
 
     <include layout="@layout/common_page_number"
+        android:visibility="invisible"
         />
 
 </LinearLayout>

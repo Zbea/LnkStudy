@@ -31,17 +31,6 @@
             android:textSize="@dimen/sp_18"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_save"
-        android:layout_width="100dp"
-        android:layout_height="@dimen/dp_40"
-        android:gravity="center"
-        android:text="@string/commit"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_24"
-        android:background="@drawable/click_btn_transparent_line_black"
-        />
-
     <ImageView
         android:id="@+id/iv_record"
         android:layout_width="60dp"

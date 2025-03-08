@@ -25,7 +25,8 @@
         />
 
     <include layout="@layout/common_page_number"
-        android:visibility="gone"/>
+        android:visibility="invisible"
+        />
 
 
 </LinearLayout>

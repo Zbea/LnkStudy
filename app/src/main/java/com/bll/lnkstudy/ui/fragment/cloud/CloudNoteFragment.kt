@@ -188,7 +188,6 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun onCloudList(cloudList: CloudList) {
-        setPageNumber(cloudList.total)
         notes.clear()
         for (item in cloudList.list){
             if (item.listJson.isNotEmpty()){
@@ -200,6 +199,7 @@ class CloudNoteFragment: BaseCloudFragment() {
             }
         }
         mAdapter?.setNewData(notes)
+        setPageNumber(cloudList.total)
     }
 
     override fun onCloudDelete() {

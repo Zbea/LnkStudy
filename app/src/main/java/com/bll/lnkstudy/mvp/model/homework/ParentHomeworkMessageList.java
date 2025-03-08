@@ -8,16 +8,18 @@ import java.util.List;
 public class ParentHomeworkMessageList implements Serializable {
 
     public int total;
-    public List<ParentHomeworkBean> list;
+    public List<ParentMessageBean> list;
 
-    public static class ParentHomeworkBean implements Serializable {
-        public int id;
+    public static class ParentMessageBean implements Serializable {
+        @SerializedName("id")
+        public int contendId;
         public String submitUrl;
         public String changeUrl;
         public int type;
         @SerializedName("parentHomeworkId")
         public int typeId;
         public String title;
+        public String createTime;
         public long endTime;
         public long submitTime;
         @SerializedName("name")
