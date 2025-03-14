@@ -8,14 +8,12 @@
     >
 
     <TextView
-        android:id="@+id/tv_selector"
+        android:id="@+id/tv_message_content"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_10"
-        android:drawableEnd="@mipmap/icon_arrow_right"
-        android:text="@string/homework_selector"
         android:lines="1"
         android:ellipsize="end"
         android:textSize="@dimen/sp_20"

@@ -115,17 +115,17 @@ class SearchActivity : BaseAppCompatActivity() {
                 }
                 when(typeItem.state){
                     1->{
-                        MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page)
+                        MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page,Constants.DEFAULT_PAGE)
                     }
                     2,6->{
                         MethodManager.gotoHomeworkDrawing(this, typeItem, item.page,Constants.DEFAULT_PAGE)
                     }
                     3->{
-                        MethodManager.gotoHomeworkRecord(this,typeItem)
+                        MethodManager.gotoHomeworkRecordList(this,typeItem)
                     }
                     4->{
                         val typeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(item.type)
-                        MethodManager.gotoHomeworkBookDetails(this,typeBean)
+                        MethodManager.gotoHomeworkBookDetails(this,typeBean,Constants.DEFAULT_PAGE)
                     }
                     5->{
                         customStartActivity(
@@ -199,6 +199,7 @@ class SearchActivity : BaseAppCompatActivity() {
             2->{
                 val homeworkContents= HomeworkContentDaoManager.getInstance().search(titleStr)
                 for (item in homeworkContents){
+                    val localContents=HomeworkContentDaoManager.getInstance().queryAllByLocalContent(item.course,item.homeworkTypeId)
                     searchBeans.add(SearchBean().apply {
                         category=2
                         title=item.title
@@ -207,12 +208,13 @@ class SearchActivity : BaseAppCompatActivity() {
                         createState=item.fromStatus
                         type=item.homeworkTypeId
                         typeStr=item.typeName
-                        page=item.page
+                        page=localContents.indexOf(item)
                     })
                 }
 
                 val paperContents= HomeworkPaperDaoManager.getInstance().search(titleStr)
                 for (item in paperContents){
+                    val localContents=HomeworkPaperDaoManager.getInstance().queryAllByLocal(item.course,item.homeworkTypeId)
                     searchBeans.add(SearchBean().apply {
                         category=2
                         title=item.title
@@ -220,7 +222,7 @@ class SearchActivity : BaseAppCompatActivity() {
                         type=item.homeworkTypeId
                         typeStr=item.typeName
                         course=item.course
-                        page=item.page
+                        page=localContents.indexOf(item)
                     })
                 }
 
@@ -253,25 +255,27 @@ class SearchActivity : BaseAppCompatActivity() {
             3->{
                 val paperContents= PaperDaoManager.getInstance().search(titleStr)
                 for (item in paperContents){
+                    val localContents=PaperDaoManager.getInstance().queryAll(item.title,item.paperTypeId)
                     searchBeans.add(SearchBean().apply {
                         category=3
                         title=item.title
                         type=item.paperTypeId
                         typeStr=item.typeName
                         course=item.course
-                        page=item.page
+                        page=localContents.indexOf(item)
                     })
                 }
             }
             4->{
                 val noteContents= NoteContentDaoManager.getInstance().search(titleStr)
                 for (item in noteContents){
+                    val localContents=NoteContentDaoManager.getInstance().queryAll(item.typeStr,item.noteTitle)
                     searchBeans.add(SearchBean().apply {
                         category=4
                         title=item.title
                         noteStr=item.noteTitle
                         typeStr=item.typeStr
-                        page=item.page
+                        page=localContents.indexOf(item)
                         grade=item.grade
                     })
                 }

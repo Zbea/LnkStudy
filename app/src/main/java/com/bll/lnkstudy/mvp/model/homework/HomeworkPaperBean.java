@@ -31,14 +31,15 @@ public class HomeworkPaperBean {
     public String typeName;//作业分组标题
     public String title;//这次作业标题
     public Long endTime=0L;//老师需要学生提交时间
-    public Long startTime=0L;
+    public Long startDate=0L;
+    public long date;
     public String filePath;//文件路径
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> drawPaths;
-    public int page;
     public int state;//提交状态0学生未提交1已提交未批改2已批改
+    public boolean isHomework;
     public int correctMode;//批改模式
     public double score;//成绩
     public String correctJson;//批改详情
@@ -46,11 +47,13 @@ public class HomeworkPaperBean {
     public int scoreMode;//打分模式1打分
     public String answerUrl;
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 917619588)
-    public HomeworkPaperBean(Long id, long userId, int contentId, String course, int homeworkTypeId,
-            int typeId, String typeName, String title, Long endTime, Long startTime, String filePath,
-            List<String> paths, List<String> drawPaths, int page, int state, int correctMode,
-            double score, String correctJson, boolean isSelfCorrect, int scoreMode, String answerUrl,
+    @Generated(hash = 542903672)
+    public HomeworkPaperBean(Long id, long userId, int contentId, String course,
+            int homeworkTypeId, int typeId, String typeName, String title,
+            Long endTime, Long startDate, long date, String filePath,
+            List<String> paths, List<String> drawPaths, int state,
+            boolean isHomework, int correctMode, double score, String correctJson,
+            boolean isSelfCorrect, int scoreMode, String answerUrl,
             String commitJson) {
         this.id = id;
         this.userId = userId;
@@ -61,12 +64,13 @@ public class HomeworkPaperBean {
         this.typeName = typeName;
         this.title = title;
         this.endTime = endTime;
-        this.startTime = startTime;
+        this.startDate = startDate;
+        this.date = date;
         this.filePath = filePath;
         this.paths = paths;
         this.drawPaths = drawPaths;
-        this.page = page;
         this.state = state;
+        this.isHomework = isHomework;
         this.correctMode = correctMode;
         this.score = score;
         this.correctJson = correctJson;
@@ -102,6 +106,12 @@ public class HomeworkPaperBean {
     public void setCourse(String course) {
         this.course = course;
     }
+    public int getHomeworkTypeId() {
+        return this.homeworkTypeId;
+    }
+    public void setHomeworkTypeId(int homeworkTypeId) {
+        this.homeworkTypeId = homeworkTypeId;
+    }
     public int getTypeId() {
         return this.typeId;
     }
@@ -126,11 +136,17 @@ public class HomeworkPaperBean {
     public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
-    public Long getStartTime() {
-        return this.startTime;
+    public Long getStartDate() {
+        return this.startDate;
     }
-    public void setStartTime(Long startTime) {
-        this.startTime = startTime;
+    public void setStartDate(Long startDate) {
+        this.startDate = startDate;
+    }
+    public long getDate() {
+        return this.date;
+    }
+    public void setDate(long date) {
+        this.date = date;
     }
     public String getFilePath() {
         return this.filePath;
@@ -150,17 +166,17 @@ public class HomeworkPaperBean {
     public void setDrawPaths(List<String> drawPaths) {
         this.drawPaths = drawPaths;
     }
-    public int getPage() {
-        return this.page;
-    }
-    public void setPage(int page) {
-        this.page = page;
-    }
     public int getState() {
         return this.state;
     }
     public void setState(int state) {
         this.state = state;
+    }
+    public boolean getIsHomework() {
+        return this.isHomework;
+    }
+    public void setIsHomework(boolean isHomework) {
+        this.isHomework = isHomework;
     }
     public int getCorrectMode() {
         return this.correctMode;
@@ -203,12 +219,6 @@ public class HomeworkPaperBean {
     }
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
-    }
-    public int getHomeworkTypeId() {
-        return this.homeworkTypeId;
-    }
-    public void setHomeworkTypeId(int homeworkTypeId) {
-        this.homeworkTypeId = homeworkTypeId;
     }
 
 }

@@ -45,7 +45,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(0,typeId)
 
         if (paintingLists.isNotEmpty()) {
-            paintingDrawingBean = paintingLists[paintingLists.size - 1]
+            paintingDrawingBean = paintingLists.last()
             page = paintingLists.size - 1
         } else {
             newPaintingContent()
@@ -100,7 +100,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         for (item in paintingLists){
             val itemList= ItemList()
             itemList.name=item.title
-            itemList.page=item.page
+            itemList.page=paintingLists.indexOf(item)
             itemList.isEdit=true
             if (titleStr != item.title) {
                 titleStr = item.title
@@ -253,7 +253,6 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.path = "$path/${DateUtils.longToString(date)}.png"
         paintingDrawingBean?.cloudId=typeId
         page = paintingLists.size
-        paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)
 
         val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)

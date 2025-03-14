@@ -75,6 +75,6 @@ class OperatingGuideActivity :BaseAppCompatActivity() {
         for (name in list){
             images.add(baseUrl+"${path}/"+name)
         }
-        GlideUtils.setImageCacheUrl(this,images[pageIndex-1],iv_content)
+        GlideUtils.setImageNoCacheUrl(this,images[pageIndex-1],iv_content)
     }
 }

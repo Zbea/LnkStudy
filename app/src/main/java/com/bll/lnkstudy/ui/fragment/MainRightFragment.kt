@@ -317,7 +317,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             findMessages()
             fetchExam()
             mMainPresenter.getTeacherCourse()

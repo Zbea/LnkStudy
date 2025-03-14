@@ -107,7 +107,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         gradeList = DataBeanManager.popupGradeThans(gradeId)
         subjectList = DataBeanManager.popupCourses
 
-        if (NetworkUtil(this).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             fetchData()
         }
     }

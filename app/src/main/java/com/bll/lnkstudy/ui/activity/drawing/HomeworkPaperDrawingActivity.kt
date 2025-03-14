@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -16,13 +17,13 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList.MessageBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
-import com.bll.lnkstudy.ui.activity.CorrectActivity
+import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
 import com.bll.lnkstudy.utils.BitmapUtils
-import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
@@ -41,6 +42,7 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
@@ -51,6 +53,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     private lateinit var mUploadPresenter:FileUploadPresenter
     private var homeworkType:HomeworkTypeBean?=null
+    private var isHomework=false
     private var course=""
     private var homeworkTypeId=0//分组id
     private var daoManager: HomeworkPaperDaoManager?=null
@@ -61,18 +64,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var oldPosition=-1
     private var page = 0//页码
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
-    private var takeTime=0L
 
     override fun onToken(token: String) {
-        FileImageUploadManager(token, getCommitPaths()).apply {
+        FileImageUploadManager(token, paper?.paths!!).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
-                    map["studentTaskId"]=paper?.contentId!!
+                    map["studentTaskId"]=homeworkCommitInfoItem?.messageId!!
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
-                    map["commonTypeId"] = paper?.typeId!!
-                    map["takeTime"]=takeTime
+                    map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
+                    map["takeTime"]=homeworkCommitInfoItem?.takeTime!!
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -84,29 +86,20 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onCommitSuccess() {
-        showToast(R.string.toast_commit_success)
-        //设置不能手写
-        setDisableTouchInput(true)
-        //修改状态
-        paper?.state=1
-        papers[currentPosition]=paper!!
+        showToastLong(if (paper?.endTime!!>0)"作业提交成功" else "作业已完成")
+
+        paper?.isHomework = false
+        paper?.date=System.currentTimeMillis()
         daoManager?.insertOrReplace(paper)
         refreshDataUpdate()
 
-        //替换本地图片，删除合图以及手写
-        for (i in paper?.paths!!.indices){
-            val mergePath=getPathMergeStr(i+1)
-            if (File(mergePath).exists()){
-                FileUtils.replaceFileContents(mergePath,paper?.paths!![i])
-            }
-        }
-        Handler().postDelayed({
+        if (paper?.endTime!!>0){
             FileUtils.deleteFile(File(getPathDraw()))
             FileUtils.deleteFile(File(getPathMerge()))
-            //刷新当前paper
-            oldPosition=-1
-            onContent()
-        },500)
+        }
+
+        EventBus.getDefault().post(Constants.HOMEWORK_MESSAGE_COMMIT_EVENT)
+        finish()
     }
 
 
@@ -116,13 +109,43 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     override fun initData() {
         initChangeScreenData()
-        homeworkType = intent.getBundleExtra("homeworkBundle")?.getSerializable("homework") as HomeworkTypeBean
-        currentPosition=intent.getIntExtra("page",Constants.DEFAULT_PAGE)
+        homeworkType = MethodManager.getHomeworkTypeBundle(intent)
+        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
+        isHomework=index>=0
         course=homeworkType?.course!!
         homeworkTypeId=homeworkType?.typeId!!
+        currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
 
         daoManager= HomeworkPaperDaoManager.getInstance()
-        papers= daoManager?.queryAll(course,homeworkTypeId) as MutableList<HomeworkPaperBean>
+        if (isHomework){
+            val item=homeworkType!!.messages[index] as MessageBean
+            homeworkCommitInfoItem=HomeworkCommitInfoItem().apply {
+                state=homeworkType?.state!!
+                messageId =item.contendId
+                title = item.title
+                typeId=item.typeId
+                isSelfCorrect=item.selfBatchStatus==1
+                correctJson=item.question
+                correctMode=item.questionType
+                correctMode=item.questionMode
+                answerUrl=item.answerUrl
+                submitState=item.submitState
+                standardTime=item.minute
+            }
+            papers.add(daoManager?.queryByContentID(item.contendId)!!)
+        }
+        else{
+            papers= daoManager?.queryAllByLocal(course,homeworkTypeId) as MutableList<HomeworkPaperBean>
+        }
+
+        if(papers.size>0){
+            if (currentPosition == DEFAULT_PAGE)
+                currentPosition=papers.size-1
+            onContent()
+        }
+        else{
+            setDisableTouchInput(true)
+        }
     }
 
     override fun initChangeScreenData() {
@@ -130,42 +153,45 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initView() {
-        //云书库没有提交按钮
-        if (homeworkType?.isCloud!!){
+        if (homeworkType?.isCloud!!||!isHomework){
             disMissView(iv_btn)
         }
 
-        if(papers.size>0){
-            if (currentPosition==Constants.DEFAULT_PAGE)
-                currentPosition=papers.size-1
-            onContent()
-        }
-        else{
-            setDisableTouchInput(true)
+        if (isHomework&&getSelfCorrect()){
+            showToast("请及时自批改后提交")
         }
 
         iv_btn.setOnClickListener {
-            if (!NetworkUtil(this).isNetworkConnected()){
+            if (!NetworkUtil.isNetworkConnected()){
                 showToast("网络连接失败，无法提交")
                 return@setOnClickListener
             }
-            if (!FileUtils.isExistContent(getPathMerge())){
-                showToast("未填写答案,无法提交")
-                return@setOnClickListener
-            }
-            if (paper?.state==1&&paper?.isSelfCorrect==true&&!paper?.commitJson.isNullOrEmpty()){
+            if (getSelfCorrect()){
                 homeworkCommitInfoItem=Gson().fromJson(paper?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
                 return@setOnClickListener
             }
-            CommonDialog(this).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
-                object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        commit()
-                    }
-                })
+            if (paper?.endTime!!>0){
+                if (!FileUtils.isExistContent(getPathMerge())){
+                    showToast("未填写答案,无法提交")
+                    return@setOnClickListener
+                }
+                CommonDialog(this,getCurrentScreenPos()).setContent("确定提交作业卷？").builder().setDialogClickListener(
+                    object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            commit()
+                        }
+                    })
+            }
+            else{
+                //不提交作业直接完成
+                showLoading()
+                val map = HashMap<String, Any>()
+                map["studentTaskId"] = paper?.contentId!!
+                mUploadPresenter.commitHomework(map)
+            }
         }
     }
 
@@ -174,7 +200,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         for (item in papers){
             val itemList= ItemList()
             itemList.name=item.title
-            itemList.page=item.page
+            itemList.page=papers.indexOf(item)
             list.add(itemList)
         }
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
@@ -195,7 +221,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             page+=if (isExpand)2 else 1
             Handler().postDelayed({
                 onContent()
-            },if (paper?.state==0)300 else 0)
+            },if (isDrawing())500 else 0)
         }
         else{
             if (currentPosition<papers.size-1){
@@ -203,7 +229,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 page=0
                 Handler().postDelayed({
                     onContent()
-                },if (paper?.state==0)300 else 0)
+                },if (isDrawing())500 else 0)
             }
         }
     }
@@ -213,7 +239,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             page-=if (isExpand)2 else 1
             Handler().postDelayed({
                 onContent()
-            },if (paper?.state==0)300 else 0)
+            },if (isDrawing())500 else 0)
         }
         else{
             if (currentPosition>0){
@@ -221,7 +247,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 page=0
                 Handler().postDelayed({
                     onContent()
-                },if (paper?.state==0)300 else 0)
+                },if (isDrawing())500 else 0)
             }
         }
     }
@@ -278,35 +304,24 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         if (currentPosition!=oldPosition){
             setScoreDetails(paper!!)
-            when(paper?.state){
-                0->{
-                    if (paper?.endTime!!>0L){
-                        showView(iv_btn)
-                        val endTime=paper?.endTime!!*1000
-                        if (System.currentTimeMillis()<=endTime){
-                            showToast(DateUtils.longToStringWeek(endTime)+getString(R.string.toast_before_commit))
-                        }
-                    }
-                    else{
-                        disMissView(iv_btn)
-                    }
-                }
-                1->{
-                    if (paper?.commitJson.isNullOrEmpty()){
-                        disMissView(iv_btn)
-                    }
-                    else{
-                        showToast("请及时自批改后提交")
-                        showView(iv_btn)
-                    }
-                }
-                2->{
-                    disMissView(iv_btn)
-                }
-            }
         }
         //用来判断重复加载
         oldPosition=currentPosition
+    }
+
+    /**
+     * 获取当前作业是否处于已提交自批状态
+     */
+    private fun getSelfCorrect():Boolean{
+        return paper?.isSelfCorrect == true &&paper?.state==1 && !paper?.commitJson.isNullOrEmpty()
+    }
+
+    /**
+     * 需要提交且状态为0
+     * 获取当前是否可写（可写需要翻页延迟，以至于保存合图时间足够）
+     */
+    private fun isDrawing():Boolean{
+        return homeworkCommitInfoItem!=null&&paper?.state==0
     }
 
     /**
@@ -352,41 +367,35 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onElikSava_a() {
-        if (paper?.endTime!!>0&&paper?.state!=2&&isExpand){
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page+1))
-            }.start()
+        if (isDrawing()){
+            BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page))
         }
         refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
-        if (paper?.endTime!!>0&&paper?.state!=2){
+        if (isDrawing()){
             if (isExpand){
-                Thread {
-                    BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1+1))
-                }.start()
+                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
             }
             else{
-                Thread {
-                    BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
-                }.start()
+                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page))
             }
         }
         refreshDataUpdate()
     }
 
     override fun onElikStart_a() {
-        if (paper?.startTime==0L){
-            paper?.startTime=System.currentTimeMillis()
+        if (paper?.startDate==0L){
+            paper?.startDate=System.currentTimeMillis()
             daoManager?.insertOrReplace(paper)
             refreshDataUpdate()
         }
     }
 
     override fun onElikStart_b() {
-        if (paper?.startTime==0L){
-            paper?.startTime=System.currentTimeMillis()
+        if (paper?.startDate==0L){
+            paper?.startDate=System.currentTimeMillis()
             daoManager?.insertOrReplace(paper)
             refreshDataUpdate()
         }
@@ -396,54 +405,29 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 提交
      */
     private fun commit(){
-        if (paper?.isSelfCorrect == true){
-            homeworkCommitInfoItem= HomeworkCommitInfoItem()
-            homeworkCommitInfoItem?.messageId=paper?.contentId
-            homeworkCommitInfoItem?.correctJson=paper?.correctJson
-            homeworkCommitInfoItem?.correctMode=paper?.correctMode
-            homeworkCommitInfoItem?.scoreMode=paper?.scoreMode
-            homeworkCommitInfoItem?.answerUrl=paper?.answerUrl
-            homeworkCommitInfoItem?.typeId=paper?.typeId
-            homeworkCommitInfoItem?.typeName=homeworkType?.name
-            homeworkCommitInfoItem?.course=homeworkType?.course
-            homeworkCommitInfoItem?.state=homeworkType?.state
-            homeworkCommitInfoItem?.paths=getCommitPaths()
-        }
-
-        takeTime=System.currentTimeMillis()- paper?.startTime!!
-        if (paper?.isSelfCorrect == true){
-            homeworkCommitInfoItem?.takeTime=takeTime
+        setDisableTouchInput(true)
+        homeworkCommitInfoItem?.takeTime=System.currentTimeMillis()- paper?.startDate!!
+        homeworkCommitInfoItem?.paths=paper?.paths
+        if (paper?.state==0){
+            for (i in paper?.paths!!.indices){
+                val mergePath=getPathMergeStr(i)
+                if (File(mergePath).exists()){
+                    FileUtils.replaceFileContents(mergePath, paper?.paths!![i])
+                }
+            }
             //修改当前paper状态
             paper?.state = 1
             paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
             daoManager?.insertOrReplace(paper)
             refreshDataUpdate()
-            //云书库下载无法手写
-            setDisableTouchInput(true)
+        }
+        if (homeworkCommitInfoItem?.isSelfCorrect == true){
             gotoSelfCorrect()
         }
         else{
             showLoading()
             mUploadPresenter.getToken()
         }
-    }
-
-    /**
-     * 获取提交图片地址
-     */
-    private fun getCommitPaths():List<String>{
-        //获取合图的图片，没有手写的页面那原图
-        val paths= mutableListOf<String>()
-        for (i in paper!!.paths.indices){
-            val mergePath=getPathMergeStr(i+1)
-            if (File(mergePath).exists()){
-                paths.add(mergePath)
-            }
-            else{
-                paths.add(paper!!.paths[i])
-            }
-        }
-        return paths
     }
 
     /**
@@ -464,7 +448,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 得到当前合图地址
      */
     private fun getPathMergeStr(index: Int):String{
-        return paper?.filePath+"/merge/${index}.png"
+        return paper?.filePath+"/merge/${index+1}.png"
     }
 
     /**
@@ -480,24 +464,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      */
     private fun gotoSelfCorrect(){
         hideLoading()
-        val intent = Intent(this, CorrectActivity::class.java)
+        val intent = Intent(this, HomeworkCorrectActivity::class.java)
         val bundle = Bundle()
         bundle.putSerializable("homeworkCommit", homeworkCommitInfoItem)
         intent.putExtra("bundle", bundle)
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.putExtra("android.intent.extra.KEEP_FOCUS", true)
-        activityResultLauncher.launch(intent)
+        customStartActivity(intent)
     }
-
-    /**
-     * 开始通知回调
-     */
-    private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        if (it.resultCode==10001){
-            papers= daoManager?.queryAll(course,homeworkTypeId) as MutableList<HomeworkPaperBean>
-            oldPosition=-1
-            onContent()
-        }
-    }
-
 }

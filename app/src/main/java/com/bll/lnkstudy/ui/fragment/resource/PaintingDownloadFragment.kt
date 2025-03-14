@@ -54,7 +54,7 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             fetchData()
         }
     }

@@ -71,7 +71,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         for (item in papers){
             val itemList= ItemList()
             itemList.name=item.title
-            itemList.page=item.page
+            itemList.page=papers.indexOf(item)
             list.add(itemList)
         }
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {

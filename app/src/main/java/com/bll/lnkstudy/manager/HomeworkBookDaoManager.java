@@ -74,10 +74,8 @@ public class HomeworkBookDaoManager {
     }
 
     public List<HomeworkBookBean> search(String name) {
-        WhereCondition whereCondition2=BookBeanDao.Properties.BookName.like("%"+name+"%");
-        return dao.queryBuilder().where(whereUser,whereCondition2)
-                .orderDesc(BookBeanDao.Properties.Time)
-                .build().list();
+        WhereCondition whereCondition2=HomeworkBookBeanDao.Properties.BookName.like("%"+name+"%");
+        return dao.queryBuilder().where(whereUser,whereCondition2).build().list();
     }
 
     public boolean isExist(int bookId){

@@ -81,9 +81,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
-                android:textColor="@color/black_30"
+                android:textColor="@color/black_50"
                 android:textSize="17sp"
-                android:text="收到作业"/>
+                android:text="作业通知"/>
         </LinearLayout>
 
         <View
@@ -107,7 +107,7 @@
                 android:id="@+id/tv_pg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black_30"
+                android:textColor="@color/black_50"
                 android:layout_marginStart="3dp"
                 android:textSize="17sp"
                 android:text="收到批改"/>

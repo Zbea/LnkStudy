@@ -70,11 +70,7 @@ public class NoteContentDaoManager {
 
     public List<NoteContentBean> search(String title) {
         WhereCondition whereCondition=NoteContentBeanDao.Properties.Title.like("%"+title+"%");
-        return noteDao.queryBuilder().where(whereUser,whereCondition).build().list();
-    }
-
-    public void deleteNote(NoteContentBean noteContent){
-        noteDao.delete(noteContent);
+        return noteDao.queryBuilder().where(whereUser,whereCondition).orderAsc(NoteContentBeanDao.Properties.Date).build().list();
     }
 
     public void deleteType(String type,String notebookStr){

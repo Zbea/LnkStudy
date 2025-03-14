@@ -63,12 +63,13 @@ public class RecordDaoManager {
         return recordBeanDao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
-    /**
-     * 作业录音
-     * @param course
-     * @param typeId
-     * @return
-     */
+    public List<RecordBean> queryAll(String course,int typeId) {
+        WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
+        WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);
+        return recordBeanDao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
+                .orderDesc(RecordBeanDao.Properties.Date).build().list();
+    }
+
     public List<RecordBean> queryAllByCourse(String course,int typeId) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);
@@ -77,12 +78,6 @@ public class RecordDaoManager {
                 .orderDesc(RecordBeanDao.Properties.Date).build().list();
     }
 
-    /**
-     * 作业录音
-     * @param course
-     * @param typeId
-     * @return
-     */
     public List<RecordBean> queryAllByCourse(String course,int typeId,int page, int pageSize) {
         WhereCondition whereCondition=RecordBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=RecordBeanDao.Properties.HomeworkTypeId.eq(typeId);

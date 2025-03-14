@@ -24,11 +24,11 @@ public class PaintingDrawingBean {
     public String path;//图片路径
     public String title;
     public String bgRes;
-    public int page;
     public int cloudId;
-    @Generated(hash = 1022619939)
-    public PaintingDrawingBean(Long id, long userId, int type, long date, String path, String title,
-            String bgRes, int page, int cloudId) {
+
+    @Generated(hash = 474092944)
+    public PaintingDrawingBean(Long id, long userId, int type, long date,
+            String path, String title, String bgRes, int cloudId) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -36,7 +36,6 @@ public class PaintingDrawingBean {
         this.path = path;
         this.title = title;
         this.bgRes = bgRes;
-        this.page = page;
         this.cloudId = cloudId;
     }
     @Generated(hash = 1527197434)
@@ -84,17 +83,11 @@ public class PaintingDrawingBean {
     public void setBgRes(String bgRes) {
         this.bgRes = bgRes;
     }
-    public int getPage() {
-        return this.page;
-    }
-    public void setPage(int page) {
-        this.page = page;
-    }
     public int getCloudId() {
         return this.cloudId;
     }
     public void setCloudId(int cloudId) {
         this.cloudId = cloudId;
     }
-
+    
 }

@@ -53,6 +53,18 @@ public class DateUtils {
         return sdf.format(new Date(second*1000L));
     }
 
+    public static long longToMinute(long date) {
+        int minuteTime=60*1000;
+        if (date>0){
+            long minute=date/minuteTime;
+            if (date%minuteTime>0){
+                minute+=1;
+            }
+            return minute;
+        }
+        return 0L;
+    }
+
     /**
      * 时间戳转换为字符串类型
      *
@@ -60,7 +72,7 @@ public class DateUtils {
      */
     public static String longToStringData(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -77,7 +89,7 @@ public class DateUtils {
      */
     public static String longToStringNoYear(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -89,7 +101,7 @@ public class DateUtils {
 
     public static String longToString(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.CHINA);
@@ -106,7 +118,7 @@ public class DateUtils {
      */
     public static String longToHour(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -123,7 +135,7 @@ public class DateUtils {
      */
     public static String longToHour1(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("H:m", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -135,7 +147,7 @@ public class DateUtils {
 
     public static String longToStringWeek(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -148,7 +160,7 @@ public class DateUtils {
 
     public static String longToStringWeek1(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH:mm  E ", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -160,7 +172,7 @@ public class DateUtils {
 
     public static String longToStringCalender(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -172,7 +184,7 @@ public class DateUtils {
 
     public static String longToStringDataNoHour(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -184,7 +196,7 @@ public class DateUtils {
 
     public static String longToStringDataNoYear(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -198,8 +210,7 @@ public class DateUtils {
     String getNowDate()
     {
         Date date = new Date();
-        String nowDate = new SimpleDateFormat("yyyy年MM月dd日").format(date);
-        return nowDate;
+        return new SimpleDateFormat("yyyy年MM月dd日").format(date);
     }
 
     //返回当前年份
@@ -255,7 +266,7 @@ public class DateUtils {
      */
     public static String intToStringDataNoHour(long date) {
         if(0 == date){
-            return null;
+            return "";
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
@@ -322,10 +333,15 @@ public class DateUtils {
      * @return
      * @throws ParseException
      */
-    public static long dateStrToLong(String dateStr) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        Date date = sdf.parse(dateStr);
-        return date.getTime();
+    public static long dateStrToLong(String dateStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+            Date date = sdf.parse(dateStr);
+            return date.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static long dateToStamp(int year,int month,int day) {
@@ -339,7 +355,6 @@ public class DateUtils {
     }
 
     public static long dateToStamp(String s) {
-
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
             Date date = simpleDateFormat.parse(s);
@@ -347,12 +362,10 @@ public class DateUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 
     public static long date2Stamp(String s) {
-
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
             Date date = simpleDateFormat.parse(s);
@@ -360,12 +373,10 @@ public class DateUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 
     public static long date3Stamp(String s) {
-
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.CHINA);
             Date date = simpleDateFormat.parse(s);
@@ -373,12 +384,10 @@ public class DateUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 
     public static long date4Stamp(String s) {
-
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm",Locale.CHINA);
             Date date = simpleDateFormat.parse(s);
@@ -386,7 +395,6 @@ public class DateUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 

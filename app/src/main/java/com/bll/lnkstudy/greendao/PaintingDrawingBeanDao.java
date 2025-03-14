@@ -31,8 +31,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
         public final static Property Path = new Property(4, String.class, "path", false, "PATH");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
         public final static Property BgRes = new Property(6, String.class, "bgRes", false, "BG_RES");
-        public final static Property Page = new Property(7, int.class, "page", false, "PAGE");
-        public final static Property CloudId = new Property(8, int.class, "cloudId", false, "CLOUD_ID");
+        public final static Property CloudId = new Property(7, int.class, "cloudId", false, "CLOUD_ID");
     }
 
 
@@ -55,8 +54,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
                 "\"PATH\" TEXT," + // 4: path
                 "\"TITLE\" TEXT," + // 5: title
                 "\"BG_RES\" TEXT," + // 6: bgRes
-                "\"PAGE\" INTEGER NOT NULL ," + // 7: page
-                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 8: cloudId
+                "\"CLOUD_ID\" INTEGER NOT NULL );"); // 7: cloudId
     }
 
     /** Drops the underlying database table. */
@@ -91,8 +89,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
         if (bgRes != null) {
             stmt.bindString(7, bgRes);
         }
-        stmt.bindLong(8, entity.getPage());
-        stmt.bindLong(9, entity.getCloudId());
+        stmt.bindLong(8, entity.getCloudId());
     }
 
     @Override
@@ -121,8 +118,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
         if (bgRes != null) {
             stmt.bindString(7, bgRes);
         }
-        stmt.bindLong(8, entity.getPage());
-        stmt.bindLong(9, entity.getCloudId());
+        stmt.bindLong(8, entity.getCloudId());
     }
 
     @Override
@@ -140,8 +136,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // path
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bgRes
-            cursor.getInt(offset + 7), // page
-            cursor.getInt(offset + 8) // cloudId
+            cursor.getInt(offset + 7) // cloudId
         );
         return entity;
     }
@@ -155,8 +150,7 @@ public class PaintingDrawingBeanDao extends AbstractDao<PaintingDrawingBean, Lon
         entity.setPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setBgRes(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setPage(cursor.getInt(offset + 7));
-        entity.setCloudId(cursor.getInt(offset + 8));
+        entity.setCloudId(cursor.getInt(offset + 7));
      }
     
     @Override

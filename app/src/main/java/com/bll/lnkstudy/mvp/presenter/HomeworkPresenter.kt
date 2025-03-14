@@ -1,7 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
@@ -14,7 +14,6 @@ import com.bll.lnkstudy.net.BaseResult
 import com.bll.lnkstudy.net.Callback
 import com.bll.lnkstudy.net.RequestUtils
 import com.bll.lnkstudy.net.RetrofitManager
-import com.bll.lnkstudy.utils.SPUtil
 
 /**
  * 作业
@@ -27,7 +26,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
     fun onCommitMessage() {
         val map=HashMap<String,Any>()
         map["size"]=10
-        map["grade"]=SPUtil.getObj("user", User::class.java)?.grade!!
+        map["grade"]=MethodManager.getUser().grade
         val type = RetrofitManager.service.getHomeworkCommitDetails(map)
         doRequest(type, object : Callback<HomeworkCommitMessageList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<HomeworkCommitMessageList>): Boolean {

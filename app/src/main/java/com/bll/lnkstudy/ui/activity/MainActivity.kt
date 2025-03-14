@@ -1053,8 +1053,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
-                if (!NetworkUtil(this).isNetworkConnected()){
-                    NetworkUtil(this).toggleNetwork(true)
+                if (!NetworkUtil.isNetworkConnected()){
+                    NetworkUtil.toggleNetwork(true)
                 }
                 eventType = Constants.AUTO_UPLOAD_EVENT
                 Handler().postDelayed({
@@ -1062,8 +1062,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 }, 30 * 1000)
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
-                if (!NetworkUtil(this).isNetworkConnected()){
-                    NetworkUtil(this).toggleNetwork(true)
+                if (!NetworkUtil.isNetworkConnected()){
+                    NetworkUtil.toggleNetwork(true)
                 }
                 eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
                 Handler().postDelayed({
@@ -1072,8 +1072,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 clearSemesterData()
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
-                if (!NetworkUtil(this).isNetworkConnected()){
-                    NetworkUtil(this).toggleNetwork(true)
+                if (!NetworkUtil.isNetworkConnected()){
+                    NetworkUtil.toggleNetwork(true)
                 }
                 eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
                 Handler().postDelayed({
@@ -1086,8 +1086,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 mQiniuPresenter.getToken()
             }
             Constants.AUTO_UPLOAD_YEAR_EVENT -> {
-                if (!NetworkUtil(this).isNetworkConnected()){
-                    NetworkUtil(this).toggleNetwork(true)
+                if (!NetworkUtil.isNetworkConnected()){
+                    NetworkUtil.toggleNetwork(true)
                 }
                 eventType = Constants.AUTO_UPLOAD_YEAR_EVENT
                 Handler().postDelayed({

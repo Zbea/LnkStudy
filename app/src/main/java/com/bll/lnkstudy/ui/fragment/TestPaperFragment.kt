@@ -10,7 +10,6 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.CommonDialog
@@ -293,7 +292,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      *  下载完成后，将考卷保存在本地试卷里面
      */
     private fun savePaperData(paperTypeId: Int,paths:List<String>,drawPaths:List<String>,item:HomeworkPaperList.HomeworkPaperListBean){
-        val papers= PaperDaoManager.getInstance().queryAll(mCourse,paperTypeId)
         val path=FileAddress().getPathTestPaper(mCourse,paperTypeId, item.contendId)
         //保存本次考试
         val paper= PaperBean().apply {
@@ -304,10 +302,10 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             typeName=item.typeName
             grade=item.grade
             title=item.title
+            date=System.currentTimeMillis()
             filePath=path
             this.paths=paths
             this.drawPaths=drawPaths
-            page=papers.size
             score=item.score.toString()
             correctJson=item.question
             correctMode=item.questionType
@@ -322,8 +320,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      *  下载完成后，将考卷保存在本地试卷里面
      */
     private fun saveExamData(paths:List<String>,drawPaths:List<String>,item:ExamCorrectBean){
-        //获取分类已保存多少次考试，用于页码排序
-        val papers= PaperDaoManager.getInstance().queryAll(mCourse,item.typeId)
         //保存本次考试
         val paper= PaperBean().apply {
             contentId=item.id
@@ -332,11 +328,11 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             typeId=item.typeId
             typeName="学校考试卷"
             title=item.typeName
+            date=System.currentTimeMillis()
             grade=this@TestPaperFragment.grade
             filePath=FileAddress().getPathTestPaper(mCourse,item.typeId, item.id)
             this.paths=paths
             this.drawPaths=drawPaths
-            page=papers.size
             score=item.score.toString()
             correctJson=item.question
             correctMode=item.questionType
@@ -351,12 +347,14 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      * 刷新批改分 循环遍历
      */
     private fun refreshView(paperTypeId:Int,item: HomeworkPaperList.HomeworkPaperListBean) {
-        for (ite in paperTypes) {
-            if (ite.typeId == paperTypeId) {
-                ite.score = item.score
-                ite.paperTitle=item.title
-                ite.isPg = true
-                mAdapter?.notifyItemChanged(paperTypes.indexOf(ite))
+        requireActivity().runOnUiThread {
+            for (ite in paperTypes) {
+                if (ite.typeId == paperTypeId) {
+                    ite.score = item.score
+                    ite.paperTitle=item.title
+                    ite.isPg = true
+                    mAdapter?.notifyItemChanged(paperTypes.indexOf(ite))
+                }
             }
         }
     }
@@ -365,18 +363,20 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      * 刷新批改分 循环遍历
      */
     private fun refreshExamView(item: ExamCorrectBean) {
-        for (ite in paperTypes) {
-            if (item.typeId == ite.typeId) {
-                ite.score = item.score
-                ite.paperTitle=item.typeName
-                ite.isPg = true
+        requireActivity().runOnUiThread {
+            for (ite in paperTypes) {
+                if ( ite.typeId==item.typeId) {
+                    ite.score = item.score
+                    ite.paperTitle=item.typeName
+                    ite.isPg = true
+                    mAdapter?.notifyItemChanged(paperTypes.indexOf(ite))
+                }
             }
         }
-        mAdapter?.notifyDataSetChanged()
     }
 
     private fun fetchTypes() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0&&DataBeanManager.getCourseId(mCourse)>0) {
+        if (NetworkUtil.isNetworkConnected()&&grade>0&&DataBeanManager.getCourseId(mCourse)>0) {
             val map = HashMap<String, Any>()
             map["type"] = 1
             map["subject"] = DataBeanManager.getCourseId(mCourse)
@@ -393,7 +393,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         paperTypes=PaperTypeDaoManager.getInstance().queryAllByCourse(mCourse,pageIndex,pageSize)
         mAdapter?.setNewData(paperTypes)
 
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             fetchCorrectPaper()
     }
 

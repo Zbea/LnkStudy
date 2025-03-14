@@ -92,7 +92,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         popSupplys=DataBeanManager.supplys
         supply=popSupplys[0].id
 
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             presenter.getBookType()
         }
     }

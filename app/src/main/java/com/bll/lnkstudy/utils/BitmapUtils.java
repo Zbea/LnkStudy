@@ -271,8 +271,18 @@ public class BitmapUtils {
      * @param path
      */
     public static void saveScreenShot(Activity context, View view, String path) {
-        Bitmap bitmap = loadBitmapFromViewByCanvas(view);
-        saveBmpGallery(context,bitmap, path);
+        new Thread(() -> {
+//            view.setDrawingCacheEnabled(true);
+//            //获取缓存的 Bitmap
+//            Bitmap drawingCache = view.getDrawingCache();
+//            //复制获取的 Bitmap
+//            Bitmap bitmap = Bitmap.createBitmap(drawingCache);
+//            //关闭视图的缓存
+//            view.setDrawingCacheEnabled(false);
+//            saveBmpGallery(context,bitmap, path);
+            Bitmap bitmap = loadBitmapFromViewByCanvas(view);
+            saveBmpGallery(context,bitmap, path);
+        }).start();
     }
 
     private static Bitmap loadBitmapFromViewByCanvas(View view) {
@@ -280,7 +290,6 @@ public class BitmapUtils {
         int h = view.getHeight();
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
-        //如果不设置canvas画布为白色，则生成透明
         c.drawColor(Color.WHITE);
         view.draw(c);
         return bitmap;

@@ -29,20 +29,18 @@ public class HomeworkContentBean {
     public Long date=0L;
     public Long startDate=0L;
     public String path;//文件路径
-    public int page;//页码
-
     public double score;//成绩
     public String correctJson;//批改详情
     public String commitJson;//提交信息(自批时)
     public String answerUrl;
     public int correctMode;//批改模式
     public int scoreMode;//打分模式1打分
-    @Generated(hash = 877458827)
+    @Generated(hash = 1645804377)
     public HomeworkContentBean(Long id, long userId, String course,
             int homeworkTypeId, int fromStatus, String typeName, int contentId,
             String title, int state, boolean isHomework, Long date, Long startDate,
-            String path, int page, double score, String correctJson,
-            String commitJson, String answerUrl, int correctMode, int scoreMode) {
+            String path, double score, String correctJson, String commitJson,
+            String answerUrl, int correctMode, int scoreMode) {
         this.id = id;
         this.userId = userId;
         this.course = course;
@@ -56,7 +54,6 @@ public class HomeworkContentBean {
         this.date = date;
         this.startDate = startDate;
         this.path = path;
-        this.page = page;
         this.score = score;
         this.correctJson = correctJson;
         this.commitJson = commitJson;
@@ -144,12 +141,6 @@ public class HomeworkContentBean {
     }
     public void setPath(String path) {
         this.path = path;
-    }
-    public int getPage() {
-        return this.page;
-    }
-    public void setPage(int page) {
-        this.page = page;
     }
     public double getScore() {
         return this.score;

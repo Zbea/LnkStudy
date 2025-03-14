@@ -75,7 +75,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         for (item in noteContents){
             val itemList= ItemList()
             itemList.name=item.title
-            itemList.page=item.page
+            itemList.page=noteContents.indexOf(item)
             itemList.isEdit=true
             if (titleStr != item.title)
             {
@@ -226,7 +226,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_b?.grade=grade
         note_Content_b?.title=getString(R.string.unnamed)+(noteContents.size+1)
         note_Content_b?.filePath = "$path/${DateUtils.longToString(date)}.png"
-        note_Content_b?.page = noteContents.size
         page = noteContents.size
 
         val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(note_Content_b)

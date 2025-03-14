@@ -12,7 +12,6 @@ import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.InputContentDialog
@@ -189,7 +188,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 val bean = map[item.typeId.toString()]
                 if (bean != null) {
                     item.messages = bean.list
-                    item.isMessage = bean.total > item.messageTotal
+                    item.isMessage = !bean.list.isNullOrEmpty()
                     item.messageTotal = bean.total
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     if (item.isMessage)
@@ -204,8 +203,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             if (item.createStatus == 1) {
                 val bean = map[item.typeId.toString()]
                 if (bean != null) {
-                    item.parents = bean.list
-                    item.isMessage = bean.total > item.messageTotal
+                    item.messages = bean.list
+                    item.isMessage = !bean.list.isNullOrEmpty()
                     item.messageTotal = bean.total
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                     if (item.isMessage)
@@ -270,14 +269,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         pageSize = 9
 
         startActivityLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if (it.resultCode==Constants.RESULT_10002){
-                val messageIndex=it.data?.flags!!
+            if (it.resultCode==Constants.RESULT_10001){
                 val item=homeworkTypes[clickPosition]
-                if (item.createStatus==2){
-                    item.messages.removeAt(messageIndex)
-                }
-                else{
-                    item.parents.removeAt(messageIndex)
+                item.messages=DataBeanManager.homeworkMessages
+                if (item.messages.isNullOrEmpty()){
+                    item.isMessage=false
+                    mAdapter?.notifyItemChanged(clickPosition)
                 }
             }
         }
@@ -313,17 +310,17 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 }
                 when (item.state) {
                     1 -> {
-                        MethodManager.gotoHomeworkReelDrawing(requireActivity(), item, Constants.DEFAULT_PAGE)
+                        MethodManager.gotoHomeworkReelDrawing(requireActivity(), item, Constants.DEFAULT_PAGE,Constants.DEFAULT_PAGE)
                     }
                     2,6 -> {
                         MethodManager.gotoHomeworkDrawing(requireActivity(), item, Constants.DEFAULT_PAGE,Constants.DEFAULT_PAGE)
                     }
                     3 -> {
-                        MethodManager.gotoHomeworkRecord(requireActivity(), item)
+                        MethodManager.gotoHomeworkRecordList(requireActivity(), item)
                     }
                     4 -> {
                         if (HomeworkBookDaoManager.getInstance().isExist(item.bookId)) {
-                            MethodManager.gotoHomeworkBookDetails(requireActivity(), item)
+                            MethodManager.gotoHomeworkBookDetails(requireActivity(), item,Constants.DEFAULT_PAGE)
                         } else {
                             val intent = Intent(requireActivity(), HomeworkBookStoreActivity::class.java)
                             intent.putExtra("bookId", item.bookId)
@@ -342,15 +339,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 clickPosition=position
                 val item = homeworkTypes[position]
                 if (view.id == R.id.ll_message) {
-                    if (item.isMessage) {
-                        item.isMessage = false
-                        notifyItemChanged(position)
+                    if (item.messages.isNullOrEmpty()){
+                        return@setOnItemChildClickListener
                     }
+                    ActivityManager.getInstance().finishActivity(HomeworkMessageActivity::class.java.name)
                     val intent=Intent(requireActivity(),HomeworkMessageActivity::class.java)
-                    ActivityManager.getInstance().finishActivity(intent.component?.className)
-                    val bundle = Bundle()
-                    bundle.putSerializable("homework", item)
-                    intent.putExtra("homeworkBundle", bundle)
+                    MethodManager.setHomeworkTypeBundle(intent,item)
                     startActivityLauncher.launch(intent)
                 }
             }
@@ -501,9 +495,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     DataUpdateManager.deleteDateUpdate(2, paper.contentId, 2, paper.typeId)
                 }
             }
-            2 -> {
+            2,6 -> {
                 //删除作本内容
-                val items = HomeworkContentDaoManager.getInstance().queryAllByType(mCourse, item.typeId)
+                val items = HomeworkContentDaoManager.getInstance().queryAll(mCourse, item.typeId)
                 HomeworkContentDaoManager.getInstance().deleteBeans(items)
                 //删除本地文件
                 val path = FileAddress().getPathHomework(mCourse, item.typeId)
@@ -516,7 +510,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 }
             }
             3 -> {
-                val recordBeans = RecordDaoManager.getInstance().queryAllByCourse(mCourse, item.typeId)
+                val recordBeans = RecordDaoManager.getInstance().queryAll(mCourse, item.typeId)
                 val path = FileAddress().getPathHomework(mCourse, item.typeId)
                 FileUtils.deleteFile(File(path))
                 for (bean in recordBeans) {
@@ -629,7 +623,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     override fun completed(task: BaseDownloadTask?) {
                         refreshView(item.typeId,2)
                         mPresenter.downloadParent(item.contendId)
-
                         //更新增量数据
                         for (homework in homeworkContents) {
                             homework.state = 2
@@ -663,36 +656,32 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
-
                     override fun completed(task: BaseDownloadTask?) {
                         refreshView(item.typeId,2)
                         //下载完成后 请求
                         mPresenter.downloadParent(item.contendId)
-
                         for (page in item.pageStr.split(",")) {
-                            if (HomeworkBookCorrectDaoManager.getInstance().isExist(typeBean.bookId, page.toInt())) {
-                                val bookCorrectBean = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(typeBean.bookId, page.toInt())
+                            var bookCorrectBean = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(typeBean.bookId, page.toInt())
+                            if (bookCorrectBean!=null) {
                                 bookCorrectBean.state = 2
-                                bookCorrectBean.homeworkTitle = item.title
                                 HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
                                 DataUpdateManager.editDataUpdate(7, bookCorrectBean.id.toInt(), 2, typeBean.bookId, Gson().toJson(bookCorrectBean))
                             } else {
-                                val bookCorrectBean = HomeworkBookCorrectBean()
+                                bookCorrectBean = HomeworkBookCorrectBean()
                                 bookCorrectBean.startTime = System.currentTimeMillis()
                                 bookCorrectBean.homeworkTitle = item.title
                                 bookCorrectBean.bookId = typeBean.bookId
                                 bookCorrectBean.page = page.toInt()
                                 bookCorrectBean.state = 2//已完成
+                                bookCorrectBean.startTime=System.currentTimeMillis()
                                 val id = HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
                                 //更新增量数据
                                 DataUpdateManager.createDataUpdate(7, id.toInt(), 2, homeworkBookBean.bookId, Gson().toJson(bookCorrectBean), "")
                             }
                         }
                     }
-
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
-
                     override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     }
                 })
@@ -724,10 +713,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         mPresenter.downloadCompletePaper(item.contendId)
 
                         for (page in item.page.split(",")) {
-                            if (HomeworkBookCorrectDaoManager.getInstance().isExist(typeBean.bookId, page.toInt())) {
-                                val bookCorrectBean = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(typeBean.bookId, page.toInt())
+                            var bookCorrectBean = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(typeBean.bookId, page.toInt())
+                            if (bookCorrectBean!=null) {
                                 bookCorrectBean.state = 2
-                                bookCorrectBean.homeworkTitle = item.title
                                 bookCorrectBean.score = item.score
                                 bookCorrectBean.correctMode = item.questionType
                                 bookCorrectBean.correctJson = item.question
@@ -736,7 +724,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
                                 DataUpdateManager.editDataUpdate(7, bookCorrectBean.id.toInt(), 2, typeBean.bookId, Gson().toJson(bookCorrectBean))
                             } else {
-                                val bookCorrectBean = HomeworkBookCorrectBean()
+                                bookCorrectBean = HomeworkBookCorrectBean()
                                 bookCorrectBean.homeworkTitle = item.title
                                 bookCorrectBean.bookId = typeBean.bookId
                                 bookCorrectBean.page = page.toInt()
@@ -746,6 +734,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 bookCorrectBean.scoreMode = item.questionMode
                                 bookCorrectBean.answerUrl = item.answerUrl
                                 bookCorrectBean.state = 2//已完成
+                                bookCorrectBean.startTime=System.currentTimeMillis()
                                 val id = HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
                                 //更新增量数据
                                 DataUpdateManager.createDataUpdate(7, id.toInt(), 2, homeworkBookBean.bookId, Gson().toJson(bookCorrectBean), "")
@@ -827,7 +816,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      */
     private fun newHomeWorkContent(createStatus: Int,homeworkTypeId:Int,contentId:Int,title:String,index:Int):HomeworkContentBean {
         val homeworkTypeBean=if (createStatus==2)HomeworkTypeDaoManager.getInstance().queryByTypeId(homeworkTypeId) else HomeworkTypeDaoManager.getInstance().queryByParentTypeId(homeworkTypeId,grade)
-        val homeworks=HomeworkContentDaoManager.getInstance().queryAllByLocalContent(homeworkTypeBean.course,homeworkTypeId)
         val path = FileAddress().getPathHomework(homeworkTypeBean.course, homeworkTypeId, contentId,index+1)
         val currentTime=System.currentTimeMillis()
 
@@ -838,7 +826,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         homeworkContent.typeName = homeworkTypeBean.name
         homeworkContent.title = title
         homeworkContent.path = "$path/${DateUtils.longToString(currentTime)}.png"
-        homeworkContent.page = homeworks.size
         homeworkContent.contentId=contentId
         homeworkContent.isHomework=false
         homeworkContent.fromStatus=createStatus
@@ -889,8 +876,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
                         val localPaper = HomeworkPaperDaoManager.getInstance().queryByContentID(item.contendId)
                         if(localPaper==null){
-                            //查找到之前已经存储的数据、用于页码计算
-                            val homeworkPapers = HomeworkPaperDaoManager.getInstance().queryAll(item.subject, item.typeId) as MutableList<*>
                             //创建作业卷目录
                             val paper = HomeworkPaperBean().apply {
                                 contentId = item.contendId
@@ -902,7 +887,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 filePath = pathStr
                                 this.paths = paths
                                 this.drawPaths = drawPaths
-                                page = homeworkPapers.size
+                                isHomework=true
+                                date=System.currentTimeMillis()
                                 endTime = item.endTime //提交时间
                                 answerUrl = item.answerUrl
                                 isSelfCorrect = item.selfBatchStatus == 1
@@ -912,8 +898,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 if (item.sendStatus==2){
                                     state = 2
                                     score = item.score
-                                    correctJson = item.question
-                                    answerUrl = item.answerUrl
+                                    isHomework=false
                                 }
                             }
                             HomeworkPaperDaoManager.getInstance().insertOrReplace(paper)
@@ -943,15 +928,17 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 刷新收到作业标题
      */
     private fun refreshView(typeId:Int,state:Int){
-        for (item in homeworkTypes){
-            if (item.typeId==typeId){
-                if (state==2){
-                    item.isPg=true
+        requireActivity().runOnUiThread {
+            for (item in homeworkTypes){
+                if (item.typeId==typeId){
+                    if (state==2){
+                        item.isPg=true
+                    }
+                    else{
+                        item.isMessage=true
+                    }
+                    mAdapter?.notifyItemChanged(homeworkTypes.indexOf(item))
                 }
-                else{
-                    item.isMessage=true
-                }
-                mAdapter?.notifyItemChanged(homeworkTypes.indexOf(item))
             }
         }
     }
@@ -960,7 +947,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 请求作业分类
      */
     private fun fetchHomeworkType() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&grade>0&&DataBeanManager.getCourseId(mCourse)>0) {
+        if (NetworkUtil.isNetworkConnected()&&grade>0&&DataBeanManager.getCourseId(mCourse)>0) {
             countDownTasks = CountDownLatch(2)
             val map = HashMap<String, Any>()
             map["type"] = 2
@@ -992,7 +979,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         homeworkTypes = HomeworkTypeDaoManager.getInstance().queryAllByCourse(mCourse, pageIndex, pageSize)
         mAdapter?.setNewData(homeworkTypes)
 
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             fetchMessage()
     }
 

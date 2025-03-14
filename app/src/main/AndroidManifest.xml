@@ -167,10 +167,10 @@
             android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
-        <activity android:name=".ui.activity.RecordActivity"
+        <activity android:name=".ui.activity.HomeworkRecordActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.RecordListActivity"
+        <activity android:name=".ui.activity.HomeworkRecordListActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
@@ -234,7 +234,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.book.HomeworkBookDetailsActivity"
+        <activity android:name=".ui.activity.drawing.HomeworkBookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
@@ -285,7 +285,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.CorrectActivity"
+        <activity android:name=".ui.activity.HomeworkCorrectActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />

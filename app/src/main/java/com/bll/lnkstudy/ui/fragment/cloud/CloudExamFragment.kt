@@ -48,7 +48,7 @@ class CloudExamFragment:BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mCloudPresenter.getType(3)
         }
     }

@@ -58,9 +58,7 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public boolean isMessage;//收到通知
     @Transient
-    public List<HomeworkMessageList.MessageBean> messages;
-    @Transient
-    public List<ParentHomeworkMessageList.ParentMessageBean> parents;
+    public List<?> messages;
 
     @Generated(hash = 1072702211)
     public HomeworkTypeBean(Long id, long studentId, Long teacherId, String teacher, String name, int grade, int typeId, int state, long date, String contentResId,

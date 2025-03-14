@@ -58,7 +58,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mCloudPresenter.getType(2)
         }
     }
@@ -138,7 +138,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                     showToast(R.string.toast_downloaded)
                 }
             }
-            2->{
+            2,6->{
                 if (!if (homeworkTypeBean.fromStatus==1) HomeworkTypeDaoManager.getInstance().isExistParentType(homeworkTypeBean.typeId,homeworkTypeBean.grade) else HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
                     download(homeworkTypeBean)
                 }

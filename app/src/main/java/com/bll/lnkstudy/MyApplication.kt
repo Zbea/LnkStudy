@@ -11,6 +11,7 @@ import com.bll.lnkstudy.greendao.DaoMaster
 import com.bll.lnkstudy.greendao.DaoSession
 import com.bll.lnkstudy.greendao.GreenDaoUpgradeHelper
 import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import com.liulishuo.filedownloader.FileDownloader
@@ -37,6 +38,7 @@ class MyApplication : Application(){
 
         requestQueue = Volley.newRequestQueue(applicationContext)
         SPUtil.init(this)
+        NetworkUtil.init(this)
         SToast.initToast(this)
         FileDownloader.setup(this)
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks)

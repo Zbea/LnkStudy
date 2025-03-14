@@ -23,15 +23,15 @@ public class FileMultitaskDownManager {
 
 
     public static FileMultitaskDownManager with(Context context) {
-        if (incetance == null) {
-            synchronized (FileMultitaskDownManager.class) {
-                if (incetance == null) {
-                    incetance = new FileMultitaskDownManager();
-                }
-            }
-        }
-        mContext = context;
-        return incetance;
+//        if (incetance == null) {
+//            synchronized (FileMultitaskDownManager.class) {
+//                if (incetance == null) {
+//                    incetance = new FileMultitaskDownManager();
+//                }
+//            }
+//        }
+//        mContext = context;
+        return new FileMultitaskDownManager();
     }
 
     //创建下载链接
@@ -45,7 +45,7 @@ public class FileMultitaskDownManager {
         return this;
     }
 
-    public void startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
+    public FileDownloadQueueSet startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
         num=0;
         auth = "Authorization";
         token = SPUtil.INSTANCE.getString("token");
@@ -93,6 +93,8 @@ public class FileMultitaskDownManager {
         queueSet.setForceReDownload(true);
         queueSet.downloadTogether(tasks);//并行下载
         queueSet.start();
+
+        return queueSet;
     }
 
     public interface MultiTaskCallBack {

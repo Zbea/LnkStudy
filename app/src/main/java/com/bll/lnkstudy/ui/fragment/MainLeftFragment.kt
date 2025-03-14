@@ -164,7 +164,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
 
     override fun fetchData() {
         onCheckUpdate()
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
             mMainLeftPresenter.getParentPermission()
             mMainLeftPresenter.getSchoolPermission(grade)

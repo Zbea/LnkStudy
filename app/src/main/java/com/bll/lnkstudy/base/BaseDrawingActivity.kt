@@ -26,7 +26,7 @@ import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.ac_correct.*
+import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.ac_drawing.ll_score
 import kotlinx.android.synthetic.main.common_correct_score.*

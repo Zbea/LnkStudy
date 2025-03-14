@@ -63,7 +63,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         //获取合图的图片，没有手写的页面那原图
         val commitPaths= mutableListOf<String>()
         for (i in paths.indices){
-            val mergePath=getPathMergeStr(i+1)
+            val mergePath=getPathMergeStr(i)
             if (File(mergePath).exists()){
                 commitPaths.add(mergePath)
             }
@@ -150,11 +150,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         onChangeContent()
 
         iv_btn.setOnClickListener {
-            if (!NetworkUtil(this).isNetworkConnected()){
-                showToast("网络连接失败，无法提交")
-                return@setOnClickListener
-            }
-            CommonDialog(this,screenPos).setContent(R.string.toast_commit_ok).builder().setDialogClickListener(
+            CommonDialog(this,screenPos).setContent("确定提交考卷？").builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
@@ -197,7 +193,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         }
         Handler().postDelayed({
             onChangeContent()
-        },300)
+        },500)
     }
 
     override fun onPageUp() {
@@ -207,7 +203,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         //页面切换是延迟已支持手写保存
         Handler().postDelayed({
             onChangeContent()
-        },300)
+        },500)
     }
 
     private fun onChangeContent(){
@@ -233,22 +229,18 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun onElikSava_a() {
-        Thread {
-            BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page+1))
-        }.start()
+        BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page))
     }
 
     override fun onElikSava_b() {
-        Thread {
-            BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1+1))
-        }.start()
+        BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
     }
 
     /**
      * 提交
      */
     private fun commit(){
-        if (!NetworkUtil(this).isNetworkConnected()){
+        if (!NetworkUtil.isNetworkConnected()){
             showToast("网络连接失败，无法提交")
             return
         }
@@ -260,7 +252,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
      * 得到当前合图地址
      */
     private fun getPathMergeStr(index: Int):String{
-        return pathStr+"/merge/${index}.png"//手绘地址
+        return pathStr+"/merge/${index+1}.png"//手绘地址
     }
 
     override fun onBackPressed() {

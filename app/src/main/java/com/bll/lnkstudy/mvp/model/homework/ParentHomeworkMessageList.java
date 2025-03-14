@@ -20,6 +20,7 @@ public class ParentHomeworkMessageList implements Serializable {
         public int typeId;
         public String title;
         public String createTime;
+        public int minute;
         public long endTime;
         public long submitTime;
         @SerializedName("name")

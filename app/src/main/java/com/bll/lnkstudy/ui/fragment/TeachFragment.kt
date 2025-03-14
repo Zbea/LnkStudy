@@ -131,7 +131,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
                 }
                 else{
                     if (MethodManager.getParentPermissionAllow(1)){
-                        if (NetworkUtil(requireActivity()).isWifiConnected()){
+                        if (NetworkUtil.isNetworkConnected()){
                             val intent= Intent(requireActivity(), TeachActivity::class.java)
                             val bundle= Bundle()
                             bundle.putSerializable("teach", mAdapter?.data?.get(position))
@@ -159,7 +159,7 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             val map=HashMap<String,Any>()
             map["page"] = pageIndex
             map["size"] = pageSize

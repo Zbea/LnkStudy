@@ -15,7 +15,7 @@ class DownloadWallpaperAdapter(layoutResId: Int, data: List<PaintingList.ListBea
             setText(R.id.tv_price,if (item.price==0) getString(R.string.free) else item.price.toString()+getString(R.string.xd))
             setText(R.id.btn_download,if (item.buyStatus==1) getString(R.string.download) else getString(R.string.buy))
             GlideUtils.setImageRoundUrl(mContext,item.bodyUrl.split(",")[0],getView(R.id.iv_image_left),8)
-            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl.split(",")[0],getView(R.id.iv_image_right),8)
+            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl.split(",")[1],getView(R.id.iv_image_right),8)
             addOnClickListener(R.id.btn_download)
         }
 

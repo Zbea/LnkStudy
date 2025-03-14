@@ -60,7 +60,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         pageSize=12
         bookId=intent.getIntExtra("bookId",0)
 
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             fetchData()
         }
     }
@@ -110,10 +110,6 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         showLoading()
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val targetFile = File(zipPath)
-        if (targetFile.exists()) {
-            targetFile.delete()
-        }
         val download = FileBigDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
@@ -127,19 +123,13 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                         }
                     }
                 }
-
                 override fun paused(task: BaseDownloadTask?,soFarBytes: Long, totalBytes: Long) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
                     unzip(book, zipPath, fileTargetPath)
-                    //删除zip文件
-                    FileUtils.deleteFile(File(zipPath))
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
                     hideLoading()
                     showToast(book.bookName+getString(R.string.book_download_fail))
                 }
@@ -172,13 +162,13 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                 HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)
                 book.loadSate=2
                 disMissView(btn_ok)
-
+                hideLoading()
+                //删除zip文件
+                FileUtils.deleteFile(File(zipPath))
                 Handler().postDelayed({
                     showToast(book.bookName+getString(R.string.book_download_success))
                     finish()
                 },500)
-
-                hideLoading()
             }
             override fun onProgress(percentDone: Int) {
             }

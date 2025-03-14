@@ -45,7 +45,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
      * 常用数据更新
      */
     fun onCheckUpdate() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             mCommonPresenter.getCommon()
             checkAppUpdate()
             checkSystemUpdate()
@@ -127,7 +127,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             }
         })
     }
-
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.REFRESH_EVENT){

@@ -76,7 +76,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){
-            if (!NetworkUtil(this).isNetworkConnected()){
+            if (!NetworkUtil.isNetworkConnected()){
                 showToast(R.string.net_work_error)
             }
         }

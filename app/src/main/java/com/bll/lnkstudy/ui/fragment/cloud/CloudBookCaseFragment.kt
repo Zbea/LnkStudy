@@ -51,7 +51,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             fetchData()
         }
     }

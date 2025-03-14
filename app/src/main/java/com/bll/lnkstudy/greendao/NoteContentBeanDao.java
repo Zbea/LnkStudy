@@ -32,8 +32,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
         public final static Property ResId = new Property(6, String.class, "resId", false, "RES_ID");
         public final static Property FilePath = new Property(7, String.class, "filePath", false, "FILE_PATH");
-        public final static Property Page = new Property(8, int.class, "page", false, "PAGE");
-        public final static Property Grade = new Property(9, int.class, "grade", false, "GRADE");
+        public final static Property Grade = new Property(8, int.class, "grade", false, "GRADE");
     }
 
 
@@ -57,8 +56,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
                 "\"TITLE\" TEXT," + // 5: title
                 "\"RES_ID\" TEXT," + // 6: resId
                 "\"FILE_PATH\" TEXT," + // 7: filePath
-                "\"PAGE\" INTEGER NOT NULL ," + // 8: page
-                "\"GRADE\" INTEGER NOT NULL );"); // 9: grade
+                "\"GRADE\" INTEGER NOT NULL );"); // 8: grade
     }
 
     /** Drops the underlying database table. */
@@ -102,8 +100,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         if (filePath != null) {
             stmt.bindString(8, filePath);
         }
-        stmt.bindLong(9, entity.getPage());
-        stmt.bindLong(10, entity.getGrade());
+        stmt.bindLong(9, entity.getGrade());
     }
 
     @Override
@@ -141,8 +138,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         if (filePath != null) {
             stmt.bindString(8, filePath);
         }
-        stmt.bindLong(9, entity.getPage());
-        stmt.bindLong(10, entity.getGrade());
+        stmt.bindLong(9, entity.getGrade());
     }
 
     @Override
@@ -161,8 +157,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // resId
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // filePath
-            cursor.getInt(offset + 8), // page
-            cursor.getInt(offset + 9) // grade
+            cursor.getInt(offset + 8) // grade
         );
         return entity;
     }
@@ -177,8 +172,7 @@ public class NoteContentBeanDao extends AbstractDao<NoteContentBean, Long> {
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setFilePath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setPage(cursor.getInt(offset + 8));
-        entity.setGrade(cursor.getInt(offset + 9));
+        entity.setGrade(cursor.getInt(offset + 8));
      }
     
     @Override

@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 public class GlideUtils {
 
 
-    public static final void setImageUrl(Context mContext,int resId, ImageView imageView){
+    public static void setImageUrl(Context mContext, int resId, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
@@ -38,7 +38,7 @@ public class GlideUtils {
 
     }
 
-    public static final void setImageUrl(Context mContext,String url, ImageView imageView){
+    public static void setImageUrl(Context mContext, String url, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
@@ -57,7 +57,7 @@ public class GlideUtils {
      * @param imageView
      * @param state
      */
-    public static final void setImageUrl(Context mContext,String url, ImageView imageView,int state){
+    public static void setImageUrl(Context mContext, String url, ImageView imageView, int state){
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
@@ -70,7 +70,7 @@ public class GlideUtils {
 
     }
 
-    public static final void setImageNoCacheUrl(Context mContext,String url, ImageView imageView){
+    public static void setImageNoCacheUrl(Context mContext, String url, ImageView imageView){
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();

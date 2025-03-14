@@ -218,7 +218,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     }
                 }
                 2,6 -> {
-                    val homeworks = HomeworkContentDaoManager.getInstance().queryAllByType(typeBean.course, typeBean.typeId)
+                    val homeworks = HomeworkContentDaoManager.getInstance().queryAll(typeBean.course, typeBean.typeId)
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
@@ -242,7 +242,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     }
                 }
                 3 -> {
-                    val records = RecordDaoManager.getInstance().queryAllByCourse(typeBean.course, typeBean.typeId)
+                    val records = RecordDaoManager.getInstance().queryAll(typeBean.course, typeBean.typeId)
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {

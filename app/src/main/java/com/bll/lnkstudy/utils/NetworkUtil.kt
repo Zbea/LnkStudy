@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.utils
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -9,12 +10,15 @@ import android.provider.Settings
 import android.telephony.TelephonyManager
 
 
-class NetworkUtil(val context: Context) {
+@SuppressLint("StaticFieldLeak")
+object NetworkUtil {
 
     private var connManager: ConnectivityManager? = null
     private var isForceOpenNet=false
+    private var context:Context?=null
 
-    init {
+    fun init(context: Context) {
+        this.context=context
         connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
@@ -69,7 +73,7 @@ class NetworkUtil(val context: Context) {
     private fun toggleMobileNet(isEnable: Boolean) {
         if (!isForceOpenNet){
             try {
-                val telephonyService = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                val telephonyService = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
                 val setMobileDataEnabledMethod = telephonyService.javaClass.getDeclaredMethod("setDataEnabled", Boolean::class.javaPrimitiveType)
                 setMobileDataEnabledMethod.invoke(telephonyService, isEnable)
             } catch (e: Exception) {
@@ -87,7 +91,7 @@ class NetworkUtil(val context: Context) {
      */
     private fun toggleWiFi(enabled: Boolean): Boolean {
         if (!isForceOpenNet){
-            val wm= context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val wm= context?.getSystemService(Context.WIFI_SERVICE) as WifiManager
             return wm.setWifiEnabled(enabled)
         }
         return false
@@ -108,7 +112,7 @@ class NetworkUtil(val context: Context) {
      * @param setAirPlane
      */
     fun toggleAirplaneMode(setAirPlane: Boolean) {
-        Settings.System.putInt(context.contentResolver, Settings.System.AIRPLANE_MODE_ON, if (setAirPlane) 1 else 0)
+        Settings.System.putInt(context?.contentResolver, Settings.System.AIRPLANE_MODE_ON, if (setAirPlane) 1 else 0)
         // 广播飞行模式信号的改变，让相应的程序可以处理。
         // 不发送广播时，在非飞行模式下，Android 2.2.1上测试关闭了Wifi,不关闭正常的通话网络(如GMS/GPRS等)。
         // 不发送广播时，在飞行模式下，Android 2.2.1上测试无法关闭飞行模式。
@@ -116,7 +120,7 @@ class NetworkUtil(val context: Context) {
         // intent.putExtra("Sponsor", "Sodino");
         // 2.3及以后，需设置此状态，否则会一直处于与运营商断连的情况
         intent.putExtra("state", setAirPlane)
-        context.sendBroadcast(intent)
+        context?.sendBroadcast(intent)
     }
 
 }

@@ -40,12 +40,12 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.book.TextbookBean;
 import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
 import com.bll.lnkstudy.ui.activity.PaintingImageActivity;
-import com.bll.lnkstudy.ui.activity.RecordActivity;
-import com.bll.lnkstudy.ui.activity.RecordListActivity;
+import com.bll.lnkstudy.ui.activity.HomeworkRecordActivity;
+import com.bll.lnkstudy.ui.activity.HomeworkRecordListActivity;
 import com.bll.lnkstudy.ui.activity.book.TextBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity;
-import com.bll.lnkstudy.ui.activity.book.HomeworkBookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity;
@@ -278,19 +278,6 @@ public class MethodManager {
         DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,2);
     }
 
-    /**
-     * 跳转作业书
-     */
-    public static void gotoHomeworkBookDetails(Context context, HomeworkTypeBean typeBean) {
-        ActivityManager.getInstance().checkHomeworkBookIsExist(typeBean);
-        Intent intent = new Intent(context, HomeworkBookDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("homework", typeBean);
-        intent.putExtra("homeworkBundle", bundle);
-        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
-        context.startActivity(intent);
-    }
-
     public static void setHomeworkTypeBundle(Intent intent, HomeworkTypeBean item){
         Bundle bundle = new Bundle();
         bundle.putSerializable("homework", item);
@@ -299,7 +286,19 @@ public class MethodManager {
 
     public static HomeworkTypeBean getHomeworkTypeBundle(Intent intent){
         Bundle bundle = intent.getBundleExtra("homeworkBundle");
-        return bundle.getSerializable("homework", HomeworkTypeBean.class);
+        return (HomeworkTypeBean) bundle.getSerializable("homework");
+    }
+
+    /**
+     * 跳转作业书
+     */
+    public static void gotoHomeworkBookDetails(Context context, HomeworkTypeBean typeBean,int messageIndex) {
+        ActivityManager.getInstance().checkHomeworkBookIsExist(typeBean);
+        Intent intent = new Intent(context, HomeworkBookDetailsActivity.class);
+        setHomeworkTypeBundle(intent,typeBean);
+        intent.putExtra("messageIndex", messageIndex);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
+        context.startActivity(intent);
     }
 
     /**
@@ -310,7 +309,7 @@ public class MethodManager {
      * @param page    调转指定页码（正常-1跳转最后一页）
      * @param messageIndex 选中作业下标
      */
-    public static void gotoHomeworkDrawing(Context context, HomeworkTypeBean item, int page,int messageIndex) {
+    public static void gotoHomeworkDrawing(Context context, HomeworkTypeBean item,int page,int messageIndex) {
         ActivityManager.getInstance().checkHomeworkDrawingIsExist(item);
         Intent intent = new Intent(context, HomeworkDrawingActivity.class);
         setHomeworkTypeBundle(intent,item);
@@ -327,10 +326,21 @@ public class MethodManager {
      * @param messageIndex 选中作业下标
      */
     public static void gotoHomeworkRecord(Context context, HomeworkTypeBean item, int messageIndex) {
-        ActivityManager.getInstance().finishActivity(RecordActivity.class.getName());
-        Intent intent = new Intent(context, RecordActivity.class);
+        ActivityManager.getInstance().finishActivity(HomeworkRecordActivity.class.getName());
+        Intent intent = new Intent(context, HomeworkRecordActivity.class);
         setHomeworkTypeBundle(intent,item);
         intent.putExtra("messageIndex", messageIndex);
+        context.startActivity(intent);
+    }
+
+
+    /**
+     * 跳转录音作业本
+     */
+    public static void gotoHomeworkRecordList(Context context, HomeworkTypeBean item) {
+        Intent intent = new Intent(context, HomeworkRecordListActivity.class);
+        setHomeworkTypeBundle(intent,item);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }
 
@@ -340,30 +350,18 @@ public class MethodManager {
      *
      * @param context
      * @param item    作业分类
-     * @param page    调转指定页码（正常-1跳转最后一页）
+     * @param page
      */
-    public static void gotoHomeworkReelDrawing(Context context, HomeworkTypeBean item, int page) {
+    public static void gotoHomeworkReelDrawing(Context context, HomeworkTypeBean item,int page, int messageIndex) {
         ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item);
         Intent intent = new Intent(context, HomeworkPaperDrawingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("homework", item);
-        intent.putExtra("homeworkBundle", bundle);
+        setHomeworkTypeBundle(intent,item);
         intent.putExtra("page", page);
+        intent.putExtra("messageIndex", messageIndex);
         intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
-    /**
-     * 跳转录音作业本
-     */
-    public static void gotoHomeworkRecord(Context context, HomeworkTypeBean item) {
-        Intent intent = new Intent(context, RecordListActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("homework", item);
-        intent.putExtra("homeworkBundle", bundle);
-        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
-        context.startActivity(intent);
-    }
 
     /**
      * 转跳考卷

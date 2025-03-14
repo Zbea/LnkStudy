@@ -62,7 +62,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             walletPresenter.getXdList(false)
             walletPresenter.accounts()
         }

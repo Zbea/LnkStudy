@@ -24,7 +24,7 @@ import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
 import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_content.rv_list
 import java.io.File
@@ -59,7 +59,7 @@ class CloudPaintingDrawingFragment : BaseCloudFragment() {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             fetchData()
         }
     }
@@ -150,13 +150,11 @@ class CloudPaintingDrawingFragment : BaseCloudFragment() {
                             DataUpdateManager.createDataUpdate(5,typeBean.typeId,1, Gson().toJson(typeBean))
 
                             //存储画本内容
-                            val jsonArray=JsonParser().parse(item.contentJson).asJsonArray
-                            for (json in jsonArray){
-                                val drawingBean=Gson().fromJson(json, PaintingDrawingBean::class.java)
+                            val contents=Gson().fromJson(item.contentJson, object : TypeToken<List<PaintingDrawingBean>>() {}.type) as MutableList<PaintingDrawingBean>
+                            for (drawingBean in contents){
                                 drawingBean.id=null
                                 drawingBean.cloudId=typeBean.typeId
                                 drawingBean.path=path+"/"+File(drawingBean.path).name
-                                drawingBean.page=jsonArray.indexOf(json)
                                 val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(drawingBean)
                                 //创建本地画本增量更新
                                 DataUpdateManager.createDataUpdate(5,id.toInt(),2,typeBean.typeId, Gson().toJson(drawingBean),drawingBean.path)

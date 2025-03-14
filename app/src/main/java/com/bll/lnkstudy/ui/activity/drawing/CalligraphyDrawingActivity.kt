@@ -45,7 +45,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingLists = PaintingDrawingDaoManager.getInstance().queryAllByType(1,typeId)
 
         if (paintingLists.isNotEmpty()) {
-            paintingDrawingBean = paintingLists[paintingLists.size - 1]
+            paintingDrawingBean = paintingLists.last()
             page = paintingLists.size - 1
         } else {
             newPaintingContent()
@@ -89,7 +89,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         for (item in paintingLists){
             val itemList= ItemList()
             itemList.name=item.title
-            itemList.page=item.page
+            itemList.page=paintingLists.indexOf(item)
             itemList.isEdit=true
             if (titleStr != item.title) {
                 titleStr = item.title
@@ -251,7 +251,6 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.cloudId=typeId
         paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_details_bg_2)
         page = paintingLists.size
-        paintingDrawingBean?.page=page
         paintingLists.add(paintingDrawingBean!!)
 
         val id=PaintingDrawingDaoManager.getInstance().insertOrReplaceGetId(paintingDrawingBean)

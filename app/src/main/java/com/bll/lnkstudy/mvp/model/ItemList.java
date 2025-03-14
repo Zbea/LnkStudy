@@ -3,6 +3,7 @@ package com.bll.lnkstudy.mvp.model;
 import android.graphics.drawable.Drawable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemList implements Serializable,Comparable<ItemList> {
@@ -22,14 +23,6 @@ public class ItemList implements Serializable,Comparable<ItemList> {
     public int resId;
     public boolean isEdit;//目录可以修改
     public boolean isAdd;//提交选中页码
-
-    public boolean isSelfCorrect;//是否自批
-    public int typeId;
-    public int submitState;//0提交1不提交
-    public String question;
-    public int questionType;//-1未加入模板0空模板
-    public int questionMode;//1打分
-    public String answerUrl;//答案
 
     public ItemList() {
     }

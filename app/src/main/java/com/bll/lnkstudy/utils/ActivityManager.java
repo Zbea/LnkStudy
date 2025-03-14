@@ -2,11 +2,12 @@ package com.bll.lnkstudy.utils;
 
 import android.app.Activity;
 
+import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.book.TextbookBean;
 import com.bll.lnkstudy.ui.activity.book.TextBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
-import com.bll.lnkstudy.ui.activity.book.HomeworkBookDetailsActivity;
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
@@ -150,7 +151,7 @@ public class ActivityManager {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkBookDetailsActivity.class.getName())) {
-                HomeworkTypeBean beam= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
+                HomeworkTypeBean beam=  MethodManager.getHomeworkTypeBundle( activity.getIntent());
                 if (beam.typeId==typeBean.typeId){
                     activity.finish();
                     it.remove();
@@ -170,7 +171,7 @@ public class ActivityManager {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkDrawingActivity.class.getName())) {
-                HomeworkTypeBean homeworkType= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
+                HomeworkTypeBean homeworkType=  MethodManager.getHomeworkTypeBundle( activity.getIntent());
                 if (Objects.equals(item.course, homeworkType.course) &&item.typeId ==homeworkType.typeId){
                     activity.finish();
                     it.remove();
@@ -191,7 +192,7 @@ public class ActivityManager {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
             if (activity.getClass().getName().equals(HomeworkPaperDrawingActivity.class.getName())) {
-                HomeworkTypeBean bean= (HomeworkTypeBean) activity.getIntent().getBundleExtra("homeworkBundle").getSerializable("homework");
+                HomeworkTypeBean bean= MethodManager.getHomeworkTypeBundle( activity.getIntent());
                 if (Objects.equals(bean.course, typeBean.course) && bean.typeId==typeBean.typeId){
                     activity.finish();
                     it.remove();

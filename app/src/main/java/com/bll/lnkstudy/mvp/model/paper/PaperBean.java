@@ -36,17 +36,18 @@ public class PaperBean {
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> drawPaths;
-    public int page;
+    public long date;
     public int correctMode;//批改模式
     public String score;//成绩
     public String correctJson;//批改详情
     public String answerUrl;
     public int scoreMode;
-    @Generated(hash = 1034147635)
-    public PaperBean(Long id, long userId, int contentId, String course, int paperTypeId, int typeId,
-            int grade, String typeName, String title, String filePath, List<String> paths,
-            List<String> drawPaths, int page, int correctMode, String score, String correctJson,
-            String answerUrl, int scoreMode) {
+    @Generated(hash = 117013680)
+    public PaperBean(Long id, long userId, int contentId, String course,
+            int paperTypeId, int typeId, int grade, String typeName, String title,
+            String filePath, List<String> paths, List<String> drawPaths, long date,
+            int correctMode, String score, String correctJson, String answerUrl,
+            int scoreMode) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -59,7 +60,7 @@ public class PaperBean {
         this.filePath = filePath;
         this.paths = paths;
         this.drawPaths = drawPaths;
-        this.page = page;
+        this.date = date;
         this.correctMode = correctMode;
         this.score = score;
         this.correctJson = correctJson;
@@ -93,11 +94,29 @@ public class PaperBean {
     public void setCourse(String course) {
         this.course = course;
     }
+    public int getPaperTypeId() {
+        return this.paperTypeId;
+    }
+    public void setPaperTypeId(int paperTypeId) {
+        this.paperTypeId = paperTypeId;
+    }
     public int getTypeId() {
         return this.typeId;
     }
     public void setTypeId(int typeId) {
         this.typeId = typeId;
+    }
+    public int getGrade() {
+        return this.grade;
+    }
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+    public String getTypeName() {
+        return this.typeName;
+    }
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
     public String getTitle() {
         return this.title;
@@ -123,11 +142,11 @@ public class PaperBean {
     public void setDrawPaths(List<String> drawPaths) {
         this.drawPaths = drawPaths;
     }
-    public int getPage() {
-        return this.page;
+    public long getDate() {
+        return this.date;
     }
-    public void setPage(int page) {
-        this.page = page;
+    public void setDate(long date) {
+        this.date = date;
     }
     public int getCorrectMode() {
         return this.correctMode;
@@ -159,25 +178,5 @@ public class PaperBean {
     public void setScoreMode(int scoreMode) {
         this.scoreMode = scoreMode;
     }
-    public int getPaperTypeId() {
-        return this.paperTypeId;
-    }
-    public void setPaperTypeId(int paperTypeId) {
-        this.paperTypeId = paperTypeId;
-    }
-    public String getTypeName() {
-        return this.typeName;
-    }
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-    public int getGrade() {
-        return this.grade;
-    }
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-
-
 
 }

@@ -25,22 +25,18 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
             val ivImage=getView<ImageView>(R.id.iv_image)
             when(item.state){
                 1->{
-                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_reel))
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_3)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
                 2->{
-                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
                 3->{
-                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_2)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
                 4->{
-                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
                     setGone(R.id.tv_grade,!item.isCloud)
                     setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
                     setText(R.id.tv_name, "")
@@ -51,7 +47,6 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
                 6->{
-                    setText(R.id.tv_message, mContext.getString(R.string.homework_receiver_message))
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
@@ -61,7 +56,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 setTextColor(R.id.tv_pg, mContext.getColor(R.color.black))
                 getView<TextView>(R.id.tv_pg).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                setTextColor(R.id.tv_pg, mContext.getColor(R.color.black_30))
+                setTextColor(R.id.tv_pg, mContext.getColor(R.color.black_50))
                 getView<TextView>(R.id.tv_pg).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
             }
 
@@ -69,7 +64,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 setTextColor(R.id.tv_message, mContext.getColor(R.color.black))
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                setTextColor(R.id.tv_message, mContext.getColor(R.color.black_30))
+                setTextColor(R.id.tv_message, mContext.getColor(R.color.black_50))
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
             }
 

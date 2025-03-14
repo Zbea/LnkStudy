@@ -64,7 +64,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
 
     override fun initData() {
         initChangeScreenData()
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             presenter.getClassGroupList(true)
         }
         else{

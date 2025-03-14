@@ -17,13 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
-import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -184,7 +182,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mCommonPresenter.getCommon()
         }
     }
@@ -344,6 +342,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         KeyboardUtils.hideSoftKeyboard(this)
     }
 
+    protected fun showToastLong(s:String){
+        SToast.showTextLong(getCurrentScreenPos(),s)
+    }
+
+    protected fun showToastLong(sId:Int){
+        SToast.showTextLong(getCurrentScreenPos(),sId)
+    }
+
     protected fun showToast(s:String){
         SToast.showText(getCurrentScreenPos(),s)
     }
@@ -373,10 +379,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     protected fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
-    }
-
-    protected fun closeNetwork(){
-        NetworkUtil(this).toggleNetwork(false)
     }
 
     /**

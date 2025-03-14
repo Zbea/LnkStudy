@@ -101,7 +101,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     override fun onResume() {
         super.onResume()
-        if (NetworkUtil(this).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             fetchCommonData()
             disMissView(ll_tips)
         }

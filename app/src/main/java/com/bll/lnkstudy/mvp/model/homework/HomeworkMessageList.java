@@ -20,6 +20,7 @@ public class HomeworkMessageList implements Serializable {
         @SerializedName("commonTypeId")
         public int typeId;
         public String createTime;
+        public int minute;//标准时间
         public long endTime;
         public int submitState;//0提交 1不提交
         public String subject;

@@ -54,21 +54,15 @@ public class PaperDaoManager {
 
     }
 
-    /**
-     * @param course //科目id
-     * @param categoryId //分组id
-     * @return
-     */
     public List<PaperBean> queryAll(String course, int categoryId) {
         WhereCondition whereCondition1= PaperBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition2= PaperBeanDao.Properties.PaperTypeId.eq(categoryId);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).orderAsc(PaperBeanDao.Properties.Date).build().list();
     }
-
 
     public List<PaperBean> search(String title) {
         WhereCondition whereCondition1= PaperBeanDao.Properties.Title.like("%"+title+"%");
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition1).orderDesc(PaperBeanDao.Properties.Date).build().list();
     }
 
     public void delete(String course, int categoryId){

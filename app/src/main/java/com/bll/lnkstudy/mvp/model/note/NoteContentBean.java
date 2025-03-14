@@ -27,12 +27,10 @@ public class NoteContentBean implements Serializable {
     public String title;
     public String resId;//背景id
     public String filePath;//文件路径
-    public int page;//页码
     public int grade;//年级
-
-    @Generated(hash = 1594347445)
-    public NoteContentBean(Long id, long userId, String typeStr, String noteTitle, long date,
-            String title, String resId, String filePath, int page, int grade) {
+    @Generated(hash = 119871778)
+    public NoteContentBean(Long id, long userId, String typeStr, String noteTitle,
+            long date, String title, String resId, String filePath, int grade) {
         this.id = id;
         this.userId = userId;
         this.typeStr = typeStr;
@@ -41,7 +39,6 @@ public class NoteContentBean implements Serializable {
         this.title = title;
         this.resId = resId;
         this.filePath = filePath;
-        this.page = page;
         this.grade = grade;
     }
     @Generated(hash = 112846212)
@@ -94,12 +91,6 @@ public class NoteContentBean implements Serializable {
     }
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-    public int getPage() {
-        return this.page;
-    }
-    public void setPage(int page) {
-        this.page = page;
     }
     public int getGrade() {
         return this.grade;

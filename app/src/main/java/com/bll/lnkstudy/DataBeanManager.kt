@@ -12,6 +12,8 @@ import java.util.*
 
 object DataBeanManager {
 
+    var homeworkMessages= mutableListOf<Any>()
+
      val listTitle = arrayOf(
         "首页","书架",
         "课本","作业",
@@ -750,10 +752,10 @@ object DataBeanManager {
     fun operatingGuideInfo():List<MultiItemEntity>{
         val list= mutableListOf<MultiItemEntity>()
         val types= mutableListOf("一、主页面","二、管理中心","三、作业书籍","四、学习工具")
-        val mainStrs= mutableListOf("注册","物理按键/功能按钮","状态栏按钮","窗口功能","账户/班群","书架/作业","课本/试卷","视教/笔记","学情/书画")
+        val mainStrs= mutableListOf("注册","物理按键功能按钮","状态栏按钮","窗口功能","账户/班群","书架/作业","课本/试卷","视教/笔记","学情/书画")
         val managerStrs= mutableListOf("管理中心","书城","资源","云书库","设置/声音","设置/一键功能","远程在校","我的壁纸","我的钱包")
-        val bookStrs= mutableListOf("课本/作业","书籍/作业卷","朗读作业本/错题本","我的画本/我的书法","日记本/随笔","测验卷/考卷","作业自行批改")
-        val toolStrs= mutableListOf("学习计划创建","学习计划列表","我的工具","我的台历","截屏","几何绘图")
+        val bookStrs= mutableListOf("课本/作业","书籍/作业卷","教辅本/作文本","朗读作业本/错题本","作业提交流程","作业自行批改","测验卷/考卷","日记本/随笔","我的画本/我的书法")
+        val toolStrs= mutableListOf("学习计划创建","学习计划列表","我的工具","我的日历","截屏","几何绘图")
         val childTypes= mutableListOf(mainStrs,managerStrs,bookStrs,toolStrs)
         for (type in types){
             val index=types.indexOf(type)

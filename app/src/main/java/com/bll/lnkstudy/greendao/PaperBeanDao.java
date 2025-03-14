@@ -39,7 +39,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         public final static Property FilePath = new Property(9, String.class, "filePath", false, "FILE_PATH");
         public final static Property Paths = new Property(10, String.class, "paths", false, "PATHS");
         public final static Property DrawPaths = new Property(11, String.class, "drawPaths", false, "DRAW_PATHS");
-        public final static Property Page = new Property(12, int.class, "page", false, "PAGE");
+        public final static Property Date = new Property(12, long.class, "date", false, "DATE");
         public final static Property CorrectMode = new Property(13, int.class, "correctMode", false, "CORRECT_MODE");
         public final static Property Score = new Property(14, String.class, "score", false, "SCORE");
         public final static Property CorrectJson = new Property(15, String.class, "correctJson", false, "CORRECT_JSON");
@@ -74,7 +74,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
                 "\"FILE_PATH\" TEXT," + // 9: filePath
                 "\"PATHS\" TEXT," + // 10: paths
                 "\"DRAW_PATHS\" TEXT," + // 11: drawPaths
-                "\"PAGE\" INTEGER NOT NULL ," + // 12: page
+                "\"DATE\" INTEGER NOT NULL ," + // 12: date
                 "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 13: correctMode
                 "\"SCORE\" TEXT," + // 14: score
                 "\"CORRECT_JSON\" TEXT," + // 15: correctJson
@@ -131,7 +131,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         if (drawPaths != null) {
             stmt.bindString(12, drawPathsConverter.convertToDatabaseValue(drawPaths));
         }
-        stmt.bindLong(13, entity.getPage());
+        stmt.bindLong(13, entity.getDate());
         stmt.bindLong(14, entity.getCorrectMode());
  
         String score = entity.getScore();
@@ -194,7 +194,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         if (drawPaths != null) {
             stmt.bindString(12, drawPathsConverter.convertToDatabaseValue(drawPaths));
         }
-        stmt.bindLong(13, entity.getPage());
+        stmt.bindLong(13, entity.getDate());
         stmt.bindLong(14, entity.getCorrectMode());
  
         String score = entity.getScore();
@@ -234,7 +234,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // filePath
             cursor.isNull(offset + 10) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 10)), // paths
             cursor.isNull(offset + 11) ? null : drawPathsConverter.convertToEntityProperty(cursor.getString(offset + 11)), // drawPaths
-            cursor.getInt(offset + 12), // page
+            cursor.getLong(offset + 12), // date
             cursor.getInt(offset + 13), // correctMode
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // score
             cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // correctJson
@@ -258,7 +258,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         entity.setFilePath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setPaths(cursor.isNull(offset + 10) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 10)));
         entity.setDrawPaths(cursor.isNull(offset + 11) ? null : drawPathsConverter.convertToEntityProperty(cursor.getString(offset + 11)));
-        entity.setPage(cursor.getInt(offset + 12));
+        entity.setDate(cursor.getLong(offset + 12));
         entity.setCorrectMode(cursor.getInt(offset + 13));
         entity.setScore(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setCorrectJson(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
