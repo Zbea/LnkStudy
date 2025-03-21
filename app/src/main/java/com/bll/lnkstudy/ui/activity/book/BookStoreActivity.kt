@@ -6,7 +6,6 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DownloadBookDialog
@@ -23,6 +22,8 @@ import com.bll.lnkstudy.mvp.presenter.BookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.BookAdapter
 import com.bll.lnkstudy.utils.FileBigDownManager
+import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -200,8 +201,8 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     //下载book
     private fun downLoadStart(url: String,book: BookBean): BaseDownloadTask? {
         showLoading()
-        val fileName = book.bookId.toString()//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.downloadUrl))
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
+        val targetFileStr = FileAddress().getPathBook(fileName+ FileUtils.getUrlFormat(book.downloadUrl))
         val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {

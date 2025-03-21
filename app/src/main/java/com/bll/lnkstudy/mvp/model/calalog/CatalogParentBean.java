@@ -5,7 +5,7 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.io.Serializable;
 
-public class CatalogParent extends AbstractExpandableItem<CatalogChild> implements Serializable, MultiItemEntity {
+public class CatalogParentBean extends AbstractExpandableItem<CatalogChildBean> implements Serializable, MultiItemEntity {
 
     public String title;
     public int pageNumber;

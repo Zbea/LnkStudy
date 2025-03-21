@@ -121,7 +121,7 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
                     item.commitJson=""
                     HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
                     //更新增量数据
-                    DataUpdateManager.editDataUpdate(7, item.id.toInt(),2,item.bookId ,Gson().toJson(item))
+                    DataUpdateManager.editDataUpdate(7, item.id.toInt(),1,item.bookId ,Gson().toJson(item))
                 }
                 ActivityManager.getInstance().finishActivity(HomeworkBookDetailsActivity::class.java.name)
             }
@@ -171,7 +171,7 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
             showView(tv_standartTime)
             tv_standartTime.text="标准："+commitItem?.standardTime+"分钟"
         }
-        tv_takeTime.text="完成："+DateUtils.longToMinute(commitItem?.takeTime!!)+"分钟"
+        tv_takeTime.text="用时："+DateUtils.longToMinute(commitItem?.takeTime!!)+"分钟"
 
         iv_score_up.setOnClickListener {
             rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))

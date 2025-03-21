@@ -471,6 +471,16 @@ public class FileUtils {
     }
 
     /**
+     * 获取url的格式后缀
+     *
+     * @param url
+     * @return
+     */
+    public static String getUrlFormat(String url) {
+        return url.substring(url.lastIndexOf("."));
+    }
+
+    /**
      * name1.txt   -> name1
      * @param fileNameStr
      * @return
@@ -489,6 +499,7 @@ public class FileUtils {
         String fileNameStr=file.getName();
         return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
     }
+
 
     public static boolean isExist(String path){
         return new File(path).exists();

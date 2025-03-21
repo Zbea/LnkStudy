@@ -14,6 +14,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
@@ -108,7 +109,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
     //下载book
     private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
         showLoading()
-        val fileName = book.bookId.toString()//文件名
+        val fileName = MD5Utils.digest(book.bookId.toString())
         val zipPath = FileAddress().getPathZip(fileName)
         val download = FileBigDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
@@ -156,7 +157,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
                     subject=book.subject
                     downloadUrl=book.downloadUrl
                     bookPath=fileTargetPath
-                    bookDrawPath=FileAddress().getPathHomeworkBookDraw(File(fileTargetPath).name)
+                    bookDrawPath=FileAddress().getPathHomeworkBookDraw(MD5Utils.digest(book.bookId.toString()))
                     time=System.currentTimeMillis()
                 }
                 HomeworkBookDaoManager.getInstance().insertOrReplaceBook(homeworkBookBean)

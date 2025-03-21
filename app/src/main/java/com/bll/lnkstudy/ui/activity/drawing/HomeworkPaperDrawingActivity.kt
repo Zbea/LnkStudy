@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import androidx.core.view.isVisible
@@ -181,6 +180,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                         override fun cancel() {
                         }
                         override fun ok() {
+                            showLoading()
+                            setDisableTouchInput(true)
                             commit()
                         }
                     })
@@ -219,17 +220,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         val count=if (isExpand) pageCount-2 else pageCount-1
         if (page<count){
             page+=if (isExpand)2 else 1
-            Handler().postDelayed({
-                onContent()
-            },if (isDrawing())500 else 0)
+            onContent()
         }
         else{
             if (currentPosition<papers.size-1){
                 currentPosition+=1
                 page=0
-                Handler().postDelayed({
-                    onContent()
-                },if (isDrawing())500 else 0)
+                onContent()
             }
         }
     }
@@ -237,17 +234,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onPageUp() {
         if (page>0){
             page-=if (isExpand)2 else 1
-            Handler().postDelayed({
-                onContent()
-            },if (isDrawing())500 else 0)
+            onContent()
         }
         else{
             if (currentPosition>0){
                 currentPosition-=1
                 page=0
-                Handler().postDelayed({
-                    onContent()
-                },if (isDrawing())500 else 0)
+                onContent()
             }
         }
     }
@@ -318,10 +311,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     /**
      * 需要提交且状态为0
-     * 获取当前是否可写（可写需要翻页延迟，以至于保存合图时间足够）
      */
     private fun isDrawing():Boolean{
-        return homeworkCommitInfoItem!=null&&paper?.state==0
+        return isHomework&&paper?.state==0&&paper?.endTime!!>0
     }
 
     /**
@@ -368,7 +360,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
     override fun onElikSava_a() {
         if (isDrawing()){
-            BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page))
+            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(page))
         }
         refreshDataUpdate()
     }
@@ -376,10 +368,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun onElikSava_b() {
         if (isDrawing()){
             if (isExpand){
-                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
+                BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page+1))
             }
             else{
-                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page))
+                BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page))
             }
         }
         refreshDataUpdate()
@@ -405,13 +397,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 提交
      */
     private fun commit(){
-        setDisableTouchInput(true)
         homeworkCommitInfoItem?.takeTime=System.currentTimeMillis()- paper?.startDate!!
         homeworkCommitInfoItem?.paths=paper?.paths
         if (paper?.state==0){
             for (i in paper?.paths!!.indices){
                 val mergePath=getPathMergeStr(i)
-                if (File(mergePath).exists()){
+                if (FileUtils.isExist(mergePath)){
                     FileUtils.replaceFileContents(mergePath, paper?.paths!![i])
                 }
             }
@@ -421,11 +412,11 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             daoManager?.insertOrReplace(paper)
             refreshDataUpdate()
         }
+
         if (homeworkCommitInfoItem?.isSelfCorrect == true){
             gotoSelfCorrect()
         }
         else{
-            showLoading()
             mUploadPresenter.getToken()
         }
     }

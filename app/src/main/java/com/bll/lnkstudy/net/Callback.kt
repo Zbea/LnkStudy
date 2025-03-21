@@ -62,6 +62,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     }
 
     override fun onError(@NonNull e: Throwable) {
+        failed(BaseResult())
         e.printStackTrace()
         if (isShowToast){
             when (ExceptionHandle.handleException(e).code) {

@@ -68,6 +68,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     private var longClickPosition = 0
     private lateinit var startActivityLauncher: ActivityResultLauncher<Intent>
 
+    override fun onTypeError() {
+        countDownTasks?.countDown()
+    }
+
     override fun onTypeList(list: MutableList<HomeworkTypeBean>) {
         //获取老师创建作业分类id，用来验证本地作业分类是否可删
         val createTypeIds = mutableListOf<Int>()
@@ -527,8 +531,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     HomeworkBookDaoManager.getInstance().delete(homeworkBook)
                     HomeworkBookCorrectDaoManager.getInstance().delete(homeworkBook.bookId)
                     //删除增量更新
-                    DataUpdateManager.deleteDateUpdate(7, item.bookId, 1)
-                    DataUpdateManager.deleteDateUpdate(7, item.bookId, 2)
+                    DataUpdateManager.deleteDateUpdate(7, item.bookId)
                 }
             }
             5 -> {
@@ -612,7 +615,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         }
         val paths = mutableListOf<String>()
         for (homework in homeworkContents) {
-            paths.add(homework.path)
+            paths.add(FileAddress().getPathHomeworkDrawingMerge(homework.path))
         }
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
             .startMultiTaskDownLoad(
@@ -645,9 +648,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         val homeworkBookBean = HomeworkBookDaoManager.getInstance().queryBookByID(typeBean.bookId) ?: return
         //拿到对应作业的所有本地图片地址
         val paths = mutableListOf<String>()
-        for (i in item.pageStr.split(",")) {
-            val path=FileUtils.getIndexFile(homeworkBookBean.bookPath,i.toInt() - 1).path
-            paths.add(path)
+        for (page in item.pageStr.split(",")) {
+            paths.add(FileAddress().getPathHomeworkBookCorrectFile(homeworkBookBean.bookDrawPath!!,page.toInt()))
         }
         //获得下载地址
         val images = item.changeUrl.split(",").toMutableList()
@@ -665,7 +667,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             if (bookCorrectBean!=null) {
                                 bookCorrectBean.state = 2
                                 HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
-                                DataUpdateManager.editDataUpdate(7, bookCorrectBean.id.toInt(), 2, typeBean.bookId, Gson().toJson(bookCorrectBean))
+                                DataUpdateManager.editDataUpdate(7, bookCorrectBean.id.toInt(), 1, typeBean.bookId, Gson().toJson(bookCorrectBean))
                             } else {
                                 bookCorrectBean = HomeworkBookCorrectBean()
                                 bookCorrectBean.startTime = System.currentTimeMillis()
@@ -675,8 +677,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 bookCorrectBean.state = 2//已完成
                                 bookCorrectBean.startTime=System.currentTimeMillis()
                                 val id = HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+                                val path=FileAddress().getPathHomeworkBookDrawPath(homeworkBookBean.bookDrawPath!!,page.toInt())
                                 //更新增量数据
-                                DataUpdateManager.createDataUpdate(7, id.toInt(), 2, homeworkBookBean.bookId, Gson().toJson(bookCorrectBean), "")
+                                DataUpdateManager.createDataUpdate(7, id.toInt(), 1, homeworkBookBean.bookId, Gson().toJson(bookCorrectBean), path)
                             }
                         }
                     }
@@ -697,7 +700,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         //拿到对应作业的所有本地图片地址
         val paths = mutableListOf<String>()
         for (page in item.page.split(",")) {
-            paths.add(FileUtils.getIndexFile(homeworkBookBean.bookPath,page.toInt()).path)
+            paths.add(FileAddress().getPathHomeworkBookCorrectFile(homeworkBookBean.bookDrawPath!!,page.toInt()))
         }
         //获得下载地址
         val images = item.submitUrl.split(",").toMutableList()
@@ -722,7 +725,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 bookCorrectBean.scoreMode = item.questionMode
                                 bookCorrectBean.answerUrl = item.answerUrl
                                 HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
-                                DataUpdateManager.editDataUpdate(7, bookCorrectBean.id.toInt(), 2, typeBean.bookId, Gson().toJson(bookCorrectBean))
+                                DataUpdateManager.editDataUpdate(7, bookCorrectBean.id.toInt(), 1, typeBean.bookId, Gson().toJson(bookCorrectBean))
                             } else {
                                 bookCorrectBean = HomeworkBookCorrectBean()
                                 bookCorrectBean.homeworkTitle = item.title
@@ -736,8 +739,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 bookCorrectBean.state = 2//已完成
                                 bookCorrectBean.startTime=System.currentTimeMillis()
                                 val id = HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+                                val path=FileAddress().getPathHomeworkBookDrawPath(homeworkBookBean.bookDrawPath!!,page.toInt())
                                 //更新增量数据
-                                DataUpdateManager.createDataUpdate(7, id.toInt(), 2, homeworkBookBean.bookId, Gson().toJson(bookCorrectBean), "")
+                                DataUpdateManager.createDataUpdate(7, id.toInt(), 1, homeworkBookBean.bookId, Gson().toJson(bookCorrectBean), path)
                             }
                         }
                     }
@@ -779,7 +783,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         //拿到对应作业的所有本地图片地址
         val paths = mutableListOf<String>()
         for (homework in homeworkContents) {
-            paths.add(homework.path)
+            paths.add(FileAddress().getPathHomeworkDrawingMerge(homework.path))
         }
 
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)

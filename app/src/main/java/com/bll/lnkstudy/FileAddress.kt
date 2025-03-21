@@ -14,6 +14,7 @@ import com.bll.lnkstudy.Constants.Companion.TEXTBOOK_PATH
 import com.bll.lnkstudy.Constants.Companion.ZIP_PATH
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.utils.SPUtil
+import java.io.File
 
 class FileAddress {
 
@@ -38,6 +39,24 @@ class FileAddress {
     }
     fun getPathHomeworkBookDraw(fileName: String):String{
         return "$HOMEWORK_PATH/$mUserId/homeworkBook/${fileName}/drawContent"
+    }
+
+    fun getPathHomeworkBookDrawPath(bookDraw: String,page:Int):String{
+        return bookDraw+"/${page+1}"
+    }
+
+    /**
+     * 教辅本手写地址
+     */
+    fun getPathHomeworkBookDrawFile(bookDraw: String,page:Int):String{
+        return bookDraw+"/${page+1}/draw.png"
+    }
+
+    /**
+     * 教辅本合图地址
+     */
+    fun getPathHomeworkBookCorrectFile(bookDraw: String,page:Int):String{
+        return bookDraw+"/${page+1}/correct.png"
     }
 
     /**
@@ -112,6 +131,13 @@ class FileAddress {
      */
     fun getPathHomework(course:String, typeId:Int?, contentId: Int?,index:Int):String{
         return "$HOMEWORK_PATH/$mUserId/$course/$typeId/$contentId/$index"
+    }
+
+    /**
+     * 作业手写合图路径
+     */
+    fun getPathHomeworkDrawingMerge(path:String):String{
+        return File(path).parent+"/merge.png"
     }
 
     /**

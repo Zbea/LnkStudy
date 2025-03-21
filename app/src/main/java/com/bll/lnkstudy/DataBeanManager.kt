@@ -2,8 +2,8 @@ package com.bll.lnkstudy
 
 import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
-import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
-import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
 import com.bll.lnkstudy.utils.ToolUtils
@@ -759,16 +759,16 @@ object DataBeanManager {
         val childTypes= mutableListOf(mainStrs,managerStrs,bookStrs,toolStrs)
         for (type in types){
             val index=types.indexOf(type)
-            val catalogParent = CatalogParent()
-            catalogParent.title=type
+            val catalogParentBean = CatalogParentBean()
+            catalogParentBean.title=type
             for (childType in childTypes[index]){
-                val catalogChild = CatalogChild()
-                catalogChild.title = childType
-                catalogChild.parentPosition=index
-                catalogChild.pageNumber = childTypes[index].indexOf(childType)+1
-                catalogParent.addSubItem(catalogChild)
+                val catalogChildBean = CatalogChildBean()
+                catalogChildBean.title = childType
+                catalogChildBean.parentPosition=index
+                catalogChildBean.pageNumber = childTypes[index].indexOf(childType)+1
+                catalogParentBean.addSubItem(catalogChildBean)
             }
-            list.add(catalogParent)
+            list.add(catalogParentBean)
         }
         return list
     }

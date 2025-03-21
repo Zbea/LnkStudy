@@ -161,6 +161,7 @@ public interface IContractView {
         default void onCommitDetails(HomeworkCommitMessageList list){}
         default void onTypeList(List<HomeworkTypeBean> list){}
         default void onTypeParentList(List<ParentTypeBean> list) {}
+        default void onTypeError() {}
         default void onMessageList(Map<String, HomeworkMessageList> map){};
         default void onParentMessageList(Map<String, ParentHomeworkMessageList> map){};
         default void onPaperList(HomeworkPaperList list){};

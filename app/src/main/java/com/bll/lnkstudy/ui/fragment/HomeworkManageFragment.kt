@@ -274,7 +274,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                         startUpload(cloudList, nullItems)
                     } else {
                         FileUploadManager(token).apply {
-                            startZipUpload(homeworkBook.bookPath, File(homeworkBook.bookPath).name)
+                            startZipUpload(homeworkBook.bookDrawPath, homeworkBook.bookId.toString()+"draw")
                             setCallBack {
                                 cloudList.add(CloudListBean().apply {
                                     this.type = 2
@@ -285,6 +285,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                                     contentJson = Gson().toJson(homeworkBook)
                                     contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
                                     downloadUrl = it
+                                    zipUrl=homeworkBook.downloadUrl
                                     bookId = typeBean.bookId
                                 })
                                 startUpload(cloudList, nullItems)
@@ -364,10 +365,14 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
 
         FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
         FileUtils.deleteHomework(File(FileAddress().getPathScreen("未分类")).parent)
-        //清除本地增量数据
+
         DataUpdateManager.clearDataUpdate(2)
+        DataUpdateManager.clearDataUpdate(7)
+
         val map=HashMap<String,Any>()
         map["type"]=2
+        mDataUploadPresenter.onDeleteData(map)
+        map["type"]=7
         mDataUploadPresenter.onDeleteData(map)
     }
 

@@ -42,6 +42,7 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
     private var homeworkType: HomeworkTypeBean? = null
     private var isHomework=false
     private var messageBean:MessageBean?=null
+    private var isCommit=true
     //语音文件保存路径
     private var pathFile: String? = null
     //语音操作对象
@@ -74,7 +75,7 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
     }
 
     override fun onCommitSuccess() {
-        showToastLong(R.string.toast_commit_success)
+        showToastLong(if (messageBean?.submitState==0)"朗读作业提交成功" else "朗读作业已完成")
         recordBean?.isHomework=false
         val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
         //创建增量数据
@@ -128,7 +129,7 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
 
     override fun initView() {
         setPageTitle(R.string.record_title_str)
-        setPageSetting(if (isHomework) "提交" else "保存")
+        setPageSetting(if (isHomework) (if (messageBean?.submitState==0)"提交" else "完成") else "保存")
         et_title.setText(recordBean?.title)
         et_title.setSelection(recordBean?.title?.length!!)
         tv_time.text= DateUtils.secondToString(second)

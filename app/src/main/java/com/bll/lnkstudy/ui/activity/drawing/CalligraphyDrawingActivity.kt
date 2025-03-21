@@ -213,6 +213,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         setBg_b()
         setElikLoadPath(elik_b!!, paintingDrawingBean!!.path)
         tv_page.text = "${page+1}"
+
         if (isExpand) {
             resId_a=ToolUtils.getImageResId(this,paintingDrawingBean_a?.bgRes)
             setBg_a()

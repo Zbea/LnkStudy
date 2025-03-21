@@ -26,6 +26,7 @@ import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.utils.zip.IZipCallback
@@ -305,7 +306,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
 
     //下载book
     private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
-        val fileName = book.bookId.toString()//文件名
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         val download = FileBigDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :

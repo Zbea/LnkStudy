@@ -51,6 +51,7 @@ public class FileBigDownManager {
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
                 .addHeader("Accept-Encoding", "identity")
                 .addHeader(auth, token)
+                .setForceReDownload(true)
                 .setPath(path).setListener(new FileDownloadLargeFileListener() {
                     @Override
                     protected void completed(BaseDownloadTask task) {

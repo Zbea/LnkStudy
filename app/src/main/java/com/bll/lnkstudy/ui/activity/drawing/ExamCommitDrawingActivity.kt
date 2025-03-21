@@ -10,13 +10,11 @@ import android.view.KeyEvent
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
-import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -64,7 +62,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         val commitPaths= mutableListOf<String>()
         for (i in paths.indices){
             val mergePath=getPathMergeStr(i)
-            if (File(mergePath).exists()){
+            if (FileUtils.isExist(mergePath)){
                 commitPaths.add(mergePath)
             }
             else{
@@ -115,10 +113,10 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         //设置考试模式
         setExamMode(true)
         SPUtil.putBoolean(Constants.SP_EXAM_MODE,true)
-
-        screenPos=Constants.SCREEN_RIGHT
         isExpand=true
+        screenPos=Constants.SCREEN_RIGHT
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem
+
         flags=exam?.type!!
         paths = exam?.paths!!
         pageCount = paths.size
@@ -191,19 +189,14 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         if (page<pageCount-1){
             page+=2
         }
-        Handler().postDelayed({
-            onChangeContent()
-        },500)
+        onChangeContent()
     }
 
     override fun onPageUp() {
         if (page>0){
             page-=2
         }
-        //页面切换是延迟已支持手写保存
-        Handler().postDelayed({
-            onChangeContent()
-        },500)
+        onChangeContent()
     }
 
     private fun onChangeContent(){
@@ -229,11 +222,11 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun onElikSava_a() {
-        BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(page))
+        BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(page))
     }
 
     override fun onElikSava_b() {
-        BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(page+1))
+        BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page+1))
     }
 
     /**

@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
+import com.bll.lnkstudy.Constants;
 import com.bll.lnkstudy.MyApplication;
 
 import java.io.ByteArrayOutputStream;
@@ -34,12 +35,31 @@ public class BitmapUtils {
      * @param drawPath
      * @return
      */
+    public static String mergeBitmap(String oldPath,String drawPath,String newPath){
+        Bitmap oldBitmap = BitmapFactory.decodeFile(oldPath);
+        Bitmap drawBitmap = BitmapFactory.decodeFile(drawPath);
+        if (drawBitmap != null) {
+            Bitmap mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap);
+            BitmapUtils.saveBmpGallery(mergeBitmap, newPath);
+        }
+        else {
+            BitmapUtils.saveBmpGallery(oldBitmap, newPath);
+        }
+        return oldPath;
+    }
+
+    /**
+     * 合图后返回合图路径
+     * @param oldPath
+     * @param drawPath
+     * @return
+     */
     public static String mergeBitmap(String oldPath,String drawPath){
         Bitmap oldBitmap = BitmapFactory.decodeFile(oldPath);
         Bitmap drawBitmap = BitmapFactory.decodeFile(drawPath);
         if (drawBitmap != null) {
             Bitmap mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap);
-            BitmapUtils.saveBmpGallery(MyApplication.Companion.getMContext(), mergeBitmap, oldPath);
+            BitmapUtils.saveBmpGallery(mergeBitmap, oldPath);
         }
         return oldPath;
     }
@@ -164,50 +184,10 @@ public class BitmapUtils {
 
     /**
      * 保存图片
-     * @param context
-     * @param bmp
-     * @param path 保存路径
-     * @param pcName 图片名称
-     */
-    public static void saveBmpGallery(Context context,Bitmap bmp, String path, String pcName) {
-        File file = null;
-        File parentFile=new File(path);
-        if (!parentFile.exists()){
-            parentFile.mkdirs();
-        }
-        // 声明输出流
-        FileOutputStream outStream = null;
-        try {
-            file = new File(path,pcName+".png");
-            // 获得输出流，如果文件中有内容，追加内容
-            outStream = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-        } catch (Exception e) {
-            e.getStackTrace();
-        } finally {
-            try {
-                if (outStream != null) {
-                    outStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-
-    }
-
-    /**
-     * 保存图片
-     * @param context
      * @param bmp
      * @param path 保存路径
      */
-    public static void saveBmpGallery(Context context,Bitmap bmp, String path)  {
+    public static void saveBmpGallery(Bitmap bmp, String path)  {
         File file=new File(path);
         if (!file.exists()){
             file.getParentFile().mkdirs();
@@ -232,12 +212,6 @@ public class BitmapUtils {
                 e.printStackTrace();
             }
         }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-
     }
 
     public static byte[] drawableToByte(Drawable drawable){
@@ -266,22 +240,13 @@ public class BitmapUtils {
 
     /**
      * 截图
-     * @param context
      * @param view
      * @param path
      */
-    public static void saveScreenShot(Activity context, View view, String path) {
+    public static void saveScreenShot(View view, String path) {
         new Thread(() -> {
-//            view.setDrawingCacheEnabled(true);
-//            //获取缓存的 Bitmap
-//            Bitmap drawingCache = view.getDrawingCache();
-//            //复制获取的 Bitmap
-//            Bitmap bitmap = Bitmap.createBitmap(drawingCache);
-//            //关闭视图的缓存
-//            view.setDrawingCacheEnabled(false);
-//            saveBmpGallery(context,bitmap, path);
             Bitmap bitmap = loadBitmapFromViewByCanvas(view);
-            saveBmpGallery(context,bitmap, path);
+            saveBmpGallery(bitmap, path);
         }).start();
     }
 

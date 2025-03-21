@@ -64,6 +64,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         jsonBody.put(Constants.VERSION_NO, DeviceUtil.getOtaProductVersion())
 
         val  jsonObjectRequest= JsonObjectRequest(Request.Method.POST,url,jsonBody, {
+            showLog(it.toString())
             val code= it.optInt("Code")
             val jsonObject=it.optJSONObject("Data")
             if (code==200&&jsonObject!=null){

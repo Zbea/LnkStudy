@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
@@ -28,6 +27,7 @@ import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
@@ -57,6 +57,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private lateinit var mUploadPresenter :FileUploadPresenter
     private var course = ""//科目
     private var homeworkTypeId = 0//作业分组id
+    private var contendId=0
     private var homeworkType: HomeworkTypeBean? = null
     private var isHomework=false//false本地作业 true老师布置作业
     private var homeworkContent: HomeworkContentBean? = null//当前作业内容
@@ -150,6 +151,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     }
                 }
             }
+            contendId=homeworkCommitInfoItem?.messageId!!
             homeworks =  HomeworkContentDaoManager.getInstance().queryAllByContentId(homeworkTypeId,homeworkCommitInfoItem?.messageId!!)
         } else{
             homeworks =  HomeworkContentDaoManager.getInstance().queryAllByLocalContent(course, homeworkTypeId)
@@ -195,6 +197,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     }
                     override fun ok() {
                         showLoading()
+                        setDisableTouchInput(true)
                         commit()
                     }
                 })
@@ -335,32 +338,28 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
         //已提交后不能手写，显示合图后的图片
         elik_b?.disableTouchInput(homeworkContent?.state == 1||homeworkType?.isCloud!!)
+        val drawPath_b=homeworkContent?.path!!
+        setElikLoadPath(elik_b!!, drawPath_b)
+        tv_page.text = "${page + 1}"
+
         when(homeworkContent?.state){
             0->{
-                setElikLoadPath(elik_b!!, homeworkContent!!.path)
                 MethodManager.setImageResource(this,ToolUtils.getImageResId(this, homeworkType?.contentResId),v_content_b)
             }
             else->{
-                GlideUtils.setImageUrl(this, homeworkContent?.path, v_content_b,homeworkContent?.state!!)
-                val file=File(homeworkContent?.path)
-                val drawPath=file.parent+"/draw.png"
-                setElikLoadPath(elik_b!!, drawPath)
+                GlideUtils.setImageUrl(this, FileAddress().getPathHomeworkDrawingMerge(drawPath_b), v_content_b,homeworkContent?.state!!)
             }
         }
-        tv_page.text = "${page + 1}"
-
         if (isExpand) {
             elik_a?.disableTouchInput(homeworkContent_a?.state == 1||homeworkType?.isCloud!!)
+            val drawPath_a=homeworkContent_a?.path!!
+            setElikLoadPath(elik_a!!, drawPath_a)
             when(homeworkContent_a?.state){
                 0->{
-                    setElikLoadPath(elik_a!!, homeworkContent_a!!.path)
                     MethodManager.setImageResource(this,ToolUtils.getImageResId(this, homeworkType?.contentResId),v_content_a)
                 }
                 else->{
-                    GlideUtils.setImageUrl(this, homeworkContent_a?.path, v_content_a,homeworkContent_a?.state!!)
-                    val file=File(homeworkContent_a?.path)
-                    val drawPath=file.parent+"/draw.png"
-                    setElikLoadPath(elik_b!!, drawPath)
+                    GlideUtils.setImageUrl(this, FileAddress().getPathHomeworkDrawingMerge(drawPath_a), v_content_a,homeworkContent_a?.state!!)
                 }
             }
             if (screenPos==Constants.SCREEN_RIGHT){
@@ -412,10 +411,16 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     override fun onElikSava_a() {
+        if (isHomework){
+            BitmapUtils.saveScreenShot(v_content_a, FileAddress().getPathHomeworkDrawingMerge(homeworkContent_a?.path!!))
+        }
         refreshDataUpdate(homeworkContent_a!!)
     }
 
     override fun onElikSava_b() {
+        if (isHomework){
+            BitmapUtils.saveScreenShot(v_content_b, FileAddress().getPathHomeworkDrawingMerge(homeworkContent?.path!!))
+        }
         refreshDataUpdate(homeworkContent!!)
     }
 
@@ -439,7 +444,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     //创建新的作业内容
     private fun newHomeWorkContent() {
         val currentTime=System.currentTimeMillis()
-        val contendId=if (isHomework) homeworkCommitInfoItem?.messageId else ToolUtils.getDateId()
         val path = if (isHomework)FileAddress().getPathHomework(course, homeworkTypeId, contendId,homeworks.size+1) else FileAddress().getPathHomework(course, homeworkTypeId, contendId)
 
         homeworkContent = HomeworkContentBean()
@@ -465,20 +469,17 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //作业提交
     private fun commit() {
-        setDisableTouchInput(true)
         homeworkCommitInfoItem?.paths?.clear()
         homeworkCommitInfoItem?.takeTime=getTakeTime()
-
         for (homework in homeworks) {
-            homeworkCommitInfoItem?.paths?.add(homework.path)
-            if (homework.state==0){
-                Thread {
-                    saveImage(homework)
-                }.start()
+            val mergePath=FileAddress().getPathHomeworkDrawingMerge(homework.path)
+            homeworkCommitInfoItem?.paths?.add(mergePath)
+            if (FileUtils.isExist(mergePath)){
+                FileUtils.deleteFile(File(homework.path))
             }
-        }
-
-        for (homework in homeworks){
+            else{
+                saveImage(mergePath)
+            }
             if (homeworkCommitInfoItem?.isSelfCorrect==true){
                 homework.commitJson=Gson().toJson(homeworkCommitInfoItem)
             }
@@ -488,15 +489,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
             refreshDataUpdate(homework)
         }
-
-        Handler().postDelayed({
-            if (homeworkCommitInfoItem?.isSelfCorrect == true){
-                gotoSelfCorrect()
-            }
-            else{
-                mUploadPresenter.getToken()
-            }
-        },500)
+        if (homeworkCommitInfoItem?.isSelfCorrect == true){
+            gotoSelfCorrect()
+        }
+        else{
+            mUploadPresenter.getToken()
+        }
     }
 
     /**
@@ -537,24 +535,14 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     }
 
     /**
-     * 合图
+     * 保存背景图
      */
-    private fun saveImage(homework: HomeworkContentBean): String {
+    private fun saveImage(path: String) {
         val resId = ToolUtils.getImageResId(this, homeworkType?.contentResId)
         val options = BitmapFactory.Options()
         options.inScaled = false
-        val oldBitmap = BitmapFactory.decodeResource(resources, resId,options)
-
-        val drawPath = homework.path
-        val drawBitmap = BitmapFactory.decodeFile(drawPath)
-        if (drawBitmap != null) {
-            val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-            BitmapUtils.saveBmpGallery(this, mergeBitmap, drawPath)
-        }
-        else{
-            BitmapUtils.saveBmpGallery(this,oldBitmap,drawPath)
-        }
-        return drawPath
+        val bitmap = BitmapFactory.decodeResource(resources, resId,options)
+        BitmapUtils.saveBmpGallery(bitmap,path)
     }
 
 }

@@ -123,11 +123,15 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         iv_page_up?.setOnClickListener {
-            onPageUp()
+            Handler().postDelayed({
+                onPageUp()
+            },100)
         }
 
         iv_page_down?.setOnClickListener {
-            onPageDown()
+            Handler().postDelayed({
+                onPageDown()
+            },100)
         }
 
         iv_catalog?.setOnClickListener {
@@ -135,7 +139,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         iv_expand?.setOnClickListener {
-            isClickExpend = true
+            isClickExpend=true
             onChangeExpandContent()
         }
     }
@@ -383,11 +387,12 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 if (elik_a?.curDrawObjStatus == true) {
                     reDrawGeometry(elik_a!!, 1)
                 }
+                onElikSava_a()
+                elik_a?.saveBitmap(true) {}
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik_a?.saveBitmap(true) {}
-                onElikSava_a()
+
             }
         })
 
@@ -404,11 +409,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 if (elik_b?.curDrawObjStatus == true) {
                     reDrawGeometry(elik_b!!, 2)
                 }
+                onElikSava_b()
+                elik_b?.saveBitmap(true) {}
             }
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik_b?.saveBitmap(true) {}
-                onElikSava_b()
             }
         })
 
@@ -450,7 +455,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                                 }
                             }
                         }
-                }, 300)
+                }, 200)
             }
         }
     }
@@ -607,7 +612,6 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
      */
     open fun onPageDown() {
     }
-
     /**
      * 上一页
      */
@@ -621,13 +625,13 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     }
 
     /**
-     * 左屏抬笔
+     * 左屏下笔
      */
     open fun onElikStart_a() {
     }
 
     /**
-     * 右屏抬笔
+     * 右屏下笔
      */
     open fun onElikStart_b() {
     }

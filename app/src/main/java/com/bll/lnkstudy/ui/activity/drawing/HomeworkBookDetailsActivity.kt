@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,9 +17,9 @@ import com.bll.lnkstudy.dialog.CatalogBookDialog
 import com.bll.lnkstudy.dialog.HomeworkCommitDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
-import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
-import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
@@ -155,18 +154,18 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
             if (catalogMsg!=null){
                 for (item in catalogMsg?.contents!!) {
-                    val catalogParent = CatalogParent()
-                    catalogParent.title = item.title
-                    catalogParent.pageNumber = item.pageNumber
-                    catalogParent.picName = item.picName
+                    val catalogParentBean = CatalogParentBean()
+                    catalogParentBean.title = item.title
+                    catalogParentBean.pageNumber = item.pageNumber
+                    catalogParentBean.picName = item.picName
                     for (ite in item.subItems) {
-                        val catalogChild = CatalogChild()
-                        catalogChild.title = ite.title
-                        catalogChild.pageNumber = ite.pageNumber
-                        catalogChild.picName = ite.picName
-                        catalogParent.addSubItem(catalogChild)
+                        val catalogChildBean = CatalogChildBean()
+                        catalogChildBean.title = ite.title
+                        catalogChildBean.pageNumber = ite.pageNumber
+                        catalogChildBean.picName = ite.picName
+                        catalogParentBean.addSubItem(catalogChildBean)
                     }
-                    catalogs.add(catalogParent)
+                    catalogs.add(catalogParentBean)
                 }
                 pageCount =  catalogMsg?.totalCount!!
                 startCount =  if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1
@@ -197,7 +196,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 return@setOnClickListener
             }
             if (homeworkCommitInfoItem?.submitState==0){
-                commit()
+                HomeworkCommitDialog(this,getCurrentScreenPos(),startCount,pageCount,homeworkCommitInfoItem!!.title).builder().setOnDialogClickListener {
+                    showLoading()
+                    setDisableTouchInput(true)
+                    commit(it)
+                }
             }
             else{
                 //不提交作业直接完成
@@ -352,8 +355,14 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val showFile = FileUtils.getIndexFile(book?.bookPath,index)
         if (showFile != null) {
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
-            GlideUtils.setImageCacheUrl(this, showFile.path, view, correctBean?.state ?: 0)
-            val drawPath = book?.bookDrawPath+"/${index+1}.png"
+            if (correctBean==null||correctBean.state==0){
+                GlideUtils.setImageCacheUrl(this, showFile.path, view)
+            }
+            else{
+                val correctPath =FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,index)
+                GlideUtils.setImageCacheUrl(this,correctPath, view, correctBean.state)
+            }
+            val drawPath =FileAddress().getPathHomeworkBookDrawFile(book?.bookDrawPath!!,index)
             elik.setLoadFilePath(drawPath, true)
 
             if (homeworkType?.isCloud!!||isCommitState(index)){
@@ -378,82 +387,78 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onElikSava_a() {
-        saveElik(elik_a!!)
+        val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page-1)
+        BitmapUtils.saveScreenShot(v_content_a, mergePath)
+        editCorrectBean(page-1)
     }
 
     override fun onElikSava_b() {
-        saveElik(elik_b!!)
+        val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page)
+        BitmapUtils.saveScreenShot(v_content_b, mergePath)
+        editCorrectBean(page)
     }
 
     override fun onElikStart_a() {
-        if (!HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page-1)){
-            val bookCorrectBean = HomeworkBookCorrectBean()
-            bookCorrectBean.bookId = bookId
-            bookCorrectBean.page = page-1
-            bookCorrectBean.startTime=System.currentTimeMillis()
-            val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
-            //更新增量数据
-            DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),"")
-        }
+        createCorrectBean(page-1)
     }
 
     override fun onElikStart_b() {
+        createCorrectBean(page)
+    }
+
+    /**
+     * 创建手写
+     */
+    private fun createCorrectBean(page:Int){
         if (!HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)){
             val bookCorrectBean = HomeworkBookCorrectBean()
             bookCorrectBean.bookId = bookId
             bookCorrectBean.page = page
             bookCorrectBean.startTime=System.currentTimeMillis()
             val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+            val path=FileAddress().getPathHomeworkBookDrawPath(book?.bookDrawPath!!,page)
             //更新增量数据
-            DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),"")
+            DataUpdateManager.createDataUpdate(7, id.toInt(),1,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),path)
         }
     }
 
     /**
-     * 抬笔后保存手写
+     * 手写后更新增量更新
      */
-    private fun saveElik(elik: EinkPWInterface){
-        if (File(elik.pwBitmapFilePath).exists()){
-            DataUpdateManager.editDataUpdate(7,bookId,1)
-        }
-        else{
-            //创建增量更新
-            DataUpdateManager.createDataUpdateDrawing(7,bookId,1,book?.bookDrawPath!!)
-        }
+    private fun editCorrectBean(page: Int){
+        val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
+        if (correctBean!=null)
+            DataUpdateManager.editDataUpdate(7,correctBean.id.toInt(),1,bookId)
     }
 
     /**
      * 题卷提交
      */
-    private fun commit() {
-        HomeworkCommitDialog(this,getCurrentScreenPos(),startCount,pageCount,homeworkCommitInfoItem!!.title).builder().setOnDialogClickListener {
-            showLoading()
-            setDisableTouchInput(true)
-            homeworkCommitInfoItem?.bookId=bookId
-            homeworkCommitInfoItem?.takeTime=getTakeTime(it)
-            homeworkCommitInfoItem?.paths?.clear()
-            homeworkCommitInfoItem?.contents=it
-            for (index in it){
-                val imageFile=FileUtils.getIndexFile(book?.bookPath,index)
-                val path=imageFile?.path.toString()
-                val drawPath = book?.bookDrawPath+"/${index+1}.png"
-                homeworkCommitInfoItem?.paths?.add(path)
-                val correctBean = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, index)
-                if (correctBean?.state!=1){
-                    Thread{
-                        BitmapUtils.mergeBitmap(path,drawPath)
-                    }.start()
-                }
+    private fun commit(pages: List<Int>) {
+        homeworkCommitInfoItem?.bookId=bookId
+        homeworkCommitInfoItem?.takeTime=getTakeTime(pages)
+        homeworkCommitInfoItem?.paths?.clear()
+        homeworkCommitInfoItem?.contents=pages
+        for (page in pages){
+            val imageFile=FileUtils.getIndexFile(book?.bookPath,page)
+            val oldPath=imageFile?.path.toString()
+            val drawPath =FileAddress().getPathHomeworkBookDrawFile(book?.bookDrawPath!!,page)
+            val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page)
+            //不存在手写时拿原图
+            if (FileUtils.isExist(mergePath)){
+                homeworkCommitInfoItem?.paths?.add(mergePath)
+                FileUtils.deleteFile(File(drawPath))
             }
-            Handler().postDelayed({
-                setBookCorrectBean(it)
-                if (homeworkCommitInfoItem?.isSelfCorrect == true){
-                    gotoSelfCorrect()
-                }
-                else{
-                    mUploadPresenter.getToken()
-                }
-            },500)
+            else{
+                homeworkCommitInfoItem?.paths?.add(oldPath)
+            }
+        }
+        setBookCorrectBean(pages)
+        if (homeworkCommitInfoItem?.isSelfCorrect == true){
+            gotoSelfCorrect()
+        }
+        else{
+            mUploadPresenter.getToken()
         }
     }
 
@@ -481,9 +486,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      */
     private fun setBookCorrectBean(pages: List<Int>){
         for (page in pages){
-            //删除手写
-            FileUtils.deleteFile(File(book?.bookDrawPath+"/${page+1}.png"))
-
             var bookCorrectBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
             if (bookCorrectBean!=null){
                 bookCorrectBean.homeworkTitle=homeworkCommitInfoItem?.title
@@ -497,7 +499,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     bookCorrectBean.commitJson=Gson().toJson(homeworkCommitInfoItem)
                 }
                 HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
-                DataUpdateManager.editDataUpdate(7,bookCorrectBean.id.toInt(),2,bookId,Gson().toJson(bookCorrectBean))
+                DataUpdateManager.editDataUpdate(7,bookCorrectBean.id.toInt(),1,bookId,Gson().toJson(bookCorrectBean))
             }
             else{
                 //保存本次题卷本批改详情
@@ -516,8 +518,9 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     bookCorrectBean.commitJson=Gson().toJson(homeworkCommitInfoItem)
                 }
                 val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
+                val path=FileAddress().getPathHomeworkBookDrawPath(book?.bookDrawPath!!,page)
                 //更新增量数据
-                DataUpdateManager.createDataUpdate(7, id.toInt(),2,bookId ,Gson().toJson(bookCorrectBean),"")
+                DataUpdateManager.createDataUpdate(7, id.toInt(),1,bookId ,Gson().toJson(bookCorrectBean),path)
             }
         }
     }

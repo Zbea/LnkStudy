@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
-import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.utils.DP2PX
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -85,7 +85,7 @@ class PopupOperatingGuideCatalog(var context:Context,  var view: View) {
         override fun convert(helper: BaseViewHolder, multiItemEntity: MultiItemEntity?) {
             when (helper.itemViewType) {
                 0 -> {
-                    val item= multiItemEntity as CatalogParent
+                    val item= multiItemEntity as CatalogParentBean
                     helper.setText(R.id.tv_name, item.title)
                     helper.itemView.setOnClickListener {
                         val pos = helper.adapterPosition
@@ -97,7 +97,7 @@ class PopupOperatingGuideCatalog(var context:Context,  var view: View) {
                     }
                 }
                 1-> {
-                    val childItem = multiItemEntity as CatalogChild
+                    val childItem = multiItemEntity as CatalogChildBean
                     helper.setText(R.id.tv_name, "       "+childItem.title)
                     helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
                     helper.setText(R.id.tv_page,"${childItem.pageNumber}")

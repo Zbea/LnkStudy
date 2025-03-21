@@ -50,6 +50,8 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public String downloadUrl;
     @Transient
+    public String zipUrl;
+    @Transient
     public String contentJson;
     @Transient
     public String contentSubtypeJson;

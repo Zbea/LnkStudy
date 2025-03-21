@@ -628,16 +628,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     }
                 }
                 7 -> {
-                    if (item.contentType==1){
-                        downloadHomeworkBookDrawing(item)
-                    }
-                    else{
-                        val correctBean = Gson().fromJson(item.listJson, HomeworkBookCorrectBean::class.java)
-                        HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(correctBean)
-
-                        DataUpdateManager.createDataUpdate(7,item.uid,2,item.typeId,item.listJson,"")
-                        DataUpdateManager.editDataUpdateUpload(7,item.uid,2,item.typeId)
-                    }
+                    downloadHomeworkBookDrawing(item)
                 }
             }
         }
@@ -790,8 +781,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         override fun onFinish() {
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            DataUpdateManager.createDataUpdateDrawing(7,item.uid,1,item.path)
-                            DataUpdateManager.editDataUpdateUpload(7,item.uid,1)
+                            val correctBean = Gson().fromJson(item.listJson, HomeworkBookCorrectBean::class.java)
+                            HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(correctBean)
+
+                            DataUpdateManager.createDataUpdate(7,item.uid,1,item.typeId,item.listJson,item.path)
+                            DataUpdateManager.editDataUpdateUpload(7,item.uid,1,item.typeId)
                         }
                         override fun onProgress(percentDone: Int) {
                         }

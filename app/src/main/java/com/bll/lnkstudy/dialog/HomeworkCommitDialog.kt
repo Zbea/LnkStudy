@@ -138,10 +138,9 @@ class HomeworkCommitDialog(val context: Context, val screenPos: Int, private val
                     showToast("输入的页码超出")
                     return@setOnClickListener
                 }
-
-
-                listener?.onClick(realPageIndexs)
                 dismiss()
+                listener?.onClick(realPageIndexs)
+
         }
 
         return this

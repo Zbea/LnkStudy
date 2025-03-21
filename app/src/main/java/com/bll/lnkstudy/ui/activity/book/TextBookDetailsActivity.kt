@@ -13,9 +13,9 @@ import com.bll.lnkstudy.dialog.CatalogBookDialog
 import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.book.TextbookBean
-import com.bll.lnkstudy.mvp.model.calalog.CatalogChild
+import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
-import com.bll.lnkstudy.mvp.model.calalog.CatalogParent
+import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
@@ -55,18 +55,18 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
             catalogMsg = Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
             if (catalogMsg!=null){
                 for (item in catalogMsg?.contents!!) {
-                    val catalogParent = CatalogParent()
-                    catalogParent.title = item.title
-                    catalogParent.pageNumber = item.pageNumber
-                    catalogParent.picName = item.picName
+                    val catalogParentBean = CatalogParentBean()
+                    catalogParentBean.title = item.title
+                    catalogParentBean.pageNumber = item.pageNumber
+                    catalogParentBean.picName = item.picName
                     for (ite in item.subItems) {
-                        val catalogChild = CatalogChild()
-                        catalogChild.title = ite.title
-                        catalogChild.pageNumber = ite.pageNumber
-                        catalogChild.picName = ite.picName
-                        catalogParent.addSubItem(catalogChild)
+                        val catalogChildBean = CatalogChildBean()
+                        catalogChildBean.title = ite.title
+                        catalogChildBean.pageNumber = ite.pageNumber
+                        catalogChildBean.picName = ite.picName
+                        catalogParentBean.addSubItem(catalogChildBean)
                     }
-                    catalogs.add(catalogParent)
+                    catalogs.add(catalogParentBean)
                 }
                 pageCount =  catalogMsg?.totalCount!!
                 startCount =  if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1

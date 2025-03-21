@@ -46,6 +46,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
         val type = RetrofitManager.service.getHomeworkType(map)
         doRequest(type, object : Callback<List<HomeworkTypeBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<HomeworkTypeBean>>): Boolean {
+                view.onTypeError()
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<HomeworkTypeBean>>) {
@@ -62,6 +63,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
         val type = RetrofitManager.service.getParentsHomeworkType(map)
         doRequest(type, object : Callback<MutableList<ParentTypeBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<ParentTypeBean>>): Boolean {
+                view.onTypeError()
                 return false
             }
             override fun success(tBaseResult: BaseResult<MutableList<ParentTypeBean>>) {
