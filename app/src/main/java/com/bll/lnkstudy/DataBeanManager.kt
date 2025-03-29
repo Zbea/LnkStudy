@@ -12,6 +12,8 @@ import java.util.*
 
 object DataBeanManager {
 
+    var isRuleImage=false//是否设置规矩图
+
     var homeworkMessages= mutableListOf<Any>()
 
      val listTitle = arrayOf(

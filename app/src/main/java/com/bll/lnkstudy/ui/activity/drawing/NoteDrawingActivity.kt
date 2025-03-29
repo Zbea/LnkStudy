@@ -26,7 +26,7 @@ import java.io.File
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
-    private var type =""
+    private var typeStr =""
     private var noteTitle=""
     private var noteBook: Note? = null
     private var note_Content_b: NoteContentBean? = null//当前内容
@@ -42,11 +42,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         val id = intent.getLongExtra("noteId",0)
         page=intent.getIntExtra("page",DEFAULT_PAGE)
         noteBook = NoteDaoManager.getInstance().queryBean(id)
-        type = noteBook?.typeStr.toString()
+        typeStr = noteBook?.typeStr.toString()
         grade=noteBook?.grade!!
         noteTitle=noteBook?.title!!
 
-        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteTitle)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr,noteTitle)
 
         if (noteContents.isNotEmpty()) {
             if (page==DEFAULT_PAGE)
@@ -216,11 +216,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     //创建新的作业内容
     private fun newNoteContent() {
         val date=System.currentTimeMillis()
-        val path=FileAddress().getPathNote(type,noteTitle)
+        val path=FileAddress().getPathNote(typeStr,noteTitle)
 
         note_Content_b = NoteContentBean()
         note_Content_b?.date=date
-        note_Content_b?.typeStr=type
+        note_Content_b?.typeStr=typeStr
         note_Content_b?.noteTitle = noteTitle
         note_Content_b?.resId = noteBook?.contentResId
         note_Content_b?.grade=grade

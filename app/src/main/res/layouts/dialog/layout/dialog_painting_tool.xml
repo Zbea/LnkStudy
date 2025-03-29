@@ -13,7 +13,7 @@
         android:gravity="center_vertical"
         >
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/black_30"
@@ -24,7 +24,6 @@
             android:id="@+id/tv_pencil"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_40"
             android:gravity="center"
             android:text="铅笔"
             android:textSize="@dimen/sp_22"
@@ -70,13 +69,13 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_35"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_20"
         android:gravity="center_vertical"
         >
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/black_30"
@@ -85,32 +84,31 @@
 
         <ImageView
             android:id="@+id/line_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
             android:src="@mipmap/icon_line_1"
             />
 
         <ImageView
             android:id="@+id/line_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_20"
             android:src="@mipmap/icon_line_2"
             />
 
         <ImageView
             android:id="@+id/line_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_20"
             android:src="@mipmap/icon_line_3"
             />
 
         <ImageView
             android:id="@+id/line_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_20"
             android:src="@mipmap/icon_line_4"
             />
@@ -125,7 +123,7 @@
         >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/black_30"
@@ -136,7 +134,6 @@
             android:id="@+id/sw_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
             />
 
     </LinearLayout>

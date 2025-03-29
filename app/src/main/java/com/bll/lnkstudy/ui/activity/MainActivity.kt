@@ -436,7 +436,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         SPUtil.removeObj(Constants.SP_PARENT_PERMISSION)
         SPUtil.putListInt(Constants.SP_WEEK_DATE_LIST, mutableListOf())
         SPUtil.putListLong(Constants.SP_DATE_LIST, mutableListOf())
-        SPUtil.putBoolean(Constants.SP_PAINTING_RULE_SET,false)
         SPUtil.putString(Constants.SP_DIARY_BG_SET,"")
         SPUtil.putString(Constants.SP_COURSE_URL,"")
         SPUtil.putBoolean(Constants.SP_EXAM_MODE,false)

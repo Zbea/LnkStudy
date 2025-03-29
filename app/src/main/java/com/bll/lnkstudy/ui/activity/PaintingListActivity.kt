@@ -10,7 +10,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
-import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
+import com.bll.lnkstudy.ui.adapter.PaintingMyAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
@@ -22,7 +22,7 @@ class PaintingListActivity:BaseAppCompatActivity() {
     private var time=0
     private var paintingType=0
     private var lists= mutableListOf<PaintingBean>()
-    private var mAdapter:MyPaintingAdapter?=null
+    private var mAdapter:PaintingMyAdapter?=null
     private var position=0
 
     override fun layoutId(): Int {
@@ -54,9 +54,10 @@ class PaintingListActivity:BaseAppCompatActivity() {
         rv_list.layoutParams = layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this@PaintingListActivity, 4)//创建布局管理
-        mAdapter = MyPaintingAdapter(R.layout.item_bookstore, null).apply {
+        mAdapter = PaintingMyAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
+            rv_list?.addItemDecoration(SpaceGridItemDeco(4, 90))
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val item = lists[position]
@@ -67,7 +68,6 @@ class PaintingListActivity:BaseAppCompatActivity() {
                 delete()
                 true
             }
-            rv_list?.addItemDecoration(SpaceGridItemDeco(4, 90))
         }
     }
 

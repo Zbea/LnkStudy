@@ -35,6 +35,9 @@ public class CalenderItemBean {
     public String path;
     @Transient
     public int loadSate;
+    @Transient
+    public boolean isCheck;
+
     @Generated(hash = 205828730)
     public CalenderItemBean(Long id, long userId, int pid, String imageUrl, String downloadUrl,
             String previewUrl, String title, String introduction, int buyStatus, long time, int price,

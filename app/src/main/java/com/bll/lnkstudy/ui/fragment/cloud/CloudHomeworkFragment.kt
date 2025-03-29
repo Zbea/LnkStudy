@@ -367,6 +367,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(homeworkTypes)
     }
 
     override fun onNetworkConnectionSuccess() {

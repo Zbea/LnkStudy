@@ -9,7 +9,7 @@ import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
-import com.bll.lnkstudy.ui.adapter.MyPaintingAdapter
+import com.bll.lnkstudy.ui.adapter.PaintingMyAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -23,7 +23,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     private var typeStr=""
     private var position=0
     private var paintings= mutableListOf<PaintingBean>()
-    private var mAdapter: MyPaintingAdapter?=null
+    private var mAdapter: PaintingMyAdapter?=null
 
 
     override fun getLayoutId(): Int {
@@ -53,7 +53,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(), 3)//创建布局管理
-        mAdapter = MyPaintingAdapter(R.layout.item_bookstore, null).apply {
+        mAdapter = PaintingMyAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
@@ -155,6 +155,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(paintings)
     }
 
     override fun onNetworkConnectionSuccess() {

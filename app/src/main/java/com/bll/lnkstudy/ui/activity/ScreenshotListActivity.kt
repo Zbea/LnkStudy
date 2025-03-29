@@ -98,10 +98,7 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
         if (tabPos>=itemTabTypes.size){
             tabPos=0
         }
-        for (item in itemTabTypes){
-            item.isCheck=false
-        }
-        itemTabTypes[tabPos].isCheck=true
+        itemTabTypes=MethodManager.setItemTypeBeanCheck(itemTabTypes,tabPos)
         mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }

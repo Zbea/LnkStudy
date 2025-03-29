@@ -205,6 +205,7 @@ class CloudPaintingDrawingFragment : BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mLocalAdapter?.remove(position)
+        onRefreshList(cloudLists)
     }
 
     override fun onNetworkConnectionSuccess() {

@@ -717,4 +717,20 @@ public class MethodManager {
         imageView.setImageBitmap(bitmap);
     }
 
+    /**
+     * 初始化不选中 指定位置选中
+     * @param list
+     * @param position
+     * @return
+     */
+    public static List<ItemTypeBean> setItemTypeBeanCheck(List<ItemTypeBean> list,int position){
+        if (list.size()>position){
+            for (ItemTypeBean item:list) {
+                item.isCheck=false;
+            }
+            list.get(position).isCheck=true;
+        }
+        return list;
+    }
+
 }

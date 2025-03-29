@@ -72,6 +72,9 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
                 startCount =  if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1
             }
         }
+        else{
+            pageCount=FileUtils.getFiles(FileAddress().getPathBookPicture(book?.bookPath!!)).size
+        }
     }
 
     override fun initView() {

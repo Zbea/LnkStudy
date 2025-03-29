@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rl_bg"
         android:layout_width="220dp"
-        android:layout_height="288dp"
+        android:layout_height="290dp"
         android:padding="1dp"
         >
 

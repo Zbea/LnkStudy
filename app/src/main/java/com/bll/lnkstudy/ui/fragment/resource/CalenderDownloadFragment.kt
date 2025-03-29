@@ -76,7 +76,7 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(), 4)//创建布局管理
-        mAdapter = CalenderListAdapter(R.layout.item_calendar, 0,null).apply {
+        mAdapter = CalenderListAdapter(R.layout.item_calendar, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

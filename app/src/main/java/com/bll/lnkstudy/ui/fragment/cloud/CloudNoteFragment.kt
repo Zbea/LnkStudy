@@ -204,6 +204,7 @@ class CloudNoteFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(notes)
     }
 
     override fun onNetworkConnectionSuccess() {

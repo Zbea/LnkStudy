@@ -69,7 +69,7 @@ class ScreenshotManagerActivity : BaseAppCompatActivity() {
                     }
                     R.id.iv_delete -> {
                         if (FileUtils.isExist(item.path)){
-                            showToast("分类存在截图，无法删除")
+                            showToast("分类存在内容，无法删除")
                             return@setOnItemChildClickListener
                         }
                         CommonDialog(this@ScreenshotManagerActivity).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {

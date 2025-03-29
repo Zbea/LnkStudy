@@ -224,6 +224,7 @@ class CloudExamFragment:BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(paperTypes)
     }
 
     override fun onNetworkConnectionSuccess() {

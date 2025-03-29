@@ -87,7 +87,7 @@ class TextbookFragment : BaseMainFragment() {
             rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(3,38))
+            rv_list.addItemDecoration(SpaceGridItemDeco(3,40))
             setOnItemClickListener { adapter, view, position ->
                 MethodManager.gotoTextBookDetails(requireActivity(),books[position])
             }

@@ -4,13 +4,13 @@ import android.content.res.Configuration
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.PaintingBeanDaoManager
 import com.bll.lnkstudy.mvp.model.painting.PaintingBean
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_painting_image.iv_rule
 import kotlinx.android.synthetic.main.ac_painting_image.ll_draw_content
 import kotlinx.android.synthetic.main.ac_painting_image.v_content
@@ -88,7 +88,7 @@ class PaintingImageActivity:BaseAppCompatActivity() {
      * 设置规矩图
      */
     private fun setRule(){
-        if (SPUtil.getBoolean(Constants.SP_PAINTING_RULE_SET)){
+        if (DataBeanManager.isRuleImage){
             MethodManager.setImageResource(this,R.mipmap.icon_painting_draw_hb,iv_rule)
         }
         else{

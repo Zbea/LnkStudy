@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
@@ -81,7 +82,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                         else{
                             setBg(0)
                         }
-                        SPUtil.putBoolean(Constants.SP_PAINTING_RULE_SET,isOPen)
+                        DataBeanManager.isRuleImage=isOPen
                         EventBus.getDefault().post(Constants.PAINTING_RULE_IMAGE_SET_EVENT)
                     }
                 })
@@ -269,7 +270,7 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        SPUtil.putBoolean(Constants.SP_PAINTING_RULE_SET,false)
+        DataBeanManager.isRuleImage=false
         EventBus.getDefault().post(Constants.PAINTING_RULE_IMAGE_SET_EVENT)
     }
 }

@@ -236,7 +236,7 @@
     <string name="download_app">应用</string>
     <string name="download_painting">书画</string>
     <string name="download_wallpaper">壁纸</string>
-    <string name="calender">台历</string>
+    <string name="calender">日历</string>
 
     <string name="homework_type_pytzb">拼音田字本</string>
     <string name="homework_type_tzb">田字本</string>
@@ -272,9 +272,6 @@
 
     <string name="book_my">我的阅读</string>
     <string name="book_type_title">分类展示</string>
-    <string name="book_collect_success">收藏成功</string>
-    <string name="book_collected">已收藏</string>
-    <string name="book_is_collect_tips">确定取消收藏？</string>
     <string name="book_download_fail">下载失败</string>
     <string name="book_download_success">下载成功</string>
     <string name="book_decompression_fail">解压失败</string>

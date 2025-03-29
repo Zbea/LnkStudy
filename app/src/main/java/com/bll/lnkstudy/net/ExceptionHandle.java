@@ -91,7 +91,7 @@ public class ExceptionHandle {
     /**
      * 约定异常
      */
-    public class ERROR {
+    public static class ERROR {
         /**
          * 未知错误
          */

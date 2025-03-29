@@ -24,7 +24,6 @@ import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.ActivityManager
-import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
@@ -43,7 +42,7 @@ import kotlin.math.ceil
 
 abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
 
-    val mCommonPresenter= CommonPresenter(this)
+    var mCommonPresenter= CommonPresenter(this,getScreenPosition())
     /**
      * 视图是否加载完毕
      */
@@ -111,11 +110,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (rv_tab!=null){
             initTabView()
         }
-
+        initDialog()
         initView()
 
         getScreenPosition()
-        initDialog()
 
         lazyLoadDataIfPrepared()
     }
@@ -134,13 +132,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
 
     fun initDialog(screen:Int){
         mDialog = ProgressDialog(requireActivity(),screen,0)
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun hideKeyboard(){
-        KeyboardUtils.hideSoftKeyboard(activity)
     }
 
     fun showToast(s:String){
@@ -320,6 +311,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
      * 重新初始化屏幕位置
      */
     open fun initChangeScreenData(){
+        mCommonPresenter= CommonPresenter(this,getScreenPosition())
         initDialog()
     }
 

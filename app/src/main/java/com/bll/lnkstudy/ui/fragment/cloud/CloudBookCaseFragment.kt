@@ -253,6 +253,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(books)
     }
 
     override fun onNetworkConnectionSuccess() {

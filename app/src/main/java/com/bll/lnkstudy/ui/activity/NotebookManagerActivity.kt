@@ -93,7 +93,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 val noteBook=notebooks[position]
                 val notes= NoteDaoManager.getInstance().queryAll(noteBook.title)
                 if (notes.isNotEmpty()){
-                    showToast("笔记本还有主题,无法删除")
+                    showToast("笔记本存在内容,无法删除")
                 }
                 else{
                     notebooks.removeAt(position)
