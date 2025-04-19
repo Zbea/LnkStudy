@@ -45,9 +45,8 @@ public class FileUtils {
     }
 
     public static void mkdirs(String path){
-        if (!FileUtils.isExist(path)){
+        if (!isExist(path)){
             File file=new File(path);
-            file.getParentFile().mkdirs();
             file.mkdirs();
         }
     }
@@ -273,34 +272,8 @@ public class FileUtils {
         return files;
     }
 
-
     /**
-     * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录（降序）
-     * @param path
-     * @param suffix
-     * @return
-     */
-    public static List<File> getAscFiles(String path, String suffix){
-        List<File> files = new ArrayList<>();
-        if("".equals(path)){
-            return files;
-        }
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-        if (tempList==null) return files;
-        for (int i = 0; i < tempList.length; i++) {
-            File childFile=tempList[i];
-            if (childFile.isFile()&&childFile.getName().endsWith(suffix)) {
-                files.add(tempList[i]);
-            }
-        }
-        //文件排序
-        sortAscFiles(files);
-        return files;
-    }
-
-    /**
-     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
+     * 文件夹排序 按照自然升序
      * @param files
      */
     public static void sortAscFiles(List<File> files) {
@@ -311,7 +284,7 @@ public class FileUtils {
     }
 
     /**
-     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最前面
+     * 文件夹排序 自认降序
      * @param files
      */
     public static void sortDescFiles(List<File> files) {
@@ -349,6 +322,14 @@ public class FileUtils {
                 }
             }
         }
+    }
+    /**
+     * 删除文件夹
+     * @param path
+     */
+    public static void delete(String path){
+        File file=new File(path);
+        deleteFile(file);
     }
 
     /**

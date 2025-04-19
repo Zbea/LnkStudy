@@ -106,15 +106,4 @@
         android:background="@drawable/bg_black_stroke_0dp_corner"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list_multi"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_marginTop="@dimen/dp_20"
-        android:padding="@dimen/dp_20"
-        android:visibility="gone"
-        android:background="@drawable/bg_black_stroke_0dp_corner"
-        />
-
-
 </LinearLayout>

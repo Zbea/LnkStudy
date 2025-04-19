@@ -193,8 +193,6 @@ public class MethodManager {
         bookBean.time = System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
 
-        List<AppBean> toolApps = getAppTools(context, 1);
-        JSONArray result = getJsonArray(toolApps);
         String format = FileUtils.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
         if (format.contains("pdf")) {
@@ -206,7 +204,7 @@ public class MethodManager {
         intent.putExtra("path", bookBean.bookPath);
         intent.putExtra("key_book_id", bookBean.bookId + "");
         intent.putExtra("bookName", bookBean.bookName);
-        intent.putExtra("tool", result.toString());
+        intent.putExtra("tool", getJsonArray().toString());
         intent.putExtra("userId", getUser().accountId);
         intent.putExtra("type", 1);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
@@ -220,7 +218,8 @@ public class MethodManager {
                 ,3000);
     }
 
-    private static JSONArray getJsonArray(List<AppBean> toolApps) {
+    private static JSONArray getJsonArray() {
+        List<AppBean> toolApps = getAppTools(MyApplication.Companion.getMContext(), 1);
         JSONArray result = new JSONArray();
         for (AppBean item : toolApps) {
             if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))

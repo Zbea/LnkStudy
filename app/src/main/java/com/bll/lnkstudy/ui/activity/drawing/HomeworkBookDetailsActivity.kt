@@ -39,7 +39,6 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.common_correct_score.rv_list_multi
 import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
 import kotlinx.android.synthetic.main.common_correct_score.tv_answer
 import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
@@ -126,7 +125,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                         isSelfCorrect=item.selfBatchStatus==1
                         correctJson=item.question
                         correctMode=item.questionType
-                        correctMode=item.questionMode
+                        scoreMode=item.questionMode
                         answerUrl=item.answerUrl
                         submitState=item.submitState
                         standardTime=item.minute
@@ -338,10 +337,10 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         tv_correct_title.text=item.homeworkTitle
         tv_total_score.text=item.score.toString()
         if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-            setScoreListDetails(item.correctJson)
+            setScoreListDetails(rv_list_score,item.correctJson,false)
         }
         else{
-            disMissView(rv_list_multi,rv_list_score)
+            disMissView(rv_list_score)
         }
     }
 

@@ -12,7 +12,6 @@ import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
-import kotlinx.android.synthetic.main.common_correct_score.rv_list_multi
 import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
 import kotlinx.android.synthetic.main.common_correct_score.tv_answer
 import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
@@ -186,10 +185,10 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             showView(tv_answer)
         }
         if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-            setScoreListDetails(item.correctJson)
+            setScoreListDetails(rv_list_score,item.correctJson,false)
         }
         else{
-            disMissView(rv_list_multi,rv_list_score)
+            disMissView(rv_list_score)
         }
     }
 

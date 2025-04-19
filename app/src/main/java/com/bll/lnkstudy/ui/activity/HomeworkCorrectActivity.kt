@@ -1,8 +1,5 @@
 package com.bll.lnkstudy.ui.activity
 
-import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.R
@@ -11,14 +8,11 @@ import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
-import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity
-import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
-import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
@@ -26,9 +20,8 @@ import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.ScoreItemUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_homework_correct.btn_page_down_bottom
 import kotlinx.android.synthetic.main.ac_homework_correct.btn_page_up_bottom
@@ -40,11 +33,11 @@ import kotlinx.android.synthetic.main.ac_homework_correct.iv_score_up
 import kotlinx.android.synthetic.main.ac_homework_correct.rv_list_score
 import kotlinx.android.synthetic.main.ac_homework_correct.sv_answer
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_correct_save
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_correct_total_score
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_page_current
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_page_total_bottom
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_standartTime
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_takeTime
-import kotlinx.android.synthetic.main.ac_homework_correct.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -73,6 +66,7 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     hideLoading()
+                    ScoreItemUtils.updateInitListData(initScores,currentScores,correctMode)
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=commitItem?.messageId!!
                     map["studentUrl"]= ToolUtils.getImagesStr(urls)
@@ -81,8 +75,8 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
                     if (state==4){
                         map["page"]= ToolUtils.getImagesStr(commitItem?.contents!!)
                     }
-                    map["score"]=tv_total_score.text.toString().toDouble()
-                    map["question"]=Gson().toJson(currentScores)
+                    map["score"]=tv_correct_total_score.text.toString().toDouble()
+                    map["question"]=Gson().toJson(initScores)
                     mUploadPresenter.commit(map)
                 }
                 override fun onUploadFail() {
@@ -102,8 +96,8 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
                 for (homework in homeworks) {
                     homework.isHomework=false
                     homework.date=System.currentTimeMillis()
-                    homework.score=tv_total_score.text.toString().toDouble()
-                    homework.correctJson=Gson().toJson(currentScores)
+                    homework.score=tv_correct_total_score.text.toString().toDouble()
+                    homework.correctJson=Gson().toJson(initScores)
                     homework.answerUrl=commitItem?.answerUrl
                     homework.correctMode=commitItem?.correctMode!!
                     homework.scoreMode=commitItem?.scoreMode!!
@@ -116,8 +110,8 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
             4 -> {
                 for (page in commitItem?.contents!!){
                     val item= HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!,page)
-                    item.score=tv_total_score.text.toString().toDouble()
-                    item.correctJson=Gson().toJson(currentScores)
+                    item.score=tv_correct_total_score.text.toString().toDouble()
+                    item.correctJson=Gson().toJson(initScores)
                     item.commitJson=""
                     HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(item)
                     //更新增量数据
@@ -129,8 +123,8 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
                 val paper=HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
                 paper.isHomework = false
                 paper.date=System.currentTimeMillis()
-                paper.correctJson=Gson().toJson(currentScores)
-                paper.score=tv_total_score.text.toString().toDouble()
+                paper.correctJson=Gson().toJson(initScores)
+                paper.score=tv_correct_total_score.text.toString().toDouble()
                 paper.commitJson=""
                 HomeworkPaperDaoManager.getInstance()?.insertOrReplace(paper)
                 //更新目录增量数据
@@ -157,7 +151,7 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
         correctMode=commitItem!!.correctMode
         scoreMode=commitItem!!.scoreMode
         answerImages= commitItem!!.answerUrl.split(",") as MutableList<String>
-        currentScores= scoreJsonToList(commitItem!!.correctJson) as MutableList<ExamScoreItem>
+        initScores= ScoreItemUtils.questionToList(commitItem!!.correctJson,false)
         images=commitItem!!.paths
         state=commitItem?.state!!
         takeTime=commitItem?.takeTime!!
@@ -181,7 +175,7 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
         }
 
         tv_correct_save.setOnClickListener {
-            if (!tv_total_score.text.isNullOrEmpty()){
+            if (!tv_correct_total_score.text.isNullOrEmpty()){
                 if (!NetworkUtil.isNetworkConnected()){
                     showToast("网络连接失败，无法提交")
                     return@setOnClickListener
@@ -191,14 +185,18 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
             }
         }
 
-//        tv_total_score.setOnClickListener {
+//        tv_correct_total_score.setOnClickListener {
 //            NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
 //                tv_total_score.text= it.toString()
 //            }
 //        }
 
         setAnswerView()
-        initRecyclerViewScore()
+        setScoreListDetails(rv_list_score,commitItem!!.correctJson,true)
+
+        showLog(Gson().toJson(initScores))
+        showLog(Gson().toJson(currentScores))
+
         onChangeExpandView()
         onContent()
     }
@@ -233,136 +231,6 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
         GlideUtils.setImageUrl(this,answerImages[posAnswer],iv_answer)
         setAnswerPageView()
     }
-
-    private fun initRecyclerViewScore(){
-        if (correctMode<3){
-            rv_list_score.layoutManager = GridLayoutManager(this,2)
-            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score,scoreMode,correctMode,currentScores).apply {
-                rv_list_score.adapter = this
-                bindToRecyclerView(rv_list_score)
-                setOnItemChildClickListener { adapter, view, position ->
-                    setChangeItemScore(view,position)
-                }
-                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@HomeworkCorrectActivity,15f)))
-            }
-        }
-        else{
-            rv_list_score.layoutManager = LinearLayoutManager(this)
-            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,currentScores).apply {
-                rv_list_score.adapter = this
-                bindToRecyclerView(rv_list_score)
-                setOnItemChildClickListener { adapter, view, position ->
-                    val item=currentScores[position]
-                    //批改状态为已提交未批改 且 没有子题目才能执行
-                    if (item.childScores.isNullOrEmpty()){
-                        setChangeItemScore(view,position)
-                    }
-                }
-                setCustomItemChildClickListener{ position, view, childPos ->
-                    val scoreItem=currentScores[position]
-                    val childItem=scoreItem.childScores[childPos]
-                    when(view.id){
-                        R.id.tv_score->{
-//                            if (scoreMode==1){
-//                                NumberDialog(this@CorrectActivity,2,"最大${childItem.label}",childItem.label).builder().setDialogClickListener{
-//                                    if (childItem.label!=it){
-//                                        childItem.result=0
-//                                    }
-//                                    childItem.score= it
-//                                    //获取小题总分
-//                                    var scoreTotal=0.0
-//                                    for (item in scoreItem.childScores){
-//                                        scoreTotal+=item.score
-//                                    }
-//                                    scoreItem.score=scoreTotal
-//                                    notifyItemChanged(position)
-//                                    setTotalScore()
-//                                }
-//                            }
-                        }
-                        R.id.iv_result->{
-                            if (childItem.result==0){
-                                childItem.result=1
-                            }
-                            else{
-                                childItem.result=0
-                            }
-                            if (scoreMode==1){
-                                childItem.score= childItem.result*childItem.label
-                                //获取小题总分
-                                var scoreTotal=0.0
-                                for (item in scoreItem.childScores){
-                                    scoreTotal+= item.score
-                                }
-                                scoreItem.score=scoreTotal
-                            }
-                            else{
-                                childItem.score= childItem.result.toDouble()
-                                var totalRight=0
-                                for (item in scoreItem.childScores){
-                                    if (item.result==1)
-                                        totalRight+= 1
-                                }
-                                scoreItem.score= totalRight.toDouble()
-                            }
-                            notifyItemChanged(position)
-                            setTotalScore()
-                        }
-                    }
-                }
-                rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@HomeworkCorrectActivity,15f)))
-            }
-        }
-    }
-
-    /**
-     * 大题数据变化
-     */
-    private fun setChangeItemScore(view: View, position: Int){
-        val item=currentScores[position]
-        when(view.id){
-            R.id.tv_score->{
-//                if (scoreMode==1){
-//                    NumberDialog(this,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
-//                        if (item.label!=it){
-//                            item.result=0
-//                        }
-//                        item.score= it
-//                        setTotalScore()
-//                        if (correctMode<3){
-//                            mTopicScoreAdapter?.notifyItemChanged(position)
-//                        }
-//                        else{
-//                            mTopicMultiAdapter?.notifyItemChanged(position)
-//                        }
-//                    }
-//                }
-            }
-            R.id.iv_result->{
-                if (item.result==0){
-                    item.result=1
-                }
-                else{
-                    item.result=0
-                }
-
-                if (scoreMode==1){
-                    item.score= item.result*item.label
-                }
-                else{
-                    item.score= item.result.toDouble()
-                }
-                setTotalScore()
-                if (correctMode<3){
-                    mTopicScoreAdapter?.notifyItemChanged(position)
-                }
-                else{
-                    mTopicMultiAdapter?.notifyItemChanged(position)
-                }
-            }
-        }
-    }
-
 
     override fun onChangeExpandContent() {
         if (getImageSize()==1)
@@ -410,20 +278,6 @@ class HomeworkCorrectActivity: BaseDrawingActivity(), IContractView.IFileUploadV
         else{
             GlideUtils.setImageNoCacheUrl(this, images[posImage],v_content_b)
             tv_page.text="${posImage+1}"
-        }
-    }
-
-
-    /**
-     * 总分变化
-     */
-    private fun setTotalScore(){
-        if (tv_total_score!=null){
-            var total=0.0
-            for (item in currentScores){
-                total+=item.score
-            }
-            tv_total_score.text= total.toString()
         }
     }
 

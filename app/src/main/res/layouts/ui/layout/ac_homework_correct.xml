@@ -250,7 +250,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/tv_total_score"
+                    android:id="@+id/tv_correct_total_score"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"

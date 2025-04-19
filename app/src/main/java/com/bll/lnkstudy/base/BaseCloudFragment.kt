@@ -58,13 +58,18 @@ BaseCloudFragment : BaseFragment(), IContractView.ICloudView  {
      * 删除后刷新页面
      */
     fun onRefreshList(list:List<Any>){
-        if (list.isEmpty()){
-            if (pageIndex>1){
+        if (pageIndex==1&&pageCount==1){
+            if (list.isEmpty()){
+                setPageNumber(0)
+            }
+        }
+        else if (pageCount>1&&pageCount>pageIndex){
+            fetchData()
+        }
+        else if (pageIndex==pageCount&&pageIndex>1){
+            if (list.isEmpty()){
                 pageIndex-=1
                 fetchData()
-            }
-            else{
-                setPageNumber(0)
             }
         }
     }

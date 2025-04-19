@@ -159,6 +159,8 @@ class ScreenshotListActivity:BaseAppCompatActivity() {
                 if (it==0){
                     mAdapter?.remove(position)
                     FileUtils.deleteFile(file)
+                    val drawPath=tabPath+"/drawing/${file.name}"
+                    FileUtils.delete(drawPath)
                 }
                 else{
                     if (tabPos==0){

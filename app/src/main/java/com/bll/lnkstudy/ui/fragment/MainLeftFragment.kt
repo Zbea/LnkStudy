@@ -19,6 +19,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
+import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkNoticeView
@@ -168,7 +169,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             mMainLeftPresenter.active()
             mMainLeftPresenter.getParentPermission()
             mMainLeftPresenter.getSchoolPermission(grade)
-
             val map=HashMap<String,Any>()
             map["size"]=7
             mHomeworkNoticePresenter.getHomeworkNotice(map)

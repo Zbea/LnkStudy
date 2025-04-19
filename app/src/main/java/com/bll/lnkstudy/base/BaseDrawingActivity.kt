@@ -11,26 +11,24 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.paper.ExamScoreItem
+import com.bll.lnkstudy.mvp.model.paper.ScoreItem
 import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
-import com.bll.lnkstudy.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkstudy.ui.adapter.TopicMultistageScoreAdapter
 import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
+import com.bll.lnkstudy.ui.adapter.TopicTwoScoreAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.bll.lnkstudy.widget.SpaceItemDeco
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.ac_drawing.ll_score
 import kotlinx.android.synthetic.main.common_correct_score.*
-import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -56,9 +54,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     var correctMode = 0
     var scoreMode = 0 //1赋分，2对错
     var answerImages = mutableListOf<String>()//答题地址
-    var currentScores = mutableListOf<ExamScoreItem>()
-    var mTopicScoreAdapter: TopicScoreAdapter? = null
-    var mTopicMultiAdapter: TopicMultiScoreAdapter? = null
+    var initScores = mutableListOf<ScoreItem>()
+    var currentScores = mutableListOf<ScoreItem>()
+    var mTopicScoreAdapter: TopicScoreAdapter?=null
+    var mTopicTwoScoreAdapter: TopicTwoScoreAdapter?=null
+    var mTopicMultistageScoreAdapter: TopicMultistageScoreAdapter?=null
 
     var ll_page_content_a: LinearLayout? = null
     var ll_page_content_b: LinearLayout? = null
@@ -164,48 +164,238 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             if (answerImages.size > 0)
                 ImageDialog(this, answerImages).builder()
         }
-
-        rv_list_score?.layoutManager = GridLayoutManager(this, 2)
-        mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_child_score, 0, 0, null).apply {
-            rv_list_score?.adapter = this
-            bindToRecyclerView(rv_list_score)
-        }
-        rv_list_score.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(this, 15f)))
-
-        rv_list_multi?.layoutManager = LinearLayoutManager(this)
-        mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score, 0, null).apply {
-            rv_list_multi?.adapter = this
-            bindToRecyclerView(rv_list_multi)
-        }
-        rv_list_multi.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this, 15f)))
     }
 
     /**
      * 设置批改详情小题列表
      */
-    fun setScoreListDetails(correctJson: String) {
-        currentScores = scoreJsonToList(correctJson) as MutableList<ExamScoreItem>
-        if (correctMode < 3) {
-            showView(rv_list_score)
-            disMissView(rv_list_multi)
-            mTopicScoreAdapter?.setNewData(currentScores)
-            mTopicScoreAdapter?.setCorrectMode(correctMode)
-            mTopicScoreAdapter?.setScoreMode(scoreMode)
-            mTopicScoreAdapter?.setResultView(false)
-        } else {
-            showView(rv_list_multi)
-            disMissView(rv_list_score)
-            mTopicMultiAdapter?.setNewData(currentScores)
-            mTopicMultiAdapter?.setScoreMode(scoreMode)
-            mTopicMultiAdapter?.setResultView(false)
+    fun setScoreListDetails(rvList:RecyclerView, correctJson: String,isAssign: Boolean) {
+        currentScores = ScoreItemUtils.jsonListToModuleList(correctMode,ScoreItemUtils.questionToList(correctJson,isAssign))
+        when(correctMode){
+            1,2->{
+                rvList.layoutManager = GridLayoutManager(this,3)
+                mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
+                    rvList.adapter = this
+                    bindToRecyclerView(rvList)
+                    setOnItemChildClickListener { adapter, view, position ->
+                        if (isAssign){
+                            setChangeItemScore(view,position)
+                        }
+                    }
+                    rvList.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(this@BaseDrawingActivity,15f)))
+                }
+            }
+            3,4,5->{
+                rvList.layoutManager = LinearLayoutManager(this)
+                mTopicTwoScoreAdapter = TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                    rvList.adapter = this
+                    bindToRecyclerView(rvList)
+                    setOnItemChildClickListener { adapter, view, position ->
+                        val item=currentScores[position]
+                        if (isAssign&&item.childScores.isNullOrEmpty()){
+                            setChangeItemScore(view,position)
+                        }
+                    }
+                    setCustomItemChildClickListener{ position, view, childPos ->
+                        if (isAssign){
+                            val scoreItem=currentScores[position]
+                            val childItem=scoreItem.childScores[childPos]
+                            when(view.id){
+                                R.id.tv_score->{
+                                    if (scoreMode==1){
+                                        NumberDialog(this@BaseDrawingActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
+
+                                            childItem.score= it
+                                            childItem.result=ScoreItemUtils.getItemScoreResult(childItem)
+
+                                            scoreItem.score=ScoreItemUtils.getItemScoreTotal(scoreItem.childScores)
+                                            scoreItem.result=ScoreItemUtils.getItemScoreResult(scoreItem)
+
+                                            notifyItemChanged(position)
+                                            setTotalScore()
+                                        }
+                                    }
+                                }
+                                R.id.iv_result->{
+                                    if (childItem.result==0){
+                                        childItem.result=1
+                                    }
+                                    else{
+                                        childItem.result=0
+                                    }
+                                    childItem.score= childItem.result*childItem.label
+
+                                    scoreItem.score=ScoreItemUtils.getItemScoreTotal(scoreItem.childScores)
+                                    scoreItem.result=ScoreItemUtils.getItemScoreResult(scoreItem)
+
+                                    notifyItemChanged(position)
+                                    setTotalScore()
+                                }
+                            }
+                        }
+                    }
+                    rvList.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseDrawingActivity,15f)))
+                }
+            }
+            6,7->{
+                rvList.layoutManager = LinearLayoutManager(this)
+                mTopicMultistageScoreAdapter=TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                    rvList.adapter = this
+                    bindToRecyclerView(rvList)
+                    setOnItemChildClickListener { adapter, view, position ->
+                        val item=currentScores[position]
+                        if (isAssign&&item.childScores.isNullOrEmpty()){
+                            setChangeItemScore(view,position)
+                        }
+                    }
+                    setCustomItemChildClickListener(object : TopicMultistageScoreAdapter.OnItemChildClickListener {
+                        override fun onParentClick(position: Int, view: View, parentPosition: Int) {
+                            val rootItem=currentScores[position]
+                            val parentItem=rootItem.childScores[parentPosition]
+                            if (isAssign){
+                                when(view.id){
+                                    R.id.tv_score->{
+                                        if (scoreMode==1){
+                                            NumberDialog(this@BaseDrawingActivity,2,"最大输入${parentItem.label}",parentItem.label).builder().setDialogClickListener{
+                                                parentItem.score= it
+                                                parentItem.result=ScoreItemUtils.getItemScoreResult(parentItem)
+
+                                                rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                                rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                                notifyItemChanged(position)
+                                                setTotalScore()
+                                            }
+                                        }
+                                    }
+                                    R.id.iv_result->{
+                                        if (parentItem.result==0){
+                                            parentItem.result=1
+                                        }
+                                        else{
+                                            parentItem.result=0
+                                        }
+                                        parentItem.score= parentItem.result*parentItem.label
+
+                                        rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                        rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                        notifyItemChanged(position)
+                                        setTotalScore()
+                                    }
+                                }
+                            }
+                        }
+                        override fun onChildClick(position: Int, view: View, parentPosition: Int, childPos: Int) {
+                            val rootItem=currentScores[position]
+                            val parentItem=rootItem.childScores[parentPosition]
+                            val childItem=parentItem.childScores[childPos]
+                            if (isAssign){
+                                when(view.id){
+                                    R.id.tv_score->{
+                                        if (scoreMode==1){
+                                            NumberDialog(this@BaseDrawingActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
+                                                childItem.score= it
+                                                childItem.result=ScoreItemUtils.getItemScoreResult(childItem)
+
+                                                parentItem.score=ScoreItemUtils.getItemScoreTotal(parentItem.childScores)
+                                                parentItem.result=ScoreItemUtils.getItemScoreResult(parentItem)
+
+                                                rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                                rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                                notifyDataSetChanged()
+                                                setTotalScore()
+                                            }
+                                        }
+                                    }
+                                    R.id.iv_result->{
+                                        if (childItem.result==0){
+                                            childItem.result=1
+                                        }
+                                        else{
+                                            childItem.result=0
+                                        }
+                                        childItem.score= childItem.result*childItem.label
+
+                                        parentItem.score=ScoreItemUtils.getItemScoreTotal(parentItem.childScores)
+                                        parentItem.result=ScoreItemUtils.getItemScoreResult(parentItem)
+
+                                        rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                        rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                        notifyDataSetChanged()
+                                        setTotalScore()
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    rvList.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseDrawingActivity,15f)))
+                }
+            }
         }
     }
 
     /**
-     * 格式序列化  题目分数转行list集合
+     * 大题数据变化
      */
-    fun scoreJsonToList(json: String): List<ExamScoreItem> {
-        return Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+    private fun setChangeItemScore(view:View,position: Int){
+        val item=currentScores[position]
+        when(view.id){
+            R.id.tv_score->{
+                if (scoreMode==1){
+                    NumberDialog(this,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
+                        item.score= it
+                        item.result=ScoreItemUtils.getItemScoreResult(item)
+                        when(correctMode){
+                            1,2->{
+                                mTopicScoreAdapter?.notifyItemChanged(position)
+                            }
+                            3,4,5->{
+                                mTopicTwoScoreAdapter?.notifyItemChanged(position)
+                            }
+                            6,7->{
+                                mTopicMultistageScoreAdapter?.notifyItemChanged(position)
+                            }
+                        }
+                        setTotalScore()
+                    }
+                }
+            }
+            R.id.iv_result->{
+                if (item.result==0){
+                    item.result=1
+                }
+                else{
+                    item.result=0
+                }
+                item.score= item.result*item.label
+                when(correctMode){
+                    1,2->{
+                        mTopicScoreAdapter?.notifyItemChanged(position)
+                    }
+                    3,4,5->{
+                        mTopicTwoScoreAdapter?.notifyItemChanged(position)
+                    }
+                    6,7->{
+                        mTopicMultistageScoreAdapter?.notifyItemChanged(position)
+                    }
+                }
+                setTotalScore()
+            }
+        }
+    }
+
+    /**
+     * 总分变化
+     */
+    private fun setTotalScore(){
+        var total=0.0
+        for (item in currentScores){
+            total+=item.score
+        }
+        tv_correct_total_score.text=total.toString()
     }
 
     /**

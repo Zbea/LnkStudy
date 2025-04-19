@@ -110,10 +110,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (rv_tab!=null){
             initTabView()
         }
-        initDialog()
-        initView()
 
         getScreenPosition()
+        initDialog()
+        initView()
 
         lazyLoadDataIfPrepared()
     }
@@ -311,7 +311,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
      * 重新初始化屏幕位置
      */
     open fun initChangeScreenData(){
-        mCommonPresenter= CommonPresenter(this,getScreenPosition())
         initDialog()
     }
 
