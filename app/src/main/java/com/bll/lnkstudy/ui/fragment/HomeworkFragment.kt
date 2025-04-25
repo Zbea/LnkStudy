@@ -676,6 +676,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 bookCorrectBean.page = page.toInt()
                                 bookCorrectBean.state = 2//已完成
                                 bookCorrectBean.startTime=System.currentTimeMillis()
+                                bookCorrectBean.contendId=item.contendId
                                 val id = HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
                                 val path=FileAddress().getPathHomeworkBookDrawPath(homeworkBookBean.bookDrawPath!!,page.toInt())
                                 //更新增量数据
@@ -729,6 +730,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             } else {
                                 bookCorrectBean = HomeworkBookCorrectBean()
                                 bookCorrectBean.homeworkTitle = item.title
+                                bookCorrectBean.contendId=item.contendId
                                 bookCorrectBean.bookId = typeBean.bookId
                                 bookCorrectBean.page = page.toInt()
                                 bookCorrectBean.score = item.score

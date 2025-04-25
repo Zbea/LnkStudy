@@ -16,24 +16,41 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.model.paper.ScoreItem
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.ExceptionHandle
 import com.bll.lnkstudy.net.IBaseView
 import com.bll.lnkstudy.ui.activity.book.BookStoreActivity
 import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
+import com.bll.lnkstudy.ui.adapter.TopicMultistageScoreAdapter
+import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
+import com.bll.lnkstudy.ui.adapter.TopicTwoScoreAdapter
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.widget.FlowLayoutManager
+import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.bll.lnkstudy.widget.SpaceItemDeco
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.ll_score
 import kotlinx.android.synthetic.main.ac_list_tab.*
+import kotlinx.android.synthetic.main.common_correct_score.iv_correct_close
+import kotlinx.android.synthetic.main.common_correct_score.iv_score_down
+import kotlinx.android.synthetic.main.common_correct_score.iv_score_up
+import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
+import kotlinx.android.synthetic.main.common_correct_score.tv_answer
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -59,6 +76,15 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var isClickExpend=false //是否是单双屏切换
     var mTabTypeAdapter: TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
+
+    var correctMode = 0
+    var scoreMode = 0 //1赋分，2对错
+    var answerImages = mutableListOf<String>()//答题地址
+    var initScores = mutableListOf<ScoreItem>()
+    var currentScores = mutableListOf<ScoreItem>()
+    var mTopicScoreAdapter: TopicScoreAdapter?=null
+    var mTopicTwoScoreAdapter: TopicTwoScoreAdapter?=null
+    var mTopicMultistageScoreAdapter: TopicMultistageScoreAdapter?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -126,6 +152,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         if (rv_tab!=null){
             initTabView()
         }
+
+        if (iv_score != null && ll_score != null)
+            initScoreView()
 
         initCreate()
         initDialog()
@@ -275,6 +304,70 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     open fun onTabClickListener(view:View, position:Int){
 
     }
+
+    /**
+     * 设置成绩分数
+     */
+    private fun initScoreView() {
+        iv_correct_close?.setOnClickListener {
+            disMissView(ll_score)
+            showView(iv_score)
+        }
+
+        iv_score.setOnClickListener {
+            disMissView(iv_score)
+            showView(ll_score)
+        }
+
+        iv_score_up.setOnClickListener {
+            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,200f))
+        }
+
+        iv_score_down.setOnClickListener {
+            rv_list_score.scrollBy(0, DP2PX.dip2px(this,200f))
+        }
+
+        tv_answer.setOnClickListener {
+            if (answerImages.size > 0)
+                ImageDialog(this, answerImages).builder()
+        }
+    }
+
+    /**
+     * 设置批改详情小题列表
+     */
+    fun setScoreListDetails(correctJson: String) {
+        currentScores = ScoreItemUtils.jsonListToModuleList(correctMode,ScoreItemUtils.questionToList(correctJson,false))
+        when(correctMode){
+            1,2->{
+                rv_list_score.layoutManager = GridLayoutManager(this,3)
+                mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
+                }
+            }
+            3,4,5->{
+                rv_list_score.layoutManager = LinearLayoutManager(this)
+                mTopicTwoScoreAdapter = TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
+                }
+            }
+            6,7->{
+                rv_list_score.layoutManager = LinearLayoutManager(this)
+                val sharedPool = RecyclerView.RecycledViewPool()
+                rv_list_score.setRecycledViewPool(sharedPool)
+                mTopicMultistageScoreAdapter=TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
+                }
+            }
+        }
+    }
+
 
     /**
      * 得到当前屏幕位置

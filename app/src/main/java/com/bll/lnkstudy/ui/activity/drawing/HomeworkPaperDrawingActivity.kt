@@ -31,7 +31,7 @@ import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
+import kotlinx.android.synthetic.main.common_correct_score.rl_topic_content
 import kotlinx.android.synthetic.main.common_correct_score.tv_answer
 import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
 import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
@@ -334,10 +334,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             tv_correct_title.text=item.title
             tv_total_score.text=item.score.toString()
             if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-                setScoreListDetails(rv_list_score,item.correctJson,false)
+                setScoreListDetails(item.correctJson)
             }
             else{
-                disMissView(rv_list_score)
+                disMissView(rl_topic_content)
             }
         }
         else{

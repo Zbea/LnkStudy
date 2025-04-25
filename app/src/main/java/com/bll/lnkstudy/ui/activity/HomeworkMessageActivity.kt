@@ -78,6 +78,7 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                             MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageIndex)
                         }
                         else{
+                            showLoading()
                             loadHomeworkPaperImage(messageBean)
                         }
                     }

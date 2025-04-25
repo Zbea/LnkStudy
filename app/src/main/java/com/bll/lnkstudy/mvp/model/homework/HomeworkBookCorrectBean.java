@@ -19,6 +19,7 @@ public class HomeworkBookCorrectBean {
     public Long id;
     public long userId= MethodManager.getAccountId();
     public int bookId;
+    public int contendId;
     public String homeworkTitle;//本次作业标题
     public int page;//下标页码
     public int state=0;//状态1提交 2已完成
@@ -30,13 +31,15 @@ public class HomeworkBookCorrectBean {
     public boolean isSelfCorrect;//是否自批
     public String commitJson;//提交信息(自批时)
     public Long startTime=0L;
-    @Generated(hash = 2061864620)
-    public HomeworkBookCorrectBean(Long id, long userId, int bookId, String homeworkTitle, int page,
-            int state, int correctMode, int scoreMode, double score, String answerUrl,
-            String correctJson, boolean isSelfCorrect, String commitJson, Long startTime) {
+    @Generated(hash = 1738409563)
+    public HomeworkBookCorrectBean(Long id, long userId, int bookId, int contendId,
+            String homeworkTitle, int page, int state, int correctMode,
+            int scoreMode, double score, String answerUrl, String correctJson,
+            boolean isSelfCorrect, String commitJson, Long startTime) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
+        this.contendId = contendId;
         this.homeworkTitle = homeworkTitle;
         this.page = page;
         this.state = state;
@@ -69,6 +72,12 @@ public class HomeworkBookCorrectBean {
     }
     public void setBookId(int bookId) {
         this.bookId = bookId;
+    }
+    public int getContendId() {
+        return this.contendId;
+    }
+    public void setContendId(int contendId) {
+        this.contendId = contendId;
     }
     public String getHomeworkTitle() {
         return this.homeworkTitle;
@@ -136,5 +145,7 @@ public class HomeworkBookCorrectBean {
     public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
+
+   
 
 }

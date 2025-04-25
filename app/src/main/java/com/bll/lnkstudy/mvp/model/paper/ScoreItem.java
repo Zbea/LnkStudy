@@ -9,6 +9,7 @@ public class ScoreItem implements Serializable {
     public int sort;
     public String sortStr;
     public int rootSort;
+    public int parentSort;
     public int level;
     public int result;//0错1对
     public boolean isResultShow=true;

@@ -95,15 +95,42 @@
             />
     </RelativeLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list_score"
+    <RelativeLayout
+        android:id="@+id/rl_topic_content"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_marginTop="@dimen/dp_20"
-        android:padding="@dimen/dp_20"
-        android:visibility="gone"
         android:background="@drawable/bg_black_stroke_0dp_corner"
-        />
+        >
+
+        <ImageView
+            android:id="@+id/iv_score_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_arrow_page_up"
+            android:layout_centerVertical="true"
+            />
+
+        <ImageView
+            android:id="@+id/iv_score_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_arrow_page_down"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_60"
+            />
+
+    </RelativeLayout>
 
 </LinearLayout>

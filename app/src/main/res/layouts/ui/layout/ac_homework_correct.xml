@@ -203,11 +203,13 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_list_score"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="afterDescendants"
+                    android:layout_centerInParent="true"
                     android:layout_marginTop="@dimen/dp_25"
                     android:layout_marginBottom="@dimen/dp_25"
-                    android:layout_marginStart="@dimen/dp_60"
-                    android:layout_marginEnd="@dimen/dp_60"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginEnd="80dp"
                     />
 
             </RelativeLayout>

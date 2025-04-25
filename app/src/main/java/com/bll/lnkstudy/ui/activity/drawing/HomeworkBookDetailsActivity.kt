@@ -39,7 +39,7 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.common_correct_score.rv_list_score
+import kotlinx.android.synthetic.main.common_correct_score.rl_topic_content
 import kotlinx.android.synthetic.main.common_correct_score.tv_answer
 import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
 import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
@@ -65,6 +65,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var startCount=0
     private var page = 0 //当前页码
     private var bookId=0
+    private var currentContendId=-1
 
     override fun onToken(token: String) {
         FileImageUploadManager(token, homeworkCommitInfoItem?.paths!!).apply {
@@ -310,7 +311,10 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     }
                 }
                 2->{
-                    setScoreDetails(correctBean)
+                    if (correctBean.contendId!=currentContendId){
+                        currentContendId=correctBean.contendId
+                        setScoreDetails(correctBean)
+                    }
                 }
             }
         }
@@ -337,10 +341,10 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         tv_correct_title.text=item.homeworkTitle
         tv_total_score.text=item.score.toString()
         if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-            setScoreListDetails(rv_list_score,item.correctJson,false)
+            setScoreListDetails(item.correctJson)
         }
         else{
-            disMissView(rv_list_score)
+            disMissView(rl_topic_content)
         }
     }
 
@@ -492,6 +496,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             if (bookCorrectBean!=null){
                 bookCorrectBean.homeworkTitle=homeworkCommitInfoItem?.title
                 bookCorrectBean.state = 1
+                bookCorrectBean.contendId=homeworkCommitInfoItem?.messageId!!
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
                     bookCorrectBean.isSelfCorrect=true
                     bookCorrectBean.correctMode = homeworkCommitInfoItem?.correctMode!!
@@ -511,6 +516,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 bookCorrectBean.startTime=System.currentTimeMillis()
                 bookCorrectBean.page=page
                 bookCorrectBean.state = 1
+                bookCorrectBean.contendId=homeworkCommitInfoItem?.messageId!!
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
                     bookCorrectBean.isSelfCorrect=true
                     bookCorrectBean.correctMode = homeworkCommitInfoItem?.correctMode!!

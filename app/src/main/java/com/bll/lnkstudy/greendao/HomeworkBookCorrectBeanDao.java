@@ -27,17 +27,18 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property BookId = new Property(2, int.class, "bookId", false, "BOOK_ID");
-        public final static Property HomeworkTitle = new Property(3, String.class, "homeworkTitle", false, "HOMEWORK_TITLE");
-        public final static Property Page = new Property(4, int.class, "page", false, "PAGE");
-        public final static Property State = new Property(5, int.class, "state", false, "STATE");
-        public final static Property CorrectMode = new Property(6, int.class, "correctMode", false, "CORRECT_MODE");
-        public final static Property ScoreMode = new Property(7, int.class, "scoreMode", false, "SCORE_MODE");
-        public final static Property Score = new Property(8, double.class, "score", false, "SCORE");
-        public final static Property AnswerUrl = new Property(9, String.class, "answerUrl", false, "ANSWER_URL");
-        public final static Property CorrectJson = new Property(10, String.class, "correctJson", false, "CORRECT_JSON");
-        public final static Property IsSelfCorrect = new Property(11, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
-        public final static Property CommitJson = new Property(12, String.class, "commitJson", false, "COMMIT_JSON");
-        public final static Property StartTime = new Property(13, Long.class, "startTime", false, "START_TIME");
+        public final static Property ContendId = new Property(3, int.class, "contendId", false, "CONTEND_ID");
+        public final static Property HomeworkTitle = new Property(4, String.class, "homeworkTitle", false, "HOMEWORK_TITLE");
+        public final static Property Page = new Property(5, int.class, "page", false, "PAGE");
+        public final static Property State = new Property(6, int.class, "state", false, "STATE");
+        public final static Property CorrectMode = new Property(7, int.class, "correctMode", false, "CORRECT_MODE");
+        public final static Property ScoreMode = new Property(8, int.class, "scoreMode", false, "SCORE_MODE");
+        public final static Property Score = new Property(9, double.class, "score", false, "SCORE");
+        public final static Property AnswerUrl = new Property(10, String.class, "answerUrl", false, "ANSWER_URL");
+        public final static Property CorrectJson = new Property(11, String.class, "correctJson", false, "CORRECT_JSON");
+        public final static Property IsSelfCorrect = new Property(12, boolean.class, "isSelfCorrect", false, "IS_SELF_CORRECT");
+        public final static Property CommitJson = new Property(13, String.class, "commitJson", false, "COMMIT_JSON");
+        public final static Property StartTime = new Property(14, Long.class, "startTime", false, "START_TIME");
     }
 
 
@@ -56,17 +57,18 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
-                "\"HOMEWORK_TITLE\" TEXT," + // 3: homeworkTitle
-                "\"PAGE\" INTEGER NOT NULL ," + // 4: page
-                "\"STATE\" INTEGER NOT NULL ," + // 5: state
-                "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 6: correctMode
-                "\"SCORE_MODE\" INTEGER NOT NULL ," + // 7: scoreMode
-                "\"SCORE\" REAL NOT NULL ," + // 8: score
-                "\"ANSWER_URL\" TEXT," + // 9: answerUrl
-                "\"CORRECT_JSON\" TEXT," + // 10: correctJson
-                "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 11: isSelfCorrect
-                "\"COMMIT_JSON\" TEXT," + // 12: commitJson
-                "\"START_TIME\" INTEGER);"); // 13: startTime
+                "\"CONTEND_ID\" INTEGER NOT NULL ," + // 3: contendId
+                "\"HOMEWORK_TITLE\" TEXT," + // 4: homeworkTitle
+                "\"PAGE\" INTEGER NOT NULL ," + // 5: page
+                "\"STATE\" INTEGER NOT NULL ," + // 6: state
+                "\"CORRECT_MODE\" INTEGER NOT NULL ," + // 7: correctMode
+                "\"SCORE_MODE\" INTEGER NOT NULL ," + // 8: scoreMode
+                "\"SCORE\" REAL NOT NULL ," + // 9: score
+                "\"ANSWER_URL\" TEXT," + // 10: answerUrl
+                "\"CORRECT_JSON\" TEXT," + // 11: correctJson
+                "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 12: isSelfCorrect
+                "\"COMMIT_JSON\" TEXT," + // 13: commitJson
+                "\"START_TIME\" INTEGER);"); // 14: startTime
     }
 
     /** Drops the underlying database table. */
@@ -85,36 +87,37 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getBookId());
+        stmt.bindLong(4, entity.getContendId());
  
         String homeworkTitle = entity.getHomeworkTitle();
         if (homeworkTitle != null) {
-            stmt.bindString(4, homeworkTitle);
+            stmt.bindString(5, homeworkTitle);
         }
-        stmt.bindLong(5, entity.getPage());
-        stmt.bindLong(6, entity.getState());
-        stmt.bindLong(7, entity.getCorrectMode());
-        stmt.bindLong(8, entity.getScoreMode());
-        stmt.bindDouble(9, entity.getScore());
+        stmt.bindLong(6, entity.getPage());
+        stmt.bindLong(7, entity.getState());
+        stmt.bindLong(8, entity.getCorrectMode());
+        stmt.bindLong(9, entity.getScoreMode());
+        stmt.bindDouble(10, entity.getScore());
  
         String answerUrl = entity.getAnswerUrl();
         if (answerUrl != null) {
-            stmt.bindString(10, answerUrl);
+            stmt.bindString(11, answerUrl);
         }
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
-            stmt.bindString(11, correctJson);
+            stmt.bindString(12, correctJson);
         }
-        stmt.bindLong(12, entity.getIsSelfCorrect() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsSelfCorrect() ? 1L: 0L);
  
         String commitJson = entity.getCommitJson();
         if (commitJson != null) {
-            stmt.bindString(13, commitJson);
+            stmt.bindString(14, commitJson);
         }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(14, startTime);
+            stmt.bindLong(15, startTime);
         }
     }
 
@@ -128,36 +131,37 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         }
         stmt.bindLong(2, entity.getUserId());
         stmt.bindLong(3, entity.getBookId());
+        stmt.bindLong(4, entity.getContendId());
  
         String homeworkTitle = entity.getHomeworkTitle();
         if (homeworkTitle != null) {
-            stmt.bindString(4, homeworkTitle);
+            stmt.bindString(5, homeworkTitle);
         }
-        stmt.bindLong(5, entity.getPage());
-        stmt.bindLong(6, entity.getState());
-        stmt.bindLong(7, entity.getCorrectMode());
-        stmt.bindLong(8, entity.getScoreMode());
-        stmt.bindDouble(9, entity.getScore());
+        stmt.bindLong(6, entity.getPage());
+        stmt.bindLong(7, entity.getState());
+        stmt.bindLong(8, entity.getCorrectMode());
+        stmt.bindLong(9, entity.getScoreMode());
+        stmt.bindDouble(10, entity.getScore());
  
         String answerUrl = entity.getAnswerUrl();
         if (answerUrl != null) {
-            stmt.bindString(10, answerUrl);
+            stmt.bindString(11, answerUrl);
         }
  
         String correctJson = entity.getCorrectJson();
         if (correctJson != null) {
-            stmt.bindString(11, correctJson);
+            stmt.bindString(12, correctJson);
         }
-        stmt.bindLong(12, entity.getIsSelfCorrect() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsSelfCorrect() ? 1L: 0L);
  
         String commitJson = entity.getCommitJson();
         if (commitJson != null) {
-            stmt.bindString(13, commitJson);
+            stmt.bindString(14, commitJson);
         }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(14, startTime);
+            stmt.bindLong(15, startTime);
         }
     }
 
@@ -172,17 +176,18 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
             cursor.getInt(offset + 2), // bookId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // homeworkTitle
-            cursor.getInt(offset + 4), // page
-            cursor.getInt(offset + 5), // state
-            cursor.getInt(offset + 6), // correctMode
-            cursor.getInt(offset + 7), // scoreMode
-            cursor.getDouble(offset + 8), // score
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // answerUrl
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // correctJson
-            cursor.getShort(offset + 11) != 0, // isSelfCorrect
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // commitJson
-            cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13) // startTime
+            cursor.getInt(offset + 3), // contendId
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // homeworkTitle
+            cursor.getInt(offset + 5), // page
+            cursor.getInt(offset + 6), // state
+            cursor.getInt(offset + 7), // correctMode
+            cursor.getInt(offset + 8), // scoreMode
+            cursor.getDouble(offset + 9), // score
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // answerUrl
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // correctJson
+            cursor.getShort(offset + 12) != 0, // isSelfCorrect
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // commitJson
+            cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14) // startTime
         );
         return entity;
     }
@@ -192,17 +197,18 @@ public class HomeworkBookCorrectBeanDao extends AbstractDao<HomeworkBookCorrectB
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setBookId(cursor.getInt(offset + 2));
-        entity.setHomeworkTitle(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setPage(cursor.getInt(offset + 4));
-        entity.setState(cursor.getInt(offset + 5));
-        entity.setCorrectMode(cursor.getInt(offset + 6));
-        entity.setScoreMode(cursor.getInt(offset + 7));
-        entity.setScore(cursor.getDouble(offset + 8));
-        entity.setAnswerUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setCorrectJson(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setIsSelfCorrect(cursor.getShort(offset + 11) != 0);
-        entity.setCommitJson(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setStartTime(cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13));
+        entity.setContendId(cursor.getInt(offset + 3));
+        entity.setHomeworkTitle(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setPage(cursor.getInt(offset + 5));
+        entity.setState(cursor.getInt(offset + 6));
+        entity.setCorrectMode(cursor.getInt(offset + 7));
+        entity.setScoreMode(cursor.getInt(offset + 8));
+        entity.setScore(cursor.getDouble(offset + 9));
+        entity.setAnswerUrl(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setCorrectJson(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setIsSelfCorrect(cursor.getShort(offset + 12) != 0);
+        entity.setCommitJson(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setStartTime(cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14));
      }
     
     @Override
