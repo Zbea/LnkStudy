@@ -195,22 +195,28 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             }
 
             if (!NetworkUtil.isNetworkConnected()){
-                showToast("网络连接失败，无法提交")
+                showToast("网络连接失败")
                 return@setOnClickListener
             }
             if (homeworkCommitInfoItem?.submitState==0){
                 HomeworkCommitDialog(this,getCurrentScreenPos(),startCount,pageCount,homeworkCommitInfoItem!!.title).builder().setOnDialogClickListener {
                     showLoading()
-                    setDisableTouchInput(true)
                     commit(it)
                 }
             }
             else{
-                //不提交作业直接完成
-                showLoading()
-                val map = HashMap<String, Any>()
-                map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
-                mUploadPresenter.commitHomework(map)
+                if (homeworkCommitInfoItem?.isSelfCorrect==true){
+                    HomeworkCommitDialog(this,getCurrentScreenPos(),startCount,pageCount,homeworkCommitInfoItem!!.title).builder().setOnDialogClickListener {
+                        commit(it)
+                    }
+                }
+                else{
+                    //不提交作业直接完成
+                    showLoading()
+                    val map = HashMap<String, Any>()
+                    map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
+                    mUploadPresenter.commitHomework(map)
+                }
             }
         }
 
@@ -441,6 +447,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
      * 题卷提交
      */
     private fun commit(pages: List<Int>) {
+        setDisableTouchInput(true)
         homeworkCommitInfoItem?.bookId=bookId
         homeworkCommitInfoItem?.takeTime=getTakeTime(pages)
         homeworkCommitInfoItem?.paths?.clear()

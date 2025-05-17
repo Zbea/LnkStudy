@@ -141,6 +141,20 @@ class FileAddress {
     }
 
     /**
+     * 自批手写保存路径
+     */
+    fun getPathHomeworkCorrect(contentId: Int):String{
+        return "$HOMEWORK_PATH/$mUserId/$contentId"
+    }
+
+    /**
+     * 自批手写保存路径
+     */
+    fun getPathHomeworkCorrect(contentId: Int,index: Int):String{
+        return "$HOMEWORK_PATH/$mUserId/$contentId/$index.png"
+    }
+
+    /**
      * 笔记文件夹地址
      */
     fun getPathNote(type: String?,noteBookStr: String?):String{
@@ -228,12 +242,5 @@ class FileAddress {
      */
     fun getPathRecorder():String{
         return "$IMAGE_PATH/${mUserId}/recorder"
-    }
-
-    /**
-     * 系统更新地址
-     */
-    fun getPathSystemUpdate(fileName: String):String{
-        return "/data/media/0/update${fileName}.zip"
     }
 }

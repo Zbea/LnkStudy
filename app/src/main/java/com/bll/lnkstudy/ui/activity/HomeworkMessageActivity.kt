@@ -118,6 +118,7 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         showToast("下载完成")
+                        hideLoading()
                         //创建作业卷目录
                         val paper = HomeworkPaperBean().apply {
                             contentId = item.contendId

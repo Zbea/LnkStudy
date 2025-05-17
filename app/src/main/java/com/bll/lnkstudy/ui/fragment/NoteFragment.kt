@@ -177,7 +177,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
         }
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            ModuleItemDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBook).builder()
+            ModuleItemDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBeanBooks).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     resId= ToolUtils.getImageResStr(activity, moduleBean.resContentId)
                     createNote()

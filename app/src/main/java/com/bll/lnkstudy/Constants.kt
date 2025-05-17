@@ -44,6 +44,7 @@ class Constants {
 //        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 //        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
             const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
+            const val UPDATE_URL="http://cdn.qinglanmb.com/"
 
         //storage/sdcard/0
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath

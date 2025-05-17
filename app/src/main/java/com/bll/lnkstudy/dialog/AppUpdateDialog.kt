@@ -3,7 +3,6 @@ package com.bll.lnkstudy.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
-import android.view.View
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
@@ -27,7 +26,7 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
         val window = dialog?.window
         val layoutParams = window?.attributes
         layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.START
-        layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 340f)) / 2
+        layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 698f)) / 2
         dialog?.show()
 
         btn_ok = dialog?.findViewById(R.id.tv_update)
@@ -64,10 +63,5 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
         if (btn_ok!=null){
             btn_ok?.text = string
         }
-    }
-
-    fun setUpdateInfo(){
-        tv_info?.text="设备将重启并升级系统, 请保证您的 USB 电缆或充电器是连接状态!"
-        btn_ok?.visibility= View.GONE
     }
 }

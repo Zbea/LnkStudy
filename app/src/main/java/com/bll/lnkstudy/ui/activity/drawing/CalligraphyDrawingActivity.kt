@@ -63,8 +63,8 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         setDisableTouchInput(typeId!=0)
 
         iv_btn.setOnClickListener {
-            ModuleItemDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModule).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+            ModuleItemDialog(this,getCurrentScreenPos(),getString(R.string.sf_module_str), DataBeanManager.sfModuleBeans).builder()
+                .setOnDialogClickListener { moduleBean ->
                     paintingDrawingBean?.bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     PaintingDrawingDaoManager.getInstance().insertOrReplace(paintingDrawingBean)
                     editDataUpdate(paintingDrawingBean!!)
@@ -250,7 +250,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
         paintingDrawingBean?.date = date
         paintingDrawingBean?.path = "$path/${DateUtils.longToString(date)}.png"
         paintingDrawingBean?.cloudId=typeId
-        paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_details_bg_2)
+        paintingDrawingBean?.bgRes=ToolUtils.getImageResStr(this, R.mipmap.icon_note_content_fg_10)
         page = paintingLists.size
         paintingLists.add(paintingDrawingBean!!)
 

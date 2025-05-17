@@ -4,6 +4,7 @@
     android:layout_width="@dimen/drawing_tool_width"
     android:layout_height="match_parent"
     android:gravity="bottom"
+    android:background="@color/white"
     >
 
 

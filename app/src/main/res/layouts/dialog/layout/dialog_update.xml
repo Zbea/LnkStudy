@@ -7,7 +7,7 @@
     >
 
     <LinearLayout
-        android:layout_width="340dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/icon_update_top"
         android:orientation="vertical"
@@ -20,9 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="新版本"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="200dp"
             />
 
         <TextView
@@ -30,15 +30,16 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:textColor="@color/black_30"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_22" />
 
         <TextView
             android:id="@+id/tv_update"
             android:layout_width="200dp"
             android:layout_height="45dp"
             android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:gravity="center"
             android:tag="beta_confirm_button"

@@ -91,7 +91,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         daoManager?.insertOrReplace(paper)
         refreshDataUpdate()
 
-        if (paper?.endTime!!>0){
+        if (homeworkCommitInfoItem?.submitState==0){
             FileUtils.deleteFile(File(getPathDraw()))
             FileUtils.deleteFile(File(getPathMerge()))
         }
@@ -169,7 +169,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 gotoSelfCorrect()
                 return@setOnClickListener
             }
-            if (paper?.endTime!!>0){
+            if (homeworkCommitInfoItem?.submitState==0){
                 if (!FileUtils.isExistContent(getPathMerge())){
                     showToast("未填写答案,无法提交")
                     return@setOnClickListener
@@ -180,17 +180,21 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                         }
                         override fun ok() {
                             showLoading()
-                            setDisableTouchInput(true)
                             commit()
                         }
                     })
             }
             else{
-                //不提交作业直接完成
-                showLoading()
-                val map = HashMap<String, Any>()
-                map["studentTaskId"] = paper?.contentId!!
-                mUploadPresenter.commitHomework(map)
+                if (homeworkCommitInfoItem?.isSelfCorrect==true){
+                    commit()
+                }
+                else{
+                    //不提交作业直接完成
+                    showLoading()
+                    val map = HashMap<String, Any>()
+                    map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
+                    mUploadPresenter.commitHomework(map)
+                }
             }
         }
     }
@@ -312,7 +316,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 需要提交且状态为0
      */
     private fun isDrawing():Boolean{
-        return isHomework&&paper?.state==0&&paper?.endTime!!>0
+        return isHomework&&paper?.state==0
     }
 
     /**
@@ -396,6 +400,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 提交
      */
     private fun commit(){
+        setDisableTouchInput(true)
         homeworkCommitInfoItem?.takeTime=System.currentTimeMillis()- paper?.startDate!!
         homeworkCommitInfoItem?.paths=paper?.paths
         if (paper?.state==0){

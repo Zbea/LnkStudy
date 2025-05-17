@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataUpdateManager
+import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.NumberDialog
@@ -100,11 +101,18 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onCommitSuccess() {
         hideLoading()
-        showToastLong("作业提交成功")
+        showToastLong(if (commitItem?.submitState==0)"作业提交成功" else "作业已完成")
+
+        FileUtils.delete(FileAddress().getPathHomeworkCorrect(commitItem?.messageId!!))
+
         when (state) {
             2, 6 -> {
                 val homeworks = HomeworkContentDaoManager.getInstance().queryAllByContentId(commitItem?.homeworkTypeId!!, commitItem?.messageId!!)
                 for (homework in homeworks) {
+                    if (commitItem?.submitState==1){
+                        homework.title=commitItem?.title//不提交成功后改标题
+                        homework.state=2
+                    }
                     homework.isHomework = false
                     homework.date = System.currentTimeMillis()
                     homework.score = tv_correct_total_score.text.toString().toDouble()
@@ -122,6 +130,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
             4 -> {
                 for (page in commitItem?.contents!!) {
                     val item = HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(commitItem?.bookId!!, page)
+                    if (commitItem?.submitState==1){
+                        item.state=2
+                    }
                     item.score = tv_correct_total_score.text.toString().toDouble()
                     item.correctJson = Gson().toJson(initScores)
                     item.commitJson = ""
@@ -134,6 +145,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
             1 -> {
                 val paper = HomeworkPaperDaoManager.getInstance().queryByContentID(commitItem?.messageId!!)
+                if (commitItem?.submitState==1){
+                    paper.state=2
+                }
                 paper.isHomework = false
                 paper.date = System.currentTimeMillis()
                 paper.correctJson = Gson().toJson(initScores)
@@ -181,15 +195,23 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
         tv_takeTime.text = "用时：" + DateUtils.longToMinute(commitItem?.takeTime!!) + "分钟"
 
+        tv_correct_save.text=if (commitItem?.submitState==0) "提交" else "保存"
         tv_correct_save.setOnClickListener {
             if (!tv_correct_total_score.text.isNullOrEmpty()) {
                 if (!NetworkUtil.isNetworkConnected()) {
-                    showToast("网络连接失败，无法提交")
+                    showToast("网络连接失败")
                     return@setOnClickListener
                 }
-                ScoreItemUtils.updateInitListData(initScores, currentScores, correctMode)
                 showLoading()
-                mUploadPresenter.getToken()
+                ScoreItemUtils.updateInitListData(initScores, currentScores, correctMode)
+                if (commitItem?.submitState==0){
+                    mUploadPresenter.getToken()
+                }
+                else{
+                    val map = HashMap<String, Any>()
+                    map["studentTaskId"] = commitItem?.messageId!!
+                    mUploadPresenter.commitHomework(map)
+                }
             }
         }
 
@@ -514,15 +536,14 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
         if (isExpand) {
             GlideUtils.setImageNoCacheUrl(this, images[posImage], v_content_a)
-            if (posImage + 1 < getImageSize()) {
-                GlideUtils.setImageNoCacheUrl(this, images[posImage + 1], v_content_b)
-            } else {
-                v_content_b?.setImageResource(0)
-            }
+            elik_a?.setLoadFilePath(FileAddress().getPathHomeworkCorrect(commitItem?.messageId!!,posImage+1), true)
+            GlideUtils.setImageNoCacheUrl(this, images[posImage + 1], v_content_b)
+            elik_b?.setLoadFilePath(FileAddress().getPathHomeworkCorrect(commitItem?.messageId!!,posImage+1+1), true)
             tv_page.text = "${posImage + 1}"
-            tv_page_a.text = if (posImage + 1 < getImageSize()) "${posImage + 1 + 1}" else ""
+            tv_page_a.text = "${posImage + 1 + 1}"
         } else {
             GlideUtils.setImageNoCacheUrl(this, images[posImage], v_content_b)
+            elik_b?.setLoadFilePath(FileAddress().getPathHomeworkCorrect(commitItem?.messageId!!,posImage+1), true)
             tv_page.text = "${posImage + 1}"
         }
     }

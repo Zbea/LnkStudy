@@ -120,13 +120,11 @@ object ScoreItemUtils {
             5 -> {
                 for (item in list) {
                     item.sortStr="${item.sort+1}"
-                    item.rootSort=item.sort
                     if (!item.childScores.isNullOrEmpty()){
                         val childItems = mutableListOf<ScoreItem>()
                         //处理当前级数据如果有第3级则显示sortStr
                         val isShowSortStr= isChildItem(item.childScores)
                         for (childItem in item.childScores) {
-                            childItem.rootSort = item.rootSort
                             if (isShowSortStr){
                                 if (childItem.childScores.isNullOrEmpty()) {
                                     childItem.sortStr=" (${childItem.sort+1})"
@@ -147,20 +145,15 @@ object ScoreItemUtils {
             6,7->{
                 for (item in list) {
                     item.sortStr=ToolUtils.numbers[item.sort+1]
-                    item.rootSort=item.sort
                     val parentItems = mutableListOf<ScoreItem>()
                     if (!item.childScores.isNullOrEmpty()) {
                         for (parentItem in item.childScores) {
-                            parentItem.rootSort = item.rootSort
-                            parentItem.level=1
                             parentItem.sortStr=" ${parentItem.sort+1}"
                             if (!parentItem.childScores.isNullOrEmpty())  {
                                 val childItems = mutableListOf<ScoreItem>()
                                 //处理当前级数据如果有第4级则显示sortStr
                                 val isShowSortStr= isChildItem(parentItem.childScores)
                                 for (childItem in parentItem.childScores){
-                                    childItem.rootSort = parentItem.rootSort
-                                    childItem.level=2
                                     if (isShowSortStr){
                                         if (childItem.childScores.isNullOrEmpty()) {
                                             childItem.sortStr=" (${childItem.sort+1})"
@@ -204,16 +197,9 @@ object ScoreItemUtils {
      * 更新初始数据
      */
     fun updateInitListData(initList: MutableList<ScoreItem>, currentList: MutableList<ScoreItem>, correctModule: Int): MutableList<ScoreItem> {
-        when (correctModule) {
-            1, 2,3,4 -> {
-                return currentList
-            }
-            5,6,7->{
-                val items= setRecursionList(currentList)
-                setRecursionListAssignScore(initList,items)
-                setInitListScore(initList)
-            }
-        }
+        val items= setRecursionList(currentList)
+        setRecursionListAssignScore(initList,items)
+        setInitListScore(initList)
         return initList
     }
 
@@ -238,7 +224,6 @@ object ScoreItemUtils {
     private fun setRecursionChildList(correctModule: Int, list: MutableList<ScoreItem>, parentItem: ScoreItem): MutableList<ScoreItem> {
         val items = mutableListOf<ScoreItem>()
         for (item in list) {
-            item.rootSort = parentItem.rootSort
             item.sortStr=if (list.indexOf(item)==0&&item.level==if (correctModule==5)2 else 3) " (${parentItem.sort+1})" else ""
             if (item.childScores.isNullOrEmpty()) {
                 items.add(item)

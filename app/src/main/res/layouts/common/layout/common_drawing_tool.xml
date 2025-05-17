@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:paddingStart="@dimen/click_line_width"
     android:paddingEnd="@dimen/click_line_width"
+    android:background="@color/white"
     >
 
     <ImageView

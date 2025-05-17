@@ -548,10 +548,23 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     when (item.contentType) {
                         1 -> {
                             val homeworkType = Gson().fromJson(item.listJson, HomeworkTypeBean::class.java)
-                            HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkType)
-                            //创建增量数据
-                            DataUpdateManager.createDataUpdate(2, homeworkType.typeId, 1,item.listJson)
-                            DataUpdateManager.editDataUpdateUpload(2,homeworkType.typeId,1)
+                            if (homeworkType.autoState==1){
+                                val localItem = HomeworkTypeDaoManager.getInstance().queryByAutoName(homeworkType.name, homeworkType.course, homeworkType.grade)
+                                if (localItem==null){
+                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkType)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(2, homeworkType.typeId, 1,item.listJson)
+                                    DataUpdateManager.editDataUpdateUpload(2,homeworkType.typeId,1)
+                                }
+                            }
+                            else{
+                                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkType.typeId)){
+                                    HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkType)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(2, homeworkType.typeId, 1,item.listJson)
+                                    DataUpdateManager.editDataUpdateUpload(2,homeworkType.typeId,1)
+                                }
+                            }
                         }
                         2 -> {
                             when (item.state) {
@@ -572,10 +585,23 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     when (item.contentType) {
                         1 -> {
                             val paperType = Gson().fromJson(item.listJson, PaperTypeBean::class.java)
-                            PaperTypeDaoManager.getInstance().insertOrReplace(paperType)
-                            //创建增量数据
-                            DataUpdateManager.createDataUpdate(3, paperType.typeId, 1, item.listJson)
-                            DataUpdateManager.editDataUpdateUpload(3,paperType.typeId,1)
+                            if (paperType.autoState==1){
+                                val localItem= PaperTypeDaoManager.getInstance().queryByName(paperType.name,paperType.course,paperType.grade)
+                                if (localItem==null){
+                                    PaperTypeDaoManager.getInstance().insertOrReplace(paperType)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(3, paperType.typeId, 1, item.listJson)
+                                    DataUpdateManager.editDataUpdateUpload(3,paperType.typeId,1)
+                                }
+                            }
+                            else{
+                                if (!PaperTypeDaoManager.getInstance().isExistPaperType(item.typeId)) {
+                                    PaperTypeDaoManager.getInstance().insertOrReplace(paperType)
+                                    //创建增量数据
+                                    DataUpdateManager.createDataUpdate(3, paperType.typeId, 1, item.listJson)
+                                    DataUpdateManager.editDataUpdateUpload(3,paperType.typeId,1)
+                                }
+                            }
                         }
                         2 -> {
                             downloadPaper(item)
@@ -1075,6 +1101,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 clearSemesterData()
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
+                //年级变化清空增量更新
+                mDataUpdatePresenter.clearData()
                 eventType = Constants.USER_CHANGE_GRADE_EVENT
                 mQiniuPresenter.getToken()
             }

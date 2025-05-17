@@ -280,6 +280,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_draw_content"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -291,12 +292,6 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter" />
 
-        <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/v_content_b"
-            android:layout_width="@dimen/drawing_content_width"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
-
         <include
             android:id="@+id/ll_page_content_a"
             layout="@layout/common_drawing_page_number"
@@ -304,6 +299,12 @@
             android:layout_width="@dimen/drawing_tool_width"
             android:layout_height="match_parent"
             />
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
+            android:layout_width="@dimen/drawing_content_width"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
 
         <include
             android:id="@+id/ll_page_content_b"

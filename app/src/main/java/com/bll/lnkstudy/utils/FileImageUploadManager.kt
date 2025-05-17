@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.utils
 
 import android.util.Log
+import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.qiniu.android.storage.Configuration
@@ -50,7 +51,7 @@ class FileImageUploadManager(private val uploadToken:String,private val paths:Li
             { key, info, response ->
                 if (info?.isOK == true&&response!=null) {
                     val keyStr=response.optString("key")
-                    val downloadUrl="http://cdn.bailianlong.com/${keyStr}?attname=${File(path).name}"
+                    val downloadUrl="${Constants.UPDATE_URL}${keyStr}?attname=${File(path).name}"
                     items.add(ItemList().apply {
                         id=key.toInt()
                         url=downloadUrl

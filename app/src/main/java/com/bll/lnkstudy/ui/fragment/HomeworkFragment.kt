@@ -147,7 +147,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     typeId = item.id
                     state = if (item.type == 1) 2 else 4
                     date = System.currentTimeMillis()
-                    contentResId = if (item.type == 1) DataBeanManager.getHomeWorkContentStr(mCourse, this@HomeworkFragment.grade) else ""
+                    contentResId = if (item.type == 1) DataBeanManager.getHomeWorkContentStr(mCourse, this@HomeworkFragment.grade,item.name) else ""
                     course = mCourse
                     bgResId = item.imageUrl
                     bookId = item.bookId
@@ -374,16 +374,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         item.createStatus = 2
         item.fromStatus=2
         item.date=System.currentTimeMillis()
-        if (item.state == 6) {
-            item.contentResId = ToolUtils.getImageResStr(requireActivity(), R.mipmap.icon_homework_content_yw_lzb)
-        } else {
-            if (item.name=="作文作业本"){
-                item.contentResId = ToolUtils.getImageResStr(requireActivity(), if (item.grade>6) R.mipmap.icon_homework_content_yw_zxzwb else R.mipmap.icon_homework_content_yw_zwb)
-            }
-            else{
-                item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, item.grade)
-            }
-        }
+        item.contentResId = DataBeanManager.getHomeWorkContentStr(mCourse, item.grade,item.name)
         HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
         //创建增量数据
         DataUpdateManager.createDataUpdate(2, item.typeId, 1, Gson().toJson(item))
@@ -545,34 +536,33 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
     //选择内容背景
     fun addContentModule() {
-        val list = when (mCourse) {
+        when (mCourse) {
             "语文" -> {
-                DataBeanManager.getYw(grade)
-            }
-
-            "数学" -> {
-                DataBeanManager.getSx(grade)
-            }
-
-            "英语" -> {
-                DataBeanManager.getYy(grade)
-            }
-
-            else -> {
-                DataBeanManager.other
-            }
-        }
-        if (list.size > 1) {
-            ModuleItemDialog(requireContext(), screenPos, getString(R.string.homework_module_str), list).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+                ModuleItemDialog(requireContext(), screenPos, "语文格式模板", DataBeanManager.createYw(grade)).builder().setOnDialogClickListener { moduleBean ->
                     val item = HomeworkTypeBean()
                     item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
                     addHomeWorkType(item)
                 }
-        } else {
-            val item = HomeworkTypeBean()
-            item.contentResId = ToolUtils.getImageResStr(activity, list[0].resContentId)
-            addHomeWorkType(item)
+            }
+            "数学" -> {
+                ModuleItemDialog(requireContext(), screenPos, "数学格式模板", DataBeanManager.createSx(grade)).builder().setOnDialogClickListener { moduleBean ->
+                    val item = HomeworkTypeBean()
+                    item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+                    addHomeWorkType(item)
+                }
+            }
+            "英语" -> {
+                ModuleItemDialog(requireContext(), screenPos, "英语格式模板", DataBeanManager.createYy(grade)).builder().setOnDialogClickListener { moduleBean ->
+                    val item = HomeworkTypeBean()
+                    item.contentResId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
+                    addHomeWorkType(item)
+                }
+            }
+            else -> {
+                val item = HomeworkTypeBean()
+                item.contentResId = ToolUtils.getImageResStr(activity, DataBeanManager.other(grade))
+                addHomeWorkType(item)
+            }
         }
     }
 

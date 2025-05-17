@@ -60,6 +60,39 @@
         android:visibility="gone"
         />
 
+    <LinearLayout
+        android:id="@+id/ll_diary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/tv_digest"
+            android:layout_width="110dp"
+            android:layout_height="@dimen/dp_40"
+            android:gravity="center"
+            android:text="搜索编辑"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_25"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
+
+        <include
+            layout="@layout/common_date_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            />
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"

@@ -183,7 +183,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
         iv_btn.setOnClickListener {
             if (!NetworkUtil.isNetworkConnected()){
-                showToast("网络连接失败，无法提交")
+                showToast("网络连接失败")
                 return@setOnClickListener
             }
             if (getSelfCorrect()){
@@ -197,17 +197,21 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     }
                     override fun ok() {
                         showLoading()
-                        setDisableTouchInput(true)
                         commit()
                     }
                 })
             }
             else{
-                //不提交作业直接完成
-                showLoading()
-                val map = HashMap<String, Any>()
-                map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
-                mUploadPresenter.commitHomework(map)
+                if (homeworkCommitInfoItem?.isSelfCorrect==true){
+                    commit()
+                }
+                else{
+                    //不提交作业直接完成
+                    showLoading()
+                    val map = HashMap<String, Any>()
+                    map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
+                    mUploadPresenter.commitHomework(map)
+                }
             }
         }
 
@@ -475,6 +479,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     //作业提交
     private fun commit() {
+        setDisableTouchInput(true)
         homeworkCommitInfoItem?.paths?.clear()
         homeworkCommitInfoItem?.takeTime=getTakeTime()
         for (homework in homeworks) {

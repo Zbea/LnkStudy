@@ -11,6 +11,7 @@ import android.util.Log
 import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.ui.activity.SearchActivity
 import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import org.greenrobot.eventbus.EventBus
 
@@ -91,6 +92,10 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
             "android.intent.action.PACKAGE_ADDED"->{
                 Log.d(Constants.DEBUG,"刷新应用列表")
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
+                if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
+                    // 应用安装完成后重启
+                    AppUtils.reOpenApk(context)
+                }
             }
             "android.intent.action.PACKAGE_REMOVED"->{
                 Log.d(Constants.DEBUG,"刷新应用列表")

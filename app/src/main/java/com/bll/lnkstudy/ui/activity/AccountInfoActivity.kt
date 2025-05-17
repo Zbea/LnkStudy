@@ -110,7 +110,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
-            tv_phone.text = telNumber.substring(0, 3) + "****" + telNumber.substring(7, 11)
+            tv_phone.text = if (telNumber.isNotEmpty())telNumber.substring(0, 3) + "****" + telNumber.substring(7, 11) else ""
             tv_birthday.text = DateUtils.intToStringDataNoHour(birthday)
             tv_parent.text = parentName
             tv_parent_name.text = parentNickname

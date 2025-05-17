@@ -41,8 +41,10 @@ class WallpaperMyActivity:BaseAppCompatActivity() {
         initRecyclerView()
 
         tv_btn.setOnClickListener {
-            if (leftPath.isEmpty()&&rightPath.isEmpty())
+            if (leftPath.isEmpty()&&rightPath.isEmpty()){
+                showToast("设置失败")
                 return@setOnClickListener
+            }
             if(File(leftPath).exists()){
                 android.os.SystemProperties.set("xsys.eink.standby",leftPath)
 //                android.os.SystemProperties.set("xsys.eink.poweroff",leftPath)
@@ -51,6 +53,7 @@ class WallpaperMyActivity:BaseAppCompatActivity() {
                 android.os.SystemProperties.set("xsys.eink.standby1",rightPath)
 //                android.os.SystemProperties.set("xsys.eink.poweroff1",rightPath)
             }
+            showToast("设置成功")
         }
 
         fetchData()

@@ -8,6 +8,7 @@ import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
+import com.bll.lnkstudy.Constants.Companion.USER_CHANGE_GRADE_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
@@ -19,7 +20,6 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolBean
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean
-import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkNoticeView
@@ -167,12 +167,15 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
         onCheckUpdate()
         if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
-            mMainLeftPresenter.getParentPermission()
-            mMainLeftPresenter.getSchoolPermission(grade)
-            val map=HashMap<String,Any>()
-            map["size"]=7
-            mHomeworkNoticePresenter.getHomeworkNotice(map)
-            mHomeworkNoticePresenter.getCorrectNotice(map)
+            if (grade>0){
+                mMainLeftPresenter.getParentPermission()
+                mMainLeftPresenter.getSchoolPermission(grade)
+
+                val map=HashMap<String,Any>()
+                map["size"]=7
+                mHomeworkNoticePresenter.getHomeworkNotice(map)
+                mHomeworkNoticePresenter.getCorrectNotice(map)
+            }
         }
     }
 
@@ -349,6 +352,9 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             }
             DATE_DRAWING_EVENT -> {
                 setDateView()
+            }
+            USER_CHANGE_GRADE_EVENT->{
+                fetchData()
             }
         }
     }

@@ -242,7 +242,8 @@
     <string name="homework_type_tzb">田字本</string>
     <string name="homework_type_pyb">拼音本</string>
     <string name="homework_type_zwb">作文本</string>
-    <string name="homework_type_lxb">练习本</string>
+    <string name="homework_type_lzb">练字本</string>
+    <string name="homework_type_lxb">语文本</string>
     <string name="homework_type_sxb">数学本</string>
     <string name="homework_type_yyb">英语本</string>
 
@@ -408,5 +409,10 @@
 
     <string name="sf_module_str">书法模板</string>
     <string name="painting_module_str">画本规矩图</string>
+
+    <string name="diary_type_hgb_11">横格本-11mm</string>
+    <string name="diary_type_hgb_9">横格本-9mm</string>
+    <string name="diary_type_fgb_10">方格本-10mm</string>
+    <string name="diary_type_fgb_8.5">方格本-8.5mm</string>
 
 </resources>

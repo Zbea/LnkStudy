@@ -466,244 +466,397 @@ object DataBeanManager {
      * 获取老师下发作业本对应的内容默认背景图
      * @return
      */
-    fun getHomeWorkContentStr(courseStr: String, grade: Int): String {
-        val resId = when (courseStr) {
+    fun getHomeWorkContentStr(courseStr: String, grade: Int,name:String): String {
+        var resId=0
+        when (courseStr) {
             "语文"-> {
-                if (grade >6) {
-                    R.mipmap.icon_homework_content_other_zxlxb
-                }
-                else if (grade<4){
-                    R.mipmap.icon_homework_content_yw_tzb
-                }
-                else {
-                    R.mipmap.icon_homework_content_other_lxb
+                resId=when(name){
+                    "练字作业本"->{
+                        getYwLzb()
+                    }
+                    "作文作业本"->{
+                        getYwZwb(grade)
+                    }
+                    else->{
+                        getYwYwb(grade)
+                    }
                 }
             }
             "数学" -> {
-                if (grade < 7) {
-                    R.mipmap.icon_homework_content_sx_sxb
-                } else {
-                    R.mipmap.icon_homework_content_other_zxlxb
-                }
+                resId=getSx(grade)
             }
             "英语" -> {
-                if (grade < 7) {
-                    R.mipmap.icon_homework_content_yy_yyb
-                } else {
-                    R.mipmap.icon_homework_content_yy_zxyyb
-                }
+                resId=getYy(grade)
             }
             else -> {
-                R.mipmap.icon_homework_content_other_lxb
+                resId=other(grade)
             }
         }
 
         return ToolUtils.getImageResStr(mContext, resId)
     }
 
-    //语文作业本
-    fun getYw(grade: Int): MutableList<Module> {
-        val list= mutableListOf<Module>()
-        if (grade <= 3) {
-            val module = Module().apply {
-                name = mContext.getString(R.string.homework_type_pytzb)
-                resId = R.mipmap.icon_homework_module_yw_pytzb
-                resContentId = R.mipmap.icon_homework_content_yw_pytzb
-            }
-            val module1 = Module().apply {
+    //创建语文作业本
+    fun createYw(grade: Int): MutableList<ModuleBean> {
+        val list= mutableListOf<ModuleBean>()
+        if (grade < 4) {
+            val moduleBean1 = ModuleBean().apply {
                name = mContext.getString(R.string.homework_type_tzb)
                 resId = R.mipmap.icon_homework_module_yw_tzb
-                resContentId = R.mipmap.icon_homework_content_yw_tzb
+                resContentId = R.mipmap.icon_homework_content_yw_tzb_cx
             }
-            val module2 = Module().apply {
+            val moduleBean2 = ModuleBean().apply {
                 name = mContext.getString(R.string.homework_type_pyb)
                 resId = R.mipmap.icon_homework_module_yw_pyb
-                resContentId = R.mipmap.icon_homework_content_yw_pyb
+                resContentId = R.mipmap.icon_homework_content_yw_pyb_cx
             }
-            val module3 = Module().apply {
+            val moduleBean3 = ModuleBean().apply {
+                name = "拼音田字本"
+                resId = R.mipmap.icon_homework_module_yw_pytzb
+                resContentId = R.mipmap.icon_homework_content_yw_ywb_cx
+            }
+            val moduleBean4 = ModuleBean().apply {
                name = mContext.getString(R.string.homework_type_zwb)
-                resId = R.mipmap.icon_homework_module_yw_zwb
-                resContentId = R.mipmap.icon_homework_content_yw_zwb
+                resId = R.mipmap.icon_homework_module_yw_zwb_cx
+                resContentId = R.mipmap.icon_homework_content_yw_zwb_gx
             }
-            val module4 = Module().apply {
-                name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_lxb
+            val moduleBean5 = ModuleBean().apply {
+                name = "方格本"
+                resId = R.mipmap.icon_note_module_fg_10
+                resContentId = R.mipmap.icon_note_content_fg_10
             }
-            list.add(module)
-            list.add(module1)
-            list.add(module2)
-            list.add(module3)
-            list.add(module4)
+            val moduleBean6 = ModuleBean().apply {
+                name = "横格本"
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+            list.add(moduleBean3)
+            list.add(moduleBean4)
+            list.add(moduleBean5)
+            list.add(moduleBean6)
         } else if (grade in 4..6) {
-            val module = Module().apply {
-                name = mContext.getString(R.string.homework_type_zwb)
-                resId = R.mipmap.icon_homework_module_yw_zwb
-                resContentId = R.mipmap.icon_homework_content_yw_zwb
+            val moduleBean1 = ModuleBean().apply {
+                name = "横格本-11mm"
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
             }
-            val module1 = Module().apply {
-                name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_lxb
+            val moduleBean2 = ModuleBean().apply {
+                name = "横格本-9mm"
+                resId = R.mipmap.icon_note_module_hg_9
+                resContentId = R.mipmap.icon_note_content_hg_9
             }
-            list.add(module)
-            list.add(module1)
+            val moduleBean3 = ModuleBean().apply {
+                name = "方格本-10mm"
+                resId = R.mipmap.icon_note_module_fg_10
+                resContentId = R.mipmap.icon_note_content_fg_10
+            }
+            val moduleBean4 = ModuleBean().apply {
+                name = "方格本-8.5mm"
+                resId = R.mipmap.icon_note_module_fg_8_5
+                resContentId = R.mipmap.icon_note_content_fg_8_5
+            }
+            val moduleBean5 = ModuleBean().apply {
+                name = "作文本-10mm"
+                resId = R.mipmap.icon_homework_module_yw_zwb_cx
+                resContentId = R.mipmap.icon_homework_content_yw_zwb_gx
+            }
+            val moduleBean6 = ModuleBean().apply {
+                name = "作文本-8.5mm"
+                resId = R.mipmap.icon_homework_module_yw_zwb_zx
+                resContentId = R.mipmap.icon_homework_content_yw_zwb_zx
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+            list.add(moduleBean3)
+            list.add(moduleBean4)
+            list.add(moduleBean5)
+            list.add(moduleBean6)
         } else {
-            val module = Module().apply {
-                name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_zxlxb
-            }
-            val module1 = Module().apply {
+            val moduleBean1 = ModuleBean().apply {
                 name = mContext.getString(R.string.homework_type_zwb)
-                resId = R.mipmap.icon_homework_module_yw_zwb
-                resContentId = R.mipmap.icon_homework_content_yw_zxzwb
+                resId = R.mipmap.icon_homework_module_yw_zwb_zx
+                resContentId = R.mipmap.icon_homework_content_yw_zwb_zx
             }
-            list.add(module1)
-            list.add(module)
+            val moduleBean2 = ModuleBean().apply {
+                name = mContext.getString(R.string.homework_type_lxb)
+                resId = R.mipmap.icon_homework_module_yw_ywb
+                resContentId = R.mipmap.icon_homework_content_yw_ywb_gx
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
         }
         return list
+    }
+
+    //创建数学作业本
+    fun createSx(grade: Int): MutableList<ModuleBean> {
+        val list= mutableListOf<ModuleBean>()
+        if (grade < 4) {
+            val moduleBean1 = ModuleBean().apply {
+                name = "格式数学本"
+                resId = R.mipmap.icon_homework_module_sx_cx
+                resContentId = R.mipmap.icon_homework_content_sx_sxb_cx
+            }
+            val moduleBean2 = ModuleBean().apply {
+                name = "空白数学本"
+                resId = R.mipmap.icon_homework_module_sx_gx
+                resContentId = R.mipmap.icon_homework_content_sx_sxb_gx
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+        } else if (grade in 4..6) {
+            val moduleBean1 = ModuleBean().apply {
+                name = "横格本-11mm"
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
+            }
+            val moduleBean2 = ModuleBean().apply {
+                name = "横格本-9mm"
+                resId = R.mipmap.icon_note_module_hg_9
+                resContentId = R.mipmap.icon_note_content_hg_9
+            }
+            val moduleBean3 = ModuleBean().apply {
+                name = "格式数学本"
+                resId = R.mipmap.icon_homework_module_sx_cx
+                resContentId = R.mipmap.icon_homework_content_sx_sxb_cx
+            }
+            val moduleBean4 = ModuleBean().apply {
+                name = "空白数学本"
+                resId = R.mipmap.icon_homework_module_sx_gx
+                resContentId = R.mipmap.icon_homework_content_sx_sxb_gx
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+            list.add(moduleBean3)
+            list.add(moduleBean4)
+        } else {
+            val moduleBean1 = ModuleBean().apply {
+                name = "横格本-11mm"
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
+            }
+            val moduleBean2 = ModuleBean().apply {
+                name = "横格本-9mm"
+                resId = R.mipmap.icon_note_module_hg_9
+                resContentId = R.mipmap.icon_note_content_hg_9
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+        }
+        return list
+    }
+
+    //创建英语作业本
+    fun createYy(grade: Int): MutableList<ModuleBean> {
+        val list= mutableListOf<ModuleBean>()
+        if (grade < 4) {
+            val moduleBean1 = ModuleBean().apply {
+                name = "英语本-3.5mm"
+                resId = R.mipmap.icon_note_module_yy_3_5
+                resContentId = R.mipmap.icon_homework_content_yy_yyb_gx
+            }
+            val moduleBean2 = ModuleBean().apply {
+                name = "英语本-3mm"
+                resId = R.mipmap.icon_note_module_yy_3
+                resContentId = R.mipmap.icon_homework_content_yy_yyb_zx
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+        } else if (grade in 4..6) {
+            val moduleBean1 = ModuleBean().apply {
+                name = "横格本-11mm"
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
+            }
+            val moduleBean2 = ModuleBean().apply {
+                name = "横格本-9mm"
+                resId = R.mipmap.icon_note_module_hg_9
+                resContentId = R.mipmap.icon_note_content_hg_9
+            }
+            val moduleBean3 = ModuleBean().apply {
+                name = "英语本-3.5mm"
+                resId = R.mipmap.icon_note_module_yy_3_5
+                resContentId = R.mipmap.icon_homework_content_yy_yyb_gx
+            }
+            val moduleBean4 = ModuleBean().apply {
+                name = "英语本-3mm"
+                resId = R.mipmap.icon_note_module_yy_3
+                resContentId = R.mipmap.icon_homework_content_yy_yyb_zx
+            }
+            list.add(moduleBean1)
+            list.add(moduleBean2)
+            list.add(moduleBean3)
+            list.add(moduleBean4)
+        } else {
+            val moduleBean1 = ModuleBean().apply {
+                name = "英语本"
+                resId = R.mipmap.icon_note_module_yy_3
+                resContentId = R.mipmap.icon_homework_content_yy_yyb_zx
+            }
+            list.add(moduleBean1)
+        }
+        return list
+    }
+
+    //语文语文本
+    fun getYwYwb(grade: Int): Int {
+        return if (grade<4){
+            R.mipmap.icon_homework_content_yw_ywb_cx
+             }
+            else {
+            R.mipmap.icon_homework_content_yw_ywb_gx
+        }
+    }
+
+    //语文练字本
+    fun getYwLzb(): Int {
+        return R.mipmap.icon_homework_content_yw_lzb
+    }
+
+    //语文作文本
+    fun getYwZwb(grade: Int): Int {
+        return if (grade<7){
+            R.mipmap.icon_homework_content_yw_zwb_gx
+        } else {
+            R.mipmap.icon_homework_content_yw_zwb_zx
+        }
     }
 
     //数学作业本
-    fun getSx(grade: Int): MutableList<Module> {
-        val list=mutableListOf<Module>()
-        if (grade < 7) {
-            list.add(Module().apply {
-                name = mContext.getString(R.string.homework_type_sxb)
-                resId = R.mipmap.icon_homework_module_sx_sxb
-                resContentId = R.mipmap.icon_homework_content_sx_sxb
-            })
-        } else {
-            list.add(Module().apply {
-                name = mContext.getString(R.string.homework_type_sxb)
-                resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_zxlxb
-            })
+    fun getSx(grade: Int): Int {
+        return if (grade<4){
+            R.mipmap.icon_homework_content_sx_sxb_cx
         }
-        return list
+        else if (grade in 4..6) {
+            R.mipmap.icon_homework_content_sx_sxb_gx
+        } else {
+            R.mipmap.icon_homework_content_sx_sxb_zx
+        }
     }
 
     //英语作业本
-    fun getYy(grade: Int): MutableList<Module> {
-        val list=mutableListOf<Module>()
-        if (grade < 7) {
-            list.add(Module().apply {
-                name = mContext.getString(R.string.homework_type_yyb)
-                resId = R.mipmap.icon_homework_module_yy_yyb
-                resContentId = R.mipmap.icon_homework_content_yy_yyb
-            })
+    fun getYy(grade: Int): Int {
+        return if (grade<7){
+            R.mipmap.icon_homework_content_yy_yyb_gx
         } else {
-            list.add(Module().apply {
-                name = mContext.getString(R.string.homework_type_yyb)
-                resId = R.mipmap.icon_homework_module_yy_yyb
-                resContentId = R.mipmap.icon_homework_content_yy_zxyyb
-            })
+            R.mipmap.icon_homework_content_yy_yyb_zx
         }
-        return list
     }
 
     //其他本子
-    val other: MutableList<Module>
-        get() {
-            val list= mutableListOf<Module>()
-            list.add(Module().apply {
-                name = mContext.getString(R.string.homework_type_lxb)
-                resId = R.mipmap.icon_homework_module_other_lxb
-                resContentId = R.mipmap.icon_homework_content_other_lxb
-            })
-            return list
+    fun other(grade: Int): Int{
+        return if (grade<7){
+            R.mipmap.icon_homework_content_other_gx
+        } else {
+            R.mipmap.icon_homework_content_other_zx
         }
+    }
 
     //日记内容选择
-    val noteModuleDiary: MutableList<Module>
+    val diaryModules: MutableList<ModuleBean>
         get() {
-            val list= mutableListOf<Module>()
-            list.add(Module().apply {
-                name = mContext.getString(R.string.note_type_hgb)
-                resId = R.mipmap.icon_note_module_bg_1
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_hgb_11)
+                resId = R.mipmap.icon_diary_module_bg_1
                 resContentId = R.mipmap.icon_diary_details_bg_1
             })
-            list.add(Module().apply {
-                name = mContext.getString(R.string.note_type_fgb)
-                resId = R.mipmap.icon_note_module_bg_2
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_hgb_9)
+                resId = R.mipmap.icon_diary_module_bg_3
+                resContentId = R.mipmap.icon_diary_details_bg_3
+            })
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_fgb_10)
+                resId = R.mipmap.icon_diary_module_bg_2
                 resContentId = R.mipmap.icon_diary_details_bg_2
+            })
+            list.add(ModuleBean().apply {
+                name =mContext.getString(R.string.diary_type_fgb_8_5)
+                resId = R.mipmap.icon_diary_module_bg_4
+                resContentId = R.mipmap.icon_diary_details_bg_4
             })
             return list
         }
 
-    val freenoteModules: MutableList<Module>
+    val freenoteModuleBeans: MutableList<ModuleBean>
         get() {
-            val list= mutableListOf<Module>()
-            list.add(Module().apply {
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_kbb)
-                resId = R.drawable.bg_gray_stroke_10dp_corner
+                resId = R.drawable.bg_black_stroke_10dp_corner
                 resContentId = 0
             })
-            list.add(Module().apply {
+            list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_hgb)
-                resId = R.mipmap.icon_note_module_bg_1
+                resId = R.mipmap.icon_note_module_hg_11
                 resContentId = R.mipmap.icon_freenote_bg_1
             })
             return list
         }
 
     //笔记本内容选择
-    val noteModuleBook: MutableList<Module>
+    val noteModuleBeanBooks: MutableList<ModuleBean>
         get() {
-            val list= mutableListOf<Module>()
-            list.add(Module().apply {
-                name = mContext.getString(R.string.note_type_kbb)
-                resId = R.drawable.bg_gray_stroke_10dp_corner
-                resContentId = 0
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_hgb_11)
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
             })
-            list.add(Module().apply {
-                name = mContext.getString(R.string.note_type_hgb)
-                resId = R.mipmap.icon_note_module_bg_1
-                resContentId = R.mipmap.icon_note_details_bg_1
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_hgb_9)
+                resId = R.mipmap.icon_note_module_hg_9
+                resContentId = R.mipmap.icon_note_content_hg_9
             })
-            list.add(Module().apply {
-                name = mContext.getString(R.string.note_type_fgb)
-                resId = R.mipmap.icon_note_module_bg_2
-                resContentId = R.mipmap.icon_note_details_bg_2
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_fgb_10)
+                resId = R.mipmap.icon_note_module_fg_10
+                resContentId = R.mipmap.icon_note_content_fg_10
             })
-            list.add(Module().apply {
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.diary_type_fgb_8_5)
+                resId = R.mipmap.icon_note_module_fg_8_5
+                resContentId = R.mipmap.icon_note_content_fg_8_5
+            })
+            list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_yyb)
-                resId = R.mipmap.icon_note_module_bg_3
-                resContentId = R.mipmap.icon_note_details_bg_3
+                resId = R.mipmap.icon_note_module_yy_3_5
+                resContentId = R.mipmap.icon_note_content_yy_3_5
             })
-            list.add(Module().apply {
-                name = mContext.getString(R.string.note_type_tzb)
-                resId = R.mipmap.icon_note_module_bg_4
-                resContentId = R.mipmap.icon_note_details_bg_4
-            })
-            list.add(Module().apply {
+            list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_wxp)
-                resId = R.mipmap.icon_note_module_bg_5
-                resContentId = R.mipmap.icon_note_details_bg_5
+                resId = R.mipmap.icon_note_module_wxp
+                resContentId = R.mipmap.icon_note_content_wxp
             })
             return list
         }
 
     //书法模板
-    val sfModule: MutableList<Module>
+    val sfModuleBeans: MutableList<ModuleBean>
         get() {
-            val list= mutableListOf<Module>()
-            list.add(Module().apply {
-                resId = R.drawable.bg_gray_stroke_10dp_corner
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name="空白本"
+                resId = R.drawable.bg_black_stroke_10dp_corner
                 resContentId = 0
             })
-            list.add(Module().apply {
-                resId = R.mipmap.icon_note_module_bg_1
-                resContentId = R.mipmap.icon_note_details_bg_1
+            list.add(ModuleBean().apply {
+                name="方格本"
+                resId = R.mipmap.icon_note_module_fg_10
+                resContentId = R.mipmap.icon_note_content_fg_10
             })
-            list.add(Module().apply {
-                resId = R.mipmap.icon_note_module_bg_2
-                resContentId = R.mipmap.icon_note_details_bg_2
+            list.add(ModuleBean().apply {
+                name="横格本"
+                resId = R.mipmap.icon_note_module_hg_11
+                resContentId = R.mipmap.icon_note_content_hg_11
             })
-            list.add(Module().apply {
-                resId = R.mipmap.icon_note_module_bg_3
-                resContentId = R.mipmap.icon_note_details_bg_3
+            list.add(ModuleBean().apply {
+                name="英语本"
+                resId = R.mipmap.icon_note_module_yy_3_5
+                resContentId = R.mipmap.icon_note_content_yy_3_5
             })
             return list
         }

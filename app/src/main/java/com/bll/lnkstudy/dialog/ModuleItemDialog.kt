@@ -9,20 +9,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.Module
+import com.bll.lnkstudy.mvp.model.ModuleBean
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class ModuleItemDialog(private val context: Context, private val screenPos:Int, val title:String, val list:MutableList<Module>) {
+class ModuleItemDialog(private val context: Context, private val screenPos:Int, val title:String, val list:MutableList<ModuleBean>) {
 
     private var dialog:Dialog?=null
 
-    fun builder(): ModuleItemDialog? {
+    fun builder(): ModuleItemDialog {
         dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_module_add)
+        dialog?.setContentView(R.layout.dialog_module_select)
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val width=if (list.size>4) DP2PX.dip2px(context,700f) else DP2PX.dip2px(context,500f)
@@ -72,16 +72,16 @@ class ModuleItemDialog(private val context: Context, private val screenPos:Int, 
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: Module)
+        fun onClick(item: ModuleBean)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
         this.listener = listener
     }
 
-    private class MAdapter(layoutResId: Int, data: List<Module>?) : BaseQuickAdapter<Module, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<ModuleBean>?) : BaseQuickAdapter<ModuleBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: Module) {
+        override fun convert(helper: BaseViewHolder, item: ModuleBean) {
 
             helper.setText(R.id.tv_name,item.name)
 
