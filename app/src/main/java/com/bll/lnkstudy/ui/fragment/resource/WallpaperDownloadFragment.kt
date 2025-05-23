@@ -26,6 +26,7 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
     private var items= mutableListOf<PaintingList.ListBean>()
     private var mAdapter: DownloadWallpaperAdapter?=null
     private var supply=1
+    private var type=1
     private var position=0
 
     override fun onList(bean: PaintingList) {
@@ -141,6 +142,13 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
      */
     fun changeSupply(supply:Int){
         this.supply=supply
+        pageIndex=1
+        fetchData()
+    }
+
+    fun changeType(type:Int){
+        this.type=type
+        pageIndex=1
         fetchData()
     }
 
@@ -154,8 +162,10 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         map["page"] = pageIndex
         map["size"] = pageSize
         map["supply"]=supply
+        map["ageType"]=type
         map["type"]=1
         map["imgType"]=2
+        map["mainType"]=1
         presenter.getList(map)
     }
 

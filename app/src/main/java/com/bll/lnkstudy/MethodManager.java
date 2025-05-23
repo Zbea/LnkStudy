@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bll.lnkstudy.manager.AppDaoManager;
@@ -184,6 +185,11 @@ public class MethodManager {
         }
         if (!MethodManager.getParentPermissionAllow(0)) {
             SToast.showText(1, "家长不允许该时间段查看书籍");
+            return;
+        }
+
+        if (!DateUtils.isTimeBetween7And22()){
+            SToast.showText(1, "该时间无法查看书籍");
             return;
         }
 
@@ -406,6 +412,10 @@ public class MethodManager {
     public static void gotoPaintingDrawing(Context context, int type, int cloudId) {
         if (!MethodManager.getSchoolPermissionAllow(2)) {
             SToast.showText(2, "学校不允许该时间段手绘");
+            return;
+        }
+        if (!DateUtils.isTimeBetween7And22()){
+            SToast.showText(2, "该时间段无法手绘");
             return;
         }
         if (type == 0) {
@@ -663,8 +673,8 @@ public class MethodManager {
         if (item.weeks.contains(week)) {
             for (int j = 0; j < item.limitTime.size(); j++) {
                 PermissionSchoolItemBean.TimeBean timeBean = item.limitTime.get(j);
-                long startTime = DateUtils.date4StampToHour(timeBean.startTime);
-                long endTime = DateUtils.date4StampToHour(timeBean.endTime);
+                long startTime = DateUtils.getTimeHourInMillis(timeBean.startTime);
+                long endTime = DateUtils.getTimeHourInMillis(timeBean.endTime);
                 if (currentTime >= startTime && currentTime <= endTime) {
                     isAllow = false;
                     break;

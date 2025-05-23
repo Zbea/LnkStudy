@@ -136,6 +136,7 @@ object DataBeanManager {
     }
 
 
+
     fun popupTypeGrades(): MutableList<PopupBean>
        {
             val typeGrades=MethodManager.getItemLists("typeGrades")
@@ -695,7 +696,13 @@ object DataBeanManager {
                 resId = R.mipmap.icon_note_module_yy_3
                 resContentId = R.mipmap.icon_homework_content_yy_yyb_zx
             }
+            val moduleBean2 = ModuleBean().apply {
+                name = "横格本-9mm"
+                resId = R.mipmap.icon_note_module_hg_9
+                resContentId = R.mipmap.icon_note_content_hg_9
+            }
             list.add(moduleBean1)
+            list.add(moduleBean2)
         }
         return list
     }

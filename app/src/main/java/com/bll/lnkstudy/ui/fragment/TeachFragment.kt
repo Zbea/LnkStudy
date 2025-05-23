@@ -131,15 +131,21 @@ class TeachFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
                 }
                 else{
                     if (MethodManager.getParentPermissionAllow(1)){
-                        if (NetworkUtil.isNetworkConnected()){
-                            val intent= Intent(requireActivity(), TeachActivity::class.java)
-                            val bundle= Bundle()
-                            bundle.putSerializable("teach", mAdapter?.data?.get(position))
-                            intent.putExtra("bundle", bundle)
-                            customStartActivity(intent)
+                        if (DateUtils.isTimeBetween7And22()) {
+                            if (NetworkUtil.isNetworkConnected()){
+                                val intent= Intent(requireActivity(), TeachActivity::class.java)
+                                val bundle= Bundle()
+                                bundle.putSerializable("teach", mAdapter?.data?.get(position))
+                                intent.putExtra("bundle", bundle)
+                                customStartActivity(intent)
+                            }
+                            else{
+                                SToast.showTextLong(1,"WIFI未连接，无法播放视教")
+                            }
+
                         }
                         else{
-                            SToast.showTextLong(1,"WIFI未连接，无法播放视教")
+                            SToast.showText(1, "该时间无法查看书籍")
                         }
                     }
                     else{

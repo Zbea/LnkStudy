@@ -152,6 +152,7 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
      */
     fun changeSupply(supply:Int){
         this.supply=supply
+        pageIndex=1
         fetchData()
     }
 
@@ -160,6 +161,7 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
      */
     fun changeDynasty(dynasty:Int){
         this.dynasty=dynasty
+        pageIndex=1
         fetchData()
     }
 
@@ -168,6 +170,7 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
      */
     fun changePainting(painting:Int){
         this.painting=painting
+        pageIndex=1
         fetchData()
     }
 

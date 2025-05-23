@@ -217,8 +217,10 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
-        GlideUtils.setImageUrl(this,paths[index],view)
-        elik.setLoadFilePath(drawPaths[index],true)
+        if (index<paths.size){
+            GlideUtils.setImageUrl(this,paths[index],view)
+            elik.setLoadFilePath(drawPaths[index],true)
+        }
     }
 
     override fun onElikSava_a() {

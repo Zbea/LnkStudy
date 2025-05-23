@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by seatrend on 2018/8/21.
@@ -398,17 +399,6 @@ public class DateUtils {
         return 0;
     }
 
-    public static long date4StampToHour(String s) {
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-            Date date = simpleDateFormat.parse(s);
-            return date.getTime();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     /**
      *
      * 把时间long 的格式转为天
@@ -418,8 +408,20 @@ public class DateUtils {
         return String.valueOf(time/(24*60*60*1000));
     }
 
+    public static long getTimeHourInMillis(String timeStr){
+        String[] times=timeStr.split(":");
+        int hour=Integer.parseInt(times[0]);
+        int minute=Integer.parseInt(times[1]);
+        return hour * 60 * 60 * 1000 + minute * 60 * 1000;
+    }
+
     public static long getCurrentHourInMillis(){
-        return System.currentTimeMillis()-getStartOfDayInMillis();
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY); // 获取当前小时
+        int minute = calendar.get(Calendar.MINUTE); // 获取当前分钟
+        int second = calendar.get(Calendar.SECOND);
+        return hour * 60 * 60 * 1000 + minute * 60 * 1000+second*1000;
+//        return System.currentTimeMillis()-getStartOfDayInMillis();
     }
 
     public static long getStartOfDayInMillis() {
@@ -505,6 +507,12 @@ public class DateUtils {
         calendar.set(Calendar.MILLISECOND, 999);
         long endTime = calendar.getTimeInMillis();
         return new long[]{startTime, endTime};
+    }
+
+    public static boolean isTimeBetween7And22() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY); // 获取当前小时
+        return hour >= 7 && hour <=22;
     }
 
 }

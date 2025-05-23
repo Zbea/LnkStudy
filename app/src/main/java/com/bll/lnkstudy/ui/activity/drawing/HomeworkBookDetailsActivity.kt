@@ -225,11 +225,8 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
     override fun onPageUp() {
         if (isExpand) {
-            if (page > 1) {
+            if (page > 0) {
                 page -= 2
-                onContent()
-            } else {
-                page = 1
                 onContent()
             }
         } else {
@@ -242,12 +239,8 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
     override fun onPageDown() {
         if (isExpand){
-            if (page<pageCount-2){
+            if (page<pageCount-1){
                 page+=2
-                onContent()
-            }
-            else if (page==pageCount-2){
-                page=pageCount-1
                 onContent()
             }
         }
@@ -282,26 +275,30 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     override fun onContent() {
         if (pageCount==0)
             return
+        if (page<0)
+            page=0
         if (page>=pageCount){
             page=pageCount-1
-            return
         }
-        if (page==0&&isExpand){
-            page=1
-        }
+        if (page>pageCount-2&&isExpand)
+            page=pageCount-2
 
-        loadPicture(page, elik_b!!, v_content_b!!)
-        setPageCurrent(page,tv_page,tv_page_total)
         if (isExpand){
-            val page_up=page-1//上一页页码
-            loadPicture(page_up, elik_a!!, v_content_a!!)
+            val page_up=page+1//上一页页码
+            loadPicture(page, elik_a!!, v_content_a!!)
+            loadPicture(page_up, elik_b!!, v_content_b!!)
             if (screenPos== Constants.SCREEN_RIGHT){
-                setPageCurrent(page_up,tv_page_a,tv_page_total_a)
+                setPageCurrent(page,tv_page_a,tv_page_total_a)
+                setPageCurrent(page_up,tv_page,tv_page_total)
             }
             else{
-                setPageCurrent(page_up,tv_page,tv_page_total)
-                setPageCurrent(page,tv_page_a,tv_page_total_a)
+                setPageCurrent(page,tv_page,tv_page_total)
+                setPageCurrent(page_up,tv_page_a,tv_page_total_a)
             }
+        }
+        else{
+            loadPicture(page, elik_b!!, v_content_b!!)
+            setPageCurrent(page,tv_page,tv_page_total)
         }
 
         if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)){

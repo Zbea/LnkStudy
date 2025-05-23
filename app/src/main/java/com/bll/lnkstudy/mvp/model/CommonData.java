@@ -7,4 +7,5 @@ public class CommonData {
     public List<ItemList> subject;
     public List<ItemList> typeGrade;
     public List<ItemList> version;
+    public List<ItemList> wallpaper;
 }

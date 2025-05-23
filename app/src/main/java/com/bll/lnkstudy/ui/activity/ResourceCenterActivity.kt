@@ -14,7 +14,8 @@ import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
 import kotlinx.android.synthetic.main.common_title.tv_course
 import kotlinx.android.synthetic.main.common_title.tv_grade
-import kotlinx.android.synthetic.main.common_title.tv_province
+import kotlinx.android.synthetic.main.common_title.tv_subgrade
+import kotlinx.android.synthetic.main.common_title.tv_supply
 
 class ResourceCenterActivity:BaseAppCompatActivity() {
 
@@ -27,6 +28,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     private var popSupplys= mutableListOf<PopupBean>()
     private var popTimes= mutableListOf<PopupBean>()
     private var popPaintings= mutableListOf<PopupBean>()
+    private var popWallpaperTypes= mutableListOf<PopupBean>()
 
     private var supply=0
     private var dynasty=0
@@ -39,7 +41,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     override fun initData() {
         popSupplys=DataBeanManager.supplys
         supply=popSupplys[0].id
-        tv_province.text=popSupplys[0].name
+        tv_supply.text=popSupplys[0].name
 
         popPaintings=DataBeanManager.popupPainting()
         paintingType=popPaintings[0].id
@@ -48,11 +50,15 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         popTimes=DataBeanManager.popupDynasty()
         dynasty=popTimes[0].id
         tv_grade.text=popTimes[0].name
+
+        popWallpaperTypes=DataBeanManager.popupTypeGrades()
+        if (popWallpaperTypes.size>0)
+            tv_subgrade.text=popWallpaperTypes[DataBeanManager.getTypeGradePos()].name
     }
 
     override fun initView() {
         setPageTitle(R.string.resource_center_str)
-        showView(tv_province)
+        showView(tv_supply)
 
         toolFragment=AppDownloadFragment().newInstance(2)
         wallpaperFragment = WallpaperDownloadFragment()
@@ -62,9 +68,9 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         switchFragment(lastFragment, toolFragment)
         initTab()
 
-        tv_province.setOnClickListener {
-            PopupList(this,popSupplys,tv_province,tv_province.width,5).builder().setOnSelectListener {
-                tv_province.text = it.name
+        tv_supply.setOnClickListener {
+            PopupList(this,popSupplys,tv_supply,tv_supply.width,5).builder().setOnSelectListener {
+                tv_supply.text = it.name
                 toolFragment?.changeSupply(it.id)
                 wallpaperFragment?.changeSupply(it.id)
                 paintingFragment?.changeSupply(it.id)
@@ -96,6 +102,14 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
             }
         }
 
+        tv_subgrade.setOnClickListener {
+            PopupList(this,popWallpaperTypes,tv_subgrade,tv_subgrade.width,5).builder().setOnSelectListener{
+                tv_subgrade.text=it.name
+                wallpaperFragment?.changeType(it.id)
+                calenderFragment?.changeType(it.id)
+            }
+        }
+
     }
 
     private fun initTab(){
@@ -111,19 +125,22 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     override fun onTabClickListener(view: View, position: Int) {
         when(position){
             0->{
-                disMissView(tv_course,tv_grade)
+                disMissView(tv_course,tv_grade,tv_subgrade)
                 switchFragment(lastFragment, toolFragment)
             }
             1->{
                 disMissView(tv_course,tv_grade)
+                showView(tv_subgrade)
                 switchFragment(lastFragment, wallpaperFragment)
             }
             2->{
                 showView(tv_course,tv_grade)
+                disMissView(tv_subgrade)
                 switchFragment(lastFragment, paintingFragment)
             }
             3->{
                 disMissView(tv_course,tv_grade)
+                showView(tv_subgrade)
                 switchFragment(lastFragment, calenderFragment)
             }
         }
