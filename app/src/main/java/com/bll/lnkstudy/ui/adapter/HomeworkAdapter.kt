@@ -28,10 +28,6 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_3)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
-                2->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
                 3->{
                     ivImage.setImageResource(R.mipmap.icon_homework_cover_2)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
@@ -47,7 +43,19 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
                 6->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_1)
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_7)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                }
+                7->{
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_5)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                }
+                8->{
+                    ivImage.setImageResource(R.mipmap.icon_homework_cover_6)
+                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                }
+                else->{
+                    ivImage.setImageResource(if (item.name=="作文作业本")R.mipmap.icon_homework_cover_8 else R.mipmap.icon_homework_cover_1)
                     setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
                 }
             }

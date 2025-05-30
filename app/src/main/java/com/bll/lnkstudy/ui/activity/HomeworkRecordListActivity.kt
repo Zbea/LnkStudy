@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.ResultStandardDetailsDialog
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -22,6 +24,7 @@ import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_page_number.ll_page_number
 import kotlinx.android.synthetic.main.common_title.iv_manager
 import java.io.File
+import java.util.stream.Collectors
 
 class HomeworkRecordListActivity : BaseAppCompatActivity(){
 
@@ -74,6 +77,11 @@ class HomeworkRecordListActivity : BaseAppCompatActivity(){
                 }
                 R.id.iv_delete->{
                     delete()
+                }
+                R.id.tv_result->{
+                    val item=recordBeans[position]
+                    val items=DataBeanManager.getResultStandardItem3s().stream().collect(Collectors.toList())
+                    ResultStandardDetailsDialog(this,item.title,item.score,item.question,items).builder()
                 }
             }
         }

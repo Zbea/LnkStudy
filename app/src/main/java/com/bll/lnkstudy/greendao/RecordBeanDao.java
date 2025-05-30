@@ -35,6 +35,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         public final static Property Path = new Property(8, String.class, "path", false, "PATH");
         public final static Property Second = new Property(9, int.class, "second", false, "SECOND");
         public final static Property IsHomework = new Property(10, boolean.class, "isHomework", false, "IS_HOMEWORK");
+        public final static Property Question = new Property(11, String.class, "question", false, "QUESTION");
+        public final static Property Score = new Property(12, double.class, "score", false, "SCORE");
+        public final static Property IsCorrect = new Property(13, boolean.class, "isCorrect", false, "IS_CORRECT");
     }
 
 
@@ -60,7 +63,10 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
                 "\"DATE\" INTEGER NOT NULL ," + // 7: date
                 "\"PATH\" TEXT," + // 8: path
                 "\"SECOND\" INTEGER NOT NULL ," + // 9: second
-                "\"IS_HOMEWORK\" INTEGER NOT NULL );"); // 10: isHomework
+                "\"IS_HOMEWORK\" INTEGER NOT NULL ," + // 10: isHomework
+                "\"QUESTION\" TEXT," + // 11: question
+                "\"SCORE\" REAL NOT NULL ," + // 12: score
+                "\"IS_CORRECT\" INTEGER NOT NULL );"); // 13: isCorrect
     }
 
     /** Drops the underlying database table. */
@@ -103,6 +109,13 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         }
         stmt.bindLong(10, entity.getSecond());
         stmt.bindLong(11, entity.getIsHomework() ? 1L: 0L);
+ 
+        String question = entity.getQuestion();
+        if (question != null) {
+            stmt.bindString(12, question);
+        }
+        stmt.bindDouble(13, entity.getScore());
+        stmt.bindLong(14, entity.getIsCorrect() ? 1L: 0L);
     }
 
     @Override
@@ -139,6 +152,13 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         }
         stmt.bindLong(10, entity.getSecond());
         stmt.bindLong(11, entity.getIsHomework() ? 1L: 0L);
+ 
+        String question = entity.getQuestion();
+        if (question != null) {
+            stmt.bindString(12, question);
+        }
+        stmt.bindDouble(13, entity.getScore());
+        stmt.bindLong(14, entity.getIsCorrect() ? 1L: 0L);
     }
 
     @Override
@@ -159,7 +179,10 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
             cursor.getLong(offset + 7), // date
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // path
             cursor.getInt(offset + 9), // second
-            cursor.getShort(offset + 10) != 0 // isHomework
+            cursor.getShort(offset + 10) != 0, // isHomework
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // question
+            cursor.getDouble(offset + 12), // score
+            cursor.getShort(offset + 13) != 0 // isCorrect
         );
         return entity;
     }
@@ -177,6 +200,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         entity.setPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setSecond(cursor.getInt(offset + 9));
         entity.setIsHomework(cursor.getShort(offset + 10) != 0);
+        entity.setQuestion(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setScore(cursor.getDouble(offset + 12));
+        entity.setIsCorrect(cursor.getShort(offset + 13) != 0);
      }
     
     @Override

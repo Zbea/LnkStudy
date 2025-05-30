@@ -24,6 +24,7 @@ import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
+import com.bll.lnkstudy.mvp.model.RecordBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
@@ -42,6 +43,7 @@ import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -222,13 +224,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     override fun onPaperList(list: HomeworkPaperList) {
         for (item in list.list) {
             when (item.subType) {
-                1 -> {
+                1,7 -> {
                     loadHomeworkPaperImage(item)
+                }
+                3->{
+                    loadHomeworkRecord(item)
                 }
                 4->{
                     loadHomeworkBook(item)
                 }
-                2,6->{
+                else->{
                     loadHomeworkImage(item)
                 }
             }
@@ -247,9 +252,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 }
             }
         }
-    }
-
-    override fun onDownloadSuccess() {
     }
 
     /**
@@ -313,11 +315,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     notifyItemChanged(position)
                 }
                 when (item.state) {
-                    1 -> {
+                    1,7 -> {
                         MethodManager.gotoHomeworkReelDrawing(requireActivity(), item, Constants.DEFAULT_PAGE,Constants.DEFAULT_PAGE)
-                    }
-                    2,6 -> {
-                        MethodManager.gotoHomeworkDrawing(requireActivity(), item, Constants.DEFAULT_PAGE,Constants.DEFAULT_PAGE)
                     }
                     3 -> {
                         MethodManager.gotoHomeworkRecordList(requireActivity(), item)
@@ -336,6 +335,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             Intent(requireActivity(), FileDrawingActivity::class.java)
                                 .putExtra("pageIndex", Constants.DEFAULT_PAGE)
                                 .putExtra("pagePath", FileAddress().getPathScreenHomework(item.name, item.grade)))
+                    }
+                    else->{
+                        MethodManager.gotoHomeworkDrawing(requireActivity(), item, Constants.DEFAULT_PAGE,Constants.DEFAULT_PAGE)
                     }
                 }
             }
@@ -530,6 +532,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
         mAdapter?.remove(longClickPosition)
+        if (homeworkTypes.size==0)
+            pageIndex-=1
         fetchData()
     }
 
@@ -744,6 +748,72 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     }
                 })
+    }
+
+    /**
+     * 作业本 下载朗读本
+     */
+    private fun loadHomeworkRecord(item: HomeworkPaperList.HomeworkPaperListBean) {
+        var homeworkTypeId=item.typeId
+        //如果是默认创建的作业本,拿到本地作业本
+        if (item.autoState==1){
+            val homeworkTypeBean= HomeworkTypeDaoManager.getInstance().queryByAutoName(item.typeName,mCourse,item.grade) ?: return
+            homeworkTypeId=homeworkTypeBean.typeId
+        }
+        else{
+            if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(item.typeId)){
+                return
+            }
+        }
+        var recordBean= RecordDaoManager.getInstance().queryByContendId(item.contendId)
+        if (recordBean!=null){
+            recordBean.isCorrect=true
+            recordBean.question=item.question
+            recordBean.score=item.score
+            RecordDaoManager.getInstance().insertOrReplace(recordBean)
+            //修改本地增量更新
+            DataUpdateManager.editDataUpdateState(2,recordBean.id.toInt(),2,recordBean.homeworkTypeId,3,Gson().toJson(recordBean))
+
+            refreshView(homeworkTypeId,2)
+            mPresenter.downloadCompletePaper(item.contendId)
+        }
+        else{
+            recordBean = RecordBean()
+            recordBean.date = System.currentTimeMillis()
+            recordBean.course = mCourse
+            recordBean.homeworkTypeId=homeworkTypeId
+            recordBean.typeName=item.typeName
+            recordBean.isHomework=false
+            recordBean.title=item.title
+            recordBean.contendId= item.contendId
+            recordBean.isCorrect=true
+            recordBean.question=item.question
+            recordBean.score=item.score
+            val path=FileAddress().getPathHomework(mCourse,homeworkTypeId)
+            if (!File(path).exists())
+                File(path).mkdirs()
+            val pathFile = File(path, "${DateUtils.longToString(recordBean.date)}.mp3").path
+            recordBean.path=pathFile
+
+            FileBigDownManager.with(activity).create(item.studentUrl).setPath(recordBean.path)
+                .startSingleTaskDownLoad(object :
+                    FileBigDownManager.SingleTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        refreshView(homeworkTypeId,2)
+                        mPresenter.downloadCompletePaper(item.contendId)
+
+                        val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
+                        //创建增量数据
+                        DataUpdateManager.createDataUpdateState(2,id.toInt(),2,recordBean.homeworkTypeId,3,Gson().toJson(recordBean),pathFile)
+                    }
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    }
+                })
+        }
     }
 
     /**

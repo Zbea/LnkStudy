@@ -31,6 +31,19 @@
             android:textSize="@dimen/sp_18"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_40"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:gravity="center"
+        android:text="总评"
+        android:visibility="gone"
+        android:background="@drawable/click_btn_transparent_line_black"
+        android:textSize="@dimen/sp_24"/>
+
     <ImageView
         android:id="@+id/iv_record"
         android:layout_width="60dp"

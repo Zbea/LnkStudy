@@ -9,25 +9,15 @@ import android.os.Handler
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
-import com.bll.lnkstudy.mvp.model.paper.ScoreItem
 import com.bll.lnkstudy.ui.activity.date.DateEventActivity
 import com.bll.lnkstudy.ui.activity.drawing.*
-import com.bll.lnkstudy.ui.adapter.TopicMultistageScoreAdapter
-import com.bll.lnkstudy.ui.adapter.TopicScoreAdapter
-import com.bll.lnkstudy.ui.adapter.TopicTwoScoreAdapter
 import com.bll.lnkstudy.utils.*
-import com.bll.lnkstudy.widget.SpaceGridItemDeco
-import com.bll.lnkstudy.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.ac_drawing.ll_score
+import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -78,15 +68,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         if (isAllowChange)
             onChangeExpandView()
 
-        if (iv_top != null) {
-            elik_a?.addOnTopView(iv_top)
-            elik_b?.addOnTopView(iv_top)
-        }
+        if (iv_top != null)
+            setViewElikUnable(iv_top)
 
-        if (iv_score != null && ll_score != null){
+        if (iv_score != null)
             setViewElikUnable(iv_score)
-            setViewElikUnable(ll_score)
-        }
 
         initClick()
         initGeometryView()
@@ -125,7 +111,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         iv_page_down?.setOnClickListener {
             Handler().postDelayed({
                 onPageDown()
-            },100)
+            },200)
         }
 
         iv_catalog?.setOnClickListener {

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
@@ -15,6 +15,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogBookDialog
 import com.bll.lnkstudy.dialog.HomeworkCommitDialog
+import com.bll.lnkstudy.dialog.ResultStandardDetailsDialog
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
@@ -38,11 +39,6 @@ import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
-import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.common_correct_score.rl_topic_content
-import kotlinx.android.synthetic.main.common_correct_score.tv_answer
-import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
-import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -51,6 +47,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Collections
+import java.util.stream.Collectors
 
 
 class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUploadView {
@@ -65,7 +62,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private var startCount=0
     private var page = 0 //当前页码
     private var bookId=0
-    private var currentContendId=-1
 
     override fun onToken(token: String) {
         FileImageUploadManager(token, homeworkCommitInfoItem?.paths!!).apply {
@@ -220,6 +216,12 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             }
         }
 
+        iv_score.setOnClickListener {
+            val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
+            val items=DataBeanManager.getResultStandardItems().stream().collect(Collectors.toList())
+            ResultStandardDetailsDialog(this,correctBean.homeworkTitle,correctBean.score,correctBean.correctJson,items).builder()
+        }
+
         onContent()
     }
 
@@ -301,53 +303,12 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             setPageCurrent(page,tv_page,tv_page_total)
         }
 
-        if (HomeworkBookCorrectDaoManager.getInstance().isExist(bookId, page)){
-            val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
-            when(correctBean.state){
-                0->{
-                    disMissView(iv_score,ll_score)
-                }
-                1->{
-                    disMissView(iv_score,ll_score)
-                    if (!correctBean.commitJson.isNullOrEmpty()){
-                        showToast("请及时自批改后提交")
-                    }
-                }
-                2->{
-                    if (correctBean.contendId!=currentContendId){
-                        currentContendId=correctBean.contendId
-                        setScoreDetails(correctBean)
-                    }
-                }
-            }
-        }
-        else{
-            disMissView(iv_score,ll_score)
-        }
-    }
-
-    /**
-     * 设置批改详情
-     */
-    private fun setScoreDetails(item:HomeworkBookCorrectBean){
-        if (!ll_score.isVisible)
+        val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
+        if (correctBean!=null&&correctBean.state==2){
             showView(iv_score)
-        correctMode=item.correctMode
-        scoreMode=item.scoreMode
-        if (item.answerUrl.isNullOrEmpty()){
-            disMissView(tv_answer)
         }
         else{
-            answerImages= item.answerUrl?.split(",") as MutableList<String>
-            showView(tv_answer)
-        }
-        tv_correct_title.text=item.homeworkTitle
-        tv_total_score.text=item.score.toString()
-        if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-            setScoreListDetails(item.correctJson)
-        }
-        else{
-            disMissView(rl_topic_content)
+            disMissView(iv_score)
         }
     }
 

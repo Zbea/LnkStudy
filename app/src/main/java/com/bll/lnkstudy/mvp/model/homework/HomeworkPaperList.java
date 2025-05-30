@@ -25,6 +25,7 @@ public class HomeworkPaperList implements Serializable {
         public int autoState;//创建状态:1默认创建
         public int grade;
         public int subType;//2普通作业本 3听读本 1题卷本6写字本
+        public String studentUrl;
         public String submitUrl;
         @SerializedName("taskImageId")
         public String imageUrl;

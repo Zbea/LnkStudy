@@ -72,7 +72,7 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                     3->{
                         MethodManager.gotoHomeworkRecord(this@HomeworkMessageActivity,homeworkType,messageIndex)
                     }
-                    1->{
+                    1,7->{
                         val messageBean=mAdapter?.data!![position] as HomeworkMessageList.MessageBean
                         if (HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean.contendId)!=null){
                             MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageIndex)

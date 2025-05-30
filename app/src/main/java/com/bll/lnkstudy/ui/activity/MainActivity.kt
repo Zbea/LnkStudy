@@ -568,7 +568,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         }
                         2 -> {
                             when (item.state) {
-                                1 -> {
+                                1,7 -> {
                                     downloadHomeworkPaper(item)
                                 }
                                 2,6 -> {//作业本内容

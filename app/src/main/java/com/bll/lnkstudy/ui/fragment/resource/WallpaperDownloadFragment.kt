@@ -164,7 +164,6 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         map["supply"]=supply
         map["ageType"]=type
         map["type"]=1
-        map["imgType"]=2
         map["mainType"]=1
         presenter.getList(map)
     }

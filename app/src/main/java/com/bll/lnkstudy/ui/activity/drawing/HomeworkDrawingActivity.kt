@@ -4,9 +4,9 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.EinkPWInterface
-import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
@@ -14,6 +14,7 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.ResultStandardDetailsDialog
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
@@ -21,6 +22,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList.MessageBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList.ParentMessageBean
+import com.bll.lnkstudy.mvp.model.homework.ResultStandardItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
@@ -33,11 +35,6 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
-import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.common_correct_score.rl_topic_content
-import kotlinx.android.synthetic.main.common_correct_score.tv_answer
-import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
-import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -46,6 +43,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Collections
+import java.util.stream.Collectors
 
 
 /**
@@ -64,7 +62,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private var homeworks = mutableListOf<HomeworkContentBean>() //所有作业内容
     private var page = 0//页码
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem? = null
-    private var currentContendId=-1
+    private var resultStandardItems= mutableListOf<ResultStandardItem>()
 
     override fun onToken(token: String) {
         FileImageUploadManager(token, homeworkCommitInfoItem?.paths!!).apply {
@@ -114,12 +112,31 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun initData() {
         initChangeScreenData()
+
         homeworkType = MethodManager.getHomeworkTypeBundle(intent)
         val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
         isHomework=index>=0
         page = intent.getIntExtra("page", DEFAULT_PAGE)
         homeworkTypeId =homeworkType?.typeId!!
         course = homeworkType?.course!!
+
+        resultStandardItems = when(homeworkType?.state){
+            6->{
+                DataBeanManager.getResultStandardItem6s()
+            }
+            8->{
+                DataBeanManager.getResultStandardItem8s()
+            }
+            else->{
+                if (homeworkType?.name=="作文作业本"){
+                    DataBeanManager.getResultStandardItem2s()
+                }
+                else{
+                    DataBeanManager.getResultStandardItems()
+                }
+            }
+        }
+
         if (isHomework){
             when (homeworkType?.createStatus) {
                 2 -> {
@@ -213,6 +230,11 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     mUploadPresenter.commitHomework(map)
                 }
             }
+        }
+
+        iv_score.setOnClickListener {
+            val items=resultStandardItems.stream().collect(Collectors.toList())
+            ResultStandardDetailsDialog(this,homeworkContent?.title!!,homeworkContent?.score!!,homeworkContent?.correctJson!!,items).builder()
         }
 
         onContent()
@@ -379,39 +401,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
-        if (homeworkType?.createStatus==2&&currentContendId!=homeworkContent?.contentId){
-            currentContendId=homeworkContent?.contentId!!
-            setScoreDetails(homeworkContent!!)
-        }
-    }
-
-    /**
-     * 设置批改详情
-     */
-    private fun setScoreDetails(item:HomeworkContentBean){
-        if (item.state==2){
-            if (!ll_score.isVisible)
-                showView(iv_score)
-            correctMode=item.correctMode
-            scoreMode=item.scoreMode
-            if (item.answerUrl.isNullOrEmpty()){
-                disMissView(tv_answer)
-            }
-            else{
-                answerImages= item.answerUrl?.split(",") as MutableList<String>
-                showView(tv_answer)
-            }
-            tv_correct_title.text=item.title
-            tv_total_score.text=item.score.toString()
-            if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-                setScoreListDetails(item.correctJson)
-            }
-            else{
-                disMissView(rl_topic_content)
-            }
-        }
-        else{
-            disMissView(iv_score,ll_score)
+        if (homeworkContent?.state==2){
+            showView(iv_score)
         }
     }
 

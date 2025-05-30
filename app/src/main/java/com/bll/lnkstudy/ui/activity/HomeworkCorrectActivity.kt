@@ -14,6 +14,7 @@ import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
+import com.bll.lnkstudy.mvp.model.paper.ScoreItem
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity
@@ -70,6 +71,15 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
     private var posAnswer = 0
     private var images = mutableListOf<String>()
     private var takeTime = 0L
+
+    var correctMode = 0
+    var scoreMode = 0 //1赋分，2对错
+    var answerImages = mutableListOf<String>()//答题地址
+    var initScores = mutableListOf<ScoreItem>()
+    var currentScores = mutableListOf<ScoreItem>()
+    var mTopicScoreAdapter: TopicScoreAdapter?=null
+    var mTopicTwoScoreAdapter: TopicTwoScoreAdapter?=null
+    var mTopicMultistageScoreAdapter: TopicMultistageScoreAdapter?=null
 
     override fun onToken(token: String) {
         showLoading()
@@ -203,7 +213,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     return@setOnClickListener
                 }
                 showLoading()
-                ScoreItemUtils.updateInitListData(initScores, currentScores, correctMode)
+                initScores=ScoreItemUtils.updateInitListData(initScores, currentScores,correctMode)
                 if (commitItem?.submitState==0){
                     mUploadPresenter.getToken()
                 }

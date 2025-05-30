@@ -7,15 +7,12 @@ import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
+import com.bll.lnkstudy.dialog.ScoreDetailsDialog
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
 import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
-import kotlinx.android.synthetic.main.common_correct_score.rl_topic_content
-import kotlinx.android.synthetic.main.common_correct_score.tv_answer
-import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
-import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -62,6 +59,11 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         }
         else{
             setDisableTouchInput(true)
+        }
+
+        iv_score.setOnClickListener {
+            val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
+            ScoreDetailsDialog(this,paper!!.title,paper!!.score.toDouble(),paper!!.correctMode,paper!!.scoreMode,answerImages,paper!!.correctJson).builder()
         }
     }
 
@@ -136,13 +138,14 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             return
         }
 
+        showView(iv_score)
+
         if (isExpand&&page>pageCount-2)
             page=pageCount-2
         if (page<0)
             page=0
 
         if (currentPosition!=oldPosition){
-            setScoreDetails(paper!!)
             page=0
         }
         oldPosition=currentPosition
@@ -165,30 +168,6 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         else{
             setElikLoadPath(elik_b!!,page,v_content_b!!)
             tv_page.text="${page+1}"
-        }
-    }
-
-    /**
-     * 设置批改详情
-     */
-    private fun setScoreDetails(item: PaperBean){
-        showView(iv_score)
-        correctMode=item.correctMode
-        tv_correct_title.text=item.title
-        tv_total_score.text=item.score
-        scoreMode=item.scoreMode
-        if (item.answerUrl.isNullOrEmpty()){
-            disMissView(tv_answer)
-        }
-        else{
-            answerImages= item.answerUrl?.split(",") as MutableList<String>
-            showView(tv_answer)
-        }
-        if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-            setScoreListDetails(item.correctJson)
-        }
-        else{
-            disMissView(rl_topic_content)
         }
     }
 

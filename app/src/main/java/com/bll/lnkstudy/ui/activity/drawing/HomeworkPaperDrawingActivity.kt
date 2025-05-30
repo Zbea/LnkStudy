@@ -4,15 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.EinkPWInterface
 import android.widget.ImageView
-import androidx.core.view.isVisible
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.dialog.ResultStandardDetailsDialog
+import com.bll.lnkstudy.dialog.ScoreDetailsDialog
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
@@ -30,11 +32,6 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
-import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.common_correct_score.rl_topic_content
-import kotlinx.android.synthetic.main.common_correct_score.tv_answer
-import kotlinx.android.synthetic.main.common_correct_score.tv_correct_title
-import kotlinx.android.synthetic.main.common_correct_score.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -42,6 +39,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.stream.Collectors
 
 
 /**
@@ -174,7 +172,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     showToast("未填写答案,无法提交")
                     return@setOnClickListener
                 }
-                CommonDialog(this,getCurrentScreenPos()).setContent("确定提交作业卷？").builder().setDialogClickListener(
+                CommonDialog(this,getCurrentScreenPos()).setContent("确定提交作业？").builder().setDialogClickListener(
                     object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
@@ -195,6 +193,17 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     map["studentTaskId"] = homeworkCommitInfoItem?.messageId!!
                     mUploadPresenter.commitHomework(map)
                 }
+            }
+        }
+
+        iv_score.setOnClickListener {
+            if (homeworkType?.state==7){
+                val items=DataBeanManager.getResultStandardItems().stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctJson,items).builder()
+            }
+            else{
+                val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
+                ScoreDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctMode,paper!!.scoreMode,answerImages,paper!!.correctJson).builder()
             }
         }
     }
@@ -299,7 +308,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         setDisableTouchInput(homeworkType?.isCloud!!||paper?.state==1)
 
         if (currentPosition!=oldPosition){
-            setScoreDetails(paper!!)
+            if (paper?.state==2){
+                showView(iv_score)
+            }
+            else{
+                disMissView(iv_score)
+            }
         }
         //用来判断重复加载
         oldPosition=currentPosition
@@ -317,36 +331,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      */
     private fun isDrawing():Boolean{
         return isHomework&&paper?.state==0
-    }
-
-    /**
-     * 设置批改详情
-     */
-    private fun setScoreDetails(item: HomeworkPaperBean){
-        if (item.state==2){
-            if (!ll_score.isVisible)
-                showView(iv_score)
-            if (item.answerUrl.isNullOrEmpty()){
-                disMissView(tv_answer)
-            }
-            else{
-                answerImages= item.answerUrl?.split(",") as MutableList<String>
-                showView(tv_answer)
-            }
-            correctMode=item.correctMode
-            scoreMode=item.scoreMode
-            tv_correct_title.text=item.title
-            tv_total_score.text=item.score.toString()
-            if (item.correctJson?.isNotEmpty() == true&&correctMode>0){
-                setScoreListDetails(item.correctJson)
-            }
-            else{
-                disMissView(rl_topic_content)
-            }
-        }
-        else{
-            disMissView(iv_score,ll_score)
-        }
     }
     
     //加载图片

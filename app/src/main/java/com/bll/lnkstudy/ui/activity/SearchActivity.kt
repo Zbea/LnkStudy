@@ -114,7 +114,7 @@ class SearchActivity : BaseAppCompatActivity() {
                     typeItem= HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.type,grade)
                 }
                 when(typeItem.state){
-                    1->{
+                    1,7->{
                         MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page,Constants.DEFAULT_PAGE)
                     }
                     2,6->{

@@ -169,14 +169,15 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
         onCheckUpdate()
         if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
+
+            val map=HashMap<String,Any>()
+            map["size"]=7
+            mHomeworkNoticePresenter.getHomeworkNotice(map)
+            mHomeworkNoticePresenter.getCorrectNotice(map)
+
             if (grade>0){
                 mMainLeftPresenter.getParentPermission()
                 mMainLeftPresenter.getSchoolPermission(grade)
-
-                val map=HashMap<String,Any>()
-                map["size"]=7
-                mHomeworkNoticePresenter.getHomeworkNotice(map)
-                mHomeworkNoticePresenter.getCorrectNotice(map)
             }
         }
     }
