@@ -152,7 +152,7 @@ class CloudExamFragment:BaseCloudFragment() {
                             item.autoState=0
                             PaperTypeDaoManager.getInstance().insertOrReplace(item)
                             //创建增量数据
-                            DataUpdateManager.createDataUpdate(3,item.typeId,1,Gson().toJson(item))
+                            DataUpdateManager.createDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
 
                             val papers=Gson().fromJson(item.contentJson, object : TypeToken<List<PaperBean>>() {}.type) as MutableList<PaperBean>
                             for (paperBean in papers){

@@ -26,7 +26,6 @@ import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
-import com.bll.lnkstudy.utils.ToolUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -50,7 +49,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             if (item.autoState==1){
                 val localItem= PaperTypeDaoManager.getInstance().queryByName(item.name,mCourse,item.grade)
                 if (localItem==null){
-                    item.typeId=ToolUtils.getDateId()
+                    item.typeId=MethodManager.getTestPaperAutoTypeId(item.name,mCourse)
                     insertPaperType(item)
                 }
                 else{
@@ -147,7 +146,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             rv_list.addItemDecoration(SpaceGridItemDeco(2, 55))
             setOnItemClickListener { adapter, view, position ->
                 val item = paperTypes[position]
-                item.isPg=false
+                item.isCorrect=false
                 notifyItemChanged(position)
                 MethodManager.gotoPaperDrawing(requireActivity(), item.course, item.typeId, Constants.DEFAULT_PAGE)
             }
@@ -182,19 +181,19 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         item.date=System.currentTimeMillis()
         PaperTypeDaoManager.getInstance().insertOrReplace(item)
         //创建增量数据
-        DataUpdateManager.createDataUpdate(3, item.typeId, 1, Gson().toJson(item))
+        DataUpdateManager.createDataUpdate(3, item.typeId, 1, item.typeId, Gson().toJson(item))
     }
 
     private fun editPaperTypeName(item: PaperTypeBean,name:String){
         item.name=name
         PaperTypeDaoManager.getInstance().insertOrReplace(item)
-        DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(item))
+        DataUpdateManager.editDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
     }
 
     private fun editPaperTypeCreate(item: PaperTypeBean,createStatus:Int){
         item.createStatus=createStatus
         PaperTypeDaoManager.getInstance().insertOrReplace(item)
-        DataUpdateManager.editDataUpdate(3,item.typeId,1,Gson().toJson(item))
+        DataUpdateManager.editDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
     }
 
     /**
@@ -259,7 +258,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     private fun loadExams(list: MutableList<ExamCorrectBean>) {
         for (item in list) {
             val images=item.teacherUrl.split(",").toMutableList()
-            val typeId=MethodManager.getExamTypeId(mCourse)
+            val typeId=MethodManager.getTestPaperAutoTypeId("学校考试卷",mCourse)
             item.typeId=typeId
 
             val pathStr = FileAddress().getPathTestPaper(mCourse,item.typeId, item.id)
@@ -352,7 +351,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 if (ite.typeId == paperTypeId) {
                     ite.score = item.score
                     ite.paperTitle=item.title
-                    ite.isPg = true
+                    ite.isCorrect = true
                     mAdapter?.notifyItemChanged(paperTypes.indexOf(ite))
                 }
             }
@@ -368,7 +367,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 if ( ite.typeId==item.typeId) {
                     ite.score = item.score
                     ite.paperTitle=item.typeName
-                    ite.isPg = true
+                    ite.isCorrect = true
                     mAdapter?.notifyItemChanged(paperTypes.indexOf(ite))
                 }
             }

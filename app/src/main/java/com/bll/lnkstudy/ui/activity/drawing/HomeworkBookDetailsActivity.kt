@@ -33,7 +33,6 @@ import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
@@ -109,6 +108,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         bookId=homeworkType?.bookId!!
         val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
         isHomework=index>=0
+        isDrawingSave=isHomework
 
         if (isHomework){
             when (homeworkType?.createStatus) {
@@ -218,8 +218,10 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
         iv_score.setOnClickListener {
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
-            val items=DataBeanManager.getResultStandardItems().stream().collect(Collectors.toList())
-            ResultStandardDetailsDialog(this,correctBean.homeworkTitle,correctBean.score,correctBean.correctJson,items).builder()
+            if (correctBean!=null&&correctBean.state==2){
+                val items=DataBeanManager.getResultStandardItems(4,"",1).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,correctBean.homeworkTitle,correctBean.score,1,correctBean.correctJson,items).builder()
+            }
         }
 
         onContent()
@@ -304,7 +306,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         }
 
         val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
-        if (correctBean!=null&&correctBean.state==2){
+        if (correctBean!=null&&correctBean.state==2&&correctBean.correctJson.isNotEmpty()){
             showView(iv_score)
         }
         else{
@@ -325,13 +327,14 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         val showFile = FileUtils.getIndexFile(book?.bookPath,index)
         if (showFile != null) {
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
-            if (correctBean==null||correctBean.state==0){
-                GlideUtils.setImageCacheUrl(this, showFile.path, view)
+            val path=if (correctBean==null||correctBean.state==0){
+                showFile.path
             }
             else{
-                val correctPath =FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,index)
-                GlideUtils.setImageCacheUrl(this,correctPath, view, correctBean.state)
+                FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,index)
             }
+            MethodManager.setImageFile(path,view)
+
             val drawPath =FileAddress().getPathHomeworkBookDrawFile(book?.bookDrawPath!!,index)
             elik.setLoadFilePath(drawPath, true)
 
@@ -357,14 +360,18 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onElikSava_a() {
-        val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page-1)
-        BitmapUtils.saveScreenShot(v_content_a, mergePath)
+        if (isDrawingSave){
+            val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page-1)
+            BitmapUtils.saveScreenShot(v_content_a, mergePath)
+        }
         editCorrectBean(page-1)
     }
 
     override fun onElikSava_b() {
-        val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page)
-        BitmapUtils.saveScreenShot(v_content_b, mergePath)
+        if (isDrawingSave){
+            val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page)
+            BitmapUtils.saveScreenShot(v_content_b, mergePath)
+        }
         editCorrectBean(page)
     }
 
@@ -388,7 +395,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
             val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
             val path=FileAddress().getPathHomeworkBookDrawPath(book?.bookDrawPath!!,page)
             //更新增量数据
-            DataUpdateManager.createDataUpdate(7, id.toInt(),1,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),path)
+            DataUpdateManager.createDataUpdate(2, id.toInt(),3,bookCorrectBean.bookId ,Gson().toJson(bookCorrectBean),path)
         }
     }
 
@@ -398,7 +405,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     private fun editCorrectBean(page: Int){
         val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId, page)
         if (correctBean!=null)
-            DataUpdateManager.editDataUpdate(7,correctBean.id.toInt(),1,bookId)
+            DataUpdateManager.editDataUpdate(2,correctBean.id.toInt(),3,bookId)
     }
 
     /**
@@ -471,7 +478,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     bookCorrectBean.commitJson=Gson().toJson(homeworkCommitInfoItem)
                 }
                 HomeworkBookCorrectDaoManager.getInstance().insertOrReplace(bookCorrectBean)
-                DataUpdateManager.editDataUpdate(7,bookCorrectBean.id.toInt(),1,bookId,Gson().toJson(bookCorrectBean))
+                DataUpdateManager.editDataUpdate(2,bookCorrectBean.id.toInt(),3,bookId,Gson().toJson(bookCorrectBean))
             }
             else{
                 //保存本次题卷本批改详情
@@ -493,7 +500,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                 val id=HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(bookCorrectBean)
                 val path=FileAddress().getPathHomeworkBookDrawPath(book?.bookDrawPath!!,page)
                 //更新增量数据
-                DataUpdateManager.createDataUpdate(7, id.toInt(),1,bookId ,Gson().toJson(bookCorrectBean),path)
+                DataUpdateManager.createDataUpdate(2, id.toInt(),3,bookId ,Gson().toJson(bookCorrectBean),path)
             }
         }
     }

@@ -43,6 +43,10 @@ object DataBeanManager {
         "外国原著", "历史地理", "政治经济",
         "军事战略", "科学技术", "运动才艺"
     )
+
+    val autoHomeworkTypes= mutableListOf("阅读作业本","练字作业本","朗读作业本","作文作业本","课堂作业卷","课外作业卷")
+    val autoTestPaperTypes= mutableListOf("学校考试卷","单元测验卷","阶段测验卷")
+
 //    val bookType = arrayOf(
 //        R.string.book_tab_sjcc,R.string.book_tab_tssc,
 //        R.string.book_tab_gdjd,R.string.book_tab_sdmz,
@@ -938,22 +942,82 @@ object DataBeanManager {
         return items
     }
 
+    private fun getResultChildHighItems():MutableList<ResultStandardItem.ResultChildItem>{
+        val items= mutableListOf<ResultStandardItem.ResultChildItem>()
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=1
+            sortStr="A+"
+            score=97.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=2
+            sortStr="A "
+            score=92.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=3
+            sortStr="A-"
+            score=87.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=4
+            sortStr="B+"
+            score=82.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=5
+            sortStr="B "
+            score=77.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=6
+            sortStr="B-"
+            score=72.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=7
+            sortStr="C+"
+            score=67.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=8
+            sortStr="C "
+            score=62.5
+            isCheck=false
+        })
+        items.add(ResultStandardItem.ResultChildItem().apply {
+            sort=9
+            sortStr="C-"
+            score=57.5
+            isCheck=false
+        })
+        return items
+    }
+
     /**
      * 练字评分
      */
-    fun getResultStandardItem6s():MutableList<ResultStandardItem>{
+    private fun getResultStandardItem6s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
+        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         items.add(ResultStandardItem().apply {
             title="比例匀称"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="字迹工整"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="卷面整洁"
-            list= getResultChildItems()
+            list= childItems
         })
         return items
     }
@@ -961,19 +1025,20 @@ object DataBeanManager {
     /**
      * 朗读评分
      */
-    fun getResultStandardItem3s():MutableList<ResultStandardItem>{
+    private fun getResultStandardItem3s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
+        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         items.add(ResultStandardItem().apply {
             title="语言标准"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="词汇语法"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="流畅程度"
-            list= getResultChildItems()
+            list= childItems
         })
         return items
     }
@@ -981,19 +1046,20 @@ object DataBeanManager {
     /**
      * 阅读评分
      */
-    fun getResultStandardItem8s():MutableList<ResultStandardItem>{
+    private fun getResultStandardItem8s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
+        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         items.add(ResultStandardItem().apply {
             title="词句摘抄"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="阅读感想"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="卷面整洁"
-            list= getResultChildItems()
+            list= childItems
         })
         return items
     }
@@ -1001,23 +1067,24 @@ object DataBeanManager {
     /**
      * 作文评分
      */
-    fun getResultStandardItem2s():MutableList<ResultStandardItem>{
+    private fun getResultStandardItem2s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
+        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         items.add(ResultStandardItem().apply {
             title="思想内容"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="语言文字"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="层次结构"
-            list= getResultChildItems()
+            list= childItems
         })
         items.add(ResultStandardItem().apply {
             title="卷面书写"
-            list= getResultChildItems()
+            list= childItems
         })
         return items
     }
@@ -1025,14 +1092,94 @@ object DataBeanManager {
     /**
      * 手写
      */
-    fun getResultStandardItems():MutableList<ResultStandardItem>{
+    private fun getResultStandardItem0s(correctModule:Int):MutableList<ResultStandardItem>{
+        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         val items= mutableListOf<ResultStandardItem>()
         items.add(ResultStandardItem().apply {
             title="标准评分"
-            list= getResultChildItems()
+            list= childItems
         })
         return items
     }
+
+    /**
+     * 返回标准评分
+     * @param score
+     * @return
+     */
+     fun getResultStandardStr(score: Double,questionType:Int): String {
+         if (questionType==1){
+             return when (score) {
+                 1.0 -> {
+                     "A"
+                 }
+                 2.0 -> {
+                     "B"
+                 }
+                 else -> {
+                     "C"
+                 }
+             }
+         }
+        else{
+             return when (score) {
+                 1.0 -> {
+                     "A+"
+                 }
+                 2.0 -> {
+                     "A "
+                 }
+                 3.0 -> {
+                     "A-"
+                 }
+                 4.0 -> {
+                     "B+"
+                 }
+                 5.0 -> {
+                     "B "
+                 }
+                 6.0 -> {
+                     "B-"
+                 }
+                 7.0 -> {
+                     "C+"
+                 }
+                 8.0 -> {
+                     "C "
+                 }
+                 else -> {
+                     "C-"
+                 }
+             }
+        }
+    }
+
+
+    /**
+     * 获取评分列表
+     */
+    fun getResultStandardItems(state:Int, name: String, correctModule:Int):MutableList<ResultStandardItem>{
+        return when(state){
+            3->{
+                getResultStandardItem3s(correctModule)
+            }
+            6->{
+                getResultStandardItem6s(correctModule)
+            }
+            8->{
+                getResultStandardItem8s(correctModule)
+            }
+            else->{
+                if (name=="作文作业本"){
+                    getResultStandardItem2s(correctModule)
+                }
+                else{
+                    getResultStandardItem0s(correctModule)
+                }
+            }
+        }
+    }
+
 
     fun operatingGuideInfo():List<MultiItemEntity>{
         val list= mutableListOf<MultiItemEntity>()

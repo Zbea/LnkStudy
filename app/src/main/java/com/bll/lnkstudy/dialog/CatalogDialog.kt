@@ -14,7 +14,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class CatalogDialog(val context: Context, private val oldScreen:Int, private val currentScreen:Int, val list: List<ItemList>, private val isEidt:Boolean) {
+class CatalogDialog(val context: Context, private val oldScreen:Int, private val currentScreen:Int, val list: List<ItemList>, private val isEidt:Boolean=false) {
 
     fun builder(): CatalogDialog {
         val dialog = Dialog(context)
@@ -43,10 +43,18 @@ class CatalogDialog(val context: Context, private val oldScreen:Int, private val
         }
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
             val item=list[position]
-            InputContentDialog(context, oldScreen ,item.name).builder().setOnDialogClickListener{
-                item.name=it
-                mAdapter.notifyItemChanged(position)
-                listener?.onEdit(it, mutableListOf(item.page))
+            when(view.id){
+                R.id.iv_edit->{
+                    InputContentDialog(context, oldScreen ,item.name).builder().setOnDialogClickListener{
+                        item.name=it
+                        mAdapter.notifyItemChanged(position)
+                        listener?.onEdit(it, mutableListOf(item.page))
+                    }
+                }
+                R.id.iv_delete->{
+                    dialog.dismiss()
+                    listener?.onDelete(position)
+                }
             }
         }
 
@@ -65,6 +73,7 @@ class CatalogDialog(val context: Context, private val oldScreen:Int, private val
     interface OnDialogClickListener {
         fun onClick(pageNumber: Int)
         fun onEdit(title:String,pages:List<Int>){}
+        fun onDelete(position:Int){}
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
@@ -77,7 +86,8 @@ class CatalogDialog(val context: Context, private val oldScreen:Int, private val
             helper.setText(R.id.tv_name, item.name)
             helper.setText(R.id.tv_page, (item.page+1).toString())
             helper.setGone(R.id.iv_edit,item.isEdit)
-            helper.addOnClickListener(R.id.iv_edit)
+            helper.setGone(R.id.iv_delete,item.isDelete)
+            helper.addOnClickListener(R.id.iv_edit,R.id.iv_delete)
         }
 
     }

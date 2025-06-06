@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.MyBroadcastReceiver
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
@@ -114,6 +115,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         setExamMode(true)
         SPUtil.putBoolean(Constants.SP_EXAM_MODE,true)
         isExpand=true
+        isDrawingSave=true
         screenPos=Constants.SCREEN_RIGHT
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem
 
@@ -218,7 +220,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view: ImageView) {
         if (index<paths.size){
-            GlideUtils.setImageUrl(this,paths[index],view)
+            MethodManager.setImageFile(paths[index],view)
             elik.setLoadFilePath(drawPaths[index],true)
         }
     }

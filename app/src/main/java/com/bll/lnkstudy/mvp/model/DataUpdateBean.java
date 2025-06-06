@@ -25,10 +25,10 @@ public class DataUpdateBean {
     @Id(autoincrement = true)
     public Long id;
     public long userId= MethodManager.getAccountId();
-    public int uid;//标识
-    public int type;//类型1课本2作业3考卷4笔记5画本6书架7题卷本
-    public int typeId;//用来防止重复
-    public int contentType;//内容分类
+    public int uid=0;//标识
+    public int type=0;//类型1课本2作业3考卷4笔记5画本6书架
+    public int typeId=0;//用来防止重复
+    public int contentType=0;//内容分类
     public int state;//type==2时：1作业卷 2普通作业本 3听读本
     public String listJson="";
     public long date;

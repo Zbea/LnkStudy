@@ -202,7 +202,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
                     }
                     val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteBook)
                     //创建笔记分类增量更新
-                    DataUpdateManager.createDataUpdate(4,id.toInt(),1,Gson().toJson(noteBook))
+                    DataUpdateManager.createDataUpdate(4,id.toInt(),1,id.toInt(),Gson().toJson(noteBook))
                     mTabTypeAdapter?.addData(noteBook)
                 }
             }
@@ -224,7 +224,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
                 note.contentResId=resId
                 val id= NoteDaoManager.getInstance().insertOrReplaceGetId(note)
                 //新建笔记本增量更新
-                DataUpdateManager.createDataUpdate(4,id.toInt(),2,Gson().toJson(note))
+                DataUpdateManager.createDataUpdate(4,id.toInt(),2,id.toInt(),Gson().toJson(note))
                 if (notes.size==10){
                     pageIndex+=1
                     fetchData()
@@ -250,7 +250,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
                     noteContent.noteTitle=string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
                     //修改增量更新
-                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,Gson().toJson(noteContent))
+                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,noteContent.id.toInt(),Gson().toJson(noteContent))
                 }
                 note.title = string
                 NoteDaoManager.getInstance().insertOrReplace(note)
@@ -268,14 +268,14 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
         val path=FileAddress().getPathNote(note.typeStr,note.title)
         FileUtils.deleteFile(File(path))
         //删除主题增量更新
-        DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2)
+        DataUpdateManager.deleteDateUpdate(4,note.id.toInt(),2,note.id.toInt())
 
         val noteContents=NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title)
         //删除主题内容
         NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title)
         //删除内容增量更新
         for (item in noteContents){
-            DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3)
+            DataUpdateManager.deleteDateUpdate(4,item.id.toInt(),3,item.id.toInt())
         }
 
         mAdapter?.remove(position)
@@ -323,7 +323,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
      * 修改增量更新数据
      */
     private fun editDataUpdate(id:Int,item: Note){
-        DataUpdateManager.editDataUpdate(4,id,2,Gson().toJson(item))
+        DataUpdateManager.editDataUpdate(4,id,2,id,Gson().toJson(item))
     }
 
     override fun fetchData() {

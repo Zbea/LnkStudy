@@ -232,11 +232,11 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun onElikSava_a() {
-        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a!!.id.toInt(),2)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean_a!!.id.toInt(),2,paintingDrawingBean_a!!.id.toInt())
     }
 
     override fun onElikSava_b() {
-        DataUpdateManager.editDataUpdate(5,paintingDrawingBean!!.id.toInt(),2)
+        DataUpdateManager.editDataUpdate(5,paintingDrawingBean!!.id.toInt(),2,paintingDrawingBean!!.id.toInt())
     }
 
     private fun setBg(resId:Int){

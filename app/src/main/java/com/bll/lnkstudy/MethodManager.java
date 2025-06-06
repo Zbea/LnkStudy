@@ -49,6 +49,7 @@ import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.HomeworkPaperDrawingActivity;
+import com.bll.lnkstudy.ui.activity.drawing.HomeworkShareDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.PaintingDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.TestPaperDrawingActivity;
@@ -252,9 +253,7 @@ public class MethodManager {
         if (new File(book.bookDrawPath).exists())
             FileUtils.deleteFile(new File(book.bookDrawPath));
         //删除增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId,1);
-        //删除增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId,2);
+        DataUpdateManager.INSTANCE.deleteDateUpdate(6,book.bookId);
         EventBus.getDefault().post(BOOK_EVENT);
     }
 
@@ -279,8 +278,8 @@ public class MethodManager {
         if (new File(book.bookDrawPath).exists())
             FileUtils.deleteFile(new File(book.bookDrawPath));
         //删除增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,1);
-        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId,2);
+        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId);
+        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId);
     }
 
     public static void setHomeworkTypeBundle(Intent intent, HomeworkTypeBean item){
@@ -349,6 +348,15 @@ public class MethodManager {
         context.startActivity(intent);
     }
 
+    /**
+     * 跳转分享作业本
+     */
+    public static void gotoHomeworkShareList(Context context, HomeworkTypeBean item) {
+        Intent intent = new Intent(context, HomeworkShareDrawingActivity.class);
+        setHomeworkTypeBundle(intent,item);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
+        context.startActivity(intent);
+    }
 
     /**
      * 转跳作业作业卷
@@ -465,8 +473,6 @@ public class MethodManager {
         }
         PaintingDrawingDaoManager.getInstance().deleteBean(type,typeId);
         FileUtils.deleteFile(new File(path));
-        //删除增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(5,typeId,1);
         DataUpdateManager.INSTANCE.deleteDateUpdate(5, typeId);
     }
 
@@ -685,13 +691,31 @@ public class MethodManager {
     }
 
     /**
-     * 获取对应科目的考试分类id
-     *
+     * 获取固定生成测试卷id
+     * @param name
      * @param subject
      * @return
      */
-    public static int getExamTypeId(String subject) {
-        String idStr = DataBeanManager.INSTANCE.getCourseId(subject) + String.valueOf(getUser().grade);
+    public static int getTestPaperAutoTypeId(String name,String subject){
+        int type=DataBeanManager.INSTANCE.getAutoTestPaperTypes().indexOf(name)+1;
+        String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
+        return Integer.parseInt(idStr);
+    }
+
+    /**
+     * 获取对应分类，对应作业的分类id
+     * @param subject
+     * @param subType
+     * @return
+     */
+    public static int getHomeworkTypeId(String subject,int subType){
+        String idStr = String.valueOf(subType)+0+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
+        return Integer.parseInt(idStr);
+    }
+
+    public static int getHomeworkAutoTypeId(String name,String subject){
+        int type=DataBeanManager.INSTANCE.getAutoHomeworkTypes().indexOf(name)+1;
+        String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
         return Integer.parseInt(idStr);
     }
 
@@ -724,6 +748,19 @@ public class MethodManager {
         options.inScaled = false; // 防止自动缩放
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
         imageView.setImageBitmap(bitmap);
+    }
+
+    /**
+     * 加载本地图片
+     * @param path
+     * @param imageView
+     */
+    public static void setImageFile(String path, ImageView imageView){
+        File file=new File(path);
+        if (file.exists()){
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     /**

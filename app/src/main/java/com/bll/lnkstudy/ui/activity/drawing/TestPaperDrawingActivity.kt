@@ -4,6 +4,7 @@ import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -11,7 +12,6 @@ import com.bll.lnkstudy.dialog.ScoreDetailsDialog
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.paper.PaperBean
-import com.bll.lnkstudy.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
@@ -173,7 +173,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
 
     //加载图片
     private fun setElikLoadPath( elik: EinkPWInterface ,index: Int, view:ImageView) {
-        GlideUtils.setImageCacheUrl(this,paper!!.paths[index],view)
+        MethodManager.setImageFile(paper!!.paths[index],view)
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 

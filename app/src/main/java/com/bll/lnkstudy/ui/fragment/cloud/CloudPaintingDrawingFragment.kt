@@ -147,7 +147,7 @@ class CloudPaintingDrawingFragment : BaseCloudFragment() {
                             typeBean.path=path
                             ItemTypeDaoManager.getInstance().insertOrReplace(typeBean)
                             //创建本地画本增量更新
-                            DataUpdateManager.createDataUpdate(5,typeBean.typeId,1, Gson().toJson(typeBean))
+                            DataUpdateManager.createDataUpdate(5,typeBean.typeId,1,typeBean.typeId, Gson().toJson(typeBean))
 
                             //存储画本内容
                             val contents=Gson().fromJson(item.contentJson, object : TypeToken<List<PaintingDrawingBean>>() {}.type) as MutableList<PaintingDrawingBean>

@@ -77,10 +77,6 @@ public class DataUpdateDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3,whereCondition4,whereCondition5).build().unique();
     }
 
-    public DataUpdateBean queryBean(int type,int id,int contentType){
-        return queryBean(type, id, contentType,0);
-    }
-
     public List<DataUpdateBean> queryList(int type,int typeId){
         WhereCondition whereCondition1= DataUpdateBeanDao.Properties.Type.eq(type);
         WhereCondition whereCondition2= DataUpdateBeanDao.Properties.TypeId.eq(typeId);
@@ -104,12 +100,7 @@ public class DataUpdateDaoManager {
     public void clear(){
         dao.deleteAll();
     }
-    public void deleteBean(int type,int id,int contentType){
-        DataUpdateBean bean=queryBean(type,id,contentType);
-        if (bean!=null){
-            dao.delete(bean);
-        }
-    }
+
     public void deleteBean(int type,int id,int contentType,int typeId){
         DataUpdateBean bean=queryBean(type,id,contentType,typeId);
         if (bean!=null){

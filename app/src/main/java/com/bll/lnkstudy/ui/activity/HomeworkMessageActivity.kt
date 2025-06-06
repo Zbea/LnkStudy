@@ -66,9 +66,6 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
             setOnItemClickListener { adapter, view, position ->
                 messageIndex=position
                 when(homeworkType?.state){
-                    2,6->{
-                        MethodManager.gotoHomeworkDrawing(this@HomeworkMessageActivity,homeworkType!!,Constants.DEFAULT_PAGE,position)
-                    }
                     3->{
                         MethodManager.gotoHomeworkRecord(this@HomeworkMessageActivity,homeworkType,messageIndex)
                     }
@@ -86,10 +83,14 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                         if (HomeworkBookDaoManager.getInstance().isExist(homeworkType?.bookId!!)) {
                             MethodManager.gotoHomeworkBookDetails(this@HomeworkMessageActivity, homeworkType,messageIndex)
                         } else {
+                            //下载教辅
                             val intent = Intent(this@HomeworkMessageActivity, HomeworkBookStoreActivity::class.java)
                             intent.putExtra("bookId", homeworkType?.bookId!!)
                             customStartActivity(intent)
                         }
+                    }
+                    else->{
+                        MethodManager.gotoHomeworkDrawing(this@HomeworkMessageActivity,homeworkType!!,Constants.DEFAULT_PAGE,position)
                     }
                 }
 
@@ -141,7 +142,9 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                         }
                         HomeworkPaperDaoManager.getInstance().insertOrReplace(paper)
                         //创建增量数据
-                        DataUpdateManager.createDataUpdateState(2, item.contendId, 2, homeworkTypeId, 1, Gson().toJson(paper), pathStr)
+                        DataUpdateManager.createDataUpdateState(2, item.contendId, 2, homeworkTypeId, homeworkType?.state!!, Gson().toJson(paper), pathStr)
+
+                        MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageIndex)
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }

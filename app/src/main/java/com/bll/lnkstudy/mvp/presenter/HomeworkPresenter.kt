@@ -5,6 +5,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
@@ -165,6 +166,34 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
                 return false
             }
 
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onDownloadSuccess()
+            }
+        }, false)
+    }
+
+    fun getShareList(map: HashMap<String, Any>) {
+        val type = RetrofitManager.service.getShareList(map)
+        doRequest(type, object : Callback<MutableList<HomeworkShareBean>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<MutableList<HomeworkShareBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<HomeworkShareBean>>) {
+                if (tBaseResult.data!=null)
+                    view.onShareList(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    fun downloadCompleteShare(id:Int) {
+        val body = RequestUtils.getBody(
+            Pair("id", id)
+        )
+        val commit = RetrofitManager.service.onDownloadShare(body)
+        doRequest(commit, object : Callback<Any>(view, screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onDownloadSuccess()
             }

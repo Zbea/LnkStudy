@@ -23,7 +23,7 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_toEndOf="@+id/tv_name"
-        android:background="@drawable/bg_cricle_black"
+        android:background="@drawable/bg_circle_black"
         />
 
 </RelativeLayout>

@@ -20,6 +20,8 @@ import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.common_correct_score.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.util.regex.Pattern
@@ -48,6 +50,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     var v_content_b: ImageView? = null
 
     private var isAllowChange = true //是否运行移屏幕
+    var isDrawingSave=false//是否手写保存
 
 
     override fun initCreate() {
@@ -105,13 +108,13 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         iv_page_up?.setOnClickListener {
             Handler().postDelayed({
                 onPageUp()
-            },100)
+            },if (isDrawingSave)500 else 0)
         }
 
         iv_page_down?.setOnClickListener {
             Handler().postDelayed({
                 onPageDown()
-            },200)
+            },if (isDrawingSave)500 else 0)
         }
 
         iv_catalog?.setOnClickListener {
@@ -521,6 +524,18 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     protected fun setViewElikUnable(view: View) {
         elik_a?.addOnTopView(view)
         elik_b?.addOnTopView(view)
+    }
+
+    /**
+     * 页面清空
+     */
+    fun setContentImageClear(){
+        v_content_a?.setImageResource(0)
+        v_content_b?.setImageResource(0)
+        tv_page_total.text=""
+        tv_page_total_a.text=""
+        tv_page.text=""
+        tv_page_a.text=""
     }
 
     /**

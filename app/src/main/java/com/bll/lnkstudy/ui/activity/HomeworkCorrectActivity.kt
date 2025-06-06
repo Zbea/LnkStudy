@@ -119,20 +119,27 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
             2, 6 -> {
                 val homeworks = HomeworkContentDaoManager.getInstance().queryAllByContentId(commitItem?.homeworkTypeId!!, commitItem?.messageId!!)
                 for (homework in homeworks) {
-                    if (commitItem?.submitState==1){
-                        homework.title=commitItem?.title//不提交成功后改标题
-                        homework.state=2
+                    val mergePath=FileAddress().getPathHomeworkDrawingMerge(homework.path)
+                    if (FileUtils.isExist(mergePath)){
+                        if (commitItem?.submitState==1){
+                            homework.title=commitItem?.title//不提交成功后改标题
+                            homework.state=2
+                        }
+                        homework.isHomework = false
+                        homework.date = System.currentTimeMillis()
+                        homework.score = tv_correct_total_score.text.toString().toDouble()
+                        homework.correctJson = Gson().toJson(initScores)
+                        homework.answerUrl = commitItem?.answerUrl
+                        homework.correctMode = commitItem?.correctMode!!
+                        homework.scoreMode = commitItem?.scoreMode!!
+                        homework.commitJson = ""
+                        HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
+                        DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homework.homeworkTypeId, Gson().toJson(homework))
                     }
-                    homework.isHomework = false
-                    homework.date = System.currentTimeMillis()
-                    homework.score = tv_correct_total_score.text.toString().toDouble()
-                    homework.correctJson = Gson().toJson(initScores)
-                    homework.answerUrl = commitItem?.answerUrl
-                    homework.correctMode = commitItem?.correctMode!!
-                    homework.scoreMode = commitItem?.scoreMode!!
-                    homework.commitJson = ""
-                    HomeworkContentDaoManager.getInstance().insertOrReplace(homework)
-                    DataUpdateManager.editDataUpdate(2, homework.id.toInt(), 2, homework.homeworkTypeId, Gson().toJson(homework))
+                    else{
+                        HomeworkContentDaoManager.getInstance().deleteBean(homework)
+                        DataUpdateManager.deleteDateUpdate(2,homework.id.toInt(),2,homework.homeworkTypeId)
+                    }
                 }
                 ActivityManager.getInstance().finishActivity(HomeworkDrawingActivity::class.java.name)
             }

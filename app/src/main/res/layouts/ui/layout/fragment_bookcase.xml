@@ -41,7 +41,7 @@
             android:layout_height="16dp"
             android:layout_marginEnd="23dp"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/bg_cricle_black"
+            android:background="@drawable/bg_circle_black"
             />
 
     </RelativeLayout>

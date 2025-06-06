@@ -95,7 +95,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                     val item=noteContents[page]
                     item.title=title
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
-                    DataUpdateManager.editDataUpdate(4,item.id.toInt(),3,Gson().toJson(item))
+                    DataUpdateManager.editDataUpdate(4,item.id.toInt(),3,item.id.toInt(),Gson().toJson(item))
                 }
             }
         })
@@ -206,11 +206,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun onElikSava_a() {
-        DataUpdateManager.editDataUpdate(4,note_Content_a!!.id.toInt(),3)
+        DataUpdateManager.editDataUpdate(4,note_Content_a!!.id.toInt(),3,note_Content_a!!.id.toInt())
     }
 
     override fun onElikSava_b() {
-        DataUpdateManager.editDataUpdate(4,note_Content_b!!.id.toInt(),3)
+        DataUpdateManager.editDataUpdate(4,note_Content_b!!.id.toInt(),3,note_Content_b!!.id.toInt())
     }
 
     //创建新的作业内容
@@ -232,7 +232,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_b?.id=id
         noteContents.add(note_Content_b!!)
 
-        DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(note_Content_b),note_Content_b?.filePath!!)
+        DataUpdateManager.createDataUpdate(4,id.toInt(),3,id.toInt(),Gson().toJson(note_Content_b),note_Content_b?.filePath!!)
     }
 
 

@@ -33,16 +33,17 @@ public class RecordBean implements Serializable {
     public int second;
     public boolean isHomework=false;
     public String question;
+    public int correctModule;
     public double score;
     public boolean isCorrect;
     @Transient
     public int state=0;//播放状态
 
-    @Generated(hash = 1997564917)
+    @Generated(hash = 1447355199)
     public RecordBean(Long id, long userId, int homeworkTypeId, String typeName,
             String course, String title, int contendId, long date, String path,
-            int second, boolean isHomework, String question, double score,
-            boolean isCorrect) {
+            int second, boolean isHomework, String question, int correctModule,
+            double score, boolean isCorrect) {
         this.id = id;
         this.userId = userId;
         this.homeworkTypeId = homeworkTypeId;
@@ -55,6 +56,7 @@ public class RecordBean implements Serializable {
         this.second = second;
         this.isHomework = isHomework;
         this.question = question;
+        this.correctModule = correctModule;
         this.score = score;
         this.isCorrect = isCorrect;
     }
@@ -144,6 +146,12 @@ public class RecordBean implements Serializable {
     }
     public void setIsCorrect(boolean isCorrect) {
         this.isCorrect = isCorrect;
+    }
+    public int getCorrectModule() {
+        return this.correctModule;
+    }
+    public void setCorrectModule(int correctModule) {
+        this.correctModule = correctModule;
     }
     
 }

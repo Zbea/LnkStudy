@@ -3,8 +3,6 @@ package com.bll.lnkstudy.mvp.model.paper;
 import androidx.annotation.Nullable;
 
 import com.bll.lnkstudy.MethodManager;
-import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -35,7 +33,7 @@ public class PaperTypeBean {
     @SerializedName("addType")
     public int autoState;//1生成作业本 0创建作业本
     @Transient
-    public boolean isPg;//是否批改
+    public boolean isCorrect;//是否批改
     @Transient
     public double score;
     @Transient

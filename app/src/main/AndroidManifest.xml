@@ -289,6 +289,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.drawing.HomeworkShareDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.HomeworkNoticeListActivity" />
         <activity android:name=".ui.activity.CourseManagerActivity" />
         <activity android:name=".ui.activity.HomeworkMessageActivity" />

@@ -338,7 +338,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                                 book.time=System.currentTimeMillis()
                                 TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                                 //创建增量更新
-                                DataUpdateManager.createDataUpdateSource(1, book.bookId, 1, Gson().toJson(book), book.downloadUrl)
+                                DataUpdateManager.createDataUpdate(1, book.bookId, 1,book.bookId, Gson().toJson(book), book.downloadUrl)
                             }
                             FileUtils.deleteFile(File(zipPath))
                             bookDetailsDialog?.dismiss()
@@ -384,7 +384,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             }
             HomeworkTypeDaoManager.getInstance().insertOrReplace(homeworkTypeBean)
             //创建增量数据
-            DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1, Gson().toJson(homeworkTypeBean))
+            DataUpdateManager.createDataUpdate(2, homeworkTypeBean.typeId, 1, homeworkTypeBean.typeId, Gson().toJson(homeworkTypeBean))
         }
         val homeworkBookBean = HomeworkBookBean().apply {
             bookId = book.bookId

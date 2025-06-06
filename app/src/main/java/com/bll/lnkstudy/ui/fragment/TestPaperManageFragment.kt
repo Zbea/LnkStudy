@@ -84,7 +84,7 @@ class TestPaperManageFragment: BaseMainFragment() {
         for (item in currentCourses){
             val course=item.title
             //创建学校考试卷
-            val typeId = MethodManager.getExamTypeId(course)
+            val typeId = MethodManager.getTestPaperAutoTypeId("学校考试卷",course)
             if (PaperTypeDaoManager.getInstance().queryById(typeId)==null){
                 val typeItem= PaperTypeBean()
                 typeItem.name="学校考试卷"

@@ -243,7 +243,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(6,book.bookId,1, Gson().toJson(book),book.downloadUrl)
+                    DataUpdateManager.createDataUpdate(6,book.bookId,1,book.bookId, Gson().toJson(book),book.downloadUrl)
                     downloadBookDialog?.dismiss()
                     EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
                     EventBus.getDefault().post(Constants.BOOK_EVENT)

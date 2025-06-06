@@ -21,6 +21,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
+import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
@@ -316,6 +317,16 @@ interface APIService{
      */
     @POST("task/group/studentDownload")
     fun onDownloadPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取分享列表
+     */
+    @GET("exam/share/listAll")
+    fun getShareList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<HomeworkShareBean>>>
+    /**
+     * 分享下载完成后 通知后台
+     */
+    @POST("exam/share/updateDownloadState")
+    fun onDownloadShare(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 获取学生提交详情

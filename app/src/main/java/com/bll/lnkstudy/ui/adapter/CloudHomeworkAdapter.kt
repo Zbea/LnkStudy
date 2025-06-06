@@ -13,11 +13,10 @@ class CloudHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
         helper.apply {
             if (item.state==4){
                 GlideUtils.setImageRoundUrl(mContext, item.bgResId, getView(R.id.iv_image), 10)
-                setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
+                setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
             }
             else{
                 setText(R.id.tv_name, item.name)
-
                 val bg=when(item.state){
                     1->{
                         R.mipmap.icon_homework_cover_3
@@ -28,12 +27,21 @@ class CloudHomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) :
                     5->{
                         R.mipmap.icon_homework_cover_4
                     }
+                    6->{
+                        R.mipmap.icon_homework_cover_6
+                    }
+                    7->{
+                        R.mipmap.icon_homework_cover_7
+                    }
+                    8->{
+                        R.mipmap.icon_homework_cover_8
+                    }
                     else->{
-                        R.mipmap.icon_homework_cover_1
+                        if (item.name=="作文作业本")R.mipmap.icon_homework_cover_5 else R.mipmap.icon_homework_cover_1
                     }
                 }
                 setImageResource(R.id.iv_image,bg)
-                setBackgroundRes(R.id.rl_bg,R.color.white)
+                setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
             }
             setGone(R.id.ll_info, false)
         }

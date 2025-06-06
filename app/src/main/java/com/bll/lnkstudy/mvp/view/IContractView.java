@@ -9,6 +9,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamItem;
 import com.bll.lnkstudy.mvp.model.MessageList;
@@ -167,6 +168,7 @@ public interface IContractView {
         default void onPaperList(HomeworkPaperList list){};
         default void onParentReel(ParentHomeworkMessageList list) {}
         default void onDownloadSuccess() {}
+        default void onShareList(List<HomeworkShareBean> list){}
     }
 
     interface IMessageView extends IBaseView{

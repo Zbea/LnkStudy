@@ -33,13 +33,13 @@ public class HomeworkTypeBean implements Serializable {
     public int grade;//年级
     public int typeId;//作业本分类id
     @SerializedName("subType")
-    public int state;//1作业卷 2普通作业本 3听读本4题卷本 5错题本 6练字本 7手写本 8阅读本
+    public int state;//1作业卷 2普通作业本 3听读本4题卷本 5错题本 6练字本 7手写本 8阅读本 9分享本
     public long date; //创建时间
     public String contentResId; //作业本内容背景id
     public String bgResId;//当前作业本背景样式id
     public String course;
     public int bookId;
-    public int createStatus=0;//自建作业本0家长创建1老师创建2自动创建错题本3
+    public int createStatus=0;//自建作业本0家长创建1老师创建2自动创建错题本3自动创建分享本4
     public int fromStatus=0;//家长创建1老师创建2
     public int messageTotal=0;//作业消息数目
     public boolean isCloud;
@@ -56,9 +56,11 @@ public class HomeworkTypeBean implements Serializable {
     @Transient
     public String contentSubtypeJson;
     @Transient
-    public boolean isPg;//是否收到批改
+    public boolean isCorrect;//是否收到批改
     @Transient
     public boolean isMessage;//收到通知
+    @Transient
+    public boolean isShare;//收到分享
     @Transient
     public List<?> messages;
 

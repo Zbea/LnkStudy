@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager.getResultStandardStr
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.ResultStandardItem
 import com.bll.lnkstudy.ui.adapter.HomeworkResultStandardAdapter
@@ -16,7 +17,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ResultStandardDetailsDialog(val context: Context, private val title:String, private val score:Double,private val question:String,private val items:MutableList<ResultStandardItem>) {
+class ResultStandardDetailsDialog(val context: Context, private val title:String, private val score:Double,private val questionType:Int,private val question:String,private val items:MutableList<ResultStandardItem>) {
 
     fun builder(): ResultStandardDetailsDialog {
         val dialog = Dialog(context)
@@ -36,7 +37,7 @@ class ResultStandardDetailsDialog(val context: Context, private val title:String
         tvTitle.text=title
 
         val tvScore=dialog.findViewById<TextView>(R.id.tv_score)
-        tvScore.text=getResultStandardStr(score)
+        tvScore.text=getResultStandardStr(score,1)
 
         if (question.isNotEmpty()){
             if (question.length<20){
@@ -56,24 +57,10 @@ class ResultStandardDetailsDialog(val context: Context, private val title:String
         HomeworkResultStandardAdapter(R.layout.item_homework_result_standard, items).apply {
             recyclerview.adapter = this
             bindToRecyclerView(recyclerview)
-            recyclerview.addItemDecoration(SpaceItemDeco(30))
+            recyclerview.addItemDecoration(SpaceItemDeco(25))
         }
 
         return this
     }
 
-    /**
-     * 返回标准评分
-     * @param score
-     * @return
-     */
-    private fun getResultStandardStr(score: Double): String {
-        return if (score == 1.0) {
-            "A"
-        } else if (score == 2.0) {
-            "B"
-        } else {
-            "C"
-        }
-    }
 }

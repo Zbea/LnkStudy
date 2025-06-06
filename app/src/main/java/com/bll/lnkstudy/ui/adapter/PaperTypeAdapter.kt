@@ -12,7 +12,7 @@ class PaperTypeAdapter(layoutResId: Int, data: List<PaperTypeBean>?) : BaseQuick
 
     override fun convert(helper: BaseViewHolder, item: PaperTypeBean) {
         helper.apply {
-            setVisible(R.id.ll_rank,item.isPg)
+            setVisible(R.id.ll_rank,item.isCorrect)
             setText(R.id.tv_name,item.name)
             setText(R.id.tv_title,item.paperTitle)
             setText(R.id.tv_score,"分数："+item.score.toString())

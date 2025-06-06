@@ -21,46 +21,44 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
         helper.apply {
             setVisible(R.id.ll_info, !item.isCloud&&(item.createStatus==1||item.createStatus==2))
             setText(R.id.tv_grade,if (grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
-            setText(R.id.tv_name, item.name)
+
             val ivImage=getView<ImageView>(R.id.iv_image)
-            when(item.state){
-                1->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_3)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+            if (item.state==4){
+                setGone(R.id.tv_grade,!item.isCloud)
+                setText(R.id.tv_name, "")
+                setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
+                GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
+            }
+            else{
+                setText(R.id.tv_name, item.name)
+                val bg=when(item.state){
+                    1->{
+                        R.mipmap.icon_homework_cover_3
+                    }
+                    3->{
+                        R.mipmap.icon_homework_cover_2
+                    }
+                    5->{
+                        R.mipmap.icon_homework_cover_4
+                    }
+                    6->{
+                        R.mipmap.icon_homework_cover_6
+                    }
+                    7->{
+                        R.mipmap.icon_homework_cover_7
+                    }
+                    8->{
+                        R.mipmap.icon_homework_cover_8
+                    }
+                    else->{
+                        if (item.name=="作文作业本")R.mipmap.icon_homework_cover_5 else R.mipmap.icon_homework_cover_1
+                    }
                 }
-                3->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_2)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
-                4->{
-                    setGone(R.id.tv_grade,!item.isCloud)
-                    setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
-                    setText(R.id.tv_name, "")
-                    GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
-                }
-                5->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_4)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
-                6->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_7)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
-                7->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_5)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
-                8->{
-                    ivImage.setImageResource(R.mipmap.icon_homework_cover_6)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
-                else->{
-                    ivImage.setImageResource(if (item.name=="作文作业本")R.mipmap.icon_homework_cover_8 else R.mipmap.icon_homework_cover_1)
-                    setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
-                }
+                setImageResource(R.id.iv_image,bg)
+                setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
             }
 
-            if (item.isPg) {
+            if (item.isCorrect) {
                 setTextColor(R.id.tv_pg, mContext.getColor(R.color.black))
                 getView<TextView>(R.id.tv_pg).typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
@@ -76,6 +74,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 getView<TextView>(R.id.tv_message).typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
             }
 
+            setGone(R.id.iv_tips,item.isShare)
             addOnClickListener(R.id.ll_message)
         }
 

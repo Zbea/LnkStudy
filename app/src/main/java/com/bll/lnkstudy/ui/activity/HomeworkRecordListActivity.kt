@@ -80,8 +80,8 @@ class HomeworkRecordListActivity : BaseAppCompatActivity(){
                 }
                 R.id.tv_result->{
                     val item=recordBeans[position]
-                    val items=DataBeanManager.getResultStandardItem3s().stream().collect(Collectors.toList())
-                    ResultStandardDetailsDialog(this,item.title,item.score,item.question,items).builder()
+                    val items=DataBeanManager.getResultStandardItems(3,"",item.correctModule) .stream().collect(Collectors.toList())
+                    ResultStandardDetailsDialog(this,item.title,item.score,item.correctModule,item.question,items).builder()
                 }
             }
         }
@@ -174,7 +174,7 @@ class HomeworkRecordListActivity : BaseAppCompatActivity(){
     private fun refreshDataUpdate(recordBean: RecordBean){
         RecordDaoManager.getInstance().insertOrReplace(recordBean)
         //修改本地增量更新
-        DataUpdateManager.editDataUpdateState(2,recordBean.id.toInt(),2,recordBean.homeworkTypeId,3,Gson().toJson(recordBean))
+        DataUpdateManager.editDataUpdate(2,recordBean.id.toInt(),2,recordBean.homeworkTypeId,Gson().toJson(recordBean))
     }
 
     override fun fetchData() {

@@ -69,7 +69,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                             return@Comparator item1.date.compareTo(item2.date)
                         })
                         setNotify()
-                        DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
+                        DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,notebook.id.toInt(),Gson().toJson(notebook))
                     }
                 }
             }
@@ -98,7 +98,7 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                 else{
                     notebooks.removeAt(position)
                     ItemTypeDaoManager.getInstance().deleteBean(noteBook)
-                    DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1)
+                    DataUpdateManager.deleteDateUpdate(4,noteBook.id.toInt(),1,noteBook.id.toInt())
                     setNotify()
                 }
             }
@@ -122,18 +122,18 @@ class NotebookManagerActivity : BaseAppCompatActivity() {
                     noteContent.typeStr=string
                     NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
                     //修改增量更新
-                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,Gson().toJson(noteContent))
+                    DataUpdateManager.editDataUpdate(4,noteContent.id.toInt(),3,noteContent.id.toInt(),Gson().toJson(noteContent))
                 }
                 note.typeStr=string
                 NoteDaoManager.getInstance().insertOrReplace(note)
                 //修改增量更新
-                DataUpdateManager.editDataUpdate(4,note.id.toInt(),2,Gson().toJson(note))
+                DataUpdateManager.editDataUpdate(4,note.id.toInt(),2,note.id.toInt(),Gson().toJson(note))
             }
             notebook.title = string
             ItemTypeDaoManager.getInstance().insertOrReplace(notebook)
             setNotify()
             //修改增量更新
-            DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,Gson().toJson(notebook))
+            DataUpdateManager.editDataUpdate(4,notebook.id.toInt(),1,notebook.id.toInt(),Gson().toJson(notebook))
         }
     }
 

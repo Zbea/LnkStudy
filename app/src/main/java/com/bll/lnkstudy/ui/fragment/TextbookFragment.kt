@@ -139,7 +139,7 @@ class TextbookFragment : BaseMainFragment() {
                         book.time = System.currentTimeMillis()
                         bookGreenDaoManager.insertOrReplaceBook(book)
                         //修改增量更新
-                        DataUpdateManager.editDataUpdate(1,book.bookId,1,Gson().toJson(book))
+                        DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
                         pageIndex=1
                         fetchData()
                     }
@@ -153,7 +153,7 @@ class TextbookFragment : BaseMainFragment() {
                             mAdapter?.notifyItemChanged(position)
                             bookGreenDaoManager.insertOrReplaceBook(book)
                             //修改增量更新
-                            DataUpdateManager.editDataUpdate(1,book.bookId,1,Gson().toJson(book))
+                            DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
                         }
                     }
                     2->{
@@ -230,7 +230,7 @@ class TextbookFragment : BaseMainFragment() {
         for (item in items){
             item.typeStr=getString(R.string.textbook_tab_old)
             //修改增量更新
-            DataUpdateManager.editDataUpdate(1,item.bookId,1,Gson().toJson(item))
+            DataUpdateManager.editDataUpdate(1,item.bookId,1,item.bookId,Gson().toJson(item))
         }
         bookGreenDaoManager.insertOrReplaceBooks(items)
 

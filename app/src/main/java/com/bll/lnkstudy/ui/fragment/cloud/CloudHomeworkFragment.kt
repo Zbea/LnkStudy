@@ -15,6 +15,7 @@ import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
+import com.bll.lnkstudy.manager.HomeworkShareDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
@@ -24,6 +25,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.ui.adapter.CloudHomeworkAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -131,25 +133,9 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                     showToast(R.string.toast_downloaded)
                 }
             }
-            5->{
-                val localItem=HomeworkTypeDaoManager.getInstance().queryByNameGrade(homeworkTypeBean.name,homeworkTypeBean.grade)
-                if (localItem==null){
-                    download(homeworkTypeBean)
-                }
-                else{
-                    showToast(R.string.toast_downloaded)
-                }
-            }
-            2,6->{
-                if (!if (homeworkTypeBean.fromStatus==1) HomeworkTypeDaoManager.getInstance().isExistParentType(homeworkTypeBean.typeId,homeworkTypeBean.grade) else HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
-                    download(homeworkTypeBean)
-                }
-                else{
-                    showToast(R.string.toast_downloaded)
-                }
-            }
             else->{
-                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
+                if (!if (homeworkTypeBean.fromStatus==1) HomeworkTypeDaoManager.getInstance().isExistParentType(homeworkTypeBean.typeId,homeworkTypeBean.grade)
+                    else HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
                     download(homeworkTypeBean)
                 }
                 else{
@@ -198,7 +184,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                         val id= HomeworkBookCorrectDaoManager.getInstance().insertOrReplaceGetId(item)
                         val path=FileAddress().getPathHomeworkBookDrawPath(homeworkBookBean?.bookDrawPath!!,item.page)
                         //更新增量数据
-                        DataUpdateManager.createDataUpdate(7, id.toInt(),1,homeworkBookBean.bookId ,Gson().toJson(item),path)
+                        DataUpdateManager.createDataUpdate(2, id.toInt(),3,homeworkBookBean.bookId ,Gson().toJson(item),path)
                     }
 
                     showToast(homeworkBookBean.bookName+getString(R.string.book_download_success))
@@ -240,24 +226,15 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                             HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
                             if (item.state!=5){
                                 //创建增量数据
-                                DataUpdateManager.createDataUpdate(2,item.typeId,1,Gson().toJson(item))
+                                DataUpdateManager.createDataUpdate(2,item.typeId,1,item.typeId,Gson().toJson(item))
                                 when(item.state){
-                                    1->{
+                                    1,7->{
                                         val papers=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkPaperBean>>() {}.type) as MutableList<HomeworkPaperBean>
                                         for (paperBean in papers){
                                             paperBean.id=null//设置数据库id为null用于重新加入
                                             HomeworkPaperDaoManager.getInstance().insertOrReplace(paperBean)
                                             //创建增量数据
                                             DataUpdateManager.createDataUpdateState(2,paperBean.contentId,2,paperBean.typeId,1,Gson().toJson(paperBean),paperBean.filePath)
-                                        }
-                                    }
-                                    2,6->{
-                                        val homeworks=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkContentBean>>() {}.type) as MutableList<HomeworkContentBean>
-                                        for (homeworkContentBean in homeworks){
-                                            homeworkContentBean.id=null//设置数据库id为null用于重新加入
-                                            val id=HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
-                                            //创建增量数据
-                                            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,item.typeId,item.state,Gson().toJson(homeworkContentBean),homeworkContentBean.path)
                                         }
                                     }
                                     3->{
@@ -267,6 +244,23 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                                             val id=RecordDaoManager.getInstance().insertOrReplaceGetId(recordBean)
                                             //创建增量数据
                                             DataUpdateManager.createDataUpdateState(2,id.toInt(),2,item.typeId,item.state,Gson().toJson(recordBean),recordBean.path)
+                                        }
+                                    }
+                                    9->{
+                                        val shareBeans=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkShareBean>>() {}.type) as MutableList<HomeworkShareBean>
+                                        for (shareBean in shareBeans){
+                                            val id=HomeworkShareDaoManager.getInstance().insertOrReplaceGetId(shareBean)
+                                            //创建增量数据
+                                            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,item.typeId,item.state,Gson().toJson(shareBean),shareBean.filePath)
+                                        }
+                                    }
+                                    else->{
+                                        val homeworks=Gson().fromJson(item.contentJson, object : TypeToken<List<HomeworkContentBean>>() {}.type) as MutableList<HomeworkContentBean>
+                                        for (homeworkContentBean in homeworks){
+                                            homeworkContentBean.id=null//设置数据库id为null用于重新加入
+                                            val id= HomeworkContentDaoManager.getInstance().insertOrReplaceGetId(homeworkContentBean)
+                                            //创建增量数据
+                                            DataUpdateManager.createDataUpdateState(2,id.toInt(),2,item.typeId,item.state,Gson().toJson(homeworkContentBean),homeworkContentBean.path)
                                         }
                                     }
                                 }

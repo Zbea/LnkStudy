@@ -7,6 +7,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogBookDialog
@@ -17,7 +18,6 @@ import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -175,7 +175,7 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
         val showFile = FileUtils.getIndexFile(book?.bookPath,index)
         if (showFile != null) {
-            GlideUtils.setImageCacheUrl(this, showFile.path, view)
+            MethodManager.setImageFile(showFile.path,view)
             val drawPath = book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath, true)
         }
@@ -193,12 +193,12 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
      * 刷新增量更新
      */
     private fun refreshDataUpdate(){
-        val item= DataUpdateDaoManager.getInstance().queryBean(1,bookId,2)
+        val item= DataUpdateDaoManager.getInstance().queryBean(1,bookId,2,bookId)
         if (item==null){
-            DataUpdateManager.createDataUpdateDrawing(1,bookId,2,book?.bookDrawPath!!)
+            DataUpdateManager.createDataUpdateDrawing(1,bookId,2,bookId,book?.bookDrawPath!!)
         }
         else{
-            DataUpdateManager.editDataUpdate(1,bookId,2)
+            DataUpdateManager.editDataUpdate(1,bookId,2,bookId)
         }
     }
 

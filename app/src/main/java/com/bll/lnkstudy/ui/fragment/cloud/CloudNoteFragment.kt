@@ -131,21 +131,21 @@ class CloudNoteFragment: BaseCloudFragment() {
                                 }
                                 val id= ItemTypeDaoManager.getInstance().insertOrReplaceGetId(noteType)
                                 //创建笔记分类增量更新
-                                DataUpdateManager.createDataUpdate(4,id.toInt(),1,Gson().toJson(noteType))
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),1,id.toInt(),Gson().toJson(noteType))
                             }
                             //添加笔记
                             item.id=null//设置数据库id为null用于重新加入
                             item.date=System.currentTimeMillis()
                             val id= NoteDaoManager.getInstance().insertOrReplaceGetId(item)
                             //新建笔记本增量更新
-                            DataUpdateManager.createDataUpdate(4,id.toInt(),2,Gson().toJson(item))
+                            DataUpdateManager.createDataUpdate(4,id.toInt(),2,id.toInt(),Gson().toJson(item))
 
                             val noteContents=Gson().fromJson(item.contentJson, object : TypeToken<List<NoteContentBean>>() {}.type) as MutableList<NoteContentBean>
                             for (contentBean in noteContents){
                                 contentBean.id=null//设置数据库id为null用于重新加入
                                 val id=NoteContentDaoManager.getInstance().insertOrReplaceGetId(contentBean)
                                 //新建笔记内容增量更新
-                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,Gson().toJson(contentBean),contentBean.filePath)
+                                DataUpdateManager.createDataUpdate(4,id.toInt(),3,id.toInt(),Gson().toJson(contentBean),contentBean.filePath)
                             }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))

@@ -149,9 +149,9 @@ class CloudTextbookFragment:BaseCloudFragment() {
                     deleteItem()
                     showToast(book.bookName+getString(R.string.book_download_success))
                     //创建增量更新
-                    DataUpdateManager.createDataUpdateSource(1,book.bookId,1,Gson().toJson(book),book.downloadUrl)
+                    DataUpdateManager.createDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book),book.downloadUrl)
                     //创建增量更新
-                    DataUpdateManager.createDataUpdate(1,book.bookId,2,book.bookDrawPath)
+                    DataUpdateManager.createDataUpdateDrawing(1,book.bookId,2,book.bookId,book.bookDrawPath)
                     EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
                 }
                 else{

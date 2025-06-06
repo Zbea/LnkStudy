@@ -78,15 +78,13 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
             "com.geniatech.knote.reader.save.note.broadcast"->{
                 val bookId=intent.getStringExtra("key_book_id")
                 val path=intent.getStringExtra("note_path")
-                val typeId=intent.getIntExtra("type",0)
-                val type=if (typeId==1)6 else 1
 
-                val item=DataUpdateDaoManager.getInstance().queryBean(type,bookId!!.toInt(),2)
+                val item=DataUpdateDaoManager.getInstance().queryBean(6,bookId!!.toInt(),2,bookId!!.toInt())
                 if (item==null){
-                    DataUpdateManager.createDataUpdateDrawing(type,bookId.toInt(),2,path!!)
+                    DataUpdateManager.createDataUpdateDrawing(6,bookId.toInt(),2,bookId.toInt(),path!!)
                 }
                 else{
-                    DataUpdateManager.editDataUpdate(type,bookId.toInt(),2)
+                    DataUpdateManager.editDataUpdate(6,bookId.toInt(),2,bookId.toInt())
                 }
             }
             "android.intent.action.PACKAGE_ADDED"->{

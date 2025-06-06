@@ -27,7 +27,6 @@ import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
-import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
@@ -198,8 +197,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         iv_score.setOnClickListener {
             if (homeworkType?.state==7){
-                val items=DataBeanManager.getResultStandardItems().stream().collect(Collectors.toList())
-                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctJson,items).builder()
+                val items=DataBeanManager.getResultStandardItems(homeworkType!!.state,homeworkType!!.name,1).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,1,paper!!.correctJson,items).builder()
             }
             else{
                 val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
@@ -274,6 +273,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         paper=papers[currentPosition]
         pageCount=paper!!.paths.size
 
+        isDrawingSave=isDrawing()
+
         if (isExpand&&pageCount==1){
             onChangeExpandContent()
             return
@@ -308,7 +309,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         setDisableTouchInput(homeworkType?.isCloud!!||paper?.state==1)
 
         if (currentPosition!=oldPosition){
-            if (paper?.state==2){
+            if (paper?.state==2&& paper?.correctJson?.isNotEmpty() == true){
                 showView(iv_score)
             }
             else{
@@ -336,24 +337,25 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     //加载图片
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
         val path=paper!!.paths[index]
-        if (paper?.state==1){
-            GlideUtils.setImageNoCacheUrl(this,path,view)
-        }
-        else{
-            GlideUtils.setImageCacheUrl(this,path,view, paper?.state!!)
-        }
+        MethodManager.setImageFile(path,view)
+//        if (paper?.state==1){
+//            GlideUtils.setImageNoCacheUrl(this,path,view)
+//        }
+//        else{
+//            GlideUtils.setImageCacheUrl(this,path,view, paper?.state!!)
+//        }
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 
     override fun onElikSava_a() {
-        if (isDrawing()){
+        if (isDrawingSave){
             BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(page))
         }
         refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
-        if (isDrawing()){
+        if (isDrawingSave){
             if (isExpand){
                 BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page+1))
             }

@@ -36,8 +36,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         public final static Property Second = new Property(9, int.class, "second", false, "SECOND");
         public final static Property IsHomework = new Property(10, boolean.class, "isHomework", false, "IS_HOMEWORK");
         public final static Property Question = new Property(11, String.class, "question", false, "QUESTION");
-        public final static Property Score = new Property(12, double.class, "score", false, "SCORE");
-        public final static Property IsCorrect = new Property(13, boolean.class, "isCorrect", false, "IS_CORRECT");
+        public final static Property CorrectModule = new Property(12, int.class, "correctModule", false, "CORRECT_MODULE");
+        public final static Property Score = new Property(13, double.class, "score", false, "SCORE");
+        public final static Property IsCorrect = new Property(14, boolean.class, "isCorrect", false, "IS_CORRECT");
     }
 
 
@@ -65,8 +66,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
                 "\"SECOND\" INTEGER NOT NULL ," + // 9: second
                 "\"IS_HOMEWORK\" INTEGER NOT NULL ," + // 10: isHomework
                 "\"QUESTION\" TEXT," + // 11: question
-                "\"SCORE\" REAL NOT NULL ," + // 12: score
-                "\"IS_CORRECT\" INTEGER NOT NULL );"); // 13: isCorrect
+                "\"CORRECT_MODULE\" INTEGER NOT NULL ," + // 12: correctModule
+                "\"SCORE\" REAL NOT NULL ," + // 13: score
+                "\"IS_CORRECT\" INTEGER NOT NULL );"); // 14: isCorrect
     }
 
     /** Drops the underlying database table. */
@@ -114,8 +116,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         if (question != null) {
             stmt.bindString(12, question);
         }
-        stmt.bindDouble(13, entity.getScore());
-        stmt.bindLong(14, entity.getIsCorrect() ? 1L: 0L);
+        stmt.bindLong(13, entity.getCorrectModule());
+        stmt.bindDouble(14, entity.getScore());
+        stmt.bindLong(15, entity.getIsCorrect() ? 1L: 0L);
     }
 
     @Override
@@ -157,8 +160,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         if (question != null) {
             stmt.bindString(12, question);
         }
-        stmt.bindDouble(13, entity.getScore());
-        stmt.bindLong(14, entity.getIsCorrect() ? 1L: 0L);
+        stmt.bindLong(13, entity.getCorrectModule());
+        stmt.bindDouble(14, entity.getScore());
+        stmt.bindLong(15, entity.getIsCorrect() ? 1L: 0L);
     }
 
     @Override
@@ -181,8 +185,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
             cursor.getInt(offset + 9), // second
             cursor.getShort(offset + 10) != 0, // isHomework
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // question
-            cursor.getDouble(offset + 12), // score
-            cursor.getShort(offset + 13) != 0 // isCorrect
+            cursor.getInt(offset + 12), // correctModule
+            cursor.getDouble(offset + 13), // score
+            cursor.getShort(offset + 14) != 0 // isCorrect
         );
         return entity;
     }
@@ -201,8 +206,9 @@ public class RecordBeanDao extends AbstractDao<RecordBean, Long> {
         entity.setSecond(cursor.getInt(offset + 9));
         entity.setIsHomework(cursor.getShort(offset + 10) != 0);
         entity.setQuestion(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setScore(cursor.getDouble(offset + 12));
-        entity.setIsCorrect(cursor.getShort(offset + 13) != 0);
+        entity.setCorrectModule(cursor.getInt(offset + 12));
+        entity.setScore(cursor.getDouble(offset + 13));
+        entity.setIsCorrect(cursor.getShort(offset + 14) != 0);
      }
     
     @Override
