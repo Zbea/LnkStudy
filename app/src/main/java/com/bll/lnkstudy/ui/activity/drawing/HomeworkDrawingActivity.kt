@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
@@ -202,7 +203,9 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     }
                     override fun ok() {
                         showLoading()
-                        commit()
+                        Handler().postDelayed({
+                            commit()
+                        },500)
                     }
                 })
             }
@@ -221,8 +224,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         }
 
         iv_score.setOnClickListener {
-            val items=DataBeanManager.getResultStandardItems(homeworkType!!.state,homeworkType!!.name,1).stream().collect(Collectors.toList())
-            ResultStandardDetailsDialog(this,homeworkContent?.title!!,homeworkContent?.score!!,1,homeworkContent?.correctJson!!,items).builder()
+            val items=DataBeanManager.getResultStandardItems(homeworkType!!.state,homeworkType!!.name,homeworkContent!!.correctMode).stream().collect(Collectors.toList())
+            ResultStandardDetailsDialog(this,homeworkContent?.title!!,homeworkContent?.score!!,if (homeworkType!!.state==10)10 else homeworkContent!!.correctMode,homeworkContent?.correctJson!!,items).builder()
         }
 
         onContent()
@@ -241,6 +244,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 list.add(itemList)
             }
         }
+        list.reverse()
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (page!=pageNumber){

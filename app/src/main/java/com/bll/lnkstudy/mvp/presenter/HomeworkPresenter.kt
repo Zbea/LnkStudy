@@ -142,6 +142,22 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
         }, false)
     }
 
+    /**
+     * 获取老师下发未完成所有消息作业消息
+     */
+    fun getMessageAll(map: HashMap<String, Any>) {
+        val type = RetrofitManager.service.getHomeworkMessageAll(map)
+        doRequest(type, object : Callback<MutableList<HomeworkMessageList.MessageBean>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<MutableList<HomeworkMessageList.MessageBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<HomeworkMessageList.MessageBean>>) {
+                if (tBaseResult.data!=null)
+                    view.onMessageAll(tBaseResult.data)
+            }
+        }, true)
+    }
+
     fun getPaperList(map: HashMap<String, Any>) {
         val type = RetrofitManager.service.getHomeworkPaperList(map)
         doRequest(type, object : Callback<HomeworkPaperList>(view,screen) {

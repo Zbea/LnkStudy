@@ -53,13 +53,13 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this@HomeworkMessageActivity,50f),
-            DP2PX.dip2px(this@HomeworkMessageActivity,30f),
+            DP2PX.dip2px(this@HomeworkMessageActivity,20f),
             DP2PX.dip2px(this@HomeworkMessageActivity,50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = HomeworkMessageAdapter(R.layout.item_homework_message_all,homeworkType?.messages!!,homeworkType?.createStatus!!).apply {
+        mAdapter = HomeworkMessageAdapter(R.layout.item_homework_message_type,homeworkType?.messages!!,homeworkType?.createStatus!!).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
@@ -118,7 +118,6 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
-                        showToast("下载完成")
                         hideLoading()
                         //创建作业卷目录
                         val paper = HomeworkPaperBean().apply {

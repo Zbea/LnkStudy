@@ -136,7 +136,7 @@ public class HomeworkTypeDaoManager {
     public List<HomeworkTypeBean> queryAllByCourse(String course,int page, int pageSize) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         return dao.queryBuilder().where(whereUser,whereCondition)
-                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.CreateStatus).orderDesc(HomeworkTypeBeanDao.Properties.AutoState).orderAsc(HomeworkTypeBeanDao.Properties.Date)
+                .offset((page-1)*pageSize).limit(pageSize).orderDesc(HomeworkTypeBeanDao.Properties.CreateStatus).orderDesc(HomeworkTypeBeanDao.Properties.AutoState).orderDesc(HomeworkTypeBeanDao.Properties.State).orderAsc(HomeworkTypeBeanDao.Properties.Date)
                 .build().list();
     }
 

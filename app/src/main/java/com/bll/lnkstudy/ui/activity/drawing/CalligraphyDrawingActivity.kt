@@ -96,6 +96,7 @@ class CalligraphyDrawingActivity : BaseDrawingActivity() {
                 list.add(itemList)
             }
         }
+        list.reverse()
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (page!=pageNumber){

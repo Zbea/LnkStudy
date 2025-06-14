@@ -32,6 +32,7 @@ import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
+import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
@@ -59,6 +60,7 @@ import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
 import kotlinx.android.synthetic.main.fragment_main_left.tv_screenshot
 import kotlinx.android.synthetic.main.fragment_main_left.v_down
 import kotlinx.android.synthetic.main.fragment_main_left.v_up
+import org.greenrobot.eventbus.EventBus
 import java.util.Random
 
 
@@ -170,6 +172,14 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
         if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
 
+            //特殊情况，清理作业本以及考试卷
+            if (AppUtils.getVersionCode(requireActivity())==18){
+                if (!SPUtil.getBoolean("clearHomework")){
+                    EventBus.getDefault().post(Constants.CLEAR_HOMEWORK_EVENT)
+                    SPUtil.putBoolean("clearHomework",true)
+                }
+            }
+
             val map=HashMap<String,Any>()
             map["size"]=7
             mHomeworkNoticePresenter.getHomeworkNotice(map)
@@ -207,15 +217,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
 //            }
 //        }
         tv_date_today.text = DateUtils.longToStringWeek(nowDate)
-
-//        val path = FileAddress().getPathDate(DateUtils.longToStringCalender(nowDate)) + "/draw.png"
-//        if (File(path).exists()) {
-////            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
-//            val myBitmap = BitmapFactory.decodeFile(path)
-//            iv_date.setImageBitmap(myBitmap)
-//        } else {
-//            iv_date.setImageResource(0)
-//        }
     }
 
     /**

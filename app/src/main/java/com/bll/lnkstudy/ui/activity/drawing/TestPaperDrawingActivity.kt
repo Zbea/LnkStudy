@@ -75,6 +75,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             itemList.page=papers.indexOf(item)
             list.add(itemList)
         }
+        list.reverse()
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (currentPosition!=pageNumber){

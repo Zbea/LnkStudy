@@ -152,10 +152,10 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         iv_btn.setOnClickListener {
             CommonDialog(this,screenPos).setContent("确定提交考卷？").builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
                     override fun ok() {
-                        commit()
+                        Handler().postDelayed({
+                            commit()
+                        },500)
                     }
                 })
         }
@@ -265,7 +265,9 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.EXAM_TIME_EVENT){
-            commit()
+            Handler().postDelayed({
+                commit()
+            },500)
         }
     }
 

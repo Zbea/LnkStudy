@@ -84,31 +84,16 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     }
 
     override fun onPageUp() {
-        if (isExpand) {
-            if (page > 0) {
-                page -= 2
-                onContent()
-            }
-        } else {
-            if (page > 0) {
-                page -= 1
-                onContent()
-            }
+        if (page > 0) {
+            page -= if(isExpand)2 else 1
+            onContent()
         }
     }
 
     override fun onPageDown() {
-        if (isExpand){
-            if (page<pageCount-1){
-                page+=2
-                onContent()
-            }
-        }
-        else{
-            if (page<pageCount-1){
-                page+=1
-                onContent()
-            }
+        if (page<pageCount-1){
+            page+=if(isExpand)2 else 1
+            onContent()
         }
     }
 

@@ -108,13 +108,13 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         iv_page_up?.setOnClickListener {
             Handler().postDelayed({
                 onPageUp()
-            },if (isDrawingSave)500 else 0)
+            },if (isDrawingSave)600 else 0)
         }
 
         iv_page_down?.setOnClickListener {
             Handler().postDelayed({
                 onPageDown()
-            },if (isDrawingSave)500 else 0)
+            },if (isDrawingSave)600 else 0)
         }
 
         iv_catalog?.setOnClickListener {
@@ -532,6 +532,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     fun setContentImageClear(){
         v_content_a?.setImageResource(0)
         v_content_b?.setImageResource(0)
+        v_content_a?.setBackgroundResource(0)
+        v_content_b?.setBackgroundResource(0)
         tv_page_total.text=""
         tv_page_total_a.text=""
         tv_page.text=""

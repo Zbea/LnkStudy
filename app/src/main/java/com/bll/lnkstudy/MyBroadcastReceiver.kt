@@ -12,8 +12,10 @@ import com.bll.lnkstudy.manager.DataUpdateDaoManager
 import com.bll.lnkstudy.ui.activity.SearchActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.AppUtils
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 
 
 open class MyBroadcastReceiver : BroadcastReceiver() {
@@ -91,6 +93,8 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 Log.d(Constants.DEBUG,"刷新应用列表")
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
                 if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
+                    //安装完成后删除
+                    FileUtils.deleteFile(File(FileAddress().getLauncherPath()))
                     // 应用安装完成后重启
                     AppUtils.reOpenApk(context)
                 }

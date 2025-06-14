@@ -8,8 +8,9 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_50"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_gravity="center_vertical"
         android:text="字迹工整"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_26" />
@@ -18,7 +19,6 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
         />
 
 </LinearLayout>

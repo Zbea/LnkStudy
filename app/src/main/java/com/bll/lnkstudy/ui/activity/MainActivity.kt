@@ -125,11 +125,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
         registerReceiver(myBroadcastReceiver,intentFilter)
 
-        val isTips=SPUtil.getBoolean("SpecificationTips")
-        if (!isTips){
-            showView(ll_tips)
-        }
-
         mainLeftFragment = MainLeftFragment()
         bookcaseFragment = BookcaseFragment()
         textbookFragment = TextbookFragment()
@@ -193,6 +188,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             customStartActivity(Intent(this, ClassGroupActivity::class.java))
         }
 
+        val isTips=SPUtil.getBoolean("SpecificationTips")
+        if (!isTips){
+            showView(ll_tips)
+        }
+
         ll_tips.setOnClickListener {
             disMissView(ll_tips)
             SPUtil.putBoolean("SpecificationTips",true)
@@ -247,6 +247,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         val path = FileAddress().getPathScreen("未分类")
         if (!File(path).exists()) {
             FileUtils.mkdirs(path)
+        }
+
+        val targetFileStr = FileAddress().getLauncherPath()
+        if (FileUtils.isExist(targetFileStr)){
+            FileUtils.deleteFile(File(targetFileStr))
         }
     }
 

@@ -455,10 +455,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             resId = R.mipmap.icon_setting_delete
         })
         beans.add(ItemList().apply {
-            name = "置顶"
-            resId = R.mipmap.icon_setting_top
-        })
-        beans.add(ItemList().apply {
             name = "重命名"
             resId = R.mipmap.icon_setting_edit
         })
@@ -468,18 +464,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     0 -> {
                         deleteHomework()
                     }
-                    1 -> {
-                        val items = HomeworkTypeDaoManager.getInstance().queryAllByLocal(mCourse)
-                        if (items.size > 1) {
-                            item.date = items[0].date - 1000
-                            HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                            //修改增量更新
-                            DataUpdateManager.editDataUpdate(2, item.typeId, 1, item.typeId, Gson().toJson(item))
-                            pageIndex = 1
-                            fetchData()
-                        }
-                    }
-                    2 -> {
+                    1-> {
                         InputContentDialog(requireActivity(), 2, item.name).builder().setOnDialogClickListener {
                             editHomeworkTypeName(item, it)
                             mAdapter?.notifyItemChanged(longClickPosition)
@@ -638,13 +623,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         mPresenter.downloadCompleteShare(item.id.toInt())
-                        for (typeBean in homeworkTypes){
-                            if (typeBean.typeId==item.typeId){
-                                typeBean.isShare=true
-                                showLog(homeworkTypes.indexOf(typeBean).toString())
-                                mAdapter?.notifyItemChanged(homeworkTypes.indexOf(typeBean))
-                            }
-                        }
+                        refreshView(item.typeId,3)
                         HomeworkShareDaoManager.getInstance().insertOrReplace(item)
                         //创建增量数据
                         DataUpdateManager.createDataUpdateState(2, item.id.toInt(), 2, item.typeId, 1, Gson().toJson(item), pathStr)
@@ -1040,6 +1019,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                             if (item.sendStatus==2){
                                 localPaper.state = 2
                                 localPaper.score = item.score
+                                localPaper.correctMode = item.questionType
                                 localPaper.correctJson = item.question
                                 localPaper.answerUrl = item.answerUrl
                                 HomeworkPaperDaoManager.getInstance().insertOrReplace(localPaper)
@@ -1061,11 +1041,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     private fun refreshView(typeId:Int,state:Int){
         for (item in homeworkTypes){
             if (item.typeId==typeId){
-                if (state==2){
-                    item.isCorrect=true
-                }
-                else{
-                    item.isMessage=true
+                when(state){
+                    1->{
+                        item.isMessage=true
+                    }
+                    2->{
+                        item.isCorrect=true
+                    }
+                    3->{
+                        item.isShare=true
+                    }
                 }
                 mAdapter?.notifyItemChanged(homeworkTypes.indexOf(item))
             }

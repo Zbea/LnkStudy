@@ -86,6 +86,20 @@
             android:background="@drawable/click_btn_line_black_5dp"
             />
 
+        <TextView
+            android:id="@+id/tv_btn_1"
+            android:layout_width="@dimen/navigation_type_width"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:visibility="gone"
+            android:background="@drawable/click_btn_line_black_5dp"
+            />
+
         <ImageView
             android:id="@+id/iv_manager"
             android:layout_width="wrap_content"

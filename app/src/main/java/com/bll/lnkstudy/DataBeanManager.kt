@@ -44,7 +44,7 @@ object DataBeanManager {
         "军事战略", "科学技术", "运动才艺"
     )
 
-    val autoHomeworkTypes= mutableListOf("阅读作业本","练字作业本","朗读作业本","作文作业本","课堂作业卷","课外作业卷")
+    val autoHomeworkTypes= mutableListOf("阅读作业本","练字作业本","朗读作业本","作文作业本","课堂作业卷","课外作业卷","预习作业本")
     val autoTestPaperTypes= mutableListOf("学校考试卷","单元测验卷","阶段测验卷")
 
 //    val bookType = arrayOf(
@@ -486,19 +486,43 @@ object DataBeanManager {
                     "阅读作业本"->{
                         R.mipmap.icon_homework_content_yw_ydb
                     }
+                    "预习作业本"->{
+                        R.mipmap.icon_homework_content_yw_yxb
+                    }
                     else->{
                         getYwYwb(grade)
                     }
                 }
             }
             "数学" -> {
-                resId=getSx(grade)
+                resId=when(name) {
+                    "预习作业本" -> {
+                        R.mipmap.icon_homework_content_other_yxb
+                    }
+                    else -> {
+                        getSx(grade)
+                    }
+                }
             }
             "英语" -> {
-                resId=getYy(grade)
+                resId=when(name) {
+                    "预习作业本" -> {
+                        R.mipmap.icon_homework_content_yy_yxb
+                    }
+                    else -> {
+                        getYy(grade)
+                    }
+                }
             }
             else -> {
-                resId=other(grade)
+                resId=when(name) {
+                    "预习作业本" -> {
+                        R.mipmap.icon_homework_content_other_yxb
+                    }
+                    else -> {
+                        other(grade)
+                    }
+                }
             }
         }
 
@@ -919,6 +943,7 @@ object DataBeanManager {
         return list
     }
 
+
     private fun getResultChildItems():MutableList<ResultStandardItem.ResultChildItem>{
         val items= mutableListOf<ResultStandardItem.ResultChildItem>()
         items.add(ResultStandardItem.ResultChildItem().apply {
@@ -1006,18 +1031,17 @@ object DataBeanManager {
      */
     private fun getResultStandardItem6s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         items.add(ResultStandardItem().apply {
             title="比例匀称"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="字迹工整"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="卷面整洁"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -1027,18 +1051,17 @@ object DataBeanManager {
      */
     private fun getResultStandardItem3s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         items.add(ResultStandardItem().apply {
             title="语言标准"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="词汇语法"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="流畅程度"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -1048,18 +1071,17 @@ object DataBeanManager {
      */
     private fun getResultStandardItem8s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         items.add(ResultStandardItem().apply {
             title="词句摘抄"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="阅读感想"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="卷面整洁"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -1069,22 +1091,21 @@ object DataBeanManager {
      */
     private fun getResultStandardItem2s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         items.add(ResultStandardItem().apply {
             title="思想内容"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="语言文字"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="层次结构"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="卷面书写"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -1093,11 +1114,10 @@ object DataBeanManager {
      * 手写
      */
     private fun getResultStandardItem0s(correctModule:Int):MutableList<ResultStandardItem>{
-        val childItems=if (correctModule==1) getResultChildItems() else getResultChildHighItems()
         val items= mutableListOf<ResultStandardItem>()
         items.add(ResultStandardItem().apply {
             title="标准评分"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -1107,50 +1127,50 @@ object DataBeanManager {
      * @param score
      * @return
      */
-     fun getResultStandardStr(score: Double,questionType:Int): String {
-         if (questionType==1){
-             return when (score) {
-                 1.0 -> {
-                     "A"
-                 }
-                 2.0 -> {
-                     "B"
-                 }
-                 else -> {
-                     "C"
-                 }
-             }
-         }
+    fun getResultStandardStr(score: Double,questionType:Int): String {
+        if (questionType==2){
+            return when (score) {
+                1.0 -> {
+                    "A+"
+                }
+                2.0 -> {
+                    "A "
+                }
+                3.0 -> {
+                    "A-"
+                }
+                4.0 -> {
+                    "B+"
+                }
+                5.0 -> {
+                    "B "
+                }
+                6.0 -> {
+                    "B-"
+                }
+                7.0 -> {
+                    "C+"
+                }
+                8.0 -> {
+                    "C "
+                }
+                else -> {
+                    "C-"
+                }
+            }
+        }
         else{
-             return when (score) {
-                 1.0 -> {
-                     "A+"
-                 }
-                 2.0 -> {
-                     "A "
-                 }
-                 3.0 -> {
-                     "A-"
-                 }
-                 4.0 -> {
-                     "B+"
-                 }
-                 5.0 -> {
-                     "B "
-                 }
-                 6.0 -> {
-                     "B-"
-                 }
-                 7.0 -> {
-                     "C+"
-                 }
-                 8.0 -> {
-                     "C "
-                 }
-                 else -> {
-                     "C-"
-                 }
-             }
+            return when (score) {
+                1.0 -> {
+                    "A"
+                }
+                2.0 -> {
+                    "B"
+                }
+                else -> {
+                    "C"
+                }
+            }
         }
     }
 

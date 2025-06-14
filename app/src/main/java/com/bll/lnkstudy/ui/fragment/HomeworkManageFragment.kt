@@ -10,8 +10,6 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.dialog.HomeworkCommitDetailsDialog
-import com.bll.lnkstudy.dialog.PopupClick
 import com.bll.lnkstudy.manager.HomeworkBookCorrectDaoManager
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkContentDaoManager
@@ -21,32 +19,24 @@ import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
-import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkstudy.ui.activity.CourseManagerActivity
+import com.bll.lnkstudy.ui.activity.HomeworkMessageAllActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.common_fragment_title.tv_btn
+import kotlinx.android.synthetic.main.common_fragment_title.tv_btn_1
 import java.io.File
 
 class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
-    private val mPresenter = HomeworkPresenter(this)
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
     private var currentCourses= mutableListOf<ItemTypeBean>()
     private var fragments= mutableListOf<HomeworkFragment>()
-    private var popWindowBeans = mutableListOf<PopupBean>()
     private val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
     private val mainCourse= mutableListOf("语文","数学","英语")
-
-    override fun onCommitDetails(list: HomeworkCommitMessageList) {
-        HomeworkCommitDetailsDialog(requireActivity(),list.list).builder()
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework_manage
@@ -54,29 +44,18 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[3])
-        showView(iv_manager)
+        showView(tv_btn,tv_btn_1)
 
-        popWindowBeans.add(PopupBean(0, getString(R.string.homework_commit_details_str) ))
-        popWindowBeans.add(PopupBean(1,"科目排序"))
-        popWindowBeans.add(PopupBean(2, getString(R.string.homework_create_str) ))
+        tv_btn.text="未完成作业"
+        tv_btn.setOnClickListener {
+            customStartActivity(Intent(requireActivity(),HomeworkMessageAllActivity::class.java))
+        }
 
-        iv_manager.setOnClickListener {
-            PopupClick(requireActivity(), popWindowBeans, iv_manager, 5).builder()
-                .setOnSelectListener { item ->
-                    when (item.id) {
-                        0 -> {
-                            mPresenter.onCommitMessage()
-                        }
-                        1->{
-                            customStartActivity(Intent(requireActivity(),CourseManagerActivity::class.java))
-                        }
-                        2 -> {
-                            if (currentCourses.isNotEmpty() && mUser?.grade!! >0) {
-                                fragments[mCoursePos].addContentModule()
-                            }
-                        }
-                    }
-                }
+        tv_btn_1.text="创建作业本"
+        tv_btn_1.setOnClickListener {
+            if (currentCourses.isNotEmpty() && grade >0) {
+                fragments[mCoursePos].addContentModule()
+            }
         }
 
         initTab()
@@ -382,6 +361,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         clearHomeworkType()
     }
 
+    /**
+     * 重置作业本 （清除以及重新加载）
+     */
     private fun clearHomeworkType(){
         setClearHomework()
         setLocalHomeworkType()
@@ -411,12 +393,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         FileUtils.deleteHomework(File(FileAddress().getPathScreen("未分类")).parent)
 
         DataUpdateManager.clearDataUpdate(2)
-        DataUpdateManager.clearDataUpdate(7)
 
         val map=HashMap<String,Any>()
         map["type"]=2
-        mDataUploadPresenter.onDeleteData(map)
-        map["type"]=7
         mDataUploadPresenter.onDeleteData(map)
     }
 
@@ -424,6 +403,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
                 initTab()
+            }
+            Constants.CLEAR_HOMEWORK_EVENT->{
+                clearHomeworkType()
             }
         }
     }

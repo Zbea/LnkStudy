@@ -171,6 +171,17 @@ class DateActivity:BaseAppCompatActivity() {
         }
 
         mAdapter?.setNewData(dateBeans)
+
+        Thread {
+            runOnUiThread {
+                for (date in dateBeans) {
+                    if (date.time != 0L) {
+                        date.lunar = LunarSolarConverter.SolarToLunar(date.solar)
+                    }
+                }
+                mAdapter?.notifyDataSetChanged()
+            }
+        }.start()
     }
 
     private fun getDateBean(year:Int,month:Int,day:Int): DateBean {
@@ -187,7 +198,6 @@ class DateActivity:BaseAppCompatActivity() {
         dateBean.isNow=day==DateUtils.getDay()&&DateUtils.getMonth()==month
         dateBean.week=DateUtils.getWeek(dateBean.time)
         dateBean.solar= solar
-        dateBean.lunar= LunarSolarConverter.SolarToLunar(solar)
 
         return dateBean
     }

@@ -191,7 +191,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 disExam()
             }
         }
-        onCheckUpdate()
         fetchData()
     }
 
@@ -404,6 +403,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onRefreshData() {
+        onCheckUpdate()
         lazyLoad()
     }
 

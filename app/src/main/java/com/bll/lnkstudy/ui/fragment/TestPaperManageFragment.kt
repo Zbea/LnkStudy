@@ -176,6 +176,9 @@ class TestPaperManageFragment: BaseMainFragment() {
         clearPaperType()
     }
 
+    /**
+     * 重置测试卷（删除以及重新加载）
+     */
     private fun clearPaperType(){
         setClearExamPaper()
         setLocalPaperType()
@@ -201,6 +204,9 @@ class TestPaperManageFragment: BaseMainFragment() {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
                 initTab()
+            }
+            Constants.CLEAR_HOMEWORK_EVENT->{
+                clearPaperType()
             }
         }
     }

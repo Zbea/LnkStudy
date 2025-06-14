@@ -2,9 +2,12 @@ package com.bll.lnkstudy.mvp.model;
 
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ItemList implements Serializable,Comparable<ItemList> {
 
@@ -44,4 +47,20 @@ public class ItemList implements Serializable,Comparable<ItemList> {
     public int compareTo(ItemList itemList) {
         return this.id-itemList.id;
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ItemList item = (ItemList) obj;
+        return Objects.equals(desc, item.desc) && type==item.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(desc, type);
+    }
+
+
 }

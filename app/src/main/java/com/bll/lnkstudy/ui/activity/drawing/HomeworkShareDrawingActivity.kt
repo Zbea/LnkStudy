@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
@@ -49,8 +48,7 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
 
         papers=HomeworkShareDaoManager.getInstance().queryAll(homeworkType?.typeId!!)
         if(papers.size>0){
-            if (currentPosition == DEFAULT_PAGE)
-                currentPosition=papers.size-1
+            currentPosition=papers.size-1
             onContent()
         }
         else{
@@ -65,8 +63,8 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
 
         iv_score.setOnClickListener {
             if (paper?.type==1&&paper?.subType!=1){
-                val items=DataBeanManager.getResultStandardItems(paper!!.subType,paper!!.commonName,1).stream().collect(Collectors.toList())
-                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,1,paper!!.question,items).builder()
+                val items=DataBeanManager.getResultStandardItems(paper!!.subType,paper!!.commonName,paper!!.questionType).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,if (homeworkType!!.state==10)10 else paper!!.questionType,paper!!.question,items).builder()
             }
             else{
                 val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
@@ -83,6 +81,7 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
             itemList.page=papers.indexOf(item)
             list.add(itemList)
         }
+        list.reverse()
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (currentPosition!=pageNumber){

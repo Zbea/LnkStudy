@@ -1,9 +1,9 @@
 package com.bll.lnkstudy.ui.activity.drawing
 
-import android.graphics.BitmapFactory
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFileDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -31,6 +31,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         pageIndex = intent.getIntExtra("pageIndex", 0)
         path= intent.getStringExtra("pagePath").toString()
         pageCount=FileUtils.getAscFiles(path).size
+
         if (pageIndex==Constants.DEFAULT_PAGE){
             pageIndex=pageCount-1
         }
@@ -65,38 +66,16 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     }
 
     override fun onPageUp() {
-        if (isExpand) {
-            if (pageIndex > 1) {
-                pageIndex -= 2
-                onContent()
-            } else {
-                pageIndex = 1
-                onContent()
-            }
-        } else {
-            if (pageIndex > 0) {
-                pageIndex -= 1
-                onContent()
-            }
+        if (pageIndex > 0) {
+            pageIndex -= if(isExpand)2 else 1
+            onContent()
         }
     }
 
     override fun onPageDown() {
-        if (isExpand){
-            if (pageIndex<pageCount-2){
-                pageIndex+=2
-                onContent()
-            }
-            else if (pageIndex==pageCount-2){
-                pageIndex=pageCount-1
-                onContent()
-            }
-        }
-        else{
-            if (pageIndex<pageCount-1){
-                pageIndex+=1
-                onContent()
-            }
+        if (pageIndex<pageCount-1){
+            pageIndex+=if(isExpand)2 else 1
+            onContent()
         }
     }
 
@@ -116,29 +95,35 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     override fun onContent() {
         if (pageCount==0)
             return
+        if (pageIndex<0)
+            pageIndex=0
         if (pageIndex>=pageCount){
             pageIndex=pageCount-1
         }
-        if (pageIndex==0&&isExpand){
-            pageIndex=1
-        }
+        if (pageIndex>pageCount-2&&isExpand)
+            pageIndex=pageCount-2
 
         tv_page_total.text="$pageCount"
         tv_page_total_a.text="$pageCount"
 
-        tv_page.text = "${pageIndex+1}"
-        loadPicture(pageIndex, elik_b!!, v_content_b!!)
-        if (isExpand) {
-            loadPicture(pageIndex-1, elik_a!!, v_content_a!!)
-            if (screenPos==Constants.SCREEN_RIGHT){
-                tv_page_a.text = "$pageIndex"
+        if (isExpand){
+            val page_up=pageIndex+1//上一页页码
+            loadPicture(pageIndex, elik_a!!, v_content_a!!)
+            loadPicture(page_up, elik_b!!, v_content_b!!)
+
+            if (screenPos== Constants.SCREEN_RIGHT){
+                tv_page_a.text = "${pageIndex+1}"
+                tv_page.text="${page_up+1}"
             }
             else{
-                tv_page.text = "$pageIndex"
-                tv_page_a.text = "${pageIndex+1}"
+                tv_page.text = "${pageIndex+1}"
+                tv_page_a.text="${page_up+1}"
             }
         }
-
+        else{
+            tv_page.text = "${pageIndex+1}"
+            loadPicture(pageIndex, elik_b!!, v_content_b!!)
+        }
     }
 
     //加载图片
@@ -146,11 +131,8 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         val files = FileUtils.getAscFiles(path)
         if (index<files.size){
             val showFile=files[index]
-            if (showFile != null) {
-                val myBitmap= BitmapFactory.decodeFile(showFile.absolutePath)
-                view.setImageBitmap(myBitmap)
-                elik.setLoadFilePath(getDrawingPath(showFile), true)
-            }
+            MethodManager.setImageFile(showFile.absolutePath,view)
+            elik.setLoadFilePath(getDrawingPath(showFile), true)
         }
     }
 

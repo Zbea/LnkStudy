@@ -313,6 +313,12 @@ interface APIService{
     fun getHomeworkMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkMessageList>>>
 
     /**
+     * 获取作业本所有信息
+     */
+    @GET("student/task/listV3")
+    fun getHomeworkMessageAll(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<HomeworkMessageList.MessageBean>>>
+
+    /**
      * 作业卷下载完成后 通知后台
      */
     @POST("task/group/studentDownload")

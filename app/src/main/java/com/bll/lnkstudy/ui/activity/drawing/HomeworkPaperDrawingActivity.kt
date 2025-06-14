@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
@@ -177,7 +178,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                         }
                         override fun ok() {
                             showLoading()
-                            commit()
+                            Handler().postDelayed({
+                                commit()
+                            },500)
                         }
                     })
             }
@@ -197,8 +200,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
 
         iv_score.setOnClickListener {
             if (homeworkType?.state==7){
-                val items=DataBeanManager.getResultStandardItems(homeworkType!!.state,homeworkType!!.name,1).stream().collect(Collectors.toList())
-                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,1,paper!!.correctJson,items).builder()
+                val items=DataBeanManager.getResultStandardItems(homeworkType!!.state,homeworkType!!.name,paper!!.correctMode).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctMode,paper!!.correctJson,items).builder()
             }
             else{
                 val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
@@ -215,6 +218,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             itemList.page=papers.indexOf(item)
             list.add(itemList)
         }
+        list.reverse()
         CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (currentPosition!=pageNumber){
@@ -398,7 +402,8 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             }
             //修改当前paper状态
             paper?.state = 1
-            paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
+            if (paper!!.isSelfCorrect)
+                paper?.commitJson=Gson().toJson(homeworkCommitInfoItem)
             daoManager?.insertOrReplace(paper)
             refreshDataUpdate()
         }

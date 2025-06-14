@@ -219,8 +219,8 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         iv_score.setOnClickListener {
             val correctBean=HomeworkBookCorrectDaoManager.getInstance().queryCorrectBean(bookId,page)
             if (correctBean!=null&&correctBean.state==2){
-                val items=DataBeanManager.getResultStandardItems(4,"",1).stream().collect(Collectors.toList())
-                ResultStandardDetailsDialog(this,correctBean.homeworkTitle,correctBean.score,1,correctBean.correctJson,items).builder()
+                val items=DataBeanManager.getResultStandardItems(4,"",correctBean.correctMode).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,correctBean.homeworkTitle,correctBean.score,correctBean.correctMode,correctBean.correctJson,items).builder()
             }
         }
 
@@ -228,31 +228,16 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onPageUp() {
-        if (isExpand) {
-            if (page > 0) {
-                page -= 2
-                onContent()
-            }
-        } else {
-            if (page > 0) {
-                page -= 1
-                onContent()
-            }
+        if (page > 0) {
+            page -= if(isExpand)2 else 1
+            onContent()
         }
     }
 
     override fun onPageDown() {
-        if (isExpand){
-            if (page<pageCount-1){
-                page+=2
-                onContent()
-            }
-        }
-        else{
-            if (page<pageCount-1){
-                page+=1
-                onContent()
-            }
+        if (page<pageCount-1){
+            page+=if(isExpand)2 else 1
+            onContent()
         }
     }
 

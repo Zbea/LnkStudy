@@ -112,6 +112,7 @@ class Constants {
         const val SETTING_CLEAT_EVENT = "DataClear"
         const val PAINTING_RULE_IMAGE_SET_EVENT = "PaintingRuleImageSetEvent"//规矩图设置
         const val HOMEWORK_MESSAGE_COMMIT_EVENT = "HomeworkMessageCommitEvent"//作业消息提交成功
+        const val CLEAR_HOMEWORK_EVENT="ClearHomeworkEvent"//清除作业通知
 
         //定时任务标识
         const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新

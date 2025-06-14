@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_50"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
@@ -94,41 +94,41 @@
 
         <ImageView
             android:id="@+id/iv_change"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:src="@mipmap/icon_draw_screen"
-            android:padding="@dimen/dp_5"
+            android:padding="@dimen/dp_10"
             android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
             android:id="@+id/iv_top"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_marginStart="30dp"
             android:src="@mipmap/icon_setting_top"
-            android:padding="@dimen/dp_5"
+            android:padding="@dimen/dp_10"
             android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
             android:id="@+id/iv_clear"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_marginStart="@dimen/dp_30"
             android:src="@mipmap/icon_draw_erasure"
-            android:padding="@dimen/dp_5"
+            android:padding="@dimen/dp_10"
             android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="60dp"
             android:src="@mipmap/icon_close"
-            android:padding="@dimen/dp_5"
+            android:padding="13dp"
             android:background="@drawable/click_btn_transparent_line_black"
             />
 

@@ -59,7 +59,7 @@ class HomeworkNoticeListActivity:BaseAppCompatActivity(),IContractView.IHomework
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this@HomeworkNoticeListActivity,50f),
-            DP2PX.dip2px(this@HomeworkNoticeListActivity,30f),
+            DP2PX.dip2px(this@HomeworkNoticeListActivity,20f),
             DP2PX.dip2px(this@HomeworkNoticeListActivity,50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
