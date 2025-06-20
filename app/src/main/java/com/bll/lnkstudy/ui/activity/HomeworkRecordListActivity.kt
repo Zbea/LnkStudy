@@ -53,7 +53,7 @@ class HomeworkRecordListActivity : BaseAppCompatActivity(){
         setImageManager(R.mipmap.icon_add)
 
         iv_manager.setOnClickListener {
-            MethodManager.gotoHomeworkRecord(this,homeworkType,Constants.DEFAULT_PAGE)
+            MethodManager.gotoHomeworkRecord(this,homeworkType,null)
         }
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)

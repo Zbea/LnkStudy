@@ -23,7 +23,6 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.model.painting.PaintingList
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean
@@ -358,12 +357,12 @@ interface APIService{
      * 消息列表
      */
     @POST("student/job/listByIds")
-    fun getParentMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, ParentHomeworkMessageList>>>
+    fun getParentMessage(@Body requestBody: RequestBody): Observable<BaseResult<Map<String, HomeworkMessageList>>>
     /**
      * 家长作业卷下发
      */
     @POST("student/job/downloadByIds")
-    fun getParentReel(@Body requestBody: RequestBody): Observable<BaseResult<ParentHomeworkMessageList>>
+    fun getParentReel(@Body requestBody: RequestBody): Observable<BaseResult<HomeworkMessageList>>
     /**
      * 作业卷下载完成后 通知后台
      */

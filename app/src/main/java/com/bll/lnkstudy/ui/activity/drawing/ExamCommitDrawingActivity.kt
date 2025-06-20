@@ -136,6 +136,9 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         disMissView(iv_catalog,iv_expand,iv_tool)
         setViewElikUnable(iv_geometry)
 
+        v_content_a?.scaleType=ImageView.ScaleType.CENTER_INSIDE
+        v_content_b?.scaleType=ImageView.ScaleType.CENTER_INSIDE
+
         if (grade>4){
             showView(iv_draft)
             if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){

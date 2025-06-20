@@ -52,6 +52,10 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
 
     override fun initView() {
         disMissView(iv_btn)
+
+        v_content_a?.scaleType=ImageView.ScaleType.CENTER_INSIDE
+        v_content_b?.scaleType=ImageView.ScaleType.CENTER_INSIDE
+
         if (papers.size>0){
             if (currentPosition==DEFAULT_PAGE)
                 currentPosition=papers.size-1

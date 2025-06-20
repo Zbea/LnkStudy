@@ -2,16 +2,14 @@ package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkMessageAdapter(layoutResId: Int, data: MutableList<*>, private val createStatus: Int) : BaseQuickAdapter<Any, BaseViewHolder>(layoutResId, data) {
+class HomeworkMessageAdapter(layoutResId: Int, data: MutableList<HomeworkMessageList.MessageBean>, private val createStatus: Int) : BaseQuickAdapter<HomeworkMessageList.MessageBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, ite: Any) {
+    override fun convert(helper: BaseViewHolder, item: HomeworkMessageList.MessageBean) {
         if (createStatus==2){
-            val item=ite as HomeworkMessageList.MessageBean
             helper.setText(R.id.tv_title,item.title)
             helper.setText(R.id.tv_assign_date, "布置时间："+DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
             if (item.submitState==0){
@@ -25,7 +23,6 @@ class HomeworkMessageAdapter(layoutResId: Int, data: MutableList<*>, private val
             }
         }
         else{
-            val item=ite as ParentHomeworkMessageList.ParentMessageBean
             helper.setText(R.id.tv_title,item.title)
             helper.setGone(R.id.tv_standardTime,false)
             helper.setGone(R.id.tv_correct,false)

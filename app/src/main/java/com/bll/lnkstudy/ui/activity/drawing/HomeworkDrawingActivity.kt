@@ -19,9 +19,7 @@ import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
 import com.bll.lnkstudy.mvp.model.homework.HomeworkContentBean
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList.MessageBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList.ParentMessageBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
@@ -118,8 +116,8 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         initChangeScreenData()
 
         homeworkType = MethodManager.getHomeworkTypeBundle(intent)
-        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
-        isHomework=index>=0
+        val item = MethodManager.getHomeworkMessageBundle(intent)
+        isHomework=item!=null
         isDrawingSave=isHomework
 
         page = intent.getIntExtra("page", DEFAULT_PAGE)
@@ -129,7 +127,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         if (isHomework){
             when (homeworkType?.createStatus) {
                 2 -> {
-                    val item=homeworkType!!.messages[index] as MessageBean
                     homeworkCommitInfoItem=HomeworkCommitInfoItem().apply {
                         homeworkTypeId=homeworkType?.typeId!!
                         state=homeworkType?.state!!
@@ -146,14 +143,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     }
                 }
                 1 -> {
-                    val item =homeworkType!!.messages[index]  as ParentMessageBean
                     homeworkCommitInfoItem=HomeworkCommitInfoItem().apply {
                         homeworkTypeId=homeworkType?.typeId!!
                         state=homeworkType?.state!!
-                        messageId = item.contendId
+                        messageId = item.id
                         title = item.title
-                        typeId=item.typeId
-                        standardTime=item.minute
+                        typeId=item.parentHomeworkId
                     }
                 }
             }
@@ -395,7 +390,7 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
         }
 
-        if (homeworkContent?.state==2&&homeworkContent?.correctJson!!.isNotEmpty()){
+        if (homeworkContent?.state==2&&!homeworkContent?.correctJson.isNullOrEmpty()){
             showView(iv_score)
         }
         else{

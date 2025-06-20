@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -83,43 +84,6 @@ public class FileUtils {
     }
 
     /**
-     * 将str转换为inputStream
-     *
-     * @param str
-     * @return
-     */
-    public static InputStream str2InputStream(String str) {
-        ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
-        return is;
-    }
-
-    /**
-     * 将inputStream转换为str
-     *
-     * @param is
-     * @return
-     * @throws IOException
-     */
-    public static String inputStream2Str(InputStream is) throws IOException {
-        StringBuffer sb;
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(is));
-
-            sb = new StringBuffer();
-
-            String data;
-            while ((data = br.readLine()) != null) {
-                sb.append(data);
-            }
-        } finally {
-            br.close();
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * 将file转换为inputStream
      *
      * @param file
@@ -130,27 +94,6 @@ public class FileUtils {
         return new FileInputStream(file);
     }
 
-    /**
-     * 将inputStream转化为file
-     *
-     * @param is
-     * @param file 要输出的文件目录
-     */
-    public static void inputStream2File(InputStream is, File file) throws IOException {
-        OutputStream os = null;
-        try {
-            os = new FileOutputStream(file);
-            int len = 0;
-            byte[] buffer = new byte[8192];
-
-            while ((len = is.read(buffer)) != -1) {
-                os.write(buffer, 0, len);
-            }
-        } finally {
-            os.close();
-            is.close();
-        }
-    }
 
     /**
      * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）
@@ -280,7 +223,7 @@ public class FileUtils {
         if (files==null){
             return;
         }
-        files.sort(Comparator.naturalOrder());
+        files.sort(Comparator.comparingLong(File::lastModified));
     }
 
     /**
@@ -291,7 +234,7 @@ public class FileUtils {
         if (files==null){
             return;
         }
-        files.sort(Comparator.reverseOrder());
+        files.sort((f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
     }
 
     /**
@@ -314,12 +257,10 @@ public class FileUtils {
      */
     public static void deleteFile(String path,String name){
         List<File> files= getAscFiles(path);
-        if (files!=null){
-            for (int i = 0; i < files.size(); i++) {
-                File file=files.get(i);
-                if (getFileName(file.getName()).equals(name)){
-                    deleteFile(file);
-                }
+        for (int i = 0; i < files.size(); i++) {
+            File file = files.get(i);
+            if (getFileName(file.getName()).equals(name)) {
+                deleteFile(file);
             }
         }
     }

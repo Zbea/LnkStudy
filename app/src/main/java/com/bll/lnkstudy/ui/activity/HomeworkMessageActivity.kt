@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
@@ -65,14 +64,14 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 messageIndex=position
+                val messageBean=homeworkType?.messages?.get(position)
                 when(homeworkType?.state){
                     3->{
-                        MethodManager.gotoHomeworkRecord(this@HomeworkMessageActivity,homeworkType,messageIndex)
+                        MethodManager.gotoHomeworkRecord(this@HomeworkMessageActivity,homeworkType,messageBean)
                     }
                     1,7->{
-                        val messageBean=mAdapter?.data!![position] as HomeworkMessageList.MessageBean
-                        if (HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean.contendId)!=null){
-                            MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageIndex)
+                        if (HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean?.contendId!!)!=null){
+                            MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageBean)
                         }
                         else{
                             showLoading()
@@ -81,7 +80,7 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                     }
                     4->{
                         if (HomeworkBookDaoManager.getInstance().isExist(homeworkType?.bookId!!)) {
-                            MethodManager.gotoHomeworkBookDetails(this@HomeworkMessageActivity, homeworkType,messageIndex)
+                            MethodManager.gotoHomeworkBookDetails(this@HomeworkMessageActivity, homeworkType,messageBean)
                         } else {
                             //下载教辅
                             val intent = Intent(this@HomeworkMessageActivity, HomeworkBookStoreActivity::class.java)
@@ -90,7 +89,7 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                         }
                     }
                     else->{
-                        MethodManager.gotoHomeworkDrawing(this@HomeworkMessageActivity,homeworkType!!,Constants.DEFAULT_PAGE,position)
+                        MethodManager.gotoHomeworkDrawing(this@HomeworkMessageActivity,homeworkType!!,Constants.DEFAULT_PAGE,messageBean)
                     }
                 }
 
@@ -143,7 +142,7 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
                         //创建增量数据
                         DataUpdateManager.createDataUpdateState(2, item.contendId, 2, homeworkTypeId, homeworkType?.state!!, Gson().toJson(paper), pathStr)
 
-                        MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageIndex)
+                        MethodManager.gotoHomeworkReelDrawing(this@HomeworkMessageActivity,homeworkType,Constants.DEFAULT_PAGE,item)
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -154,9 +153,8 @@ class HomeworkMessageActivity:BaseAppCompatActivity() {
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == Constants.HOMEWORK_MESSAGE_COMMIT_EVENT) {
-            mAdapter?.remove(messageIndex)
-            DataBeanManager.homeworkMessages= mAdapter?.data!!
-            setResult(Constants.RESULT_10001, Intent())
+            if (messageIndex<mAdapter?.data!!.size)
+                mAdapter?.remove(messageIndex)
             if (mAdapter?.data.isNullOrEmpty())
                 finish()
         }

@@ -19,7 +19,6 @@ import com.bll.lnkstudy.dialog.ScoreDetailsDialog
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList.MessageBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
@@ -106,15 +105,14 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     override fun initData() {
         initChangeScreenData()
         homeworkType = MethodManager.getHomeworkTypeBundle(intent)
-        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
-        isHomework=index>=0
+        val item =  MethodManager.getHomeworkMessageBundle(intent)
+        isHomework=item!=null
         course=homeworkType?.course!!
         homeworkTypeId=homeworkType?.typeId!!
         currentPosition=intent.getIntExtra("page",DEFAULT_PAGE)
 
         daoManager= HomeworkPaperDaoManager.getInstance()
         if (isHomework){
-            val item=homeworkType!!.messages[index] as MessageBean
             homeworkCommitInfoItem=HomeworkCommitInfoItem().apply {
                 state=homeworkType?.state!!
                 messageId =item.contendId
@@ -149,6 +147,9 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun initView() {
+        v_content_a?.scaleType=ImageView.ScaleType.CENTER_INSIDE
+        v_content_b?.scaleType=ImageView.ScaleType.CENTER_INSIDE
+
         if (homeworkType?.isCloud!!||!isHomework){
             disMissView(iv_btn)
         }

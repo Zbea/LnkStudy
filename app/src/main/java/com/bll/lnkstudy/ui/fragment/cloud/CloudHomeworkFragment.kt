@@ -134,8 +134,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
                 }
             }
             else->{
-                if (!if (homeworkTypeBean.fromStatus==1) HomeworkTypeDaoManager.getInstance().isExistParentType(homeworkTypeBean.typeId,homeworkTypeBean.grade)
-                    else HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
+                if (!HomeworkTypeDaoManager.getInstance().isExistHomeworkType(homeworkTypeBean.typeId)){
                     download(homeworkTypeBean)
                 }
                 else{

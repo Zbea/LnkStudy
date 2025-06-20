@@ -6,6 +6,7 @@ import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.mvp.model.date.DateRemind
 import com.bll.lnkstudy.mvp.model.date.DateWeek
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.ResultStandardItem
 import com.bll.lnkstudy.utils.ToolUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
@@ -14,8 +15,7 @@ import java.util.*
 object DataBeanManager {
 
     var isRuleImage=false//是否设置规矩图
-
-    var homeworkMessages= mutableListOf<Any>()
+    var homeworkMessages= mutableListOf<HomeworkMessageList.MessageBean>()
 
      val listTitle = arrayOf(
         "首页","书架",

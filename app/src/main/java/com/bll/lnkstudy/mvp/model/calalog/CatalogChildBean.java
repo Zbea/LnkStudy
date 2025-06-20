@@ -11,12 +11,9 @@ public class CatalogChildBean implements Serializable, MultiItemEntity {
     public int parentPosition;
     public int pageNumber;
     public String picName;
-    public long endTime;
-    public String course;
-    public String commonType;
-    public int minute;
-    public int selfBatchStatus;
     public HomeworkMessageList.MessageBean messageBean;
+    public int position;
+    public boolean isLast;
 
     @Override
     public int getItemType() {

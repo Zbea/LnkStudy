@@ -109,23 +109,20 @@ class SearchActivity : BaseAppCompatActivity() {
                 finish()
             }
             2->{
-                var typeItem= HomeworkTypeDaoManager.getInstance().queryByTypeId(item.type)
-                if (item.createState==1){
-                    typeItem= HomeworkTypeDaoManager.getInstance().queryByParentTypeId(item.type,grade)
-                }
+                val typeItem= HomeworkTypeDaoManager.getInstance().queryByTypeId(item.type)
                 when(typeItem.state){
                     1,7->{
-                        MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page,Constants.DEFAULT_PAGE)
+                        MethodManager.gotoHomeworkReelDrawing(this,typeItem,item.page,null)
                     }
                     2,6->{
-                        MethodManager.gotoHomeworkDrawing(this, typeItem, item.page,Constants.DEFAULT_PAGE)
+                        MethodManager.gotoHomeworkDrawing(this, typeItem, item.page,null)
                     }
                     3->{
                         MethodManager.gotoHomeworkRecordList(this,typeItem)
                     }
                     4->{
                         val typeBean=HomeworkTypeDaoManager.getInstance().queryByBookId(item.type)
-                        MethodManager.gotoHomeworkBookDetails(this,typeBean,Constants.DEFAULT_PAGE)
+                        MethodManager.gotoHomeworkBookDetails(this,typeBean,null)
                     }
                     5->{
                         customStartActivity(

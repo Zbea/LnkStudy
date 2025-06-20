@@ -23,7 +23,6 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList;
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean;
 import com.bll.lnkstudy.mvp.model.painting.PaintingList;
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean;
@@ -165,9 +164,9 @@ public interface IContractView {
         default void onTypeError() {}
         default void onMessageList(Map<String, HomeworkMessageList> map){}
         default void onMessageAll(List<HomeworkMessageList.MessageBean> list){};
-        default void onParentMessageList(Map<String, ParentHomeworkMessageList> map){};
+        default void onParentMessageList(Map<String, HomeworkMessageList> map){};
         default void onPaperList(HomeworkPaperList list){};
-        default void onParentReel(ParentHomeworkMessageList list) {}
+        default void onParentReel(HomeworkMessageList list) {}
         default void onDownloadSuccess() {}
         default void onShareList(List<HomeworkShareBean> list){}
     }

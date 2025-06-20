@@ -72,6 +72,38 @@
             android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
+        <RelativeLayout
+            android:id="@+id/rl_message"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:visibility="gone"
+            android:background="@drawable/click_btn_line_black_5dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:text="未完成作业"
+                />
+
+            <ImageView
+                android:id="@+id/iv_tips"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="5dp"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                android:background="@drawable/bg_circle_black"
+                />
+
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/tv_btn"
             android:layout_width="@dimen/navigation_type_width"

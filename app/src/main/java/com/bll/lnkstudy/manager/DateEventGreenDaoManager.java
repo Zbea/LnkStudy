@@ -91,7 +91,7 @@ public class DateEventGreenDaoManager {
                 dateEventBeans.add(bean);
             }
         }
-        if (dateEventBeans.size()>0)
+        if (!dateEventBeans.isEmpty())
             return dateEventBeans;
 
         List<DateEventBean> allWeeks=queryAllDateEvent(0);

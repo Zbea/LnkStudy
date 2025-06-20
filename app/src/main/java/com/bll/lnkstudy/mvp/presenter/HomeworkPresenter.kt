@@ -7,7 +7,6 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
@@ -80,11 +79,11 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
     fun getParentMessage(map :HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.getParentMessage(body)
-        doRequest(type, object : Callback<Map<String, ParentHomeworkMessageList>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Map<String, ParentHomeworkMessageList>>): Boolean {
+        doRequest(type, object : Callback<Map<String, HomeworkMessageList>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Map<String, HomeworkMessageList>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<Map<String, ParentHomeworkMessageList>>) {
+            override fun success(tBaseResult: BaseResult<Map<String, HomeworkMessageList>>) {
                 if (tBaseResult.data!=null)
                     view.onParentMessageList(tBaseResult.data)
             }
@@ -97,11 +96,11 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
     fun getParentReel(map :HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.getParentReel(body)
-        doRequest(type, object : Callback<ParentHomeworkMessageList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<ParentHomeworkMessageList>): Boolean {
+        doRequest(type, object : Callback<HomeworkMessageList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<HomeworkMessageList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<ParentHomeworkMessageList>) {
+            override fun success(tBaseResult: BaseResult<HomeworkMessageList>) {
                 if (tBaseResult.data!=null)
                     view.onParentReel(tBaseResult.data)
             }

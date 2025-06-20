@@ -37,7 +37,6 @@ class Constants {
         const val SCREEN_FULL = 3//全屏
         const val STATUS_BAR_SHOW = 2147483647//永不消失
         const val DEBUG="debug"
-        const val RESULT_10001=10001//消息提交成功回调
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
@@ -112,6 +111,7 @@ class Constants {
         const val SETTING_CLEAT_EVENT = "DataClear"
         const val PAINTING_RULE_IMAGE_SET_EVENT = "PaintingRuleImageSetEvent"//规矩图设置
         const val HOMEWORK_MESSAGE_COMMIT_EVENT = "HomeworkMessageCommitEvent"//作业消息提交成功
+            const val HOMEWORK_MESSAGE_TIPS_EVENT = "HomeworkMessageTipsEvent"//作业消息标识
         const val CLEAR_HOMEWORK_EVENT="ClearHomeworkEvent"//清除作业通知
 
         //定时任务标识

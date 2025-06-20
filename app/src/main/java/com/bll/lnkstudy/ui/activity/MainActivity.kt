@@ -295,7 +295,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             val currentTimeMillisLong = System.currentTimeMillis()
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 15)
+            set(Calendar.HOUR_OF_DAY, 13)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)

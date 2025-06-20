@@ -20,17 +20,23 @@ import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
+import com.bll.lnkstudy.ui.activity.HomeworkMessageActivity
 import com.bll.lnkstudy.ui.activity.HomeworkMessageAllActivity
+import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.tv_btn
+import kotlinx.android.synthetic.main.common_fragment_title.iv_tips
+import kotlinx.android.synthetic.main.common_fragment_title.rl_message
 import kotlinx.android.synthetic.main.common_fragment_title.tv_btn_1
 import java.io.File
 
 class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
+    private val mPresenter = HomeworkPresenter(this)
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
     private var currentCourses= mutableListOf<ItemTypeBean>()
@@ -38,16 +44,26 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     private val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
     private val mainCourse= mutableListOf("语文","数学","英语")
 
+    override fun onMessageAll(list: MutableList<HomeworkMessageList.MessageBean>) {
+        DataBeanManager.homeworkMessages=list
+        if (list.isNotEmpty()){
+            showView(iv_tips)
+        }
+        else{
+            disMissView(iv_tips)
+        }
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework_manage
     }
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[3])
-        showView(tv_btn,tv_btn_1)
+        showView(rl_message,tv_btn_1)
 
-        tv_btn.text="未完成作业"
-        tv_btn.setOnClickListener {
+        rl_message.setOnClickListener {
+            ActivityManager.getInstance().finishActivity(HomeworkMessageActivity::class.java.name)
             customStartActivity(Intent(requireActivity(),HomeworkMessageAllActivity::class.java))
         }
 
@@ -62,6 +78,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     }
 
     override fun lazyLoad() {
+        fetchData()
     }
 
     //设置头部索引
@@ -112,7 +129,8 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
             if (!otherCourse.contains(course)){
                 var path = ""
                 val name="${course}错题本"
-                val localType=HomeworkTypeDaoManager.getInstance().queryByNameGrade(name,grade)
+                val typeId=MethodManager.getHomeworkTypeId(course,5)
+                val localType=HomeworkTypeDaoManager.getInstance().queryByTypeId(typeId)
                 //创建作业错题本
                 if (localType==null) {
                     val typeItem = HomeworkTypeBean()
@@ -121,7 +139,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     typeItem.date = System.currentTimeMillis()
                     typeItem.grade = grade
                     typeItem.state = 5
-                    typeItem.typeId = MethodManager.getHomeworkTypeId(course,typeItem.state)
+                    typeItem.typeId = typeId
                     typeItem.createStatus=3
                     typeItem.fromStatus=3
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
@@ -134,7 +152,8 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
             }
             if (mainCourse.contains(course)){
                 val name="${course}分享本"
-                val localType=HomeworkTypeDaoManager.getInstance().queryByNameGrade(name,grade)
+                val typeId=MethodManager.getHomeworkTypeId(course,9)
+                val localType=HomeworkTypeDaoManager.getInstance().queryByTypeId(typeId)
                 if (localType==null) {
                     val typeItem = HomeworkTypeBean()
                     typeItem.name = name
@@ -142,7 +161,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     typeItem.date = System.currentTimeMillis()
                     typeItem.grade = grade
                     typeItem.state = 9
-                    typeItem.typeId = MethodManager.getHomeworkTypeId(course,typeItem.state)
+                    typeItem.typeId = typeId
                     typeItem.createStatus=3
                     typeItem.fromStatus=3
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
@@ -399,6 +418,12 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         mDataUploadPresenter.onDeleteData(map)
     }
 
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["grade"]=grade
+        mPresenter.getMessageAll(map)
+    }
+
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.COURSEITEM_EVENT -> {
@@ -406,6 +431,14 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
             }
             Constants.CLEAR_HOMEWORK_EVENT->{
                 clearHomeworkType()
+            }
+            Constants.HOMEWORK_MESSAGE_TIPS_EVENT->{
+                if (DataBeanManager.homeworkMessages.isNotEmpty()){
+                    showView(iv_tips)
+                }
+                else{
+                    disMissView(iv_tips)
+                }
             }
         }
     }
@@ -415,6 +448,10 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         for (fragment in fragments){
             fragment.onRefreshData()
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        lazyLoad()
     }
 
 }

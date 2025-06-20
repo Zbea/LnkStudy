@@ -19,22 +19,35 @@ class HomeworkMessageAllAdapter(data: MutableList<MultiItemEntity>?) : BaseMulti
         when (helper.itemViewType) {
             0 -> {
                 val item= multiItemEntity as CatalogParentBean
+                helper.setImageResource(R.id.iv_tips,if (item.isExpanded) R.mipmap.icon_arrow_down else R.mipmap.icon_arrow_right)
                 helper.setText(R.id.tv_title, item.title)
+                helper.itemView.setOnClickListener {
+                    val pos = helper.adapterPosition
+                    if (item.hasSubItem()){
+                        if (item.isExpanded) {
+                            collapse(pos,false)
+                        } else {
+                            expand(pos,false)
+                        }
+                    }
+                }
             }
             1-> {
                 val childItem = multiItemEntity as CatalogChildBean
-                helper.setText(R.id.tv_title, childItem.title)
-                helper.setText(R.id.tv_course, childItem.course)
-                helper.setText(R.id.tv_type, childItem.commonType)
-                helper.setGone(R.id.tv_correct, childItem.selfBatchStatus==1)
-                helper.setGone(R.id.tv_standardTime,childItem.minute>0)
-                helper.setText(R.id.tv_standardTime,"${childItem.minute}分钟")
-                val timeStr=if (childItem.endTime>0)"提交时间："+ DateUtils.longToStringWeek(childItem.endTime) else "不提交"
+                val messageBean=childItem.messageBean
+                helper.setText(R.id.tv_title, messageBean.title)
+                helper.setText(R.id.tv_course, messageBean.subject)
+                helper.setText(R.id.tv_type, messageBean.typeName)
+                helper.setGone(R.id.tv_correct, messageBean.selfBatchStatus==1)
+                helper.setGone(R.id.tv_standardTime,messageBean.minute>0)
+                helper.setText(R.id.tv_standardTime,"${messageBean.minute}分钟")
+                helper.setGone(R.id.iv_tips,!childItem.isLast)
+                val timeStr=if (messageBean.endTime>0)"提交时间："+ DateUtils.longToStringWeek(messageBean.endTime) else "不提交"
                 helper.setText(R.id.tv_end_date, timeStr)
-//                helper.getView<LinearLayout>(R.id.ll_click).setOnClickListener {
-//                    if (listener!=null)
-//                        listener?.onChildClick(multiItemEntity.pageNumber)
-//                }
+                helper.itemView.setOnClickListener{
+                    if (listener!=null)
+                        listener?.onChildClick(childItem)
+                }
             }
         }
 
@@ -42,8 +55,8 @@ class HomeworkMessageAllAdapter(data: MutableList<MultiItemEntity>?) : BaseMulti
 
     private var listener: OnChildClickListener? = null
 
-    interface OnChildClickListener{
-        fun onChildClick(page:Int)
+    fun interface OnChildClickListener{
+        fun onChildClick(childBean: CatalogChildBean)
     }
 
     fun setOnChildClickListener(listener: OnChildClickListener?) {

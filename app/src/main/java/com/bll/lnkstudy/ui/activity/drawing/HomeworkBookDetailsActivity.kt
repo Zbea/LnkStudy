@@ -6,7 +6,6 @@ import android.view.EinkPWInterface
 import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
@@ -24,9 +23,7 @@ import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkBookCorrectBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
-import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList.MessageBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.model.homework.ParentHomeworkMessageList.ParentMessageBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
@@ -106,14 +103,13 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         initChangeScreenData()
         homeworkType = MethodManager.getHomeworkTypeBundle(intent)
         bookId=homeworkType?.bookId!!
-        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
-        isHomework=index>=0
+        val item = MethodManager.getHomeworkMessageBundle(intent)
+        isHomework=item!=null
         isDrawingSave=isHomework
 
         if (isHomework){
             when (homeworkType?.createStatus) {
                 2 -> {
-                    val item=homeworkType!!.messages[index] as MessageBean
                     homeworkCommitInfoItem=HomeworkCommitInfoItem().apply {
                         state=homeworkType?.state!!
                         messageId =item.contendId
@@ -129,13 +125,11 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     }
                 }
                 1 -> {
-                    val item =homeworkType!!.messages[index]  as ParentMessageBean
                     homeworkCommitInfoItem=HomeworkCommitInfoItem().apply {
                         state=homeworkType?.state!!
-                        messageId = item.contendId
+                        messageId = item.id
                         title = item.title
-                        typeId=item.typeId
-                        standardTime=item.minute
+                        typeId=item.parentHomeworkId
                     }
                 }
             }

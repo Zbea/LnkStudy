@@ -27,8 +27,6 @@ class CatalogBookDialog(val context: Context, private val oldScreen:Int, private
         val rv_list = dialog.findViewById<RecyclerView>(R.id.rv_list)
 
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val layoutManager=LinearLayoutManager(context)
-        rv_list?.layoutManager =layoutManager
         val mAdapter = BookCatalogAdapter(list,startCount)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)

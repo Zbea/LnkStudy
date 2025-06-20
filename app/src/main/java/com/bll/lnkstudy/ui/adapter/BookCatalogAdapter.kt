@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.ui.adapter
 
-import android.widget.LinearLayout
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
@@ -42,7 +41,7 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?,private val startCount:Int
                 helper.setText(R.id.tv_name, childItem.title)
                 helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
                 helper.setText(R.id.tv_page,"${childItem.pageNumber-startCount}")
-                helper.getView<LinearLayout>(R.id.ll_click).setOnClickListener {
+                helper.itemView.setOnClickListener {
                     if (listener!=null)
                         listener?.onChildClick(multiItemEntity.pageNumber)
                 }

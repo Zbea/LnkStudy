@@ -3,7 +3,6 @@ package com.bll.lnkstudy.ui.activity
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
@@ -42,7 +41,6 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
     private var homeworkType: HomeworkTypeBean? = null
     private var isHomework=false
     private var messageBean:MessageBean?=null
-    private var isCommit=true
     //语音文件保存路径
     private var pathFile: String? = null
     //语音操作对象
@@ -91,10 +89,9 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
     override fun initData() {
         initChangeScreenData()
         homeworkType = MethodManager.getHomeworkTypeBundle(intent)
-        val index = intent.getIntExtra("messageIndex", DEFAULT_PAGE)
-        isHomework=index>=0
+        messageBean = MethodManager.getHomeworkMessageBundle(intent)
+        isHomework=messageBean!=null
         if (isHomework){
-            messageBean= homeworkType?.messages!![index] as MessageBean
             recordBean=RecordDaoManager.getInstance().queryByContendId(messageBean?.contendId!!)
         }
 
@@ -118,7 +115,7 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
             val path=FileAddress().getPathHomework(recordBean?.course!!,recordBean?.homeworkTypeId!!)
             if (!File(path).exists())
                 File(path).mkdirs()
-            pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
+            pathFile = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp4").path
             recordBean?.path=pathFile
         }
     }
@@ -280,7 +277,7 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
                         tv_time.text= DateUtils.secondToString(second)
                     }
                 }
-            } ,1000,1000)
+            } ,0,1000)
         }.start()
     }
 

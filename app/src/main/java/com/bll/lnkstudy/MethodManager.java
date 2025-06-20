@@ -30,6 +30,7 @@ import com.bll.lnkstudy.mvp.model.Area;
 import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ItemList;
 import com.bll.lnkstudy.mvp.model.ItemTypeBean;
+import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList;
 import com.bll.lnkstudy.mvp.model.permission.PermissionParentBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionSchoolItemBean;
 import com.bll.lnkstudy.mvp.model.permission.PermissionTimeBean;
@@ -288,19 +289,31 @@ public class MethodManager {
         intent.putExtra("homeworkBundle", bundle);
     }
 
+    public static void setHomeworkTypeBundle(Intent intent, HomeworkTypeBean item, HomeworkMessageList.MessageBean messageBean){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("homework", item);
+        if (messageBean!=null)
+            bundle.putSerializable("messageBean",messageBean);
+        intent.putExtra("homeworkBundle", bundle);
+    }
+
     public static HomeworkTypeBean getHomeworkTypeBundle(Intent intent){
         Bundle bundle = intent.getBundleExtra("homeworkBundle");
         return (HomeworkTypeBean) bundle.getSerializable("homework");
     }
 
+    public static HomeworkMessageList.MessageBean getHomeworkMessageBundle(Intent intent){
+        Bundle bundle = intent.getBundleExtra("homeworkBundle");
+        return (HomeworkMessageList.MessageBean) bundle.getSerializable("messageBean");
+    }
+
     /**
      * 跳转作业书
      */
-    public static void gotoHomeworkBookDetails(Context context, HomeworkTypeBean typeBean,int messageIndex) {
+    public static void gotoHomeworkBookDetails(Context context, HomeworkTypeBean typeBean, HomeworkMessageList.MessageBean messageBean) {
         ActivityManager.getInstance().checkHomeworkBookIsExist(typeBean);
         Intent intent = new Intent(context, HomeworkBookDetailsActivity.class);
-        setHomeworkTypeBundle(intent,typeBean);
-        intent.putExtra("messageIndex", messageIndex);
+        setHomeworkTypeBundle(intent,typeBean,messageBean);
         intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
@@ -311,14 +324,13 @@ public class MethodManager {
      * @param context
      * @param item    作业分类
      * @param page    调转指定页码（正常-1跳转最后一页）
-     * @param messageIndex 选中作业下标
+     * @param messageBean 选中作业下标
      */
-    public static void gotoHomeworkDrawing(Context context, HomeworkTypeBean item,int page,int messageIndex) {
+    public static void gotoHomeworkDrawing(Context context, HomeworkTypeBean item,int page, HomeworkMessageList.MessageBean messageBean) {
         ActivityManager.getInstance().checkHomeworkDrawingIsExist(item);
         Intent intent = new Intent(context, HomeworkDrawingActivity.class);
-        setHomeworkTypeBundle(intent,item);
+        setHomeworkTypeBundle(intent,item,messageBean);
         intent.putExtra("page", page);
-        intent.putExtra("messageIndex", messageIndex);
         intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
@@ -327,13 +339,12 @@ public class MethodManager {
      * 转跳朗读本
      * @param context
      * @param item    作业分类
-     * @param messageIndex 选中作业下标
+     * @param messageBean 选中作业下标
      */
-    public static void gotoHomeworkRecord(Context context, HomeworkTypeBean item, int messageIndex) {
+    public static void gotoHomeworkRecord(Context context, HomeworkTypeBean item, HomeworkMessageList.MessageBean messageBean) {
         ActivityManager.getInstance().finishActivity(HomeworkRecordActivity.class.getName());
         Intent intent = new Intent(context, HomeworkRecordActivity.class);
-        setHomeworkTypeBundle(intent,item);
-        intent.putExtra("messageIndex", messageIndex);
+        setHomeworkTypeBundle(intent,item,messageBean);
         context.startActivity(intent);
     }
 
@@ -355,6 +366,7 @@ public class MethodManager {
         Intent intent = new Intent(context, HomeworkShareDrawingActivity.class);
         setHomeworkTypeBundle(intent,item);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
 
@@ -365,12 +377,11 @@ public class MethodManager {
      * @param item    作业分类
      * @param page
      */
-    public static void gotoHomeworkReelDrawing(Context context, HomeworkTypeBean item,int page, int messageIndex) {
+    public static void gotoHomeworkReelDrawing(Context context, HomeworkTypeBean item,int page,HomeworkMessageList.MessageBean messageBean) {
         ActivityManager.getInstance().checkHomeworkPaperDrawingIsExist(item);
         Intent intent = new Intent(context, HomeworkPaperDrawingActivity.class);
-        setHomeworkTypeBundle(intent,item);
+        setHomeworkTypeBundle(intent,item,messageBean);
         intent.putExtra("page", page);
-        intent.putExtra("messageIndex", messageIndex);
         intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
         context.startActivity(intent);
     }
@@ -703,7 +714,7 @@ public class MethodManager {
     }
 
     /**
-     * 获取对应分类，对应作业的分类id
+     * (本地默认创建)获取对应分类，对应作业的分类id
      * @param subject
      * @param subType
      * @return
@@ -712,11 +723,33 @@ public class MethodManager {
         String idStr = String.valueOf(subType)+0+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
         return Integer.parseInt(idStr);
     }
-
+    /**
+     * (老师默认创建)获取对应分类，对应作业的分类id
+     */
     public static int getHomeworkAutoTypeId(String name,String subject){
         int type=DataBeanManager.INSTANCE.getAutoHomeworkTypes().indexOf(name)+1;
         String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
         return Integer.parseInt(idStr);
+    }
+
+    /**
+     * 家长作业本本地typeID
+     * @param typeId
+     * @return
+     */
+    public static int getParentHomeworkTypeId(int typeId){
+        String idStr = String.valueOf(typeId) + getUser().grade;
+        return Integer.parseInt(idStr);
+    }
+
+    /**
+     * 家长作业本本地typeId转成线上typeId
+     * @param typeId
+     * @return
+     */
+    public static int getParentHomeworkTypeIdOld(int typeId){
+        int index= (int) Math.pow(10,String.valueOf(getUser().grade).length());
+        return typeId/index;
     }
 
     /**

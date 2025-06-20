@@ -34,7 +34,6 @@
                 android:id="@+id/tv_correct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_30"
                 android:textSize="@dimen/sp_24"
                 android:text="自批"
                 android:visibility="gone"
@@ -44,6 +43,7 @@
                 android:id="@+id/tv_assign_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
                 android:textSize="@dimen/sp_24"
                 android:textColor="@color/black" />
 
@@ -61,7 +61,6 @@
                 android:id="@+id/tv_standardTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_30"
                 android:textSize="@dimen/sp_24"
                 android:text="标准时间："
                 android:visibility="gone"

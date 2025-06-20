@@ -14,11 +14,13 @@ public class HomeworkMessageList implements Serializable {
     public List<MessageBean> list;
 
     public static class MessageBean implements Serializable{
+
         public String title;
         @SerializedName("name")
         public String typeName;
         @SerializedName("commonTypeId")
         public int typeId;
+        public int addType;
         public int subType;
         public String createTime;
         public int minute;//标准时间
@@ -34,5 +36,11 @@ public class HomeworkMessageList implements Serializable {
         public int questionMode;//1打分
         public int selfBatchStatus;//1自批
         public String answerUrl;//答案
+
+        public int id;//作业id
+        public String changeUrl;//家长批改url
+        public int type;//作业本类型
+        public int parentHomeworkId;//父作业本id
+        public String pageStr;
     }
 }
