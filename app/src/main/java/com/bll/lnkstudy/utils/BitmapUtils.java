@@ -250,7 +250,7 @@ public class BitmapUtils {
         }).start();
     }
 
-    private static Bitmap loadBitmapFromViewByCanvas(View view) {
+    public static Bitmap loadBitmapFromViewByCanvas(View view) {
         int w = view.getWidth();
         int h = view.getHeight();
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);

@@ -22,10 +22,6 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
 
     @SuppressLint("InvalidWakeLockTag")
     override fun onReceive(context: Context, intent: Intent) {
-        //未登录不执行
-        if (!MethodManager.isLogin()){
-            return
-        }
         when(intent.action){
             Constants.ACTION_DAY_REFRESH->{
                 Log.d(Constants.DEBUG,"每天刷新")
@@ -93,6 +89,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 Log.d(Constants.DEBUG,"刷新应用列表")
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
                 if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
+                    Log.d(Constants.DEBUG,"更新launcher")
                     //安装完成后删除
                     FileUtils.deleteFile(File(FileAddress().getLauncherPath()))
                     // 应用安装完成后重启

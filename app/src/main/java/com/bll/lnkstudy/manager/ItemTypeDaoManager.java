@@ -57,8 +57,8 @@ public class ItemTypeDaoManager {
         return queryList.get(queryList.size()-1).id;
     }
 
-    public void saveBookBean(int type,String title,boolean isNew) {
-        WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(type);
+    public void saveBookBean(String title,boolean isNew) {
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(5);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Title.eq(title);
         ItemTypeBean bean=dao.queryBuilder().where(whereUser,whereUser1,whereUser2).orderAsc(ItemTypeBeanDao.Properties.Date).build().unique();
         bean.setIsNew(isNew);

@@ -102,7 +102,7 @@ class CommonDialog(private val context: Context,private val screenPos:Int) {
         fun ok()
     }
 
-    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
+    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener) {
         this.onDialogClickListener = onDialogClickListener
     }
 }

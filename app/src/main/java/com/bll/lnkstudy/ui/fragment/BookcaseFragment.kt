@@ -47,10 +47,8 @@ class BookcaseFragment: BaseMainFragment() {
     override fun initView() {
         setTitle(DataBeanManager.listTitle[1])
 
-        initRecyclerView()
-
         tv_type.setOnClickListener {
-            ItemTypeDaoManager.getInstance().saveBookBean(5,"诗经楚辞",false)
+            ItemTypeDaoManager.getInstance().saveBookBean("诗经楚辞",false)
             customStartActivity(Intent(activity, BookcaseTypeActivity::class.java))
         }
         
@@ -59,10 +57,12 @@ class BookcaseFragment: BaseMainFragment() {
                 MethodManager.gotoBookDetails(requireActivity(),bookTopBean)
         }
 
+        initRecyclerView()
+        findBook()
     }
 
     override fun lazyLoad() {
-        findBook()
+
     }
 
     private fun initRecyclerView(){
@@ -120,7 +120,7 @@ class BookcaseFragment: BaseMainFragment() {
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==BOOK_EVENT){
-            lazyLoad()
+            findBook()
         }
     }
 

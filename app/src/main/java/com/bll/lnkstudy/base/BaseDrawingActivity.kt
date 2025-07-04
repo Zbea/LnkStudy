@@ -50,8 +50,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     var v_content_b: ImageView? = null
 
     private var isAllowChange = true //是否运行移屏幕
-    var isDrawingSave=false//是否手写保存
-
+    var bitmapBatchSaver= BitmapBatchSaver(4)
 
     override fun initCreate() {
         if (this is FreeNoteActivity || this is PlanOverviewActivity || this is DraftDrawingActivity || this is DateEventActivity) {
@@ -106,15 +105,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         iv_page_up?.setOnClickListener {
-            Handler().postDelayed({
-                onPageUp()
-            },if (isDrawingSave)600 else 0)
+            onPageUp()
         }
 
         iv_page_down?.setOnClickListener {
-            Handler().postDelayed({
-                onPageDown()
-            },if (isDrawingSave)600 else 0)
+            onPageDown()
         }
 
         iv_catalog?.setOnClickListener {
@@ -736,6 +731,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             onChangeExpandView()
             onContent()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bitmapBatchSaver.shutdown()
     }
 
 }

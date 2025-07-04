@@ -118,7 +118,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
         homeworkType = MethodManager.getHomeworkTypeBundle(intent)
         val item = MethodManager.getHomeworkMessageBundle(intent)
         isHomework=item!=null
-        isDrawingSave=isHomework
 
         page = intent.getIntExtra("page", DEFAULT_PAGE)
         homeworkTypeId =homeworkType?.typeId!!
@@ -282,15 +281,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 page+=2
                 onContent()
             }
-            else if (page==total-1){
+            else{
                 if (isDrawLastContent()){
                     newHomeWorkContent()
-                    onContent()
                 }
-                else{
-                    page=total
-                    onContent()
-                }
+                page=homeworks.size - 1
+                onContent()
             }
         }
         else{
@@ -405,14 +401,16 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onElikSava_a() {
         if (isHomework){
-            BitmapUtils.saveScreenShot(v_content_a, FileAddress().getPathHomeworkDrawingMerge(homeworkContent_a?.path!!))
+            val mergePath=FileAddress().getPathHomeworkDrawingMerge(homeworkContent_a?.path!!)
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),mergePath,null)
         }
         refreshDataUpdate(homeworkContent_a!!)
     }
 
     override fun onElikSava_b() {
         if (isHomework){
-            BitmapUtils.saveScreenShot(v_content_b, FileAddress().getPathHomeworkDrawingMerge(homeworkContent?.path!!))
+            val mergePath=FileAddress().getPathHomeworkDrawingMerge(homeworkContent?.path!!)
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),mergePath,null)
         }
         refreshDataUpdate(homeworkContent!!)
     }

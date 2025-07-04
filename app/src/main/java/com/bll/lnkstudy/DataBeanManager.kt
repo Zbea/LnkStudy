@@ -68,15 +68,6 @@ object DataBeanManager {
     )
     var resources = arrayOf("我的工具","锁屏壁纸","历代书画","跳页日历")
 
-    fun popupGrades(): MutableList<PopupBean>
-       {
-           val grades=MethodManager.getItemLists("grades")
-            val list= mutableListOf<PopupBean>()
-            for (i in grades.indices){
-                list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
-            }
-            return list
-        }
 
     fun popupGrades(grade: Int): MutableList<PopupBean> {
         val grades=MethodManager.getItemLists("grades")
@@ -182,15 +173,6 @@ object DataBeanManager {
             }
             return list
         }
-
-    fun popupCourses(course:Int): MutableList<PopupBean>{
-        val courses=MethodManager.getItemLists("courses")
-        val list= mutableListOf<PopupBean>()
-        for (item in courses){
-            list.add(PopupBean(item.type, item.desc, item.type == course))
-        }
-        return list
-    }
 
     /**
      * 获取选中科目

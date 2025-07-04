@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.Constants
@@ -179,15 +178,23 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                         }
                         override fun ok() {
                             showLoading()
-                            Handler().postDelayed({
+                            if (bitmapBatchSaver.isAccomplished){
                                 commit()
-                            },500)
+                            }
+                            else{
+                                showToast("手写未保存，请稍后提交")
+                            }
                         }
                     })
             }
             else{
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
-                    commit()
+                    if (bitmapBatchSaver.isAccomplished){
+                        commit()
+                    }
+                    else{
+                        showToast("手写未保存，请稍后提交")
+                    }
                 }
                 else{
                     //不提交作业直接完成
@@ -278,8 +285,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         paper=papers[currentPosition]
         pageCount=paper!!.paths.size
 
-        isDrawingSave=isDrawing()
-
         if (isExpand&&pageCount==1){
             onChangeExpandContent()
             return
@@ -353,20 +358,16 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onElikSava_a() {
-        if (isDrawingSave){
-            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(page))
-        }
+        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(page),null)
         refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
-        if (isDrawingSave){
-            if (isExpand){
-                BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page+1))
-            }
-            else{
-                BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page))
-            }
+        if (isExpand){
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page+1),null)
+        }
+        else{
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page),null)
         }
         refreshDataUpdate()
     }

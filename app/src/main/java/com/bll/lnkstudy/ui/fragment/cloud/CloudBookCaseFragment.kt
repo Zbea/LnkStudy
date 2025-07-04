@@ -185,7 +185,7 @@ class CloudBookCaseFragment:BaseCloudFragment() {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     //修改书库分类状态
-                    ItemTypeDaoManager.getInstance().saveBookBean(5,book.subtypeStr,true)
+                    ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
                     book.time=System.currentTimeMillis()
                     book.isLook=false
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)

@@ -115,7 +115,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
         setExamMode(true)
         SPUtil.putBoolean(Constants.SP_EXAM_MODE,true)
         isExpand=true
-        isDrawingSave=true
         screenPos=Constants.SCREEN_RIGHT
         exam=intent.getBundleExtra("bundle")?.getSerializable("exam") as ExamItem
 
@@ -156,9 +155,12 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
             CommonDialog(this,screenPos).setContent("确定提交考卷？").builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun ok() {
-                        Handler().postDelayed({
+                        if (bitmapBatchSaver.isAccomplished){
                             commit()
-                        },500)
+                        }
+                        else{
+                            showToast("手写未保存，请稍后提交")
+                        }
                     }
                 })
         }
@@ -229,11 +231,13 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
     }
 
     override fun onElikSava_a() {
-        BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(page))
+//        BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(page))
+        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(page),null)
     }
 
     override fun onElikSava_b() {
-        BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page+1))
+//        BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(page+1))
+        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page+1),null)
     }
 
     /**
@@ -268,9 +272,14 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.EXAM_TIME_EVENT){
-            Handler().postDelayed({
-                commit()
-            },500)
+            if (bitmapBatchSaver.isAccomplished){
+                if (bitmapBatchSaver.isAccomplished){
+                    commit()
+                }
+                else{
+                    showToast("手写未保存，请稍后提交")
+                }
+            }
         }
     }
 

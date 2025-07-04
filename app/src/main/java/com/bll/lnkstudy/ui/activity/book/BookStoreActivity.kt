@@ -239,7 +239,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
                     //修改书库分类状态
-                    ItemTypeDaoManager.getInstance().saveBookBean(5,book.subtypeStr,true)
+                    ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //创建增量更新

@@ -78,11 +78,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         val createTypeIds = mutableListOf<Int>()
         //遍历查询作业本是否保存，以及保存后的作业名称修改
         for (item in list) {
-            //是否是自动生成的作业本，自动生成的作业本不同老师公用
             if (item.autoState == 1) {
+                val typeId=MethodManager.getHomeworkAutoTypeId(item.name,mCourse)
+                createTypeIds.add(typeId)
                 val localItem = HomeworkTypeDaoManager.getInstance().queryByAutoName(item.name, mCourse, item.grade)
                 if (localItem == null) {
-                    item.typeId=MethodManager.getHomeworkAutoTypeId(item.name,mCourse)
+                    item.typeId=typeId
                     insertHomeworkType(item)
                 } else {
                     if (localItem.createStatus == 0) {
@@ -116,16 +117,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
 
-        //验证本地老师自动生成作业本，线上是否还存在，不存在转为非线上状态
-        val autoTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2, 1)
-        for (item in autoTypes) {
-            if (!isAutoExistLineType(item, list)) {
-                editHomeworkTypeCreate(item, 0)
-            }
-        }
-
-        //验证本地老师创建作业本，线上是否还存在，不存在转为非线上状态
-        val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2, 0)
+        //验证老师作业本，线上是否还存在，不存在转为非线上状态
+        val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2)
         for (item in localTypes) {
             if (!createTypeIds.contains(item.typeId)) {
                 editHomeworkTypeCreate(item, 0)
@@ -176,14 +169,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
 
-        //把所有除开当前年级的家长作业本改为非在线状态
-        val allTypes=HomeworkTypeDaoManager.getInstance().queryAllParentByExceptGrade(grade)
-        for (item in allTypes){
-            editHomeworkTypeCreate(item,0)
-        }
-
-        //判断所有当前在线状态的家长作业本是线上还存在，不存在改为非线上状态
-        val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 1, 0)
+        //判断家长作业本是否还存在，不存在将作业本转本地
+        val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 1)
         for (item in localTypes) {
             if (!createTypeIds.contains(item.typeId)) {
                 editHomeworkTypeCreate(item,0)
@@ -424,21 +411,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
         }
         return homeworkTypeBean
-    }
-
-    /**
-     * 验证本地自动生成数据是否线上还存在
-     */
-    private fun isAutoExistLineType(item: HomeworkTypeBean, list: List<HomeworkTypeBean>): Boolean {
-        var isExist = false
-        for (lineItem in list) {
-            if (lineItem.autoState == 1) {
-                if (lineItem.name == item.name && lineItem.grade == item.grade) {
-                    isExist = true
-                }
-            }
-        }
-        return isExist
     }
 
     private fun onLongClick() {

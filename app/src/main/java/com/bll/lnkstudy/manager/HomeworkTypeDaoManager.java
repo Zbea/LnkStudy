@@ -108,11 +108,10 @@ public class HomeworkTypeDaoManager {
                 .build().list();
     }
 
-    public List<HomeworkTypeBean> queryAllByCreate(String course,int create,int autoState){
+    public List<HomeworkTypeBean> queryAllByCreate(String course,int create){
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.CreateStatus.eq(create);
-        WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.AutoState.eq(autoState);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2)
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
                 .build().list();
     }
 
@@ -123,18 +122,6 @@ public class HomeworkTypeDaoManager {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.State.eq(4);
         WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.Grade.eq(grade);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
-    }
-
-    /**
-     * 查找所有除开当前年级的、当前学生状态的家长作业本
-     * @param grade
-     * @return
-     */
-    public List<HomeworkTypeBean> queryAllParentByExceptGrade(int grade) {
-        WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.FromStatus.eq(1);
-        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.FromStatus.eq(1);
-        WhereCondition whereCondition2=HomeworkTypeBeanDao.Properties.Grade.notEq(grade);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).build().list();
     }
 

@@ -43,7 +43,7 @@ class PaintingDetailsDialog(val context: Context) {
         tv_upload.visibility= View.VISIBLE
 
         val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
-        tv_total.text="总计：${total}幅"
+        tv_total.text="总计：${total}"
 
         val items= mutableListOf<ItemDetailsBean>()
         for (item in DataBeanManager.popupPainting()){
@@ -59,7 +59,7 @@ class PaintingDetailsDialog(val context: Context) {
 
         val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = PaintingDetailsAdapter(R.layout.item_bookcase_list, items)
+        val mAdapter = PaintingDetailsAdapter(R.layout.item_details_list, items)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
@@ -95,11 +95,11 @@ class PaintingDetailsDialog(val context: Context) {
 
         override fun convert(helper: BaseViewHolder, item: ItemDetailsBean) {
             helper.setText(R.id.tv_book_type,item.typeStr)
-            helper.setText(R.id.tv_book_num,"(${item.num}幅)")
+            helper.setText(R.id.tv_book_num,"( ${item.num} )")
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_painting_name,item.paintings)
+            val mAdapter = ChildAdapter(R.layout.item_details_list_name,item.paintings)
             recyclerView?.adapter = mAdapter
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(item.paintings[position])
@@ -117,6 +117,7 @@ class PaintingDetailsDialog(val context: Context) {
             override fun convert(helper: BaseViewHolder, item: PaintingBean) {
                 helper.apply {
                     setText(R.id.tv_name, item.title)
+                    setGone(R.id.iv_check,true)
                     setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
                     addOnClickListener(R.id.cb_check)
                 }

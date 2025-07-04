@@ -105,7 +105,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
         bookId=homeworkType?.bookId!!
         val item = MethodManager.getHomeworkMessageBundle(intent)
         isHomework=item!=null
-        isDrawingSave=isHomework
 
         if (isHomework){
             when (homeworkType?.createStatus) {
@@ -339,18 +338,17 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
     }
 
     override fun onElikSava_a() {
-        if (isDrawingSave){
-            val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page-1)
-            BitmapUtils.saveScreenShot(v_content_a, mergePath)
-        }
+        val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page-1)
+//        BitmapUtils.saveScreenShot(v_content_a, mergePath)
+        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),mergePath,null)
+
         editCorrectBean(page-1)
     }
 
     override fun onElikSava_b() {
-        if (isDrawingSave){
-            val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page)
-            BitmapUtils.saveScreenShot(v_content_b, mergePath)
-        }
+        val mergePath=FileAddress().getPathHomeworkBookCorrectFile(book?.bookDrawPath!!,page)
+//        BitmapUtils.saveScreenShot(v_content_b, mergePath)
+        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),mergePath,null)
         editCorrectBean(page)
     }
 

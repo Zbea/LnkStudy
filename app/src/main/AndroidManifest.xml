@@ -294,7 +294,6 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.HomeworkNoticeListActivity" />
-        <activity android:name=".ui.activity.CourseManagerActivity" />
         <activity android:name=".ui.activity.HomeworkMessageActivity" />
         <activity android:name=".ui.activity.HomeworkMessageAllActivity" />
 

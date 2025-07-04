@@ -152,15 +152,12 @@ class PaintingDrawingActivity : BaseDrawingActivity() {
                 page+=2
                 onContent()
             }
-            else if (page==total-1){
+            else{
                 if (isDrawLastContent()){
                     newPaintingContent()
-                    onContent()
                 }
-                else{
-                    page=total
-                    onContent()
-                }
+                page=paintingLists.size - 1
+                onContent()
             }
         }
         else{

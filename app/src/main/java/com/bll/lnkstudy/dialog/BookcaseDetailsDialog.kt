@@ -17,7 +17,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class BookcaseDetailsDialog(val context: Context) {
+class BookcaseDetailsDialog(val context: Context,val type:Int) {
 
     fun builder(): BookcaseDetailsDialog {
         val dialog = Dialog(context)
@@ -27,9 +27,6 @@ class BookcaseDetailsDialog(val context: Context) {
         dialog.show()
 
         val total=BookGreenDaoManager.getInstance().queryAllBook().size
-
-        val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
-        tv_total.text="总计：${total}本"
 
         val items= mutableListOf<ItemDetailsBean>()
         for (typeStr in DataBeanManager.bookType){
@@ -43,9 +40,15 @@ class BookcaseDetailsDialog(val context: Context) {
             }
         }
 
+        val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
+        tv_title.text="书架明细"
+
+        val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
+        tv_total.text="总计：${total}"
+
         val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = BookcaseDetailsAdapter(R.layout.item_bookcase_list, items)
+        val mAdapter = BookcaseDetailsAdapter(R.layout.item_details_list, items)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
@@ -62,18 +65,18 @@ class BookcaseDetailsDialog(val context: Context) {
 
         override fun convert(helper: BaseViewHolder, item: ItemDetailsBean) {
             helper.setText(R.id.tv_book_type,item.typeStr)
-            helper.setText(R.id.tv_book_num,"(${item.num}本)")
+            helper.setText(R.id.tv_book_num,"( ${item.num} )")
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.books)
+            val mAdapter = ChildAdapter(R.layout.item_details_list_name,item.books)
             recyclerView?.adapter = mAdapter
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(item.books[position])
             }
         }
 
-        class ChildAdapter(layoutResId: Int,  data: List<BookBean>?) : BaseQuickAdapter<BookBean, BaseViewHolder>(layoutResId, data) {
+        class ChildAdapter(layoutResId: Int, data: List<BookBean>) : BaseQuickAdapter<BookBean, BaseViewHolder>(layoutResId, data) {
             override fun convert(helper: BaseViewHolder, item: BookBean) {
                 helper.apply {
                     helper.setText(R.id.tv_name, item.bookName)

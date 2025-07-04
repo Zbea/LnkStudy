@@ -66,6 +66,10 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
         dialog?.dismiss()
     }
 
+    fun isShow():Boolean?{
+        return dialog?.isShowing
+    }
+
     fun setUpdateBtn(string: String){
         if (btn_ok!=null){
             btn_ok?.text = string

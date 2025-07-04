@@ -9,6 +9,7 @@ import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
+import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -28,6 +29,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
 
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
+    var appUpdateDialog:AppUpdateDialog?=null
 
     //云端上传回调
     override fun onSuccess(cloudIds: MutableList<Int>?) {
@@ -68,7 +70,10 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             val code= it.optInt("Code")
             val jsonObject=it.optJSONObject("Data")
             if (code==200&&jsonObject!=null){
-                AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
+                val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
+                requireActivity().runOnUiThread {
+                    AppUpdateDialog(requireActivity(),2,item).builder()
+                }
             }
         },null)
         MyApplication.requestQueue?.add(jsonObjectRequest)
@@ -105,28 +110,33 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             AppUtils.installApp(requireActivity(), targetFileStr)
         }
         else{
-            val updateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
-            FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning) {
-                        requireActivity().runOnUiThread {
-                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
-                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                            updateDialog.setUpdateBtn(s)
+            if (appUpdateDialog==null||appUpdateDialog?.isShow()==false) {
+                appUpdateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
+                FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+                    FileDownManager.SingleTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                        if (task != null && task.isRunning) {
+                            requireActivity().runOnUiThread {
+                                val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
+                                        ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                                appUpdateDialog?.setUpdateBtn(s)
+                            }
                         }
                     }
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    updateDialog.dismiss()
-                    AppUtils.installApp(requireActivity(), targetFileStr)
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    updateDialog.dismiss()
-                }
-            })
+
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+
+                    override fun completed(task: BaseDownloadTask?) {
+                        appUpdateDialog?.dismiss()
+                        AppUtils.installApp(requireActivity(), targetFileStr)
+                    }
+
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                        appUpdateDialog?.dismiss()
+                    }
+                })
+            }
         }
     }
 
