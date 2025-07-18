@@ -17,5 +17,6 @@ public class SearchBean {
     public int page;
     public String listJson;
     public int grade;
+    public int autoState;
 
 }

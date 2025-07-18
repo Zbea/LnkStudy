@@ -47,14 +47,16 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         for (item in list) {
             //自动生成的测验卷分类
             if (item.autoState==1){
+                val typeId=MethodManager.getTestPaperAutoTypeId(item.name,mCourse)
+                createTypeIds.add(typeId)
                 val localItem= PaperTypeDaoManager.getInstance().queryByName(item.name,mCourse,item.grade)
                 if (localItem==null){
-                    item.typeId=MethodManager.getTestPaperAutoTypeId(item.name,mCourse)
+                    item.typeId=typeId
                     insertPaperType(item)
                 }
                 else{
-                    if (localItem.createStatus==0){
-                        editPaperTypeCreate(localItem,1)
+                    if (localItem.typeId!=typeId){
+                        editPaperTypeId(localItem,typeId)
                     }
                 }
             }
@@ -72,15 +74,15 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             }
         }
 
-        val autoTypes= PaperTypeDaoManager.getInstance().queryAllByCreate(mCourse, 1,1)
-        for (item in autoTypes){
-            if (!isAutoExistLineType(item,list)){
-                editPaperTypeCreate(item,0)
+        val localTypes= PaperTypeDaoManager.getInstance().queryAllByCreate(mCourse,0)
+        for (item in localTypes){
+            if (createTypeIds.contains(item.typeId)){
+                editPaperTypeCreate(item,1)
             }
         }
 
-        val localTypes= PaperTypeDaoManager.getInstance().queryAllByCreate(mCourse,1,0)
-        for (item in localTypes){
+        val localTypes1= PaperTypeDaoManager.getInstance().queryAllByCreate(mCourse,1)
+        for (item in localTypes1){
             if (!createTypeIds.contains(item.typeId)){
                 editPaperTypeCreate(item,0)
             }
@@ -196,19 +198,12 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         DataUpdateManager.editDataUpdate(3,item.typeId,1,item.typeId,Gson().toJson(item))
     }
 
-    /**
-     * 验证本地自动生成数据是否线上还存在
-     */
-    private fun isAutoExistLineType(item: PaperTypeBean, list:List<PaperTypeBean>):Boolean{
-        var isExist=false
-        for (lineItem in list){
-            if (lineItem.autoState==1){
-                if (lineItem.name==item.name&&lineItem.grade==item.grade){
-                    isExist=true
-                }
-            }
-        }
-        return isExist
+    private fun editPaperTypeId(item: PaperTypeBean, typeId: Int) {
+        DataUpdateManager.deleteDateUpdate(3,item.typeId)
+        item.typeId = typeId
+        PaperTypeDaoManager.getInstance().insertOrReplace(item)
+        //修改增量更新
+        DataUpdateManager.createDataUpdate(3, item.typeId, 1, item.typeId, Gson().toJson(item))
     }
 
     /**
@@ -416,6 +411,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onRefreshData() {
+        super.onRefreshData()
         fetchTypes()
     }
 

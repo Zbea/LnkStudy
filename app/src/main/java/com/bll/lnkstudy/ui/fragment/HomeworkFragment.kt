@@ -35,8 +35,8 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkstudy.ui.activity.HomeworkMessageActivity
-import com.bll.lnkstudy.ui.activity.HomeworkMessageAllActivity
+import com.bll.lnkstudy.ui.activity.HomeworkUnfinishedMessageActivity
+import com.bll.lnkstudy.ui.activity.HomeworkUnfinishedMessageAllActivity
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
@@ -86,8 +86,8 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     item.typeId=typeId
                     insertHomeworkType(item)
                 } else {
-                    if (localItem.createStatus == 0) {
-                        editHomeworkTypeCreate(localItem, 2)
+                    if (localItem.typeId!=typeId){
+                       editHomeworkTypeId(localItem,typeId)
                     }
                 }
             } else {
@@ -105,21 +105,24 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     insertHomeworkType(item)
                 } else {
                     val homeworkTypeBean = HomeworkTypeDaoManager.getInstance().queryByTypeId(item.typeId)
-                    if (homeworkTypeBean.createStatus == 0) {
-                        editHomeworkTypeCreate(homeworkTypeBean, 2)
-                    }
-                    else{
-                        if (homeworkTypeBean.name != item.name) {
-                            editHomeworkTypeName(homeworkTypeBean, item.name)
-                        }
+                    if (homeworkTypeBean.name != item.name) {
+                        editHomeworkTypeName(homeworkTypeBean, item.name)
                     }
                 }
             }
         }
 
-        //验证老师作业本，线上是否还存在，不存在转为非线上状态
-        val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2)
+        //验证学生本地作业本，线上还存在，本地转为线上状态
+        val localTypes = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 0)
         for (item in localTypes) {
+            if (createTypeIds.contains(item.typeId)) {
+                editHomeworkTypeCreate(item, 2)
+            }
+        }
+
+        //验证老师作业本，线上还存在，不存在转为非线上状态
+        val localTypes1 = HomeworkTypeDaoManager.getInstance().queryAllByCreate(mCourse, 2)
+        for (item in localTypes1) {
             if (!createTypeIds.contains(item.typeId)) {
                 editHomeworkTypeCreate(item, 0)
             }
@@ -342,9 +345,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     if (item.messages.isNullOrEmpty()){
                         return@setOnItemChildClickListener
                     }
-                    ActivityManager.getInstance().finishActivity(HomeworkMessageAllActivity::class.java.name)
+                    ActivityManager.getInstance().finishActivity(HomeworkUnfinishedMessageAllActivity::class.java.name)
 
-                    val intent=Intent(requireActivity(),HomeworkMessageActivity::class.java)
+                    val intent=Intent(requireActivity(),HomeworkUnfinishedMessageActivity::class.java)
                     MethodManager.setHomeworkTypeBundle(intent,item)
                     customStartActivity(intent)
                 }
@@ -397,6 +400,17 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
         //修改增量更新
         DataUpdateManager.editDataUpdate(2, item.typeId, 1, item.typeId, Gson().toJson(item))
+    }
+
+    /**
+     * 作业本名称改变
+     */
+    private fun editHomeworkTypeId(item: HomeworkTypeBean, typeId: Int) {
+        DataUpdateManager.deleteDateUpdate(2,item.typeId)
+        item.typeId = typeId
+        HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
+        //修改增量更新
+        DataUpdateManager.createDataUpdate(2, item.typeId, 1, item.typeId, Gson().toJson(item))
     }
 
     /**
@@ -1135,11 +1149,12 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     }
 
     override fun onRefreshData() {
+        super.onRefreshData()
         fetchHomeworkType()
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchHomeworkType()
+        onRefreshData()
     }
 
 }

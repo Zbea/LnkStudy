@@ -1,5 +1,8 @@
 package com.bll.lnkstudy.manager;
 
+import android.util.Log;
+
+import com.bll.lnkstudy.Constants;
 import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.DaoSession;

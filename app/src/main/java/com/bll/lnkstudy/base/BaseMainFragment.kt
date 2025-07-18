@@ -154,4 +154,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     open fun uploadSuccess(cloudIds: MutableList<Int>?){
     }
 
+    override fun onRefreshData() {
+        mCommonPresenter.getClassGroupPermission()
+    }
 }

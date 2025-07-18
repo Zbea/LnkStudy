@@ -8,6 +8,7 @@ import com.bll.lnkstudy.mvp.model.ClassGroup;
 import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
+import com.bll.lnkstudy.mvp.model.book.TeachingMaterialList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
@@ -187,6 +188,7 @@ public interface IContractView {
     interface ICommonView extends IBaseView {
         default void onList(CommonData commonData){};
         default void onListSchools(List<SchoolBean> list){};
+        default void onClassGroupPermission(long time){};
     }
 
     interface ICalenderView extends IBaseView {
@@ -196,6 +198,10 @@ public interface IContractView {
 
     interface IQiniuView extends IBaseView {
         void onToken(String token);
+    }
+
+    interface ITeachingMaterialView extends IBaseView {
+        void onList(TeachingMaterialList list);
     }
 
 }

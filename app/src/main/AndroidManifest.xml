@@ -130,7 +130,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".ui.activity.TeachActivity"
+            android:name=".ui.activity.VideoActivity"
             android:turnScreenOn="true"
             android:windowSoftInputMode="adjustPan"
             />
@@ -294,8 +294,9 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.HomeworkNoticeListActivity" />
-        <activity android:name=".ui.activity.HomeworkMessageActivity" />
-        <activity android:name=".ui.activity.HomeworkMessageAllActivity" />
+        <activity android:name=".ui.activity.HomeworkUnfinishedMessageActivity" />
+        <activity android:name=".ui.activity.HomeworkUnfinishedMessageAllActivity" />
+        <activity android:name=".ui.activity.TeachingMaterialListActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

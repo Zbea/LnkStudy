@@ -212,6 +212,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     override fun onRefreshData() {
+        super.onRefreshData()
         for (fragment in fragments){
             fragment.onRefreshData()
         }

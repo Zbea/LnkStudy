@@ -17,7 +17,7 @@ import com.bll.lnkstudy.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class BookcaseDetailsDialog(val context: Context,val type:Int) {
+class BookcaseDetailsDialog(val context: Context) {
 
     fun builder(): BookcaseDetailsDialog {
         val dialog = Dialog(context)

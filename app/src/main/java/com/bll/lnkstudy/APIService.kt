@@ -15,6 +15,7 @@ import com.bll.lnkstudy.mvp.model.TeachingVideoType
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.book.BookStore
 import com.bll.lnkstudy.mvp.model.book.BookStoreType
+import com.bll.lnkstudy.mvp.model.book.TeachingMaterialList
 import com.bll.lnkstudy.mvp.model.book.TextbookStore
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
@@ -349,6 +350,11 @@ interface APIService{
     @POST("message/inform/studentToParent")
     fun commitMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 获取老师分享资料
+     */
+    @GET("teacher/share/list")
+    fun getTeachingMaterials(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<TeachingMaterialList>>
+    /**
      * 获取家长作业本
      */
     @GET("parent/homework/all")
@@ -384,6 +390,11 @@ interface APIService{
      */
     @GET("school/list")
     fun getCommonSchool(): Observable<BaseResult<MutableList<SchoolBean>>>
+    /**
+     * 获取班群老师权限
+     */
+    @GET("class/limitTime")
+    fun getClassGroupPermission(): Observable<BaseResult<Long>>
 
     /**
      * 获取云列表

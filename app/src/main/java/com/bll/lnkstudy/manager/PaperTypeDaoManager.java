@@ -87,11 +87,10 @@ public class PaperTypeDaoManager {
                 .build().list();
     }
 
-    public List<PaperTypeBean> queryAllByCreate(String course,int create,int autoState){
+    public List<PaperTypeBean> queryAllByCreate(String course,int create){
         WhereCondition whereCondition=PaperTypeBeanDao.Properties.Course.eq(course);
         WhereCondition whereCondition1=PaperTypeBeanDao.Properties.CreateStatus.eq(create);
-        WhereCondition whereCondition2=PaperTypeBeanDao.Properties.AutoState.eq(autoState);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2)
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1)
                 .build().list();
     }
 

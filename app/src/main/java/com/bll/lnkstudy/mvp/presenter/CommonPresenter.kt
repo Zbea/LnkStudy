@@ -40,4 +40,18 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
         }, true)
     }
 
+    fun getClassGroupPermission() {
+        val grade = RetrofitManager.service.getClassGroupPermission()
+        doRequest(grade, object : Callback<Long>(view,screen,false) {
+            override fun failed(tBaseResult: BaseResult<Long>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Long>) {
+                if (tBaseResult.data!=null)
+                    view.onClassGroupPermission(tBaseResult.data!!)
+            }
+
+        }, false)
+    }
+
 }

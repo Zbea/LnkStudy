@@ -80,13 +80,11 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
         SPUtil.putObj(Constants.SP_PARENT_PERMISSION, permissionParentBean)
     }
     override fun onSchoolPermission(permissionSchoolBean: PermissionSchoolBean) {
-        if (permissionSchoolBean!=null){
-            if (permissionSchoolBean.config.isNotEmpty()) {
-                val item = Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
-                SPUtil.putObj(Constants.SP_SCHOOL_PERMISSION, item)
-            } else {
-                SPUtil.removeObj(Constants.SP_SCHOOL_PERMISSION)
-            }
+        if (permissionSchoolBean.config.isNotEmpty()) {
+            val item = Gson().fromJson(permissionSchoolBean.config, PermissionSchoolItemBean::class.java)
+            SPUtil.putObj(Constants.SP_SCHOOL_PERMISSION, item)
+        } else {
+            SPUtil.removeObj(Constants.SP_SCHOOL_PERMISSION)
         }
     }
     override fun onCorrect(list: HomeworkNoticeList) {
@@ -355,6 +353,7 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
     }
 
     override fun onRefreshData() {
+        super.onRefreshData()
         lazyLoad()
     }
 

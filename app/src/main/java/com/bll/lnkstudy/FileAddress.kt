@@ -243,4 +243,11 @@ class FileAddress {
     fun getPathRecorder():String{
         return "$IMAGE_PATH/${getAccountId()}/recorder"
     }
+
+    fun getPathDocument():String{
+        return "$IMAGE_PATH/${getAccountId()}"
+    }
+    fun getPathDocument(name:String):String{
+        return "$IMAGE_PATH/${getAccountId()}/$name"
+    }
 }

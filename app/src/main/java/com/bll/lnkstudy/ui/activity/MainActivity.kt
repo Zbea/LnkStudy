@@ -28,6 +28,7 @@ import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
+import com.bll.lnkstudy.ui.fragment.teaching.TextbookFragment
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.date.Lunar
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
@@ -49,8 +50,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     var mainLeftFragment: MainLeftFragment? = null
     var bookcaseFragment: BookcaseFragment? = null
-    var textbookFragment: TextbookFragment? = null
-    var teachFragment: TeachFragment? = null
+    var teachingManageFragment: TeachingManageFragment? = null
+    var videoFragment: VideoFragment? = null
     var learningConditionFragment: LearningConditionFragment? = null
 
     var mainRightFragment: MainRightFragment? = null
@@ -76,10 +77,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 uploadDataUpdate(token)
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
-                textbookFragment?.uploadTextBook(token)
+                teachingManageFragment?.uploadTextBook(token)
+                teachingManageFragment?.deleteDocument()
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
-                textbookFragment?.uploadTextBook(token)
+                teachingManageFragment?.uploadTextBook(token)
+                teachingManageFragment?.deleteDocument()
             }
             Constants.AUTO_UPLOAD_YEAR_EVENT->{
                 mainRightFragment?.uploadDiary(token,true)
@@ -127,12 +130,12 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
         mainLeftFragment = MainLeftFragment()
         bookcaseFragment = BookcaseFragment()
-        textbookFragment = TextbookFragment()
+        teachingManageFragment = TeachingManageFragment()
         paperFragment = TestPaperManageFragment()
         homeworkFragment = HomeworkManageFragment()
         noteFragment = NoteFragment()
         paintingFragment = PaintingFragment()
-        teachFragment = TeachFragment()
+        videoFragment = VideoFragment()
         mainRightFragment = MainRightFragment()
         learningConditionFragment = LearningConditionFragment()
 
@@ -149,8 +152,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 when (position) {
                     0 -> switchFragment(1,mainLeftFragment)//首页
                     1 -> switchFragment(1,bookcaseFragment)//书架
-                    2 -> switchFragment(1,textbookFragment)//课本
-                    3 -> switchFragment(1,teachFragment)//义教
+                    2 -> switchFragment(1,teachingManageFragment)//课本
+                    3 -> switchFragment(1,videoFragment)//义教
                     4 -> switchFragment(1,learningConditionFragment)//应用
                 }
                 leftPosition = position

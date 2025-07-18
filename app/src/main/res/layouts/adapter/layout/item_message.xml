@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:background="@drawable/bg_line_bottom"
     >
-
-    <TextView
-        android:id="@+id/tv_message_content"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:lineSpacingExtra="5dp"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_24"
-        />
-
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/dp_30"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="end|center_vertical"
         >
+        <TextView
+            android:id="@+id/tv_message_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24" />
 
         <TextView
             android:id="@+id/tv_message_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
-
-        <TextView
-            android:id="@+id/tv_message_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:ellipsize="end"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24" />
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_message_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_24"
+        />
 
 </LinearLayout>

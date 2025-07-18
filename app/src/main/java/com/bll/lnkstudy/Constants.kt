@@ -48,6 +48,7 @@ class Constants {
         //storage/sdcard/0
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
+        val DOCUMENT_PATH = Environment.getExternalStoragePublicDirectory("Documents").absolutePath
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")!!.path
@@ -111,8 +112,9 @@ class Constants {
         const val SETTING_CLEAT_EVENT = "DataClear"
         const val PAINTING_RULE_IMAGE_SET_EVENT = "PaintingRuleImageSetEvent"//规矩图设置
         const val HOMEWORK_MESSAGE_COMMIT_EVENT = "HomeworkMessageCommitEvent"//作业消息提交成功
-            const val HOMEWORK_MESSAGE_TIPS_EVENT = "HomeworkMessageTipsEvent"//作业消息标识
+        const val HOMEWORK_MESSAGE_TIPS_EVENT = "HomeworkMessageTipsEvent"//作业消息标识
         const val CLEAR_HOMEWORK_EVENT="ClearHomeworkEvent"//清除作业通知
+        const val DOCUMENT_DOWNLOAD_EVENT="DocumentDownloadEvent"//资料下载通知
 
         //定时任务标识
         const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新
@@ -130,6 +132,7 @@ class Constants {
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
         const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"
+        const val PACKAGE_PPT= "com.htfyun.dualdocreader"
 
         const val INTENT_SCREEN_LABEL = "android.intent.extra.LAUNCH_SCREEN"//打开页面在那个屏
         const val INTENT_DRAWING_FOCUS = "android.intent.extra.KEEP_FOCUS"//手写设置焦点

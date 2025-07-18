@@ -17,9 +17,11 @@ object DataBeanManager {
     var isRuleImage=false//是否设置规矩图
     var homeworkMessages= mutableListOf<HomeworkMessageList.MessageBean>()
 
+    var permissionTime=0L
+
      val listTitle = arrayOf(
         "首页","书架",
-        "课本","作业",
+        "教材","作业",
         "试卷","笔记",
         "书画","视教",
         "学情","日记"
@@ -30,7 +32,7 @@ object DataBeanManager {
     )
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
-        mContext.getString(R.string.textbook_tab_other),mContext.getString(R.string.textbook_tab_old)
+        mContext.getString(R.string.textbook_tab_other),mContext.getString(R.string.textbook_tab_old),"教学资料"
     )
     val searchType = arrayOf(
         mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),

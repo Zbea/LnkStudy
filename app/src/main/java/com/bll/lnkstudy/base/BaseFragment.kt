@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.ProgressDialog
@@ -79,6 +80,10 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (!commonData.version.isNullOrEmpty()&&commonData.version!=MethodManager.getItemLists("bookVersions")){
             MethodManager.saveItemLists("bookVersions",commonData.version)
         }
+    }
+
+    override fun onClassGroupPermission(time: Long) {
+        DataBeanManager.permissionTime=time
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

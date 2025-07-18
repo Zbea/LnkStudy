@@ -5,6 +5,7 @@ import static com.bll.lnkstudy.Constants.SP_PARENT_PERMISSION;
 import static com.bll.lnkstudy.Constants.SP_SCHOOL_PERMISSION;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.bll.lnkstudy.dialog.ImageDialog;
 import com.bll.lnkstudy.manager.AppDaoManager;
 import com.bll.lnkstudy.manager.BookGreenDaoManager;
 import com.bll.lnkstudy.manager.ItemTypeDaoManager;
@@ -94,6 +96,14 @@ public class MethodManager {
         else {
             return user.accountId;
         }
+    }
+
+    /**
+     * 获取老师是否允许查看(true允许查看)
+     * @return
+     */
+    public static boolean isClassGroupPermissionArrow(){
+        return System.currentTimeMillis()<DataBeanManager.INSTANCE.getPermissionTime();
     }
 
     /**
@@ -173,6 +183,45 @@ public class MethodManager {
         context.sendBroadcast(intent);
     }
 
+    public static void gotoDocument(Context context,File file){
+        String format=FileUtils.getUrlFormat(file.getPath());
+        if (format.equals(".ppt") || format.equals(".pptx")){
+            gotoPptDetails(context,file.getPath(),Constants.SCREEN_LEFT);
+        }
+        else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
+            List<String> images=new ArrayList<>();
+            images.add(file.getPath());
+            new ImageDialog(context,1,images).builder();
+        }
+        else {
+            String fileName=FileUtils.getUrlName(file.getPath());
+            String drawPath=file.getParent()+"/"+fileName+"draw/";
+            Intent intent=new Intent();
+            intent.setAction("com.geniatech.reader.action.VIEW_BOOK_PATH");
+            intent.setPackage(Constants.PACKAGE_READER);
+            intent.putExtra("path", file.getPath());
+            intent.putExtra("bookName", fileName);
+            intent.putExtra("tool", getJsonArray().toString());
+            intent.putExtra("userId", getAccountId());
+            intent.putExtra("type", 1);
+            intent.putExtra("drawPath", drawPath);
+            intent.putExtra("key_book_type", 1);
+            intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
+
+    public static void gotoPptDetails(Context context,String path,int flags){
+        if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+            intent.putExtra("path", path);
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL, flags);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
+
     /**
      * 跳转阅读器
      *
@@ -181,18 +230,19 @@ public class MethodManager {
      * key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      */
     public static void gotoBookDetails(Context context, BookBean bookBean) {
-        if (!MethodManager.getSchoolPermissionAllow(0)) {
-            SToast.showText(1, "学校不允许该时间段查看书籍");
-            return;
-        }
-        if (!MethodManager.getParentPermissionAllow(0)) {
-            SToast.showText(1, "家长不允许该时间段查看书籍");
-            return;
-        }
-
-        if (!DateUtils.isTimeBetween7And22()){
-            SToast.showText(1, "该时间无法查看书籍");
-            return;
+        if (!isClassGroupPermissionArrow()){
+            if (!MethodManager.getSchoolPermissionAllow(0)) {
+                SToast.showText(1, "学校不允许该时间段查看书籍");
+                return;
+            }
+            if (!MethodManager.getParentPermissionAllow(0)) {
+                SToast.showText(1, "家长不允许该时间段查看书籍");
+                return;
+            }
+            if (!DateUtils.isTimeBetween7And22()){
+                SToast.showText(1, "该时间无法查看书籍");
+                return;
+            }
         }
 
         AppUtils.stopApp(context, Constants.PACKAGE_READER);
@@ -429,13 +479,15 @@ public class MethodManager {
      * 转跳本地画本、书法
      */
     public static void gotoPaintingDrawing(Context context, int type, int cloudId) {
-        if (!MethodManager.getSchoolPermissionAllow(2)) {
-            SToast.showText(2, "学校不允许该时间段手绘");
-            return;
-        }
-        if (!DateUtils.isTimeBetween7And22()){
-            SToast.showText(2, "该时间段无法手绘");
-            return;
+        if (!isClassGroupPermissionArrow()){
+            if (!MethodManager.getSchoolPermissionAllow(2)) {
+                SToast.showText(2, "学校不允许该时间段手绘");
+                return;
+            }
+            if (!DateUtils.isTimeBetween7And22()){
+                SToast.showText(2, "该时间段无法手绘");
+                return;
+            }
         }
         if (type == 0) {
             ActivityManager.getInstance().checkPaintingDrawingIsExist();
