@@ -11,7 +11,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.ClassGroupAddDialog
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.ImageDialog
 import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -120,9 +119,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                         bundle.putSerializable("classGroup",classGroup)
                         intent.putExtra("bundle",bundle)
                         customStartActivity(intent)
-                    }
-                    R.id.tv_course->{
-                        ImageDialog(this@ClassGroupActivity, arrayListOf(classGroup.imageUrl)).builder()
                     }
                 }
             }

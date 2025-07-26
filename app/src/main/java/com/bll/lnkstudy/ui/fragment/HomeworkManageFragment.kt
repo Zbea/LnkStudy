@@ -24,9 +24,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkstudy.ui.activity.HomeworkUnfinishedMessageActivity
-import com.bll.lnkstudy.ui.activity.HomeworkUnfinishedMessageAllActivity
-import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageAllActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
@@ -63,8 +61,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         showView(rl_message,tv_btn_1)
 
         rl_message.setOnClickListener {
-            ActivityManager.getInstance().finishActivity(HomeworkUnfinishedMessageActivity::class.java.name)
-            customStartActivity(Intent(requireActivity(),HomeworkUnfinishedMessageAllActivity::class.java))
+            customStartActivity(Intent(requireActivity(), HomeworkUnfinishedMessageAllActivity::class.java))
         }
 
         tv_btn_1.text="创建作业本"

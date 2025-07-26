@@ -102,9 +102,10 @@ public class DiaryDaoManager {
     }
 
     public List<DiaryBean> queryList(long startLong,long endLong) {
-        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.between(startLong,endLong);
-        WhereCondition whereCondition1= DiaryBeanDao.Properties.UploadId.eq(0);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.ge(startLong);
+        WhereCondition whereCondition1= DiaryBeanDao.Properties.Date.le(endLong);
+        WhereCondition whereCondition2= DiaryBeanDao.Properties.UploadId.eq(0);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1,whereCondition2).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
 
     public List<DiaryBean> queryListByTitle(int uploadId) {

@@ -37,8 +37,9 @@ class InputContentDialog(val context: Context, private val screenPos:Int, val st
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val name = dialog.findViewById<EditText>(R.id.ed_name)
         name.hint=string
-        if (type==1)
-            name?.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL // 设置输入类型为数字
+        if (type==1){
+            name.inputType = InputType.TYPE_CLASS_NUMBER// 设置输入类型为数字
+        }
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()

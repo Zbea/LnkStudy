@@ -1,6 +1,7 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.account
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
@@ -12,7 +13,9 @@ import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
+import com.bll.lnkstudy.mvp.presenter.SmsPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.ISmsView
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_birthday
@@ -32,28 +35,34 @@ import kotlinx.android.synthetic.main.ac_account_info.tv_phone
 import kotlinx.android.synthetic.main.ac_account_info.tv_provinces
 import kotlinx.android.synthetic.main.ac_account_info.tv_school_name
 import kotlinx.android.synthetic.main.ac_account_info.tv_user
+import kotlinx.android.synthetic.main.common_title.tv_btn
 
-class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView {
+class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoView,ISmsView {
 
     private var presenter:AccountInfoPresenter?=null
+    private var smsPresenter:SmsPresenter?=null
     private var nickname = ""
     private var school=0
     private var schoolBean:SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
     private var birthday=0L
+    private var type=1
+
+    override fun onSms() {
+        showToast("短信发送成功")
+        InputContentDialog(this,1,"输入验证码",1).builder().setOnDialogClickListener{
+            smsPresenter?.checkPhone(it)
+        }
+    }
+    override fun onCheckSuccess() {
+        onClick()
+    }
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
         selectorSchool(list)
     }
-
     override fun onLogout() {
-    }
-    override fun onSms() {
-        showToast("短信发送成功")
-    }
-    override fun onCheckSuccess() {
-        editPhone()
     }
     override fun onEditPhone() {
         mUser?.telNumber=phone
@@ -101,11 +110,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     override fun initChangeScreenData() {
         presenter = AccountInfoPresenter(this,getCurrentScreenPos())
+        smsPresenter=SmsPresenter(this,getCurrentScreenPos())
     }
 
     @SuppressLint("WrongConstant")
     override fun initView() {
         setPageTitle(R.string.my_account)
+        showView(tv_btn)
 
         mUser?.apply {
             tv_user.text = account
@@ -121,50 +132,74 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
             tv_area.text = schoolArea
         }
 
-        btn_edit_name.setOnClickListener {
-            editName()
+        tv_btn.text="一键功能"
+        tv_btn.setOnClickListener {
+            customStartActivity(Intent(this,AccountSettingDataActivity::class.java))
         }
 
-        btn_edit_school.setOnClickListener {
-            mCommonPresenter.getCommonSchool()
+        btn_edit_name.setOnClickListener {
+            getSms(1)
         }
 
         btn_edit_birthday.setOnClickListener {
-            DateDialog(this,birthday).builder().setOnDateListener { dateStr, dateTim ->
-                birthday=dateTim
-                presenter?.editBirthday(birthday)
-            }
+            getSms(2)
         }
 
         btn_edit_phone.setOnClickListener {
-            presenter?.sms(mUser?.telNumber!!)
-            InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
-                presenter?.checkPhone(it)
-            }
+            getSms(3)
+        }
+
+        btn_edit_school.setOnClickListener {
+            getSms(4)
+        }
+
+        btn_edit_parent.setOnClickListener {
+            getSms(5)
         }
 
         btn_logout.setOnClickListener {
             CommonDialog(this).setContent(R.string.account_is_logout_tips).builder()
-                .setDialogClickListener(object :
-                    CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
+                .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                     override fun ok() {
                         MethodManager.logout(this@AccountInfoActivity)
                     }
                 })
         }
 
-        btn_edit_parent.setOnClickListener {
-            AccountEditParentDialog(this,mUser!!.parentName,mUser!!.parentNickname,mUser!!.parentTel).builder().setOnDialogClickListener{
-                name,nickname,phone->
-                tv_parent.text = name
-                tv_parent_name.text = nickname
-                tv_parent_phone.text = phone
-                presenter?.editParent(name, nickname, phone)
+    }
+
+    private fun getSms(type:Int){
+        this.type=type
+        smsPresenter?.sms(mUser?.telNumber!!)
+    }
+
+    private fun onClick(){
+        when(type){
+            1->{
+                editName()
+            }
+            2->{
+                DateDialog(this,birthday).builder().setOnDateListener { dateStr, dateTim ->
+                    birthday=dateTim
+                    presenter?.editBirthday(birthday)
+                }
+            }
+            3->{
+                editPhone()
+            }
+            4->{
+                mCommonPresenter.getCommonSchool()
+            }
+            5->{
+                AccountEditParentDialog(this,mUser!!.parentName,mUser!!.parentNickname,mUser!!.parentTel).builder().setOnDialogClickListener{
+                        name,nickname,phone->
+                    tv_parent.text = name
+                    tv_parent_name.text = nickname
+                    tv_parent_phone.text = phone
+                    presenter?.editParent(name, nickname, phone)
+                }
             }
         }
-
     }
 
     /**
@@ -194,7 +229,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                 presenter?.editPhone(code, phone)
             }
             override fun onPhone(phone: String) {
-                presenter?.sms(phone)
+                smsPresenter?.sms(phone)
             }
         })
     }

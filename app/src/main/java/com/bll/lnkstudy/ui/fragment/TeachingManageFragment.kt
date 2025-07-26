@@ -34,7 +34,7 @@ class TeachingManageFragment: BaseMainFragment() {
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[2])
-        tv_btn.text="资料中心"
+        tv_btn.text="教学列表"
 
         tv_btn.setOnClickListener {
             customStartActivity(Intent(requireActivity(),TeachingMaterialListActivity::class.java))
@@ -137,7 +137,6 @@ class TeachingManageFragment: BaseMainFragment() {
                             mCloudUploadPresenter.upload(cloudList)
                     }
                 }
-
             }
             else{
                 cloudList.add(CloudListBean().apply {

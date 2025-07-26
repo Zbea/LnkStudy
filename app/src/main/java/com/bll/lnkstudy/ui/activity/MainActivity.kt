@@ -26,9 +26,9 @@ import com.bll.lnkstudy.mvp.model.book.TextbookBean
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.presenter.QiniuPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.ui.activity.account.AccountInfoActivity
 import com.bll.lnkstudy.ui.adapter.MainListAdapter
 import com.bll.lnkstudy.ui.fragment.*
-import com.bll.lnkstudy.ui.fragment.teaching.TextbookFragment
 import com.bll.lnkstudy.utils.*
 import com.bll.lnkstudy.utils.date.Lunar
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
@@ -434,66 +434,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     }
 
-    /**
-     * 一键清除
-     */
-    private fun clearData() {
-        SPUtil.removeObj(Constants.SP_PRIVACY_PW_DIARY)
-        SPUtil.removeObj(Constants.SP_PRIVACY_PW_NOTE)
-        SPUtil.removeObj(Constants.SP_SCHOOL_PERMISSION)
-        SPUtil.removeObj(Constants.SP_PARENT_PERMISSION)
-        SPUtil.putListInt(Constants.SP_WEEK_DATE_LIST, mutableListOf())
-        SPUtil.putListLong(Constants.SP_DATE_LIST, mutableListOf())
-        SPUtil.putString(Constants.SP_DIARY_BG_SET,"")
-        SPUtil.putString(Constants.SP_COURSE_URL,"")
-        SPUtil.putBoolean(Constants.SP_EXAM_MODE,false)
-
-        MyApplication.mDaoSession?.clear()
-        DataUpdateDaoManager.getInstance().clear()
-        FreeNoteDaoManager.getInstance().clear()
-        DiaryDaoManager.getInstance().clear()
-        BookGreenDaoManager.getInstance().clear()
-        TextbookGreenDaoManager.getInstance().clear()
-
-        HomeworkTypeDaoManager.getInstance().clear()
-        //删除所有作业
-        HomeworkContentDaoManager.getInstance().clear()
-        //删除所有录音
-        RecordDaoManager.getInstance().clear()
-        //删除所有作业卷内容
-        HomeworkPaperDaoManager.getInstance().clear()
-        //题卷本
-        HomeworkBookDaoManager.getInstance().clear()
-        HomeworkBookCorrectDaoManager.getInstance().clear()
-        HomeworkShareDaoManager.getInstance().clear()
-
-        //删除本地考卷分类
-        PaperTypeDaoManager.getInstance().clear()
-        //删除所有考卷内容
-        PaperDaoManager.getInstance().clear()
-
-        NoteDaoManager.getInstance().clear()
-        NoteContentDaoManager.getInstance().clear()
-
-        PaintingDrawingDaoManager.getInstance().clear()
-        PaintingBeanDaoManager.getInstance().clear()
-
-        DateEventGreenDaoManager.getInstance().clear()
-        AppDaoManager.getInstance().clear()
-
-        ItemTypeDaoManager.getInstance().clear()
-        CalenderDaoManager.getInstance().clear()
-
-        FileUtils.deleteFile(File(Constants.BOOK_PATH))
-        FileUtils.deleteFile(File(Constants.SCREEN_PATH))
-        FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
-
-        Glide.get(this).clearMemory()
-        Thread{
-            Glide.get(this).clearDiskCache()
-        }.start()
-        MethodManager.logout(this)
-    }
 
     /**
      * 清除增量更新
@@ -1085,9 +1025,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 val map = HashMap<String, Any>()
                 map["type"] = arrayOf(1, 2, 3, 7)
                 mDataUpdatePresenter.onList(map)
-            }
-            Constants.SETTING_CLEAT_EVENT -> {
-                clearData()
             }
         }
     }

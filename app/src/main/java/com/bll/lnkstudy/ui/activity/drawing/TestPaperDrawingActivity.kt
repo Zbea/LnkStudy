@@ -66,7 +66,12 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
         }
 
         iv_score.setOnClickListener {
-            val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
+            val answerImages=if (paper?.answerUrl.isNullOrEmpty()){
+                mutableListOf()
+            }
+            else{
+                paper!!.answerUrl?.split(",") as MutableList<String>
+            }
             ScoreDetailsDialog(this,paper!!.title,paper!!.score.toDouble(),paper!!.correctMode,paper!!.scoreMode,answerImages,paper!!.correctJson).builder()
         }
     }

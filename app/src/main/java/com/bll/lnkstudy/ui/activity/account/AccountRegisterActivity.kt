@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -10,7 +10,9 @@ import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.presenter.RegisterOrFindPsdPresenter
+import com.bll.lnkstudy.mvp.presenter.SmsPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.ISmsView
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
@@ -40,24 +42,24 @@ import kotlinx.android.synthetic.main.ac_account_register.tv_school
 //5. 手机号码规则 11 位有效手机号
 //6. 验证码规则数字即可
  */
-class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView {
+class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView,ISmsView {
 
     private var presenter:RegisterOrFindPsdPresenter?=null
+    private var smsPresenter: SmsPresenter?=null
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var brithday=0L
     private var school=0
     private var schoolSelectDialog:SchoolSelectDialog?=null
 
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        selectorSchool(list)
-    }
-
     override fun onSms() {
         showToast(R.string.toast_message_code_success)
         showCountDownView()
     }
 
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
     override fun onRegister() {
         showToast(R.string.toast_register_success)
         setIntent()
@@ -84,6 +86,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
 
     override fun initChangeScreenData() {
         presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
+        smsPresenter=SmsPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
@@ -113,7 +116,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
-            presenter?.sms(phone)
+            smsPresenter?.sms(phone)
         }
 
         tv_school.setOnClickListener {

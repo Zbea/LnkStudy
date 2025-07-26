@@ -64,7 +64,6 @@ public interface IContractView {
 
     //注册 找回密码
     interface IRegisterOrFindPsdView extends IBaseView {
-        void onSms();
         void onRegister();
         void onFindPsd();
     }
@@ -72,13 +71,17 @@ public interface IContractView {
     //账户页面回调
     interface IAccountInfoView extends IBaseView {
         void onLogout();
-        void onSms();
-        void onCheckSuccess();
         void onEditPhone();
         void onEditBirthday();
         void onEditNameSuccess();
         void onEditSchool();
         void onEditParent();
+    }
+
+    //短信回调
+    interface ISmsView extends IBaseView {
+        default void onSms(){};
+        default void onCheckSuccess(){};
     }
 
     //钱包页面回调

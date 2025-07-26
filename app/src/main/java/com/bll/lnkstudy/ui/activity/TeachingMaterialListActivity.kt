@@ -18,10 +18,12 @@ import com.bll.lnkstudy.ui.adapter.DocumentListAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.SPUtil
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_course
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 
 class TeachingMaterialListActivity:BaseAppCompatActivity(), IContractView.ITeachingMaterialView {
 
@@ -53,7 +55,7 @@ class TeachingMaterialListActivity:BaseAppCompatActivity(), IContractView.ITeach
     }
 
     override fun initView() {
-        setPageTitle("资料中心")
+        setPageTitle("教学列表")
         showView(tv_course)
 
         tv_course.text="全部"
@@ -104,6 +106,7 @@ class TeachingMaterialListActivity:BaseAppCompatActivity(), IContractView.ITeach
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     hideLoading()
+                    SPUtil.putString(File(targetFileStr).name,item.url)
                     EventBus.getDefault().post(Constants.DOCUMENT_DOWNLOAD_EVENT)
                     showToast(getString(R.string.book_download_success))
                     hideLoading()

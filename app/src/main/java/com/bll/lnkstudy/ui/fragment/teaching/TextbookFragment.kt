@@ -87,50 +87,30 @@ class TextbookFragment : BaseMainFragment() {
         val book=books[position]
 
         val beans= mutableListOf<ItemList>()
-        when(textId){
-            1->{
-                beans.add(ItemList().apply {
-                    name=if (book.isLock)"解锁" else "加锁"
-                    resId=if (book.isLock) R.mipmap.icon_setting_unlock else R.mipmap.icon_setting_lock
-                })
-                beans.add(ItemList().apply {
-                    name="删除"
-                    resId=R.mipmap.icon_setting_delete
-                })
-            }
-            2->{
-                beans.add(ItemList().apply {
-                    name="删除"
-                    resId=R.mipmap.icon_setting_delete
-                })
-            }
-            3->{
-                beans.add(ItemList().apply {
-                    name=if (book.isLock)"解锁" else "加锁"
-                    resId=if (book.isLock) R.mipmap.icon_setting_unlock else R.mipmap.icon_setting_lock
-                })
-            }
+        beans.add(ItemList().apply {
+            name="删除"
+            resId=R.mipmap.icon_setting_delete
+        })
+        //将参考课本或者往期课本加锁
+        if (textId==1||textId==3){
+            beans.add(ItemList().apply {
+                name=if (book.isLock)"解锁" else "加锁"
+                resId=if (book.isLock) R.mipmap.icon_setting_unlock else R.mipmap.icon_setting_lock
+            })
         }
-
         LongClickManageDialog(requireActivity(),1,book.bookName,beans).builder()
             .setOnDialogClickListener {
                 when(it){
                     0->{
-                        if (textId==2){
-                            MethodManager.deleteTextbook(book)
-                            mAdapter?.remove(position)
-                        }
-                        else{
-                            book.isLock=!book.isLock
-                            mAdapter?.notifyItemChanged(position)
-                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                            //修改增量更新
-                            DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
-                        }
-                    }
-                    1->{
                         MethodManager.deleteTextbook(book)
                         mAdapter?.remove(position)
+                    }
+                    1->{
+                        book.isLock=!book.isLock
+                        mAdapter?.notifyItemChanged(position)
+                        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                        //修改增量更新
+                        DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
                     }
                 }
             }

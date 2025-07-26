@@ -24,7 +24,7 @@ import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkNoticeView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
-import com.bll.lnkstudy.ui.activity.HomeworkNoticeListActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkNoticeListActivity
 import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity

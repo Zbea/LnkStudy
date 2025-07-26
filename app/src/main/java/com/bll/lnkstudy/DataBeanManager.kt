@@ -928,7 +928,7 @@ object DataBeanManager {
     }
 
 
-    private fun getResultChildItems():MutableList<ResultStandardItem.ResultChildItem>{
+     fun getResultChildItems():MutableList<ResultStandardItem.ResultChildItem>{
         val items= mutableListOf<ResultStandardItem.ResultChildItem>()
         items.add(ResultStandardItem.ResultChildItem().apply {
             sort=1
@@ -1138,12 +1138,15 @@ object DataBeanManager {
                 8.0 -> {
                     "C "
                 }
-                else -> {
+                9.0 -> {
                     "C-"
+                }
+                else->{
+                    score.toString()
                 }
             }
         }
-        else{
+        else {
             return when (score) {
                 1.0 -> {
                     "A"
@@ -1151,8 +1154,11 @@ object DataBeanManager {
                 2.0 -> {
                     "B"
                 }
-                else -> {
+                3.0 -> {
                     "C"
+                }
+                else -> {
+                    score.toString()
                 }
             }
         }

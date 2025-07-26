@@ -28,7 +28,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
             }
             Constants.ACTION_UPLOAD_15->{
-                Log.d(Constants.DEBUG,"15点增量上传、以及全局刷新")
+                Log.d(Constants.DEBUG,"13点增量上传、以及全局刷新")
                 MethodManager.wakeUpScreen(context)
                 EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_EVENT)
             }
@@ -62,7 +62,6 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
             }
             "com.android.settings.cleardata"->{
                 Log.d(Constants.DEBUG,"一键清除")
-                EventBus.getDefault().post(Constants.SETTING_CLEAT_EVENT)
             }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d(Constants.DEBUG,"搜索")

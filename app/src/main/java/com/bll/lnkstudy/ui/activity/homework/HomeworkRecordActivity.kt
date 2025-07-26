@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.homework
 
 import android.media.MediaPlayer
 import android.media.MediaRecorder

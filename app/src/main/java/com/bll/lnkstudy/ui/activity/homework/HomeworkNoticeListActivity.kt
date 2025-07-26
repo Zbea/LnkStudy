@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.homework
 
 import android.view.ViewGroup
 import android.widget.LinearLayout

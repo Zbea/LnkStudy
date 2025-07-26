@@ -1,7 +1,6 @@
 package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
-import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkstudy.Constants.Companion.BOOK_EVENT
@@ -21,9 +20,9 @@ import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_book_tips
 import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_down
 import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_up
-import kotlinx.android.synthetic.main.fragment_bookcase.iv_tips
 import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
 import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
@@ -83,7 +82,12 @@ class BookcaseFragment: BaseMainFragment() {
      * 查找本地书籍
      */
     private fun findBook(){
-        iv_tips?.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
+        if (ItemTypeDaoManager.getInstance().isExistBookType){
+            showView(iv_book_tips)
+        }
+        else{
+            disMissView(iv_book_tips)
+        }
 
         books=BookGreenDaoManager.getInstance().queryAllBook(true,13)
         if (books.size==0){

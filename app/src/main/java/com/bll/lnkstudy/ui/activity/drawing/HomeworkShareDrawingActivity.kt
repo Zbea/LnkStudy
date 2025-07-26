@@ -67,7 +67,12 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
                 ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,if (homeworkType!!.state==10)10 else paper!!.questionType,paper!!.question,items).builder()
             }
             else{
-                val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
+                val answerImages=if (paper?.answerUrl.isNullOrEmpty()){
+                    mutableListOf()
+                }
+                else{
+                    paper!!.answerUrl?.split(",") as MutableList<String>
+                }
                 ScoreDetailsDialog(this,paper!!.title,paper!!.score,paper!!.questionType,paper!!.questionMode,answerImages,paper!!.question).builder()
             }
         }

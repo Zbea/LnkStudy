@@ -105,7 +105,7 @@
             android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.activity.AccountLoginActivity"
+            android:name=".ui.activity.account.AccountLoginActivity"
             android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>
@@ -115,10 +115,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.AccountRegisterActivity"
+        <activity android:name=".ui.activity.account.AccountRegisterActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.AccountInfoActivity"
+        <activity android:name=".ui.activity.account.AccountInfoActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookStoreActivity"
@@ -167,10 +167,10 @@
             android:name=".ui.activity.drawing.HomeworkPaperDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
-        <activity android:name=".ui.activity.HomeworkRecordActivity"
+        <activity android:name=".ui.activity.homework.HomeworkRecordActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.HomeworkRecordListActivity"
+        <activity android:name=".ui.activity.homework.HomeworkRecordListActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
@@ -285,7 +285,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.HomeworkCorrectActivity"
+        <activity android:name=".ui.activity.homework.HomeworkCorrectActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
@@ -293,10 +293,11 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.HomeworkNoticeListActivity" />
-        <activity android:name=".ui.activity.HomeworkUnfinishedMessageActivity" />
-        <activity android:name=".ui.activity.HomeworkUnfinishedMessageAllActivity" />
+        <activity android:name=".ui.activity.homework.HomeworkNoticeListActivity" />
+        <activity android:name=".ui.activity.homework.HomeworkUnfinishedMessageActivity" />
+        <activity android:name=".ui.activity.homework.HomeworkUnfinishedMessageAllActivity" />
         <activity android:name=".ui.activity.TeachingMaterialListActivity" />
+        <activity android:name=".ui.activity.account.AccountSettingDataActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

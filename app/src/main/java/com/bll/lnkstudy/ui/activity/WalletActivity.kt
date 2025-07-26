@@ -6,12 +6,15 @@ import android.os.Looper
 import android.widget.ImageView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.WalletBuyXdDialog
 import com.bll.lnkstudy.mvp.model.AccountOrder
 import com.bll.lnkstudy.mvp.model.AccountQdBean
 import com.bll.lnkstudy.mvp.model.User
+import com.bll.lnkstudy.mvp.presenter.SmsPresenter
 import com.bll.lnkstudy.mvp.presenter.WalletPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.ISmsView
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
@@ -19,14 +22,30 @@ import com.king.zxing.util.CodeUtils
 import kotlinx.android.synthetic.main.ac_wallet.tv_buy
 import kotlinx.android.synthetic.main.ac_wallet.tv_xdmoney
 
-class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
+class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
 
+    private var smsPresenter=SmsPresenter(this)
     private var walletPresenter=WalletPresenter(this)
     private var xdDialog:WalletBuyXdDialog?=null
     private var xdList= mutableListOf<AccountQdBean>()
     private var qrCodeDialog:Dialog?=null
     private var orderThread: OrderThread?=null//定时器
     private val handlerThread = Handler(Looper.myLooper()!!)
+
+    override fun onSms() {
+        showToast("短信发送成功")
+        InputContentDialog(this,1,"输入验证码",1).builder().setOnDialogClickListener{
+            smsPresenter.checkPhone(it)
+        }
+    }
+    override fun onCheckSuccess() {
+        if (xdList.size>0){
+            getXdView()
+        }
+        else{
+            walletPresenter.getXdList(true)
+        }
+    }
 
     override fun onXdList(list: MutableList<AccountQdBean>) {
         xdList= list
@@ -72,12 +91,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         tv_xdmoney.text=getString(R.string.xd)+"  "+mUser?.balance
 
         tv_buy.setOnClickListener {
-            if (xdList.size>0){
-                getXdView()
-            }
-            else{
-                walletPresenter.getXdList(true)
-            }
+            smsPresenter.sms(mUser?.telNumber!!)
         }
     }
 

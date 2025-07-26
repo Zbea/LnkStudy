@@ -22,7 +22,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IFileUploadView
-import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkCorrectActivity
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -212,7 +212,12 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 ResultStandardDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctMode,paper!!.correctJson,items).builder()
             }
             else{
-                val answerImages= paper!!.answerUrl?.split(",") as MutableList<String>
+                val answerImages=if (paper?.answerUrl.isNullOrEmpty()){
+                    mutableListOf()
+                }
+                else{
+                    paper!!.answerUrl?.split(",") as MutableList<String>
+                }
                 ScoreDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctMode,paper!!.scoreMode,answerImages,paper!!.correctJson).builder()
             }
         }

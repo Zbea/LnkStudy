@@ -109,7 +109,6 @@ class Constants {
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理刷新
         const val SETTING_DOWNLOAD_EVENT = "DataDownload"
         const val SETTING_RENT_EVENT = "DataRent"
-        const val SETTING_CLEAT_EVENT = "DataClear"
         const val PAINTING_RULE_IMAGE_SET_EVENT = "PaintingRuleImageSetEvent"//规矩图设置
         const val HOMEWORK_MESSAGE_COMMIT_EVENT = "HomeworkMessageCommitEvent"//作业消息提交成功
         const val HOMEWORK_MESSAGE_TIPS_EVENT = "HomeworkMessageTipsEvent"//作业消息标识

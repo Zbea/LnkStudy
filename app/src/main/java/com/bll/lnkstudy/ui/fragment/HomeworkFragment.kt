@@ -35,8 +35,8 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkstudy.ui.activity.HomeworkUnfinishedMessageActivity
-import com.bll.lnkstudy.ui.activity.HomeworkUnfinishedMessageAllActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageAllActivity
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
@@ -347,7 +347,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     }
                     ActivityManager.getInstance().finishActivity(HomeworkUnfinishedMessageAllActivity::class.java.name)
 
-                    val intent=Intent(requireActivity(),HomeworkUnfinishedMessageActivity::class.java)
+                    val intent=Intent(requireActivity(), HomeworkUnfinishedMessageActivity::class.java)
                     MethodManager.setHomeworkTypeBundle(intent,item)
                     customStartActivity(intent)
                 }

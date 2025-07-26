@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -11,6 +11,7 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.LoginPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -92,7 +93,7 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     private fun gotoMainActivity(){
         MethodManager.setStatusBarValue(statusBarValue)
-        val intent=Intent(this,MainActivity::class.java)
+        val intent=Intent(this, MainActivity::class.java)
         intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent)

@@ -17,7 +17,6 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bll.lnkstudy.dialog.ImageDialog;
@@ -42,10 +41,10 @@ import com.bll.lnkstudy.mvp.model.book.BookBean;
 import com.bll.lnkstudy.mvp.model.note.Note;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.book.TextbookBean;
-import com.bll.lnkstudy.ui.activity.AccountLoginActivity;
+import com.bll.lnkstudy.ui.activity.account.AccountLoginActivity;
 import com.bll.lnkstudy.ui.activity.PaintingImageActivity;
-import com.bll.lnkstudy.ui.activity.HomeworkRecordActivity;
-import com.bll.lnkstudy.ui.activity.HomeworkRecordListActivity;
+import com.bll.lnkstudy.ui.activity.homework.HomeworkRecordActivity;
+import com.bll.lnkstudy.ui.activity.homework.HomeworkRecordListActivity;
 import com.bll.lnkstudy.ui.activity.book.TextBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.drawing.CalligraphyDrawingActivity;
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity;
@@ -186,7 +185,8 @@ public class MethodManager {
     public static void gotoDocument(Context context,File file){
         String format=FileUtils.getUrlFormat(file.getPath());
         if (format.equals(".ppt") || format.equals(".pptx")){
-            gotoPptDetails(context,file.getPath(),Constants.SCREEN_LEFT);
+            String url=SPUtil.INSTANCE.getString(file.getName());
+            gotoPptDetails(context,file.getPath(),url,Constants.SCREEN_LEFT);
         }
         else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
             List<String> images=new ArrayList<>();
@@ -211,11 +211,12 @@ public class MethodManager {
         }
     }
 
-    public static void gotoPptDetails(Context context,String path,int flags){
+    public static void gotoPptDetails(Context context,String path,String url,int flags){
         if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
             intent.putExtra("path", path);
+            intent.putExtra("url",url);
             intent.putExtra(Constants.INTENT_SCREEN_LABEL, flags);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
@@ -863,5 +864,4 @@ public class MethodManager {
         }
         return list;
     }
-
 }

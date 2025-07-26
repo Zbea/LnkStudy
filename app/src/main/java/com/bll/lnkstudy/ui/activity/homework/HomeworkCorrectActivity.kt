@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.ui.activity
+package com.bll.lnkstudy.ui.activity.homework
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
@@ -250,10 +250,10 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private fun setAnswerView() {
         iv_answer_up.setOnClickListener {
-            sv_answer.scrollBy(0, -DP2PX.dip2px(this, 100f))
+            sv_answer.scrollBy(0, -DP2PX.dip2px(this, 300f))
         }
         iv_answer_down.setOnClickListener {
-            sv_answer.scrollBy(0, DP2PX.dip2px(this, 100f))
+            sv_answer.scrollBy(0, DP2PX.dip2px(this, 300f))
         }
 
         btn_page_up_bottom.setOnClickListener {
@@ -282,10 +282,10 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
      */
     private fun setScoreListView() {
         iv_score_up.setOnClickListener {
-            rv_list_score.scrollBy(0, -DP2PX.dip2px(this, 200f))
+            rv_list_score.scrollBy(0, -DP2PX.dip2px(this, 300f))
         }
         iv_score_down.setOnClickListener {
-            rv_list_score.scrollBy(0, DP2PX.dip2px(this, 200f))
+            rv_list_score.scrollBy(0, DP2PX.dip2px(this, 300f))
         }
 
         when (correctMode) {

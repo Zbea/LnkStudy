@@ -26,7 +26,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitInfoItem
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.ui.activity.HomeworkCorrectActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkCorrectActivity
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils

@@ -56,23 +56,5 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView,val 
 
     }
 
-
-    fun sms(phone:String) {
-
-        val sms = RetrofitManager.service.getSms(phone)
-
-        doRequest(sms, object : Callback<Any>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSms()
-            }
-
-        }, true)
-
-    }
-
-
 }
 
