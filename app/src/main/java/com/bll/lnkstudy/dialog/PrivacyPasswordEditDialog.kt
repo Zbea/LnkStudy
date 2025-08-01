@@ -3,7 +3,6 @@ package com.bll.lnkstudy.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
@@ -62,7 +61,7 @@ class PrivacyPasswordEditDialog(private val context: Context,private val type:In
                 return@setOnClickListener
             }
 
-            privacyPassword?.password= MD5Utils.digest(privacyPassword?.password)
+            privacyPassword?.password= MD5Utils.digest(passwordStr)
             MethodManager.savePrivacyPassword(type,privacyPassword)
             dialog.dismiss()
             listener?.onClick()

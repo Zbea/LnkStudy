@@ -18,6 +18,7 @@ import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISmsView
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_birthday
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_parent
@@ -47,12 +48,19 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
     private var birthday=0L
-    private var type=1
+    private var type=0
 
     override fun onSms() {
         showToast("短信发送成功")
-        InputContentDialog(this,1,"输入验证码",1).builder().setOnDialogClickListener{
-            smsPresenter?.checkPhone(it)
+        if (type!=0){
+            AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+                override fun onClick(code: String, phone: String) {
+                    smsPresenter?.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter?.sms(phone)
+                }
+            })
         }
     }
     override fun onCheckSuccess() {
@@ -66,7 +74,8 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     }
     override fun onEditPhone() {
         mUser?.telNumber=phone
-        tv_phone.text=phone
+        tv_phone.text=getPhoneStr(phone)
+        btn_edit_phone.text="修改号码"
         saveUser()
     }
     override fun onEditBirthday() {
@@ -121,7 +130,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
-            tv_phone.text = if (telNumber.isNotEmpty())telNumber.substring(0, 3) + "****" + telNumber.substring(7, 11) else ""
+            tv_phone.text = getPhoneStr(telNumber)
             tv_birthday.text = DateUtils.intToStringDataNoHour(birthday)
             tv_parent.text = parentName
             tv_parent_name.text = parentNickname
@@ -144,9 +153,22 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         btn_edit_birthday.setOnClickListener {
             getSms(2)
         }
-
+        btn_edit_phone.text=if (ToolUtils.isPhoneNum(mUser?.telNumber)) "修改号码" else "绑定号码"
         btn_edit_phone.setOnClickListener {
-            getSms(3)
+            if (mUser?.telNumber.isNullOrEmpty()){
+                AccountEditPhoneDialog(this).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+                    override fun onClick(code: String, phone: String) {
+                        this@AccountInfoActivity.phone=phone
+                        presenter?.bindPhone(code, phone)
+                    }
+                    override fun onPhone(phone: String) {
+                        type=0
+                        smsPresenter?.sms(phone)
+                    }
+                })
+            }else{
+                getSms(3)
+            }
         }
 
         btn_edit_school.setOnClickListener {
@@ -158,19 +180,27 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         }
 
         btn_logout.setOnClickListener {
-            CommonDialog(this).setContent(R.string.account_is_logout_tips).builder()
-                .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                    override fun ok() {
-                        MethodManager.logout(this@AccountInfoActivity)
-                    }
-                })
+            if (mUser?.telNumber.isNullOrEmpty()){
+                logout()
+            }else{
+                getSms(6)
+            }
         }
 
     }
 
+    private fun getPhoneStr(phone:String):String{
+        return if (ToolUtils.isPhoneNum(phone)) phone.substring(0, 3) + "****" + phone.substring(7, 11) else ""
+    }
+
     private fun getSms(type:Int){
         this.type=type
-        smsPresenter?.sms(mUser?.telNumber!!)
+        if (mUser?.telNumber.isNullOrEmpty()){
+            showToast("请先绑定手机号")
+        }
+        else{
+            smsPresenter?.sms(mUser?.telNumber!!)
+        }
     }
 
     private fun onClick(){
@@ -198,6 +228,9 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                     tv_parent_phone.text = phone
                     presenter?.editParent(name, nickname, phone)
                 }
+            }
+            6->{
+                logout()
             }
         }
     }
@@ -249,4 +282,12 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         SPUtil.putObj("user", mUser!!)
     }
 
+    private fun logout(){
+        CommonDialog(this).setContent(R.string.account_is_logout_tips).builder()
+            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun ok() {
+                    MethodManager.logout(this@AccountInfoActivity)
+                }
+            })
+    }
 }

@@ -73,7 +73,7 @@ public class ToolUtils {
      * @return
      */
     public static boolean isPhoneNum(String str){
-        String regex = "[1][3-9]\\d{9}";
+        String regex = "1[3-9]\\d{9}";
         return str.matches(regex);
     }
 

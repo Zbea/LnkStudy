@@ -5,8 +5,8 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
+import com.bll.lnkstudy.dialog.AccountEditPhoneDialog
 import com.bll.lnkstudy.dialog.CommonDialog
-import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.CalenderDaoManager
@@ -31,6 +31,8 @@ import com.bll.lnkstudy.manager.RecordDaoManager
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.presenter.SmsPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.ISmsView
+import com.bll.lnkstudy.ui.activity.MainActivity
+import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.SPUtil
 import com.bumptech.glide.Glide
@@ -47,9 +49,14 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
 
     override fun onSms() {
         showToast("短信发送成功")
-        InputContentDialog(this,1,"输入验证码",1).builder().setOnDialogClickListener{
-            smsPresenter?.checkPhone(it)
-        }
+        AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+            override fun onClick(code: String, phone: String) {
+                smsPresenter?.checkPhone(code)
+            }
+            override fun onPhone(phone: String) {
+                smsPresenter?.sms(phone)
+            }
+        })
     }
     override fun onCheckSuccess() {
         setOnClick()
@@ -105,9 +112,11 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
                 when(type){
                     1->{
                         EventBus.getDefault().post(Constants.SETTING_DOWNLOAD_EVENT)
+                        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
                     }
                     2->{
                         EventBus.getDefault().post(Constants.SETTING_RENT_EVENT)
+                        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
                     }
                     3->{
                         clearData()

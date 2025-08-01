@@ -10,7 +10,12 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.utils.KeyboardUtils
 import com.bll.lnkstudy.utils.ToolUtils
 
-class AccountEditPhoneDialog(val context: Context) {
+class AccountEditPhoneDialog(val context: Context,val phone: String) {
+
+    var btn_code:TextView?=null
+
+    constructor(context: Context):this(context, "")
+
     fun builder(): AccountEditPhoneDialog {
 
         val dialog = Dialog(context)
@@ -20,8 +25,14 @@ class AccountEditPhoneDialog(val context: Context) {
         val ed_phone = dialog.findViewById<EditText>(R.id.ed_phone)
         val ed_code = dialog.findViewById<EditText>(R.id.ed_code)
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
-        val btn_code = dialog.findViewById<TextView>(R.id.btn_code)
+        btn_code = dialog.findViewById(R.id.btn_code)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
+
+        if (phone.isNotEmpty()){
+            ed_phone.setText(phone)
+            ed_code.requestFocus()
+            setCountDownTimer()
+        }
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()
@@ -29,7 +40,7 @@ class AccountEditPhoneDialog(val context: Context) {
         btn_ok.setOnClickListener {
             val phone=ed_phone.text.toString()
             val code=ed_code.text.toString()
-            if (phone.isNotEmpty()&&code.isNotEmpty())
+            if (ToolUtils.isPhoneNum(phone)&&code.isNotEmpty())
             {
                 if (ToolUtils.isPhoneNum(phone)){
                     dialog.dismiss()
@@ -37,23 +48,11 @@ class AccountEditPhoneDialog(val context: Context) {
                 }
             }
         }
-        btn_code.setOnClickListener {
+        btn_code?.setOnClickListener {
             val phone=ed_phone.text.toString()
-            if (phone.isNotEmpty()){
+            if (ToolUtils.isPhoneNum(phone)){
                 listener?.onPhone(phone)
-                btn_code.isEnabled = false
-                btn_code.isClickable = false
-                object : CountDownTimer(60 * 1000, 1000) {
-                    override fun onFinish() {
-                        btn_code.isEnabled = true
-                        btn_code.isClickable = true
-                        btn_code.text = "获取验证码"
-                    }
-                    @SuppressLint("SetTextI18n")
-                    override fun onTick(millisUntilFinished: Long) {
-                        btn_code.text = "${millisUntilFinished / 1000}s"
-                    }
-                }.start()
+                setCountDownTimer()
             }
         }
 
@@ -61,6 +60,22 @@ class AccountEditPhoneDialog(val context: Context) {
             KeyboardUtils.hideSoftKeyboard(context)
         }
         return this
+    }
+
+    private fun setCountDownTimer(){
+        btn_code?.isEnabled = false
+        btn_code?.isClickable = false
+        object : CountDownTimer(60 * 1000, 1000) {
+            override fun onFinish() {
+                btn_code?.isEnabled = true
+                btn_code?.isClickable = true
+                btn_code?.text = "获取验证码"
+            }
+            @SuppressLint("SetTextI18n")
+            override fun onTick(millisUntilFinished: Long) {
+                btn_code?.text = "${millisUntilFinished / 1000}s"
+            }
+        }.start()
     }
 
     private var listener: OnDialogClickListener? = null

@@ -4,9 +4,10 @@ import android.app.Dialog
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import android.widget.TextView
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
-import com.bll.lnkstudy.dialog.InputContentDialog
+import com.bll.lnkstudy.dialog.AccountEditPhoneDialog
 import com.bll.lnkstudy.dialog.WalletBuyXdDialog
 import com.bll.lnkstudy.mvp.model.AccountOrder
 import com.bll.lnkstudy.mvp.model.AccountQdBean
@@ -31,13 +32,20 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
     private var qrCodeDialog:Dialog?=null
     private var orderThread: OrderThread?=null//定时器
     private val handlerThread = Handler(Looper.myLooper()!!)
+    private var payType=1
 
     override fun onSms() {
         showToast("短信发送成功")
-        InputContentDialog(this,1,"输入验证码",1).builder().setOnDialogClickListener{
-            smsPresenter.checkPhone(it)
-        }
+        AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+            override fun onClick(code: String, phone: String) {
+                smsPresenter.checkPhone(code)
+            }
+            override fun onPhone(phone: String) {
+                smsPresenter.sms(phone)
+            }
+        })
     }
+
     override fun onCheckSuccess() {
         if (xdList.size>0){
             getXdView()
@@ -63,7 +71,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
             qrCodeDialog?.dismiss()
             runOnUiThread {
                 mUser?.balance = mUser?.balance?.plus(order.amount)
-                tv_xdmoney.text = "" + mUser?.balance
+                tv_xdmoney.text = "青豆:  " + mUser?.balance
                 SPUtil.putObj("user",mUser!!)
             }
         }
@@ -74,7 +82,6 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
         tv_xdmoney.text="青豆:  "+mUser?.balance
         SPUtil.putObj("user",mUser!!)
     }
-
 
     override fun layoutId(): Int {
         return R.layout.ac_wallet
@@ -91,6 +98,10 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
         tv_xdmoney.text=getString(R.string.xd)+"  "+mUser?.balance
 
         tv_buy.setOnClickListener {
+            if (mUser?.telNumber.isNullOrEmpty()){
+                showToast("请先绑定手机号")
+                return@setOnClickListener
+            }
             smsPresenter.sms(mUser?.telNumber!!)
         }
     }
@@ -99,9 +110,10 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
     private fun getXdView(){
         if (xdDialog==null){
             xdDialog= WalletBuyXdDialog(this,xdList).builder()
-            xdDialog?.setOnDialogClickListener { id ->
+            xdDialog?.setOnDialogClickListener { payType,id ->
                 xdDialog?.dismiss()
-                walletPresenter.postXdOrder(id)
+                this.payType=payType
+                walletPresenter.postXdOrder(id,payType)
             }
         }
         else{
@@ -117,8 +129,11 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
         qrCodeDialog?.setCanceledOnTouchOutside(false)
         val iv_qrcode = qrCodeDialog?.findViewById<ImageView>(R.id.iv_qrcode)
         qrCodeDialog?.show()
-        val bitmap = CodeUtils.createQRCode(url, DP2PX.dip2px(this,300f), null)
+        val bitmap = CodeUtils.createQRCode(url, DP2PX.dip2px(this,350f), null)
         iv_qrcode?.setImageBitmap(bitmap)
+
+        val tv_title = qrCodeDialog?.findViewById<TextView>(R.id.tv_title)
+        tv_title?.text=if (payType==2) "请微信扫描二维码支付" else "请支付宝扫描二维码支付"
 
         val iv_close = qrCodeDialog?.findViewById<ImageView>(R.id.iv_close)
         iv_close?.setOnClickListener {

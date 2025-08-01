@@ -9,7 +9,7 @@ import com.bll.lnkstudy.net.RequestUtils
 import com.bll.lnkstudy.net.RetrofitManager
 
 
-class SmsPresenter(view: IContractView.ISmsView, val screen:Int=0) : BasePresenter<IContractView.ISmsView>(view) {
+class SmsPresenter(view: IContractView.ISmsView, val screen:Int=1) : BasePresenter<IContractView.ISmsView>(view) {
 
     fun sms(phone:String) {
         val sms = RetrofitManager.service.getSms(phone)

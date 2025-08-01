@@ -28,9 +28,9 @@ class WalletPresenter(view: IContractView.IWalletView,val screen:Int=0) : BasePr
     }
 
     //提交学豆订单
-    fun postXdOrder(id:String)
+    fun postXdOrder(id:String,payType:Int)
     {
-        val post = RetrofitManager.service.postOrder(id)
+        val post = RetrofitManager.service.postOrder(id,payType)
         doRequest(post, object : Callback<AccountOrder>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
                 return false

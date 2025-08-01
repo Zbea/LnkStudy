@@ -126,6 +126,11 @@ interface APIService{
     @POST("accounts/checkCode")
     fun checkPhone(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 绑定电话
+     */
+    @POST("user/bingTel")
+    fun bindPhone(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 修改电话
      */
     @POST("accounts/changeTel")
@@ -161,7 +166,7 @@ interface APIService{
      * 提交学豆订单
      */
     @POST("wallets/order/{id}")
-    fun postOrder(@Path("id") id:String ): Observable<BaseResult<AccountOrder>>
+    fun postOrder(@Path("id") id:String,@Query("type") type:Int): Observable<BaseResult<AccountOrder>>
     /**
      * 查看订单状态
      */

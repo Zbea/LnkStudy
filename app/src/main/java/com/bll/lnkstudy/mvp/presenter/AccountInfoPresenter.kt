@@ -11,17 +11,18 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) : BasePresenter<IContractView.IAccountInfoView>(view) {
 
-    fun editBirthday(time: Long) {
+    fun bindPhone(code: String,phone: String) {
         val body = RequestUtils.getBody(
-            Pair.create("birthdayTime", time)
+            Pair.create("telNumber", phone),
+            Pair.create("code", code)
         )
-        val editName = RetrofitManager.service.editBirthday(body)
+        val editName = RetrofitManager.service.bindPhone(body)
         doRequest(editName, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onEditBirthday()
+                view.onEditPhone()
             }
         }, true)
     }
@@ -38,6 +39,21 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) 
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onEditPhone()
+            }
+        }, true)
+    }
+
+    fun editBirthday(time: Long) {
+        val body = RequestUtils.getBody(
+            Pair.create("birthdayTime", time)
+        )
+        val editName = RetrofitManager.service.editBirthday(body)
+        doRequest(editName, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditBirthday()
             }
         }, true)
     }

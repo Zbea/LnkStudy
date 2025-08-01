@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
+    android:layout_width="450dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:padding="@dimen/dp_20"
@@ -15,6 +15,7 @@
         >
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
@@ -22,7 +23,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
-            android:text="@string/scan_code_pay_str"/>
+            android:text="请支付宝扫描二维码支付"/>
 
         <ImageView
             android:id="@+id/iv_close"
@@ -38,8 +39,8 @@
 
     <ImageView
         android:id="@+id/iv_qrcode"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_margin="@dimen/dp_20"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_margin="@dimen/dp_30"
         />
 </LinearLayout>
