@@ -178,7 +178,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
             ModuleItemDialog(requireContext(),screenPos,getString(R.string.note_module_str),DataBeanManager.noteModuleBeanBooks).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+                .setOnDialogClickListener { moduleBean ->
                     resId= ToolUtils.getImageResStr(activity, moduleBean.resContentId)
                     createNote()
                 }
@@ -299,7 +299,7 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
         if (privacyPassword==null){
             PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener{
                 privacyPassword=it
-                mAdapter?.notifyDataSetChanged()
+                mAdapter?.notifyItemChanged(position)
                 showToast("密本密码设置成功")
             }
         }

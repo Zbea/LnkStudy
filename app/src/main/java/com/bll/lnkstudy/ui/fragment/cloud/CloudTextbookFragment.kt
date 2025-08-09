@@ -18,6 +18,7 @@ import com.bll.lnkstudy.ui.adapter.TextBookAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
@@ -215,7 +216,9 @@ class CloudTextbookFragment:BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
+                    val fileName= MD5Utils.digest(book.bookId.toString())
+                    val path=FileAddress().getPathTextBookPath(fileName)
+                    ZipUtils.unzip(zipPath, path, object : IZipCallback {
                         override fun onFinish() {
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))

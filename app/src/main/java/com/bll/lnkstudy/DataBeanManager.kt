@@ -14,6 +14,7 @@ import java.util.*
 
 object DataBeanManager {
 
+    var textBookAnnotationPage=0//页面切换地址
     var isRuleImage=false//是否设置规矩图
     var homeworkMessages= mutableListOf<HomeworkMessageList.MessageBean>()
 

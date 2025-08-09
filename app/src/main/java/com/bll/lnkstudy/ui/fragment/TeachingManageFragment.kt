@@ -19,9 +19,9 @@ import com.bll.lnkstudy.ui.fragment.teaching.DocumentFragment
 import com.bll.lnkstudy.ui.fragment.teaching.TextbookFragment
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.tv_btn
-import java.io.File
 
 class TeachingManageFragment: BaseMainFragment() {
 
@@ -118,10 +118,12 @@ class TeachingManageFragment: BaseMainFragment() {
         val cloudList= mutableListOf<CloudListBean>()
         val textBooks= getTextbooksUnLock()
         for (book in textBooks){
+            val fileName=MD5Utils.digest(book.bookId.toString())
+            val path=FileAddress().getPathTextBookPath(fileName)
             //判读是否存在手写内容
-            if (FileUtils.isExistContent(book.bookDrawPath)){
+            if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
-                    startZipUpload(book.bookDrawPath, File(book.bookDrawPath).name)
+                    startZipUpload(path, fileName)
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=1

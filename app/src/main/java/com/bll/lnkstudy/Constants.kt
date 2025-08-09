@@ -113,6 +113,7 @@ class Constants {
         const val HOMEWORK_MESSAGE_TIPS_EVENT = "HomeworkMessageTipsEvent"//作业消息标识
         const val CLEAR_HOMEWORK_EVENT="ClearHomeworkEvent"//清除作业通知
         const val DOCUMENT_DOWNLOAD_EVENT="DocumentDownloadEvent"//资料下载通知
+            const val TEXTBOOK_ANNOTATION_CHANGE_PAGE_EVENT="TextBookAnnotationChangePageEvent"//课本页面切换通知
 
         //定时任务标识
         const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新

@@ -117,24 +117,15 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     }
 
     override fun onPageDown() {
-        posImage+=1
-        onContent()
-    }
-
-    /**
-     * 得到文件大小
-     */
-    private fun getPathsSize(){
-        val path=if (type==1){
-            FileAddress().getPathPlan(nowYear,nowMonth)
+        if (posImage<images.size-1){
+            posImage+=1
+            onContent()
         }
         else{
-            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))
-        }
-        images.clear()
-        if (File(path).exists()){
-            for (file in FileUtils.getAscFiles(path)){
-                images.add(file.path)
+            if (isDrawLastContent()){
+                posImage+=1
+                images.add(getPathStr())
+                onContent()
             }
         }
     }
@@ -152,20 +143,42 @@ class PlanOverviewActivity:BaseDrawingActivity() {
     }
 
     override fun onContent() {
-        val path = if (type==1){
-            FileAddress().getPathPlan(nowYear,nowMonth)+ "/${posImage + 1}.png"
-        }
-        else{
-            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))+ "/${posImage + 1}.png"
-        }
-        //判断路径是否已经创建
-        if (!images.contains(path)) {
-            images.add(path)
-        }
         tv_page.text = "${posImage + 1}"
         tv_page_total.text="${images.size}"
 
-        elik_b?.setLoadFilePath(path, true)
+        elik_b?.setLoadFilePath(images[posImage], true)
     }
 
+    private fun getPath():String{
+        return if (type==1){
+            FileAddress().getPathPlan(nowYear,nowMonth)
+        }
+        else{
+            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))
+        }
+    }
+
+    private fun getPathStr():String{
+        return getPath()+"/${posImage + 1}.png"
+    }
+
+    /**
+     * 最后一个是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        return File(images.last()).exists()
+    }
+
+    /**
+     * 得到文件大小
+     */
+    private fun getPathsSize(){
+        images.clear()
+        for (file in FileUtils.getAscFiles(getPath())){
+            images.add(file.path)
+        }
+        if (images.isEmpty()){
+            images.add(getPathStr())
+        }
+    }
 }

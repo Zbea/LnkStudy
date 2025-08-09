@@ -55,7 +55,7 @@ public class FreeNoteDaoManager {
     public FreeNoteBean queryBean() {
         WhereCondition whereCondition= FreeNoteBeanDao.Properties.IsSave.eq(false);
         List<FreeNoteBean> items=dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
-        if (items.size()==0){
+        if (items.isEmpty()){
             return null;
         }
         if (items.size()>1){

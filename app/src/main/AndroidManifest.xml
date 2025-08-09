@@ -298,6 +298,10 @@
         <activity android:name=".ui.activity.homework.HomeworkUnfinishedMessageAllActivity" />
         <activity android:name=".ui.activity.TeachingMaterialListActivity" />
         <activity android:name=".ui.activity.account.AccountSettingDataActivity" />
+        <activity android:name=".ui.activity.book.TextBookAnnotationActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

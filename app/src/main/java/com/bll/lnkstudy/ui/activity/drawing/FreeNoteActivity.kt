@@ -68,7 +68,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
 
         iv_expand.setOnClickListener {
             ModuleItemDialog(this, getCurrentScreenPos(), getString(R.string.freenote_module_str), DataBeanManager.freenoteModuleBeans).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+                .setOnDialogClickListener { moduleBean ->
                     MethodManager.setImageResource(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage] = ToolUtils.getImageResStr(this, moduleBean.resContentId)
                 }

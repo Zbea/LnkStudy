@@ -72,23 +72,34 @@ class FileAddress {
      * /storage/emulated/0/Books
      */
     fun getPathBook(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/$fileName"
+        return "$BOOK_PATH/${getAccountId()}/${fileName}book"
+    }
+    fun getPathBookPath(fileName: String):String{
+        return "$BOOK_PATH/${getAccountId()}/${fileName}"
     }
     /**
      * 书籍手写地址
      * /storage/emulated/0/Notes
      */
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/${fileName}draw"
+        return "$BOOK_PATH/${getAccountId()}/${fileName}/draw"
     }
 
     fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/$fileName"
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}book"
+    }
+    fun getPathTextBookPath(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}draw"
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}/draw"
     }
-
+    fun getPathTextBookAnnotation(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}/annotation"
+    }
+    fun getPathTextBookAnnotation(fileName: String,page:Int):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}/annotation/${page}"
+    }
     /**
      * apk下载地址
      */

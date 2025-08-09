@@ -1,10 +1,14 @@
 package com.bll.lnkstudy.ui.activity.book
 
+import android.content.Intent
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.Constants.Companion.SCREEN_LEFT
+import com.bll.lnkstudy.Constants.Companion.SCREEN_RIGHT
 import com.bll.lnkstudy.Constants.Companion.TEXT_BOOK_EVENT
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
@@ -17,7 +21,9 @@ import com.bll.lnkstudy.mvp.model.book.TextbookBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogMsg
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
+import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.MD5Utils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -37,7 +43,7 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     private var startCount=0
     private var page = 0 //当前页码
     private var bookId=0
-
+    private var upPage=0//上一页
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -78,7 +84,15 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
     }
 
     override fun initView() {
-        disMissView(iv_btn)
+
+        iv_btn.setOnClickListener {
+            customStartActivity(
+                Intent(this,TextBookAnnotationActivity::class.java)
+                .putExtra("page",page)
+                .putExtra("bookId",bookId)
+                .putExtra( Constants.INTENT_SCREEN_LABEL, if (getCurrentScreenPos()== SCREEN_RIGHT) SCREEN_LEFT else SCREEN_RIGHT)
+            )
+        }
 
         onContent()
     }
@@ -128,12 +142,25 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
         if (page>pageCount-2&&isExpand)
             page=pageCount-2
 
+        if (page!=upPage){
+            upPage=page
+            DataBeanManager.textBookAnnotationPage=page
+            EventBus.getDefault().post(Constants.TEXTBOOK_ANNOTATION_CHANGE_PAGE_EVENT)
+        }
+
+        if (FileUtils.isExistContent(getAnnotationPath())){
+            iv_btn.setImageResource(R.mipmap.icon_draw_annotation_exist)
+        }
+        else{
+            iv_btn.setImageResource(R.mipmap.icon_draw_annotation)
+        }
+
         if (isExpand){
             val page_up=page+1//上一页页码
             loadPicture(page, elik_a!!, v_content_a!!)
             loadPicture(page_up, elik_b!!, v_content_b!!)
 
-            if (screenPos== Constants.SCREEN_RIGHT){
+            if (screenPos== SCREEN_RIGHT){
                 setPageCurrent(page,tv_page_a,tv_page_total_a)
                 setPageCurrent(page_up,tv_page,tv_page_total)
             }
@@ -146,6 +173,11 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
             loadPicture(page, elik_b!!, v_content_b!!)
             setPageCurrent(page,tv_page,tv_page_total)
         }
+    }
+
+    private fun getAnnotationPath():String{
+        val bookName= MD5Utils.digest(book?.bookId.toString())
+        return FileAddress().getPathTextBookAnnotation(bookName,page+1)
     }
 
     /**
@@ -193,6 +225,8 @@ class TextBookDetailsActivity : BaseDrawingActivity(){
         book?.pageUrl = FileUtils.getIndexFile(book?.bookPath,page).path
         TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
+
+        ActivityManager.getInstance().finishActivity(TextBookAnnotationActivity::class.java.name)
     }
 
 }

@@ -59,6 +59,7 @@ import com.bll.lnkstudy.utils.ActivityManager;
 import com.bll.lnkstudy.utils.AppUtils;
 import com.bll.lnkstudy.utils.DateUtils;
 import com.bll.lnkstudy.utils.FileUtils;
+import com.bll.lnkstudy.utils.MD5Utils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
 import com.google.gson.Gson;
@@ -327,10 +328,10 @@ public class MethodManager {
     public static void deleteTextbook(TextbookBean book){
         TextbookGreenDaoManager.getInstance().deleteBook(book);
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
-        if (new File(book.bookDrawPath).exists())
-            FileUtils.deleteFile(new File(book.bookDrawPath));
+        FileUtils.deleteFile(new File(book.bookDrawPath));
+        String annotationPath=new FileAddress().getPathTextBookAnnotation(MD5Utils.digest(book.bookId+""));
+        FileUtils.deleteFile(new File(annotationPath));
         //删除增量更新
-        DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId);
         DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId);
     }
 
