@@ -49,14 +49,6 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
 
     override fun onSms() {
         showToast("短信发送成功")
-        AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
-            override fun onClick(code: String, phone: String) {
-                smsPresenter?.checkPhone(code)
-            }
-            override fun onPhone(phone: String) {
-                smsPresenter?.sms(phone)
-            }
-        })
     }
     override fun onCheckSuccess() {
         setOnClick()
@@ -92,7 +84,14 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
 
     private fun getSms(type:Int){
         this.type=type
-        smsPresenter?.sms(mUser?.telNumber!!)
+        AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+            override fun onClick(code: String, phone: String) {
+                smsPresenter?.checkPhone(code)
+            }
+            override fun onPhone(phone: String) {
+                smsPresenter?.sms(phone)
+            }
+        })
     }
 
     private fun setOnClick(){
@@ -111,10 +110,12 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
             override fun ok() {
                 when(type){
                     1->{
+                        clearData()
                         EventBus.getDefault().post(Constants.SETTING_DOWNLOAD_EVENT)
                         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
                     }
                     2->{
+                        clearData()
                         EventBus.getDefault().post(Constants.SETTING_RENT_EVENT)
                         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
                     }
@@ -184,6 +185,7 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
         Thread{
             Glide.get(this).clearDiskCache()
         }.start()
-        MethodManager.logout(this)
+        if (type==3)
+            MethodManager.logout(this)
     }
 }

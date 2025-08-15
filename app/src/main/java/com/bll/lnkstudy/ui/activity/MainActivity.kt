@@ -69,6 +69,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     private var rightFragment: Fragment? = null
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
+    private var mqttClient:MQTTClient?=null
 
     override fun onToken(token: String) {
         when (eventType) {
@@ -108,7 +109,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         Collections.sort(list, Comparator { p0, p1 ->
             return@Comparator p0.type - p1.type
         })
-        clearDataUpdate()
         download(list)
     }
 
@@ -117,6 +117,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
+        mqttClient=MQTTClient().getInstance()
+        mqttClient?.connect(this)
+
         initStartDate()
     }
 
@@ -235,17 +238,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 初始化数据
      */
     private fun initStartDate(){
-        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
-            val strings = DataBeanManager.bookType
-            for (i in strings.indices) {
-                val item = ItemTypeBean()
-                item.type=5
-                item.title = strings[i]
-                item.date=System.currentTimeMillis()
-                ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            }
-        }
-
         //创建截屏默认文件夹
         val path = FileAddress().getPathScreen("未分类")
         if (!File(path).exists()) {
@@ -431,52 +423,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 date, pendingIntent
             )
         }
-
-    }
-
-
-    /**
-     * 清除增量更新
-     */
-    private fun clearDataUpdate(){
-        DataUpdateDaoManager.getInstance().clear()
-
-        BookGreenDaoManager.getInstance().clear()
-        TextbookGreenDaoManager.getInstance().clear()
-
-        HomeworkTypeDaoManager.getInstance().clear()
-        //删除所有作业
-        HomeworkContentDaoManager.getInstance().clear()
-        //删除所有录音
-        RecordDaoManager.getInstance().clear()
-        //删除所有作业卷内容
-        HomeworkPaperDaoManager.getInstance().clear()
-        //题卷本
-        HomeworkBookDaoManager.getInstance().clear()
-        HomeworkBookCorrectDaoManager.getInstance().clear()
-
-        //删除本地考卷分类
-        PaperTypeDaoManager.getInstance().clear()
-        //删除所有考卷内容
-        PaperDaoManager.getInstance().clear()
-
-        NoteDaoManager.getInstance().clear()
-        NoteContentDaoManager.getInstance().clear()
-
-        PaintingDrawingDaoManager.getInstance().clear()
-
-        //删除笔记分类
-        ItemTypeDaoManager.getInstance().clear(2)
-        //删除画本分类
-        ItemTypeDaoManager.getInstance().clear(3)
-        //删除书法分类
-        ItemTypeDaoManager.getInstance().clear(4)
-
-        FileUtils.deleteFile(File(Constants.BOOK_PATH))
-        FileUtils.deleteFile(File(Constants.TESTPAPER_PATH))
-        FileUtils.deleteFile(File(Constants.HOMEWORK_PATH))
-        FileUtils.deleteFile(File(Constants.NOTE_PATH))
-        FileUtils.deleteFile(File(Constants.PAINTING_PATH))
     }
 
     /**
@@ -971,32 +917,17 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.AUTO_UPLOAD_EVENT -> {
-                if (!NetworkUtil.isNetworkConnected()){
-                    NetworkUtil.toggleNetwork(true)
-                }
                 eventType = Constants.AUTO_UPLOAD_EVENT
-                Handler().postDelayed({
-                    mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                mQiniuPresenter.getToken()
             }
             Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT -> {
-                if (!NetworkUtil.isNetworkConnected()){
-                    NetworkUtil.toggleNetwork(true)
-                }
                 eventType = Constants.AUTO_UPLOAD_LAST_SEMESTER_EVENT
-                Handler().postDelayed({
-                    mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                mQiniuPresenter.getToken()
                 clearSemesterData()
             }
             Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT -> {
-                if (!NetworkUtil.isNetworkConnected()){
-                    NetworkUtil.toggleNetwork(true)
-                }
                 eventType = Constants.AUTO_UPLOAD_NEXT_SEMESTER_EVENT
-                Handler().postDelayed({
-                    mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                mQiniuPresenter.getToken()
                 clearSemesterData()
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
@@ -1006,13 +937,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 mQiniuPresenter.getToken()
             }
             Constants.AUTO_UPLOAD_YEAR_EVENT -> {
-                if (!NetworkUtil.isNetworkConnected()){
-                    NetworkUtil.toggleNetwork(true)
-                }
                 eventType = Constants.AUTO_UPLOAD_YEAR_EVENT
-                Handler().postDelayed({
-                    mQiniuPresenter.getToken()
-                }, 30 * 1000)
+                mQiniuPresenter.getToken()
             }
             Constants.DIARY_UPLOAD_EVENT -> {
                 eventType = Constants.DIARY_UPLOAD_EVENT
@@ -1023,7 +949,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             }
             Constants.SETTING_RENT_EVENT -> {
                 val map = HashMap<String, Any>()
-                map["type"] = arrayOf(1, 2, 3, 7)
+                map["type"] = arrayOf(1, 2, 3)
                 mDataUpdatePresenter.onList(map)
             }
         }
@@ -1037,6 +963,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     override fun onDestroy() {
         super.onDestroy()
+        mqttClient?.disconnect()
         unregisterReceiver(myBroadcastReceiver)
     }
 

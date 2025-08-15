@@ -48,6 +48,7 @@ class FreeNoteActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
+//        showView(iv_edit)
         disMissView(iv_btn,iv_draft)
         iv_expand.setImageResource(R.mipmap.icon_draw_change)
 

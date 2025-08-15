@@ -437,6 +437,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     disMissView(iv_tips)
                 }
             }
+            Constants.HOMEWORK_NOTICE_EVENT->{
+                fetchData()
+            }
         }
     }
 

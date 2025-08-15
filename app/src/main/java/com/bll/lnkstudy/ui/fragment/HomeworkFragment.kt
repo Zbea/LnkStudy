@@ -35,10 +35,10 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.model.homework.ParentTypeBean
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageActivity
-import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageAllActivity
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.activity.drawing.FileDrawingActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageAllActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkAdapter
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.DP2PX
@@ -66,7 +66,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     private var countDownTasks: CountDownLatch? = null //异步完成后操作
     private var mAdapter: HomeworkAdapter? = null
     private var homeworkTypes = mutableListOf<HomeworkTypeBean>()//当前页分类
-    private var clickPosition=0
     private var longClickPosition = 0
 
     override fun onTypeError() {
@@ -191,11 +190,10 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                     item.messages = bean.list
                     item.isMessage = !bean.list.isNullOrEmpty()
                     HomeworkTypeDaoManager.getInstance().insertOrReplace(item)
-                    if (item.isMessage)
-                        mAdapter?.notifyItemChanged(homeworkTypes.indexOf(item))
                 }
             }
         }
+        mAdapter?.notifyDataSetChanged()
     }
 
     override fun onParentMessageList(map: MutableMap<String, HomeworkMessageList>) {
@@ -339,7 +337,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                 }
             }
             setOnItemChildClickListener { adapter, view, position ->
-                clickPosition=position
                 val item = homeworkTypes[position]
                 if (view.id == R.id.ll_message) {
                     if (item.messages.isNullOrEmpty()){
@@ -1144,6 +1141,9 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             }
             Constants.HOMEWORK_MESSAGE_COMMIT_EVENT->{
                 fetchMessage()
+            }
+            Constants.MQTT_HOMEWORK_NOTICE_EVENT->{
+                fetchHomeworkType()
             }
         }
     }

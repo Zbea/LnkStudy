@@ -60,6 +60,15 @@
         android:visibility="gone"
         />
 
+    <include
+        android:id="@+id/ll_drawing_edit"
+        layout="@layout/common_drawing_edit"
+        android:layout_width="@dimen/width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/statusbar_height"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/ll_diary"
         android:layout_width="wrap_content"

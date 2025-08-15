@@ -31,7 +31,7 @@ class AccountEditPhoneDialog(val context: Context,val phone: String) {
         if (phone.isNotEmpty()){
             ed_phone.setText(phone)
             ed_code.requestFocus()
-            setCountDownTimer()
+//            setCountDownTimer()
         }
 
         btn_cancel.setOnClickListener {

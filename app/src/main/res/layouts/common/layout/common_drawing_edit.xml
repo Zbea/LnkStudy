@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_20"
+    android:gravity="center"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:paddingStart="@dimen/dp_30"
+        android:paddingEnd="@dimen/dp_30"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_geometry"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/ll_enclosing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:background="@drawable/bg_geometry_select"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="圈选"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_drawing_edit_enclosing"
+                android:layout_marginTop="@dimen/dp_15"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="复制"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_drawing_edit_copy"
+                android:layout_marginTop="@dimen/dp_15"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_crop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="剪切"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_drawing_edit_crop"
+                android:layout_marginTop="@dimen/dp_15"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_stick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="粘贴"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_drawing_edit_stick"
+                android:layout_marginTop="@dimen/dp_15"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_edit_out"
+            android:layout_width="80dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="@dimen/dp_40"
+            android:gravity="center"
+            android:text="退出"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -49,10 +49,11 @@ class TextBookAnnotationActivity: BaseDrawingActivity() {
     }
 
     override fun initView() {
+//        showView(iv_edit)
+        disMissView(iv_expand,iv_btn,iv_tool,iv_catalog)
+
         MethodManager.setImageResource(this, R.mipmap.icon_note_content_hg_11,v_content_a)
         MethodManager.setImageResource(this, R.mipmap.icon_note_content_hg_11,v_content_b)
-
-        disMissView(iv_expand,iv_btn,iv_tool,iv_catalog)
 
         onContent()
     }

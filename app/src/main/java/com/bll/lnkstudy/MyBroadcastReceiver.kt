@@ -76,7 +76,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 val bookId=intent.getStringExtra("key_book_id")
                 val path=intent.getStringExtra("note_path")
 
-                val item=DataUpdateDaoManager.getInstance().queryBean(6,bookId!!.toInt(),2,bookId!!.toInt())
+                val item=DataUpdateDaoManager.getInstance().queryBean(6,bookId!!.toInt(),2,bookId.toInt())
                 if (item==null){
                     DataUpdateManager.createDataUpdateDrawing(6,bookId.toInt(),2,bookId.toInt(),path!!)
                 }

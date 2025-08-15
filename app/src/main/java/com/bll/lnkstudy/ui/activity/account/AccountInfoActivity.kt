@@ -12,11 +12,13 @@ import com.bll.lnkstudy.dialog.DateDialog
 import com.bll.lnkstudy.dialog.InputContentDialog
 import com.bll.lnkstudy.dialog.SchoolSelectDialog
 import com.bll.lnkstudy.mvp.model.SchoolBean
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkstudy.mvp.presenter.SmsPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.mvp.view.IContractView.ISmsView
 import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_birthday
@@ -50,18 +52,13 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var birthday=0L
     private var type=0
 
+    override fun getAccount(user: User) {
+        mUser=user
+        setAccountInfo()
+    }
+
     override fun onSms() {
         showToast("短信发送成功")
-        if (type!=0){
-            AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
-                override fun onClick(code: String, phone: String) {
-                    smsPresenter?.checkPhone(code)
-                }
-                override fun onPhone(phone: String) {
-                    smsPresenter?.sms(phone)
-                }
-            })
-        }
     }
     override fun onCheckSuccess() {
         onClick()
@@ -70,23 +67,21 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun onListSchools(list: MutableList<SchoolBean>) {
         selectorSchool(list)
     }
+
     override fun onLogout() {
     }
     override fun onEditPhone() {
         mUser?.telNumber=phone
         tv_phone.text=getPhoneStr(phone)
         btn_edit_phone.text="修改号码"
-        saveUser()
     }
     override fun onEditBirthday() {
         mUser?.birthdayTime=birthday
         tv_birthday.text=DateUtils.intToStringDataNoHour(birthday)
-        saveUser()
     }
     override fun onEditNameSuccess() {
         mUser?.nickname = nickname
         tv_name.text = nickname
-        saveUser()
     }
     override fun onEditSchool() {
         mUser?.schoolId = schoolBean?.id
@@ -98,7 +93,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         tv_city.text = schoolBean?.city
         tv_school_name.text = schoolBean?.schoolName
         tv_area.text = schoolBean?.area
-        saveUser()
     }
     override fun onEditParent() {
         mUser?.parentName=tv_parent.text.toString()
@@ -113,8 +107,14 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     override fun initData() {
         initChangeScreenData()
-        school=mUser?.schoolId!!
-        birthday=mUser?.birthdayTime!!
+
+        if (NetworkUtil.isNetworkConnected()){
+            presenter?.accounts()
+        }
+        else{
+            school=mUser?.schoolId!!
+            birthday=mUser?.birthdayTime!!
+        }
     }
 
     override fun initChangeScreenData() {
@@ -127,22 +127,14 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         setPageTitle(R.string.my_account)
         showView(tv_btn)
 
-        mUser?.apply {
-            tv_user.text = account
-            tv_name.text = nickname
-            tv_phone.text = getPhoneStr(telNumber)
-            tv_birthday.text = DateUtils.intToStringDataNoHour(birthday)
-            tv_parent.text = parentName
-            tv_parent_name.text = parentNickname
-            tv_parent_phone.text = parentTel
-            tv_provinces.text = schoolProvince
-            tv_city.text = schoolCity
-            tv_school_name.text = schoolName
-            tv_area.text = schoolArea
-        }
+        setAccountInfo()
 
         tv_btn.text="一键功能"
         tv_btn.setOnClickListener {
+            if (!ToolUtils.isPhoneNum(mUser?.telNumber)){
+                showToast("请先绑定手机号")
+                return@setOnClickListener
+            }
             customStartActivity(Intent(this,AccountSettingDataActivity::class.java))
         }
 
@@ -155,7 +147,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         }
         btn_edit_phone.text=if (ToolUtils.isPhoneNum(mUser?.telNumber)) "修改号码" else "绑定号码"
         btn_edit_phone.setOnClickListener {
-            if (mUser?.telNumber.isNullOrEmpty()){
+            if (!ToolUtils.isPhoneNum(mUser?.telNumber)){
                 AccountEditPhoneDialog(this).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
                     override fun onClick(code: String, phone: String) {
                         this@AccountInfoActivity.phone=phone
@@ -189,17 +181,40 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
 
     }
 
+    private fun setAccountInfo(){
+        mUser?.apply {
+            tv_user.text = account
+            tv_name.text = nickname
+            tv_phone.text = getPhoneStr(telNumber)
+            tv_birthday.text = DateUtils.intToStringDataNoHour(birthdayTime)
+            tv_parent.text = parentName
+            tv_parent_name.text = parentNickname
+            tv_parent_phone.text = parentTel
+            tv_provinces.text = schoolProvince
+            tv_city.text = schoolCity
+            tv_school_name.text = schoolName
+            tv_area.text = schoolArea
+        }
+    }
+
     private fun getPhoneStr(phone:String):String{
         return if (ToolUtils.isPhoneNum(phone)) phone.substring(0, 3) + "****" + phone.substring(7, 11) else ""
     }
 
     private fun getSms(type:Int){
         this.type=type
-        if (mUser?.telNumber.isNullOrEmpty()){
+        if (!ToolUtils.isPhoneNum(mUser?.telNumber)){
             showToast("请先绑定手机号")
         }
         else{
-            smsPresenter?.sms(mUser?.telNumber!!)
+            AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+                override fun onClick(code: String, phone: String) {
+                    smsPresenter?.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter?.sms(phone)
+                }
+            })
         }
     }
 
@@ -289,5 +304,10 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
                     MethodManager.logout(this@AccountInfoActivity)
                 }
             })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        saveUser()
     }
 }

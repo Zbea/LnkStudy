@@ -70,6 +70,7 @@ public interface IContractView {
 
     //账户页面回调
     interface IAccountInfoView extends IBaseView {
+        void getAccount(User user);
         void onLogout();
         void onEditPhone();
         void onEditBirthday();

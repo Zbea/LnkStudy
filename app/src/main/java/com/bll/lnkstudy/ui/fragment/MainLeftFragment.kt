@@ -7,6 +7,7 @@ import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
+import com.bll.lnkstudy.Constants.Companion.HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
 import com.bll.lnkstudy.Constants.Companion.USER_CHANGE_GRADE_EVENT
 import com.bll.lnkstudy.DataBeanManager
@@ -24,12 +25,12 @@ import com.bll.lnkstudy.mvp.presenter.HomeworkNoticePresenter
 import com.bll.lnkstudy.mvp.presenter.MainLeftPresenter
 import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkNoticeView
 import com.bll.lnkstudy.mvp.view.IContractView.IMainLeftView
-import com.bll.lnkstudy.ui.activity.homework.HomeworkNoticeListActivity
 import com.bll.lnkstudy.ui.activity.ScreenshotListActivity
 import com.bll.lnkstudy.ui.activity.date.DateActivity
 import com.bll.lnkstudy.ui.activity.date.DateDayListActivity
 import com.bll.lnkstudy.ui.activity.date.DatePlanListActivity
 import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
+import com.bll.lnkstudy.ui.activity.homework.HomeworkNoticeListActivity
 import com.bll.lnkstudy.ui.adapter.MainDatePlanAdapter
 import com.bll.lnkstudy.ui.adapter.MainHomeworkNoticeAdapter
 import com.bll.lnkstudy.utils.DateUtils
@@ -346,8 +347,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             DATE_DRAWING_EVENT -> {
                 setDateView()
             }
-            USER_CHANGE_GRADE_EVENT->{
-                fetchData()
+            USER_CHANGE_GRADE_EVENT, HOMEWORK_NOTICE_EVENT->{
+                onRefreshData()
             }
         }
     }

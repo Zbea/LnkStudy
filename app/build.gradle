@@ -15,8 +15,8 @@ android {
         applicationId "com.bll.lnkstudy"
         minSdk 26
         targetSdk 33
-        versionCode 20
-        versionName "V 1.0.2"
+        versionCode 21
+        versionName "V 1.0.3"
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -156,6 +156,9 @@ dependencies {
     implementation 'com.qiniu:qiniu-android-sdk:8.4.+'
     implementation 'com.haibin:calendarview:3.7.1'
     implementation 'com.android.volley:volley:1.2.1'
+
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.4'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 }
 
 def buildTime() {

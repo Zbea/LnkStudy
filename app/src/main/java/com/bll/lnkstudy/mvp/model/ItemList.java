@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class ItemList implements Serializable,Comparable<ItemList> {
 
-    public int type;
+    public int type;//学生: 1作业通知，2批改通知,3老师权限控制，4考试批改下发
     public String desc;
     public boolean isCheck;
 
@@ -27,6 +27,8 @@ public class ItemList implements Serializable,Comparable<ItemList> {
     public boolean isDelete;//目录可以删除
     public boolean isEdit;//目录可以修改
     public boolean isAdd;//提交选中页码
+
+    public int userType;//1老师，2学生
 
     public ItemList() {
     }

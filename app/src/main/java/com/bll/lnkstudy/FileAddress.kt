@@ -38,7 +38,7 @@ class FileAddress {
         return "$HOMEWORK_PATH/${getAccountId()}/homeworkBook/$fileName"
     }
     fun getPathHomeworkBookDraw(fileName: String):String{
-        return "$HOMEWORK_PATH/${getAccountId()}/homeworkBook/${fileName}/drawContent"
+        return "$HOMEWORK_PATH/${getAccountId()}/homeworkBook/${fileName}note/drawContent"
     }
 
     fun getPathHomeworkBookDrawPath(bookDraw: String,page:Int):String{
@@ -72,9 +72,6 @@ class FileAddress {
      * /storage/emulated/0/Books
      */
     fun getPathBook(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/${fileName}book"
-    }
-    fun getPathBookPath(fileName: String):String{
         return "$BOOK_PATH/${getAccountId()}/${fileName}"
     }
     /**
@@ -82,23 +79,23 @@ class FileAddress {
      * /storage/emulated/0/Notes
      */
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/${fileName}/draw"
+        return "$BOOK_PATH/${getAccountId()}/${fileName}note/draw"
     }
 
     fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}book"
-    }
-    fun getPathTextBookPath(fileName: String):String{
         return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}"
     }
+    fun getPathTextBookPath(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}note"
+    }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}/draw"
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}note/draw"
     }
     fun getPathTextBookAnnotation(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}/annotation"
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}note/annotation"
     }
     fun getPathTextBookAnnotation(fileName: String,page:Int):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}/annotation/${page}"
+        return "$TEXTBOOK_PATH/${getAccountId()}/${fileName}note/annotation/${page}"
     }
     /**
      * apk下载地址

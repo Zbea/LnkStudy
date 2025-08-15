@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
+import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
 import com.bll.lnkstudy.net.BaseResult
@@ -10,6 +11,23 @@ import com.bll.lnkstudy.net.RetrofitManager
 
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) : BasePresenter<IContractView.IAccountInfoView>(view) {
+
+
+    fun accounts() {
+
+        val account = RetrofitManager.service.accounts()
+
+        doRequest(account, object : Callback<User>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<User>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<User>) {
+                view.getAccount(tBaseResult.data)
+            }
+
+        }, true)
+
+    }
 
     fun bindPhone(code: String,phone: String) {
         val body = RequestUtils.getBody(

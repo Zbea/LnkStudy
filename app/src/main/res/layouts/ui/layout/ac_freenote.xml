@@ -97,6 +97,11 @@
         android:visibility="gone"
         />
 
+    <include
+        android:id="@+id/ll_drawing_edit"
+        layout="@layout/common_drawing_edit"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"

@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bll.lnkstudy.Constants
+import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.dialog.*
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -19,6 +20,11 @@ import com.bll.lnkstudy.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.common_correct_score.*
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_copy
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_crop
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_enclosing
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_stick
+import kotlinx.android.synthetic.main.common_drawing_edit.tv_edit_out
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
@@ -76,8 +82,70 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         if (iv_score != null)
             setViewElikUnable(iv_score)
 
+        if (ll_drawing_edit!=null)
+            setViewElikUnable(ll_drawing_edit)
+
         initClick()
         initGeometryView()
+
+        initDrawingEdit()
+
+
+        elik_a?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                if (elik_a?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+                    currentDrawingEditScreen=1
+                    elik_b?.onLassoReset()
+                    if (isStick&&DataBeanManager.copyBitmap!=null){
+                        elik_a?.onLassoPaste(DataBeanManager.copyBitmap)
+                        DataBeanManager.copyBitmap=null
+                        isStick=false
+                    }
+                }
+                elik_a?.setShifted(isCurrent&&isParallel)
+                onElikStart_a()
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
+                revocationList.add(1)
+                if (revocationList.size>2)
+                    revocationList.remove(0)
+                if (elik_a?.curDrawObjStatus == true){
+                    reDrawGeometry(elik_a!!,1)
+                }
+                onElikSava_a()
+                elik_a?.saveBitmap(true) {}
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+            }
+        })
+
+        elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                if (elik_b?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+                    currentDrawingEditScreen=2
+                    elik_a?.onLassoReset()
+                    if (isStick&&DataBeanManager.copyBitmap!=null){
+                        elik_b?.onLassoPaste(DataBeanManager.copyBitmap)
+                        DataBeanManager.copyBitmap=null
+                        isStick=false
+                    }
+                }
+                elik_b?.setShifted(isCurrent&&isParallel)
+                onElikStart_b()
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
+                revocationList.add(2)
+                if (revocationList.size>2)
+                    revocationList.remove(0)
+                if (elik_b?.curDrawObjStatus == true){
+                    reDrawGeometry(elik_b!!,2)
+                }
+                onElikSava_b()
+                elik_b?.saveBitmap(true) {}
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+            }
+        })
     }
 
     open fun onInStanceElik() {
@@ -119,6 +187,62 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         iv_expand?.setOnClickListener {
             isClickExpend=true
             onChangeExpandContent()
+        }
+
+        iv_edit?.setOnClickListener {
+            showView(ll_drawing_edit)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LASSO)
+        }
+    }
+
+    private var isStick=false
+    private var currentDrawingEditScreen=1
+
+    private fun initDrawingEdit(){
+        ll_enclosing?.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LASSO)
+            isStick=false
+        }
+        ll_copy?.setOnClickListener {
+            isStick=false
+            if (currentDrawingEditScreen==1){
+                DataBeanManager.copyBitmap=elik_a?.onLassoCopy()
+                if (DataBeanManager.copyBitmap!=null)
+                    showToast("复制成功")
+            }
+            else{
+                DataBeanManager.copyBitmap=elik_b?.onLassoCopy()
+                if (DataBeanManager.copyBitmap!=null)
+                    showToast("复制成功")
+            }
+        }
+        ll_crop?.setOnClickListener {
+            isStick=false
+            if (currentDrawingEditScreen==1){
+                DataBeanManager.copyBitmap=elik_a?.onLassoCut()
+                if (DataBeanManager.copyBitmap!=null)
+                    showToast("剪切成功")
+            }
+            else{
+                DataBeanManager.copyBitmap=elik_b?.onLassoCut()
+                if (DataBeanManager.copyBitmap!=null)
+                    showToast("剪切成功")
+            }
+        }
+        ll_stick?.setOnClickListener {
+            if (DataBeanManager.copyBitmap!=null){
+                elik_a?.onLassoReset()
+                elik_b?.onLassoReset()
+                isStick=true
+            }
+            else{
+                showToast("暂无内容，无法粘贴")
+            }
+        }
+        tv_edit_out?.setOnClickListener {
+            isStick=false
+            disMissView(ll_drawing_edit)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
         }
     }
 
@@ -287,50 +411,6 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                 tv_scale?.callOnClick()
             }
         }
-
-        elik_a?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
-                elik_a?.setShifted(isCurrent && isParallel)
-                onElikStart_a()
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
-                revocationList.add(1)
-                if (revocationList.size > 2)
-                    revocationList.remove(0)
-                if (elik_a?.curDrawObjStatus == true) {
-                    reDrawGeometry(elik_a!!, 1)
-                }
-                onElikSava_a()
-                elik_a?.saveBitmap(true) {}
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-
-            }
-
-        })
-
-        elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
-                elik_b?.setShifted(isCurrent && isParallel)
-                onElikStart_b()
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
-                revocationList.add(2)
-                if (revocationList.size > 2)
-                    revocationList.remove(0)
-                if (elik_b?.curDrawObjStatus == true) {
-                    reDrawGeometry(elik_b!!, 2)
-                }
-                onElikSava_b()
-                elik_b?.saveBitmap(true) {}
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-            }
-        })
 
         this.setTouchAsFocus(true)
     }
@@ -737,6 +817,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         bitmapBatchSaver.shutdown()
+//        elik_a?.onLassoReset()
+//        elik_b?.onLassoReset()
     }
 
 }

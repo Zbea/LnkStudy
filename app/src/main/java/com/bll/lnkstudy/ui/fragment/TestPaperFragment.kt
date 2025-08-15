@@ -418,4 +418,10 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     override fun onNetworkConnectionSuccess() {
         fetchTypes()
     }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.MQTT_TESTPAPER_NOTICE_EVENT){
+            fetchTypes()
+        }
+    }
 }

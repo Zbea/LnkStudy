@@ -1,5 +1,6 @@
 package com.bll.lnkstudy
 
+import android.graphics.Bitmap
 import com.bll.lnkstudy.MyApplication.Companion.mContext
 import com.bll.lnkstudy.mvp.model.*
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
@@ -14,6 +15,7 @@ import java.util.*
 
 object DataBeanManager {
 
+    var copyBitmap: Bitmap?=null//剪切、复制保存bitmap
     var textBookAnnotationPage=0//页面切换地址
     var isRuleImage=false//是否设置规矩图
     var homeworkMessages= mutableListOf<HomeworkMessageList.MessageBean>()

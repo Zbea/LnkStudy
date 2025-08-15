@@ -36,14 +36,6 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
 
     override fun onSms() {
         showToast("短信发送成功")
-        AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
-            override fun onClick(code: String, phone: String) {
-                smsPresenter.checkPhone(code)
-            }
-            override fun onPhone(phone: String) {
-                smsPresenter.sms(phone)
-            }
-        })
     }
 
     override fun onCheckSuccess() {
@@ -98,11 +90,14 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
         tv_xdmoney.text=getString(R.string.xd)+"  "+mUser?.balance
 
         tv_buy.setOnClickListener {
-            if (mUser?.telNumber.isNullOrEmpty()){
-                showToast("请先绑定手机号")
-                return@setOnClickListener
-            }
-            smsPresenter.sms(mUser?.telNumber!!)
+            AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+                override fun onClick(code: String, phone: String) {
+                    smsPresenter.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter.sms(phone)
+                }
+            })
         }
     }
 

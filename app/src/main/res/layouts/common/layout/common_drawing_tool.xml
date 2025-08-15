@@ -49,6 +49,17 @@
         android:background="@drawable/click_btn_transparent_line_black"
         />
 
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_tool_height"
+        android:layout_marginTop="@dimen/drawing_tool_dimens"
+        android:scaleType="center"
+        android:src="@mipmap/icon_draw_edit"
+        android:visibility="gone"
+        android:background="@drawable/click_btn_transparent_line_black"
+        />
+
 
     <View
         android:id="@+id/ll_hide"

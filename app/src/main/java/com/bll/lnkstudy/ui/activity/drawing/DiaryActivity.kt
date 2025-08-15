@@ -63,6 +63,7 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
+//        showView(iv_edit)
         disMissView(iv_draft)
         iv_btn.setImageResource(R.mipmap.icon_draw_change)
 
