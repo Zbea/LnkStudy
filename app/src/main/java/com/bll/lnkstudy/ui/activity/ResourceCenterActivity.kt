@@ -10,6 +10,7 @@ import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.PopupBean
 import com.bll.lnkstudy.ui.fragment.resource.AppDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.CalenderDownloadFragment
+import com.bll.lnkstudy.ui.fragment.resource.DictionaryDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.PaintingDownloadFragment
 import com.bll.lnkstudy.ui.fragment.resource.WallpaperDownloadFragment
 import kotlinx.android.synthetic.main.common_title.tv_course
@@ -24,6 +25,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
     private var wallpaperFragment: WallpaperDownloadFragment? = null
     private var paintingFragment: PaintingDownloadFragment? = null
     private var calenderFragment: CalenderDownloadFragment? = null
+    private var dictionaryDownloadFragment:DictionaryDownloadFragment?=null
 
     private var popSupplys= mutableListOf<PopupBean>()
     private var popTimes= mutableListOf<PopupBean>()
@@ -60,10 +62,12 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         setPageTitle(R.string.resource_center_str)
         showView(tv_supply)
 
+        val ageType=popWallpaperTypes[DataBeanManager.getTypeGradePos()].id
         toolFragment=AppDownloadFragment().newInstance(2)
-        wallpaperFragment = WallpaperDownloadFragment()
+        wallpaperFragment = WallpaperDownloadFragment().newInstance(ageType)
         paintingFragment = PaintingDownloadFragment()
-        calenderFragment = CalenderDownloadFragment()
+        calenderFragment = CalenderDownloadFragment().newInstance(ageType)
+        dictionaryDownloadFragment=DictionaryDownloadFragment()
 
         switchFragment(lastFragment, toolFragment)
         initTab()
@@ -129,16 +133,20 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
                 switchFragment(lastFragment, toolFragment)
             }
             1->{
+                disMissView(tv_course,tv_grade,tv_subgrade)
+                switchFragment(lastFragment, dictionaryDownloadFragment)
+            }
+            2->{
                 disMissView(tv_course,tv_grade)
                 showView(tv_subgrade)
                 switchFragment(lastFragment, wallpaperFragment)
             }
-            2->{
+            3->{
                 showView(tv_course,tv_grade)
                 disMissView(tv_subgrade)
                 switchFragment(lastFragment, paintingFragment)
             }
-            3->{
+            4->{
                 disMissView(tv_course,tv_grade)
                 showView(tv_subgrade)
                 switchFragment(lastFragment, calenderFragment)

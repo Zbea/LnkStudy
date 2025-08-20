@@ -15,6 +15,7 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import com.liulishuo.filedownloader.FileDownloader
+import org.greenrobot.greendao.identityscope.IdentityScopeType
 import kotlin.properties.Delegates
 
 
@@ -53,7 +54,7 @@ class MyApplication : Application(){
         val mHelper = GreenDaoUpgradeHelper(this, "lnkstudy.db" , null)
         val  db = mHelper.writableDatabase
         val mDaoMaster = DaoMaster(db)
-        mDaoSession = mDaoMaster.newSession()
+        mDaoSession = mDaoMaster.newSession(IdentityScopeType.None)
     }
 
     private val mActivityLifecycleCallbacks = object :ActivityLifecycleCallbacks {

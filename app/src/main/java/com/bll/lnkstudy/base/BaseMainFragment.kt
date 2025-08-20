@@ -7,8 +7,10 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.dialog.AppUpdateDialog
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
+import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
@@ -42,6 +44,21 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     override fun onSuccess() {
     }
     override fun onList(list: MutableList<DataUpdateBean>?) {
+    }
+
+    /**
+     * 设置科目tab
+     */
+    fun setTabCourse(){
+        val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
+        itemTabTypes.clear()
+        for (i in courseItems.indices) {
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=courseItems[i].title
+                isCheck=i==0
+            })
+        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
 
     /**
@@ -154,7 +171,4 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     open fun uploadSuccess(cloudIds: MutableList<Int>?){
     }
 
-    override fun onRefreshData() {
-        mCommonPresenter.getClassGroupPermission()
-    }
 }

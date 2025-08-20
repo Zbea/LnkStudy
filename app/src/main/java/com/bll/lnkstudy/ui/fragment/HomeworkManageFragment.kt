@@ -16,9 +16,7 @@ import com.bll.lnkstudy.manager.HomeworkContentDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkShareDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.RecordDaoManager
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
@@ -37,7 +35,6 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     private val mPresenter = HomeworkPresenter(this)
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
-    private var currentCourses= mutableListOf<ItemTypeBean>()
     private var fragments= mutableListOf<HomeworkFragment>()
     private val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
     private val mainCourse= mutableListOf("语文","数学","英语")
@@ -66,7 +63,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
 
         tv_btn_1.text="创建作业本"
         tv_btn_1.setOnClickListener {
-            if (currentCourses.isNotEmpty() && grade >0) {
+            if (itemTabTypes.isNotEmpty() && grade >0) {
                 fragments[mCoursePos].addContentModule()
             }
         }
@@ -80,18 +77,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
 
     //设置头部索引
     private fun initTab() {
-        val courseItems=ItemTypeDaoManager.getInstance().queryAll(7)
-        if (grade>0&&currentCourses!=courseItems){
+        if (grade>0){
             mCoursePos = 0
-            itemTabTypes.clear()
-            currentCourses=courseItems
-            for (i in currentCourses.indices) {
-                itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i].title
-                    isCheck=i==0
-                })
-            }
-            mTabTypeAdapter?.setNewData(itemTabTypes)
+            setTabCourse()
             setLocalHomeworkType()
             initFragment()
         }
@@ -102,10 +90,11 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         switchFragment(lastFragment, fragments[mCoursePos])
     }
 
+
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
-        for (courseItem in currentCourses){
+        for (courseItem in itemTabTypes){
             fragments.add(HomeworkFragment().newInstance(courseItem.title))
         }
         if (fragments.size>0){
@@ -120,7 +109,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         if (grade==0){
             return
         }
-        for (item in currentCourses){
+        for (item in itemTabTypes){
             val course=item.title
             //添加错题本
             if (!otherCourse.contains(course)){
@@ -203,7 +192,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         val cloudList = mutableListOf<CloudListBean>()
         //空内容不上传
         val nullItems = mutableListOf<HomeworkTypeBean>()
-        val types= HomeworkTypeDaoManager.getInstance().queryAllExceptCloud()
+        val types= HomeworkTypeDaoManager.getInstance().queryAllExceptCloud(grade)
         for (typeBean in types) {
             when (typeBean.state) {
                 1,7 -> {
@@ -362,7 +351,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
      * 开始上传到云书库
      */
     private fun startUpload(cloudList: MutableList<CloudListBean>, nullList: MutableList<HomeworkTypeBean>) {
-        if (cloudList.size == HomeworkTypeDaoManager.getInstance().queryAllExceptCloud().size - nullList.size){
+        if (cloudList.size == HomeworkTypeDaoManager.getInstance().queryAllExceptCloud(grade).size - nullList.size){
             if (cloudList.size>0){
                 mCloudUploadPresenter.upload(cloudList)
             }
@@ -437,14 +426,13 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     disMissView(iv_tips)
                 }
             }
-            Constants.HOMEWORK_NOTICE_EVENT->{
+            Constants.MQTT_HOMEWORK_NOTICE_EVENT->{
                 fetchData()
             }
         }
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         lazyLoad()
         for (fragment in fragments){
             fragment.onRefreshData()

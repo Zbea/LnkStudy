@@ -30,11 +30,15 @@ public class AppBean {
     public byte[] imageByte;
     public boolean isTool;
     public long time;
+    public Integer type;//1应用2字典、词典
+    public String path;
+    public long bookId;
     @Transient
     public boolean isCheck=false;
-    @Generated(hash = 233552212)
+
+    @Generated(hash = 625746854)
     public AppBean(Long id, long userId, String appName, String packageName, byte[] imageByte,
-            boolean isTool, long time) {
+            boolean isTool, long time, Integer type, String path, long bookId) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
@@ -42,6 +46,9 @@ public class AppBean {
         this.imageByte = imageByte;
         this.isTool = isTool;
         this.time = time;
+        this.type = type;
+        this.path = path;
+        this.bookId = bookId;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -87,6 +94,24 @@ public class AppBean {
     }
     public void setTime(long time) {
         this.time = time;
+    }
+    public Integer getType() {
+        return this.type;
+    }
+    public void setType(Integer type) {
+        this.type = type;
+    }
+    public String getPath() {
+        return this.path;
+    }
+    public void setPath(String path) {
+        this.path = path;
+    }
+    public long getBookId() {
+        return this.bookId;
+    }
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
     }
 
   

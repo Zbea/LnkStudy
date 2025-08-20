@@ -22,6 +22,8 @@ class MQTTClient {
 
     private var client: MQTTClient? = null
     private var mMqttAndroidClient: MqttAndroidClient? = null
+    private var options : MqttConnectOptions?=null
+
     /**
      * 获取单例（context 最好用application的context  防止内存泄漏）
      */
@@ -36,21 +38,39 @@ class MQTTClient {
         return client
     }
 
-     fun connect(context: Context) {
+     fun init(context: Context){
         val serverURI = "tcp://api2.qinglanmb.com:1883"
         val username = "mqtt"
         val password = "EMQ12312@12asdf"
         val clientName = "Client_" + MethodManager.getUser().accountId
 
-        mMqttAndroidClient = MqttAndroidClient(MyApplication.mContext, serverURI, clientName)
+        options= MqttConnectOptions()
+        options?.userName = username
+        options?.password = password.toCharArray()
+        options?.isAutomaticReconnect = true // 开启自动重连
+        options?.isCleanSession = false // 保持会话状态
+        options?.keepAliveInterval = 60
+        options?.connectionTimeout=10
+        //        options.maxReconnectDelay=5*60*1000
+
+        mMqttAndroidClient = MqttAndroidClient(context, serverURI, clientName)
         mMqttAndroidClient?.setCallback(object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 Log.d(TAG, "Receive message: ${message.toString()} from topic: $topic")
                 val item = Gson().fromJson(message.toString(), ItemList::class.java)
                 if (item.userType == 2) {
                     when(item.type){
+                        3->{
+                            EventBus.getDefault().post(Constants.MQTT_CLASSGROUP_PERMISSION_EVENT)
+                        }
                         4->{
-                            EventBus.getDefault().post(Constants.MQTT_TESTPAPER_NOTICE_EVENT)
+                            EventBus.getDefault().post(Constants.MQTT_TESTPAPER_CORRECT_NOTICE_EVENT)
+                        }
+                        5->{
+                            EventBus.getDefault().post(Constants.MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT)
+                        }
+                        6->{
+                            EventBus.getDefault().post(Constants.CLASSGROUP_REFRESH_EVENT)
                         }
                         else->{
                             EventBus.getDefault().post(Constants.MQTT_HOMEWORK_NOTICE_EVENT)
@@ -58,23 +78,15 @@ class MQTTClient {
                     }
                 }
             }
-
             override fun connectionLost(cause: Throwable?) {
                 Log.d(TAG, "Connection lost ${cause.toString()}")
-                connect(context)
             }
-
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
-
             }
         })
-        val options = MqttConnectOptions()
-        options.userName = username
-        options.password = password.toCharArray()
-        options.isAutomaticReconnect = true // 开启自动重连
-        options.isCleanSession = false // 保持会话状态
-        options.keepAliveInterval = 60
+    }
 
+     fun connect() {
         try {
             mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
@@ -84,6 +96,7 @@ class MQTTClient {
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "Connection failure")
+//                    connect(context)
                 }
             })
         } catch (e: MqttException) {
@@ -122,4 +135,7 @@ class MQTTClient {
         }
     }
 
+    fun isConnect():Boolean?{
+        return mMqttAndroidClient?.isConnected
+    }
 }

@@ -411,7 +411,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         fetchTypes()
     }
 
@@ -420,7 +419,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.MQTT_TESTPAPER_NOTICE_EVENT){
+        if (msgFlag==Constants.MQTT_TESTPAPER_CORRECT_NOTICE_EVENT){
             fetchTypes()
         }
     }

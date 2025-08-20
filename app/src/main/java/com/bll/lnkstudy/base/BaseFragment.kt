@@ -9,10 +9,11 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkstudy.Constants
-import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.ProgressDialog
+import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.User
@@ -82,9 +83,6 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         }
     }
 
-    override fun onClassGroupPermission(time: Long) {
-        DataBeanManager.permissionTime=time
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -278,6 +276,12 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
                     onTabClickListener(view,position)
                 }
             }
+            setOnItemLongClickListener { adapter, view, position ->
+                if (position<data.size){
+                    onTabLongClickListener(view,position)
+                }
+                true
+            }
         }
     }
 
@@ -286,6 +290,20 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
      */
     open fun onTabClickListener(view:View, position:Int){
 
+    }
+
+    open fun onTabLongClickListener(view:View, position:Int){
+        CommonDialog(requireActivity(),if (javaClass.simpleName.equals("VideoFragment"))1 else 2).setContent("确定顶置${itemTabTypes[position].title}？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+            override fun ok() {
+                val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
+                val firstItem=courseItems.first()
+                val item=courseItems[position]
+                item.date=firstItem.date-1000
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+
+                EventBus.getDefault().post(Constants.COURSEITEM_EVENT)
+            }
+        })
     }
 
     /**

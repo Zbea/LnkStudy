@@ -12,8 +12,6 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.dialog.PopupList
-import com.bll.lnkstudy.manager.ItemTypeDaoManager
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.TeachingVideoList
 import com.bll.lnkstudy.mvp.presenter.TeachingVideoPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -35,7 +33,6 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     private val mPresenter=TeachingVideoPresenter(this,1)
     private var mAdapter: TeachListAdapter? = null
-    private var currentCourses= mutableListOf<ItemTypeBean>()
     private var mCourse=""
     private var semester=1
 
@@ -88,24 +85,17 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
     //设置头部索引
     private fun initTab() {
-        val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
-        if (currentCourses!=courseItems){
-            itemTabTypes.clear()
-            currentCourses=courseItems
-            mCourse=currentCourses[0].title
-            for (i in currentCourses.indices) {
-                itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i].title
-                    isCheck=i==0
-                })
+        if (grade>0){
+            setTabCourse()
+            if (itemTabTypes.isNotEmpty()){
+                mCourse=itemTabTypes[0].title
+                fetchData()
             }
-            mTabTypeAdapter?.setNewData(itemTabTypes)
-            fetchData()
         }
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        mCourse=currentCourses[position].title
+        mCourse=itemTabTypes[0].title
         pageIndex=1
         fetchData()
     }
@@ -186,7 +176,6 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         fetchData()
     }
 

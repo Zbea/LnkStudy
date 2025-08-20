@@ -252,10 +252,23 @@ class FileAddress {
         return "$IMAGE_PATH/${getAccountId()}/recorder"
     }
 
+    /**
+     * 字典、词典地址
+     */
+    fun getPathDictionary():String{
+        return "$IMAGE_PATH/${getAccountId()}/dictionary"
+    }
+    /**
+     * 字典、词典手写地址
+     */
+    fun getPathDictionaryDrawing(bookName:String):String{
+        return "$IMAGE_PATH/${getAccountId()}/dictionary/${bookName}note/draw"
+    }
+
     fun getPathDocument():String{
-        return "$IMAGE_PATH/${getAccountId()}"
+        return "$IMAGE_PATH/${getAccountId()}/teaching"
     }
     fun getPathDocument(name:String):String{
-        return "$IMAGE_PATH/${getAccountId()}/$name"
+        return "$IMAGE_PATH/${getAccountId()}/teaching/$name"
     }
 }

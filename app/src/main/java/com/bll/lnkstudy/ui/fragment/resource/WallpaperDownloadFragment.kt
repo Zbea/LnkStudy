@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.fragment.resource
 
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -40,12 +41,23 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         mAdapter?.notifyDataSetChanged()
     }
 
+    /**
+     * 实例 传送数据
+     */
+    fun newInstance(index:Int): WallpaperDownloadFragment {
+        val fragment= WallpaperDownloadFragment()
+        val bundle= Bundle()
+        bundle.putInt("ageType",index)
+        fragment.arguments=bundle
+        return fragment
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
     }
 
     override fun initView() {
+        type=arguments?.getInt("ageType")!!
         initChangeScreenData()
         pageSize=6
         initRecyclerView()

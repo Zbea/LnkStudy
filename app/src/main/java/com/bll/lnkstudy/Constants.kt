@@ -115,7 +115,9 @@ class Constants {
         const val DOCUMENT_DOWNLOAD_EVENT="DocumentDownloadEvent"//资料下载通知
         const val TEXTBOOK_ANNOTATION_CHANGE_PAGE_EVENT="TextBookAnnotationChangePageEvent"//课本页面切换通知
         const val MQTT_HOMEWORK_NOTICE_EVENT="MQTTHomeworkNoticeEvent"//作业通知推送
-            const val MQTT_TESTPAPER_NOTICE_EVENT="MQTTTestPaperNoticeEvent"//考卷通知推送
+        const val MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT="MQTTTestPaperAssignNoticeEvent"//考卷布置通知推送
+        const val MQTT_TESTPAPER_CORRECT_NOTICE_EVENT="MQTTTestPaperCorrectNoticeEvent"//考卷批改通知推送
+        const val MQTT_CLASSGROUP_PERMISSION_EVENT="MQTTClassGroupPermissionEvent"//班级老师控制权限推送
 
         //定时任务标识
         const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新

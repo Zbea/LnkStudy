@@ -71,7 +71,7 @@ object DataBeanManager {
         mContext.getString(R.string.painting_hnh),mContext.getString(R.string.painting_rwh),
         mContext.getString(R.string.painting_smh),mContext.getString(R.string.painting_ybsf)
     )
-    var resources = arrayOf("我的工具","锁屏壁纸","历代书画","跳页日历")
+    var resources = arrayOf("我的工具","字典词典","锁屏壁纸","历代书画","跳页日历")
 
 
     fun popupGrades(grade: Int): MutableList<PopupBean> {

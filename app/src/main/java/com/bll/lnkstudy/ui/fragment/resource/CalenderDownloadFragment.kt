@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.ui.fragment.resource
 
+import android.os.Bundle
 import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -50,6 +51,20 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
     }
 
     override fun buySuccess() {
+        items[position].buyStatus=1
+        mAdapter?.notifyItemChanged(position)
+        detailsDialog?.setChangeStatus()
+    }
+
+    /**
+     * 实例 传送数据
+     */
+    fun newInstance(index:Int): CalenderDownloadFragment {
+        val fragment= CalenderDownloadFragment()
+        val bundle= Bundle()
+        bundle.putInt("ageType",index)
+        fragment.arguments=bundle
+        return fragment
     }
 
     override fun getLayoutId(): Int {
@@ -57,6 +72,8 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
     }
 
     override fun initView() {
+        type=arguments?.getInt("ageType")!!
+
         initChangeScreenData()
         pageSize=12
         initRecycleView()
@@ -163,7 +180,7 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
                 }
                 CalenderDaoManager.getInstance().insertOrReplace(item)
                 //更新列表
-                mAdapter?.notifyDataSetChanged()
+                mAdapter?.notifyItemChanged(position)
                 detailsDialog?.dismiss()
                 FileUtils.deleteFile(File(zipPath))
                 Handler().postDelayed({
@@ -214,7 +231,7 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
         map["page"] = pageIndex
         map["size"] = pageSize
         map["type"] = supply
-        map["ageType"]=type
+        map["subType"]=type
         map["mainType"]=1
         presenter.getList(map)
     }

@@ -129,9 +129,10 @@ public class HomeworkTypeDaoManager {
      * 获取当前年级之前的所有未上传作业本
      * @return
      */
-    public List<HomeworkTypeBean> queryAllExceptCloud() {
+    public List<HomeworkTypeBean> queryAllExceptCloud(int grade) {
         WhereCondition whereCondition=HomeworkTypeBeanDao.Properties.IsCloud.eq(false);
-        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.Grade.lt(grade);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
     /**

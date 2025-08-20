@@ -31,6 +31,9 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         public final static Property ImageByte = new Property(4, byte[].class, "imageByte", false, "IMAGE_BYTE");
         public final static Property IsTool = new Property(5, boolean.class, "isTool", false, "IS_TOOL");
         public final static Property Time = new Property(6, long.class, "time", false, "TIME");
+        public final static Property Type = new Property(7, Integer.class, "type", false, "TYPE");
+        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
+        public final static Property BookId = new Property(9, long.class, "bookId", false, "BOOK_ID");
     }
 
 
@@ -52,7 +55,10 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
                 "\"PACKAGE_NAME\" TEXT," + // 3: packageName
                 "\"IMAGE_BYTE\" BLOB," + // 4: imageByte
                 "\"IS_TOOL\" INTEGER NOT NULL ," + // 5: isTool
-                "\"TIME\" INTEGER NOT NULL );"); // 6: time
+                "\"TIME\" INTEGER NOT NULL ," + // 6: time
+                "\"TYPE\" INTEGER," + // 7: type
+                "\"PATH\" TEXT," + // 8: path
+                "\"BOOK_ID\" INTEGER NOT NULL );"); // 9: bookId
     }
 
     /** Drops the underlying database table. */
@@ -87,6 +93,17 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         }
         stmt.bindLong(6, entity.getIsTool() ? 1L: 0L);
         stmt.bindLong(7, entity.getTime());
+ 
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(8, type);
+        }
+ 
+        String path = entity.getPath();
+        if (path != null) {
+            stmt.bindString(9, path);
+        }
+        stmt.bindLong(10, entity.getBookId());
     }
 
     @Override
@@ -115,6 +132,17 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         }
         stmt.bindLong(6, entity.getIsTool() ? 1L: 0L);
         stmt.bindLong(7, entity.getTime());
+ 
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(8, type);
+        }
+ 
+        String path = entity.getPath();
+        if (path != null) {
+            stmt.bindString(9, path);
+        }
+        stmt.bindLong(10, entity.getBookId());
     }
 
     @Override
@@ -131,7 +159,10 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // packageName
             cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4), // imageByte
             cursor.getShort(offset + 5) != 0, // isTool
-            cursor.getLong(offset + 6) // time
+            cursor.getLong(offset + 6), // time
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // type
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // path
+            cursor.getLong(offset + 9) // bookId
         );
         return entity;
     }
@@ -145,6 +176,9 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         entity.setImageByte(cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4));
         entity.setIsTool(cursor.getShort(offset + 5) != 0);
         entity.setTime(cursor.getLong(offset + 6));
+        entity.setType(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setBookId(cursor.getLong(offset + 9));
      }
     
     @Override

@@ -106,6 +106,11 @@ public interface IContractView {
         void buySuccess();
     }
 
+    interface IDictionaryResourceView extends IBaseView {
+        void onList(TextbookStore bookStore);
+        void buySuccess();
+    }
+
     //应用
     interface IAPPView extends IBaseView {
         void onAppList(AppList appBean);
@@ -135,6 +140,7 @@ public interface IContractView {
     interface IMainLeftView extends IBaseView {
         void onParentPermission(PermissionParentBean permissionParentBean);
         void onSchoolPermission(PermissionSchoolBean permissionSchoolBean);
+        default void onClassGroupPermission(long time){}
     }
 
     interface IMainRightView extends IBaseView {
@@ -191,8 +197,7 @@ public interface IContractView {
     //公共接口
     interface ICommonView extends IBaseView {
         default void onList(CommonData commonData){};
-        default void onListSchools(List<SchoolBean> list){};
-        default void onClassGroupPermission(long time){};
+        default void onListSchools(List<SchoolBean> list){};;
     }
 
     interface ICalenderView extends IBaseView {

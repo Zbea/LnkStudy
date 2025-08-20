@@ -7,8 +7,9 @@ import com.bll.lnkstudy.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.CALENDER_SET_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_DRAWING_EVENT
 import com.bll.lnkstudy.Constants.Companion.DATE_EVENT
-import com.bll.lnkstudy.Constants.Companion.HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.Constants.Companion.MAIN_HOMEWORK_NOTICE_CLEAR_EVENT
+import com.bll.lnkstudy.Constants.Companion.MQTT_CLASSGROUP_PERMISSION_EVENT
+import com.bll.lnkstudy.Constants.Companion.MQTT_HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.Constants.Companion.USER_CHANGE_GRADE_EVENT
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.R
@@ -88,6 +89,10 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             SPUtil.removeObj(Constants.SP_SCHOOL_PERMISSION)
         }
     }
+    override fun onClassGroupPermission(time: Long) {
+        DataBeanManager.permissionTime=time
+    }
+
     override fun onCorrect(list: HomeworkNoticeList) {
         correctAdapter?.setNewData(list.list)
     }
@@ -174,6 +179,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             map["size"]=7
             mHomeworkNoticePresenter.getHomeworkNotice(map)
             mHomeworkNoticePresenter.getCorrectNotice(map)
+
+            mMainLeftPresenter.getClassGroupPermission()
 
             if (grade>0){
                 mMainLeftPresenter.getParentPermission()
@@ -347,14 +354,16 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             DATE_DRAWING_EVENT -> {
                 setDateView()
             }
-            USER_CHANGE_GRADE_EVENT, HOMEWORK_NOTICE_EVENT->{
-                onRefreshData()
+            USER_CHANGE_GRADE_EVENT, MQTT_HOMEWORK_NOTICE_EVENT->{
+                fetchData()
+            }
+            MQTT_CLASSGROUP_PERMISSION_EVENT->{
+                fetchData()
             }
         }
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         lazyLoad()
     }
 

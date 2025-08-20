@@ -10,6 +10,7 @@ import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.dialog.LongClickManageDialog
 import com.bll.lnkstudy.manager.TextbookGreenDaoManager
 import com.bll.lnkstudy.mvp.model.ItemList
@@ -77,7 +78,21 @@ class TextbookFragment : BaseMainFragment() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position
-                onLongClick()
+                if (textId!=0){
+                    onLongClick()
+                }
+                else{
+                    CommonDialog(requireActivity(),1).setContent("确定顶置课本？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun ok() {
+                            val book=books[position]
+                            book.time=System.currentTimeMillis()
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //修改增量更新
+                            DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
+                            fetchData()
+                        }
+                    })
+                }
                 true
             }
         }

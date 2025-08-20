@@ -118,7 +118,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     override fun initData() {
         mqttClient=MQTTClient().getInstance()
-        mqttClient?.connect(this)
+        mqttClient?.init(this)
+        mqttClient?.connect()
 
         initStartDate()
     }
@@ -959,6 +960,14 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK || keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
             false
         } else super.onKeyDown(keyCode, event)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        Handler().postDelayed({
+            if (mqttClient?.isConnect() == false){
+                mqttClient?.connect()
+            }
+        },20*1000)
     }
 
     override fun onDestroy() {

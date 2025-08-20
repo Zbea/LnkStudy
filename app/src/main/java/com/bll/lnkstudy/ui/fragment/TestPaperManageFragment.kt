@@ -9,10 +9,8 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
-import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.manager.PaperDaoManager
 import com.bll.lnkstudy.manager.PaperTypeDaoManager
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.mvp.model.paper.PaperTypeBean
 import com.bll.lnkstudy.utils.FileUploadManager
@@ -24,7 +22,6 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     private var lastFragment: Fragment? = null
     private var mCoursePos=0
-    private var currentCourses= mutableListOf<ItemTypeBean>()
     private var fragments= mutableListOf<TestPaperFragment>()
 
     override fun getLayoutId(): Int {
@@ -41,18 +38,9 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     //设置头部索引
     private fun initTab() {
-        val courseItems= ItemTypeDaoManager.getInstance().queryAll(7)
-        if (grade>0&&currentCourses!=courseItems){
+        if (grade>0){
             mCoursePos = 0
-            itemTabTypes.clear()
-            currentCourses=courseItems
-            for (i in currentCourses.indices) {
-                itemTabTypes.add(ItemTypeBean().apply {
-                    title=currentCourses[i].title
-                    isCheck=i==0
-                })
-            }
-            mTabTypeAdapter?.setNewData(itemTabTypes)
+            setTabCourse()
             setLocalPaperType()
             initFragment()
         }
@@ -66,7 +54,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
-        for (courseItem in currentCourses){
+        for (courseItem in itemTabTypes){
             fragments.add(TestPaperFragment().newInstance(courseItem.title))
         }
         if (fragments.size>0){
@@ -81,7 +69,7 @@ class TestPaperManageFragment: BaseMainFragment() {
         if (grade==0){
             return
         }
-        for (item in currentCourses){
+        for (item in itemTabTypes){
             val course=item.title
             //创建学校考试卷
             val typeId = MethodManager.getTestPaperAutoTypeId("学校考试卷",course)
@@ -212,7 +200,6 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         for (fragment in fragments){
             fragment.onRefreshData()
         }

@@ -1149,7 +1149,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         fetchHomeworkType()
     }
 

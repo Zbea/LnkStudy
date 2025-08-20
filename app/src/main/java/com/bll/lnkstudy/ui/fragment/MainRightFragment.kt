@@ -8,6 +8,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_REFRESH_EVENT
 import com.bll.lnkstudy.Constants.Companion.EXAM_COMMIT_EVENT
 import com.bll.lnkstudy.Constants.Companion.MESSAGE_COMMIT_EVENT
+import com.bll.lnkstudy.Constants.Companion.MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
@@ -386,14 +387,15 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             EXAM_COMMIT_EVENT -> {
                 disExam()
             }
-
             MESSAGE_COMMIT_EVENT -> {
                 findMessages()
             }
-
             CLASSGROUP_REFRESH_EVENT -> {
                 mMainPresenter.getTeacherCourse()
                 mMainPresenter.getClassGroupList(false)
+            }
+            MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT->{
+                fetchExam()
             }
         }
     }
@@ -403,7 +405,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         onCheckUpdate()
         lazyLoad()
     }

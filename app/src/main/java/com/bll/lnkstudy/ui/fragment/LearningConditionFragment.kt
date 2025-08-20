@@ -129,7 +129,6 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         fetchData()
     }
 

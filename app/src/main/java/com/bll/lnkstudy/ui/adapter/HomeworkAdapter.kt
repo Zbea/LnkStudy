@@ -4,23 +4,19 @@ import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
-import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.GlideUtils
-import com.bll.lnkstudy.utils.SPUtil.getObj
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import java.util.Objects
 
 class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
-
-    var grade = Objects.requireNonNull(getObj("user", User::class.java))?.grade
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
         helper.apply {
             setVisible(R.id.ll_info, !item.isCloud&&(item.createStatus==1||item.createStatus==2))
-            setText(R.id.tv_grade,if (grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
+            setText(R.id.tv_grade,if (MethodManager.getUser().grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
 
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){
