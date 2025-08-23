@@ -255,8 +255,8 @@ class FileAddress {
     /**
      * 字典、词典地址
      */
-    fun getPathDictionary():String{
-        return "$IMAGE_PATH/${getAccountId()}/dictionary"
+    fun getPathDictionary(bookName:String):String{
+        return "$IMAGE_PATH/${getAccountId()}/dictionary/$bookName"
     }
     /**
      * 字典、词典手写地址

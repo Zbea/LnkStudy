@@ -15,6 +15,7 @@ import com.bll.lnkstudy.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -45,7 +46,7 @@ class AppToolDialog(val context: Context, private val oldScreen:Int, private val
 
         val toolApps=MethodManager.getAppTools(context,1)
         if (context is PlanOverviewActivity){
-            val appBean= AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
+            val appBean= AppDaoManager.getInstance().queryBeanByPackageName(Constants.PACKAGE_GEOMETRY)
             if (appBean!=null){
                 toolApps.remove(appBean)
             }
@@ -57,17 +58,29 @@ class AppToolDialog(val context: Context, private val oldScreen:Int, private val
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            val packageName= toolApps[position].packageName
-            if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
-                listener?.onClick()
-            }
-            else{
+            val item=toolApps[position]
+            if (item.type==2){
                 when(oldScreen){
                     Constants.SCREEN_LEFT->{
-                        AppUtils.startAPP(context,packageName,Constants.SCREEN_RIGHT)
+                        MethodManager.gotoDictionaryDetails(context,item.bookId,Constants.SCREEN_RIGHT)
                     }
                     else->{
-                        AppUtils.startAPP(context,packageName,Constants.SCREEN_LEFT)
+                        MethodManager.gotoDictionaryDetails(context,item.bookId,Constants.SCREEN_LEFT)
+                    }
+                }
+            }
+            else{
+                if (item.packageName.equals(Constants.PACKAGE_GEOMETRY)){
+                    listener?.onClick()
+                }
+                else{
+                    when(oldScreen){
+                        Constants.SCREEN_LEFT->{
+                            AppUtils.startAPP(context,item.packageName,Constants.SCREEN_RIGHT)
+                        }
+                        else->{
+                            AppUtils.startAPP(context,item.packageName,Constants.SCREEN_LEFT)
+                        }
                     }
                 }
             }
@@ -90,7 +103,12 @@ class AppToolDialog(val context: Context, private val oldScreen:Int, private val
     class MyAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<AppBean, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: AppBean) {
             helper.setText(R.id.tv_name,item.appName)
-            helper.setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(item.imageByte))
+            if (item.type==2){
+                GlideUtils.setImageRoundUrl(mContext,item.imageUrl,helper.getView(R.id.iv_image),10)
+            }
+            else{
+                helper.setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(item.imageByte))
+            }
         }
     }
 

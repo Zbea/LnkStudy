@@ -60,9 +60,10 @@ open class PaintingDownloadFragment :BaseMainFragment(), IContractView.IPainting
     }
 
     private fun initRecyclerView(){
-        val distance= DP2PX.dip2px(requireActivity(),30f)
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(distance, DP2PX.dip2px(requireActivity(),40f),distance,0)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 

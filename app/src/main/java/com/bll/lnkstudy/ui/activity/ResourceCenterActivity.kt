@@ -130,25 +130,26 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         when(position){
             0->{
                 disMissView(tv_course,tv_grade,tv_subgrade)
+                showView(tv_supply)
                 switchFragment(lastFragment, toolFragment)
             }
             1->{
-                disMissView(tv_course,tv_grade,tv_subgrade)
+                disMissView(tv_course,tv_grade,tv_subgrade,tv_supply)
                 switchFragment(lastFragment, dictionaryDownloadFragment)
             }
             2->{
                 disMissView(tv_course,tv_grade)
-                showView(tv_subgrade)
+                showView(tv_subgrade,tv_supply)
                 switchFragment(lastFragment, wallpaperFragment)
             }
             3->{
                 showView(tv_course,tv_grade)
-                disMissView(tv_subgrade)
+                disMissView(tv_subgrade,tv_supply)
                 switchFragment(lastFragment, paintingFragment)
             }
             4->{
                 disMissView(tv_course,tv_grade)
-                showView(tv_subgrade)
+                showView(tv_subgrade,tv_supply)
                 switchFragment(lastFragment, calenderFragment)
             }
         }

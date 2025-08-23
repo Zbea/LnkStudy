@@ -43,6 +43,7 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean;
 import com.bll.lnkstudy.mvp.model.book.TextbookBean;
 import com.bll.lnkstudy.ui.activity.account.AccountLoginActivity;
 import com.bll.lnkstudy.ui.activity.PaintingImageActivity;
+import com.bll.lnkstudy.ui.activity.book.DictionaryBookDetailsActivity;
 import com.bll.lnkstudy.ui.activity.homework.HomeworkRecordActivity;
 import com.bll.lnkstudy.ui.activity.homework.HomeworkRecordListActivity;
 import com.bll.lnkstudy.ui.activity.book.TextBookDetailsActivity;
@@ -62,6 +63,9 @@ import com.bll.lnkstudy.utils.FileUtils;
 import com.bll.lnkstudy.utils.MD5Utils;
 import com.bll.lnkstudy.utils.SPUtil;
 import com.bll.lnkstudy.utils.SToast;
+import com.bll.lnkstudy.utils.date.Lunar;
+import com.bll.lnkstudy.utils.date.LunarSolarConverter;
+import com.bll.lnkstudy.utils.date.Solar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -73,9 +77,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class MethodManager {
 
@@ -95,6 +102,39 @@ public class MethodManager {
         }
         else {
             return user.accountId;
+        }
+    }
+
+    public static int getSemester(){
+        long time=System.currentTimeMillis();
+
+        Lunar lunar=new Lunar();
+        lunar.isleap=DateUtils.isleap();
+        lunar.lunarYear = DateUtils.getYear();
+        lunar.lunarMonth = 1;
+        lunar.lunarDay = 1;
+        Solar solar = LunarSolarConverter.LunarToSolar(lunar);
+
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        calendar.set(Calendar.YEAR, solar.solarYear);
+        calendar.set(Calendar.MONTH, solar.solarMonth-1);
+        calendar.set(Calendar.DAY_OF_MONTH, solar.solarDay);
+
+        long startTime=calendar.getTimeInMillis();
+
+        calendar.set(Calendar.YEAR, solar.solarYear);
+        calendar.set(Calendar.MONTH, 7);
+        calendar.set(Calendar.DAY_OF_MONTH, 15);
+
+        long endTime=calendar.getTimeInMillis();
+
+        if (time>=startTime&&time<=endTime){
+            return 2;
+        }
+        else {
+            return 1;
         }
     }
 
@@ -282,7 +322,7 @@ public class MethodManager {
         List<AppBean> toolApps = getAppTools(MyApplication.Companion.getMContext(), 1);
         JSONArray result = new JSONArray();
         for (AppBean item : toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)||item.type==2)
                 continue;
             JSONObject jsonObject = new JSONObject();
             try {
@@ -333,6 +373,18 @@ public class MethodManager {
         FileUtils.deleteFile(new File(annotationPath));
         //删除增量更新
         DataUpdateManager.INSTANCE.deleteDateUpdate(1,book.bookId);
+    }
+
+    /**
+     * 跳转字典词典
+     */
+    public static void gotoDictionaryDetails(Context context, int bookId,int screen) {
+        ActivityManager.getInstance().finishActivity(DictionaryBookDetailsActivity.class.getName());
+        Intent intent = new Intent(context, DictionaryBookDetailsActivity.class);
+        intent.putExtra("bookId",bookId);
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, screen);
+        intent.putExtra(Constants.INTENT_DRAWING_FOCUS, true);
+        context.startActivity(intent);
     }
 
     public static void setHomeworkTypeBundle(Intent intent, HomeworkTypeBean item){
@@ -573,10 +625,11 @@ public class MethodManager {
         Iterator<AppBean> it = apps.iterator();
         while (it.hasNext()) {
             AppBean item = it.next();
-            if (!AppUtils.isAvailable(context, item.packageName) && !Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)) {
+            if (!AppUtils.isAvailable(context, item.packageName) && !Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)&&item.type!=2) {
                 it.remove();
                 AppDaoManager.getInstance().deleteBean(item);
             }
+            item.isCheck=false;
         }
         return apps;
     }

@@ -3,6 +3,7 @@ package com.bll.lnkstudy.manager;
 
 import com.bll.lnkstudy.MethodManager;
 import com.bll.lnkstudy.MyApplication;
+import com.bll.lnkstudy.R;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.greendao.TextbookBeanDao;
 import com.bll.lnkstudy.mvp.model.User;
@@ -84,6 +85,15 @@ public class TextbookGreenDaoManager {
     public TextbookBean queryTextBookByID(int bookID) {
         WhereCondition whereCondition1= TextbookBeanDao.Properties.BookId.eq(bookID);
         return dao.queryBuilder().where(whereUser,whereCondition1).build().unique();
+    }
+
+    public List<TextbookBean> queryAllTextBookByGrade(int grade, int semester) {
+        String typeStr=MyApplication.Companion.getMContext().getString(R.string.textbook_tab_my);
+        WhereCondition whereCondition1=TextbookBeanDao.Properties.TypeStr.eq(typeStr);
+        WhereCondition whereCondition2=TextbookBeanDao.Properties.Grade.notEq(grade);
+        WhereCondition whereCondition3=TextbookBeanDao.Properties.Semester.notEq(semester);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+                .orderDesc(TextbookBeanDao.Properties.Time).build().list();
     }
 
     //查找课本 细分子类

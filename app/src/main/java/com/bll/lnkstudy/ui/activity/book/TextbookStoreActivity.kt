@@ -7,6 +7,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.dialog.DownloadTextbookDialog
@@ -23,7 +24,6 @@ import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.mvp.presenter.TextbookStorePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.TextBookAdapter
-import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.MD5Utils
@@ -99,7 +99,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
         typeList = DataBeanManager.teachingType.toMutableList()
         tabStr = typeList[0]
 
-        getSemester()
+        semester=MethodManager.getSemester()
 
         provinceStr = mUser?.schoolCity.toString()
         gradeId = mUser?.grade!!
@@ -136,7 +136,6 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 for (book in books) {
                     val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByID(book.bookId)
                     if (localBook != null) {
-                        //预习课本转移到我的课本中
                         if (localBook.typeStr != tabStr) {
                             localBook.typeStr = tabStr
                             localBook.time = System.currentTimeMillis()
@@ -151,6 +150,8 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                     showToast("已下载")
                     return@setOnClickListener
                 }
+
+                moveTextbook()
 
                 startBooks(downloadBooks)
             }
@@ -174,10 +175,9 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 showView(tv_download)
                 disMissView(tv_course, tv_grade, tv_semester)
                 gradeId = mUser?.grade!!
-                getSemester()
+                semester=MethodManager.getSemester()
                 tv_semester.text = DataBeanManager.popupSemesters()[semester - 1].name
             }
-
             else -> {
                 showView(tv_grade, tv_course, tv_semester)
                 disMissView(tv_download)
@@ -244,10 +244,16 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     }
 
     /**
-     * 设置课本学期（月份为9月份之前为下学期）
+     * 移除课本到往期课本
      */
-    private fun getSemester() {
-        semester = if (DateUtils.getMonth() < 9) 2 else 1
+    private fun moveTextbook(){
+        val items= TextbookGreenDaoManager.getInstance().queryAllTextBookByGrade(gradeId,semester)
+        for (item in items){
+            item.typeStr=getString(R.string.textbook_tab_old)
+            //修改增量更新
+            DataUpdateManager.editDataUpdate(1,item.bookId,1,item.bookId, Gson().toJson(item))
+        }
+        TextbookGreenDaoManager.getInstance().insertOrReplaceBooks(items)
     }
 
     /**

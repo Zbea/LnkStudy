@@ -96,13 +96,11 @@ class MQTTClient {
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "Connection failure")
-//                    connect(context)
                 }
             })
         } catch (e: MqttException) {
             e.printStackTrace()
         }
-
     }
 
     private fun subscribe(topic: String, qos: Int = 1) {
@@ -118,22 +116,17 @@ class MQTTClient {
         } catch (e: MqttException) {
             e.printStackTrace()
         }
+
     }
 
     fun disconnect() {
         try {
-            mMqttAndroidClient?.disconnect(null, object : IMqttActionListener {
-                override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG, "Disconnected")
-                }
-                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.d(TAG, "Failed to disconnect")
-                }
-            })
+            mMqttAndroidClient?.disconnect(null, null)
         } catch (e: MqttException) {
             e.printStackTrace()
         }
     }
+
 
     fun isConnect():Boolean?{
         return mMqttAndroidClient?.isConnected

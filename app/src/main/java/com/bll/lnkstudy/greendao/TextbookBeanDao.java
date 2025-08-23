@@ -60,7 +60,7 @@ public class TextbookBeanDao extends AbstractDao<TextbookBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"TEXTBOOK_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"BOOK_ID\" INTEGER NOT NULL UNIQUE ," + // 2: bookId
+                "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
                 "\"TYPE_STR\" TEXT," + // 4: typeStr
                 "\"IMAGE_URL\" TEXT," + // 5: imageUrl

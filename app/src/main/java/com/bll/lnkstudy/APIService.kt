@@ -240,7 +240,11 @@ interface APIService{
      */
     @GET("font/draw/list")
     fun getPaintings(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<PaintingList>>
-
+    /**
+     * 获取字典
+     */
+    @GET("dict/list")
+    fun getDictionaryList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
 
     /**
      * 教学视频 课程列表

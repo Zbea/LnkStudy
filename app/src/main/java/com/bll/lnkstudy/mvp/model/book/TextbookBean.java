@@ -23,7 +23,6 @@ public class TextbookBean {
     @Unique
     public Long id;
     public long userId= MethodManager.getAccountId();
-    @Unique
     public int bookId;
     public int type;
     public String typeStr;

@@ -12,6 +12,7 @@ import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.ui.adapter.AppListAdapter
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.BitmapUtils
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_list.rv_list
 import kotlinx.android.synthetic.main.ac_app_list.rv_list_tool
@@ -34,13 +35,14 @@ class AppToolActivity:BaseAppCompatActivity() {
     }
 
     override fun initData() {
-        if (!AppDaoManager.getInstance().isExist(Constants.PACKAGE_GEOMETRY)){
+        if (AppDaoManager.getInstance().queryBeanByPackageName(Constants.PACKAGE_GEOMETRY)==null){
             AppDaoManager.getInstance().insertOrReplace(AppBean().apply {
                 appName="几何绘图"
                 imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
                 packageName=Constants.PACKAGE_GEOMETRY
                 time=System.currentTimeMillis()
                 isTool=false
+                type=1
             })
         }
 
@@ -58,13 +60,10 @@ class AppToolActivity:BaseAppCompatActivity() {
             for (item in apps){
                 if (item.isCheck){
                     item.isTool=true
-                    if (!AppDaoManager.getInstance().isTool(item.packageName)){
-                        AppDaoManager.getInstance().insertOrReplace(item)
-                    }
+                    AppDaoManager.getInstance().insertOrReplace(item)
                 }
             }
-            setDataApp()
-            setDataAppTool()
+            fetchData()
         }
 
         tv_out.setOnClickListener {
@@ -74,12 +73,10 @@ class AppToolActivity:BaseAppCompatActivity() {
                     AppDaoManager.getInstance().insertOrReplace(item)
                 }
             }
-            setDataApp()
-            setDataAppTool()
+            fetchData()
         }
 
-        setDataApp()
-        setDataAppTool()
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -91,8 +88,14 @@ class AppToolActivity:BaseAppCompatActivity() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val item=apps[position]
             val packageName= item.packageName
-            if (packageName!=Constants.PACKAGE_GEOMETRY)
-                AppUtils.startAPP(this,packageName)
+            if (packageName!=Constants.PACKAGE_GEOMETRY){
+                if (item.type==2){
+                    MethodManager.gotoDictionaryDetails(this,item.bookId,getCurrentScreenPos())
+                }
+                else{
+                    AppUtils.startAPP(this,packageName)
+                }
+            }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val item=apps[position]
@@ -107,14 +110,18 @@ class AppToolActivity:BaseAppCompatActivity() {
             this.position=position
             val item=apps[position]
             val packageName= item.packageName
-            showLog(packageName)
             if (packageName!=Constants.PACKAGE_GEOMETRY){
-                CommonDialog(this).setContent("确认卸载该应用？").builder().setDialogClickListener(object :
+                CommonDialog(this).setContent("确认删除工具？").builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
                     override fun ok() {
-                        AppUtils.uninstallAPK(this@AppToolActivity,packageName)
+                        if (item.type==2){
+                            AppDaoManager.getInstance().deleteBean(item)
+                            FileUtils.delete(item.path)
+                            fetchData()
+                        }
+                        else{
+                            AppUtils.uninstallAPK(this@AppToolActivity,packageName)
+                        }
                     }
                 })
             }
@@ -141,19 +148,18 @@ class AppToolActivity:BaseAppCompatActivity() {
 
     }
 
+    override fun fetchData() {
+        setDataApp()
+        setDataAppTool()
+    }
+
     private fun setDataApp(){
         apps=MethodManager.getAppTools(this,0)
-        for (item in apps){
-            item.isCheck=false
-        }
         mAdapter?.setNewData(apps)
     }
 
     private fun setDataAppTool(){
         toolApps=MethodManager.getAppTools(this,1)
-        for (item in toolApps){
-            item.isCheck=false
-        }
         mAdapterTool?.setNewData(toolApps)
     }
 
@@ -161,8 +167,7 @@ class AppToolActivity:BaseAppCompatActivity() {
         when(msgFlag){
             Constants.APP_UNINSTALL_EVENT->{
                 AppDaoManager.getInstance().deleteBean(apps[position])
-                setDataApp()
-                setDataAppTool()
+                fetchData()
             }
             Constants.APP_INSERT_EVENT->{
                 setDataApp()

@@ -324,7 +324,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.MONTH, 7)
-            set(Calendar.DAY_OF_MONTH, 31)
+            set(Calendar.DAY_OF_MONTH, 15)
             set(Calendar.HOUR_OF_DAY, 13)
             set(Calendar.MINUTE, 10)
             set(Calendar.SECOND, 0)
@@ -359,7 +359,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         lunar.isleap = DateUtils.isleap()
         lunar.lunarYear = DateUtils.getYear()
         lunar.lunarMonth = 1
-        lunar.lunarDay = 10
+        lunar.lunarDay = 1
         val solar = LunarSolarConverter.LunarToSolar(lunar)
 
         Calendar.getInstance().apply {

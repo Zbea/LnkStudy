@@ -5,13 +5,10 @@ import com.bll.lnkstudy.MyApplication;
 import com.bll.lnkstudy.greendao.AppBeanDao;
 import com.bll.lnkstudy.greendao.DaoSession;
 import com.bll.lnkstudy.mvp.model.AppBean;
-import com.bll.lnkstudy.mvp.model.User;
-import com.bll.lnkstudy.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
-import java.util.Objects;
 
 public class AppDaoManager {
 
@@ -60,30 +57,20 @@ public class AppDaoManager {
         return dao.queryBuilder().where(whereUser).build().list();
     }
 
-    public AppBean queryAllByPackageName(String packageName) {
+    public AppBean queryBeanByPackageName(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.IsTool.eq(true);
-        return dao.queryBuilder().where(whereUser,whereCondition,where2).build().unique();
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+    }
+
+    public AppBean queryBeanByBookId(int bookId){
+        WhereCondition whereCondition=AppBeanDao.Properties.BookId.eq(bookId);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
     public List<AppBean> queryToolAll() {
         WhereCondition whereCondition=AppBeanDao.Properties.IsTool.eq(true);
         return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition).build().list();
     }
-
-    public boolean isTool(String packageName) {
-        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition whereCondition1=AppBeanDao.Properties.IsTool.eq(true);
-        AppBean appBean=dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition,whereCondition1).build().unique();
-        return appBean!=null;
-    }
-
-    public boolean isExist(String packageName){
-        WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
-        AppBean appBean=dao.queryBuilder().where(whereUser,where1).build().unique();
-        return appBean!=null;
-    }
-
 
     public void deleteBean(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);

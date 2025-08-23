@@ -140,7 +140,8 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
         if (grade>4){
             showView(iv_draft)
-            if (AppDaoManager.getInstance().isTool(Constants.PACKAGE_GEOMETRY)){
+            val bean=AppDaoManager.getInstance().queryBeanByPackageName(Constants.PACKAGE_GEOMETRY)
+            if (bean!=null&&bean.isTool){
                 showView(iv_geometry)
             }
             else{

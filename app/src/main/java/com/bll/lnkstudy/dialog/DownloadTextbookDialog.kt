@@ -34,7 +34,7 @@ class DownloadTextbookDialog(private val context: Context, private val book: Tex
 
         GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,5)
 
-        tv_book_name?.text = book.bookName+"-"+ DataBeanManager.popupSemesters()[book.semester-1].name
+        tv_book_name?.text = book.bookName+"-"+if (book.semester>0) DataBeanManager.popupSemesters()[book.semester-1].name else ""
         tv_price?.text = context.getString(R.string.price)+"： " + if (book.price==0) context.getString(R.string.free) else book.price
         tv_version?.text =context.getString(R.string.press)+"： " + DataBeanManager.getBookVersionStr(book.version)
         tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
@@ -51,6 +51,9 @@ class DownloadTextbookDialog(private val context: Context, private val book: Tex
 
         if (book.typeStr==DataBeanManager.textbookType[0])
             btn_ok?.visibility= View.GONE
+
+        if (book.subject==0)
+            tv_course?.visibility=View.GONE
 
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
         btn_ok?.setOnClickListener { listener?.onClick() }

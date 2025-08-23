@@ -8,9 +8,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/**
- * Created by seatrend on 2018/8/21.
- */
 
 public class DateUtils {
 

@@ -302,6 +302,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.book.DictionaryBookDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 

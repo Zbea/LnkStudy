@@ -12,7 +12,7 @@ import com.bll.lnkstudy.net.RetrofitManager
 class DownloadDictionaryPresenter(view: IContractView.IDictionaryResourceView, val screen: Int =0) : BasePresenter<IContractView.IDictionaryResourceView>(view) {
 
     fun getList(map: HashMap<String,Any>) {
-        val books = RetrofitManager.service.getTextBooks(map)
+        val books = RetrofitManager.service.getDictionaryList(map)
         doRequest(books, object : Callback<TextbookStore>(view,screen) {
             override fun failed(tBaseResult: BaseResult<TextbookStore>): Boolean {
                 return false
