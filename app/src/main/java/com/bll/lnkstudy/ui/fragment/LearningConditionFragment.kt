@@ -129,7 +129,12 @@ class LearningConditionFragment:BaseMainFragment(), IContractView.IHomeworkNotic
     }
 
     override fun onRefreshData() {
-        fetchData()
+        if (currentCourses.isEmpty()){
+            initType()
+        }
+        else{
+            fetchData()
+        }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

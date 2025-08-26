@@ -182,6 +182,7 @@ class ResourceCenterActivity:BaseAppCompatActivity() {
         wallpaperFragment?.initChangeScreenData()
         paintingFragment?.initChangeScreenData()
         calenderFragment?.initChangeScreenData()
+        dictionaryDownloadFragment?.initChangeScreenData()
     }
 
 }

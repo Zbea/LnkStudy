@@ -92,7 +92,7 @@ public class TextbookGreenDaoManager {
         WhereCondition whereCondition1=TextbookBeanDao.Properties.TypeStr.eq(typeStr);
         WhereCondition whereCondition2=TextbookBeanDao.Properties.Grade.notEq(grade);
         WhereCondition whereCondition3=TextbookBeanDao.Properties.Semester.notEq(semester);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
+        return dao.queryBuilder().where(whereUser,whereCondition1,dao.queryBuilder().or(whereCondition2,whereCondition3))
                 .orderDesc(TextbookBeanDao.Properties.Time).build().list();
     }
 

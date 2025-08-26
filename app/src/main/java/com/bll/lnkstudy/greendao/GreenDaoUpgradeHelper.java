@@ -16,19 +16,17 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
     //这里重写onUpgrade方法
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        super.onUpgrade(db, oldVersion, newVersion);
         MigrationHelper.migrate(db, new MigrationHelper.ReCreateAllTableListener() {
                     @Override
                     public void onCreateAllTables(Database db, boolean ifNotExists) {
                         DaoMaster.createAllTables(db,ifNotExists);
                     }
-
                     @Override
                     public void onDropAllTables(Database db, boolean ifExists) {
                         DaoMaster.dropAllTables(db, ifExists);
                     }
-
-                }, AppBeanDao.class,
+                },
+                AppBeanDao.class,
                 NoteDao.class,
                 BookBeanDao.class,
                 DateEventBeanDao.class,

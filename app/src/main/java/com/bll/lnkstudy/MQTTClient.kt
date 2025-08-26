@@ -42,7 +42,7 @@ class MQTTClient {
         val serverURI = "tcp://api2.qinglanmb.com:1883"
         val username = "mqtt"
         val password = "EMQ12312@12asdf"
-        val clientName = "Client_" + MethodManager.getUser().accountId
+        val clientName = "Client_" + MethodManager.getUser()?.accountId
 
         options= MqttConnectOptions()
         options?.userName = username
@@ -91,7 +91,7 @@ class MQTTClient {
             mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "Connection success")
-                    val topic = "topic/user/" + MethodManager.getUser().accountId
+                    val topic = "topic/user/" + MethodManager.getUser()?.accountId
                     subscribe(topic)
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {

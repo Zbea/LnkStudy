@@ -434,8 +434,13 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
 
     override fun onRefreshData() {
         lazyLoad()
-        for (fragment in fragments){
-            fragment.onRefreshData()
+        if (fragments.isEmpty()){
+            initTab()
+        }
+        else{
+            for (fragment in fragments){
+                fragment.onRefreshData()
+            }
         }
     }
 

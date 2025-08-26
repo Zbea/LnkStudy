@@ -176,7 +176,12 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun onRefreshData() {
-        fetchData()
+        if (itemTabTypes.isEmpty()){
+            initTab()
+        }
+        else{
+            fetchData()
+        }
     }
 
     override fun onNetworkConnectionSuccess() {

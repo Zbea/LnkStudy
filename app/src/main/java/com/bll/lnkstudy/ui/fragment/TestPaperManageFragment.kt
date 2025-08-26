@@ -200,8 +200,13 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     override fun onRefreshData() {
-        for (fragment in fragments){
-            fragment.onRefreshData()
+        if (fragments.isEmpty()){
+            initTab()
+        }
+        else{
+            for (fragment in fragments){
+                fragment.onRefreshData()
+            }
         }
     }
 

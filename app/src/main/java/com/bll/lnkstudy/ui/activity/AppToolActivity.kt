@@ -169,7 +169,7 @@ class AppToolActivity:BaseAppCompatActivity() {
                 AppDaoManager.getInstance().deleteBean(apps[position])
                 fetchData()
             }
-            Constants.APP_INSERT_EVENT->{
+            Constants.APP_INSTALL_INSERT_EVENT->{
                 setDataApp()
             }
         }

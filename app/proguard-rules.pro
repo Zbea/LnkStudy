@@ -151,21 +151,17 @@
 #网络请求相关
 -keep public class android.net.http.SslError
 
-#greendao
+# GreenDao 3 的混淆规则
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-   public static java.lang.String TABLENAME;
+    public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
--keepclassmembers class * {
-    public static ** $build;
-    public static ** $properties;
-}
--keepclassmembers class * implements org.greenrobot.greendao.Property {
-   public static ** value();
-}
--keep class * extends org.greenrobot.greendao.AbstractDaoMaster { *; }
--keep class * extends org.greenrobot.greendao.AbstractDaoSession { *; }
--keep class * extends org.greenrobot.greendao.AbstractDao { *; }
+
+# 如果你不使用 SQLCipher
+-dontwarn org.greenrobot.greendao.database.**
+
+# 如果你不使用 RxJava
+-dontwarn rx.**
 
 # EventBus
 -keepclassmembers class ** {

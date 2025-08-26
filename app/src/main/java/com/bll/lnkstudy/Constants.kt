@@ -38,8 +38,8 @@ class Constants {
         const val STATUS_BAR_SHOW = 2147483647//永不消失
         const val DEBUG="debug"
 
-//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.3.100:10800/v1/"
+                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.3.100:10800/v1/"
 //        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 //        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
             const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
@@ -88,7 +88,7 @@ class Constants {
         const val HOMEWORK_BOOK_EVENT = "HomeworkBookEvent"//课本下载通知
         const val APP_INSTALL_EVENT = "AppInstallEvent"//应用下载安装通知
         const val APP_UNINSTALL_EVENT = "AppUninstallEvent"//应用卸载安装通知
-        const val APP_INSERT_EVENT = "AppInsertEvent"//工具保存通知
+        const val APP_INSTALL_INSERT_EVENT = "AppInsertEvent"//工具保存通知
         const val CLASSGROUP_REFRESH_EVENT = "ClassGroupRefreshEvent"//班群更新通知
         const val COURSEITEM_EVENT = "ClassItemEvent" //学生科目刷新
         const val NOTE_TAB_MANAGER_EVENT = "NoteBookManagerEvent"
