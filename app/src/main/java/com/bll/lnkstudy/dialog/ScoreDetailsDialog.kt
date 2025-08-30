@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +27,7 @@ import java.util.stream.Collectors
 
 class ScoreDetailsDialog(val context: Context, private val title:String, private val score:Double,
                          private val correctMode:Int,private val scoreMode:Int,private val answerImages:MutableList<String>,
-                         private val commitJson:String) {
+                         private val correctJson:String,private val message:String) {
 
     fun builder(): ScoreDetailsDialog {
         val dialog = Dialog(context)
@@ -40,7 +41,7 @@ class ScoreDetailsDialog(val context: Context, private val title:String, private
         var currentScores= mutableListOf<ScoreItem>()
         var currentResults= mutableListOf<ResultChildItem>()
         if (correctMode >0) {
-            currentScores = ScoreItemUtils.jsonListToModuleList(correctMode, ScoreItemUtils.questionToList(commitJson,false))
+            currentScores = ScoreItemUtils.jsonListToModuleList(correctMode, ScoreItemUtils.questionToList(correctJson,false))
         }
         else{
             currentResults=DataBeanManager.getResultChildItems().stream().collect(Collectors.toList())
@@ -70,40 +71,49 @@ class ScoreDetailsDialog(val context: Context, private val title:String, private
             ImageDialog(context, answerImages).builder()
         }
 
+        val svContent=dialog.findViewById<ScrollView>(R.id.sv_content)
+        val tvContent=dialog.findViewById<TextView>(R.id.tv_content)
+
         val rv_list_score = dialog.findViewById<RecyclerView>(R.id.rv_list)
 
-        when(correctMode){
-            1,2->{
-                rv_list_score.layoutManager = GridLayoutManager(context,3)
-                TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(context,15f)))
+        if (message.isNotEmpty()){
+            svContent.visibility=View.VISIBLE
+            tvContent.text=message
+        }
+        else{
+            when(correctMode){
+                1,2->{
+                    rv_list_score.layoutManager = GridLayoutManager(context,3)
+                    TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
+                        rv_list_score.adapter = this
+                        bindToRecyclerView(rv_list_score)
+                        rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(context,15f)))
+                    }
                 }
-            }
-            3,4,5->{
-                rv_list_score.layoutManager = LinearLayoutManager(context)
-                TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,15f)))
+                3,4,5->{
+                    rv_list_score.layoutManager = LinearLayoutManager(context)
+                    TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                        rv_list_score.adapter = this
+                        bindToRecyclerView(rv_list_score)
+                        rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,15f)))
+                    }
                 }
-            }
-            6,7->{
-                rv_list_score.layoutManager = LinearLayoutManager(context)
-                val sharedPool = RecyclerView.RecycledViewPool()
-                rv_list_score.setRecycledViewPool(sharedPool)
-                TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,15f)))
+                6,7->{
+                    rv_list_score.layoutManager = LinearLayoutManager(context)
+                    val sharedPool = RecyclerView.RecycledViewPool()
+                    rv_list_score.setRecycledViewPool(sharedPool)
+                    TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                        rv_list_score.adapter = this
+                        bindToRecyclerView(rv_list_score)
+                        rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,15f)))
+                    }
                 }
-            }
-            else->{
-                rv_list_score.layoutManager = GridLayoutManager(context, 3)
-                TopicResultStandardAdapter(R.layout.item_homework_result_standard_child,currentResults).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
+                else->{
+                    rv_list_score.layoutManager = GridLayoutManager(context, 3)
+                    TopicResultStandardAdapter(R.layout.item_homework_result_standard_child,currentResults).apply {
+                        rv_list_score.adapter = this
+                        bindToRecyclerView(rv_list_score)
+                    }
                 }
             }
         }

@@ -305,6 +305,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             correctMode=item.questionType
             answerUrl=item.answerUrl
             scoreMode=item.questionMode
+            message=item.message
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,paper.contentId,2,paper.paperTypeId,Gson().toJson(paper),paper.filePath)
@@ -332,6 +333,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
             correctMode=item.questionType
             scoreMode=item.questionMode
             answerUrl=item.answerUrl
+            message=item.message
         }
         PaperDaoManager.getInstance()?.insertOrReplace(paper)
         DataUpdateManager.createDataUpdate(3,paper.contentId,2,paper.paperTypeId,Gson().toJson(paper),paper.filePath)

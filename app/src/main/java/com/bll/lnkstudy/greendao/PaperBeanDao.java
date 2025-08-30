@@ -45,6 +45,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         public final static Property CorrectJson = new Property(15, String.class, "correctJson", false, "CORRECT_JSON");
         public final static Property AnswerUrl = new Property(16, String.class, "answerUrl", false, "ANSWER_URL");
         public final static Property ScoreMode = new Property(17, int.class, "scoreMode", false, "SCORE_MODE");
+        public final static Property Message = new Property(18, String.class, "message", false, "MESSAGE");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -79,7 +80,8 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
                 "\"SCORE\" TEXT," + // 14: score
                 "\"CORRECT_JSON\" TEXT," + // 15: correctJson
                 "\"ANSWER_URL\" TEXT," + // 16: answerUrl
-                "\"SCORE_MODE\" INTEGER NOT NULL );"); // 17: scoreMode
+                "\"SCORE_MODE\" INTEGER NOT NULL ," + // 17: scoreMode
+                "\"MESSAGE\" TEXT);"); // 18: message
     }
 
     /** Drops the underlying database table. */
@@ -149,6 +151,11 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             stmt.bindString(17, answerUrl);
         }
         stmt.bindLong(18, entity.getScoreMode());
+ 
+        String message = entity.getMessage();
+        if (message != null) {
+            stmt.bindString(19, message);
+        }
     }
 
     @Override
@@ -212,6 +219,11 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             stmt.bindString(17, answerUrl);
         }
         stmt.bindLong(18, entity.getScoreMode());
+ 
+        String message = entity.getMessage();
+        if (message != null) {
+            stmt.bindString(19, message);
+        }
     }
 
     @Override
@@ -239,7 +251,8 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // score
             cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // correctJson
             cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // answerUrl
-            cursor.getInt(offset + 17) // scoreMode
+            cursor.getInt(offset + 17), // scoreMode
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18) // message
         );
         return entity;
     }
@@ -264,6 +277,7 @@ public class PaperBeanDao extends AbstractDao<PaperBean, Long> {
         entity.setCorrectJson(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
         entity.setAnswerUrl(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
         entity.setScoreMode(cursor.getInt(offset + 17));
+        entity.setMessage(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
      }
     
     @Override

@@ -41,12 +41,14 @@ public class HomeworkShareBean {
     public String answerUrl;
     public int grade;
     public String examUrl;
-    @Generated(hash = 274065517)
+    public String message;
+
+    @Generated(hash = 508465887)
     public HomeworkShareBean(Long id, long studentId, int typeId, int type,
             int subject, String name, String commonName, String title, int subType,
             long date, String filePath, List<String> paths, List<String> drawPaths,
             double score, String question, int questionType, int questionMode,
-            String answerUrl, int grade, String examUrl) {
+            String answerUrl, int grade, String examUrl, String message) {
         this.id = id;
         this.studentId = studentId;
         this.typeId = typeId;
@@ -67,6 +69,7 @@ public class HomeworkShareBean {
         this.answerUrl = answerUrl;
         this.grade = grade;
         this.examUrl = examUrl;
+        this.message = message;
     }
     @Generated(hash = 874720725)
     public HomeworkShareBean() {
@@ -190,6 +193,12 @@ public class HomeworkShareBean {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public String getMessage() {
+        return this.message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
     }
    
 }

@@ -72,7 +72,9 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             else{
                 paper!!.answerUrl?.split(",") as MutableList<String>
             }
-            ScoreDetailsDialog(this,paper!!.title,paper!!.score.toDouble(),paper!!.correctMode,paper!!.scoreMode,answerImages,paper!!.correctJson).builder()
+            ScoreDetailsDialog(this,paper!!.title,paper!!.score.toDouble(),
+                paper!!.correctMode,paper!!.scoreMode,answerImages,
+                paper!!.correctJson,if (paper!!.message==null)"" else paper!!.message).builder()
         }
     }
 

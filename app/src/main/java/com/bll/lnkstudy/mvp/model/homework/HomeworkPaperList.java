@@ -41,6 +41,7 @@ public class HomeworkPaperList implements Serializable {
         public int questionType;//批改模型
         public String question;//批改详情
         public String answerUrl;
+        public String message;
         public int selfBatchStatus;
     }
 }

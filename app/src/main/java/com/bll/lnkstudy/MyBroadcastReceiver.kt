@@ -64,6 +64,7 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
             }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d(Constants.DEBUG,"搜索")
+//                AppUtils.startAPP(context,Constants.PACKAGE_AI_APP,2)
                 ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
                 val intent = Intent(context,SearchActivity::class.java)
                 intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK

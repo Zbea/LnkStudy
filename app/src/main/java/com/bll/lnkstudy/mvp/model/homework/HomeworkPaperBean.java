@@ -47,14 +47,16 @@ public class HomeworkPaperBean {
     public int scoreMode;//打分模式1打分
     public String answerUrl;
     public String commitJson;//提交信息(自批时)
-    @Generated(hash = 542903672)
+    public String message;
+
+    @Generated(hash = 1722412922)
     public HomeworkPaperBean(Long id, long userId, int contentId, String course,
             int homeworkTypeId, int typeId, String typeName, String title,
             Long endTime, Long startDate, long date, String filePath,
             List<String> paths, List<String> drawPaths, int state,
             boolean isHomework, int correctMode, double score, String correctJson,
             boolean isSelfCorrect, int scoreMode, String answerUrl,
-            String commitJson) {
+            String commitJson, String message) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -78,6 +80,7 @@ public class HomeworkPaperBean {
         this.scoreMode = scoreMode;
         this.answerUrl = answerUrl;
         this.commitJson = commitJson;
+        this.message = message;
     }
     @Generated(hash = 1573712411)
     public HomeworkPaperBean() {
@@ -219,6 +222,12 @@ public class HomeworkPaperBean {
     }
     public void setCommitJson(String commitJson) {
         this.commitJson = commitJson;
+    }
+    public String getMessage() {
+        return this.message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }

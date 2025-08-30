@@ -15,6 +15,7 @@ public class ExamCorrectBean {
     public String question;
     public int questionType;
     public int questionMode;
+    public String message;
     public String answerUrl;
     @SerializedName("examName")
     public String typeName;//收到考卷 分类名称
