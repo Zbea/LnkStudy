@@ -96,6 +96,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onDownloadSuccess() {
+
     }
 
     override fun onExamList(list: MutableList<ExamCorrectBean>) {
