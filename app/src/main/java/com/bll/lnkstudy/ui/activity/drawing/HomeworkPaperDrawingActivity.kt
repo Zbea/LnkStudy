@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import com.bll.lnkstudy.AICorrectService
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
 import com.bll.lnkstudy.MethodManager
+import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.dialog.CatalogDialog
@@ -64,12 +66,21 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
+                    homeworkCommitInfoItem?.commitUrl=ToolUtils.getImagesStr(urls)
+
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=homeworkCommitInfoItem?.messageId!!
-                    map["studentUrl"]= ToolUtils.getImagesStr(urls)
+                    map["studentUrl"]= homeworkCommitInfoItem?.commitUrl!!
                     map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
                     map["takeTime"]=homeworkCommitInfoItem?.takeTime!!
                     mUploadPresenter.commit(map)
+
+                    if (!homeworkCommitInfoItem?.correctJson.isNullOrEmpty()&&homeworkCommitInfoItem?.correctMode!!>0){
+                        //开启ai批改服务
+                        MyApplication.mContext.startService(Intent(MyApplication.mContext, AICorrectService::class.java).apply {
+                            putExtra("KEY_HOMEWORK_COMMIT_ITEM", homeworkCommitInfoItem)
+                        })
+                    }
                 }
                 override fun onUploadFail() {
                     hideLoading()
@@ -124,6 +135,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 answerUrl=item.answerUrl
                 submitState=item.submitState
                 standardTime=item.minute
+                course=item.subject
             }
             papers.add(daoManager?.queryByContentID(item.contendId)!!)
         }
@@ -220,7 +232,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 }
                 ScoreDetailsDialog(this,paper!!.title,paper!!.score,paper!!.correctMode,
                     paper!!.scoreMode,answerImages,
-                    paper!!.correctJson,if (paper!!.message==null)"" else paper!!.message).builder()
+                    paper!!.correctJson).builder()
             }
         }
     }

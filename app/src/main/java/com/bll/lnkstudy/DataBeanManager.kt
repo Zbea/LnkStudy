@@ -207,6 +207,16 @@ object DataBeanManager {
         return courseId
     }
 
+    fun getCourseStr_en(courseStr: String): String {
+        var courseStr_en=""
+        for (item in MethodManager.getSubjects()) {
+            if (item.desc == courseStr){
+                courseStr_en=item.en_name
+            }
+        }
+        return courseStr_en
+    }
+
     fun popupDynasty():MutableList<PopupBean>{
         val list= mutableListOf<PopupBean>()
         for (i in dynastys.indices){

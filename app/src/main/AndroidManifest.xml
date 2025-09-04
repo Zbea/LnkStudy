@@ -64,6 +64,8 @@
     <uses-permission android:name="android.rockchip.update.permission.SHOW_UI" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 后台服务权限（Android 12+） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".MyApplication"
@@ -308,6 +310,10 @@
             />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <service
+            android:name=".AICorrectService"
+            android:exported="false" /> <!-- 非第三方调用，设为false -->
 
         <provider
             android:name="androidx.core.content.FileProvider"

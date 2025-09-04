@@ -64,12 +64,16 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
             }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d(Constants.DEBUG,"搜索")
-//                AppUtils.startAPP(context,Constants.PACKAGE_AI_APP,2)
-                ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
-                val intent = Intent(context,SearchActivity::class.java)
-                intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
-                intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_RIGHT)
-                context.startActivity(intent)
+                if (AppUtils.isAvailable(context,Constants.PACKAGE_AI_APP)){
+                    AppUtils.startAPP(context,Constants.PACKAGE_AI_APP,2)
+                }
+                else{
+                    ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
+                    val intent = Intent(context,SearchActivity::class.java)
+                    intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_RIGHT)
+                    context.startActivity(intent)
+                }
             }
             //阅读器回传
             "com.geniatech.knote.reader.save.note.broadcast"->{

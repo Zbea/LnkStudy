@@ -50,7 +50,6 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         public final static Property ScoreMode = new Property(20, int.class, "scoreMode", false, "SCORE_MODE");
         public final static Property AnswerUrl = new Property(21, String.class, "answerUrl", false, "ANSWER_URL");
         public final static Property CommitJson = new Property(22, String.class, "commitJson", false, "COMMIT_JSON");
-        public final static Property Message = new Property(23, String.class, "message", false, "MESSAGE");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -90,8 +89,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
                 "\"IS_SELF_CORRECT\" INTEGER NOT NULL ," + // 19: isSelfCorrect
                 "\"SCORE_MODE\" INTEGER NOT NULL ," + // 20: scoreMode
                 "\"ANSWER_URL\" TEXT," + // 21: answerUrl
-                "\"COMMIT_JSON\" TEXT," + // 22: commitJson
-                "\"MESSAGE\" TEXT);"); // 23: message
+                "\"COMMIT_JSON\" TEXT);"); // 22: commitJson
     }
 
     /** Drops the underlying database table. */
@@ -174,11 +172,6 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         if (commitJson != null) {
             stmt.bindString(23, commitJson);
         }
- 
-        String message = entity.getMessage();
-        if (message != null) {
-            stmt.bindString(24, message);
-        }
     }
 
     @Override
@@ -255,11 +248,6 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         if (commitJson != null) {
             stmt.bindString(23, commitJson);
         }
- 
-        String message = entity.getMessage();
-        if (message != null) {
-            stmt.bindString(24, message);
-        }
     }
 
     @Override
@@ -292,8 +280,7 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
             cursor.getShort(offset + 19) != 0, // isSelfCorrect
             cursor.getInt(offset + 20), // scoreMode
             cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // answerUrl
-            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // commitJson
-            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23) // message
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22) // commitJson
         );
         return entity;
     }
@@ -323,7 +310,6 @@ public class HomeworkPaperBeanDao extends AbstractDao<HomeworkPaperBean, Long> {
         entity.setScoreMode(cursor.getInt(offset + 20));
         entity.setAnswerUrl(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
         entity.setCommitJson(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
-        entity.setMessage(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
      }
     
     @Override

@@ -195,8 +195,8 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
         correctMode = commitItem!!.correctMode
         scoreMode = commitItem!!.scoreMode
         answerImages = commitItem!!.answerUrl.split(",") as MutableList<String>
-        initScores = ScoreItemUtils.questionToList(commitItem!!.correctJson, false)
-        currentScores = ScoreItemUtils.jsonListToModuleList(correctMode, ScoreItemUtils.questionToList(commitItem!!.correctJson, true))
+        initScores = ScoreItemUtils.questionToList(commitItem!!.correctJson,correctMode)
+        currentScores = ScoreItemUtils.jsonListToModuleList(commitItem!!.correctJson,correctMode)
         images = commitItem!!.paths
         state = commitItem?.state!!
         takeTime = commitItem?.takeTime!!
@@ -291,7 +291,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
         when (correctMode) {
             1, 2 -> {
                 rv_list_score.layoutManager = GridLayoutManager(this, 3)
-                mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score, scoreMode, currentScores).apply {
+                mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score, scoreMode,true, currentScores).apply {
                     rv_list_score.adapter = this
                     bindToRecyclerView(rv_list_score)
                     setOnItemChildClickListener { adapter, view, position ->
@@ -302,7 +302,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
             3, 4, 5 -> {
                 rv_list_score.layoutManager = LinearLayoutManager(this)
-                mTopicTwoScoreAdapter = TopicTwoScoreAdapter(if (correctMode == 5) R.layout.item_topic_multi_score else R.layout.item_topic_two_score, scoreMode, currentScores).apply {
+                mTopicTwoScoreAdapter = TopicTwoScoreAdapter(if (correctMode == 5) R.layout.item_topic_multi_score else R.layout.item_topic_two_score, scoreMode,true, currentScores).apply {
                     rv_list_score.adapter = this
                     bindToRecyclerView(rv_list_score)
                     setOnItemChildClickListener { adapter, view, position ->
@@ -354,7 +354,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 val sharedPool = RecyclerView.RecycledViewPool()
                 rv_list_score.setRecycledViewPool(sharedPool)
                 rv_list_score.layoutManager = LinearLayoutManager(this)
-                mTopicMultistageScoreAdapter = TopicMultistageScoreAdapter(R.layout.item_topic_two_score, scoreMode, currentScores).apply {
+                mTopicMultistageScoreAdapter = TopicMultistageScoreAdapter(R.layout.item_topic_two_score, scoreMode,true, currentScores).apply {
                     rv_list_score.adapter = this
                     bindToRecyclerView(rv_list_score)
                     setOnItemChildClickListener { adapter, view, position ->

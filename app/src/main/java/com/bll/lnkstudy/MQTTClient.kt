@@ -1,6 +1,8 @@
 package com.bll.lnkstudy
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.bll.lnkstudy.mvp.model.ItemList
 import com.google.gson.Gson
@@ -51,7 +53,9 @@ class MQTTClient {
         options?.isCleanSession = false // 保持会话状态
         options?.keepAliveInterval = 60
         options?.connectionTimeout=10
-        //        options.maxReconnectDelay=5*60*1000
+         options?.maxReconnectDelay=60*1000 // 最大重连间隔30秒
+//         options?.socketFactory = SSLSocketFactory.getDefault() // 使用安全连接
+//         options?.mqttVersion = MqttConnectOptions.MQTT_VERSION_3_1_1
 
         mMqttAndroidClient = MqttAndroidClient(context, serverURI, clientName)
         mMqttAndroidClient?.setCallback(object : MqttCallback {
@@ -90,12 +94,12 @@ class MQTTClient {
         try {
             mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG, "Connection success")
+                    Log.d(TAG, "connect:Connection success")
                     val topic = "topic/user/" + MethodManager.getUser()?.accountId
                     subscribe(topic)
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.d(TAG, "Connection failure")
+                    Log.d(TAG, "connect:Connection failure")
                 }
             })
         } catch (e: MqttException) {
@@ -131,4 +135,27 @@ class MQTTClient {
     fun isConnect():Boolean?{
         return mMqttAndroidClient?.isConnected
     }
+
+    fun reConnect(){
+        try {
+            mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    Log.d(TAG, "reConnect:Connection success")
+                    // 重连成功后重新订阅主题
+                    val topic = "topic/user/" + MethodManager.getUser()?.accountId
+                    subscribe(topic)
+                }
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    Log.d(TAG, "reConnect:Connection failure")
+                    // 失败后延迟重试
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        reConnect()
+                    }, 5000) // 5秒后重试
+                }
+            })
+        } catch (e: MqttException) {
+            e.printStackTrace()
+        }
+    }
+
 }

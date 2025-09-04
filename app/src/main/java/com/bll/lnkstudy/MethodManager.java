@@ -918,4 +918,14 @@ public class MethodManager {
         }
         return list;
     }
+
+    /**
+     * 获取科目
+     * @return
+     * @throws IOException
+     */
+    public static List<ItemList> getSubjects() throws IOException {
+        String areaJson = FileUtils.readFileContent(MyApplication.Companion.getMContext().getResources().getAssets().open("subject.json"));
+        return new Gson().fromJson(areaJson, new TypeToken<List<ItemList>>(){}.getType());
+    }
 }

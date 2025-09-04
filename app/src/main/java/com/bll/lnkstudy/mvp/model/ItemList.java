@@ -13,6 +13,7 @@ public class ItemList implements Serializable,Comparable<ItemList> {
 
     public int type;//学生: 1作业通知，2批改通知,3老师权限控制，4测卷、考试批改下发
     public String desc;
+    public String en_name;
     public boolean isCheck;
 
     public int id;

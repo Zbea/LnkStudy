@@ -74,7 +74,7 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
                     paper!!.answerUrl?.split(",") as MutableList<String>
                 }
                 ScoreDetailsDialog(this,paper!!.title,paper!!.score,paper!!.questionType,paper!!.questionMode,answerImages,
-                    paper!!.question,if (paper!!.message==null)"" else paper!!.message).builder()
+                    paper!!.question).builder()
             }
         }
     }

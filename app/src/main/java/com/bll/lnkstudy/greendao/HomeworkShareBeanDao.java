@@ -47,7 +47,6 @@ public class HomeworkShareBeanDao extends AbstractDao<HomeworkShareBean, Long> {
         public final static Property AnswerUrl = new Property(17, String.class, "answerUrl", false, "ANSWER_URL");
         public final static Property Grade = new Property(18, int.class, "grade", false, "GRADE");
         public final static Property ExamUrl = new Property(19, String.class, "examUrl", false, "EXAM_URL");
-        public final static Property Message = new Property(20, String.class, "message", false, "MESSAGE");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
@@ -84,8 +83,7 @@ public class HomeworkShareBeanDao extends AbstractDao<HomeworkShareBean, Long> {
                 "\"QUESTION_MODE\" INTEGER NOT NULL ," + // 16: questionMode
                 "\"ANSWER_URL\" TEXT," + // 17: answerUrl
                 "\"GRADE\" INTEGER NOT NULL ," + // 18: grade
-                "\"EXAM_URL\" TEXT," + // 19: examUrl
-                "\"MESSAGE\" TEXT);"); // 20: message
+                "\"EXAM_URL\" TEXT);"); // 19: examUrl
     }
 
     /** Drops the underlying database table. */
@@ -157,11 +155,6 @@ public class HomeworkShareBeanDao extends AbstractDao<HomeworkShareBean, Long> {
         if (examUrl != null) {
             stmt.bindString(20, examUrl);
         }
- 
-        String message = entity.getMessage();
-        if (message != null) {
-            stmt.bindString(21, message);
-        }
     }
 
     @Override
@@ -227,11 +220,6 @@ public class HomeworkShareBeanDao extends AbstractDao<HomeworkShareBean, Long> {
         if (examUrl != null) {
             stmt.bindString(20, examUrl);
         }
- 
-        String message = entity.getMessage();
-        if (message != null) {
-            stmt.bindString(21, message);
-        }
     }
 
     @Override
@@ -261,8 +249,7 @@ public class HomeworkShareBeanDao extends AbstractDao<HomeworkShareBean, Long> {
             cursor.getInt(offset + 16), // questionMode
             cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // answerUrl
             cursor.getInt(offset + 18), // grade
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // examUrl
-            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20) // message
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19) // examUrl
         );
         return entity;
     }
@@ -289,7 +276,6 @@ public class HomeworkShareBeanDao extends AbstractDao<HomeworkShareBean, Long> {
         entity.setAnswerUrl(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
         entity.setGrade(cursor.getInt(offset + 18));
         entity.setExamUrl(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
-        entity.setMessage(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
      }
     
     @Override

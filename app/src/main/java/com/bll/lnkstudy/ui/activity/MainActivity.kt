@@ -117,9 +117,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
-        mqttClient=MQTTClient().getInstance()
-        mqttClient?.init(this)
-        mqttClient?.connect()
+        initMqtt()
 
         initStartDate()
     }
@@ -932,8 +930,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 clearSemesterData()
             }
             Constants.USER_CHANGE_GRADE_EVENT -> {
-                //年级变化清空增量更新
-                mDataUpdatePresenter.clearData()
                 eventType = Constants.USER_CHANGE_GRADE_EVENT
                 mQiniuPresenter.getToken()
             }
@@ -962,10 +958,20 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         } else super.onKeyDown(keyCode, event)
     }
 
+    private fun initMqtt(){
+        mqttClient=MQTTClient().getInstance()
+        mqttClient?.init(this)
+        mqttClient?.connect()
+    }
+
     override fun onNetworkConnectionSuccess() {
         Handler().postDelayed({
-            if (mqttClient?.isConnect() == false){
-                mqttClient?.connect()
+            if (mqttClient==null){
+                initMqtt()
+            }
+            else{
+                if (mqttClient?.isConnect()==false)
+                    mqttClient?.reConnect()
             }
         },20*1000)
     }
@@ -973,6 +979,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     override fun onDestroy() {
         super.onDestroy()
         mqttClient?.disconnect()
+        mqttClient=null
         unregisterReceiver(myBroadcastReceiver)
     }
 

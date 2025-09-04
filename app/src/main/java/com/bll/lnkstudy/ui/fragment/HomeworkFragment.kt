@@ -983,7 +983,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 correctJson = item.question
                                 correctMode = item.questionType
                                 scoreMode = item.questionMode
-                                message=item.message
                                 if (item.sendStatus==2){
                                     state = 2
                                     score = item.score
@@ -1001,7 +1000,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                                 localPaper.correctMode = item.questionType
                                 localPaper.correctJson = item.question
                                 localPaper.answerUrl = item.answerUrl
-                                localPaper.message=item.message
                                 HomeworkPaperDaoManager.getInstance().insertOrReplace(localPaper)
                                 //更新目录增量数据
                                 DataUpdateManager.editDataUpdate(2, item.contendId, 2, homeworkTypeId, Gson().toJson(localPaper))

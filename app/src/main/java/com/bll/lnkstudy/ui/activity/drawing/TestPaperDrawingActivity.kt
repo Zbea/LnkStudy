@@ -74,7 +74,7 @@ class TestPaperDrawingActivity: BaseDrawingActivity(){
             }
             ScoreDetailsDialog(this,paper!!.title,paper!!.score.toDouble(),
                 paper!!.correctMode,paper!!.scoreMode,answerImages,
-                paper!!.correctJson,if (paper!!.message==null)"" else paper!!.message).builder()
+                paper!!.correctJson).builder()
         }
     }
 

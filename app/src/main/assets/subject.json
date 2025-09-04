@@ -1,0 +1,67 @@
+[
+{
+    "desc": "语文",
+    "type": 1,
+    "en_name": "chinese"
+}, {
+    "desc": "数学",
+    "type": 2,
+    "en_name": "math"
+}, {
+    "desc": "英语",
+    "type": 3,
+    "en_name": "english"
+}, {
+    "desc": "科学",
+    "type": 13,
+    "en_name": "science"
+}, {
+    "desc": "道法",
+    "type": 12,
+    "en_name": "law"
+}, {
+    "desc": "物理",
+    "type": 4,
+    "en_name": "physics"
+}, {
+    "desc": "化学",
+    "type": 5,
+    "en_name": "chemistry"
+}, {
+    "desc": "地理",
+    "type": 6,
+    "en_name": "geography"
+}, {
+    "desc": "历史",
+    "type": 7,
+    "en_name": "history"
+}, {
+    "desc": "生物",
+    "type": 8,
+    "en_name": "biology"
+}, {
+    "desc": "政治",
+    "type": 9,
+    "en_name": "politics"
+}, {
+    "desc": "美术",
+    "type": 10,
+    "en_name": "art"
+}, {
+    "desc": "音乐",
+    "type": 11,
+    "en_name": "music"
+}, {
+    "desc": "体育",
+    "type": 14,
+    "en_name": "sports"
+}, {
+    "desc": "信息",
+    "type": 15,
+    "en_name": "information"
+}, {
+    "desc": "心理",
+    "type": 16,
+    "en_name": "psychology"
+}
+]

@@ -12,7 +12,6 @@ public class ScoreItem implements Serializable {
     public int parentSort;
     public int level;
     public int result;//0错1对
-    public boolean isResultShow=true;
     public double label=1;//题目标准分数
     public List<ScoreItem> childScores=new ArrayList<>();
 }

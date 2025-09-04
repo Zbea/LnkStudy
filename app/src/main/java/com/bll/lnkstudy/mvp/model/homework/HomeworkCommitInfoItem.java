@@ -12,6 +12,7 @@ public class HomeworkCommitInfoItem implements Serializable {
     public int homeworkTypeId;
     public int typeId;//作业本分类id
     public int state;//1作业卷 2普通作业本 3听读本4题卷本 5错题本
+    public String course;
     public int bookId;
     public int messageId;//作业消息id
     public String title;
@@ -25,5 +26,6 @@ public class HomeworkCommitInfoItem implements Serializable {
     public double score;//成绩
     public String correctJson;//批改详情
     public String answerUrl;
+    public String commitUrl;//提交图片地址
     public List<String> paths=new ArrayList<>();
 }
