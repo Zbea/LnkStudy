@@ -105,6 +105,10 @@ public class MethodManager {
         }
     }
 
+    /**
+     * 获取当前日期处于那个学期农历一月初一到8月15日为下学期
+     * @return
+     */
     public static int getSemester(){
         long time=System.currentTimeMillis();
 

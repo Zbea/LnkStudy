@@ -64,7 +64,7 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
             }
         }
 
-        semester=getSemester()
+        semester=MethodManager.getSemester()
         tv_semester.text=DataBeanManager.popupSemesters()[semester-1].name
         tv_semester.setOnClickListener {
             PopupList(requireActivity(), DataBeanManager.popupSemesters(semester), tv_semester, tv_semester.width, 5).builder().setOnSelectListener { item ->
@@ -77,20 +77,23 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
 
         initRecyclerView()
 
-        initTab()
     }
 
     override fun lazyLoad() {
+        if (itemTabTypes.isEmpty()){
+            initTab()
+        }
+        else{
+            fetchData()
+        }
     }
 
     //设置头部索引
     private fun initTab() {
-        if (grade>0){
-            setTabCourse()
-            if (itemTabTypes.isNotEmpty()){
-                mCourse=itemTabTypes[0].title
-                fetchData()
-            }
+        setTabCourse()
+        if (itemTabTypes.isNotEmpty()){
+            mCourse=itemTabTypes[0].title
+            fetchData()
         }
     }
 
@@ -156,13 +159,6 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
         rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(activity, 20f)))
     }
 
-    /**
-     * 设置课本学期（月份为9月份之前为下学期）
-     */
-    private fun getSemester():Int{
-        return if (DateUtils.getMonth()<9) 2 else 1
-    }
-
     override fun fetchData() {
         if (NetworkUtil.isNetworkConnected()){
             val map=HashMap<String,Any>()
@@ -176,16 +172,11 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
     }
 
     override fun onRefreshData() {
-        if (itemTabTypes.isEmpty()){
-            initTab()
-        }
-        else{
-            fetchData()
-        }
+        lazyLoad()
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchData()
+        lazyLoad()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

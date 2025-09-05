@@ -959,6 +959,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     private fun initMqtt(){
+        showLog("mqttClient初始化")
         mqttClient=MQTTClient().getInstance()
         mqttClient?.init(this)
         mqttClient?.connect()
@@ -966,10 +967,11 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     override fun onNetworkConnectionSuccess() {
         Handler().postDelayed({
-            if (mqttClient==null){
+            if (mqttClient==null||mqttClient?.isClientValidity()==false){
                 initMqtt()
             }
             else{
+                showLog(mqttClient?.isConnect().toString())
                 if (mqttClient?.isConnect()==false)
                     mqttClient?.reConnect()
             }

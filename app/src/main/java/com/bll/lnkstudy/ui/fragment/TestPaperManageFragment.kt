@@ -30,20 +30,25 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[4])
-        initTab()
     }
 
     override fun lazyLoad() {
+        if (fragments.isEmpty()){
+            initTab()
+        }
+        else{
+            for (fragment in fragments){
+                fragment.onRefreshData()
+            }
+        }
     }
 
     //设置头部索引
     private fun initTab() {
-        if (grade>0){
-            mCoursePos = 0
-            setTabCourse()
-            setLocalPaperType()
-            initFragment()
-        }
+        mCoursePos = 0
+        setTabCourse()
+        setLocalPaperType()
+        initFragment()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
@@ -200,14 +205,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     override fun onRefreshData() {
-        if (fragments.isEmpty()){
-            initTab()
-        }
-        else{
-            for (fragment in fragments){
-                fragment.onRefreshData()
-            }
-        }
+        lazyLoad()
     }
 
 }

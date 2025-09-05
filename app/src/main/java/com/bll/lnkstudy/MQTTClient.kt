@@ -25,6 +25,9 @@ class MQTTClient {
     private var client: MQTTClient? = null
     private var mMqttAndroidClient: MqttAndroidClient? = null
     private var options : MqttConnectOptions?=null
+    private val backgroundHandler = Handler(Looper.getMainLooper())
+    private var SUBSCRIBE_MAX_RETRY = 0
+    private var CONNECT_MAX_RETRY = 0
 
     /**
      * 获取单例（context 最好用application的context  防止内存泄漏）
@@ -41,6 +44,9 @@ class MQTTClient {
     }
 
      fun init(context: Context){
+         SUBSCRIBE_MAX_RETRY=0
+         CONNECT_MAX_RETRY=0
+
         val serverURI = "tcp://api2.qinglanmb.com:1883"
         val username = "mqtt"
         val password = "EMQ12312@12asdf"
@@ -100,6 +106,7 @@ class MQTTClient {
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "connect:Connection failure")
+                    reConnect()
                 }
             })
         } catch (e: MqttException) {
@@ -112,9 +119,17 @@ class MQTTClient {
             mMqttAndroidClient?.subscribe(topic, qos, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "Subscribed to $topic")
+                    SUBSCRIBE_MAX_RETRY=0
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "Failed to subscribe $topic")
+                    if (SUBSCRIBE_MAX_RETRY<5){
+                        SUBSCRIBE_MAX_RETRY+=1
+                        // 失败后延迟重试
+                        backgroundHandler.postDelayed({
+                            subscribe(topic)
+                        },  5000)
+                    }
                 }
             })
         } catch (e: MqttException) {
@@ -125,37 +140,50 @@ class MQTTClient {
 
     fun disconnect() {
         try {
+            val topic = "topic/user/" + MethodManager.getUser()?.accountId
+            mMqttAndroidClient?.unsubscribe(topic)
             mMqttAndroidClient?.disconnect(null, null)
+            mMqttAndroidClient?.close()
         } catch (e: MqttException) {
             e.printStackTrace()
         }
+        mMqttAndroidClient = null // 置空，避免后续复用
+        options = null // 重置连接配置（避免旧配置干扰）
     }
 
+    fun isClientValidity(): Boolean {
+        return mMqttAndroidClient != null
+    }
 
-    fun isConnect():Boolean?{
-        return mMqttAndroidClient?.isConnected
+    fun isConnect():Boolean{
+        return mMqttAndroidClient!!.isConnected
     }
 
     fun reConnect(){
+        SUBSCRIBE_MAX_RETRY=0
+        CONNECT_MAX_RETRY=0
         try {
             mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "reConnect:Connection success")
+                    CONNECT_MAX_RETRY=0
                     // 重连成功后重新订阅主题
                     val topic = "topic/user/" + MethodManager.getUser()?.accountId
                     subscribe(topic)
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "reConnect:Connection failure")
-                    // 失败后延迟重试
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        reConnect()
-                    }, 5000) // 5秒后重试
+                    if (CONNECT_MAX_RETRY<5){
+                        CONNECT_MAX_RETRY+=1
+                        // 失败后延迟重试
+                        backgroundHandler.postDelayed({
+                            reConnect()
+                        },  5000)
+                    }
                 }
             })
         } catch (e: MqttException) {
             e.printStackTrace()
         }
     }
-
 }

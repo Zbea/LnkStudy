@@ -106,6 +106,7 @@ class AICorrectService:Service() {
 
         if (!homeworkCommitInfoItem?.answerUrl.isNullOrEmpty()) {
             aiRequestItem.prompt = "参照上传的标准答案批改试题"
+//            aiRequestItem.prompt = "识别题目中的手写答题，对比上传的标准答案批改试题"
             val answerImages = homeworkCommitInfoItem?.answerUrl!!.split(",")
             for (imageUrl in answerImages) {
                 val imageItem = AiRequestItem.ImageItem().apply {
@@ -115,6 +116,7 @@ class AICorrectService:Service() {
             }
         } else {
             aiRequestItem.prompt = "批改试题"
+//            aiRequestItem.prompt = "识别题目中的手写答题，批改试题"
         }
         val imageUrls = homeworkCommitInfoItem?.commitUrl!!.split(",")
         for (imageUrl in imageUrls) {

@@ -67,22 +67,26 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                 fragments[mCoursePos].addContentModule()
             }
         }
-
-        initTab()
     }
 
     override fun lazyLoad() {
+        if (fragments.isEmpty()){
+            initTab()
+        }
+        else{
+            for (fragment in fragments){
+                fragment.onRefreshData()
+            }
+        }
         fetchData()
     }
 
     //设置头部索引
     private fun initTab() {
-        if (grade>0){
-            mCoursePos = 0
-            setTabCourse()
-            setLocalHomeworkType()
-            initFragment()
-        }
+        mCoursePos = 0
+        setTabCourse()
+        setLocalHomeworkType()
+        initFragment()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
@@ -434,14 +438,6 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
 
     override fun onRefreshData() {
         lazyLoad()
-        if (fragments.isEmpty()){
-            initTab()
-        }
-        else{
-            for (fragment in fragments){
-                fragment.onRefreshData()
-            }
-        }
     }
 
     override fun onNetworkConnectionSuccess() {

@@ -180,51 +180,43 @@ object ScoreItemUtils {
      * 给数据节点赋分、以及统计对错
      */
     private fun setInitListScore(list:List<ScoreItem>){
-        for (item in list){
-            if (!item.childScores.isNullOrEmpty()){
-                item.label= getParentTotalLabel(item.childScores)
-                item.score= getParentTotalScore(item.childScores)
-                item.result= getItemScoreResult(item)
+        list.forEach { item ->
+            // 1. 处理子节点（递归：先确保子节点的result已计算，避免父节点依赖未初始化的子节点数据）
+            if (!item.childScores.isNullOrEmpty()) {
+                setInitListScore(item.childScores) // 递归处理子节点，保证子节点result/score/label已就绪
             }
-            else{
-                item.result= getItemScoreResult(item)
+            // 2. 处理当前节点的result（子节点/父节点通用）
+            item.result = getItemScoreResult(item)
+            // 3. 父节点逻辑：仅当score/label为空时，才通过子节点汇总赋值（核心优化点）
+            if (item.childScores.isNullOrEmpty()) {
+                return@forEach
+            }
+            // 父节点：判断score/label是否为空
+            if (item.score == 0.0) {
+                item.score = calculateParentTotalScore(item.childScores)
+            }
+            if (item.label == 0.0) {
+                item.label = calculateParentTotalLabel(item.childScores)
             }
         }
     }
 
     /**
-     * 轮询赋值父节点总分以及result
+     * 计算父节点总score（子节点score汇总）
      */
-    private fun getParentTotalScore(list: MutableList<ScoreItem>): Double {
-        var total = 0.0
-        for (item in list) {
-            if (!item.childScores.isNullOrEmpty()) {
-                item.label = getParentTotalLabel(item.childScores)
-                item.score = getParentTotalScore(item.childScores)
-                item.result = getItemScoreResult(item)
-                total += item.score
-            } else {
-                item.result = getItemScoreResult(item)
-                total += item.score
-            }
+    private fun calculateParentTotalScore(childList: MutableList<ScoreItem>): Double {
+        return childList.sumOf { child ->
+            child.score
         }
-        return total
     }
 
     /**
      * 轮询赋值父节点总label
      */
-    private fun getParentTotalLabel(list: MutableList<ScoreItem>): Double {
-        var total = 0.0
-        for (item in list) {
-            if (!item.childScores.isNullOrEmpty()) {
-                item.label = getParentTotalLabel(item.childScores)
-                total += item.label
-            } else {
-                total += item.label
-            }
+    private fun calculateParentTotalLabel(childList: MutableList<ScoreItem>): Double {
+        return childList.sumOf { child ->
+            child.label
         }
-        return total
     }
 
     /**
