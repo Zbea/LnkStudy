@@ -15,8 +15,8 @@ android {
         applicationId "com.bll.lnkstudy"
         minSdk 26
         targetSdk 33
-        versionCode 22
-        versionName "V 1.0.4"
+        versionCode 24
+        versionName "V 1.0.4.2"
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

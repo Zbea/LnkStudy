@@ -23,15 +23,15 @@ public class FileDownManager {
 
 
     public static FileDownManager with(Context context) {
-        if (incetance == null) {
-            synchronized (FileDownManager.class) {
-                if (incetance == null) {
-                    incetance = new FileDownManager();
-                }
-            }
-        }
+//        if (incetance == null) {
+//            synchronized (FileDownManager.class) {
+//                if (incetance == null) {
+//                    incetance = new FileDownManager();
+//                }
+//            }
+//        }
         mContext = context;
-        return incetance;
+        return  new FileDownManager();
     }
 
     //创建下载链接

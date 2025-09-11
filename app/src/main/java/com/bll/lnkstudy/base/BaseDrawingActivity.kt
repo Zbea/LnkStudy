@@ -185,6 +185,12 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         iv_expand?.setOnClickListener {
+            if (elik_a?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+                elik_a?.onLassoReset()
+            }
+            if (elik_b?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+                elik_b?.onLassoReset()
+            }
             isClickExpend=true
             onChangeExpandContent()
         }
@@ -817,8 +823,12 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         bitmapBatchSaver.shutdown()
-//        elik_a?.onLassoReset()
-//        elik_b?.onLassoReset()
+        if (elik_a?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+            elik_a?.onLassoReset()
+        }
+        if (elik_b?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+            elik_b?.onLassoReset()
+        }
     }
 
 }

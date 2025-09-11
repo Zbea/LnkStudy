@@ -59,9 +59,6 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 Log.d(Constants.DEBUG,"租用下载")
                 EventBus.getDefault().post(Constants.SETTING_RENT_EVENT)
             }
-            "com.android.settings.cleardata"->{
-                Log.d(Constants.DEBUG,"一键清除")
-            }
             "ACTION_GLOBAL_SEARCH"->{
                 Log.d(Constants.DEBUG,"搜索")
                 if (AppUtils.isAvailable(context,Constants.PACKAGE_AI_APP)){
@@ -79,13 +76,14 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
             "com.geniatech.knote.reader.save.note.broadcast"->{
                 val bookId=intent.getStringExtra("key_book_id")
                 val path=intent.getStringExtra("note_path")
-
-                val item=DataUpdateDaoManager.getInstance().queryBean(6,bookId!!.toInt(),2,bookId.toInt())
-                if (item==null){
-                    DataUpdateManager.createDataUpdateDrawing(6,bookId.toInt(),2,bookId.toInt(),path!!)
-                }
-                else{
-                    DataUpdateManager.editDataUpdate(6,bookId.toInt(),2,bookId.toInt())
+                if (!bookId.isNullOrEmpty()){
+                    val item=DataUpdateDaoManager.getInstance().queryBean(6,bookId.toInt(),2,bookId.toInt())
+                    if (item==null){
+                        DataUpdateManager.createDataUpdateDrawing(6,bookId.toInt(),2,bookId.toInt(),path!!)
+                    }
+                    else{
+                        DataUpdateManager.editDataUpdate(6,bookId.toInt(),2,bookId.toInt())
+                    }
                 }
             }
             "android.intent.action.PACKAGE_ADDED"->{

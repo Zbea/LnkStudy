@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.ac_app_list.rv_list
 import kotlinx.android.synthetic.main.ac_app_list.rv_list_tool
 import kotlinx.android.synthetic.main.ac_app_list.tv_out
 import kotlinx.android.synthetic.main.common_title.tv_setting
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 应用工具
@@ -166,6 +167,9 @@ class AppToolActivity:BaseAppCompatActivity() {
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             Constants.APP_UNINSTALL_EVENT->{
+                if (apps[position].packageName==Constants.PACKAGE_AI_APP){
+                    EventBus.getDefault().post(Constants.LONG_VIEW_EVENT)
+                }
                 AppDaoManager.getInstance().deleteBean(apps[position])
                 fetchData()
             }

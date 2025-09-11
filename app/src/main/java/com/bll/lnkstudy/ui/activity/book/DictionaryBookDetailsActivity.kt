@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_draft
-import kotlinx.android.synthetic.main.common_drawing_tool.iv_edit
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_erasure
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
@@ -74,7 +73,7 @@ class DictionaryBookDetailsActivity : BaseDrawingActivity(){
     }
 
     override fun initView() {
-        disMissView(iv_btn,iv_edit,iv_erasure,iv_draft)
+        disMissView(iv_btn,iv_erasure,iv_draft)
         setDisableTouchInput(true)
 
         onContent()

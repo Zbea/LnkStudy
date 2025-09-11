@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
+            android:layout_marginStart="41dp"
             android:text="@string/book_my"
             android:layout_centerVertical="true"
             android:textColor="@color/black"

@@ -21,7 +21,6 @@ import com.bll.lnkstudy.utils.NetworkUtil
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
 
@@ -98,27 +97,15 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
                     presenter.buyApk(map)
                 }
                 else{
-                    val idName=app.applicationId.toString()
-                    val apkPath=FileAddress().getPathApk(idName)
                     if (AppDaoManager.getInstance().queryBeanByPackageName(app.packageName)==null){
-                        if (File(apkPath).exists()) {
-                            installApk(apkPath)
-                        }
-                        else{
-                            downLoadStart(app)
-                        }
+                        downLoadStart(app)
                     }
                     else{
                         if (AppUtils.isAvailable(requireActivity(),app.packageName)){
                             showToast("已安装")
                         }
                         else{
-                            if (File(apkPath).exists()) {
-                                installApk(apkPath)
-                            }
-                            else{
-                                downLoadStart(app)
-                            }
+                            downLoadStart(app)
                         }
                     }
                 }
@@ -182,6 +169,9 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
         if (msgFlag==Constants.APP_INSTALL_EVENT){
             if (index==2){
                 val bean=apps[position]
+                if (bean.packageName==Constants.PACKAGE_AI_APP){
+                    EventBus.getDefault().post(Constants.LONG_VIEW_EVENT)
+                }
                 if (AppDaoManager.getInstance().queryBeanByPackageName(bean.packageName)==null){
                     val item= AppBean()
                     item.appName=bean.nickname

@@ -125,7 +125,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     @SuppressLint("WrongConstant")
     override fun initView() {
         setPageTitle(R.string.my_account)
-        showView(tv_btn)
 
         setAccountInfo()
 

@@ -9,7 +9,6 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_centerHorizontal="true"
         android:background="@drawable/bg_rb_line_selector"
         android:gravity="center"
         android:lines="1"
@@ -22,6 +21,7 @@
         android:id="@+id/iv_tips"
         android:layout_width="15dp"
         android:layout_height="15dp"
+        android:layout_marginEnd="5dp"
         android:layout_alignParentEnd="true"
         android:background="@drawable/bg_circle_black"
         />

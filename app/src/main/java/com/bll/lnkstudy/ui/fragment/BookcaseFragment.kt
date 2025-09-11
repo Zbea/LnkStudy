@@ -10,7 +10,6 @@ import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.BookGreenDaoManager
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
-import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.book.BookBean
 import com.bll.lnkstudy.mvp.model.cloud.CloudListBean
 import com.bll.lnkstudy.ui.activity.book.BookcaseTypeActivity
@@ -61,17 +60,6 @@ class BookcaseFragment: BaseMainFragment() {
     }
 
     override fun lazyLoad() {
-        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
-            val strings = DataBeanManager.bookType
-            for (i in strings.indices) {
-                val item = ItemTypeBean()
-                item.type=5
-                item.title = strings[i]
-                item.date=System.currentTimeMillis()
-                ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            }
-        }
-
         findBook()
     }
 

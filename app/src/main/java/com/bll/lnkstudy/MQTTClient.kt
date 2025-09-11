@@ -101,8 +101,7 @@ class MQTTClient {
             mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "connect:Connection success")
-                    val topic = "topic/user/" + MethodManager.getUser()?.accountId
-                    subscribe(topic)
+                    subscribe()
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "connect:Connection failure")
@@ -114,7 +113,8 @@ class MQTTClient {
         }
     }
 
-    private fun subscribe(topic: String, qos: Int = 1) {
+     fun subscribe(qos: Int = 1) {
+        val topic = "topic/user/" + MethodManager.getUser()?.accountId
         try {
             mMqttAndroidClient?.subscribe(topic, qos, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
@@ -127,7 +127,7 @@ class MQTTClient {
                         SUBSCRIBE_MAX_RETRY+=1
                         // 失败后延迟重试
                         backgroundHandler.postDelayed({
-                            subscribe(topic)
+                            subscribe()
                         },  5000)
                     }
                 }
@@ -167,9 +167,7 @@ class MQTTClient {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "reConnect:Connection success")
                     CONNECT_MAX_RETRY=0
-                    // 重连成功后重新订阅主题
-                    val topic = "topic/user/" + MethodManager.getUser()?.accountId
-                    subscribe(topic)
+                    subscribe()
                 }
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                     Log.d(TAG, "reConnect:Connection failure")

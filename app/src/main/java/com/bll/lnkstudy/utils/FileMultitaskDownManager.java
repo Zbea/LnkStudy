@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bll.lnkstudy.utils.SPUtil;
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -23,17 +24,16 @@ public class FileMultitaskDownManager {
     private String token = "";
     private final AtomicInteger activeCount = new AtomicInteger(0);
 
-
     public static FileMultitaskDownManager with(Context context) {
-        if (incetance == null) {
-            synchronized (FileMultitaskDownManager.class) {
-                if (incetance == null) {
-                    incetance = new FileMultitaskDownManager();
-                }
-            }
-        }
+//        if (incetance == null) {
+//            synchronized (FileMultitaskDownManager.class) {
+//                if (incetance == null) {
+//                    incetance = new FileMultitaskDownManager();
+//                }
+//            }
+//        }
         mContext = context;
-        return incetance;
+        return new FileMultitaskDownManager();
     }
 
     //创建下载链接
@@ -50,41 +50,32 @@ public class FileMultitaskDownManager {
 
     //单任务下载
     public void startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
-
         auth = "Authorization";
         token = SPUtil.INSTANCE.getString("token");
-
         FileDownloadListener fileDownloadListener=new FileDownloadListener() {
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
             }
-
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 //                multitaskCallBack.progress(task, soFarBytes, totalBytes);
             }
-
             @Override
             protected void completed(BaseDownloadTask task) {
                 if (activeCount.decrementAndGet() == 0) {
                     multitaskCallBack.completed(task);
                 }
             }
-
             @Override
             protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 //                multitaskCallBack.paused(task, soFarBytes, totalBytes);
             }
-
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 multitaskCallBack.error(task, e);
             }
-
             @Override
             protected void warn(BaseDownloadTask task) {
-
             }
         };
 

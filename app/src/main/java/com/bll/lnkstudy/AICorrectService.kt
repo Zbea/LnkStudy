@@ -26,7 +26,7 @@ import org.json.JSONObject
 class AICorrectService:Service() {
     private val TAG = "AICorrectService"
 
-    private val AI_MESSAGE_TIMEOUT = 90 * 1000L // AI消息超时：30秒
+    private val AI_MESSAGE_TIMEOUT = 90 * 1000L // AI消息超时：90秒
     private val UPLOAD_MAX_RETRY = 2 // 上传最大重试次数：2次（共3次机会：1次原始+2次重试）
     private val UPLOAD_RETRY_INTERVAL = 5 * 1000L // 重试间隔：5秒
     private var nativeLib: NativeLib? = null
@@ -43,7 +43,7 @@ class AICorrectService:Service() {
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem? = null
     // 缓存上传参数（避免重试时重复构造）
     private var cachedUploadMap: HashMap<String, Any>? = null
-
+    private var isFirstRequestAi=true//初次请求
 
     override fun onBind(intent: Intent?): IBinder? {
         return Binder()
@@ -52,7 +52,6 @@ class AICorrectService:Service() {
     override fun onCreate() {
         super.onCreate()
         initNativeLibAndMqtt()
-        initAiMessageTimer() // 初始化AI消息超时计时器
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -74,7 +73,7 @@ class AICorrectService:Service() {
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
                 if (!isAiMessageReceived) {
-                    stopServiceWithReason("AI消息超时")
+                    scheduleRequestAiRetry("AI批改超时")
                 }
             }
         }.start()
@@ -100,6 +99,8 @@ class AICorrectService:Service() {
      * 发送AI请求
      */
     private fun sendAiCorrectRequest() {
+        aiMessageTimer?.cancel()
+        initAiMessageTimer() // 初始化AI消息超时计时器
 
         val aiRequestItem = AiRequestItem()
         aiRequestItem.subject = DataBeanManager.getCourseStr_en(homeworkCommitInfoItem?.course!!)
@@ -137,14 +138,14 @@ class AICorrectService:Service() {
      */
     private fun handleAiMessage(message: String?) {
         if (message.isNullOrEmpty()) {
-            stopServiceWithReason("AI消息为空")
+            scheduleRequestAiRetry("AI消息为空")
             return
         }
         try {
         // 1. 解析AI分数
         val alScoreItem = gson.fromJson(message, AIScoreItem::class.java)
         if (alScoreItem?.result?.choices.isNullOrEmpty()) {
-            stopServiceWithReason("AI批改错误")
+            scheduleRequestAiRetry("AI批改错误")
             return
         }
 
@@ -170,7 +171,7 @@ class AICorrectService:Service() {
         }
 
         } catch (e: Exception) {
-            stopServiceWithReason("处理AI消息异常")
+            scheduleRequestAiRetry("处理AI消息异常")
             return
         }
 
@@ -225,6 +226,22 @@ class AICorrectService:Service() {
         }
 
         MyApplication.requestQueue?.add(jsonObjectRequest)
+    }
+
+    /**
+     * 超时、ai请求失败重试调度方法
+     */
+    private fun scheduleRequestAiRetry(err:String){
+        if (isFirstRequestAi){
+            isFirstRequestAi=false
+            backgroundHandler.postDelayed({
+                Log.d(TAG, "开始第2次AI请求")
+                sendAiCorrectRequest()
+            }, UPLOAD_RETRY_INTERVAL)
+        }
+        else{
+            stopServiceWithReason(err)
+        }
     }
 
     /**

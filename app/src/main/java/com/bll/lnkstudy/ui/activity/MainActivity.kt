@@ -202,6 +202,26 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             disMissView(ll_tips)
             SPUtil.putBoolean("SpecificationTips",true)
         }
+
+        ll_long.setOnClickListener {
+            if (AppUtils.isAvailable(this,Constants.PACKAGE_AI_APP)){
+                AppUtils.startAPP(this,Constants.PACKAGE_AI_APP)
+            }
+            else{
+                showToast(1,"暂未安装应用")
+            }
+        }
+
+        setLongView()
+    }
+
+    fun setLongView(){
+        if (AppUtils.isAvailable(this,Constants.PACKAGE_AI_APP)){
+            showView(ll_long)
+        }
+        else{
+            disMissView(ll_long)
+        }
     }
 
     private fun switchFragment(type: Int, to: Fragment?) {
@@ -246,6 +266,17 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         val targetFileStr = FileAddress().getLauncherPath()
         if (FileUtils.isExist(targetFileStr)){
             FileUtils.deleteFile(File(targetFileStr))
+        }
+
+        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
+            val strings = DataBeanManager.bookType
+            for (i in strings.indices) {
+                val item = ItemTypeBean()
+                item.type=5
+                item.title = strings[i]
+                item.date=System.currentTimeMillis()
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
         }
     }
 
@@ -949,6 +980,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 map["type"] = arrayOf(1, 2, 3)
                 mDataUpdatePresenter.onList(map)
             }
+            Constants.LONG_VIEW_EVENT->{
+                setLongView()
+            }
         }
     }
 
@@ -966,14 +1000,19 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun onNetworkConnectionSuccess() {
+        setLongView()
         Handler().postDelayed({
             if (mqttClient==null||mqttClient?.isClientValidity()==false){
                 initMqtt()
             }
             else{
-                showLog(mqttClient?.isConnect().toString())
-                if (mqttClient?.isConnect()==false)
+                showLog("mqttClient.isConnect:"+mqttClient?.isConnect().toString())
+                if (mqttClient?.isConnect()==false){
                     mqttClient?.reConnect()
+                }
+                else{
+                    mqttClient?.subscribe()
+                }
             }
         },20*1000)
     }

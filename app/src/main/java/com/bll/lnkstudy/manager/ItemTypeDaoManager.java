@@ -64,8 +64,10 @@ public class ItemTypeDaoManager {
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(5);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Title.eq(title);
         ItemTypeBean bean=dao.queryBuilder().where(whereUser,whereUser1,whereUser2).orderAsc(ItemTypeBeanDao.Properties.Date).build().unique();
-        bean.setIsNew(isNew);
-        insertOrReplace(bean);
+        if (bean!=null){
+            bean.setIsNew(isNew);
+            insertOrReplace(bean);
+        }
     }
 
     public Boolean isExistBookType(){
