@@ -25,6 +25,7 @@ import com.bll.lnkstudy.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkstudy.ui.activity.homework.HomeworkUnfinishedMessageAllActivity
 import com.bll.lnkstudy.utils.FileUploadManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.iv_tips
 import kotlinx.android.synthetic.main.common_fragment_title.rl_message
@@ -37,7 +38,6 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     private var mCoursePos=0
     private var fragments= mutableListOf<HomeworkFragment>()
     private val otherCourse= mutableListOf("美术","音乐","科学","道法","信息","体育")
-    private val mainCourse= mutableListOf("语文","数学","英语")
 
     override fun onMessageAll(list: MutableList<HomeworkMessageList.MessageBean>) {
         DataBeanManager.homeworkMessages=list
@@ -78,6 +78,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                 fragment.onRefreshData()
             }
         }
+        clearRepeatHomeworkType()
         fetchData()
     }
 
@@ -103,6 +104,23 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
+        }
+    }
+
+    /**
+     * 清除重复的本地默认生成作业本（又grade=0引起的typeId不同）
+     */
+    private fun clearRepeatHomeworkType(){
+        val items=HomeworkTypeDaoManager.getInstance().queryAllByCreate(3)
+        for (item in items){
+            if (item.typeId>100000000){
+               HomeworkTypeDaoManager.getInstance().deleteBean(item)
+            }
+            else{
+                if (item.typeId%10==0){
+                    HomeworkTypeDaoManager.getInstance().deleteBean(item)
+                }
+            }
         }
     }
 
@@ -140,22 +158,21 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                 if (!FileUtils.isExist(path))
                     FileUtils.mkdirs(path)
             }
-            if (mainCourse.contains(course)){
-                val name="${course}分享本"
-                val typeId=MethodManager.getHomeworkTypeId(course,9)
-                val localType=HomeworkTypeDaoManager.getInstance().queryByTypeId(typeId)
-                if (localType==null) {
-                    val typeItem = HomeworkTypeBean()
-                    typeItem.name = name
-                    typeItem.course = course
-                    typeItem.date = System.currentTimeMillis()
-                    typeItem.grade = grade
-                    typeItem.state = 9
-                    typeItem.typeId = typeId
-                    typeItem.createStatus=3
-                    typeItem.fromStatus=3
-                    HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
-                }
+
+            val name="${course}分享本"
+            val typeId=MethodManager.getHomeworkTypeId(course,9)
+            val localType=HomeworkTypeDaoManager.getInstance().queryByTypeId(typeId)
+            if (localType==null) {
+                val typeItem = HomeworkTypeBean()
+                typeItem.name = name
+                typeItem.course = course
+                typeItem.date = System.currentTimeMillis()
+                typeItem.grade = grade
+                typeItem.state = 9
+                typeItem.typeId = typeId
+                typeItem.createStatus=3
+                typeItem.fromStatus=3
+                HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
             }
         }
     }
@@ -409,9 +426,11 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     }
 
     override fun fetchData() {
-        val map=HashMap<String,Any>()
-        map["grade"]=grade
-        mPresenter.getMessageAll(map)
+        if(NetworkUtil.isNetworkConnected()&&grade>0){
+            val map=HashMap<String,Any>()
+            map["grade"]=grade
+            mPresenter.getMessageAll(map)
+        }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

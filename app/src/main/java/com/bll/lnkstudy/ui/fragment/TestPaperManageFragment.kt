@@ -41,6 +41,7 @@ class TestPaperManageFragment: BaseMainFragment() {
                 fragment.onRefreshData()
             }
         }
+        clearRepeatPaperType()
     }
 
     //设置头部索引
@@ -64,6 +65,18 @@ class TestPaperManageFragment: BaseMainFragment() {
         }
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
+        }
+    }
+
+    /**
+     * 清除重复的本地默认生成学校分类（又grade=0引起的typeId不同）
+     */
+    private fun clearRepeatPaperType(){
+        val items= PaperTypeDaoManager.getInstance().queryAllByCreate(2)
+        for (item in items){
+            if (item.typeId%10==0){
+                PaperTypeDaoManager.getInstance().deleteBean(item)
+            }
         }
     }
 

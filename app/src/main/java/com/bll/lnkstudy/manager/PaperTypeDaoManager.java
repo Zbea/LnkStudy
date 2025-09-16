@@ -94,6 +94,12 @@ public class PaperTypeDaoManager {
                 .build().list();
     }
 
+    public List<PaperTypeBean> queryAllByCreate(int create){
+        WhereCondition whereCondition1=PaperTypeBeanDao.Properties.CreateStatus.eq(create);
+        return dao.queryBuilder().where(whereUser,whereCondition1)
+                .build().list();
+    }
+
 
     public boolean isExistPaperType(int typeId){
         return queryById(typeId)!=null;

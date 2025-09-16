@@ -238,6 +238,10 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
+                    if (book.subtypeStr.isNullOrEmpty()){
+                        showToast(book.bookName+getString(R.string.book_download_fail))
+                        return
+                    }
                     //修改书库分类状态
                     ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
                     //下载解压完成后更新存储的book

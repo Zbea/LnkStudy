@@ -395,19 +395,17 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
      * 获取老师批改下发测试卷
      */
     private fun fetchCorrectPaper() {
-        if (mCourse.isNotEmpty()){
-            val map1 = HashMap<String, Any>()
-            map1["subject"]=DataBeanManager.getCourseId(mCourse)
-            //获取考试批改下发列表
-            mPresenter.getExamList(map1)
+        val map1 = HashMap<String, Any>()
+        map1["subject"]=DataBeanManager.getCourseId(mCourse)
+        //获取考试批改下发列表
+        mPresenter.getExamList(map1)
 
-            val map = HashMap<String, Any>()
-            map["type"]=2
-            map["sendStatus"] = 2
-            map["subject"]=mCourse
-            //获取测试卷批改下发列表
-            mPresenter.getPaperList(map)
-        }
+        val map = HashMap<String, Any>()
+        map["type"]=2
+        map["sendStatus"] = 2
+        map["subject"]=mCourse
+        //获取测试卷批改下发列表
+        mPresenter.getPaperList(map)
     }
 
     override fun onRefreshData() {

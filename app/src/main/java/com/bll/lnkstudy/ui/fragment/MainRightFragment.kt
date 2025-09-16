@@ -112,7 +112,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
 
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
         var currentGrade = 0
-        val oldGrade = mUser?.grade!!
+        val oldGrade = MethodManager.getUser().grade
         for (item in classGroups) {
             if (item.state == 1) {
                 currentGrade = item.grade
@@ -123,12 +123,15 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             grade = currentGrade
             mUser?.grade = currentGrade
             SPUtil.putObj("user", mUser!!)
-            EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
+            Handler().postDelayed({
+                EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
+            }, 500)
+
             Handler().postDelayed({
                 //当年级变化时，上传作业本
                 if(oldGrade>0)
                     EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
-            }, 500)
+            }, 1500)
         }
         mMainPresenter.getCourseItems()
     }

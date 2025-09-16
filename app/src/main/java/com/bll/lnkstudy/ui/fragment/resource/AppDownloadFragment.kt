@@ -161,7 +161,7 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
         map["size"] = pageSize
         map["type"] = supply
         map["subType"]=index
-        map["mainType"]=2
+        map["mainType"]=1
         presenter.getAppList(map)
     }
 

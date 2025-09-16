@@ -115,6 +115,12 @@ public class HomeworkTypeDaoManager {
                 .build().list();
     }
 
+    public List<HomeworkTypeBean> queryAllByCreate(int create){
+        WhereCondition whereCondition1=HomeworkTypeBeanDao.Properties.CreateStatus.eq(create);
+        return dao.queryBuilder().where(whereUser,whereCondition1)
+                .build().list();
+    }
+
     /**
      * 查找科目下 本地题卷本
      */
