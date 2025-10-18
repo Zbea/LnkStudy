@@ -1,5 +1,6 @@
 package com.bll.lnkstudy.base
 
+import android.os.CountDownTimer
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -16,10 +17,10 @@ import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.utils.AppUtils
-import com.bll.lnkstudy.utils.DeviceUtil
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import com.htfy.params.ServerParams
@@ -32,6 +33,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
     var appUpdateDialog:AppUpdateDialog?=null
+    var systemUpdateDialog:AppUpdateDialog?=null
 
     //云端上传回调
     override fun onSuccess(cloudIds: MutableList<Int>?) {
@@ -79,9 +81,9 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         val url=Constants.RELEASE_BASE_URL+"Device/CheckUpdate"
 
         val  jsonBody = JSONObject()
-        jsonBody.put(Constants.SN, DeviceUtil.getOtaSerialNumber())
-        jsonBody.put(Constants.KEY, ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber()))
-        jsonBody.put(Constants.VERSION_NO, DeviceUtil.getOtaProductVersion())
+        jsonBody.put(Constants.SN, ToolUtils.getOtaSerialNumber())
+        jsonBody.put(Constants.KEY, ServerParams.getInstance().GetHtMd5Key(ToolUtils.getOtaSerialNumber()))
+        jsonBody.put(Constants.VERSION_NO, ToolUtils.getOtaProductVersion())
         val  jsonObjectRequest= JsonObjectRequest(Request.Method.POST,url,jsonBody, {
             showLog(it.toString())
             val code= it.optInt("Code")
@@ -89,7 +91,21 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             if (code==200&&jsonObject!=null){
                 val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
                 requireActivity().runOnUiThread {
-                    AppUpdateDialog(requireActivity(),2,item).builder()
+                    if (SPUtil.getString(Constants.SP_UPDATE_SYSTEM_STATUS)!="waiting"){
+                        if (systemUpdateDialog==null){
+                            systemUpdateDialog=AppUpdateDialog(requireActivity(),2,item).builder()
+                            systemUpdateDialog?.setDialogClickListener(object :AppUpdateDialog.OnDialogClickListener{
+                                override fun onClick() {
+                                }
+                                override fun onDelay() {
+                                    setCountDownTimer(2)
+                                }
+                            })
+                        }
+                        else{
+                            systemUpdateDialog?.show()
+                        }
+                    }
                 }
             }
         },null)
@@ -110,7 +126,9 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             if (code==0){
                 if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
                     requireActivity().runOnUiThread {
-                        downLoadAPP(item)
+                        if (SPUtil.getString(Constants.SP_UPDATE_APP_STATUS)!="waiting"){
+                            downLoadAPP(item)
+                        }
                     }
                 }
             }
@@ -129,32 +147,54 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         else{
             if (appUpdateDialog==null||appUpdateDialog?.isShow()==false) {
                 appUpdateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
-                FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-                    FileDownManager.SingleTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        if (task != null && task.isRunning) {
-                            requireActivity().runOnUiThread {
-                                val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
-                                        ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                                appUpdateDialog?.setUpdateBtn(s)
+                appUpdateDialog?.setDialogClickListener(object : AppUpdateDialog.OnDialogClickListener {
+                    override fun onClick() {
+                        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+                            FileDownManager.SingleTaskCallBack {
+                            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                                if (task != null && task.isRunning) {
+                                    requireActivity().runOnUiThread {
+                                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
+                                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                                        appUpdateDialog?.setUpdateBtn(s)
+                                    }
+                                }
                             }
-                        }
+                            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                            }
+                            override fun completed(task: BaseDownloadTask?) {
+                                appUpdateDialog?.dismiss()
+                                AppUtils.installApp(requireActivity(), targetFileStr)
+                            }
+                            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                                appUpdateDialog?.dismiss()
+                            }
+                        })
                     }
-
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun completed(task: BaseDownloadTask?) {
-                        appUpdateDialog?.dismiss()
-                        AppUtils.installApp(requireActivity(), targetFileStr)
-                    }
-
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        appUpdateDialog?.dismiss()
+                    override fun onDelay() {
+                        setCountDownTimer(1)
                     }
                 })
             }
         }
+    }
+
+    private fun setCountDownTimer(type:Int){
+        object : CountDownTimer(60*60*1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                if (type==1){
+                    SPUtil.putString(Constants.SP_UPDATE_APP_STATUS,"")
+                    if (NetworkUtil.isNetworkConnected())
+                        appUpdateDialog?.show()
+                }
+                else{
+                    SPUtil.putString(Constants.SP_UPDATE_APP_STATUS,"")
+                    systemUpdateDialog?.show()
+                }
+            }
+        }.start()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

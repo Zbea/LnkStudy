@@ -8,6 +8,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
 import com.bll.lnkstudy.utils.GlideUtils
+import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -26,7 +27,8 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 GlideUtils.setImageRoundUrl(mContext, item.bgResId, ivImage, 10)
             }
             else{
-                setText(R.id.tv_name, item.name)
+                //清除Glide的异步加载任务和缓存，防止残留图片覆盖默认资源
+                Glide.with(mContext).clear(ivImage)
                 val bg=when(item.state){
                     1->{
                         R.mipmap.icon_homework_cover_3
@@ -55,6 +57,7 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 }
                 setImageResource(R.id.iv_image,bg)
                 setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
+                setText(R.id.tv_name, item.name)
             }
 
             if (item.isCorrect) {

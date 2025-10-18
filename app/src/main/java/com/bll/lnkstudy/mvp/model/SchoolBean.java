@@ -6,4 +6,5 @@ public class SchoolBean {
     public String province;
     public String city;
     public String area;
+    public int aiUpdate;
 }

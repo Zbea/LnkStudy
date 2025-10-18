@@ -52,6 +52,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
     var ll_page_content_a: LinearLayout? = null
     var ll_page_content_b: LinearLayout? = null
     var ll_draw_content: LinearLayout? = null
+    var ll_record: LinearLayout? = null
     var v_content_a: ImageView? = null
     var v_content_b: ImageView? = null
 
@@ -69,6 +70,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
             ll_page_content_a = findViewById(R.id.ll_page_content_a)
             ll_page_content_b = findViewById(R.id.ll_page_content_b)
             v_content_a = findViewById(R.id.v_content_a)
+            ll_record=findViewById(R.id.ll_record)
         }
 
         onInStanceElik()

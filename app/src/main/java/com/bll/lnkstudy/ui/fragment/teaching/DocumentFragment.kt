@@ -9,15 +9,28 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.dialog.CommonDialog
+import com.bll.lnkstudy.mvp.model.book.TeachingMaterialList
+import com.bll.lnkstudy.mvp.presenter.TeachingMaterialPresenter
+import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.ui.adapter.DocumentAdapter
 import com.bll.lnkstudy.utils.DP2PX
+import com.bll.lnkstudy.utils.FileBigDownManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.NetworkUtil
 import com.bll.lnkstudy.widget.SpaceGridItemDeco
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
-class DocumentFragment:BaseFragment() {
+class DocumentFragment:BaseFragment(), IContractView.ITeachingMaterialView {
 
+    private var mPresenter= TeachingMaterialPresenter(this)
     private var mAdapter: DocumentAdapter? = null
+
+    override fun onList(list: TeachingMaterialList) {
+        for (item in list.list){
+            downLoadStart(item)
+        }
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
@@ -28,6 +41,13 @@ class DocumentFragment:BaseFragment() {
     }
     override fun lazyLoad() {
         fetchData()
+        if (NetworkUtil.isNetworkConnected()){
+            val map= HashMap<String,Any>()
+            map["page"]=1
+            map["size"]=100
+            map["status"]=1
+            mPresenter.getList(map)
+        }
     }
 
     private fun initRecycleView() {
@@ -65,6 +85,28 @@ class DocumentFragment:BaseFragment() {
         }
     }
 
+    private fun downLoadStart(item:TeachingMaterialList.TeachingMaterialBean){
+        val targetFileStr = FileAddress().getPathDocument(item.title+ FileUtils.getUrlFormat(item.url))
+        if (FileUtils.isExist(targetFileStr)){
+            mPresenter.downloadComplete(item.id)
+            return
+        }
+        FileBigDownManager.with(requireActivity()).create(item.url).setPath(targetFileStr)
+            .startSingleTaskDownLoad(object :
+                FileBigDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    mPresenter.downloadComplete(item.id)
+                    fetchData()
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                }
+            })
+    }
+
     override fun fetchData() {
         val path=FileAddress().getPathDocument()
         val totalNum = FileUtils.getFiles(path).size
@@ -74,7 +116,7 @@ class DocumentFragment:BaseFragment() {
     }
 
     override fun onRefreshData() {
-        fetchData()
+        lazyLoad()
     }
 
     override fun onEventBusMessage(msgFlag: String) {
@@ -82,5 +124,9 @@ class DocumentFragment:BaseFragment() {
             pageIndex=1
             fetchData()
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        lazyLoad()
     }
 }

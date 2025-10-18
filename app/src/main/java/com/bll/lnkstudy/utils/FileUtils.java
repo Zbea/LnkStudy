@@ -269,6 +269,8 @@ public class FileUtils {
      * @param path
      */
     public static void delete(String path){
+        if (path == null || path.isEmpty() )
+            return;
         File file=new File(path);
         deleteFile(file);
     }

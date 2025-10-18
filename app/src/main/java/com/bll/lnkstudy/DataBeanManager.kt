@@ -23,11 +23,11 @@ object DataBeanManager {
     var permissionTime=0L
 
      val listTitle = arrayOf(
-        "首页","书架",
-        "教材","作业",
+        "首页","教材",
+        "书架","作业",
         "试卷","笔记",
         "书画","视教",
-        "学情","日记"
+        "智教","日记"
     )
     val teachingType = arrayOf(
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
@@ -37,10 +37,7 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
         mContext.getString(R.string.textbook_tab_other),mContext.getString(R.string.textbook_tab_old),"教学资料"
     )
-    val searchType = arrayOf(
-        mContext.getString(R.string.search_bookcase_str),mContext.getString(R.string.search_textbook_str),
-        mContext.getString(R.string.search_homework_str),mContext.getString(R.string.search_exam_str),mContext.getString(R.string.search_note_str),"书画"
-    )
+
     private val dateRemind = arrayOf(1, 3, 5, 7, 10, 15)
     val bookType = arrayOf(
         "诗经楚辞", "唐诗宋词", "古代经典",
@@ -319,16 +316,17 @@ object DataBeanManager {
         }
 
         val h1 = ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
+            name = listTitle[2]
+        }
+
+        val h2 = ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
             name = listTitle[1]
         }
 
-        val h2 = ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
-            name = listTitle[2]
-        }
 
         val h3 = ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_video)
@@ -1117,6 +1115,28 @@ object DataBeanManager {
             list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
+    }
+
+    fun getScoreStandardStr(score: Double,questionType:Int):String{
+        if (questionType>0){
+            return score.toString()
+        }
+        else {
+            return when (score) {
+                1.0 -> {
+                    "A"
+                }
+                2.0 -> {
+                    "B"
+                }
+                3.0 -> {
+                    "C"
+                }
+                else -> {
+                    score.toString()
+                }
+            }
+        }
     }
 
     /**

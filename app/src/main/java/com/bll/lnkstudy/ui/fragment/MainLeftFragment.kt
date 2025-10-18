@@ -12,6 +12,7 @@ import com.bll.lnkstudy.Constants.Companion.MQTT_CLASSGROUP_PERMISSION_EVENT
 import com.bll.lnkstudy.Constants.Companion.MQTT_HOMEWORK_NOTICE_EVENT
 import com.bll.lnkstudy.Constants.Companion.USER_CHANGE_GRADE_EVENT
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
 import com.bll.lnkstudy.manager.CalenderDaoManager
@@ -55,6 +56,7 @@ import kotlinx.android.synthetic.main.fragment_main_left.tv_homework_notice
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_content
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_end_time
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_name
+import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_score
 import kotlinx.android.synthetic.main.fragment_main_left.tv_notice_time
 import kotlinx.android.synthetic.main.fragment_main_left.tv_plan
 import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
@@ -99,7 +101,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
     override fun onHomeworkNotice(list: HomeworkNoticeList) {
         mNoticeAdapter?.setNewData(list.list)
     }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_left
@@ -174,6 +175,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
         onCheckUpdate()
         if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
+
+            mCommonPresenter.getCommonSchoolInfo()
 
             val map=HashMap<String,Any>()
             map["size"]=7
@@ -300,6 +303,11 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             disMissView(tv_notice_end_time)
         }
         tv_notice_content?.text = "通知内容：${item.title}"
+
+        if (type==1){
+            showView(tv_notice_score)
+            tv_notice_score.text="批改成绩："+MethodManager.getCorrectNoticeScore(item.score,item.correctJson,item.correctMode)
+        }
 
         iv_close.setOnClickListener {
             disMissView(ll_notice)

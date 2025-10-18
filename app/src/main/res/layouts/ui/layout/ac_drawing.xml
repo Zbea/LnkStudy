@@ -25,6 +25,14 @@
             android:scaleType="fitCenter" />
 
         <include
+            android:id="@+id/ll_record"
+            layout="@layout/common_record_content"
+            android:layout_width="@dimen/drawing_content_width"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+
+        <include
             android:id="@+id/ll_page_content_a"
             layout="@layout/common_drawing_page_number"
             android:layout_marginTop="@dimen/statusbar_height"

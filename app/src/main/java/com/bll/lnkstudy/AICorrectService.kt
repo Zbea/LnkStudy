@@ -156,7 +156,7 @@ class AICorrectService:Service() {
         val scoreList = gson.fromJson<MutableList<ScoreItem>>(scoreJson, scoreListType)
         val totalScore = scoreList.sumOf { it.score }
 
-        // 2. 合并分数（原有逻辑）
+        // 2. 合并分数
         val currentScores = ScoreItemUtils.questionToList(homeworkCommitInfoItem?.correctJson!!,homeworkCommitInfoItem?.correctMode!!)
         ScoreItemUtils.updateAIJsonScores(currentScores, scoreList)
 

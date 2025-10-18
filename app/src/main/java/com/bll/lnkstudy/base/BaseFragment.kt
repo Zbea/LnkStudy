@@ -16,6 +16,7 @@ import com.bll.lnkstudy.dialog.ProgressDialog
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.CommonData
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
+import com.bll.lnkstudy.mvp.model.SchoolBean
 import com.bll.lnkstudy.mvp.model.User
 import com.bll.lnkstudy.mvp.presenter.CommonPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
@@ -26,6 +27,7 @@ import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.ui.activity.ResourceCenterActivity
 import com.bll.lnkstudy.ui.adapter.TabTypeAdapter
 import com.bll.lnkstudy.utils.ActivityManager
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.SToast
 import com.bll.lnkstudy.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
@@ -83,6 +85,9 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         }
     }
 
+    override fun onSchoolInfo(schoolBean: SchoolBean) {
+        SPUtil.putInt("schoolAiUpdate",schoolBean.aiUpdate)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {

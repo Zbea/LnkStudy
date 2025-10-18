@@ -62,7 +62,7 @@
                 android:background="@drawable/click_btn_line_black_5dp"
                 android:gravity="center"
                 android:tag="beta_confirm_button"
-                android:text="前往更新"
+                android:text="立即更新"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

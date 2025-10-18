@@ -8,8 +8,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import com.bll.lnkstudy.manager.DataUpdateDaoManager
-import com.bll.lnkstudy.ui.activity.SearchActivity
-import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
@@ -63,13 +61,6 @@ open class MyBroadcastReceiver : BroadcastReceiver() {
                 Log.d(Constants.DEBUG,"搜索")
                 if (AppUtils.isAvailable(context,Constants.PACKAGE_AI_APP)){
                     AppUtils.startAPP(context,Constants.PACKAGE_AI_APP,2)
-                }
-                else{
-                    ActivityManager.getInstance().finishActivity(SearchActivity::class.java.name)
-                    val intent = Intent(context,SearchActivity::class.java)
-                    intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_RIGHT)
-                    context.startActivity(intent)
                 }
             }
             //阅读器回传

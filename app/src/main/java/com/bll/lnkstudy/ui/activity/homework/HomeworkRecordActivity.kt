@@ -50,11 +50,10 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
     private var isSave=false
     private var second=0
     private var timer: Timer?=null
-    private var commitPaths= mutableListOf<String>()
 
     override fun onToken(token: String) {
         showLoading()
-        FileImageUploadManager(token,commitPaths).apply {
+        FileImageUploadManager(token, mutableListOf(pathFile!!)).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
@@ -157,7 +156,6 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
                 }
                 showLoading()
                 if (messageBean?.submitState==0){
-                    commitPaths.add(pathFile!!)
                     mUploadPresenter.getToken()
                 }
                 else{

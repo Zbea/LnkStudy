@@ -95,6 +95,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_score_content"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_marginTop="@dimen/dp_20"
@@ -127,6 +128,16 @@
             android:layout_marginBottom="@dimen/dp_25"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
+            />
+
+        <ImageView
+            android:id="@+id/iv_expand_arrow"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:src="@mipmap/icon_topic_arrow_expend"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
     </RelativeLayout>

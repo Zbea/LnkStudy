@@ -323,8 +323,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
                         }
                     }
                     5 -> {
-                        customStartActivity(
-                            Intent(requireActivity(), FileDrawingActivity::class.java)
+                        customStartActivity(Intent(requireActivity(), FileDrawingActivity::class.java)
                                 .putExtra("pageIndex", Constants.DEFAULT_PAGE)
                                 .putExtra("pagePath", FileAddress().getPathScreenHomework(item.name, item.grade)))
                     }
@@ -582,6 +581,14 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
      * 下载分享作业
      */
     private fun loadShareHomework(item: HomeworkShareBean) {
+        if (item.subType==3){
+            mPresenter.downloadCompleteShare(item.id.toInt())
+            refreshView(item.typeId,3)
+            HomeworkShareDaoManager.getInstance().insertOrReplace(item)
+            //创建增量数据
+            DataUpdateManager.createDataUpdateState(2, item.id.toInt(), 2, item.typeId, 1, Gson().toJson(item), "")
+            return
+        }
         val pathStr = FileAddress().getPathHomework(mCourse, item.typeId,item.id.toInt())
         val images =item.examUrl.split(",").toMutableList()
         val paths = mutableListOf<String>()

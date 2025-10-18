@@ -161,7 +161,7 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
         map["size"] = pageSize
         map["type"] = supply
         map["subType"]=index
-        map["mainType"]=1
+        map["bookType"]=1
         presenter.getAppList(map)
     }
 
@@ -169,9 +169,6 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
         if (msgFlag==Constants.APP_INSTALL_EVENT){
             if (index==2){
                 val bean=apps[position]
-                if (bean.packageName==Constants.PACKAGE_AI_APP){
-                    EventBus.getDefault().post(Constants.LONG_VIEW_EVENT)
-                }
                 if (AppDaoManager.getInstance().queryBeanByPackageName(bean.packageName)==null){
                     val item= AppBean()
                     item.appName=bean.nickname

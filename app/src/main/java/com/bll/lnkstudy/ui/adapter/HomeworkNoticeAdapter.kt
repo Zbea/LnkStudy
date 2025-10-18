@@ -1,6 +1,7 @@
 package com.bll.lnkstudy.ui.adapter
 
 import com.bll.lnkstudy.DataBeanManager
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.utils.DateUtils
@@ -25,6 +26,8 @@ class HomeworkNoticeAdapter(layoutResId: Int,val type:Int, data: List<HomeworkNo
                     setText(R.id.tv_assign_date, "布置时间："+DateUtils.longToStringWeek(startTime))
                 }
                 setText(R.id.tv_date, "批改时间："+DateUtils.longToStringWeek(item.time))
+
+                setText(R.id.tv_score, MethodManager.getCorrectNoticeScore(item.score,item.correctJson,item.correctMode))
             }
 
             setText(R.id.tv_content,item.title)

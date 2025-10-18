@@ -40,7 +40,7 @@ public interface IContractView {
     //文件上传
     interface IFileUploadView extends IBaseView{
         void onToken(String token);
-        void onCommitSuccess();
+        default void onCommitSuccess(){};
     }
     /**
      * 增量更新
@@ -197,7 +197,8 @@ public interface IContractView {
     //公共接口
     interface ICommonView extends IBaseView {
         default void onList(CommonData commonData){};
-        default void onListSchools(List<SchoolBean> list){};;
+        default void onListSchools(List<SchoolBean> list){}
+        default void onSchoolInfo(SchoolBean schoolBean){}
     }
 
     interface ICalenderView extends IBaseView {
@@ -211,6 +212,7 @@ public interface IContractView {
 
     interface ITeachingMaterialView extends IBaseView {
         void onList(TeachingMaterialList list);
+        default void onDownloadSuccess(){};
     }
 
 }

@@ -38,8 +38,8 @@ class Constants {
         const val STATUS_BAR_SHOW = 2147483647//永不消失
         const val DEBUG="debug"
 
-                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-//        const val URL_BASE = "http://192.168.3.100:10800/v1/"
+//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        const val URL_BASE = "http://192.168.3.100:10800/v1/"
 //        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 //        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
             const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
@@ -118,7 +118,6 @@ class Constants {
         const val MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT="MQTTTestPaperAssignNoticeEvent"//考卷布置通知推送
         const val MQTT_TESTPAPER_CORRECT_NOTICE_EVENT="MQTTTestPaperCorrectNoticeEvent"//考卷批改通知推送
         const val MQTT_CLASSGROUP_PERMISSION_EVENT="MQTTClassGroupPermissionEvent"//班级老师控制权限推送
-        const val LONG_VIEW_EVENT="LongViewEvent"
 
         //定时任务标识
         const val ACTION_DAY_REFRESH = "com.bll.lnkstudy.refresh"//每天0刷新
@@ -146,6 +145,8 @@ class Constants {
         const val KEY = "Key"
         const val VERSION_NO = "VersionNO"
 
+        const val SP_UPDATE_APP_STATUS = "UpdateAppStatus"
+        const val SP_UPDATE_SYSTEM_STATUS = "UpdateSystemStatus"
         const val SP_PRIVACY_PW_DIARY = "PrivacyPasswordDiary"//私密日记密码
         const val SP_PRIVACY_PW_NOTE = "PrivacyPasswordNote"//密本密码
         const val SP_WEEK_DATE_LIST = "weekDateEvent"//学习计划星期所选

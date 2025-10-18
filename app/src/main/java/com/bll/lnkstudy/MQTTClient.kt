@@ -142,8 +142,7 @@ class MQTTClient {
         try {
             val topic = "topic/user/" + MethodManager.getUser()?.accountId
             mMqttAndroidClient?.unsubscribe(topic)
-            mMqttAndroidClient?.disconnect(null, null)
-            mMqttAndroidClient?.close()
+            mMqttAndroidClient?.disconnect()
         } catch (e: MqttException) {
             e.printStackTrace()
         }

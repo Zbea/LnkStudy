@@ -29,6 +29,7 @@ import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
@@ -75,7 +76,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     map["takeTime"]=homeworkCommitInfoItem?.takeTime!!
                     mUploadPresenter.commit(map)
 
-                    if (!homeworkCommitInfoItem?.correctJson.isNullOrEmpty()&&homeworkCommitInfoItem?.correctMode!!>0){
+                    if (SPUtil.getInt("schoolAiUpdate")==2&&!homeworkCommitInfoItem?.correctJson.isNullOrEmpty()&&homeworkCommitInfoItem?.correctMode!!>0){
                         //开启ai批改服务
                         MyApplication.mContext.startService(Intent(MyApplication.mContext, AICorrectService::class.java).apply {
                             putExtra("KEY_HOMEWORK_COMMIT_ITEM", homeworkCommitInfoItem)

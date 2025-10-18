@@ -931,4 +931,26 @@ public class MethodManager {
         String areaJson = FileUtils.readFileContent(MyApplication.Companion.getMContext().getResources().getAssets().open("subject.json"));
         return new Gson().fromJson(areaJson, new TypeToken<List<ItemList>>(){}.getType());
     }
+
+    /**
+     * 批改通知获取得分字符显示
+     * @param score
+     * @param question
+     * @param questionType
+     * @return
+     */
+    public static String getCorrectNoticeScore(double score,String question,int questionType){
+        if (question==null){
+            return "";
+        }
+        if (question.isEmpty()){
+            return DataBeanManager.INSTANCE.getScoreStandardStr(score,questionType);
+        }
+        else if (question.length()<20){
+            return DataBeanManager.INSTANCE.getResultStandardStr(score,questionType);
+        }
+        else{
+            return String.valueOf(score);
+        }
+    }
 }

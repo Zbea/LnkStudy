@@ -9,6 +9,7 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.view.KeyEvent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.*
@@ -42,7 +43,8 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
-class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContractView.IDataUpdateView {
+class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContractView.IDataUpdateView,
+    WebViewAssistClass.OnFragmentToActivityListener {
 
     private val mQiniuPresenter = QiniuPresenter(this)
     private val mDataUpdatePresenter = DataUpdatePresenter(this)
@@ -52,13 +54,13 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     var bookcaseFragment: BookcaseFragment? = null
     var teachingManageFragment: TeachingManageFragment? = null
     var videoFragment: VideoFragment? = null
-    var learningConditionFragment: LearningConditionFragment? = null
 
     var mainRightFragment: MainRightFragment? = null
     var paperFragment: TestPaperManageFragment? = null
     var homeworkFragment: HomeworkManageFragment? = null
     var noteFragment: NoteFragment? = null
     var paintingFragment: PaintingFragment? = null
+    var webViewFragment:WebViewFragment?=null
 
     private var leftPosition = 0
     private var mAdapterLeft: MainListAdapter? = null
@@ -117,9 +119,35 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun initData() {
-        initMqtt()
+        //清除应用更新状态
+        SPUtil.putString(Constants.SP_UPDATE_APP_STATUS,"")
+        SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS,"")
 
-        initStartDate()
+        //创建截屏默认文件夹
+        val path = FileAddress().getPathScreen("未分类")
+        if (!File(path).exists()) {
+            FileUtils.mkdirs(path)
+        }
+
+        //删除应用更新包
+        val targetFileStr = FileAddress().getLauncherPath()
+        if (FileUtils.isExist(targetFileStr)){
+            FileUtils.deleteFile(File(targetFileStr))
+        }
+
+        //初始化书籍分类
+        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
+            val strings = DataBeanManager.bookType
+            for (i in strings.indices) {
+                val item = ItemTypeBean()
+                item.type=5
+                item.title = strings[i]
+                item.date=System.currentTimeMillis()
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
+        }
+
+        initMqtt()
     }
 
     override fun initView() {
@@ -139,7 +167,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         paintingFragment = PaintingFragment()
         videoFragment = VideoFragment()
         mainRightFragment = MainRightFragment()
-        learningConditionFragment = LearningConditionFragment()
+        webViewFragment=WebViewFragment()
 
         switchFragment(1, mainLeftFragment)
         switchFragment(2, mainRightFragment)
@@ -149,16 +177,22 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             rv_list_a.adapter = this
             bindToRecyclerView(rv_list_a)
             setOnItemClickListener { adapter, view, position ->
-                updateItem(leftPosition, false)//原来的位置去掉勾选
-                updateItem(position, true)//更新新的位置
-                when (position) {
-                    0 -> switchFragment(1,mainLeftFragment)//首页
-                    1 -> switchFragment(1,bookcaseFragment)//书架
-                    2 -> switchFragment(1,teachingManageFragment)//课本
-                    3 -> switchFragment(1,videoFragment)//义教
-                    4 -> switchFragment(1,learningConditionFragment)//应用
+                if (position==4){
+                    if (AppUtils.isAvailable(this@MainActivity,Constants.PACKAGE_AI_APP)){
+                        AppUtils.startAPP(this@MainActivity,Constants.PACKAGE_AI_APP)
+                    }
                 }
-                leftPosition = position
+                else{
+                    updateItem(leftPosition, false)//原来的位置去掉勾选
+                    updateItem(position, true)//更新新的位置
+                    when (position) {
+                        0 -> switchFragment(1,mainLeftFragment)//首页
+                        1 -> switchFragment(1,teachingManageFragment)//书架
+                        2 -> switchFragment(1,bookcaseFragment)//课本
+                        3 -> switchFragment(1,videoFragment)//义教
+                    }
+                    leftPosition = position
+                }
             }
         }
 
@@ -174,7 +208,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     1 -> switchFragment(2,  homeworkFragment)
                     2 -> switchFragment(2,  paperFragment)
                     3 -> switchFragment(2,  noteFragment)
-                    4 -> switchFragment(2,  paintingFragment)
+                    4 -> switchFragment(2,  webViewFragment)
                 }
                 rightPosition = position
             }
@@ -203,26 +237,8 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             SPUtil.putBoolean("SpecificationTips",true)
         }
 
-        ll_long.setOnClickListener {
-            if (AppUtils.isAvailable(this,Constants.PACKAGE_AI_APP)){
-                AppUtils.startAPP(this,Constants.PACKAGE_AI_APP)
-            }
-            else{
-                showToast(1,"暂未安装应用")
-            }
-        }
-
-        setLongView()
     }
 
-    fun setLongView(){
-        if (AppUtils.isAvailable(this,Constants.PACKAGE_AI_APP)){
-            showView(ll_long)
-        }
-        else{
-            disMissView(ll_long)
-        }
-    }
 
     private fun switchFragment(type: Int, to: Fragment?) {
         val from = if (type == 1) {
@@ -249,33 +265,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     ft.hide(from)
                 }
                 ft.show(to).commit()
-            }
-        }
-    }
-
-    /**
-     * 初始化数据
-     */
-    private fun initStartDate(){
-        //创建截屏默认文件夹
-        val path = FileAddress().getPathScreen("未分类")
-        if (!File(path).exists()) {
-            FileUtils.mkdirs(path)
-        }
-
-        val targetFileStr = FileAddress().getLauncherPath()
-        if (FileUtils.isExist(targetFileStr)){
-            FileUtils.deleteFile(File(targetFileStr))
-        }
-
-        if (ItemTypeDaoManager.getInstance().queryAll(5).size==0){
-            val strings = DataBeanManager.bookType
-            for (i in strings.indices) {
-                val item = ItemTypeBean()
-                item.type=5
-                item.title = strings[i]
-                item.date=System.currentTimeMillis()
-                ItemTypeDaoManager.getInstance().insertOrReplace(item)
             }
         }
     }
@@ -980,9 +969,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                 map["type"] = arrayOf(1, 2, 3)
                 mDataUpdatePresenter.onList(map)
             }
-            Constants.LONG_VIEW_EVENT->{
-                setLongView()
-            }
         }
     }
 
@@ -990,6 +976,18 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK || keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
             false
         } else super.onKeyDown(keyCode, event)
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        if ((event?.keyCode == KeyEvent.KEYCODE_APANEL_BACK|| event?.keyCode == KeyEvent.KEYCODE_BPANEL_BACK) && event?.action == KeyEvent.ACTION_DOWN) {
+            if (rightPosition==4){
+                webViewFragment?.onBackPressed()
+            }
+            return true
+        }
+        // 对于其他按键事件，让系统默认处理
+        return super.dispatchKeyEvent(event);
+
     }
 
     private fun initMqtt(){
@@ -1000,7 +998,6 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     override fun onNetworkConnectionSuccess() {
-        setLongView()
         Handler().postDelayed({
             if (mqttClient==null||mqttClient?.isClientValidity()==false){
                 initMqtt()
@@ -1028,4 +1025,21 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
         super.onResume()
         setExamMode(false)
     }
+
+    // 注册Activity结果监听器
+    private val startActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == 10001 && it.data != null) {
+            val path = it.data!!.getStringExtra("path")
+            if (webViewFragment != null) {
+                webViewFragment?.addJavascriptBackPath(path!!)
+            }
+        }
+    }
+
+    override fun startTargetActivityForResult(dataFromWeb: String) {
+        val intent = Intent(this, WebViewDrawingActivity::class.java)
+        intent.putExtra("webViewInfo", dataFromWeb) // 传递初始数据
+        startActivityLauncher.launch(intent)
+    }
+
 }

@@ -271,4 +271,7 @@ class FileAddress {
     fun getPathDocument(name:String):String{
         return "$IMAGE_PATH/${getAccountId()}/teaching/$name"
     }
+    fun getPathWebView(name:String):String{
+        return "$IMAGE_PATH/${getAccountId()}/webview/$name.png"
+    }
 }

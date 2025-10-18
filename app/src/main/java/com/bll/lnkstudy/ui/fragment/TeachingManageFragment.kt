@@ -33,7 +33,7 @@ class TeachingManageFragment: BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle(DataBeanManager.listTitle[2])
+        setTitle(DataBeanManager.listTitle[1])
         tv_btn.text="教学列表"
 
         tv_btn.setOnClickListener {

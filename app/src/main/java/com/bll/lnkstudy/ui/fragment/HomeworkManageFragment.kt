@@ -58,7 +58,9 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         showView(rl_message,tv_btn_1)
 
         rl_message.setOnClickListener {
-            customStartActivity(Intent(requireActivity(), HomeworkUnfinishedMessageAllActivity::class.java))
+            if (grade>0){
+                customStartActivity(Intent(requireActivity(), HomeworkUnfinishedMessageAllActivity::class.java))
+            }
         }
 
         tv_btn_1.text="创建作业本"

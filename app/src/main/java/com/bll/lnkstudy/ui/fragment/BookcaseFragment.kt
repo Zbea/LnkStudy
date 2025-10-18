@@ -44,7 +44,7 @@ class BookcaseFragment: BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle(DataBeanManager.listTitle[1])
+        setTitle(DataBeanManager.listTitle[2])
 
         tv_type.setOnClickListener {
             ItemTypeDaoManager.getInstance().saveBookBean("诗经楚辞",false)

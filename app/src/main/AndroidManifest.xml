@@ -197,11 +197,6 @@
             android:theme="@style/activityCustom"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity
-            android:name=".ui.activity.SearchActivity"
-            android:theme="@style/activityCustom1"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.WallpaperMyActivity"
             android:windowSoftInputMode="adjustPan"
             />
@@ -308,6 +303,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity
+            android:name=".ui.activity.WebViewDrawingActivity"
+            android:theme="@style/activityCustom" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 

@@ -40,4 +40,17 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
         }, true)
     }
 
+    fun getCommonSchoolInfo() {
+        val grade = RetrofitManager.service.getCommonSchoolInfo()
+        doRequest(grade, object : Callback<SchoolBean>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<SchoolBean>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<SchoolBean>) {
+                if (tBaseResult.data!=null)
+                    view.onSchoolInfo(tBaseResult.data)
+            }
+        }, true)
+    }
+
 }

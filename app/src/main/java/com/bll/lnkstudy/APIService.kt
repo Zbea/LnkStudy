@@ -364,6 +364,11 @@ interface APIService{
     @GET("teacher/share/list")
     fun getTeachingMaterials(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<TeachingMaterialList>>
     /**
+     * 分享下载完成后 通知后台
+     */
+    @POST("teacher/share/updateStatus")
+    fun onTeachingDownloadShare(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 获取家长作业本
      */
     @GET("parent/homework/all")
@@ -399,6 +404,11 @@ interface APIService{
      */
     @GET("school/list")
     fun getCommonSchool(): Observable<BaseResult<MutableList<SchoolBean>>>
+    /**
+     * 获取学校信息
+     */
+    @GET("user/schoolInfo")
+    fun getCommonSchoolInfo(): Observable<BaseResult<SchoolBean>>
     /**
      * 获取班群老师权限
      */

@@ -87,6 +87,13 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
         }
 
         if (MethodManager.isLogin()){
+
+            val intent = Intent()
+            intent.putExtra("token", SPUtil.getString("token"))
+            intent.putExtra("userId", MethodManager.getAccountId())
+            intent.action = Constants.LOGIN_BROADCAST_EVENT
+            sendBroadcast(intent)
+
             gotoMainActivity()
         }
     }
