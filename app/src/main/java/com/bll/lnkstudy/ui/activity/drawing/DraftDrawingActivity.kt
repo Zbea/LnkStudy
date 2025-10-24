@@ -7,7 +7,7 @@ import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.utils.DP2PX
-import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_drawing_draft.iv_change
 import kotlinx.android.synthetic.main.ac_drawing_draft.iv_clear
 import kotlinx.android.synthetic.main.ac_drawing_draft.iv_top
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_drawing_draft.rg_group
 class DraftDrawingActivity:BaseDrawingActivity(){
 
     private val paths= mutableListOf<String>()
-    private val pos= SPUtil.getInt("draft")
+    private val pos= 0
     private var isTop=false
 
     override fun layoutId(): Int {
@@ -97,7 +97,13 @@ class DraftDrawingActivity:BaseDrawingActivity(){
 
     private fun onClick(index:Int){
         elik_b?.setLoadFilePath(paths[index], true)
-        SPUtil.putObj("draft",index)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        for (str in paths){
+            FileUtils.delete(str)
+        }
     }
 
 }

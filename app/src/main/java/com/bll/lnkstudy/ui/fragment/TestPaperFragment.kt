@@ -102,17 +102,15 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
         loadExams(list)
     }
 
-    /**
-     * 实例 传送数据
-     */
-    fun newInstance(courseItem: String): TestPaperFragment {
-        val fragment= TestPaperFragment()
-        val bundle= Bundle()
-        bundle.putString("courseItem",courseItem)
-        fragment.arguments=bundle
-        return fragment
+    companion object {
+        fun newInstance(title: String): TestPaperFragment {
+            return TestPaperFragment().apply {
+                arguments = Bundle().apply {
+                    putString("courseItem", title)
+                }
+            }
+        }
     }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
@@ -126,7 +124,6 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun lazyLoad() {
-        pageIndex=1
         fetchTypes()
     }
 
@@ -409,16 +406,16 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
     }
 
     override fun onRefreshData() {
-        fetchTypes()
+        lazyLoad()
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchTypes()
+        lazyLoad()
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.MQTT_TESTPAPER_CORRECT_NOTICE_EVENT){
-            fetchTypes()
+            lazyLoad()
         }
     }
 }

@@ -14,13 +14,16 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
+import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
+import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkMessageAllAdapter
 import com.bll.lnkstudy.utils.DP2PX
@@ -37,8 +40,9 @@ import org.greenrobot.eventbus.EventBus
 /**
  * 作业本未做作业通知
  */
-class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView.IHomeworkView {
+class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView.IHomeworkView,IClassGroupView {
     private val mPresenter = HomeworkPresenter(this)
+    private var mClassGroupPresenter= ClassGroupPresenter(this)
     private var homeworkType: HomeworkTypeBean? = null
     private var mAdapter: HomeworkMessageAllAdapter?=null
     private var messageIndex=0
@@ -46,6 +50,11 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
     override fun onMessageAll(list: MutableList<HomeworkMessageList.MessageBean>) {
         DataBeanManager.homeworkMessages=list
         setData(list)
+    }
+
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
+        MethodManager.setGradeByClassGroups(classGroups)
+        fetchData()
     }
 
     override fun layoutId(): Int {
@@ -62,7 +71,12 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
         initRecyclerView()
 
         if (NetworkUtil.isNetworkConnected()){
-            fetchData()
+            if (grade>0){
+                fetchData()
+            }
+            else{
+                mClassGroupPresenter.getClassGroupList(true)
+            }
         }
         else{
             setData(DataBeanManager.homeworkMessages)
@@ -228,11 +242,16 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
     override fun fetchData() {
         val map=HashMap<String,Any>()
         map["grade"]=grade
-        mPresenter.getMessageAll(map)
+        mPresenter.getMessageAll(map,true)
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchData()
+        if (grade>0){
+            fetchData()
+        }
+        else{
+            mClassGroupPresenter.getClassGroupList(true)
+        }
     }
 
     override fun onDestroy() {

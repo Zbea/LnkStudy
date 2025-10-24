@@ -164,6 +164,7 @@ class AICorrectService:Service() {
         cachedUploadMap = HashMap<String, Any>().apply {
             put("studentTaskId", homeworkCommitInfoItem?.messageId!!)
             put("studentUrl", homeworkCommitInfoItem?.commitUrl!!)
+            put("answerInfo",homeworkCommitInfoItem?.commitDrawUrl!!)
             put("commonTypeId", homeworkCommitInfoItem?.typeId!!)
             put("takeTime", homeworkCommitInfoItem?.takeTime!!)
             put("score", totalScore)

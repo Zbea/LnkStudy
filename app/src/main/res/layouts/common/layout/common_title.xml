@@ -195,6 +195,19 @@
             android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
+        <TextView
+            android:id="@+id/tv_setting_1"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:visibility="gone"
+            android:lines="1"
+            android:ellipsize="end"
+            android:background="@drawable/click_btn_line_black_5dp"
+            />
 
         <TextView
             android:id="@+id/tv_setting"

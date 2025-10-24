@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.CLASSGROUP_REFRESH_EVENT
@@ -111,28 +110,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        var currentGrade = 0
-        val oldGrade = MethodManager.getUser().grade
-        for (item in classGroups) {
-            if (item.state == 1) {
-                currentGrade = item.grade
-                break
-            }
-        }
-        if (currentGrade > 0 &&currentGrade != oldGrade) {
-            grade = currentGrade
-            mUser?.grade = currentGrade
-            SPUtil.putObj("user", mUser!!)
-            Handler().postDelayed({
-                EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
-            }, 500)
-
-            Handler().postDelayed({
-                //当年级变化时，上传作业本
-                if(oldGrade>0)
-                    EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
-            }, 1500)
-        }
+        MethodManager.setGradeByClassGroups(classGroups)
         mMainPresenter.getCourseItems()
     }
 
@@ -324,7 +302,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             findMessages()
             fetchExam()
             mMainPresenter.getTeacherCourse()
-            mMainPresenter.getClassGroupList(false)
+            mMainPresenter.getClassGroupList()
         }
     }
 
@@ -395,7 +373,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             CLASSGROUP_REFRESH_EVENT -> {
                 mMainPresenter.getTeacherCourse()
-                mMainPresenter.getClassGroupList(false)
+                mMainPresenter.getClassGroupList()
             }
             MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT->{
                 fetchExam()

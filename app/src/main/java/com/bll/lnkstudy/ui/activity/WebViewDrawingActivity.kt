@@ -1,30 +1,35 @@
 package com.bll.lnkstudy.ui.activity
 
 import android.content.Intent
-import android.view.Gravity
-import android.view.PWDrawObjectHandler
+import android.os.Handler
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseDrawingActivity
 import com.bll.lnkstudy.mvp.presenter.FileUploadPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.utils.DateUtils
+import com.bll.lnkstudy.ui.activity.drawing.DraftDrawingActivity
+import com.bll.lnkstudy.utils.BitmapUtils
 import com.bll.lnkstudy.utils.FileImageUploadManager
 import com.bll.lnkstudy.utils.FileUtils
+import com.bll.lnkstudy.utils.GlideUtils
 import com.bll.lnkstudy.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_drawing_draft.iv_clear
-import kotlinx.android.synthetic.main.ac_drawing_webview.tv_commit
+import kotlinx.android.synthetic.main.common_title.tv_setting
+import kotlinx.android.synthetic.main.common_title.tv_setting_1
 
 /**
  * 草稿纸
  */
-class WebViewDrawingActivity:BaseDrawingActivity(), IContractView.IFileUploadView{
+class WebViewDrawingActivity: BaseDrawingActivity(), IContractView.IFileUploadView{
 
     private var mUploadPresenter= FileUploadPresenter(this,getCurrentScreenPos())
+    private var idStr=""
+    private var url=""
     private var path=""
+    private var pathDraw=""
+    private var pathMerge=""
 
     override fun onToken(token: String) {
-        val paths= mutableListOf(path)
+        val paths= mutableListOf(pathDraw,pathMerge)
         FileImageUploadManager(token, paths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
@@ -33,6 +38,7 @@ class WebViewDrawingActivity:BaseDrawingActivity(), IContractView.IFileUploadVie
                     FileUtils.delete(path)
                     val intent= Intent()
                     intent.putExtra("path", ToolUtils.getImagesStr(urls))
+                    intent.putExtra("id", idStr)
                     setResult(10001,intent )
                     finish()
                 }
@@ -49,34 +55,47 @@ class WebViewDrawingActivity:BaseDrawingActivity(), IContractView.IFileUploadVie
     }
 
     override fun initData() {
-        path=FileAddress().getPathWebView(DateUtils.longToString(System.currentTimeMillis()))
+        idStr= intent.getStringExtra("webViewInfoId").toString()
+        url=intent.getStringExtra("webViewInfoUrl").toString()
+
+        path=FileAddress().getPathWebView(idStr)
+        pathDraw= "$path/draw.png"
+        pathMerge= "$path/marge.png"
     }
 
     override fun initView() {
-        val layoutParams=window?.attributes
-        layoutParams?.gravity = Gravity.BOTTOM
-        window?.attributes = layoutParams
+        showView(tv_setting,tv_setting_1)
+        tv_setting_1.text="草稿纸"
+        tv_setting.text="提交"
 
-        iv_clear.setOnClickListener {
-            elik_b ?.clearContent(null,true,true)
-            if (elik_b?.drawObjectType != PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN) {
-                elik_b?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-            }
+        tv_setting_1.setOnClickListener {
+            customStartActivity(Intent(this, DraftDrawingActivity::class.java))
         }
 
-        tv_commit.setOnClickListener {
-            if (FileUtils.isExist(path)){
+        tv_setting.setOnClickListener {
+            if (FileUtils.isExistContent(path)){
                 showLoading()
-                mUploadPresenter.getToken()
+                Handler().postDelayed({
+                    if (bitmapBatchSaver.isAccomplished){
+                        mUploadPresenter.getToken()
+                    }
+                    else{
+                        hideLoading()
+                        showToast("未保存，请稍后提交")
+                    }
+                },500)
+            }
+            else{
+                showToast("未写答案")
             }
         }
 
-        elik_b?.setLoadFilePath(path, true)
+        GlideUtils.setImageUrl(this,url,v_content_b)
+        elik_b?.setLoadFilePath(pathDraw, true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        FileUtils.delete(path)
+    override fun onElikSava_b() {
+        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),pathMerge,null)
     }
 
 }

@@ -52,8 +52,6 @@ class VideoFragment : BaseMainFragment(),IContractView.ITeachingVideoView {
         pageSize=16
         initDialog(1)
 
-        grade=mUser?.grade!!
-
         tv_grade.text=DataBeanManager.getGradeStr(grade)
         tv_grade.setOnClickListener {
             PopupList(requireActivity(), DataBeanManager.popupGrades(grade), tv_grade, tv_grade.width, 5).builder().setOnSelectListener { item ->

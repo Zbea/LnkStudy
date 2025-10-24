@@ -74,6 +74,7 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         mUser?.telNumber=phone
         tv_phone.text=getPhoneStr(phone)
         btn_edit_phone.text="修改号码"
+        showView(tv_btn)
     }
     override fun onEditBirthday() {
         mUser?.birthdayTime=birthday
@@ -126,14 +127,14 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     override fun initView() {
         setPageTitle(R.string.my_account)
 
+        if (ToolUtils.isPhoneNum(mUser?.telNumber)){
+            showView(tv_btn)
+        }
+
         setAccountInfo()
 
         tv_btn.text="一键功能"
         tv_btn.setOnClickListener {
-            if (!ToolUtils.isPhoneNum(mUser?.telNumber)){
-                showToast("请先绑定手机号")
-                return@setOnClickListener
-            }
             customStartActivity(Intent(this,AccountSettingDataActivity::class.java))
         }
 

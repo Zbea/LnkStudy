@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bll.lnkstudy.dialog.ImageDialog;
@@ -102,6 +103,36 @@ public class MethodManager {
         }
         else {
             return user.accountId;
+        }
+    }
+
+    /**
+     * 获取学生年级
+     * @param classGroups
+     */
+    public static void setGradeByClassGroups(List<ClassGroup> classGroups){
+        User mUser=getUser();
+        int currentGrade = 0;
+        int oldGrade = mUser.grade;
+        for (ClassGroup item:classGroups) {
+            if (item.state == 1) {
+                currentGrade = item.grade;
+                break;
+            }
+        }
+        if (currentGrade > 0 &&currentGrade != oldGrade) {
+            mUser.grade = currentGrade;
+            SPUtil.INSTANCE.putObj("user",mUser);
+            //年级变化后，刷新整个数据
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            EventBus.getDefault().post(Constants.USER_CHANGE_EVENT)
+                    ,500);
+            //刷新作业本、测卷上传
+            if (oldGrade>0){
+                new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                EventBus.getDefault().post(Constants.USER_CHANGE_GRADE_EVENT)
+                        ,1500);
+            }
         }
     }
 

@@ -18,7 +18,6 @@ import com.bll.lnkstudy.mvp.model.book.BookStoreType
 import com.bll.lnkstudy.mvp.model.book.TeachingMaterialList
 import com.bll.lnkstudy.mvp.model.book.TextbookStore
 import com.bll.lnkstudy.mvp.model.cloud.CloudList
-import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkNoticeList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
@@ -289,11 +288,6 @@ interface APIService{
      */
     @POST("student/task/pushGradeExam")
     fun commitExam(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-//    /**
-//     * 学生下载完老师发送的已批改试卷删除
-//     */
-//    @POST("student/task/deleteTag")
-//    fun onDownloadCompletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取下发考卷
      */
@@ -305,11 +299,6 @@ interface APIService{
     @GET("student/task/listV2")
     fun getHomeworkPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkPaperList>>
 
-//    /**
-//     * 获取作业本分类
-//     */
-//    @GET("common/type/list")
-//    fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
     /**
      * 获取作业本分类
      */
@@ -343,11 +332,6 @@ interface APIService{
     @POST("exam/share/updateDownloadState")
     fun onDownloadShare(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
-    /**
-     * 获取学生提交详情
-     */
-    @GET("submit/message/list")
-    fun getHomeworkCommitDetails(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HomeworkCommitMessageList>>
     /**
      * 消息列表
      */

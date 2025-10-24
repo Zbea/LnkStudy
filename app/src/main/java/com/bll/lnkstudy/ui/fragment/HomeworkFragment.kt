@@ -253,17 +253,16 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         }
     }
 
-    /**
-     * 实例 传送数据
-     */
-    fun newInstance(courseItem: String): HomeworkFragment {
-        val fragment = HomeworkFragment()
-        val bundle = Bundle()
-        bundle.putString("courseItem", courseItem)
-        fragment.arguments = bundle
-        return fragment
-    }
 
+    companion object {
+        fun newInstance(title: String): HomeworkFragment {
+            return HomeworkFragment().apply {
+                arguments = Bundle().apply {
+                    putString("courseItem", title)
+                }
+            }
+        }
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
@@ -277,7 +276,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     }
 
     override fun lazyLoad() {
-        pageIndex = 1
         fetchHomeworkType()
     }
 
@@ -1156,11 +1154,11 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
     }
 
     override fun onRefreshData() {
-        fetchHomeworkType()
+        lazyLoad()
     }
 
     override fun onNetworkConnectionSuccess() {
-        onRefreshData()
+        lazyLoad()
     }
 
 }

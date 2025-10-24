@@ -3,6 +3,7 @@ package com.bll.lnkstudy.ui.fragment
 import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.DataBeanManager
 import com.bll.lnkstudy.DataUpdateManager
@@ -58,9 +59,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         showView(rl_message,tv_btn_1)
 
         rl_message.setOnClickListener {
-            if (grade>0){
-                customStartActivity(Intent(requireActivity(), HomeworkUnfinishedMessageAllActivity::class.java))
-            }
+            customStartActivity(Intent(requireActivity(), HomeworkUnfinishedMessageAllActivity::class.java))
         }
 
         tv_btn_1.text="创建作业本"
@@ -80,6 +79,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                 fragment.onRefreshData()
             }
         }
+
         clearRepeatHomeworkType()
         fetchData()
     }
@@ -87,6 +87,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     //设置头部索引
     private fun initTab() {
         mCoursePos = 0
+        lastFragment=null
         setTabCourse()
         setLocalHomeworkType()
         initFragment()
@@ -101,9 +102,15 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     private fun initFragment(){
         removeAllFragment()
         fragments.clear()
+        //将所有科目全部添加
+        val ft=getFragmentTransaction()
         for (courseItem in itemTabTypes){
-            fragments.add(HomeworkFragment().newInstance(courseItem.title))
+            val fragment=HomeworkFragment.newInstance(courseItem.title)
+            ft.add(R.id.fl_content_homework, fragment).hide(fragment)
+            fragments.add(fragment)
         }
+        ft.commit()
+
         if (fragments.size>0){
             switchFragment(lastFragment, fragments[mCoursePos])
         }
@@ -115,14 +122,8 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     private fun clearRepeatHomeworkType(){
         val items=HomeworkTypeDaoManager.getInstance().queryAllByCreate(3)
         for (item in items){
-            if (item.typeId>100000000){
+            if (item.typeId%10==0)
                HomeworkTypeDaoManager.getInstance().deleteBean(item)
-            }
-            else{
-                if (item.typeId%10==0){
-                    HomeworkTypeDaoManager.getInstance().deleteBean(item)
-                }
-            }
         }
     }
 
@@ -180,32 +181,26 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     }
 
     //页码跳转
-    private fun switchFragment(from: Fragment?, to: Fragment?) {
+    private fun switchFragment(from: Fragment?, to: Fragment) {
         if (from != to) {
             lastFragment = to
-            val fm = activity?.supportFragmentManager
-            val ft = fm?.beginTransaction()
-
-            if (!to?.isAdded!!) {
-                if (from != null) {
-                    ft?.hide(from)
-                }
-                ft?.add(R.id.fl_content_homework, to)?.commit()
-            } else {
-                if (from != null) {
-                    ft?.hide(from)
-                }
-                ft?.show(to)?.commit()
+            val ft = getFragmentTransaction()
+            if (from != null) {
+                ft.hide(from)
             }
+            ft.show(to).commit()
         }
     }
 
     private fun removeAllFragment(){
         for (fragment in fragments){
-            val fm = activity?.supportFragmentManager!!
-            val ft = fm.beginTransaction()
-            ft.remove(fragment).commit()
+            getFragmentTransaction().remove(fragment).commit()
         }
+    }
+
+    private fun getFragmentTransaction():FragmentTransaction{
+        val fm = activity?.supportFragmentManager!!
+        return fm.beginTransaction()
     }
 
     /**
@@ -431,7 +426,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         if(NetworkUtil.isNetworkConnected()&&grade>0){
             val map=HashMap<String,Any>()
             map["grade"]=grade
-            mPresenter.getMessageAll(map)
+            mPresenter.getMessageAll(map,false)
         }
     }
 

@@ -37,7 +37,7 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
                 if (tBaseResult.data!=null)
                     view.onListSchools(tBaseResult.data)
             }
-        }, true)
+        }, false)
     }
 
     fun getCommonSchoolInfo() {
@@ -50,7 +50,7 @@ class CommonPresenter(view: IContractView.ICommonView,val screen:Int=0) : BasePr
                 if (tBaseResult.data!=null)
                     view.onSchoolInfo(tBaseResult.data)
             }
-        }, true)
+        }, false)
     }
 
 }

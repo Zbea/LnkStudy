@@ -83,6 +83,11 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onToken(token: String) {
         showLoading()
+        if (state==1){
+            images.clear()
+            images.addAll(commitItem?.paths!!)
+            images.addAll(commitItem?.drawPaths!!)
+        }
         FileImageUploadManager(token, images).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
@@ -91,6 +96,11 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     val map = HashMap<String, Any>()
                     map["studentTaskId"] = commitItem?.messageId!!
                     map["studentUrl"] = ToolUtils.getImagesStr(urls)
+                    if (state==1){
+                        val list=ToolUtils.splitList(urls)
+                        map["studentUrl"] = ToolUtils.getImagesStr(list[0])
+                        map["answerInfo"]=ToolUtils.getImagesStr(list[1])
+                    }
                     map["commonTypeId"] = commitItem?.typeId!!
                     map["takeTime"] = takeTime
                     if (state == 4) {

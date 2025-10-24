@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 import com.bll.lnkstudy.Constants;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,29 @@ public class ToolUtils {
             ,"四一", "四二", "四三", "四四", "四五", "四六", "四七", "四八", "四九","五十"
             ,"五一", "五二", "五三", "五四", "五五", "五六", "五七", "五八", "五九","六十"
     }; // 大写数字
+
+
+    /**
+     * list集合平分两份
+     * @param originalList
+     * @return
+     * @param <T>
+     */
+    public static <T> List<T>[] splitList(List<T> originalList) {
+        if (originalList == null || originalList.isEmpty()) {
+            return new List[]{new ArrayList<>(), new ArrayList<>()};
+        }
+
+        // 计算中间索引（长度为奇数时，前半部分多一个）
+        int mid = (originalList.size() + 1) / 2;
+
+        // 前半部分：从 0 到 mid-1（包含）
+        List<T> firstPart = new ArrayList<>(originalList.subList(0, mid));
+        // 后半部分：从 mid 到末尾
+        List<T> secondPart = new ArrayList<>(originalList.subList(mid, originalList.size()));
+
+        return new List[]{firstPart, secondPart};
+    }
 
     /**
      * 格式化数据显示

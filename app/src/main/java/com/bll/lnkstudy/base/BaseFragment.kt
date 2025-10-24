@@ -384,6 +384,7 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
             Constants.USER_CHANGE_EVENT->{
                 mUser= MethodManager.getUser()
                 grade=mUser?.grade!!
+                onNetworkConnectionSuccess()
             }
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
                 onNetworkConnectionSuccess()

@@ -181,6 +181,9 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                     if (AppUtils.isAvailable(this@MainActivity,Constants.PACKAGE_AI_APP)){
                         AppUtils.startAPP(this@MainActivity,Constants.PACKAGE_AI_APP)
                     }
+                    else{
+                        showToast(1,"未安装智教")
+                    }
                 }
                 else{
                     updateItem(leftPosition, false)//原来的位置去掉勾选
@@ -986,7 +989,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             return true
         }
         // 对于其他按键事件，让系统默认处理
-        return super.dispatchKeyEvent(event);
+        return super.dispatchKeyEvent(event)
 
     }
 
@@ -1029,16 +1032,18 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     // 注册Activity结果监听器
     private val startActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == 10001 && it.data != null) {
+            val idStr = it.data!!.getStringExtra("id")
             val path = it.data!!.getStringExtra("path")
             if (webViewFragment != null) {
-                webViewFragment?.addJavascriptBackPath(path!!)
+                webViewFragment?.addJavascriptBackPath(idStr!!,path!!)
             }
         }
     }
 
-    override fun startTargetActivityForResult(dataFromWeb: String) {
+    override fun startTargetActivityForResult(id:String,url: String) {
         val intent = Intent(this, WebViewDrawingActivity::class.java)
-        intent.putExtra("webViewInfo", dataFromWeb) // 传递初始数据
+        intent.putExtra("webViewInfoId", id)
+        intent.putExtra("webViewInfoUrl", url)
         startActivityLauncher.launch(intent)
     }
 

@@ -1,8 +1,6 @@
 package com.bll.lnkstudy.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkstudy.MethodManager
-import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean
@@ -19,26 +17,6 @@ import com.bll.lnkstudy.net.RetrofitManager
  * 作业
  */
 class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : BasePresenter<IContractView.IHomeworkView>(view) {
-
-    /**
-     * 获取作业本列表
-     */
-    fun onCommitMessage() {
-        val map=HashMap<String,Any>()
-        map["size"]=10
-        map["grade"]=MethodManager.getUser().grade
-        val type = RetrofitManager.service.getHomeworkCommitDetails(map)
-        doRequest(type, object : Callback<HomeworkCommitMessageList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<HomeworkCommitMessageList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<HomeworkCommitMessageList>) {
-                if (tBaseResult.data!=null)
-                    view.onCommitDetails(tBaseResult.data)
-            }
-        }, true)
-    }
-
     /**
      * 获取作业本列表
      */
@@ -144,7 +122,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
     /**
      * 获取老师下发未完成所有消息作业消息
      */
-    fun getMessageAll(map: HashMap<String, Any>) {
+    fun getMessageAll(map: HashMap<String, Any>,boolean: Boolean) {
         val type = RetrofitManager.service.getHomeworkMessageAll(map)
         doRequest(type, object : Callback<MutableList<HomeworkMessageList.MessageBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<HomeworkMessageList.MessageBean>>): Boolean {
@@ -154,7 +132,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
                 if (tBaseResult.data!=null)
                     view.onMessageAll(tBaseResult.data)
             }
-        }, true)
+        }, boolean)
     }
 
     fun getPaperList(map: HashMap<String, Any>) {

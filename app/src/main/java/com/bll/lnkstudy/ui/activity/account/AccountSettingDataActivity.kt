@@ -35,6 +35,7 @@ import com.bll.lnkstudy.ui.activity.MainActivity
 import com.bll.lnkstudy.utils.ActivityManager
 import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.SPUtil
+import com.bll.lnkstudy.utils.ToolUtils
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.ac_account_setting_data.tv_clear
 import kotlinx.android.synthetic.main.ac_account_setting_data.tv_download
@@ -84,14 +85,19 @@ class AccountSettingDataActivity:BaseAppCompatActivity(),ISmsView {
 
     private fun getSms(type:Int){
         this.type=type
-        AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
-            override fun onClick(code: String, phone: String) {
-                smsPresenter?.checkPhone(code)
-            }
-            override fun onPhone(phone: String) {
-                smsPresenter?.sms(phone)
-            }
-        })
+        if (ToolUtils.isPhoneNum(mUser?.telNumber)){
+            AccountEditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : AccountEditPhoneDialog.OnDialogClickListener {
+                override fun onClick(code: String, phone: String) {
+                    smsPresenter?.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter?.sms(phone)
+                }
+            })
+        }
+        else{
+            setOnClick()
+        }
     }
 
     private fun setOnClick(){

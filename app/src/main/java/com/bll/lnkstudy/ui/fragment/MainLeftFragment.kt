@@ -173,6 +173,11 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
 
     override fun fetchData() {
         onCheckUpdate()
+
+        if (MethodManager.getUser()==null){
+            login()
+        }
+
         if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
 
@@ -183,9 +188,8 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
             mHomeworkNoticePresenter.getHomeworkNotice(map)
             mHomeworkNoticePresenter.getCorrectNotice(map)
 
-            mMainLeftPresenter.getClassGroupPermission()
-
             if (grade>0){
+                mMainLeftPresenter.getClassGroupPermission()
                 mMainLeftPresenter.getParentPermission()
                 mMainLeftPresenter.getSchoolPermission(grade)
             }

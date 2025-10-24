@@ -165,8 +165,6 @@ class NoteFragment : BaseMainFragment(),IContractView.IQiniuView{
                             return@setOnItemChildClickListener
                         }
                         CommonDialog(requireActivity()).setContent("上传${note.title}到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
                             override fun ok() {
                                 presenter.getToken(true)
                             }

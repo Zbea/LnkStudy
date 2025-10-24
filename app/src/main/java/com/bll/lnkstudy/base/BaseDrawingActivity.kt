@@ -171,7 +171,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         }
 
         iv_draft?.setOnClickListener {
-            startActivity(Intent(this, DraftDrawingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            customStartActivity(Intent(this, DraftDrawingActivity::class.java))
         }
 
         iv_page_up?.setOnClickListener {

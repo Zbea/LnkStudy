@@ -9,7 +9,6 @@ import com.bll.lnkstudy.mvp.model.ClassGroupUserList;
 import com.bll.lnkstudy.mvp.model.CommonData;
 import com.bll.lnkstudy.mvp.model.DataUpdateBean;
 import com.bll.lnkstudy.mvp.model.book.TeachingMaterialList;
-import com.bll.lnkstudy.mvp.model.homework.HomeworkCommitMessageList;
 import com.bll.lnkstudy.mvp.model.homework.HomeworkShareBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamCorrectBean;
 import com.bll.lnkstudy.mvp.model.paper.ExamItem;
@@ -169,7 +168,6 @@ public interface IContractView {
 
     //作业
     interface IHomeworkView extends IBaseView{
-        default void onCommitDetails(HomeworkCommitMessageList list){}
         default void onTypeList(List<HomeworkTypeBean> list){}
         default void onTypeParentList(List<ParentTypeBean> list) {}
         default void onTypeError() {}

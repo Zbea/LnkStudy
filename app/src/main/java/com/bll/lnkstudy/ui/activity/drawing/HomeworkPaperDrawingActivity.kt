@@ -63,15 +63,21 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
 
     override fun onToken(token: String) {
-        FileImageUploadManager(token, paper?.paths!!).apply {
+        val paths= mutableListOf<String>()
+        paths.addAll(paper?.paths!!)
+        paths.addAll(paper?.drawPaths!!)
+        FileImageUploadManager(token, paths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    homeworkCommitInfoItem?.commitUrl=ToolUtils.getImagesStr(urls)
+                    val list=ToolUtils.splitList(urls)
+                    homeworkCommitInfoItem?.commitUrl=ToolUtils.getImagesStr(list[0])
+                    homeworkCommitInfoItem?.commitDrawUrl=ToolUtils.getImagesStr(list[1])
 
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=homeworkCommitInfoItem?.messageId!!
                     map["studentUrl"]= homeworkCommitInfoItem?.commitUrl!!
+                    map["answerInfo"]= homeworkCommitInfoItem?.commitDrawUrl!!
                     map["commonTypeId"] = homeworkCommitInfoItem?.typeId!!
                     map["takeTime"]=homeworkCommitInfoItem?.takeTime!!
                     mUploadPresenter.commit(map)
@@ -378,16 +384,20 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     }
 
     override fun onElikSava_a() {
-        bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(page),null)
+        if (isDrawing()){
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(page),null)
+        }
         refreshDataUpdate()
     }
 
     override fun onElikSava_b() {
-        if (isExpand){
-            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page+1),null)
-        }
-        else{
-            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page),null)
+        if (isDrawing()){
+            if (isExpand){
+                bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page+1),null)
+            }
+            else{
+                bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(page),null)
+            }
         }
         refreshDataUpdate()
     }
@@ -415,11 +425,18 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         setDisableTouchInput(true)
         homeworkCommitInfoItem?.takeTime=System.currentTimeMillis()- paper?.startDate!!
         homeworkCommitInfoItem?.paths=paper?.paths
+        homeworkCommitInfoItem?.drawPaths=paper?.drawPaths
         if (paper?.state==0){
             for (i in paper?.paths!!.indices){
+                val drawPath=getPathDrawStr(i)
                 val mergePath=getPathMergeStr(i)
+                //存在手写
                 if (FileUtils.isExist(mergePath)){
                     FileUtils.replaceFileContents(mergePath, paper?.paths!![i])
+                }
+                else{
+                    //不存在手写时，把原图当手写
+                    FileUtils.replaceFileContents(paper?.paths!![i],drawPath)
                 }
             }
             //修改当前paper状态
@@ -448,6 +465,13 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     /**
      * 得到当前合图地址
      */
+    private fun getPathDrawStr(index: Int):String{
+        return getPathDraw()+"${index+1}.png"
+    }
+
+    /**
+     * 得到当前合图地址
+     */
     private fun getPathMerge():String{
         return paper?.filePath+"/merge/"
     }
@@ -456,7 +480,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 得到当前合图地址
      */
     private fun getPathMergeStr(index: Int):String{
-        return paper?.filePath+"/merge/${index+1}.png"
+        return getPathMerge()+"${index+1}.png"
     }
 
     /**

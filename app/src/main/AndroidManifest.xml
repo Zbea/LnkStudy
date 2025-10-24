@@ -304,8 +304,9 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".ui.activity.WebViewDrawingActivity"
-            android:theme="@style/activityCustom" />
+            android:name=".ui.activity.WebViewDrawingActivity" />
+        <activity
+            android:name=".ui.activity.SpeechRecognizerActivity" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 

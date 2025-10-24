@@ -49,14 +49,6 @@ object DataBeanManager {
     val autoHomeworkTypes= mutableListOf("阅读作业本","练字作业本","朗读作业本","作文作业本","课堂作业卷","课外作业卷","预习作业本")
     val autoTestPaperTypes= mutableListOf("学校考试卷","单元测验卷","阶段测验卷")
 
-//    val bookType = arrayOf(
-//        R.string.book_tab_sjcc,R.string.book_tab_tssc,
-//        R.string.book_tab_gdjd,R.string.book_tab_sdmz,
-//        R.string.book_tab_zgkj,R.string.book_tab_xssw,
-//        R.string.book_tab_wgyz,R.string.book_tab_lsdl,
-//        R.string.book_tab_zzjj,R.string.book_tab_jszl,
-//        R.string.book_tab_kxjs,R.string.book_tab_ydcy
-//    ) //书籍分类
     val dynastys = arrayOf(
         R.string.age_han,R.string.age_tang,
         R.string.age_song,R.string.age_yuan,
@@ -318,13 +310,13 @@ object DataBeanManager {
         val h1 = ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
-            name = listTitle[2]
+            name = listTitle[1]
         }
 
         val h2 = ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
-            name = listTitle[1]
+            name = listTitle[2]
         }
 
 

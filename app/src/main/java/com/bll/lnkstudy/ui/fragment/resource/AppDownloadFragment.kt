@@ -8,6 +8,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseMainFragment
+import com.bll.lnkstudy.dialog.CommonDialog
 import com.bll.lnkstudy.manager.AppDaoManager
 import com.bll.lnkstudy.mvp.model.AppBean
 import com.bll.lnkstudy.mvp.model.AppList
@@ -103,6 +104,11 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
                     else{
                         if (AppUtils.isAvailable(requireActivity(),app.packageName)){
                             showToast("已安装")
+                            CommonDialog(requireActivity()).setContent("确定重新下载安装？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                                override fun ok() {
+                                    downLoadStart(app)
+                                }
+                            })
                         }
                         else{
                             downLoadStart(app)

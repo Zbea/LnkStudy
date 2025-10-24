@@ -41,7 +41,7 @@ class MainRightPresenter(view: IContractView.IMainRightView, val screen: Int=0) 
     }
 
     //班群列表
-    fun getClassGroupList(boolean: Boolean) {
+    fun getClassGroupList() {
         val list= RetrofitManager.service.groupList()
         doRequest(list, object : Callback<List<ClassGroup>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroup>>): Boolean {
@@ -51,7 +51,7 @@ class MainRightPresenter(view: IContractView.IMainRightView, val screen: Int=0) 
                 if (tBaseResult.data!=null)
                     view.onClassGroupList(tBaseResult.data)
             }
-        }, boolean)
+        }, false)
     }
 
     //获取学生科目列表
