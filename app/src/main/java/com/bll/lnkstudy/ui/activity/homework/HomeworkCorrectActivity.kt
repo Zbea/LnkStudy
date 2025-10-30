@@ -84,12 +84,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
     override fun onToken(token: String) {
         showLoading()
         if (state==1){
-            images.clear()
-            images.addAll(commitItem?.paths!!)
-            images.addAll(commitItem?.drawPaths!!)
+            images=commitItem!!.paths
         }
         FileImageUploadManager(token, images).apply {
-            startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     hideLoading()
@@ -110,12 +107,12 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
                     map["question"] = Gson().toJson(initScores)
                     mUploadPresenter.commit(map)
                 }
-
                 override fun onUploadFail() {
                     hideLoading()
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 
@@ -184,6 +181,14 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
                 //更新目录增量数据
                 DataUpdateManager.editDataUpdate(2, paper?.contentId!!, 2, paper.typeId, Gson().toJson(paper))
 
+                //存在手写将合图替换原图
+                for (i in paper.paths.indices){
+                    val path= paper.paths[i]
+                    val mergePath=paper.filePath+"/merge/${i+1}.png"
+                    if (FileUtils.isExist(mergePath)){
+                        FileUtils.replaceFileContents(mergePath, path)
+                    }
+                }
                 FileUtils.deleteFile(File(paper.filePath + "/draw/"))
                 FileUtils.deleteFile(File(paper.filePath + "/merge/"))
                 ActivityManager.getInstance().finishActivity(HomeworkPaperDrawingActivity::class.java.name)
@@ -207,8 +212,14 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.IFileUpload
         answerImages = commitItem!!.answerUrl.split(",") as MutableList<String>
         initScores = ScoreItemUtils.questionToList(commitItem!!.correctJson,correctMode)
         currentScores = ScoreItemUtils.jsonListToModuleList(commitItem!!.correctJson,correctMode)
-        images = commitItem!!.paths
         state = commitItem?.state!!
+        if (state==1){
+            val list=ToolUtils.splitList(commitItem!!.paths)
+            images=list[0]
+        }
+        else{
+            images = commitItem!!.paths
+        }
         takeTime = commitItem?.takeTime!!
     }
 

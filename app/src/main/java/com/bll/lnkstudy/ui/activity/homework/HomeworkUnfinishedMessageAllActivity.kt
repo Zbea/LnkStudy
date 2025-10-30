@@ -14,21 +14,19 @@ import com.bll.lnkstudy.base.BaseAppCompatActivity
 import com.bll.lnkstudy.manager.HomeworkBookDaoManager
 import com.bll.lnkstudy.manager.HomeworkPaperDaoManager
 import com.bll.lnkstudy.manager.HomeworkTypeDaoManager
-import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.calalog.CatalogChildBean
 import com.bll.lnkstudy.mvp.model.calalog.CatalogParentBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkMessageList
 import com.bll.lnkstudy.mvp.model.homework.HomeworkPaperBean
 import com.bll.lnkstudy.mvp.model.homework.HomeworkTypeBean
-import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.HomeworkPresenter
 import com.bll.lnkstudy.mvp.view.IContractView
-import com.bll.lnkstudy.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkMessageAllAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.DateUtils
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
+import com.bll.lnkstudy.utils.FileUtils
 import com.bll.lnkstudy.utils.NetworkUtil
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
@@ -40,9 +38,8 @@ import org.greenrobot.eventbus.EventBus
 /**
  * 作业本未做作业通知
  */
-class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView.IHomeworkView,IClassGroupView {
+class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView.IHomeworkView {
     private val mPresenter = HomeworkPresenter(this)
-    private var mClassGroupPresenter= ClassGroupPresenter(this)
     private var homeworkType: HomeworkTypeBean? = null
     private var mAdapter: HomeworkMessageAllAdapter?=null
     private var messageIndex=0
@@ -50,11 +47,6 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
     override fun onMessageAll(list: MutableList<HomeworkMessageList.MessageBean>) {
         DataBeanManager.homeworkMessages=list
         setData(list)
-    }
-
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        MethodManager.setGradeByClassGroups(classGroups)
-        fetchData()
     }
 
     override fun layoutId(): Int {
@@ -71,12 +63,7 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
         initRecyclerView()
 
         if (NetworkUtil.isNetworkConnected()){
-            if (grade>0){
-                fetchData()
-            }
-            else{
-                mClassGroupPresenter.getClassGroupList(true)
-            }
+            fetchData()
         }
         else{
             setData(DataBeanManager.homeworkMessages)
@@ -112,7 +99,8 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
                         MethodManager.gotoHomeworkRecord(this@HomeworkUnfinishedMessageAllActivity, homeworkType, messageBean)
                     }
                     1, 7 -> {
-                        if (HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean.contendId) != null) {
+                        val paperBean=HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean.contendId)
+                        if (paperBean != null&&FileUtils.isExistContent(paperBean.filePath)) {
                             MethodManager.gotoHomeworkReelDrawing(this@HomeworkUnfinishedMessageAllActivity, homeworkType, Constants.DEFAULT_PAGE, messageBean)
                         } else {
                             showLoading()
@@ -186,7 +174,7 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
             paths.add("$pathStr/${i + 1}.png")
             drawPaths.add("$pathStr/draw/${i + 1}.png")
         }
-        FileMultitaskDownManager.with(this).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -227,31 +215,29 @@ class HomeworkUnfinishedMessageAllActivity:BaseAppCompatActivity(),IContractView
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == Constants.HOMEWORK_MESSAGE_COMMIT_EVENT) {
-            if (messageIndex<DataBeanManager.homeworkMessages.size)
-                DataBeanManager.homeworkMessages.removeAt(messageIndex)
-            if (DataBeanManager.homeworkMessages.isEmpty()){
-                finish()
+        when(msgFlag){
+            Constants.HOMEWORK_MESSAGE_COMMIT_EVENT->{
+                if (messageIndex<DataBeanManager.homeworkMessages.size)
+                    DataBeanManager.homeworkMessages.removeAt(messageIndex)
+                if (DataBeanManager.homeworkMessages.isEmpty()){
+                    finish()
+                }
+                else{
+                    fetchData()
+                }
             }
-            else{
+            Constants.MQTT_HOMEWORK_NOTICE_EVENT->{
                 fetchData()
             }
         }
     }
 
     override fun fetchData() {
-        val map=HashMap<String,Any>()
-        map["grade"]=grade
-        mPresenter.getMessageAll(map,true)
+        mPresenter.getMessageAll(true)
     }
 
     override fun onNetworkConnectionSuccess() {
-        if (grade>0){
-            fetchData()
-        }
-        else{
-            mClassGroupPresenter.getClassGroupList(true)
-        }
+        fetchData()
     }
 
     override fun onDestroy() {

@@ -2,6 +2,7 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkstudy.AICorrectService
@@ -61,13 +62,10 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private var oldPosition=-1
     private var page = 0//页码
     private var homeworkCommitInfoItem: HomeworkCommitInfoItem?=null
+    private var commitPaths= mutableListOf<String>()
 
     override fun onToken(token: String) {
-        val paths= mutableListOf<String>()
-        paths.addAll(paper?.paths!!)
-        paths.addAll(paper?.drawPaths!!)
-        FileImageUploadManager(token, paths).apply {
-            startUpload()
+        FileImageUploadManager(token, commitPaths).apply {
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val list=ToolUtils.splitList(urls)
@@ -94,6 +92,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 
@@ -106,6 +105,14 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
         refreshDataUpdate()
 
         if (homeworkCommitInfoItem?.submitState==0){
+            //存在手写将合图替换原图
+            for (i in paper?.paths!!.indices){
+                val path= paper?.paths!![i]
+                val mergePath=getPathMergeStr(i)
+                if (FileUtils.isExist(mergePath)){
+                    FileUtils.replaceFileContents(mergePath, path)
+                }
+            }
             FileUtils.deleteFile(File(getPathDraw()))
             FileUtils.deleteFile(File(getPathMerge()))
         }
@@ -181,6 +188,7 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 showToast("网络连接失败，无法提交")
                 return@setOnClickListener
             }
+
             if (getSelfCorrect()){
                 homeworkCommitInfoItem=Gson().fromJson(paper?.commitJson, HomeworkCommitInfoItem::class.java)
                 gotoSelfCorrect()
@@ -193,27 +201,23 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
                 }
                 CommonDialog(this,getCurrentScreenPos()).setContent("确定提交作业？").builder().setDialogClickListener(
                     object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
                         override fun ok() {
                             showLoading()
-                            if (bitmapBatchSaver.isAccomplished){
-                                commit()
-                            }
-                            else{
-                                showToast("手写未保存，请稍后提交")
-                            }
+                            Handler().postDelayed({
+                                if (bitmapBatchSaver.isAccomplished&&FileUtils.isExistContent(getPathDraw())){
+                                    commit()
+                                }
+                                else{
+                                    hideLoading()
+                                    showToast("手写未保存，请稍后提交")
+                                }
+                            },800)
                         }
                     })
             }
             else{
                 if (homeworkCommitInfoItem?.isSelfCorrect==true){
-                    if (bitmapBatchSaver.isAccomplished){
-                        commit()
-                    }
-                    else{
-                        showToast("手写未保存，请稍后提交")
-                    }
+                    commit()
                 }
                 else{
                     //不提交作业直接完成
@@ -374,12 +378,6 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
     private fun setElikLoadPath(index: Int, elik:EinkPWInterface, view:ImageView) {
         val path=paper!!.paths[index]
         MethodManager.setImageFile(path,view)
-//        if (paper?.state==1){
-//            GlideUtils.setImageNoCacheUrl(this,path,view)
-//        }
-//        else{
-//            GlideUtils.setImageCacheUrl(this,path,view, paper?.state!!)
-//        }
         elik.setLoadFilePath(paper!!.drawPaths[index],true)
     }
 
@@ -423,22 +421,31 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      */
     private fun commit(){
         setDisableTouchInput(true)
-        homeworkCommitInfoItem?.takeTime=System.currentTimeMillis()- paper?.startDate!!
-        homeworkCommitInfoItem?.paths=paper?.paths
-        homeworkCommitInfoItem?.drawPaths=paper?.drawPaths
-        if (paper?.state==0){
-            for (i in paper?.paths!!.indices){
-                val drawPath=getPathDrawStr(i)
-                val mergePath=getPathMergeStr(i)
-                //存在手写
-                if (FileUtils.isExist(mergePath)){
-                    FileUtils.replaceFileContents(mergePath, paper?.paths!![i])
-                }
-                else{
-                    //不存在手写时，把原图当手写
-                    FileUtils.replaceFileContents(paper?.paths!![i],drawPath)
-                }
+        commitPaths.clear()
+        for (i in paper?.paths!!.indices){
+            val path= paper?.paths!![i]
+            val mergePath=getPathMergeStr(i)
+            if (FileUtils.isExist(mergePath)){
+                commitPaths.add(mergePath)
             }
+            else{
+                commitPaths.add(path)
+            }
+        }
+        for (i in paper?.paths!!.indices){
+            val path= paper?.paths!![i]
+            val drawPath=getPathDrawStr(i)
+            if (FileUtils.isExist(drawPath)){
+                commitPaths.add(drawPath)
+            }
+            else{
+                commitPaths.add(path)
+            }
+        }
+        homeworkCommitInfoItem?.takeTime=System.currentTimeMillis()- paper?.startDate!!
+        homeworkCommitInfoItem?.paths=commitPaths
+
+        if (paper?.state==0){
             //修改当前paper状态
             paper?.state = 1
             if (paper!!.isSelfCorrect)

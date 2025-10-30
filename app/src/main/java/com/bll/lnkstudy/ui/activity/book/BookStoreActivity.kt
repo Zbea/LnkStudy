@@ -54,6 +54,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
     private var popGrades = mutableListOf<PopupBean>()
     private var subTypeList = mutableListOf<ItemList>()
     private var supply=0
+    private var downloader:BaseDownloadTask?=null
 
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
@@ -203,7 +204,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+ FileUtils.getUrlFormat(book.downloadUrl))
-        val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
+        downloader = FileBigDownManager.with().create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
 
@@ -261,7 +262,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                     showToast(book.bookName+getString(R.string.book_download_fail))
                 }
             })
-        return download
+        return downloader
     }
 
     override fun onDestroy() {
@@ -285,6 +286,17 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         map["type"] = type
         map["supply"]=supply
         presenter.getBooks(map)
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        if (downloader==null||downloader?.isRunning==false){
+            if (subTypeList.isEmpty()){
+                presenter.getBookType()
+            }
+            else{
+                fetchData()
+            }
+        }
     }
 
 }

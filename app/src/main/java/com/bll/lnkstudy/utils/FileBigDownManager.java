@@ -11,23 +11,13 @@ import com.liulishuo.filedownloader.FileDownloader;
 
 public class FileBigDownManager {
 
-    private static FileBigDownManager incetance;
-    private static Context mContext;
     private String url; //下载的url链接
     private String path;//文件的绝对路径
     private String auth = "";
     private String token = "";
 
 
-    public static FileBigDownManager with(Context context) {
-//        if (incetance == null) {
-//            synchronized (FileBigDownManager.class) {
-//                if (incetance == null) {
-//                    incetance = new FileBigDownManager();
-//                }
-//            }
-//        }
-        mContext = context;
+    public static FileBigDownManager with() {
         return new FileBigDownManager();
     }
 

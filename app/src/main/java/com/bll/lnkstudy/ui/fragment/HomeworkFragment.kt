@@ -598,7 +598,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         item.filePath=pathStr
         item.paths=paths
         item.drawPaths=drawPaths
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -636,7 +636,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         for (homework in homeworkContents) {
             paths.add(FileAddress().getPathHomeworkDrawingMerge(homework.path))
         }
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -672,7 +672,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         }
         //获得下载地址
         val images = item.changeUrl.split(",").toMutableList()
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -724,7 +724,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
         }
         //获得下载地址
         val images = item.submitUrl.split(",").toMutableList()
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -822,7 +822,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             val pathFile = File(path, "${DateUtils.longToString(recordBean.date)}.mp3").path
             recordBean.path=pathFile
 
-            FileBigDownManager.with(activity).create(item.studentUrl).setPath(recordBean.path)
+            FileBigDownManager.with().create(item.studentUrl).setPath(recordBean.path)
                 .startSingleTaskDownLoad(object :
                     FileBigDownManager.SingleTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
@@ -875,7 +875,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             paths.add(FileAddress().getPathHomeworkDrawingMerge(homework.path))
         }
 
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -958,7 +958,7 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
             paths.add("$pathStr/${i + 1}.png")
             drawPaths.add("$pathStr/draw/${i + 1}.png")
         }
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -1105,7 +1105,6 @@ class HomeworkFragment : BaseMainFragment(), IHomeworkView {
 
         val mapShare = HashMap<String, Any>()
         mapShare["subject"] = DataBeanManager.getCourseId(mCourse)
-        mapShare["grade"] = grade
         mPresenter.getShareList(mapShare)
 
         fetchMessage()

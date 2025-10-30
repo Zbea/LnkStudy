@@ -61,7 +61,6 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
 
     override fun onToken(token: String) {
         FileImageUploadManager(token, homeworkCommitInfoItem?.paths!!).apply {
-            startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
@@ -86,6 +85,7 @@ class HomeworkBookDetailsActivity : BaseDrawingActivity(), IContractView.IFileUp
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 

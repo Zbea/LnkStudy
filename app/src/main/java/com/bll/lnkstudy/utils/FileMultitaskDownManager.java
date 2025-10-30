@@ -16,23 +16,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileMultitaskDownManager {
 
-    private static FileMultitaskDownManager incetance;
-    private static Context mContext;
     private List<String> urls; //下载的url链接
     private List<String> paths;//文件的绝对路径
     private String auth = "";
     private String token = "";
     private final AtomicInteger activeCount = new AtomicInteger(0);
 
-    public static FileMultitaskDownManager with(Context context) {
-//        if (incetance == null) {
-//            synchronized (FileMultitaskDownManager.class) {
-//                if (incetance == null) {
-//                    incetance = new FileMultitaskDownManager();
-//                }
-//            }
-//        }
-        mContext = context;
+    public static FileMultitaskDownManager with() {
         return new FileMultitaskDownManager();
     }
 

@@ -109,7 +109,7 @@ class CloudPaintingFragment : BaseCloudFragment() {
     private fun download(item:PaintingBean){
         showLoading()
         val images = item.bodyUrl.split(",")
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(item.paths).startMultiTaskDownLoad(
+        FileMultitaskDownManager.with().create(images).setPath(item.paths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                 }

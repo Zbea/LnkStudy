@@ -68,6 +68,8 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                 fragments[mCoursePos].addContentModule()
             }
         }
+
+        fetchGrade()
     }
 
     override fun lazyLoad() {
@@ -423,10 +425,8 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     }
 
     override fun fetchData() {
-        if(NetworkUtil.isNetworkConnected()&&grade>0){
-            val map=HashMap<String,Any>()
-            map["grade"]=grade
-            mPresenter.getMessageAll(map,false)
+        if(NetworkUtil.isNetworkConnected()){
+            mPresenter.getMessageAll(false)
         }
     }
 
@@ -453,6 +453,7 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
     }
 
     override fun onRefreshData() {
+        fetchGrade()
         lazyLoad()
     }
 

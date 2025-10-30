@@ -145,7 +145,6 @@ public interface IContractView {
     interface IMainRightView extends IBaseView {
         void onExam(ExamItem exam);
         void onCourseUrl(String url);
-        void onClassGroupList(List<ClassGroup> classGroups);
         void onCourseItems(List<String> courseItems);
     }
 

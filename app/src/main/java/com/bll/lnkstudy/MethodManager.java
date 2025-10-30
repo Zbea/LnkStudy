@@ -97,7 +97,7 @@ public class MethodManager {
     }
 
     public static long getAccountId(){
-        User user=SPUtil.INSTANCE.getObj("user", User.class);
+        User user=getUser();
         if (user==null){
             return 0L;
         }
@@ -849,8 +849,9 @@ public class MethodManager {
      * @return
      */
     public static int getTestPaperAutoTypeId(String name,String subject){
+        User mUser=getUser();
         int type=DataBeanManager.INSTANCE.getAutoTestPaperTypes().indexOf(name)+1;
-        String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
+        String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) +mUser.grade;
         return Integer.parseInt(idStr);
     }
 
@@ -861,15 +862,17 @@ public class MethodManager {
      * @return
      */
     public static int getHomeworkTypeId(String subject,int subType){
-        String idStr = String.valueOf(subType)+0+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
+        User mUser=getUser();
+        String idStr = String.valueOf(subType)+0+DataBeanManager.INSTANCE.getCourseId(subject) + mUser.grade;
         return Integer.parseInt(idStr);
     }
     /**
      * (老师默认创建)获取对应分类，对应作业的分类id
      */
     public static int getHomeworkAutoTypeId(String name,String subject){
+        User mUser=getUser();
         int type=DataBeanManager.INSTANCE.getAutoHomeworkTypes().indexOf(name)+1;
-        String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) + getUser().grade;
+        String idStr =String.valueOf(type)+DataBeanManager.INSTANCE.getCourseId(subject) + mUser.grade;
         return Integer.parseInt(idStr);
     }
 
@@ -879,7 +882,8 @@ public class MethodManager {
      * @return
      */
     public static int getParentHomeworkTypeId(int typeId){
-        String idStr = String.valueOf(typeId) + getUser().grade;
+        User mUser=getUser();
+        String idStr = String.valueOf(typeId) + mUser.grade;
         return Integer.parseInt(idStr);
     }
 
@@ -889,7 +893,8 @@ public class MethodManager {
      * @return
      */
     public static int getParentHomeworkTypeIdOld(int typeId){
-        int index= (int) Math.pow(10,String.valueOf(getUser().grade).length());
+        User mUser=getUser();
+        int index= (int) Math.pow(10,String.valueOf(mUser.grade).length());
         return typeId/index;
     }
 

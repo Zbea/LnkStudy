@@ -122,8 +122,8 @@ class HomeworkPresenter(view: IContractView.IHomeworkView,val screen:Int=0) : Ba
     /**
      * 获取老师下发未完成所有消息作业消息
      */
-    fun getMessageAll(map: HashMap<String, Any>,boolean: Boolean) {
-        val type = RetrofitManager.service.getHomeworkMessageAll(map)
+    fun getMessageAll(boolean: Boolean) {
+        val type = RetrofitManager.service.getHomeworkMessageAll()
         doRequest(type, object : Callback<MutableList<HomeworkMessageList.MessageBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<HomeworkMessageList.MessageBean>>): Boolean {
                 return false

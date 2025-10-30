@@ -227,7 +227,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 paths.add("$pathStr/${i + 1}.png")
                 drawPaths.add("$pathStr/${i + 1}draw.png")
             }
-            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+            FileMultitaskDownManager.with().create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -260,7 +260,7 @@ class TestPaperFragment : BaseMainFragment(), IContractView.IPaperView {
                 paths.add("$pathStr/${i + 1}.png")
                 drawPaths.add("$pathStr/${i + 1}draw.png")
             }
-            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+            FileMultitaskDownManager.with().create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }

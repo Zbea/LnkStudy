@@ -111,7 +111,7 @@ class HomeworkBookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbo
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())
         val zipPath = FileAddress().getPathZip(fileName)
-        val download = FileBigDownManager.with(this).create(url).setPath(zipPath)
+        val download = FileBigDownManager.with().create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
 

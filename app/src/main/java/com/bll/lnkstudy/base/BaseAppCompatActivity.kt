@@ -117,12 +117,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         screenPos=getCurrentScreenPos()
 
         mUser= MethodManager.getUser()
-        if (mUser!=null)
+        if (mUser!=null){
             grade=mUser?.grade!!
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
         }
+        else{
+            login()
+        }
+
+        setStatusBarColor(ContextCompat.getColor(this, R.color.color_transparent))
 
         if (rv_tab!=null){
             initTabView()

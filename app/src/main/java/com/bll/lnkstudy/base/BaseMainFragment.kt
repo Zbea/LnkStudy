@@ -6,16 +6,20 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
+import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.MyApplication
 import com.bll.lnkstudy.dialog.AppUpdateDialog
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
 import com.bll.lnkstudy.mvp.model.AppUpdateBean
+import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.DataUpdateBean
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.SystemUpdateInfo
+import com.bll.lnkstudy.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkstudy.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkstudy.mvp.presenter.DataUpdatePresenter
 import com.bll.lnkstudy.mvp.view.IContractView
+import com.bll.lnkstudy.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkstudy.utils.AppUtils
 import com.bll.lnkstudy.utils.FileDownManager
 import com.bll.lnkstudy.utils.FileUtils
@@ -28,12 +32,17 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import org.json.JSONObject
 
 
-abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView,IContractView.IDataUpdateView{
+abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView,IContractView.IDataUpdateView,IClassGroupView{
 
     val mCloudUploadPresenter= CloudUploadPresenter(this)
     val mDataUploadPresenter=DataUpdatePresenter(this)
+    private val mClassGroupPresenter= ClassGroupPresenter(this)
     var appUpdateDialog:AppUpdateDialog?=null
     var systemUpdateDialog:AppUpdateDialog?=null
+
+    override fun onClassGroupList(classGroups: MutableList<ClassGroup>?) {
+        MethodManager.setGradeByClassGroups(classGroups)
+    }
 
     //云端上传回调
     override fun onSuccess(cloudIds: MutableList<Int>?) {
@@ -61,6 +70,15 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             })
         }
         mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
+
+    /**
+     * 刷新年级
+     */
+    fun fetchGrade(){
+        if (NetworkUtil.isNetworkConnected()){
+            mClassGroupPresenter.getClassGroupList(false)
+        }
     }
 
     /**
@@ -149,7 +167,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
                 appUpdateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
                 appUpdateDialog?.setDialogClickListener(object : AppUpdateDialog.OnDialogClickListener {
                     override fun onClick() {
-                        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+                        FileDownManager.with().create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
                             FileDownManager.SingleTaskCallBack {
                             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                                 if (task != null && task.isRunning) {

@@ -14,6 +14,7 @@ import com.bll.lnkstudy.MethodManager
 import com.bll.lnkstudy.R
 import com.bll.lnkstudy.base.BaseFragment
 import com.bll.lnkstudy.utils.IflytekVoiceRecognition
+import com.bll.lnkstudy.utils.SPUtil
 import com.bll.lnkstudy.utils.WebViewAssistClass
 import com.bll.lnkstudy.utils.WebViewAssistClass.OnFragmentToActivityListener
 import kotlinx.android.synthetic.main.fragment_webview.wv_view
@@ -43,8 +44,6 @@ class WebViewFragment:BaseFragment() {
         if (activity is OnFragmentToActivityListener) {
             activityListener = activity as OnFragmentToActivityListener
         }
-
-        url = "https://test-inkbook.szvt.com?token=${MethodManager.getUser().token}&accountId=${MethodManager.getUser().accountId}"
 
         val webSettings = wv_view.settings
         webSettings.javaScriptEnabled = true
@@ -76,12 +75,16 @@ class WebViewFragment:BaseFragment() {
             }
         }
 
-        wv_view.loadUrl(url)
-
         initVoiceRecognition()
     }
 
     override fun lazyLoad() {
+        val token= SPUtil.getString("token")
+        val accountId=MethodManager.getAccountId()
+        if (token.isNotEmpty()&&accountId!=0L){
+            url = "https://inkbook.szvt.com?token=${token}&accountId=${accountId}"
+            wv_view.loadUrl(url)
+        }
     }
 
     fun clearWebViewCache() {
@@ -103,6 +106,11 @@ class WebViewFragment:BaseFragment() {
 
     private fun addJavascriptRefreshSubject(){
         val jsCode = ("javascript:window.refreshSubject()")
+        wv_view.evaluateJavascript(jsCode) {}
+    }
+
+    private fun addJavascriptCloseWebView(){
+        val jsCode = ("javascript:window.onStopVoicePlayback()")
         wv_view.evaluateJavascript(jsCode) {}
     }
 
@@ -180,8 +188,8 @@ class WebViewFragment:BaseFragment() {
 
    fun destroyNativeVoiceRecognition(){
        voiceStr=""
-        // 停止识别
-        recognition?.stop()
+       // 停止识别
+       recognition?.stop()
        // 页面销毁时移除所有任务，避免内存泄漏
        handler.removeCallbacksAndMessages(null)
     }
@@ -211,15 +219,24 @@ class WebViewFragment:BaseFragment() {
 
     override fun onRefreshData() {
         if (!isWebViewComplete)
-            wv_view.loadUrl(url)
+            lazyLoad()
+    }
+
+    override fun onRefreshHideData() {
+        addJavascriptCloseWebView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        addJavascriptCloseWebView()
     }
 
     override fun onNetworkConnectionSuccess() {
         if (!isWebViewComplete){
-            wv_view.loadUrl(url)
+            lazyLoad()
         }
-         else{
+        else{
              wv_view.reload()
-         }
+        }
     }
 }

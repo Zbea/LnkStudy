@@ -71,7 +71,6 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
             }
         }
         FileImageUploadManager(token, commitPaths).apply {
-            startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     //老师测试卷
@@ -94,6 +93,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 
@@ -156,12 +156,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
             CommonDialog(this,screenPos).setContent("确定提交考卷？").builder().setDialogClickListener(
                 object : CommonDialog.OnDialogClickListener {
                     override fun ok() {
-                        if (bitmapBatchSaver.isAccomplished){
-                            commit()
-                        }
-                        else{
-                            showToast("手写未保存，请稍后提交")
-                        }
+                        commit()
                     }
                 })
         }
@@ -250,7 +245,15 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
             return
         }
         showLoading()
-        mUploadPresenter.getToken()
+        Handler().postDelayed({
+            if (bitmapBatchSaver.isAccomplished){
+                mUploadPresenter.getToken()
+            }
+            else{
+                hideLoading()
+                showToast("手写未保存，请稍后提交")
+            }
+        },500)
     }
 
     /**
@@ -273,14 +276,7 @@ class ExamCommitDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploa
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.EXAM_TIME_EVENT){
-            if (bitmapBatchSaver.isAccomplished){
-                if (bitmapBatchSaver.isAccomplished){
-                    commit()
-                }
-                else{
-                    showToast("手写未保存，请稍后提交")
-                }
-            }
+            commit()
         }
     }
 

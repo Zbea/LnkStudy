@@ -65,6 +65,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private var subjectList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
+    private var downloader:BaseDownloadTask?=null
 
     override fun onTextbook(bookStore: TextbookStore) {
         setPageNumber(bookStore.total)
@@ -174,7 +175,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
             0 -> {
                 showView(tv_download)
                 disMissView(tv_course, tv_grade, tv_semester)
-                gradeId = mUser?.grade!!
+                gradeId = grade
                 semester=MethodManager.getSemester()
                 tv_semester.text = DataBeanManager.popupSemesters()[semester - 1].name
             }
@@ -314,7 +315,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val download = FileBigDownManager.with(this).create(url).setPath(zipPath)
+        downloader = FileBigDownManager.with().create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
@@ -368,7 +369,7 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                     countDownTasks?.countDown()
                 }
             })
-        return download
+        return downloader
     }
 
     /**
@@ -417,6 +418,8 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
     }
 
     override fun fetchData() {
+        if (tabId==0)
+            gradeId=grade
         books.clear()
         mAdapter?.notifyDataSetChanged()
         val map = HashMap<String, Any>()
@@ -443,6 +446,11 @@ class TextbookStoreActivity : BaseAppCompatActivity(), IContractView.ITextbookSt
                 presenter.getTextBooks(map)
             }
         }
+    }
+
+    override fun onNetworkConnectionSuccess() {
+        if (downloader==null||downloader?.isRunning==false)
+            fetchData()
     }
 
 }

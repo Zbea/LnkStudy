@@ -113,7 +113,7 @@ class DictionaryDownloadFragment:BaseMainFragment(),IContractView.IDictionaryRes
     private fun downLoadStart(book: TextbookBean): BaseDownloadTask? {
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val download = FileBigDownManager.with(requireActivity()).create(book.downloadUrl).setPath(zipPath)
+        val download = FileBigDownManager.with().create(book.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {

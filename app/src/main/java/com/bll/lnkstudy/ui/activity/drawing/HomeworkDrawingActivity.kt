@@ -2,7 +2,6 @@ package com.bll.lnkstudy.ui.activity.drawing
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.EinkPWInterface
 import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.Constants.Companion.DEFAULT_PAGE
@@ -61,7 +60,6 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
 
     override fun onToken(token: String) {
         FileImageUploadManager(token, homeworkCommitInfoItem?.paths!!).apply {
-            startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map = HashMap<String, Any>()
@@ -78,12 +76,12 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
                         mUploadPresenter.commitParent(map)
                     }
                 }
-
                 override fun onUploadFail() {
                     hideLoading()
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 
@@ -193,13 +191,14 @@ class HomeworkDrawingActivity : BaseDrawingActivity(), IContractView.IFileUpload
             }
             if (homeworkCommitInfoItem?.submitState==0){
                 CommonDialog(this,getCurrentScreenPos()).setContent("确定提交作业？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
                     override fun ok() {
-                        showLoading()
-                        Handler().postDelayed({
+                        if (bitmapBatchSaver.isAccomplished){
+                            showLoading()
                             commit()
-                        },500)
+                        }
+                        else{
+                            showToast("手写未保存，请稍后提交")
+                        }
                     }
                 })
             }

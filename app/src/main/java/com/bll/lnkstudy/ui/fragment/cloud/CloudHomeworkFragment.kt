@@ -208,7 +208,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
             5->FileAddress().getPathScreenHomework(item.name,item.grade)
             else->FileAddress().getPathHomework(item.course,item.typeId)
         }
-        FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -298,7 +298,7 @@ class CloudHomeworkFragment:BaseCloudFragment(){
      */
     private fun downloadBook(downloadUrl:String,path:String){
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(downloadUrl))
-        FileDownManager.with(activity).create(downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }

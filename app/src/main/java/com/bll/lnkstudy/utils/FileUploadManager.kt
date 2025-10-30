@@ -14,6 +14,10 @@ import java.io.File
 class FileUploadManager(private val uploadToken:String) {
 
     fun startUpload(filePath: String){
+        if (FileUtils.isExist(filePath))
+        {
+            return
+        }
         upload(filePath,1)
     }
 
@@ -65,11 +69,11 @@ class FileUploadManager(private val uploadToken:String) {
         //避免记录文件冲突（特别是 key 指定为 null 时），也可自定义文件名(下方为默认实现)：
         val keyGen = object : KeyGenerator {
             override fun gen(key: String?, file: File?): String {
-                return key + "_._" + StringBuffer(file!!.absolutePath).reverse()
+                return key + "_${ToolUtils.getOtaSerialNumber()}._" + StringBuffer(file!!.absolutePath).reverse()
             }
 
             override fun gen(key: String?, sourceId: String?): String {
-                return key + "_._" + StringBuffer(File(sourceId).absolutePath).reverse()
+                return key + "_${ToolUtils.getOtaSerialNumber()}._" + StringBuffer(File(sourceId).absolutePath).reverse()
             }
         }
 

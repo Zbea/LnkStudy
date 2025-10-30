@@ -14,23 +14,12 @@ import java.util.List;
 
 public class FileDownManager {
 
-    private static FileDownManager incetance;
-    private static Context mContext;
     private String url; //下载的url链接
     private String path;//文件的绝对路径
     private String auth = "";
     private String token = "";
 
-
-    public static FileDownManager with(Context context) {
-//        if (incetance == null) {
-//            synchronized (FileDownManager.class) {
-//                if (incetance == null) {
-//                    incetance = new FileDownManager();
-//                }
-//            }
-//        }
-        mContext = context;
+    public static FileDownManager with() {
         return  new FileDownManager();
     }
 

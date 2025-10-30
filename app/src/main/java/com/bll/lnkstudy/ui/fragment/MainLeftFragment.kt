@@ -174,10 +174,6 @@ class MainLeftFragment : BaseMainFragment(), IMainLeftView,IHomeworkNoticeView {
     override fun fetchData() {
         onCheckUpdate()
 
-        if (MethodManager.getUser()==null){
-            login()
-        }
-
         if (NetworkUtil.isNetworkConnected()) {
             mMainLeftPresenter.active()
 

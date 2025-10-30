@@ -138,4 +138,8 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         })
     }
 
+    override fun onNetworkConnectionSuccess() {
+        presenter.getClassGroupList(true)
+    }
+
 }

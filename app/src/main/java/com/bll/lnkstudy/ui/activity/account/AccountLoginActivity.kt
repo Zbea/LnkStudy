@@ -36,7 +36,6 @@ class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
     }
 
     override fun getAccount(user: User) {
-        user.token=token
         SPUtil.putObj("user",user)
 
         val intent = Intent()

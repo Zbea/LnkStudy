@@ -41,13 +41,7 @@ object SPUtil {
     }
 
     fun getUserId():String{
-        val userStr=if (getObj("user", User::class.java)==null){
-            ""
-        }
-        else{
-            getObj("user", User::class.java)?.accountId!!.toString()
-        }
-        return userStr
+        return getObj("user", User::class.java)?.accountId?.toString()?:""
     }
 
 
@@ -107,7 +101,9 @@ object SPUtil {
 
     fun putString(key: String, value: String) {
         val keyStr= getKeyStr(key)
-        map[keyStr] = value
+        synchronized(map) {
+            map[keyStr] = value
+        }
         Schedulers.io().run {
             editor.putString(keyStr, value).apply()
         }
@@ -127,7 +123,9 @@ object SPUtil {
 
     fun putInt(key: String, value: Int) {
         val keyStr= getKeyStr(key)
-        map[keyStr] = value
+        synchronized(map) {
+            map[keyStr] = value
+        }
         Schedulers.io().run {
             editor.putInt(keyStr, value).apply()
         }
@@ -145,7 +143,9 @@ object SPUtil {
 
     fun putBoolean(key: String, value: Boolean) {
         val keyStr= getKeyStr(key)
-        map[keyStr] = value
+        synchronized(map) {
+            map[keyStr] = value
+        }
         Schedulers.io().run {
             editor.putBoolean(keyStr, value).apply()
         }
@@ -173,7 +173,12 @@ object SPUtil {
 
     fun removeObj(key: String): Any? {
         val keyStr= getKeyStr(key)
-        putString(keyStr,"")
+        synchronized(map) {
+            map.remove(keyStr)
+        }
+        Schedulers.io().run {
+            editor.remove(keyStr).apply()
+        }
         return map.remove(keyStr)
     }
 }

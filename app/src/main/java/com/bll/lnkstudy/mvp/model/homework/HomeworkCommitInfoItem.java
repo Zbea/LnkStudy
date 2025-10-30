@@ -26,8 +26,7 @@ public class HomeworkCommitInfoItem implements Serializable {
     public double score;//成绩
     public String correctJson;//批改详情
     public String answerUrl;
-    public String commitUrl;//提交图片地址
-    public String commitDrawUrl;
+    public String commitUrl;//提交合图地址
+    public String commitDrawUrl;//提交纯手写地址
     public List<String> paths=new ArrayList<>();//合图
-    public List<String> drawPaths=new ArrayList<>();//作业卷手写图
 }

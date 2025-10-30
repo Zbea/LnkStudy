@@ -54,10 +54,16 @@ object ScoreItemUtils {
             return mutableListOf()
         }
         val list=Gson().fromJson(json, object : TypeToken<MutableList<ScoreItem>>() {}.type) as MutableList<ScoreItem>
+        for (item in list){
+            item.sort=list.indexOf(item)
+            item.childScores?.forEach {
+                it.sort=item.childScores.indexOf(it)
+            }
+        }
         if (correctModule==4||correctModule==7){
             var sort=0
             for (item in list){
-                item.childScores.forEach {
+                item.childScores?.forEach {
                     it.sort=sort
                     sort+=1
                 }

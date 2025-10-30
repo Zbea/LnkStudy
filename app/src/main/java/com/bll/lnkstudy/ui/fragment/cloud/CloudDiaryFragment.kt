@@ -104,7 +104,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
         val fileName=DateUtils.longToStringCalender(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
         val fileTargetPath= File(FileAddress().getPathDiary(fileName)).parent
-        FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

@@ -31,7 +31,6 @@ class WebViewDrawingActivity: BaseDrawingActivity(), IContractView.IFileUploadVi
     override fun onToken(token: String) {
         val paths= mutableListOf(pathDraw,pathMerge)
         FileImageUploadManager(token, paths).apply {
-            startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     hideLoading()
@@ -47,6 +46,7 @@ class WebViewDrawingActivity: BaseDrawingActivity(), IContractView.IFileUploadVi
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 
@@ -76,7 +76,7 @@ class WebViewDrawingActivity: BaseDrawingActivity(), IContractView.IFileUploadVi
             if (FileUtils.isExistContent(path)){
                 showLoading()
                 Handler().postDelayed({
-                    if (bitmapBatchSaver.isAccomplished){
+                    if (bitmapBatchSaver.isAccomplished&&FileUtils.isExist(pathDraw)){
                         mUploadPresenter.getToken()
                     }
                     else{

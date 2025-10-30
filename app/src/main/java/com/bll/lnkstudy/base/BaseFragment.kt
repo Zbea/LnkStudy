@@ -112,8 +112,12 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         initCommonTitle()
 
         mUser= MethodManager.getUser()
-        if (mUser!=null)
+        if (mUser!=null){
             grade=mUser?.grade!!
+        }
+        else{
+            login()
+        }
 
         if (rv_tab!=null){
             initTabView()
@@ -369,12 +373,18 @@ abstract class BaseFragment : Fragment(),IContractView.ICommonView, IBaseView{
         if (!hidden){
             onRefreshData()
         }
+        else{
+            onRefreshHideData()
+        }
     }
 
     /**
      * 页面切换刷新数据
      */
     open fun onRefreshData(){
+    }
+
+    open fun onRefreshHideData(){
     }
 
     //更新数据

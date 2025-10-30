@@ -45,6 +45,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView,ISmsView{
         else{
             walletPresenter.getXdList(true)
         }
+
     }
 
     override fun onXdList(list: MutableList<AccountQdBean>) {

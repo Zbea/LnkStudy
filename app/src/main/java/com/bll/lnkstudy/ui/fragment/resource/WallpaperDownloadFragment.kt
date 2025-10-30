@@ -120,7 +120,7 @@ open class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IPaintin
         val pathStr= FileAddress().getPathImage("wallpaper",item.fontDrawId)
         val images = item.bodyUrl.split(",")
         val savePaths= arrayListOf("$pathStr/1.png","$pathStr/2.png")
-        FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
+        FileMultitaskDownManager.with().create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                 }

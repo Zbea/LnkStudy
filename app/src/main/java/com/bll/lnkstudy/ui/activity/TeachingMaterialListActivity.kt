@@ -95,7 +95,7 @@ class TeachingMaterialListActivity:BaseAppCompatActivity(), IContractView.ITeach
             return
         }
         showLoading()
-        FileBigDownManager.with(this).create(item.url).setPath(targetFileStr)
+        FileBigDownManager.with().create(item.url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {

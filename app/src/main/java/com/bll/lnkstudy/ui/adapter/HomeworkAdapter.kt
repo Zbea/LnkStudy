@@ -15,9 +15,10 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQuickAdapter<HomeworkTypeBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeBean) {
+        val localGrade=MethodManager.getUser().grade
         helper.apply {
             setVisible(R.id.ll_info, !item.isCloud&&(item.createStatus==1||item.createStatus==2))
-            setText(R.id.tv_grade,if (MethodManager.getUser().grade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
+            setText(R.id.tv_grade,if (localGrade!=item.grade) "(${DataBeanManager.getGradeStr(item.grade)})" else "" )
 
             val ivImage=getView<ImageView>(R.id.iv_image)
             if (item.state==4){

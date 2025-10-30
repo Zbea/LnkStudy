@@ -19,6 +19,7 @@ import com.bll.lnkstudy.ui.activity.book.HomeworkBookStoreActivity
 import com.bll.lnkstudy.ui.adapter.HomeworkMessageAdapter
 import com.bll.lnkstudy.utils.DP2PX
 import com.bll.lnkstudy.utils.FileMultitaskDownManager
+import com.bll.lnkstudy.utils.FileUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_list.rv_list
@@ -70,7 +71,8 @@ class HomeworkUnfinishedMessageActivity:BaseAppCompatActivity() {
                         MethodManager.gotoHomeworkRecord(this@HomeworkUnfinishedMessageActivity,homeworkType,messageBean)
                     }
                     1,7->{
-                        if (HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean?.contendId!!)!=null){
+                        val paperBean=HomeworkPaperDaoManager.getInstance().queryByContentID(messageBean?.contendId!!)
+                        if (paperBean != null&& FileUtils.isExistContent(paperBean.filePath)) {
                             MethodManager.gotoHomeworkReelDrawing(this@HomeworkUnfinishedMessageActivity,homeworkType,Constants.DEFAULT_PAGE,messageBean)
                         }
                         else{
@@ -111,7 +113,7 @@ class HomeworkUnfinishedMessageActivity:BaseAppCompatActivity() {
             paths.add("$pathStr/${i + 1}.png")
             drawPaths.add("$pathStr/draw/${i + 1}.png")
         }
-        FileMultitaskDownManager.with(this).create(images).setPath(paths)
+        FileMultitaskDownManager.with().create(images).setPath(paths)
             .startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

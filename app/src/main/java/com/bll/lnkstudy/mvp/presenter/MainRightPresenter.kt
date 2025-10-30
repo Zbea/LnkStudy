@@ -1,6 +1,5 @@
 package com.bll.lnkstudy.mvp.presenter
 
-import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.paper.ExamItem
 import com.bll.lnkstudy.mvp.view.IContractView
 import com.bll.lnkstudy.net.BasePresenter
@@ -36,20 +35,6 @@ class MainRightPresenter(view: IContractView.IMainRightView, val screen: Int=0) 
             }
             override fun success(tBaseResult: BaseResult<String>) {
                 view.onCourseUrl(tBaseResult.data)
-            }
-        }, false)
-    }
-
-    //班群列表
-    fun getClassGroupList() {
-        val list= RetrofitManager.service.groupList()
-        doRequest(list, object : Callback<List<ClassGroup>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<ClassGroup>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<List<ClassGroup>>) {
-                if (tBaseResult.data!=null)
-                    view.onClassGroupList(tBaseResult.data)
             }
         }, false)
     }

@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -181,6 +182,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
         iv_page_down?.setOnClickListener {
             onPageDown()
         }
+
 
         iv_catalog?.setOnClickListener {
             onCatalog()

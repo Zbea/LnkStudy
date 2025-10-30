@@ -123,9 +123,8 @@ class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
     private fun downLoadStart(bean: AppList.ListBean): BaseDownloadTask? {
         val targetFileStr= FileAddress().getPathApk(bean.applicationId.toString())
         showLoading()
-        val download = FileDownManager.with(requireActivity()).create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+        val download = FileDownManager.with().create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
-
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
             }
             override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

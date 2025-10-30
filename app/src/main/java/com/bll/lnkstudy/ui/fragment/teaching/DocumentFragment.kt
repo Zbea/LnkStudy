@@ -91,7 +91,7 @@ class DocumentFragment:BaseFragment(), IContractView.ITeachingMaterialView {
             mPresenter.downloadComplete(item.id)
             return
         }
-        FileBigDownManager.with(requireActivity()).create(item.url).setPath(targetFileStr)
+        FileBigDownManager.with().create(item.url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {

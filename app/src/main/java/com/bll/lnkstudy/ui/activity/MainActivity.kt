@@ -35,6 +35,7 @@ import com.bll.lnkstudy.utils.date.Lunar
 import com.bll.lnkstudy.utils.date.LunarSolarConverter
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
+import com.bll.lnkteacher.MQTTClient
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -182,7 +183,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
                         AppUtils.startAPP(this@MainActivity,Constants.PACKAGE_AI_APP)
                     }
                     else{
-                        showToast(1,"未安装智教")
+                        showToast(1,"未安装龙老师")
                     }
                 }
                 else{
@@ -556,7 +557,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun downloadBook(item: DataUpdateBean) {
         val bookBean = Gson().fromJson(item.listJson, BookBean::class.java)
-        FileDownManager.with(this).create(item.downloadUrl).setPath(bookBean.bookPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(bookBean.bookPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -579,7 +580,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun downloadBookDraw(item: DataUpdateBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -614,7 +615,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     private fun downloadTextBook(item: DataUpdateBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         val bookBean = Gson().fromJson(item.listJson, TextbookBean::class.java)
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -650,7 +651,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun downloadTextBookDrawing(item: DataUpdateBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -686,7 +687,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun downloadHomeworkBookDrawing(item: DataUpdateBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -722,7 +723,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun downloadHomeworkPaper(item: DataUpdateBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -762,7 +763,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
     }
 
     private fun downloadHomework(item: DataUpdateBean) {
-        FileDownManager.with(this).create(item.downloadUrl).setPath(item.path)
+        FileDownManager.with().create(item.downloadUrl).setPath(item.path)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -792,7 +793,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      */
     private fun downloadPaper(item: DataUpdateBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
-        FileDownManager.with(this).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -826,7 +827,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载笔记内容
      */
     private fun downloadNote(item: DataUpdateBean) {
-        FileDownManager.with(this).create(item.downloadUrl).setPath(item.path)
+        FileDownManager.with().create(item.downloadUrl).setPath(item.path)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -850,7 +851,7 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
      * 下载本地书画
      */
     private fun downloadPaintingLocal(item: DataUpdateBean) {
-        FileDownManager.with(this).create(item.downloadUrl).setPath(item.path)
+        FileDownManager.with().create(item.downloadUrl).setPath(item.path)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -995,22 +996,20 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
 
     private fun initMqtt(){
         showLog("mqttClient初始化")
-        mqttClient=MQTTClient().getInstance()
+        mqttClient= MQTTClient.INSTANCE
         mqttClient?.init(this)
         mqttClient?.connect()
     }
 
     override fun onNetworkConnectionSuccess() {
         Handler().postDelayed({
-            if (mqttClient==null||mqttClient?.isClientValidity()==false){
+            if (MQTTClient.INSTANCE.isClientValidity().not()) {
                 initMqtt()
-            }
-            else{
-                showLog("mqttClient.isConnect:"+mqttClient?.isConnect().toString())
-                if (mqttClient?.isConnect()==false){
+            } else {
+                val isConnected = mqttClient?.isConnect()
+                if (isConnected?.not() == true) {
                     mqttClient?.reConnect()
-                }
-                else{
+                } else {
                     mqttClient?.subscribe()
                 }
             }

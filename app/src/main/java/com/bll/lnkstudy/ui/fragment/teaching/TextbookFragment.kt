@@ -78,21 +78,7 @@ class TextbookFragment : BaseMainFragment() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@TextbookFragment.position=position
-                if (textId!=0){
-                    onLongClick()
-                }
-                else{
-                    CommonDialog(requireActivity(),1).setContent("确定顶置课本？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun ok() {
-                            val book=books[position]
-                            book.time=System.currentTimeMillis()
-                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                            //修改增量更新
-                            DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
-                            fetchData()
-                        }
-                    })
-                }
+                onLongClick()
                 true
             }
         }
@@ -106,26 +92,46 @@ class TextbookFragment : BaseMainFragment() {
             name="删除"
             resId=R.mipmap.icon_setting_delete
         })
-        //将参考课本或者往期课本加锁
-        if (textId==1||textId==3){
-            beans.add(ItemList().apply {
-                name=if (book.isLock)"解锁" else "加锁"
-                resId=if (book.isLock) R.mipmap.icon_setting_unlock else R.mipmap.icon_setting_lock
-            })
+        when(textId){
+            0->{
+                beans.add(ItemList().apply {
+                    name="顶置"
+                    resId=R.mipmap.icon_setting_top
+                })
+            }
+            1,3->{
+                beans.add(ItemList().apply {
+                    name=if (book.isLock)"解锁" else "加锁"
+                    resId=if (book.isLock) R.mipmap.icon_setting_unlock else R.mipmap.icon_setting_lock
+                })
+            }
         }
         LongClickManageDialog(requireActivity(),1,book.bookName,beans).builder()
             .setOnDialogClickListener {
                 when(it){
                     0->{
-                        MethodManager.deleteTextbook(book)
-                        mAdapter?.remove(position)
+                        CommonDialog(requireActivity(),1).setContent(R.string.item_is_delete_tips).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun ok() {
+                                MethodManager.deleteTextbook(book)
+                                mAdapter?.remove(position)
+                            }
+                        })
                     }
                     1->{
-                        book.isLock=!book.isLock
-                        mAdapter?.notifyItemChanged(position)
-                        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                        //修改增量更新
-                        DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
+                        if (textId==0){
+                            book.time=System.currentTimeMillis()
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //修改增量更新
+                            DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
+                            fetchData()
+                        }
+                        else{
+                            book.isLock=!book.isLock
+                            mAdapter?.notifyItemChanged(position)
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //修改增量更新
+                            DataUpdateManager.editDataUpdate(1,book.bookId,1,book.bookId,Gson().toJson(book))
+                        }
                     }
                 }
             }

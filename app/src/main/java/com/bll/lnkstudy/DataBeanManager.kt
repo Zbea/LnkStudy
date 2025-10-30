@@ -27,7 +27,7 @@ object DataBeanManager {
         "书架","作业",
         "试卷","笔记",
         "书画","视教",
-        "智教","日记"
+        "龙老师","日记"
     )
     val teachingType = arrayOf(
         mContext.getString(R.string.textbook_tab_my),mContext.getString(R.string.textbook_tab_assist),
@@ -372,10 +372,15 @@ object DataBeanManager {
             name = listTitle[5]
         }
 
+//        val h4 = ItemList().apply {
+//            icon = mContext.getDrawable(R.mipmap.icon_tab_sh)
+//            icon_check = mContext.getDrawable(R.mipmap.icon_tab_sh_check)
+//            name = listTitle[6]
+//        }
         val h4 = ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_sh)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_sh_check)
-            name = listTitle[6]
+            icon = mContext.getDrawable(R.mipmap.icon_tab_errorbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_errorbook_check)
+            name = "错题本"
         }
         list.add(h0)
         list.add(h1)

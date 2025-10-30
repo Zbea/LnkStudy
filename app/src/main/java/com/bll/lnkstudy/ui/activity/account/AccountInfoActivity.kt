@@ -53,7 +53,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
     private var type=0
 
     override fun getAccount(user: User) {
-        mUser=user
         setAccountInfo()
     }
 
@@ -99,7 +98,6 @@ class AccountInfoActivity : BaseAppCompatActivity(), IContractView.IAccountInfoV
         mUser?.parentName=tv_parent.text.toString()
         mUser?.parentNickname=tv_parent_name.text.toString()
         mUser?.parentTel=tv_parent_phone.text.toString()
-        saveUser()
     }
 
     override fun layoutId(): Int {

@@ -21,7 +21,6 @@ import com.bll.lnkstudy.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkstudy.dialog.PrivacyPasswordDialog
 import com.bll.lnkstudy.manager.DiaryDaoManager
 import com.bll.lnkstudy.manager.ItemTypeDaoManager
-import com.bll.lnkstudy.mvp.model.ClassGroup
 import com.bll.lnkstudy.mvp.model.ItemTypeBean
 import com.bll.lnkstudy.mvp.model.MessageList
 import com.bll.lnkstudy.mvp.model.PopupBean
@@ -107,11 +106,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             SPUtil.putString(Constants.SP_COURSE_URL, url)
             GlideUtils.setImageUrl(requireActivity(), url, iv_course)
         }
-    }
-
-    override fun onClassGroupList(classGroups: MutableList<ClassGroup>) {
-        MethodManager.setGradeByClassGroups(classGroups)
-        mMainPresenter.getCourseItems()
     }
 
     override fun onCourseItems(courses: MutableList<String>) {
@@ -301,8 +295,9 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         if (NetworkUtil.isNetworkConnected()) {
             findMessages()
             fetchExam()
+            fetchGrade()
             mMainPresenter.getTeacherCourse()
-            mMainPresenter.getClassGroupList()
+            mMainPresenter.getCourseItems()
         }
     }
 
@@ -335,7 +330,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
         }
         examItem?.paths = paths
         if (files.isNullOrEmpty()) {
-            FileMultitaskDownManager.with(requireActivity()).create(images).setPath(paths).startMultiTaskDownLoad(
+            FileMultitaskDownManager.with().create(images).setPath(paths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -372,8 +367,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
                 findMessages()
             }
             CLASSGROUP_REFRESH_EVENT -> {
-                mMainPresenter.getTeacherCourse()
-                mMainPresenter.getClassGroupList()
+                fetchData()
             }
             MQTT_TESTPAPER_ASSIGN_NOTICE_EVENT->{
                 fetchExam()
@@ -382,7 +376,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
     }
 
     override fun onNetworkConnectionSuccess() {
-        fetchData()
+        lazyLoad()
     }
 
     override fun onRefreshData() {

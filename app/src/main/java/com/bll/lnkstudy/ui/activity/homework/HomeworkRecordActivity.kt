@@ -54,7 +54,6 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
     override fun onToken(token: String) {
         showLoading()
         FileImageUploadManager(token, mutableListOf(pathFile!!)).apply {
-            startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     val map= HashMap<String, Any>()
@@ -68,6 +67,7 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
                     showToast(R.string.upload_fail)
                 }
             })
+            startUpload()
         }
     }
 
@@ -208,6 +208,9 @@ class HomeworkRecordActivity : BaseAppCompatActivity(), IContractView.IFileUploa
         }
 
         ll_record_play.setOnClickListener {
+            if (!FileUtils.isExist(pathFile)){
+                return@setOnClickListener
+            }
             if(mRecorder!=null){
                 showToast(R.string.toast_recording)
                 return@setOnClickListener

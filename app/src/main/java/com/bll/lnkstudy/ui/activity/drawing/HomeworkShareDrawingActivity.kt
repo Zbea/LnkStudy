@@ -300,6 +300,7 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
         if (paper?.subType==3){
             speed=1f
             isReadyRecorder=false
+            if (!paper?.examUrl.isNullOrEmpty()){
             exoPlayer = ExoPlayer.Builder(this).build()
             exoPlayer?.setMediaItem(MediaItem.fromUri(paper?.examUrl!!))
             exoPlayer?.addListener(object : Player.Listener {
@@ -328,6 +329,7 @@ class HomeworkShareDrawingActivity: BaseDrawingActivity(){
 
             tv_page_a.text="1"
             tv_page.text="1"
+            }
         }
         else{
             if (isExpand){

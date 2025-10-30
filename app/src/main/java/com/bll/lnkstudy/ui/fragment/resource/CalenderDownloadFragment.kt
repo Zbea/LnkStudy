@@ -143,7 +143,7 @@ class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
         showLoading()
         val fileName = MD5Utils.digest(item.pid.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val download = FileDownManager.with(requireActivity()).create(url).setPath(zipPath)
+        val download = FileDownManager.with().create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning) {

@@ -31,6 +31,8 @@ class TestPaperManageFragment: BaseMainFragment() {
 
     override fun initView() {
         setTitle(DataBeanManager.listTitle[4])
+
+        fetchGrade()
     }
 
     override fun lazyLoad() {
@@ -221,6 +223,7 @@ class TestPaperManageFragment: BaseMainFragment() {
     }
 
     override fun onRefreshData() {
+        fetchGrade()
         lazyLoad()
     }
 
