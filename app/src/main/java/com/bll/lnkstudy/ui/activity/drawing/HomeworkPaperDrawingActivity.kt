@@ -371,7 +371,18 @@ class HomeworkPaperDrawingActivity: BaseDrawingActivity(),IFileUploadView {
      * 需要提交且状态为0
      */
     private fun isDrawing():Boolean{
-        return isHomework&&paper?.state==0
+        if (isHomework&&paper?.state==0){
+            if (homeworkCommitInfoItem?.submitState==0){
+                return true
+            }
+            else{
+                //不提交自批需要保存合图
+                if (homeworkCommitInfoItem?.isSelfCorrect==true){
+                    return true
+                }
+            }
+        }
+        return false
     }
     
     //加载图片

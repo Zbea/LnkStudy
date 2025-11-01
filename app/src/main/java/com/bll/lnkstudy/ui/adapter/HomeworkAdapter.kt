@@ -32,13 +32,13 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                 Glide.with(mContext).clear(ivImage)
                 val bg=when(item.state){
                     1->{
-                        R.mipmap.icon_homework_cover_3
+                        R.mipmap.icon_homework_cover_1
                     }
                     3->{
-                        R.mipmap.icon_homework_cover_2
+                        R.mipmap.icon_homework_cover_3
                     }
                     5->{
-                        R.mipmap.icon_homework_cover_4
+                        R.mipmap.icon_homework_cover_5
                     }
                     6->{
                         R.mipmap.icon_homework_cover_6
@@ -49,11 +49,17 @@ class HomeworkAdapter(layoutResId: Int, data: List<HomeworkTypeBean>?) : BaseQui
                     8->{
                         R.mipmap.icon_homework_cover_8
                     }
+                    9->{
+                        R.mipmap.icon_homework_cover_9
+                    }
                     10->{
                         R.mipmap.icon_homework_cover_10
                     }
+                    11->{
+                        R.mipmap.icon_homework_cover_11
+                    }
                     else->{
-                        if (item.name=="作文作业本")R.mipmap.icon_homework_cover_5 else R.mipmap.icon_homework_cover_1
+                        R.mipmap.icon_homework_cover_2
                     }
                 }
                 setImageResource(R.id.iv_image,bg)

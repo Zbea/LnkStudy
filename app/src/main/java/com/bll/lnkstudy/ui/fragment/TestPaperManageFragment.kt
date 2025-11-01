@@ -150,19 +150,23 @@ class TestPaperManageFragment: BaseMainFragment() {
             val path = FileAddress().getPathTestPaper(item.course,item.typeId)
             if (FileUtils.isExistContent(path)) {
                 FileUploadManager(token).apply {
+                    setCallBack(object : FileUploadManager.UploadCallBack {
+                        override fun onUploadSuccess(url: String) {
+                            cloudList.add(CloudListBean().apply {
+                                type = 3
+                                subTypeStr = item.course
+                                date = System.currentTimeMillis()
+                                grade = item.grade
+                                listJson = Gson().toJson(item)
+                                contentJson = Gson().toJson(papers)
+                                downloadUrl = url
+                            })
+                            startUpload(cloudList,nullItems)
+                        }
+                        override fun onUploadFail() {
+                        }
+                    })
                     startZipUpload(path, item.name)
-                    setCallBack {
-                        cloudList.add(CloudListBean().apply {
-                            type = 3
-                            subTypeStr = item.course
-                            date = System.currentTimeMillis()
-                            grade = item.grade
-                            listJson = Gson().toJson(item)
-                            contentJson = Gson().toJson(papers)
-                            downloadUrl = it
-                        })
-                        startUpload(cloudList,nullItems)
-                    }
                 }
             } else {
                 //没有考卷内容不上传

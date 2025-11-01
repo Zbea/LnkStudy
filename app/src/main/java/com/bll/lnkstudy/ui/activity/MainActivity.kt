@@ -903,26 +903,34 @@ class MainActivity : BaseAppCompatActivity(), IContractView.IQiniuView, IContrac
             } else {
                 if (File(item.path).isDirectory){
                     FileUploadManager(token).apply {
+                        setCallBack(object : FileUploadManager.UploadCallBack {
+                            override fun onUploadSuccess(url: String) {
+                                map["path"]=item.path
+                                map["downloadUrl"] = url
+                                mDataUpdatePresenter.onAddData(map)
+                                item.isUpload=true
+                                DataUpdateDaoManager.getInstance().insertOrReplace(item)
+                            }
+                            override fun onUploadFail() {
+                            }
+                        })
                         startZipUpload(item.path, item.id.toString())
-                        setCallBack {
-                            map["path"]=item.path
-                            map["downloadUrl"] = it
-                            mDataUpdatePresenter.onAddData(map)
-                            item.isUpload=true
-                            DataUpdateDaoManager.getInstance().insertOrReplace(item)
-                        }
                     }
                 }
                 else{
                     FileUploadManager(token).apply {
+                        setCallBack(object : FileUploadManager.UploadCallBack {
+                            override fun onUploadSuccess(url: String) {
+                                map["path"]=item.path
+                                map["downloadUrl"] = url
+                                mDataUpdatePresenter.onAddData(map)
+                                item.isUpload=true
+                                DataUpdateDaoManager.getInstance().insertOrReplace(item)
+                            }
+                            override fun onUploadFail() {
+                            }
+                        })
                         startUpload(item.path)
-                        setCallBack {
-                            map["path"]=item.path
-                            map["downloadUrl"] = it
-                            mDataUpdatePresenter.onAddData(map)
-                            item.isUpload=true
-                            DataUpdateDaoManager.getInstance().insertOrReplace(item)
-                        }
                     }
                 }
             }

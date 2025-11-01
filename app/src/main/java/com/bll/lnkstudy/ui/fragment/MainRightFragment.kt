@@ -403,19 +403,23 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView, ICon
             }
             val time = System.currentTimeMillis()
             FileUploadManager(token).apply {
+                setCallBack(object : FileUploadManager.UploadCallBack {
+                    override fun onUploadSuccess(url: String) {
+                        cloudList.add(CloudListBean().apply {
+                            type = 7
+                            title = diaryUploadTitleStr
+                            subTypeStr = "我的日记"
+                            year = DateUtils.getYear()
+                            date = time
+                            listJson = Gson().toJson(diarys)
+                            downloadUrl = url
+                        })
+                        mCloudUploadPresenter.upload(cloudList)
+                    }
+                    override fun onUploadFail() {
+                    }
+                })
                 startZipUpload(paths, DateUtils.longToString(time))
-                setCallBack {
-                    cloudList.add(CloudListBean().apply {
-                        type = 7
-                        title = diaryUploadTitleStr
-                        subTypeStr = "我的日记"
-                        year = DateUtils.getYear()
-                        date = time
-                        listJson = Gson().toJson(diarys)
-                        downloadUrl = it
-                    })
-                    mCloudUploadPresenter.upload(cloudList)
-                }
             }
         }
 

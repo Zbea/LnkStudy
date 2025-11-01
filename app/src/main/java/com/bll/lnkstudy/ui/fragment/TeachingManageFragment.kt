@@ -122,21 +122,25 @@ class TeachingManageFragment: BaseMainFragment() {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
+                    setCallBack(object : FileUploadManager.UploadCallBack {
+                        override fun onUploadSuccess(url: String) {
+                            cloudList.add(CloudListBean().apply {
+                                type=1
+                                subTypeStr=book.typeStr
+                                grade=book.grade
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(book)
+                                downloadUrl=url
+                                zipUrl=book.downloadUrl
+                                bookId=book.bookId
+                            })
+                            if (cloudList.size==textBooks.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                        override fun onUploadFail() {
+                        }
+                    })
                     startZipUpload(path, fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=1
-                            subTypeStr=book.typeStr
-                            grade=book.grade
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(book)
-                            downloadUrl=it
-                            zipUrl=book.downloadUrl
-                            bookId=book.bookId
-                        })
-                        if (cloudList.size==textBooks.size)
-                            mCloudUploadPresenter.upload(cloudList)
-                    }
                 }
             }
             else{

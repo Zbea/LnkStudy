@@ -159,6 +159,10 @@ public class HomeworkTypeDaoManager {
         return queryByTypeId(typeId)!=null;
     }
 
+    public void deleteBean(int typeId){
+        dao.delete(queryByTypeId(typeId));
+    }
+
     public void deleteBean(HomeworkTypeBean bean){
         dao.delete(bean);
     }

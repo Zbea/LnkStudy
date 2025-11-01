@@ -138,31 +138,10 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
         }
         for (item in itemTabTypes){
             val course=item.title
-            //添加错题本
-            if (!otherCourse.contains(course)){
-                var path = ""
-                val name="${course}错题本"
-                val typeId=MethodManager.getHomeworkTypeId(course,5)
-                val localType=HomeworkTypeDaoManager.getInstance().queryByTypeId(typeId)
-                //创建作业错题本
-                if (localType==null) {
-                    val typeItem = HomeworkTypeBean()
-                    typeItem.name = name
-                    typeItem.course = course
-                    typeItem.date = System.currentTimeMillis()
-                    typeItem.grade = grade
-                    typeItem.state = 5
-                    typeItem.typeId = typeId
-                    typeItem.createStatus=3
-                    typeItem.fromStatus=3
-                    HomeworkTypeDaoManager.getInstance().insertOrReplace(typeItem)
-                    path = FileAddress().getPathScreenHomework(typeItem.name, typeItem.grade)
-                } else {
-                    path = FileAddress().getPathScreenHomework(name, grade)
-                }
-                if (!FileUtils.isExist(path))
-                    FileUtils.mkdirs(path)
-            }
+            //删除错题本
+            HomeworkTypeDaoManager.getInstance().deleteBean(MethodManager.getHomeworkTypeId(course,5))
+            val path = FileAddress().getPathScreenHomework("${course}错题本", grade)
+            FileUtils.delete(path)
 
             val name="${course}分享本"
             val typeId=MethodManager.getHomeworkTypeId(course,9)
@@ -220,19 +199,23 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
+                            setCallBack(object : FileUploadManager.UploadCallBack {
+                                override fun onUploadSuccess(url: String) {
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type = 2
+                                        subTypeStr = typeBean.course
+                                        date = typeBean.date
+                                        grade = typeBean.grade
+                                        listJson = Gson().toJson(typeBean)
+                                        contentJson = Gson().toJson(homePapers)
+                                        downloadUrl = url
+                                    })
+                                    startUpload(cloudList, nullItems)
+                                }
+                                override fun onUploadFail() {
+                                }
+                            })
                             startZipUpload(path, typeBean.name)
-                            setCallBack {
-                                cloudList.add(CloudListBean().apply {
-                                    this.type = 2
-                                    subTypeStr = typeBean.course
-                                    date = typeBean.date
-                                    grade = typeBean.grade
-                                    listJson = Gson().toJson(typeBean)
-                                    contentJson = Gson().toJson(homePapers)
-                                    downloadUrl = it
-                                })
-                                startUpload(cloudList, nullItems)
-                            }
                         }
                     } else {
                         nullItems.add(typeBean)
@@ -244,19 +227,23 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
+                            setCallBack(object : FileUploadManager.UploadCallBack {
+                                override fun onUploadSuccess(url: String) {
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type = 2
+                                        subTypeStr = typeBean.course
+                                        date = typeBean.date
+                                        grade = typeBean.grade
+                                        listJson = Gson().toJson(typeBean)
+                                        contentJson = Gson().toJson(records)
+                                        downloadUrl = url
+                                    })
+                                    startUpload(cloudList, nullItems)
+                                }
+                                override fun onUploadFail() {
+                                }
+                            })
                             startZipUpload(path, typeBean.name)
-                            setCallBack {
-                                cloudList.add(CloudListBean().apply {
-                                    this.type = 2
-                                    subTypeStr = typeBean.course
-                                    date = typeBean.date
-                                    grade = typeBean.grade
-                                    listJson = Gson().toJson(typeBean)
-                                    contentJson = Gson().toJson(records)
-                                    downloadUrl = it
-                                })
-                                startUpload(cloudList, nullItems)
-                            }
                         }
                     } else {
                         nullItems.add(typeBean)
@@ -272,22 +259,26 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                         startUpload(cloudList, nullItems)
                     } else {
                         FileUploadManager(token).apply {
+                            setCallBack(object : FileUploadManager.UploadCallBack {
+                                override fun onUploadSuccess(url: String) {
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type = 2
+                                        subTypeStr = typeBean.course
+                                        date = typeBean.date
+                                        grade = typeBean.grade
+                                        listJson = Gson().toJson(typeBean)
+                                        contentJson = Gson().toJson(homeworkBook)
+                                        contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
+                                        downloadUrl = url
+                                        zipUrl=homeworkBook.downloadUrl
+                                        bookId = typeBean.bookId
+                                    })
+                                    startUpload(cloudList, nullItems)
+                                }
+                                override fun onUploadFail() {
+                                }
+                            })
                             startZipUpload(homeworkBook.bookDrawPath, homeworkBook.bookId.toString()+"draw")
-                            setCallBack {
-                                cloudList.add(CloudListBean().apply {
-                                    this.type = 2
-                                    subTypeStr = typeBean.course
-                                    date = typeBean.date
-                                    grade = typeBean.grade
-                                    listJson = Gson().toJson(typeBean)
-                                    contentJson = Gson().toJson(homeworkBook)
-                                    contentSubtypeJson=Gson().toJson(homeworkBookCorrects)
-                                    downloadUrl = it
-                                    zipUrl=homeworkBook.downloadUrl
-                                    bookId = typeBean.bookId
-                                })
-                                startUpload(cloudList, nullItems)
-                            }
                         }
                     }
                 }
@@ -295,18 +286,22 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     val path=FileAddress().getPathScreenHomework(typeBean.name,typeBean.grade)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
+                            setCallBack(object : FileUploadManager.UploadCallBack {
+                                override fun onUploadSuccess(url: String) {
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type = 2
+                                        subTypeStr = typeBean.course
+                                        date = typeBean.date
+                                        grade = typeBean.grade
+                                        listJson = Gson().toJson(typeBean)
+                                        downloadUrl = url
+                                    })
+                                    startUpload(cloudList, nullItems)
+                                }
+                                override fun onUploadFail() {
+                                }
+                            })
                             startZipUpload(path, typeBean.name+typeBean.grade)
-                            setCallBack {
-                                cloudList.add(CloudListBean().apply {
-                                    this.type = 2
-                                    subTypeStr = typeBean.course
-                                    date = typeBean.date
-                                    grade = typeBean.grade
-                                    listJson = Gson().toJson(typeBean)
-                                    downloadUrl = it
-                                })
-                                startUpload(cloudList, nullItems)
-                            }
                         }
                     }
                     else{
@@ -319,19 +314,23 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     val path=FileAddress().getPathHomework(typeBean.course,typeBean.typeId)
                     if (shareBeans.isNullOrEmpty()&&FileUtils.isExistContent(path)){
                         FileUploadManager(token).apply {
+                            setCallBack(object : FileUploadManager.UploadCallBack {
+                                override fun onUploadSuccess(url: String) {
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type = 2
+                                        subTypeStr = typeBean.course
+                                        date = typeBean.date
+                                        grade = typeBean.grade
+                                        listJson = Gson().toJson(typeBean)
+                                        contentJson = Gson().toJson(shareBeans)
+                                        downloadUrl = url
+                                    })
+                                    startUpload(cloudList, nullItems)
+                                }
+                                override fun onUploadFail() {
+                                }
+                            })
                             startZipUpload(path, typeBean.name)
-                            setCallBack {
-                                cloudList.add(CloudListBean().apply {
-                                    this.type = 2
-                                    subTypeStr = typeBean.course
-                                    date = typeBean.date
-                                    grade = typeBean.grade
-                                    listJson = Gson().toJson(typeBean)
-                                    contentJson = Gson().toJson(shareBeans)
-                                    downloadUrl = it
-                                })
-                                startUpload(cloudList, nullItems)
-                            }
                         }
                     } else {
                         nullItems.add(typeBean)
@@ -343,19 +342,23 @@ class HomeworkManageFragment: BaseMainFragment(), IHomeworkView {
                     val path = FileAddress().getPathHomework(typeBean.course, typeBean.typeId)
                     if (FileUtils.isExistContent(path)) {
                         FileUploadManager(token).apply {
+                            setCallBack(object : FileUploadManager.UploadCallBack {
+                                override fun onUploadSuccess(url: String) {
+                                    cloudList.add(CloudListBean().apply {
+                                        this.type = 2
+                                        subTypeStr = typeBean.course
+                                        date = typeBean.date
+                                        grade = typeBean.grade
+                                        listJson = Gson().toJson(typeBean)
+                                        contentJson = Gson().toJson(homeworks)
+                                        downloadUrl = url
+                                    })
+                                    startUpload(cloudList, nullItems)
+                                }
+                                override fun onUploadFail() {
+                                }
+                            })
                             startZipUpload(path, typeBean.name)
-                            setCallBack {
-                                cloudList.add(CloudListBean().apply {
-                                    this.type = 2
-                                    subTypeStr = typeBean.course
-                                    date = typeBean.date
-                                    grade = typeBean.grade
-                                    listJson = Gson().toJson(typeBean)
-                                    contentJson = Gson().toJson(homeworks)
-                                    downloadUrl = it
-                                })
-                                startUpload(cloudList, nullItems)
-                            }
                         }
                     } else {
                         nullItems.add(typeBean)

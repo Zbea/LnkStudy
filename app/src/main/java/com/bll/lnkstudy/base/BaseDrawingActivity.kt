@@ -116,7 +116,8 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity() {
                     reDrawGeometry(elik_a!!,1)
                 }
                 onElikSava_a()
-                elik_a?.saveBitmap(true) {}
+                elik_a?.saveBitmap(true) {
+                }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
             }

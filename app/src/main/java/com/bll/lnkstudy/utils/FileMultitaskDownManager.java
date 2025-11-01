@@ -18,8 +18,6 @@ public class FileMultitaskDownManager {
 
     private List<String> urls; //下载的url链接
     private List<String> paths;//文件的绝对路径
-    private String auth = "";
-    private String token = "";
     private final AtomicInteger activeCount = new AtomicInteger(0);
 
     public static FileMultitaskDownManager with() {
@@ -40,8 +38,6 @@ public class FileMultitaskDownManager {
 
     //单任务下载
     public void startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
-        auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
         FileDownloadListener fileDownloadListener=new FileDownloadListener() {
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
@@ -76,10 +72,10 @@ public class FileMultitaskDownManager {
             tasks.add(FileDownloader.getImpl().create(urls.get(i))
                     .setPath(paths.get(i))
                     .addHeader("Accept-Encoding", "identity")
-                    .addHeader(auth, token));
+                    .addHeader("Authorization", SPUtil.INSTANCE.getString("token")));
         }
         queueSet.disableCallbackProgressTimes();
-        queueSet.setAutoRetryTimes(1);
+        queueSet.setAutoRetryTimes(2);
         queueSet.setForceReDownload(true);
         queueSet.downloadTogether(tasks);//并行下载
         queueSet.start();

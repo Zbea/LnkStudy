@@ -1,23 +1,15 @@
 package com.bll.lnkstudy.utils;
 
-import android.content.Context;
 import android.util.Log;
-
-import com.bll.lnkstudy.Constants;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloadQueueSet;
 import com.liulishuo.filedownloader.FileDownloader;
-
-import java.util.List;
 
 
 public class FileDownManager {
 
     private String url; //下载的url链接
     private String path;//文件的绝对路径
-    private String auth = "";
-    private String token = "";
 
     public static FileDownManager with() {
         return  new FileDownManager();
@@ -36,14 +28,13 @@ public class FileDownManager {
 
     //单任务下载
     public BaseDownloadTask startSingleTaskDownLoad(final SingleTaskCallBack singletaskCallBack) {
-        auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
         Log.d("debug"," download url = "+url);
         Log.d("debug"," path = "+path);
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
                 .addHeader("Accept-Encoding", "identity")
-                .addHeader(auth, token)
+                .addHeader("Authorization", SPUtil.INSTANCE.getString("token"))
                 .setForceReDownload(true)
+                .setAutoRetryTimes(2)
                 .setPath(path).setListener(new FileDownloadListener() {
 
             @Override

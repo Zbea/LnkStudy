@@ -266,20 +266,24 @@ class PaintingFragment : BaseMainFragment(),IContractView.IQiniuView{
         val paintingContents=PaintingDrawingDaoManager.getInstance().queryAllByType(type,0)
         if (paintingContents.isNotEmpty()){
             FileUploadManager(token).apply {
+                setCallBack(object : FileUploadManager.UploadCallBack {
+                    override fun onUploadSuccess(url: String) {
+                        cloudList.add(CloudListBean().apply {
+                            type=5
+                            title=itemTypeBean.title
+                            subTypeStr="我的${getTypeStr()}"
+                            date=itemTypeBean.date
+                            grade=this@PaintingFragment.grade
+                            listJson=Gson().toJson(itemTypeBean)
+                            contentJson=Gson().toJson(paintingContents)
+                            downloadUrl=url
+                        })
+                        mCloudUploadPresenter.upload(cloudList,true)
+                    }
+                    override fun onUploadFail() {
+                    }
+                })
                 startZipUpload(itemTypeBean.path,uploadTitleStr)
-                setCallBack{
-                    cloudList.add(CloudListBean().apply {
-                        type=5
-                        title=itemTypeBean.title
-                        subTypeStr="我的${getTypeStr()}"
-                        date=itemTypeBean.date
-                        grade=this@PaintingFragment.grade
-                        listJson=Gson().toJson(itemTypeBean)
-                        contentJson=Gson().toJson(paintingContents)
-                        downloadUrl=it
-                    })
-                    mCloudUploadPresenter.upload(cloudList,true)
-                }
             }
         }
         else{

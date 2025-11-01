@@ -5,6 +5,7 @@ import com.bll.lnkstudy.Constants
 import com.bll.lnkstudy.FileAddress
 import com.bll.lnkstudy.utils.zip.IZipCallback
 import com.bll.lnkstudy.utils.zip.ZipUtils
+import com.google.gson.Gson
 import com.qiniu.android.storage.Configuration
 import com.qiniu.android.storage.FileRecorder
 import com.qiniu.android.storage.KeyGenerator
@@ -14,17 +15,16 @@ import java.io.File
 class FileUploadManager(private val uploadToken:String) {
 
     fun startUpload(filePath: String){
-        if (FileUtils.isExist(filePath))
-        {
-            return
-        }
+        Log.d(Constants.DEBUG,filePath)
         upload(filePath,1)
     }
 
     fun startZipUpload(filePath: String, fileName: String){
+        Log.d(Constants.DEBUG,filePath)
         autoZip(filePath,fileName)
     }
     fun startZipUpload(targetPaths: List<String>, fileName: String){
+        Log.d(Constants.DEBUG, Gson().toJson(targetPaths))
         autoZip(targetPaths,fileName)
     }
 
@@ -40,6 +40,7 @@ class FileUploadManager(private val uploadToken:String) {
             }
             override fun onError(msg: String?) {
                 Log.d(Constants.DEBUG,"onError ${fileName}:$msg")
+                callBack?.onUploadFail()
             }
         })
     }
@@ -56,6 +57,7 @@ class FileUploadManager(private val uploadToken:String) {
             }
             override fun onError(msg: String?) {
                 Log.d("debug","onError ${fileName}:$msg")
+                callBack?.onUploadFail()
             }
         })
     }
@@ -88,28 +90,32 @@ class FileUploadManager(private val uploadToken:String) {
         val uploadManager = UploadManager(config)
         uploadManager.put(path, null, uploadToken,
             { key, info, response ->
-                if (info?.isOK == true) {
+                if (info?.isOK == true&& response != null) {
                     if (type==0){
                         FileUtils.deleteFile(File(path))
                     }
                     val keyStr=response.optString("key")
                     val downloadUrl="${Constants.UPDATE_URL}${keyStr}?attname=${File(path).name}"
-                    Log.d("debug",downloadUrl)
-                    callBack?.onUpLoadSuccess(downloadUrl)
+                    Log.d(Constants.DEBUG,downloadUrl)
+                    callBack?.onUploadSuccess(downloadUrl)
+                }
+                else{
+                    Log.d(Constants.DEBUG,info.toString())
+                    callBack?.onUploadFail()
                 }
             }, null
         )
 
     }
 
-    private var callBack: UpLoadCallBack? = null
+    private var callBack: UploadCallBack? = null
 
-    fun setCallBack(callBack: UpLoadCallBack) {
+    fun setCallBack(callBack: UploadCallBack) {
         this.callBack = callBack
     }
 
-    fun interface UpLoadCallBack {
-        fun onUpLoadSuccess(url:String)
+    interface UploadCallBack {
+        fun onUploadSuccess(url:String)
+        fun onUploadFail()
     }
-
 }

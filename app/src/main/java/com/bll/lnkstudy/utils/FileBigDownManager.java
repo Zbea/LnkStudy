@@ -13,9 +13,6 @@ public class FileBigDownManager {
 
     private String url; //下载的url链接
     private String path;//文件的绝对路径
-    private String auth = "";
-    private String token = "";
-
 
     public static FileBigDownManager with() {
         return new FileBigDownManager();
@@ -35,14 +32,12 @@ public class FileBigDownManager {
 
     //单任务下载
     public BaseDownloadTask startSingleTaskDownLoad(final SingleTaskCallBack singletaskCallBack) {
-        auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
         Log.d("debug"," download url = "+url);
         Log.d("debug"," path = "+path);
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
                 .addHeader("Accept-Encoding", "identity")
-                .addHeader(auth, token)
-                .setForceReDownload(true)
+                .addHeader("Authorization", SPUtil.INSTANCE.getString("token"))
+                .setAutoRetryTimes(2)
                 .setPath(path).setListener(new FileDownloadLargeFileListener() {
                     @Override
                     protected void completed(BaseDownloadTask task) {
@@ -52,6 +47,7 @@ public class FileBigDownManager {
                     @Override
                     protected void error(BaseDownloadTask task, Throwable e) {
                         singletaskCallBack.error(task, e);
+                        FileUtils.delete(path);
                     }
 
                     @Override

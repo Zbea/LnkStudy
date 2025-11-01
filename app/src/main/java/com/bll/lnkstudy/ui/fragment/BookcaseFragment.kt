@@ -134,20 +134,24 @@ class BookcaseFragment: BaseMainFragment() {
         for (item in books){
             if (FileUtils.isExistContent(item.bookDrawPath)){
                 FileUploadManager(token).apply {
+                    setCallBack(object : FileUploadManager.UploadCallBack {
+                        override fun onUploadSuccess(url: String) {
+                            cloudList.add(CloudListBean().apply {
+                                type=6
+                                zipUrl=item.downloadUrl
+                                downloadUrl=url
+                                subTypeStr=item.subtypeStr
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(item)
+                                bookId=item.bookId
+                            })
+                            if (cloudList.size==books.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                        override fun onUploadFail() {
+                        }
+                    })
                     startZipUpload(item.bookDrawPath,item.bookId.toString())
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=6
-                            zipUrl=item.downloadUrl
-                            downloadUrl=it
-                            subTypeStr=item.subtypeStr
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(item)
-                            bookId=item.bookId
-                        })
-                        if (cloudList.size==books.size)
-                            mCloudUploadPresenter.upload(cloudList)
-                    }
                 }
             }
             else{
